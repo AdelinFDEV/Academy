@@ -75,9 +75,16 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
     if (coins.some((c) => c.coin_id === result.id)) return;
     setAdding(result.id);
     const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.id) {
+      setAdding(null);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("watchlist")
       .insert({
+        user_id: session.user.id,
         coin_id: result.id,
         coin_symbol: result.symbol.toUpperCase(),
         coin_name: result.name,
