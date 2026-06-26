@@ -2,14 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -17,18 +9,19 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role, current_streak, max_streak, is_featured")
+    .select("full_name, role, current_streak, is_featured")
     .eq("id", user.id)
     .single();
 
   const name = profile?.full_name || user.email?.split("@")[0] || "Usuario";
   const role = profile?.role || "free";
   const isPremium = role === "premium" || role === "admin";
+  const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
 
   const [{ data: posts }, { data: userPostsData }] = await Promise.all([
     supabase
       .from("posts")
-      .select("id, title, slug, excerpt, cover_image, is_premium, created_at, categories(name, slug)")
+      .select("id, title, slug, cover_image, is_premium, created_at, categories(name, slug)")
       .eq("published", true)
       .order("created_at", { ascending: false }),
     supabase
@@ -41,175 +34,175 @@ export default async function DashboardPage() {
   const userPosts = userPostsData ?? [];
 
   const totalPosts = allPosts.length;
-  const premiumPosts = allPosts.filter((p) => p.is_premium).length;
-  // static premium items: Diario de Trading, Mis Estadísticas, Portfolio Spot, Cursos, Recursos, Chat y Foro
-  const premiumTotal = premiumPosts + 6;
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
   const readCount = readIds.size;
   const savedIds = new Set(userPosts.filter((up) => up.saved).map((up) => up.post_id));
   const savedPosts = allPosts.filter((p) => savedIds.has(p.id));
-  const latest = allPosts.slice(0, 6);
-  const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
+  const readPercent = totalPosts > 0 ? Math.round((readCount / totalPosts) * 100) : 0;
+
+  // Continúa leyendo: guardados no leídos primero, luego recientes no leídos
+  const savedUnread = allPosts.filter((p) => {
+    const up = userPosts.find((u) => u.post_id === p.id);
+    return up?.saved && !up.read_at;
+  });
+  const continueReading = savedUnread.length > 0
+    ? savedUnread.slice(0, 3)
+    : allPosts.filter((p) => !readIds.has(p.id)).slice(0, 3);
+
+  const TOOLS = [
+    { href: "/dashboard/watchlist", icon: "trending" as const, name: "Watchlist", desc: "Sigue precios", locked: false },
+    { href: "/glosario", icon: "book" as const, name: "Glosario", desc: "40+ términos", locked: false },
+    { href: isPremium ? "/dashboard/trading" : "/dashboard", icon: "chart" as const, name: "Diario Trading", desc: "Registra ops.", locked: !isPremium },
+    { href: isPremium ? "/dashboard/estadisticas" : "/dashboard", icon: "chart" as const, name: "Estadísticas", desc: "Tu rendimiento", locked: !isPremium },
+  ];
 
   return (
     <main className="dashboard-main">
-      <div className="dashboard-header">
-        <div className="dashboard-header-name">
-          <h1>Hola, <span>{name}</span></h1>
-          {profile?.is_featured && (
-            <span className="featured-star-large" title="Usuario destacado — 30 días de racha">
-              ★
-            </span>
-          )}
+
+      {/* ── Cabecera ── */}
+      <div className="dash-header">
+        <div className="dash-header-left">
+          <h1 className="dash-greeting">
+            Hola, <span>{name}</span>
+            {profile?.is_featured && (
+              <span className="featured-star-large" title="Usuario destacado — 30 días de racha">★</span>
+            )}
+          </h1>
+          <div className="dash-header-meta">
+            <span className={`dash-plan-badge${isPremium ? " premium" : ""}`}>{planLabel}</span>
+            {(profile?.current_streak ?? 0) > 0 && (
+              <Link href="/dashboard/logros" className="dash-streak-badge">
+                🔥 {profile?.current_streak} días
+              </Link>
+            )}
+          </div>
         </div>
-        <p>Bienvenido a tu academia de criptomonedas</p>
+        {!isPremium && (
+          <Link href="#" className="dash-upgrade-btn">Hazte Premium →</Link>
+        )}
       </div>
 
-      {!isPremium && (
-        <div className="premium-banner">
-          <div className="premium-banner-text">
-            <strong>Desbloquea todo el contenido</strong>
-            <p>Accede a los <span style={{ color: "var(--accent-orange)", fontWeight: 700 }}>{premiumTotal}</span> contenidos premium: análisis, herramientas y cursos exclusivos</p>
+      {/* ── Fila superior: progreso + herramientas ── */}
+      <div className="dash-top-row">
+
+        {/* Progreso */}
+        <div className="dash-progress-card">
+          <div className="dash-progress-head">
+            <span className="dash-card-label">Tu progreso</span>
+            <span className="dash-progress-count">
+              {readCount}<span>/{totalPosts}</span>
+            </span>
           </div>
-          <button className="btn-primary btn-small">Hazte Premium →</button>
+          <div className="dash-progress-bar">
+            <div className="dash-progress-fill" style={{ width: `${readPercent}%` }} />
+          </div>
+          <div className="dash-progress-foot">
+            <span>{readPercent}% de artículos leídos</span>
+            <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+          </div>
+        </div>
+
+        {/* Herramientas */}
+        <div className="dash-tools-card">
+          <span className="dash-card-label">Herramientas</span>
+          <div className="dash-tools-grid">
+            {TOOLS.map((t) => (
+              <Link
+                key={t.name}
+                href={t.href}
+                className={`dash-tool-item${t.locked ? " locked" : ""}`}
+              >
+                {t.locked && <span className="dash-tool-premium-tag">PREMIUM</span>}
+                <div className="dash-tool-icon"><Icon name={t.icon} size={17} /></div>
+                <span className="dash-tool-name">{t.name}</span>
+                <span className="dash-tool-desc">{t.desc}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Continúa leyendo ── */}
+      {continueReading.length > 0 && (
+        <div className="dash-section">
+          <div className="dash-section-head">
+            <h2 className="dash-section-title">Continúa leyendo</h2>
+            <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+          </div>
+          <div className="dash-continue-list">
+            {continueReading.map((post) => (
+              <Link key={post.id} href={`/post/${post.slug}`} className="dash-continue-card">
+                <div
+                  className="dash-continue-thumb"
+                  style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
+                >
+                  {!post.cover_image && <Icon name="chart" size={26} />}
+                  {post.is_premium && <span className="dash-mini-badge">PREMIUM</span>}
+                </div>
+                <div className="dash-continue-body">
+                  {(post.categories as any)?.name && (
+                    <span className="dash-continue-cat">{(post.categories as any).name}</span>
+                  )}
+                  <h3 className="dash-continue-title">{post.title}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
-      <div className="stats-grid">
-        <div className="stat-card">
-          <span className="stat-value">{totalPosts}</span>
-          <span className="stat-label">Artículos disponibles</span>
+      {/* ── Guardados ── */}
+      <div className="dash-section">
+        <div className="dash-section-head">
+          <h2 className="dash-section-title">
+            Guardados
+            {savedPosts.length > 0 && (
+              <span className="dash-count-pill">{savedPosts.length}</span>
+            )}
+          </h2>
         </div>
-        <div className="stat-card">
-          <span className="stat-value">{readCount}</span>
-          <span className="stat-label">Artículos leídos</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-value">{savedPosts.length}</span>
-          <span className="stat-label">Guardados</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-value" style={{ color: isPremium ? "var(--accent-orange)" : undefined }}>
-            {planLabel}
-          </span>
-          <span className="stat-label">Tu plan</span>
-        </div>
-      </div>
 
-      <Link href="/dashboard/logros" className="streak-teaser">
-        <span className="streak-teaser-btn">Ver Mis Logros</span>
-        <span className="streak-teaser-flame">🔥</span>
-        <span className="streak-teaser-value">{profile?.current_streak ?? 0} días de racha</span>
-        {profile?.is_featured && (
-          <span className="streak-teaser-star" title="Usuario destacado">★</span>
-        )}
-      </Link>
-
-      {savedPosts.length > 0 && (
-        <div className="section">
-          <div className="dashboard-section-head">
-            <h2 className="section-title">
-              <Icon name="bookmark" size={18} /> Guardados
-            </h2>
+        {savedPosts.length === 0 ? (
+          <div className="dash-empty">
+            <div className="dash-empty-icon"><Icon name="bookmark" size={22} /></div>
+            <p>No tienes artículos guardados aún.</p>
+            <Link href="/articulos" className="dash-link-orange">Explorar artículos →</Link>
           </div>
-          <div className="posts-grid">
+        ) : (
+          <div className="dash-saved-list">
             {savedPosts.map((post) => {
               const locked = post.is_premium && !isPremium;
+              const isRead = readIds.has(post.id);
               return (
                 <Link
                   key={post.id}
                   href={`/post/${post.slug}`}
-                  className={`post-card${post.is_premium ? " is-premium" : ""}`}
+                  className={`dash-saved-item${isRead ? " is-read" : ""}`}
                 >
                   <div
-                    className="post-card-image"
+                    className="dash-saved-thumb"
                     style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
                   >
-                    {!post.cover_image && (
-                      <span className="post-card-image-placeholder">
-                        <Icon name="chart" size={40} />
-                      </span>
-                    )}
-                    {post.is_premium ? (
-                      <div className="post-premium-badge"><Icon name="lock" size={11} /> Premium</div>
-                    ) : (
-                      <div className="post-free-badge">Gratis</div>
-                    )}
+                    {!post.cover_image && <Icon name="chart" size={18} />}
                   </div>
-                  <div className="post-card-body">
-                    <div className="post-card-meta">
-                      {(post.categories as any)?.name && (
-                        <span className="post-category">{(post.categories as any).name}</span>
-                      )}
-                      <span className="post-date">{formatDate(post.created_at)}</span>
+                  <div className="dash-saved-body">
+                    {(post.categories as any)?.name && (
+                      <span className="dash-saved-cat">{(post.categories as any).name}</span>
+                    )}
+                    <h3 className="dash-saved-title">{post.title}</h3>
+                    <div className="dash-saved-tags">
+                      {isRead && <span className="dash-tag-read">✓ Leído</span>}
+                      {locked && <span className="dash-tag-premium">PREMIUM</span>}
                     </div>
-                    <h3 className="post-card-title">{post.title}</h3>
-                    {locked ? (
-                      <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>
-                    ) : (
-                      <span className="post-read-more">Leer <Icon name="arrow-right" size={15} /></span>
-                    )}
                   </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <div className="section">
-        <div className="dashboard-section-head">
-          <h2 className="section-title">Últimos artículos</h2>
-          <Link href="/articulos" className="dashboard-see-all">Ver todos →</Link>
-        </div>
-        {latest.length === 0 ? (
-          <p className="admin-empty">Aún no hay artículos publicados.</p>
-        ) : (
-          <div className="posts-grid">
-            {latest.map((post) => {
-              const locked = post.is_premium && !isPremium;
-              return (
-                <Link
-                  key={post.id}
-                  href={`/post/${post.slug}`}
-                  className={`post-card${post.is_premium ? " is-premium" : ""}`}
-                >
-                  <div
-                    className="post-card-image"
-                    style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
-                  >
-                    {!post.cover_image && (
-                      <span className="post-card-image-placeholder">
-                        <Icon name="chart" size={40} />
-                      </span>
-                    )}
-                    {post.is_premium ? (
-                      <div className="post-premium-badge"><Icon name="lock" size={11} /> Premium</div>
-                    ) : (
-                      <div className="post-free-badge">Gratis</div>
-                    )}
-                  </div>
-                  <div className="post-card-body">
-                    <div className="post-card-meta">
-                      {(post.categories as any)?.name && (
-                        <span className="post-category">{(post.categories as any).name}</span>
-                      )}
-                      <span className="post-date">{formatDate(post.created_at)}</span>
-                    </div>
-                    <h3 className="post-card-title">{post.title}</h3>
-                    {post.excerpt && <p className="post-card-excerpt">{post.excerpt}</p>}
-                    {locked ? (
-                      <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>
-                    ) : (
-                      <span className="post-read-more">Leer <Icon name="arrow-right" size={15} /></span>
-                    )}
-                  </div>
+                  <span className="dash-saved-arrow" aria-hidden="true">›</span>
                 </Link>
               );
             })}
           </div>
         )}
       </div>
+
     </main>
   );
 }
