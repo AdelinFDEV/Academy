@@ -9250,3 +9250,157 @@ select {
     padding: 1rem;
   }
 }
+
+/* ══════════════════════════════════════════════════════
+   GLOSARIO — SAVE BUTTON
+   ══════════════════════════════════════════════════════ */
+
+.glosario-term-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.glosario-term-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.glosario-save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1px solid rgba(240,244,255,0.1);
+  background: rgba(240,244,255,0.04);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.glosario-save-btn:hover {
+  color: var(--text-primary);
+  background: rgba(240,244,255,0.08);
+  border-color: rgba(240,244,255,0.2);
+}
+
+.glosario-save-btn.saved {
+  color: var(--accent-orange);
+  background: rgba(255,107,43,0.1);
+  border-color: rgba(255,107,43,0.3);
+}
+
+.glosario-save-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.glosario-login-hint {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.glosario-login-hint a {
+  color: var(--accent-orange);
+  text-decoration: none;
+}
+
+.glosario-login-hint a:hover {
+  text-decoration: underline;
+}
+
+/* ══════════════════════════════════════════════════════
+   DASHBOARD — SAVED TERMS
+   ══════════════════════════════════════════════════════ */
+
+.dash-terms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .dash-terms-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dash-term-card {
+  background: var(--bg-card);
+  border: var(--card-border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  box-shadow: var(--card-shadow);
+}
+
+.dash-term-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dash-term-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.dash-term-def {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ══════════════════════════════════════════════════════
+   ADMIN — COMMUNITY INTERACTION CHART
+   ══════════════════════════════════════════════════════ */
+
+.admin-interaction-card {
+  margin-bottom: 1.5rem;
+}
+
+.admin-interaction-kpis {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-interaction-kpi {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.admin-interaction-kpi-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .admin-interaction-kpis {
+    gap: 0.6rem;
+  }
+  .admin-interaction-kpi {
+    font-size: 0.72rem;
+  }
+}

@@ -58,6 +58,30 @@ function LineChart({ data }: { data: { count: number }[] }) {
   );
 }
 
+// ── SVG multi-line chart (community interaction) ──────────
+interface Series { label: string; color: string; data: { count: number }[] }
+function MultiLineChart({ series, labels }: { series: Series[]; labels: string[] }) {
+  const W = 400, H = 80, PAD_X = 2, PAD_Y = 8;
+  const allCounts = series.flatMap((s) => s.data.map((d) => d.count));
+  const max = Math.max(...allCounts, 1);
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="admin-line-chart-svg" aria-hidden="true">
+      {series.map((s) => {
+        const pts = s.data.map((d, i) => {
+          const x = PAD_X + (i / (s.data.length - 1 || 1)) * (W - PAD_X * 2);
+          const y = PAD_Y + (1 - d.count / max) * (H - PAD_Y * 2);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(" ");
+        return (
+          <polyline key={s.label} points={pts} fill="none" stroke={s.color}
+            strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" opacity="0.9" />
+        );
+      })}
+    </svg>
+  );
+}
+
 // ── SVG donut ─────────────────────────────────────────────
 function Donut({ pct, color }: { pct: number; color: string }) {
   const r = 18, cx = 22, cy = 22;
@@ -108,6 +132,9 @@ export default async function AdminPage() {
     { data: recentComments },
     { data: recentSignups },
     { data: allReads },
+    { data: likes30 },
+    { data: comments30 },
+    { data: shares30 },
   ] = await Promise.all([
     supabase.from("posts").select("*", { count: "exact", head: true }),
     supabase.from("comments").select("*", { count: "exact", head: true }).eq("approved", false),
@@ -127,6 +154,9 @@ export default async function AdminPage() {
       .limit(6),
     supabase.from("profiles").select("id, full_name, role, created_at").order("created_at", { ascending: false }).limit(5),
     supabase.from("user_posts").select("post_id, posts(title, slug)").not("read_at", "is", null),
+    supabase.from("post_likes").select("created_at").gte("created_at", d30.toISOString()),
+    supabase.from("comments").select("created_at").gte("created_at", d30.toISOString()),
+    supabase.from("post_shares").select("created_at").gte("created_at", d30.toISOString()),
   ]);
 
   // ── User growth chart (30 days) ──
@@ -161,6 +191,26 @@ export default async function AdminPage() {
     readMap[r.post_id].count++;
   });
   const topPosts = Object.values(readMap).sort((a, b) => b.count - a.count).slice(0, 5);
+
+  // ── Community interaction (30 days) ──
+  const likesBuckets   = buildDayBuckets(30);
+  const commentBuckets = buildDayBuckets(30);
+  const sharesBuckets  = buildDayBuckets(30);
+
+  (likes30   ?? []).forEach((r) => { const b = likesBuckets.find((d) => d.key === r.created_at.slice(0, 10));   if (b) b.count++; });
+  (comments30 ?? []).forEach((r) => { const b = commentBuckets.find((d) => d.key === r.created_at.slice(0, 10)); if (b) b.count++; });
+  (shares30  ?? []).forEach((r) => { const b = sharesBuckets.find((d) => d.key === r.created_at.slice(0, 10));  if (b) b.count++; });
+
+  const totalLikes30    = likesBuckets.reduce((s, d) => s + d.count, 0);
+  const totalComments30 = commentBuckets.reduce((s, d) => s + d.count, 0);
+  const totalShares30   = sharesBuckets.reduce((s, d) => s + d.count, 0);
+
+  const interactionSeries: Series[] = [
+    { label: "Me gustas",    color: "var(--accent-orange)", data: likesBuckets },
+    { label: "Comentarios",  color: "#60a5fa",              data: commentBuckets },
+    { label: "Compartidos",  color: "#a78bfa",              data: sharesBuckets },
+  ];
+  const interactionLabels = [likesBuckets[0].label, likesBuckets[14].label, likesBuckets[29].label];
 
   // ── Trend helpers ──
   function trend(curr: number | null, prev: number | null) {
@@ -318,6 +368,36 @@ export default async function AdminPage() {
                 <strong>{freePosts}</strong>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Community interaction chart */}
+      <div className="admin-chart-card admin-interaction-card">
+        <div className="admin-chart-head">
+          <div>
+            <h2 className="admin-chart-title">Interacción de la comunidad</h2>
+            <p className="admin-chart-sub">Últimos 30 días</p>
+          </div>
+          <div className="admin-interaction-kpis">
+            <span className="admin-interaction-kpi" style={{ color: "var(--accent-orange)" }}>
+              <span className="admin-interaction-kpi-dot" style={{ background: "var(--accent-orange)" }} />
+              {totalLikes30} me gustas
+            </span>
+            <span className="admin-interaction-kpi" style={{ color: "#60a5fa" }}>
+              <span className="admin-interaction-kpi-dot" style={{ background: "#60a5fa" }} />
+              {totalComments30} comentarios
+            </span>
+            <span className="admin-interaction-kpi" style={{ color: "#a78bfa" }}>
+              <span className="admin-interaction-kpi-dot" style={{ background: "#a78bfa" }} />
+              {totalShares30} compartidos
+            </span>
+          </div>
+        </div>
+        <div className="admin-line-chart-wrap">
+          <MultiLineChart series={interactionSeries} labels={interactionLabels} />
+          <div className="admin-line-chart-labels">
+            {interactionLabels.map((l) => <span key={l}>{l}</span>)}
           </div>
         </div>
       </div>

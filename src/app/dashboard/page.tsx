@@ -18,7 +18,7 @@ export default async function DashboardPage() {
   const isPremium = role === "premium" || role === "admin";
   const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
 
-  const [{ data: posts }, { data: userPostsData }] = await Promise.all([
+  const [{ data: posts }, { data: userPostsData }, { data: savedTermsData }] = await Promise.all([
     supabase
       .from("posts")
       .select("id, title, slug, cover_image, is_premium, created_at, categories(name, slug)")
@@ -28,10 +28,16 @@ export default async function DashboardPage() {
       .from("user_posts")
       .select("post_id, saved, read_at")
       .eq("user_id", user.id),
+    supabase
+      .from("saved_terms")
+      .select("term, definition, category")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
   ]);
 
   const allPosts = posts ?? [];
   const userPosts = userPostsData ?? [];
+  const savedTermsList = savedTermsData ?? [];
 
   const totalPosts = allPosts.length;
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
@@ -40,7 +46,6 @@ export default async function DashboardPage() {
   const savedPosts = allPosts.filter((p) => savedIds.has(p.id));
   const readPercent = totalPosts > 0 ? Math.round((readCount / totalPosts) * 100) : 0;
 
-  // Continúa leyendo: guardados no leídos primero, luego recientes no leídos
   const savedUnread = allPosts.filter((p) => {
     const up = userPosts.find((u) => u.post_id === p.id);
     return up?.saved && !up.read_at;
@@ -199,6 +204,39 @@ export default async function DashboardPage() {
                 </Link>
               );
             })}
+          </div>
+        )}
+      </div>
+
+      {/* ── Diccionario guardado ── */}
+      <div className="dash-section">
+        <div className="dash-section-head">
+          <h2 className="dash-section-title">
+            Diccionario guardado
+            {savedTermsList.length > 0 && (
+              <span className="dash-count-pill">{savedTermsList.length}</span>
+            )}
+          </h2>
+          <Link href="/glosario" className="dash-link-orange">Ver diccionario →</Link>
+        </div>
+
+        {savedTermsList.length === 0 ? (
+          <div className="dash-empty">
+            <div className="dash-empty-icon"><Icon name="book" size={22} /></div>
+            <p>No tienes términos guardados aún.</p>
+            <Link href="/glosario" className="dash-link-orange">Explorar el diccionario →</Link>
+          </div>
+        ) : (
+          <div className="dash-terms-grid">
+            {savedTermsList.map((t) => (
+              <div key={t.term} className="dash-term-card">
+                <div className="dash-term-head">
+                  <span className="dash-term-name">{t.term}</span>
+                  <span className={`glosario-term-cat glosario-term-cat--${t.category}`}>{t.category}</span>
+                </div>
+                <p className="dash-term-def">{t.definition}</p>
+              </div>
+            ))}
           </div>
         )}
       </div>

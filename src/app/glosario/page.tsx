@@ -18,6 +18,15 @@ export default async function GlosarioPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  const initialSaved: string[] = [];
+  if (user) {
+    const { data } = await supabase
+      .from("saved_terms")
+      .select("term")
+      .eq("user_id", user.id);
+    initialSaved.push(...(data ?? []).map((r) => r.term));
+  }
+
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
@@ -49,8 +58,13 @@ export default async function GlosarioPage() {
           <p className="glosario-sub">
             Todos los términos que necesitas para entender el mercado crypto y el trading. Gratis, siempre actualizado.
           </p>
+          {!user && (
+            <p className="glosario-login-hint">
+              <Link href="/login">Inicia sesión</Link> para guardar términos en tu dashboard.
+            </p>
+          )}
         </div>
-        <GlosarioClient />
+        <GlosarioClient isLoggedIn={!!user} initialSaved={initialSaved} />
       </main>
 
       <Footer />

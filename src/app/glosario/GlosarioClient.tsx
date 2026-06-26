@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Bookmark } from "lucide-react";
 
 interface Term {
   term: string;
@@ -66,9 +67,16 @@ const CATEGORIES = [
   { id: "seguridad", label: "Seguridad" },
 ] as const;
 
-export default function GlosarioClient() {
+interface Props {
+  isLoggedIn: boolean;
+  initialSaved: string[];
+}
+
+export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<string>("all");
+  const [saved, setSaved] = useState<Set<string>>(new Set(initialSaved));
+  const [toggling, setToggling] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
@@ -78,6 +86,55 @@ export default function GlosarioClient() {
       return matchesCat && matchesSearch;
     }).sort((a, b) => a.term.localeCompare(b.term));
   }, [search, category]);
+
+  async function toggleSave(t: Term) {
+    if (!isLoggedIn) {
+      window.location.href = "/login";
+      return;
+    }
+    if (toggling === t.term) return;
+    setToggling(t.term);
+
+    const wasSaved = saved.has(t.term);
+    setSaved((prev) => {
+      const next = new Set(prev);
+      if (wasSaved) next.delete(t.term);
+      else next.add(t.term);
+      return next;
+    });
+
+    try {
+      const res = await fetch("/api/terms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ term: t.term, definition: t.definition, category: t.category }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSaved((prev) => {
+          const next = new Set(prev);
+          if (data.saved) next.add(t.term);
+          else next.delete(t.term);
+          return next;
+        });
+      } else {
+        setSaved((prev) => {
+          const next = new Set(prev);
+          if (wasSaved) next.add(t.term);
+          else next.delete(t.term);
+          return next;
+        });
+      }
+    } catch {
+      setSaved((prev) => {
+        const next = new Set(prev);
+        if (wasSaved) next.add(t.term);
+        else next.delete(t.term);
+        return next;
+      });
+    }
+    setToggling(null);
+  }
 
   return (
     <>
@@ -106,15 +163,29 @@ export default function GlosarioClient() {
       <p className="glosario-count">{filtered.length} término{filtered.length !== 1 ? "s" : ""}</p>
 
       <div className="glosario-list">
-        {filtered.map((t) => (
-          <div key={t.term} className="glosario-term">
-            <div className="glosario-term-head">
-              <span className="glosario-term-name">{t.term}</span>
-              <span className={`glosario-term-cat glosario-term-cat--${t.category}`}>{t.category}</span>
+        {filtered.map((t) => {
+          const isSaved = saved.has(t.term);
+          return (
+            <div key={t.term} className="glosario-term">
+              <div className="glosario-term-head">
+                <span className="glosario-term-name">{t.term}</span>
+                <div className="glosario-term-actions">
+                  <span className={`glosario-term-cat glosario-term-cat--${t.category}`}>{t.category}</span>
+                  <button
+                    className={`glosario-save-btn${isSaved ? " saved" : ""}`}
+                    onClick={() => toggleSave(t)}
+                    disabled={toggling === t.term}
+                    aria-label={isSaved ? "Quitar de guardados" : "Guardar término"}
+                    title={isLoggedIn ? (isSaved ? "Quitar de guardados" : "Guardar en tu diccionario") : "Inicia sesión para guardar términos"}
+                  >
+                    <Bookmark size={14} fill={isSaved ? "currentColor" : "none"} aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+              <p className="glosario-term-def">{t.definition}</p>
             </div>
-            <p className="glosario-term-def">{t.definition}</p>
-          </div>
-        ))}
+          );
+        })}
         {filtered.length === 0 && (
           <p className="glosario-empty">No se encontró ningún término para "{search}".</p>
         )}
