@@ -5,6 +5,11 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
+import LogoutButton from "@/components/LogoutButton";
+import BlogMobileMenu from "@/components/BlogMobileMenu";
+import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
+import NavArticulosDropdown from "@/components/NavArticulosDropdown";
+import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -32,6 +37,13 @@ export async function generateMetadata(
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const profileData = user ? (await supabase.from("profiles").select("full_name, role").eq("id", user.id).single()).data : null;
+  const role = profileData?.role ?? "free";
+  const isPremium = role === "premium" || role === "admin";
+  const isAdmin = role === "admin";
+  const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
 
   const { data: category } = await supabase
     .from("categories")
@@ -69,9 +81,27 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <div className="blog-nav-links">
-          <Link href="/#contenido">← Todos los temas</Link>
-          <Link href="/dashboard" className="btn-nav-cta">Mi academia →</Link>
+          <NavArticulosDropdown />
+          <NavEducacionDropdown />
+          <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
+          {user ? (
+            <>
+              <Link href="/dashboard" className="btn-nav-link btn-nav-link--dashboard">Academia</Link>
+              {isAdmin && <Link href="/admin" className="btn-nav-link">Admin</Link>}
+              <div className="blog-nav-user">
+                <span className="blog-nav-user-name">{userName}</span>
+                <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>{isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}</span>
+              </div>
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="btn-nav-link">Iniciar sesión</Link>
+              <Link href="/register" className="btn-nav-cta">Registrarse</Link>
+            </>
+          )}
         </div>
+        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 
       <main className="blog-main">
@@ -123,7 +153,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                   postId={post.id}
                   postSlug={post.slug}
                   commentsCount={commentCountMap[post.id] ?? 0}
-                  isLoggedIn={false}
+                  isLoggedIn={!!user}
                   variant="card"
                 />
               </div>

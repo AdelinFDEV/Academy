@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
@@ -20,6 +21,8 @@ interface Props {
 export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false }: Props) {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const pathname = usePathname();
+  const a = (href: string) => pathname === href || pathname.startsWith(href + "/") ? " active" : "";
 
   useEffect(() => {
     const supabase = createClient();
@@ -66,7 +69,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
           <nav className="blog-mobile-menu-nav">
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Artículos</span>
-              <Link href="/articulos" className="blog-mobile-tool-link" onClick={close}>
+              <Link href="/articulos" className={`blog-mobile-tool-link${a("/articulos")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
                   <path d="M4.5 5.5h7M4.5 8h7M4.5 10.5h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
@@ -74,7 +77,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Todos los artículos
               </Link>
               {categories.map((cat) => (
-                <Link key={cat.slug} href={`/categoria/${cat.slug}`} className="blog-mobile-tool-link" onClick={close}>
+                <Link key={cat.slug} href={`/categoria/${cat.slug}`} className={`blog-mobile-tool-link${a("/categoria/" + cat.slug)}`} onClick={close}>
                   <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M2 4h5l1.5 2H14v7H2V4Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                   </svg>
@@ -85,14 +88,14 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Educación</span>
-              <Link href="/glosario" className="blog-mobile-tool-link" onClick={close}>
+              <Link href="/glosario" className={`blog-mobile-tool-link${a("/glosario")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M2 2h6l1 1h5v11H2V2Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                   <path d="M5 7h6M5 9.5h6M5 12h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
                 </svg>
                 Glosario
               </Link>
-              <Link href="/cursos" className="blog-mobile-tool-link" onClick={close}>
+              <Link href="/cursos" className={`blog-mobile-tool-link${a("/cursos")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M8 1L1 5l7 4 7-4-7-4Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                   <path d="M1 5v6M4 6.5v4.5a6 6 0 0 0 8 0V6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -100,7 +103,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Cursos
                 <span className="mobile-premium-badge">PREMIUM</span>
               </Link>
-              <Link href="/recursos" className="blog-mobile-tool-link" onClick={close}>
+              <Link href="/recursos" className={`blog-mobile-tool-link${a("/recursos")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 2h7l3 3v9H3V2Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                   <path d="M10 2v3h3M5.5 7h5M5.5 9.5h5M5.5 12h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
@@ -108,7 +111,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Recursos
                 <span className="mobile-premium-badge">PREMIUM</span>
               </Link>
-              <Link href="/guias" className="blog-mobile-tool-link" onClick={close}>
+              <Link href="/guias" className={`blog-mobile-tool-link${a("/guias")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M2 3h5v10H2zM9 3h5v10H9z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                 </svg>
@@ -119,7 +122,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Herramientas</span>
 
-              <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/dashboard/trading"} className="blog-mobile-tool-link" onClick={close}>
+              <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/dashboard/trading"} className={`blog-mobile-tool-link${a("/dashboard/trading")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <polyline points="1,11 5,7 9,9 15,3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   <polyline points="11,3 15,3 15,7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -128,7 +131,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={!user ? "/register" : "/dashboard/watchlist"} className="blog-mobile-tool-link" onClick={close}>
+              <Link href={!user ? "/register" : "/dashboard/watchlist"} className={`blog-mobile-tool-link${a("/dashboard/watchlist")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M2 8a6 6 0 1 0 12 0A6 6 0 0 0 2 8Z" stroke="currentColor" strokeWidth="1.4"/>
                   <path d="M8 5v3.5l2 1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -137,7 +140,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={(!user || !isPremium) ? "/dashboard" : "/dashboard/estadisticas"} className="blog-mobile-tool-link" onClick={close}>
+              <Link href={(!user || !isPremium) ? "/dashboard" : "/dashboard/estadisticas"} className={`blog-mobile-tool-link${a("/dashboard/estadisticas")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <rect x="2" y="9" width="3" height="5" rx="0.5" stroke="currentColor" strokeWidth="1.3"/>
                   <rect x="6.5" y="5" width="3" height="9" rx="0.5" stroke="currentColor" strokeWidth="1.3"/>
@@ -147,7 +150,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {(!user || !isPremium) && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href="/logros" className="blog-mobile-tool-link" onClick={close}>
+              <Link href="/logros" className={`blog-mobile-tool-link${a("/logros")}`} onClick={close}>
                 <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M8 2l1.9 3.8L14 6.6l-3 2.9.7 4.1L8 11.5l-3.7 2.1.7-4.1-3-2.9 4.1-.8z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                 </svg>

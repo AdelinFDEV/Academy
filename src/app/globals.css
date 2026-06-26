@@ -4587,9 +4587,8 @@ html {
   transition: color 0.15s, padding-left 0.15s;
 }
 
-.blog-mobile-tool-link:hover {
+.blog-mobile-tool-link.active {
   color: var(--accent-orange);
-  padding-left: 4px;
 }
 
 .mobile-tool-lock {
@@ -5383,9 +5382,8 @@ html {
   transition: color 0.15s, padding-left 0.15s;
 }
 
-.blog-mobile-link:hover {
+.blog-mobile-link.active {
   color: var(--accent-orange);
-  padding-left: 6px;
 }
 
 .blog-mobile-menu-footer {

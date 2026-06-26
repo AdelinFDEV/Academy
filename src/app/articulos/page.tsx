@@ -4,6 +4,11 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
 import ArticulosClient from "./ArticulosClient";
+import LogoutButton from "@/components/LogoutButton";
+import BlogMobileMenu from "@/components/BlogMobileMenu";
+import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
+import NavArticulosDropdown from "@/components/NavArticulosDropdown";
+import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 
 export const metadata: Metadata = {
   title: "Artículos | AdelinBTC Academy",
@@ -14,6 +19,12 @@ export default async function ArticulosPage() {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
+
+  const profile = user ? (await supabase.from("profiles").select("full_name, role").eq("id", user.id).single()).data : null;
+  const role = profile?.role ?? "free";
+  const isPremium = role === "premium" || role === "admin";
+  const isAdmin = role === "admin";
+  const userName = profile?.full_name || user?.email?.split("@")[0] || "Usuario";
 
   const [{ data: posts }, { data: categories }] = await Promise.all([
     supabase
@@ -47,13 +58,27 @@ export default async function ArticulosPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <div className="blog-nav-links">
-          <Link href="/" className="btn-nav-back">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Volver
-          </Link>
+          <NavArticulosDropdown />
+          <NavEducacionDropdown />
+          <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
+          {user ? (
+            <>
+              <Link href="/dashboard" className="btn-nav-link btn-nav-link--dashboard">Academia</Link>
+              {isAdmin && <Link href="/admin" className="btn-nav-link">Admin</Link>}
+              <div className="blog-nav-user">
+                <span className="blog-nav-user-name">{userName}</span>
+                <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>{isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}</span>
+              </div>
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="btn-nav-link">Iniciar sesión</Link>
+              <Link href="/register" className="btn-nav-cta">Registrarse</Link>
+            </>
+          )}
         </div>
+        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 
       <main className="articulos-page">
