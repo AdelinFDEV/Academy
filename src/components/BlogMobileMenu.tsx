@@ -48,11 +48,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
   return (
     <>
-      {!user && (
-        <Link href="/login" className="btn-nav-mobile-login" onClick={close}>
-          Iniciar sesión
-        </Link>
-      )}
       <button
         className={`btn-hamburger${open ? " open" : ""}`}
         onClick={() => setOpen(!open)}
@@ -116,6 +111,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   <path d="M2 3h5v10H2zM9 3h5v10H9z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                 </svg>
                 Guías
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
             </div>
 
@@ -137,7 +133,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   <path d="M8 5v3.5l2 1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
                 Watchlist
-                {!user && <span className="mobile-premium-badge">PREMIUM</span>}
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
               <Link href={(!user || !isPremium) ? "/dashboard" : "/dashboard/estadisticas"} className={`blog-mobile-tool-link${a("/dashboard/estadisticas")}`} onClick={close}>
@@ -147,7 +143,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   <rect x="11" y="2" width="3" height="12" rx="0.5" stroke="currentColor" strokeWidth="1.3"/>
                 </svg>
                 Mis Estadísticas
-                {(!user || !isPremium) && <span className="mobile-premium-badge">PREMIUM</span>}
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
               <Link href="/logros" className={`blog-mobile-tool-link${a("/logros")}`} onClick={close}>
@@ -155,7 +151,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   <path d="M8 2l1.9 3.8L14 6.6l-3 2.9.7 4.1L8 11.5l-3.7 2.1.7-4.1-3-2.9 4.1-.8z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
                 </svg>
                 Logros
-                {!user && <span className="mobile-premium-badge">PREMIUM</span>}
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">
@@ -182,7 +178,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.4"/>
                   <path d="M8 4.5v4l2.5 1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Calculadora de precio
+                Predicción de precio
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </div>
             </div>

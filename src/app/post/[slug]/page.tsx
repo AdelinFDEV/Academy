@@ -81,23 +81,41 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   const hasAccess = !post.is_premium || isPremium;
 
-  const { data: comments } = await supabase
-    .from("comments")
-    .select("id, content, created_at, profiles(full_name, is_featured)")
-    .eq("post_id", post.id)
-    .eq("approved", true)
-    .order("created_at", { ascending: true });
-
-  let userPost: { saved: boolean; read_at: string | null } | null = null;
-  if (user) {
-    const { data } = await supabase
-      .from("user_posts")
-      .select("saved, read_at")
-      .eq("user_id", user.id)
+  // Fetch comments, user post state, and like data in parallel
+  const [commentsRes, userPostRes, likeCountRes, userLikedRes] = await Promise.all([
+    supabase
+      .from("comments")
+      .select("id, content, created_at, profiles(full_name, is_featured)")
       .eq("post_id", post.id)
-      .single();
-    userPost = data;
-  }
+      .eq("approved", true)
+      .order("created_at", { ascending: true }),
+    user
+      ? supabase
+          .from("user_posts")
+          .select("saved, read_at")
+          .eq("user_id", user.id)
+          .eq("post_id", post.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase
+      .from("post_likes")
+      .select("id", { count: "exact", head: true })
+      .eq("post_id", post.id),
+    user
+      ? supabase
+          .from("post_likes")
+          .select("id")
+          .eq("post_id", post.id)
+          .eq("user_id", user.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const comments = commentsRes.data;
+  const userPost = userPostRes.data as { saved: boolean; read_at: string | null } | null;
+  const initialLikes = (post.base_likes ?? 0) + (likeCountRes.count ?? 0);
+  const initialLiked = !!userLikedRes.data;
+  const initialShares = post.shares_count ?? 0;
 
   const youtubeId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
   const wordCount = post.content ? post.content.trim().split(/\s+/).length : 0;
@@ -182,6 +200,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             postId={post.id}
             postSlug={slug}
             commentsCount={comments?.length ?? 0}
+            initialLikes={initialLikes}
+            initialLiked={initialLiked}
+            initialShares={initialShares}
             initialSaved={userPost?.saved ?? false}
             initialRead={!!userPost?.read_at}
             isLoggedIn={!!user}

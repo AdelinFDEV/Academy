@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import CryptoMarkets from "@/components/CryptoMarkets";
 
 interface WatchCoin {
   id: string;
@@ -22,24 +23,24 @@ interface SearchResult {
   thumb: string;
 }
 
+type CoinInput = { id: string; symbol: string; name: string; thumb?: string };
+
 export default function WatchlistClient({ initialCoins }: { initialCoins: WatchCoin[] }) {
-  const [coins, setCoins] = useState<WatchCoin[]>(initialCoins);
-  const [prices, setPrices] = useState<Record<string, PriceData>>({});
+  const [coins, setCoins]             = useState<WatchCoin[]>(initialCoins);
+  const [prices, setPrices]           = useState<Record<string, PriceData>>({});
   const [loadingPrices, setLoadingPrices] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch]           = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [adding, setAdding] = useState<string | null>(null);
-  const [removing, setRemoving] = useState<string | null>(null);
+  const [searching, setSearching]     = useState(false);
+  const [adding, setAdding]           = useState<string | null>(null);
+  const [removing, setRemoving]       = useState<string | null>(null);
 
   const fetchPrices = useCallback(async (coinList: WatchCoin[]) => {
     if (coinList.length === 0) return;
     setLoadingPrices(true);
     try {
       const ids = coinList.map((c) => c.coin_id).join(",");
-      const res = await fetch(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`
-      );
+      const res = await fetch(`/api/crypto/price?ids=${encodeURIComponent(ids)}`);
       if (res.ok) {
         const data = await res.json();
         setPrices(data);
@@ -59,10 +60,10 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
     const t = setTimeout(async () => {
       setSearching(true);
       try {
-        const res = await fetch(`https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(search)}`);
+        const res = await fetch(`/api/crypto/search?query=${encodeURIComponent(search)}`);
         if (res.ok) {
           const data = await res.json();
-          setSearchResults((data.coins ?? []).slice(0, 6));
+          setSearchResults(data.coins ?? []);
         }
       } catch {}
       setSearching(false);
@@ -70,13 +71,17 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
     return () => clearTimeout(t);
   }, [search]);
 
-  async function addCoin(result: SearchResult) {
+  async function addCoin(result: CoinInput) {
     if (coins.some((c) => c.coin_id === result.id)) return;
     setAdding(result.id);
     const supabase = createClient();
     const { data, error } = await supabase
       .from("watchlist")
-      .insert({ coin_id: result.id, coin_symbol: result.symbol.toUpperCase(), coin_name: result.name })
+      .insert({
+        coin_id: result.id,
+        coin_symbol: result.symbol.toUpperCase(),
+        coin_name: result.name,
+      })
       .select("id, coin_id, coin_symbol, coin_name")
       .single();
     if (!error && data) {
@@ -99,7 +104,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
 
   function fmt(n: number): string {
     if (n >= 1000) return n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    if (n >= 1) return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+    if (n >= 1)    return n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 });
     return n.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 8 });
   }
 
@@ -110,7 +115,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
         <p>Sigue el precio de tus coins favoritas. Se actualiza cada minuto.</p>
       </div>
 
-      {/* Search / Add */}
+      {/* ── Search / Add ── */}
       <div className="watchlist-add-wrap">
         <div className="watchlist-search-box">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="watchlist-search-icon">
@@ -154,14 +159,14 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
         )}
       </div>
 
-      {/* Coin list */}
+      {/* ── Personal watchlist ── */}
       {coins.length === 0 ? (
         <div className="watchlist-empty">
           <svg width="40" height="40" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M2 8a6 6 0 1 0 12 0A6 6 0 0 0 2 8Z" stroke="currentColor" strokeWidth="1.2"/>
             <path d="M8 5v3.5l2 1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <p>Tu watchlist está vacía. Busca una coin arriba para añadirla.</p>
+          <p>Tu watchlist está vacía. Busca una coin arriba o añádela desde el mercado.</p>
         </div>
       ) : (
         <div className="watchlist-list">
@@ -208,6 +213,12 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
           })}
         </div>
       )}
+
+      {/* ── Top 50 real-time market table ── */}
+      <CryptoMarkets
+        watchedIds={coins.map((c) => c.coin_id)}
+        onAdd={addCoin}
+      />
     </div>
   );
 }

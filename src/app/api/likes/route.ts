@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         .from("posts")
         .select("base_likes, shares_count")
         .eq("id", post_id)
-        .single(),
+        .maybeSingle(),
     ]);
 
     let liked = false;
@@ -29,7 +29,7 @@ export async function GET(request: Request) {
         .select("id")
         .eq("post_id", post_id)
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
       liked = !!data;
     }
 
@@ -49,17 +49,28 @@ export async function POST(request: Request) {
     const { post_id } = await request.json();
     if (!post_id) return NextResponse.json({ error: "Missing post_id" }, { status: 400 });
 
-    const { data: existing } = await supabase
-      .from("post_likes")
-      .select("id")
-      .eq("post_id", post_id)
-      .eq("user_id", user.id)
-      .single();
+    let nowLiked: boolean;
 
-    if (existing) {
-      await supabase.from("post_likes").delete().eq("id", existing.id);
+    // Try INSERT first — avoids needing a SELECT (which may be blocked by RLS)
+    const { error: insertError } = await supabase
+      .from("post_likes")
+      .insert({ post_id, user_id: user.id });
+
+    if (!insertError) {
+      // Insert succeeded → user just liked the post
+      nowLiked = true;
+    } else if (insertError.code === "23505") {
+      // Unique constraint violation → row already existed → user wants to unlike
+      await supabase
+        .from("post_likes")
+        .delete()
+        .eq("post_id", post_id)
+        .eq("user_id", user.id);
+      nowLiked = false;
     } else {
-      await supabase.from("post_likes").insert({ post_id, user_id: user.id });
+      // Unexpected error (e.g. RLS policy missing → code 42501)
+      console.error("[likes] insert error:", insertError.code, insertError.message);
+      return NextResponse.json({ error: "DB error" }, { status: 500 });
     }
 
     const [{ count: likesCount }, { data: postData }] = await Promise.all([
@@ -71,12 +82,13 @@ export async function POST(request: Request) {
         .from("posts")
         .select("base_likes")
         .eq("id", post_id)
-        .single(),
+        .maybeSingle(),
     ]);
 
     const totalLikes = (postData?.base_likes ?? 0) + (likesCount ?? 0);
-    return NextResponse.json({ count: totalLikes, liked: !existing });
+    return NextResponse.json({ count: totalLikes, liked: nowLiked });
   } catch {
-    return NextResponse.json({ count: 0, liked: false });
+    // 500 → client reverts the optimistic update cleanly
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

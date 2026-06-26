@@ -6,6 +6,9 @@ interface Props {
   postId: string;
   postSlug: string;
   commentsCount: number;
+  initialLikes?: number;
+  initialLiked?: boolean;
+  initialShares?: number;
   initialSaved?: boolean;
   initialRead?: boolean;
   isLoggedIn?: boolean;
@@ -16,34 +19,38 @@ export default function PostInteractions({
   postId,
   postSlug,
   commentsCount,
+  initialLikes,
+  initialLiked = false,
+  initialShares,
   initialSaved = false,
   initialRead = false,
   isLoggedIn = false,
   variant = "card",
 }: Props) {
-  const [likes, setLikes] = useState(0);
-  const [liked, setLiked] = useState(false);
-  const [shares, setShares] = useState(0);
-  const [saved, setSaved] = useState(initialSaved);
-  const [copied, setCopied] = useState(false);
+  const [likes, setLikes]       = useState(initialLikes ?? 0);
+  const [liked, setLiked]       = useState(initialLiked);
+  const [shares, setShares]     = useState(initialShares ?? 0);
+  const [saved, setSaved]       = useState(initialSaved);
+  const [copied, setCopied]     = useState(false);
   const [loadingLike, setLoadingLike] = useState(false);
   const [loadingSave, setLoadingSave] = useState(false);
   const [heartPop, setHeartPop] = useState(false);
 
+  // Only call the GET endpoint when no server-side initial data was provided
+  // (e.g. when used in card/list context without pre-fetched counts)
   useEffect(() => {
+    if (initialLikes != null) return;
     fetch(`/api/likes?post_id=${postId}`)
       .then((r) => r.json())
       .then((data) => {
-        if (typeof data.count === "number") {
-          setLikes(data.count);
-          setLiked(!!data.liked);
-        }
+        if (typeof data.count  === "number") setLikes(data.count);
+        if (typeof data.liked  === "boolean") setLiked(data.liked);
         if (typeof data.shares === "number") setShares(data.shares);
       })
       .catch(() => {});
-  }, [postId]);
+  }, [postId, initialLikes]);
 
-  // Mark as read and check badges when opening a post (only for logged-in users)
+  // Mark as read + check badges when opening a post (logged-in users only)
   useEffect(() => {
     if (variant !== "post" || initialRead || !isLoggedIn) return;
     fetch("/api/user-posts", {
@@ -64,34 +71,42 @@ export default function PostInteractions({
           });
       })
       .catch(() => {});
-  }, [postId, variant, initialRead]);
+  }, [postId, variant, initialRead, isLoggedIn]);
 
   async function toggleLike(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
     if (!isLoggedIn) { window.location.href = "/login"; return; }
     if (loadingLike) return;
+
     setLoadingLike(true);
     const wasLiked = liked;
+
+    // Optimistic update
     setLiked(!wasLiked);
     setLikes((prev) => wasLiked ? prev - 1 : prev + 1);
     if (!wasLiked) {
       setHeartPop(true);
       setTimeout(() => setHeartPop(false), 500);
     }
+
     const res = await fetch("/api/likes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ post_id: postId }),
     });
+
     if (res.ok) {
       const data = await res.json();
+      // Sync with definitive server state
       setLikes(data.count);
       setLiked(data.liked);
     } else {
+      // Server failed — revert the optimistic update
       setLiked(wasLiked);
       setLikes((prev) => wasLiked ? prev + 1 : prev - 1);
     }
+
     setLoadingLike(false);
   }
 
@@ -118,16 +133,38 @@ export default function PostInteractions({
     e.stopPropagation();
     const url = `${window.location.origin}/post/${postSlug}`;
     let didShare = false;
+
     if (navigator.share) {
-      try { await navigator.share({ url }); didShare = true; } catch {}
+      try {
+        await navigator.share({ title: document.title, url });
+        didShare = true;
+      } catch {
+        // User cancelled native share — don't count it
+      }
     } else {
       try {
         await navigator.clipboard.writeText(url);
         didShare = true;
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch {}
+        setTimeout(() => setCopied(false), 2500);
+      } catch {
+        // Clipboard access denied — try fallback
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        ta.style.cssText = "position:fixed;top:-9999px;left:-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try {
+          document.execCommand("copy");
+          didShare = true;
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2500);
+        } catch {}
+        document.body.removeChild(ta);
+      }
     }
+
     if (didShare) {
       fetch("/api/shares", {
         method: "POST",
@@ -143,10 +180,13 @@ export default function PostInteractions({
   return (
     <div className={`post-interactions${variant === "post" ? " post-interactions--post" : ""}`}>
 
+      {/* Like / Heart */}
       <button
         className={`pi-btn pi-like${liked ? " pi-active" : ""}${heartPop ? " pi-heart-pop" : ""}`}
         onClick={toggleLike}
+        disabled={loadingLike}
         aria-label={liked ? "Quitar me gusta" : "Me gusta"}
+        aria-pressed={liked}
         title={isLoggedIn ? undefined : "Regístrate para reaccionar"}
       >
         <svg width="15" height="14" viewBox="0 0 15 14" fill="none" aria-hidden="true">
@@ -161,6 +201,7 @@ export default function PostInteractions({
         <span>{likes}</span>
       </button>
 
+      {/* Comments */}
       {variant === "post" ? (
         <a
           href="#comentarios"
@@ -178,11 +219,14 @@ export default function PostInteractions({
         </span>
       )}
 
+      {/* Save (post view only) */}
       {variant === "post" && (
         <button
           className={`pi-btn pi-save${saved ? " pi-active" : ""}`}
           onClick={toggleSave}
+          disabled={loadingSave}
           aria-label={saved ? "Quitar de guardados" : "Guardar artículo"}
+          aria-pressed={saved}
           title={isLoggedIn ? undefined : "Regístrate para guardar"}
         >
           <svg width="12" height="13" viewBox="0 0 12 13" fill="none" aria-hidden="true">
@@ -198,6 +242,7 @@ export default function PostInteractions({
         </button>
       )}
 
+      {/* Share */}
       <button
         className={`pi-btn pi-share${copied ? " pi-copied" : ""}`}
         onClick={handleShare}
@@ -213,7 +258,7 @@ export default function PostInteractions({
             <path d="M2 9v3.5h10V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         )}
-        <span>{shares}</span>
+        <span>{copied ? "¡Copiado!" : shares > 0 ? shares : "Compartir"}</span>
       </button>
 
     </div>

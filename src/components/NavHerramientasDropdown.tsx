@@ -162,7 +162,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               </svg>
             </span>
             <span>
-              <span className="nav-tools-item-name">Calculadora de precio</span>
+              <span className="nav-tools-item-name">Predicción de precio</span>
               <span className="nav-tools-item-desc">Predicción de precio de tokens</span>
             </span>
             <span className="nav-tools-soon-badge">Pronto</span>

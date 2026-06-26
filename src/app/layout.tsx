@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, DM_Sans } from "next/font/google";
+import { Poppins, DM_Sans, Kalam } from "next/font/google";
 import "./globals.css";
 import BadgeNotifier from "@/components/BadgeNotifier";
 
@@ -14,6 +14,13 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const kalam = Kalam({
+  weight: ["700"],
+  subsets: ["latin"],
+  variable: "--font-kalam",
   display: "swap",
 });
 
@@ -56,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${poppins.variable} ${dmSans.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
+    <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${kalam.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
       <body>
         {children}
         <BadgeNotifier />

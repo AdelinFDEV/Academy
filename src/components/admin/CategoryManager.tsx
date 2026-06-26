@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Icon from "@/components/Icon";
 
-type Category = { id: string; name: string; slug: string };
+type Category = { id: string; name: string; slug: string; postCount: number };
 
 function toSlug(text: string) {
   return text
@@ -27,24 +28,18 @@ export default function CategoryManager({ categories }: { categories: Category[]
     e.preventDefault();
     setLoading(true);
     setError("");
-
-    const { error } = await supabase
-      .from("categories")
-      .insert({ name, slug: toSlug(name) });
-
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
-
+    const { error } = await supabase.from("categories").insert({ name, slug: toSlug(name) });
+    if (error) { setError(error.message); setLoading(false); return; }
     setName("");
     setLoading(false);
     router.refresh();
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm("¿Borrar esta categoría?")) return;
+  async function handleDelete(id: string, postCount: number) {
+    const msg = postCount > 0
+      ? `Esta categoría tiene ${postCount} artículos. ¿Borrarla de todos modos?`
+      : "¿Borrar esta categoría?";
+    if (!confirm(msg)) return;
     await supabase.from("categories").delete().eq("id", id);
     router.refresh();
   }
@@ -76,13 +71,23 @@ export default function CategoryManager({ categories }: { categories: Category[]
         )}
         {categories.map((cat) => (
           <div key={cat.id} className="category-item">
-            <div>
-              <span className="category-name">{cat.name}</span>
-              <span className="category-slug">/{cat.slug}</span>
+            <div className="category-item-left">
+              <div className="category-icon-wrap">
+                <Icon name="folder" size={15} />
+              </div>
+              <div>
+                <span className="category-name">{cat.name}</span>
+                <span className="category-slug">/{cat.slug}</span>
+              </div>
             </div>
-            <button onClick={() => handleDelete(cat.id)} className="action-btn delete">
-              Borrar
-            </button>
+            <div className="category-item-right">
+              <span className="category-post-count">
+                {cat.postCount} {cat.postCount === 1 ? "artículo" : "artículos"}
+              </span>
+              <button onClick={() => handleDelete(cat.id, cat.postCount)} className="action-btn delete" title="Borrar categoría">
+                <Icon name="x" size={13} />
+              </button>
+            </div>
           </div>
         ))}
       </div>
