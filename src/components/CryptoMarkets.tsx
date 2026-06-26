@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Plus } from "lucide-react";
 
 type MarketCoin = {
   id: string;
@@ -161,9 +162,7 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
                           {adding === coin.id ? (
                             <span className="crypto-add-spinner" />
                           ) : (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                            </svg>
+                            <Plus size={12} aria-hidden="true" />
                           )}
                         </button>
                       )}

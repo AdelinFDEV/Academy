@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import CryptoMarkets from "@/components/CryptoMarkets";
+import { Search, Eye, Minus } from "lucide-react";
 
 interface WatchCoin {
   id: string;
@@ -125,10 +126,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
       {/* ── Search / Add ── */}
       <div className="watchlist-add-wrap">
         <div className="watchlist-search-box">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="watchlist-search-icon">
-            <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.4"/>
-            <path d="M10 10l3.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
+          <Search size={16} aria-hidden="true" className="watchlist-search-icon" />
           <input
             type="text"
             className="watchlist-search-input"
@@ -169,10 +167,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
       {/* ── Personal watchlist ── */}
       {coins.length === 0 ? (
         <div className="watchlist-empty">
-          <svg width="40" height="40" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M2 8a6 6 0 1 0 12 0A6 6 0 0 0 2 8Z" stroke="currentColor" strokeWidth="1.2"/>
-            <path d="M8 5v3.5l2 1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <Eye size={40} aria-hidden="true" />
           <p>Tu watchlist está vacía. Busca una coin arriba o añádela desde el mercado.</p>
         </div>
       ) : (
@@ -211,9 +206,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
                   disabled={removing === coin.id}
                   aria-label={`Eliminar ${coin.coin_name}`}
                 >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                    <path d="M2.5 7h9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  </svg>
+                  <Minus size={14} aria-hidden="true" />
                 </button>
               </div>
             );

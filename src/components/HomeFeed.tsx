@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
+import { Clock, Star, Lock, Heart, MessageSquare, Share2, Check } from "lucide-react";
 
 type Post = {
   id: string;
@@ -77,28 +78,17 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   return (
     <div className="feed-action-bar" onClick={(e) => e.stopPropagation()}>
       <button className={`feed-action-btn like-btn ${liked ? "active" : ""}`} onClick={toggleLike} title="Me gusta">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
-        </svg>
+        <Heart size={18} fill={liked ? "currentColor" : "none"} aria-hidden="true" />
         <span>{likes}</span>
       </button>
 
       <Link href={`/post/${post.slug}#comentarios`} className="feed-action-btn comment-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-        </svg>
+        <MessageSquare size={18} aria-hidden="true" />
         <span>{post.comments}</span>
       </Link>
 
       <button className="feed-action-btn share-btn" onClick={handleShare} title="Compartir">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-        </svg>
-        {shared && <span>✓</span>}
+        {shared ? <Check size={18} aria-hidden="true" /> : <Share2 size={18} aria-hidden="true" />}
       </button>
     </div>
   );
@@ -216,15 +206,15 @@ export default function HomeFeed({ posts, isLoggedIn }: { posts: Post[]; isLogge
       {/* Tabs */}
       <div className="feed-tabs" role="tablist" ref={tabsRef}>
         <button role="tab" aria-selected={tab === "nuevo"}      className={`feed-tab${tab === "nuevo"      ? " active" : ""}`} onClick={() => switchTab("nuevo")}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.4"/><path d="M7 4v3.5l2 1.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
+          <Clock size={14} aria-hidden="true" />
           Nuevo
         </button>
         <button role="tab" aria-selected={tab === "destacados"} className={`feed-tab${tab === "destacados" ? " active" : ""}`} onClick={() => switchTab("destacados")}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><polygon points="7,1.5 8.5,5.5 13,5.5 9.5,8 10.5,12 7,9.5 3.5,12 4.5,8 1,5.5 5.5,5.5" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/></svg>
+          <Star size={14} aria-hidden="true" />
           Destacados
         </button>
         <button role="tab" aria-selected={tab === "premium"}    className={`feed-tab${tab === "premium"    ? " active" : ""}`} onClick={() => switchTab("premium")}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="2" y="6" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M4.5 6V4.5a2.5 2.5 0 0 1 5 0V6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
+          <Lock size={14} aria-hidden="true" />
           Premium
         </button>
       </div>

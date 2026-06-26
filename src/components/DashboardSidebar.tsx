@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import LogoutButton from "@/components/LogoutButton";
+import { X } from "lucide-react";
 
 interface Props {
   role: string;
@@ -78,9 +79,7 @@ export default function DashboardSidebar({ role, userName }: Props) {
               adelin<span>btc</span>
             </Link>
             <button className="blog-mobile-close" onClick={close} aria-label="Cerrar menú">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-              </svg>
+              <X size={20} aria-hidden="true" />
             </button>
           </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { User } from "lucide-react";
 
 function randomOnline() {
   return Math.floor(Math.random() * (98 - 21 + 1)) + 21;
@@ -18,9 +19,7 @@ export default function LiveCounter({ total }: { total: number }) {
   return (
     <div className="live-counter">
       <div className="live-counter-item">
-        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 14c0-2.5 2.5-4 6-4s6 1.5 6 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-        </svg>
+        <User size={12} aria-hidden="true" />
         <span><strong>157</strong> alumnos</span>
       </div>
       <div className="live-counter-divider" />

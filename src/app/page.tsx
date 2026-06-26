@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Calculator, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass } from "lucide-react";
+import { ArrowRight, Calculator, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Check } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
@@ -120,9 +120,9 @@ export default async function HomePage() {
           </div>
           
           <div className="home-banner-features">
-            <span className="home-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg> Guías y Cursos</span>
-            <span className="home-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg> Herramientas Exclusivas</span>
-            <span className="home-feature"><svg viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg> Comunidad Privada</span>
+            <span className="home-feature"><Check size={18} aria-hidden="true" /> Guías y Cursos</span>
+            <span className="home-feature"><Check size={18} aria-hidden="true" /> Herramientas Exclusivas</span>
+            <span className="home-feature"><Check size={18} aria-hidden="true" /> Comunidad Privada</span>
           </div>
 
           <div className="home-banner-actions">
@@ -141,7 +141,7 @@ export default async function HomePage() {
           </div>
           {!user && (
             <p className="home-banner-guarantee">
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2l2 4 4.5.5-3.5 3 1 4.5L8 11.5 4 14l1-4.5-3.5-3L6 6l2-4z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/></svg>
+              <Star size={14} aria-hidden="true" />
               Crea tu cuenta en menos de 1 minuto. Sin tarjeta de crédito.
             </p>
           )}

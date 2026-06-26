@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { ChevronDown, FileText, Folder } from "lucide-react";
 
 interface Category {
   name: string;
@@ -44,9 +45,7 @@ export default function NavArticulosDropdown() {
         aria-expanded={open}
       >
         Artículos
-        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true" className="nav-tools-caret">
-          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <ChevronDown size={12} className="nav-tools-caret" aria-hidden="true" />
       </button>
 
       {open && (
@@ -60,10 +59,7 @@ export default function NavArticulosDropdown() {
             onClick={() => setOpen(false)}
           >
             <span className="nav-tools-item-icon">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.4"/>
-                <path d="M4.5 5.5h7M4.5 8h7M4.5 10.5h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-              </svg>
+              <FileText size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Todos los artículos</span>
@@ -80,9 +76,7 @@ export default function NavArticulosDropdown() {
               onClick={() => setOpen(false)}
             >
               <span className="nav-tools-item-icon">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M2 4h5l1.5 2H14v7H2V4Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-                </svg>
+                <Folder size={16} aria-hidden="true" />
               </span>
               <span>
                 <span className="nav-tools-item-name">{cat.name}</span>

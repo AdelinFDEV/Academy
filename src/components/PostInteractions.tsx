@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Heart, MessageSquare, Bookmark, Share2, Check } from "lucide-react";
 
 interface Props {
   postId: string;
@@ -189,15 +190,7 @@ export default function PostInteractions({
         aria-pressed={liked}
         title={isLoggedIn ? undefined : "Regístrate para reaccionar"}
       >
-        <svg width="15" height="14" viewBox="0 0 15 14" fill="none" aria-hidden="true">
-          <path
-            d="M7.5 12.5C7.5 12.5 1.5 8.8 1.5 5C1.5 3.07 3.07 1.5 5 1.5C6.1 1.5 7.1 2.04 7.5 2.9C7.9 2.04 8.9 1.5 10 1.5C11.93 1.5 13.5 3.07 13.5 5C13.5 8.8 7.5 12.5 7.5 12.5Z"
-            fill={liked ? "currentColor" : "none"}
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <Heart size={15} fill={liked ? "currentColor" : "none"} aria-hidden="true" />
         <span>{likes}</span>
       </button>
 
@@ -209,12 +202,12 @@ export default function PostInteractions({
           onClick={(e) => e.stopPropagation()}
           aria-label="Ver comentarios"
         >
-          <CommentIcon />
+          <MessageSquare size={14} aria-hidden="true" />
           <span>{commentsCount}</span>
         </a>
       ) : (
         <span className="pi-btn pi-comments pi-static">
-          <CommentIcon />
+          <MessageSquare size={14} aria-hidden="true" />
           <span>{commentsCount}</span>
         </span>
       )}
@@ -229,15 +222,7 @@ export default function PostInteractions({
           aria-pressed={saved}
           title={isLoggedIn ? undefined : "Regístrate para guardar"}
         >
-          <svg width="12" height="13" viewBox="0 0 12 13" fill="none" aria-hidden="true">
-            <path
-              d="M2 1.5h8v10L6 9 2 11.5V1.5Z"
-              fill={saved ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Bookmark size={13} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
           <span className="pi-text-hide-mobile">{saved ? "Guardado" : "Guardar"}</span>
         </button>
       )}
@@ -249,14 +234,9 @@ export default function PostInteractions({
         aria-label={copied ? "Enlace copiado" : "Compartir"}
       >
         {copied ? (
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <Check size={14} aria-hidden="true" />
         ) : (
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M7 1v8M4 4l3-3 3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 9v3.5h10V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <Share2 size={14} aria-hidden="true" />
         )}
         <span className={shares > 0 && !copied ? "" : "pi-text-hide-mobile"}>
           {copied ? "¡Copiado!" : shares > 0 ? shares : "Compartir"}
@@ -264,18 +244,5 @@ export default function PostInteractions({
       </button>
 
     </div>
-  );
-}
-
-function CommentIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-      <path
-        d="M2 2.5C2 1.95 2.45 1.5 3 1.5h8c.55 0 1 .45 1 1v6c0 .55-.45 1-1 1H7.5L5.5 12 4 9.5H3c-.55 0-1-.45-1-1v-6Z"
-        stroke="currentColor"
-        strokeWidth="1.35"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

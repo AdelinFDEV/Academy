@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import { ChevronDown, BookOpen, GraduationCap, Files, LayoutGrid } from "lucide-react";
 
 const ITEMS = [
   {
@@ -9,47 +10,28 @@ const ITEMS = [
     label: "Glosario",
     desc: "Términos clave de crypto y trading explicados",
     premium: false,
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M2 2h6l1 1h5v11H2V2Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-        <path d="M5 7h6M5 9.5h6M5 12h4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-      </svg>
-    ),
+    icon: <BookOpen size={16} aria-hidden="true" />,
   },
   {
     href: "/cursos",
     label: "Cursos",
     desc: "Aprende desde cero con nuestros cursos",
     premium: true,
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M8 1L1 5l7 4 7-4-7-4Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-        <path d="M1 5v6M4 6.5v4.5a6 6 0 0 0 8 0V6.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-    ),
+    icon: <GraduationCap size={16} aria-hidden="true" />,
   },
   {
     href: "/recursos",
     label: "Recursos",
     desc: "Herramientas y materiales de referencia",
     premium: true,
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M3 2h7l3 3v9H3V2Z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-        <path d="M10 2v3h3M5.5 7h5M5.5 9.5h5M5.5 12h3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
-      </svg>
-    ),
+    icon: <Files size={16} aria-hidden="true" />,
   },
   {
     href: "/guias",
     label: "Guías",
     desc: "Paso a paso para dominar el mercado",
     premium: false,
-    icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M2 3h5v10H2zM9 3h5v10H9z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
-      </svg>
-    ),
+    icon: <LayoutGrid size={16} aria-hidden="true" />,
   },
 ];
 
@@ -78,9 +60,7 @@ export default function NavEducacionDropdown() {
         aria-expanded={open}
       >
         Educación
-        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true" className="nav-tools-caret">
-          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        <ChevronDown size={12} className="nav-tools-caret" aria-hidden="true" />
       </button>
 
       {open && (
