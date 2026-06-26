@@ -80,16 +80,16 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
         </svg>
-        <span>{likes} Me gusta</span>
+        <span>{likes}</span>
       </button>
-      
+
       <Link href={`/post/${post.slug}#comentarios`} className="feed-action-btn comment-btn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
         </svg>
-        <span>{post.comments} {post.comments === 1 ? 'Comentario' : 'Comentarios'}</span>
+        <span>{post.comments}</span>
       </Link>
-      
+
       <button className="feed-action-btn share-btn" onClick={handleShare} title="Compartir">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="18" cy="5" r="3"></circle>
@@ -98,7 +98,7 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
           <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
           <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
         </svg>
-        <span>{shared ? "Copiado" : "Compartir"}</span>
+        {shared && <span>✓</span>}
       </button>
     </div>
   );
@@ -230,7 +230,7 @@ export default function HomeFeed({ posts, isLoggedIn }: { posts: Post[]; isLogge
       </div>
 
       {/* Feed */}
-      <div className="feed-list" style={{ minHeight: "400px" }}>
+      <div className="feed-list">
         {filtered.length === 0 ? (
           <div className="feed-empty">
             <p>No hay artículos en esta sección todavía.</p>
