@@ -1,6 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import DashboardSidebar from "@/components/DashboardSidebar";
+import Link from "next/link";
+import LogoutButton from "@/components/LogoutButton";
+import BlogMobileMenu from "@/components/BlogMobileMenu";
+import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
+import NavArticulosDropdown from "@/components/NavArticulosDropdown";
+import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -14,15 +19,37 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .single();
 
   const role = profile?.role ?? "free";
+  const isPremium = role === "premium" || role === "admin";
+  const isAdmin = role === "admin";
   const userName = profile?.full_name || user.email?.split("@")[0] || "Usuario";
+  const planLabel = isAdmin ? "Admin" : isPremium ? "Premium" : "Free";
 
   return (
-    <div className="dash-layout">
-      <DashboardSidebar role={role} userName={userName} />
-      <div className="dash-content">
-        <div className="bg-ambient" />
-        {children}
-      </div>
+    <div className="blog-page">
+      <div className="bg-ambient" />
+
+      <nav className="blog-nav">
+        <Link href="/" className="blog-brand">
+          adelin<span>btc</span>
+        </Link>
+        <div className="blog-nav-links">
+          <NavArticulosDropdown />
+          <NavEducacionDropdown />
+          <NavHerramientasDropdown user={true} isPremium={isPremium} />
+          <Link href="/dashboard" className="btn-nav-link btn-nav-link--dashboard">Academia</Link>
+          {isAdmin && (
+            <Link href="/admin" className="btn-nav-link">Admin</Link>
+          )}
+          <div className="blog-nav-user">
+            <span className="blog-nav-user-name">{userName}</span>
+            <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>{planLabel}</span>
+          </div>
+          <LogoutButton />
+        </div>
+        <BlogMobileMenu user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
+      </nav>
+
+      {children}
     </div>
   );
 }

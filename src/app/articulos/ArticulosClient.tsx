@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import PostInteractions from "@/components/PostInteractions";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -31,9 +32,11 @@ interface Category {
 interface Props {
   posts: Post[];
   categories: Category[];
+  commentCountMap?: Record<string, number>;
+  isLoggedIn?: boolean;
 }
 
-export default function ArticulosClient({ posts, categories }: Props) {
+export default function ArticulosClient({ posts, categories, commentCountMap = {}, isLoggedIn = false }: Props) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
@@ -104,45 +107,53 @@ export default function ArticulosClient({ posts, categories }: Props) {
             <p className="articulos-count">{filtered.length} artículo{filtered.length !== 1 ? "s" : ""}</p>
             <div className="articulos-grid">
               {filtered.map((post) => (
-                <Link
+                <div
                   key={post.id}
-                  href={`/post/${post.slug}`}
                   className={`post-card${post.is_premium ? " is-premium" : ""}`}
                 >
-                  <div
-                    className="post-card-image"
-                    style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
-                  >
-                    {!post.cover_image && (
-                      <span className="post-card-image-placeholder">
-                        <Icon name="chart" size={40} />
-                      </span>
-                    )}
-                    {post.is_premium ? (
-                      <div className="post-premium-badge"><Icon name="lock" size={11} /> Premium</div>
-                    ) : (
-                      <div className="post-free-badge">Gratis</div>
-                    )}
-                  </div>
-                  <div className="post-card-body">
-                    <div className="post-card-meta">
-                      {(post.categories as any)?.name && (
-                        <span className="post-category">{(post.categories as any).name}</span>
+                  <Link href={`/post/${post.slug}`} className="post-card-link">
+                    <div
+                      className="post-card-image"
+                      style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
+                    >
+                      {!post.cover_image && (
+                        <span className="post-card-image-placeholder">
+                          <Icon name="chart" size={40} />
+                        </span>
                       )}
-                      <span className="post-date">{formatDate(post.created_at)}</span>
+                      {post.is_premium ? (
+                        <div className="post-premium-badge"><Icon name="lock" size={11} /> Premium</div>
+                      ) : (
+                        <div className="post-free-badge">Gratis</div>
+                      )}
                     </div>
-                    <div className="post-author-row">
-                      <span className="post-author">AdelinBTC</span>
+                    <div className="post-card-body">
+                      <div className="post-card-meta">
+                        {(post.categories as any)?.name && (
+                          <span className="post-category">{(post.categories as any).name}</span>
+                        )}
+                        <span className="post-date">{formatDate(post.created_at)}</span>
+                      </div>
+                      <div className="post-author-row">
+                        <span className="post-author">AdelinBTC</span>
+                      </div>
+                      <h3 className="post-card-title">{post.title}</h3>
+                      {post.excerpt && <p className="post-card-excerpt">{post.excerpt}</p>}
+                      {post.is_premium ? (
+                        <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>
+                      ) : (
+                        <span className="post-read-more">Leer más <Icon name="arrow-right" size={15} /></span>
+                      )}
                     </div>
-                    <h3 className="post-card-title">{post.title}</h3>
-                    {post.excerpt && <p className="post-card-excerpt">{post.excerpt}</p>}
-                    {post.is_premium ? (
-                      <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>
-                    ) : (
-                      <span className="post-read-more">Leer más <Icon name="arrow-right" size={15} /></span>
-                    )}
-                  </div>
-                </Link>
+                  </Link>
+                  <PostInteractions
+                    postId={post.id}
+                    postSlug={post.slug}
+                    commentsCount={commentCountMap[post.id] ?? 0}
+                    isLoggedIn={isLoggedIn}
+                    variant="card"
+                  />
+                </div>
               ))}
             </div>
           </>

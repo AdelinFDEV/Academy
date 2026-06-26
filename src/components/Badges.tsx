@@ -105,7 +105,7 @@ interface BadgeDef {
   special?: boolean;
 }
 
-const BADGE_DEFS: BadgeDef[] = [
+export const BADGE_DEFS: BadgeDef[] = [
   {
     id: "first-read",
     label: "Primer paso",
@@ -169,11 +169,6 @@ const BADGE_DEFS: BadgeDef[] = [
 /* ─── Celebration popup ──────────────────────────────────── */
 
 function BadgePopup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
-  useEffect(() => {
-    const t = setTimeout(onClose, 5000);
-    return () => clearTimeout(t);
-  }, [onClose]);
-
   return (
     <div className="badge-popup-overlay" onClick={onClose}>
       <div className="badge-popup" onClick={(e) => e.stopPropagation()}>

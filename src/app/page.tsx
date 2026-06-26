@@ -1,10 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import Newsletter from "@/components/Newsletter";
 import Icon from "@/components/Icon";
 import LogoutButton from "@/components/LogoutButton";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
+import PostInteractions from "@/components/PostInteractions";
+import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
+import NavArticulosDropdown from "@/components/NavArticulosDropdown";
+import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -33,6 +36,19 @@ export default async function HomePage() {
   const featured = posts?.find((p) => p.is_featured);
   const rest = posts?.filter((p) => !p.is_featured) ?? [];
 
+  const postIds = posts?.map((p) => p.id) ?? [];
+  const commentCountMap: Record<string, number> = {};
+  if (postIds.length > 0) {
+    const { data: cc } = await supabase
+      .from("comments")
+      .select("post_id")
+      .in("post_id", postIds)
+      .eq("approved", true);
+    cc?.forEach((c) => {
+      commentCountMap[c.post_id] = (commentCountMap[c.post_id] ?? 0) + 1;
+    });
+  }
+
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
@@ -42,9 +58,9 @@ export default async function HomePage() {
           adelin<span>btc</span>
         </Link>
         <div className="blog-nav-links">
-          <Link href="#herramientas" className="btn-nav-link">Herramientas</Link>
-          <Link href="/articulos" className="btn-nav-link">Artículos</Link>
-          <Link href="#como-empezar" className="btn-nav-link">Cómo empezar</Link>
+          <NavArticulosDropdown />
+          <NavEducacionDropdown />
+          <NavHerramientasDropdown user={!!user} />
           {user ? (
             <>
               <Link href="/dashboard" className="btn-nav-cta">Ir a la academia →</Link>
@@ -119,39 +135,50 @@ export default async function HomePage() {
         )}
 
         {featured && (
-          <Link href={`/post/${featured.slug}`} className={`featured-post${featured.is_premium ? " is-premium" : ""}`}>
-            <div className="featured-bg" style={featured.cover_image ? { backgroundImage: `url(${featured.cover_image})` } : undefined} />
-            <div className="featured-overlay" />
-            <div className="featured-content">
-              <div className="featured-meta">
-                {(featured.categories as any)?.name && (
-                  <span className="post-category">{(featured.categories as any).name}</span>
-                )}
-                <span className="featured-label">Destacado</span>
-                {featured.is_premium ? (
-                  <span className="featured-access is-premium"><Icon name="lock" size={11} /> Premium</span>
-                ) : (
-                  <span className="featured-access is-free">Gratis</span>
-                )}
-              </div>
-              <h1 className="featured-title">{featured.title}</h1>
-              {featured.excerpt && <p className="featured-excerpt">{featured.excerpt}</p>}
-              <div className="featured-footer">
-                <div className="post-author-row">
-                  <span className="post-author">AdelinBTC</span>
-                  <span className="post-author-sep">·</span>
-                  <span className="post-date">{formatDate(featured.created_at)}</span>
-                </div>
-                <span className={`read-more${featured.is_premium ? " is-premium" : ""}`}>
-                  {featured.is_premium ? (
-                    <><Icon name="lock" size={15} /> Desbloquear</>
-                  ) : (
-                    <>Leer artículo <Icon name="arrow-right" size={16} /></>
+          <div className="featured-post-wrap">
+            <Link href={`/post/${featured.slug}`} className={`featured-post${featured.is_premium ? " is-premium" : ""}`}>
+              <div className="featured-bg" style={featured.cover_image ? { backgroundImage: `url(${featured.cover_image})` } : undefined} />
+              <div className="featured-overlay" />
+              <div className="featured-content">
+                <div className="featured-meta">
+                  {(featured.categories as any)?.name && (
+                    <span className="post-category">{(featured.categories as any).name}</span>
                   )}
-                </span>
+                  <span className="featured-label">Destacado</span>
+                  {featured.is_premium ? (
+                    <span className="featured-access is-premium"><Icon name="lock" size={11} /> Premium</span>
+                  ) : (
+                    <span className="featured-access is-free">Gratis</span>
+                  )}
+                </div>
+                <h1 className="featured-title">{featured.title}</h1>
+                {featured.excerpt && <p className="featured-excerpt">{featured.excerpt}</p>}
+                <div className="featured-footer">
+                  <div className="post-author-row">
+                    <span className="post-author">AdelinBTC</span>
+                    <span className="post-author-sep">·</span>
+                    <span className="post-date">{formatDate(featured.created_at)}</span>
+                  </div>
+                  <span className={`read-more${featured.is_premium ? " is-premium" : ""}`}>
+                    {featured.is_premium ? (
+                      <><Icon name="lock" size={15} /> Desbloquear</>
+                    ) : (
+                      <>Leer artículo <Icon name="arrow-right" size={16} /></>
+                    )}
+                  </span>
+                </div>
               </div>
+            </Link>
+            <div className="featured-post-bar">
+              <PostInteractions
+                postId={featured.id}
+                postSlug={featured.slug}
+                commentsCount={commentCountMap[featured.id] ?? 0}
+                isLoggedIn={!!user}
+                variant="card"
+              />
             </div>
-          </Link>
+          </div>
         )}
 
         {rest.length > 0 && (
@@ -159,34 +186,43 @@ export default async function HomePage() {
             <h2 className="posts-section-title">Últimas entradas</h2>
             <div className="posts-grid">
               {rest.map((post) => (
-                <Link key={post.id} href={`/post/${post.slug}`} className={`post-card${post.is_premium ? " is-premium" : ""}`}>
-                  <div className="post-card-image" style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}>
-                    {!post.cover_image && <span className="post-card-image-placeholder"><Icon name="chart" size={40} /></span>}
-                    {post.is_premium ? (
-                      <div className="post-premium-badge"><Icon name="lock" size={11} /> Premium</div>
-                    ) : (
-                      <div className="post-free-badge">Gratis</div>
-                    )}
-                  </div>
-                  <div className="post-card-body">
-                    <div className="post-card-meta">
-                      {(post.categories as any)?.name && (
-                        <span className="post-category">{(post.categories as any).name}</span>
+                <div key={post.id} className={`post-card${post.is_premium ? " is-premium" : ""}`}>
+                  <Link href={`/post/${post.slug}`} className="post-card-link">
+                    <div className="post-card-image" style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}>
+                      {!post.cover_image && <span className="post-card-image-placeholder"><Icon name="chart" size={40} /></span>}
+                      {post.is_premium ? (
+                        <div className="post-premium-badge"><Icon name="lock" size={11} /> Premium</div>
+                      ) : (
+                        <div className="post-free-badge">Gratis</div>
                       )}
-                      <span className="post-date">{formatDate(post.created_at)}</span>
                     </div>
-                    <div className="post-author-row">
-                      <span className="post-author">AdelinBTC</span>
+                    <div className="post-card-body">
+                      <div className="post-card-meta">
+                        {(post.categories as any)?.name && (
+                          <span className="post-category">{(post.categories as any).name}</span>
+                        )}
+                        <span className="post-date">{formatDate(post.created_at)}</span>
+                      </div>
+                      <div className="post-author-row">
+                        <span className="post-author">AdelinBTC</span>
+                      </div>
+                      <h3 className="post-card-title">{post.title}</h3>
+                      {post.excerpt && <p className="post-card-excerpt">{post.excerpt}</p>}
+                      {post.is_premium ? (
+                        <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>
+                      ) : (
+                        <span className="post-read-more">Leer más <Icon name="arrow-right" size={15} /></span>
+                      )}
                     </div>
-                    <h3 className="post-card-title">{post.title}</h3>
-                    {post.excerpt && <p className="post-card-excerpt">{post.excerpt}</p>}
-                    {post.is_premium ? (
-                      <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>
-                    ) : (
-                      <span className="post-read-more">Leer más <Icon name="arrow-right" size={15} /></span>
-                    )}
-                  </div>
-                </Link>
+                  </Link>
+                  <PostInteractions
+                    postId={post.id}
+                    postSlug={post.slug}
+                    commentsCount={commentCountMap[post.id] ?? 0}
+                    isLoggedIn={!!user}
+                    variant="card"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -313,7 +349,6 @@ export default async function HomePage() {
           </div>
         )}
 
-        <Newsletter />
 
       </main>
 

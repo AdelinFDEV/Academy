@@ -13,6 +13,8 @@ export const metadata: Metadata = {
 export default async function ArticulosPage() {
   const supabase = await createClient();
 
+  const { data: { user } } = await supabase.auth.getUser();
+
   const [{ data: posts }, { data: categories }] = await Promise.all([
     supabase
       .from("posts")
@@ -24,6 +26,19 @@ export default async function ArticulosPage() {
       .select("name, slug")
       .order("name", { ascending: true }),
   ]);
+
+  const postIds = posts?.map((p) => p.id) ?? [];
+  const commentCountMap: Record<string, number> = {};
+  if (postIds.length > 0) {
+    const { data: cc } = await supabase
+      .from("comments")
+      .select("post_id")
+      .in("post_id", postIds)
+      .eq("approved", true);
+    cc?.forEach((c) => {
+      commentCountMap[c.post_id] = (commentCountMap[c.post_id] ?? 0) + 1;
+    });
+  }
 
   return (
     <div className="blog-page">
@@ -46,6 +61,8 @@ export default async function ArticulosPage() {
           <ArticulosClient
             posts={(posts ?? []) as any}
             categories={categories ?? []}
+            commentCountMap={commentCountMap}
+            isLoggedIn={!!user}
           />
         </div>
       </main>

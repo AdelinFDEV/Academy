@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
-import PostActions from "@/components/PostActions";
+import PostInteractions from "@/components/PostInteractions";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -162,14 +162,16 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               <span className="post-author-sep">·</span>
               <span className="post-date-full">{readingMinutes} min de lectura</span>
             </div>
-            {user && (
-              <PostActions
-                postId={post.id}
-                initialSaved={userPost?.saved ?? false}
-                initialRead={!!userPost?.read_at}
-              />
-            )}
           </div>
+          <PostInteractions
+            postId={post.id}
+            postSlug={slug}
+            commentsCount={comments?.length ?? 0}
+            initialSaved={userPost?.saved ?? false}
+            initialRead={!!userPost?.read_at}
+            isLoggedIn={!!user}
+            variant="post"
+          />
         </div>
 
         {/* Imagen de portada */}
@@ -262,7 +264,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         )}
 
         {/* Comentarios */}
-        <div className="post-comments">
+        <div id="comentarios" className="post-comments">
           <h2 className="comments-title">Comentarios ({comments?.length ?? 0})</h2>
 
           {user && hasAccess && (
