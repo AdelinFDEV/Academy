@@ -195,7 +195,7 @@ export default async function AdminPage() {
           <div className="admin-stat-v2-body">
             <span className="admin-stat-v2-value">{postsCount ?? 0}</span>
             <span className="admin-stat-v2-label">Entradas totales</span>
-            <span className="admin-stat-v2-sub">{publishedCount ?? 0} publicadas · {(postsCount ?? 0) - (publishedCount ?? 0)} borradores</span>
+            <span className="admin-stat-v2-sub">{publishedCount ?? 0} publicadas</span>
           </div>
         </div>
 

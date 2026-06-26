@@ -190,7 +190,7 @@ export default async function HomePage() {
             <div className="sidebar-tools-list">
               <Link href="/glosario" className="sidebar-tool-link">
                 <BookOpen size={16} className="sidebar-tool-icon" />
-                <span>Glosario</span>
+                <span>Diccionario Cripto</span>
               </Link>
               <Link href="/cursos" className="sidebar-tool-link sidebar-tool-highlight">
                 <Star size={16} className="sidebar-tool-icon" fill="currentColor" />

@@ -10,7 +10,7 @@ import LogoutButton from "@/components/LogoutButton";
 import GlosarioClient from "./GlosarioClient";
 
 export const metadata: Metadata = {
-  title: "Glosario Crypto | AdelinBTC Academy",
+  title: "Diccionario Cripto | AdelinBTC Academy",
   description: "Términos clave de criptomonedas y trading explicados de forma clara. Desde Bitcoin hasta DeFi.",
 };
 
@@ -45,7 +45,7 @@ export default async function GlosarioPage() {
 
       <main className="blog-main glosario-page">
         <div className="glosario-header">
-          <h1 className="glosario-title">Glosario Crypto</h1>
+          <h1 className="glosario-title">Diccionario Cripto</h1>
           <p className="glosario-sub">
             Todos los términos que necesitas para entender el mercado crypto y el trading. Gratis, siempre actualizado.
           </p>

@@ -51,7 +51,7 @@ export default async function DashboardPage() {
 
   const TOOLS = [
     { href: "/dashboard/watchlist", icon: "trending" as const, name: "Watchlist", desc: "Sigue precios", locked: false },
-    { href: "/glosario", icon: "book" as const, name: "Glosario", desc: "40+ términos", locked: false },
+    { href: "/glosario", icon: "book" as const, name: "Diccionario Cripto", desc: "40+ términos", locked: false },
     { href: isPremium ? "/dashboard/trading" : "/dashboard", icon: "chart" as const, name: "Diario Trading", desc: "Registra ops.", locked: !isPremium },
     { href: isPremium ? "/dashboard/estadisticas" : "/dashboard", icon: "chart" as const, name: "Estadísticas", desc: "Tu rendimiento", locked: !isPremium },
   ];

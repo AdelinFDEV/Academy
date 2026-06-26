@@ -3931,6 +3931,8 @@ html {
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
 }
 
 .admin-page-header {
@@ -6288,12 +6290,20 @@ html {
   }
 
   /* Trading journal */
+  .tj-charts {
+    grid-template-columns: 1fr;
+  }
+
   .tj-stats {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .tj-form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .tj-title {
+    font-size: 1.45rem;
   }
 
   /* Stats dashboard â€” 2Ã—2 en mÃ³vil */
@@ -7094,6 +7104,7 @@ select {
 /* â”€â”€ Page shell â”€â”€ */
 .admin-page {
   max-width: 1100px;
+  width: 100%;
 }
 
 .admin-page-header {
@@ -9218,5 +9229,24 @@ select {
     width: 13px;
     height: 13px;
     flex-shrink: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Feed tabs — prevent active state from visually overflowing container */
+  .feed-tab {
+    font-size: 0.72rem;
+    padding: 0.5rem 0.45rem;
+    gap: 0.2rem;
+    letter-spacing: 0;
+  }
+  .feed-tab.active {
+    border-color: transparent;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  }
+
+  /* Admin — reduce padding on small phones */
+  .admin-main {
+    padding: 1rem;
   }
 }

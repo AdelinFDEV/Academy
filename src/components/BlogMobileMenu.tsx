@@ -84,7 +84,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
               <span className="blog-mobile-section-label">Educación</span>
               <Link href="/glosario" className={`blog-mobile-tool-link${a("/glosario")}`} onClick={close}>
                 <BookOpen size={15} aria-hidden="true" />
-                Glosario
+                Diccionario Cripto
               </Link>
               <Link href="/cursos" className={`blog-mobile-tool-link${a("/cursos")}`} onClick={close}>
                 <GraduationCap size={15} aria-hidden="true" />

@@ -7,7 +7,7 @@ import { ChevronDown, BookOpen, GraduationCap, Files, LayoutGrid } from "lucide-
 const ITEMS = [
   {
     href: "/glosario",
-    label: "Glosario",
+    label: "Diccionario Cripto",
     desc: "Términos clave de crypto y trading explicados",
     premium: false,
     icon: <BookOpen size={16} aria-hidden="true" />,
