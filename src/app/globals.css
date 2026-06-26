@@ -6667,3 +6667,203 @@ html {
     font-size: 1.4rem;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   CORRECCIONES GLOBALES ANTI-SCROLL HORIZONTAL — MÓVIL
+   ═══════════════════════════════════════════════════════ */
+
+/* 1 — Imágenes y media: nunca más anchas que su contenedor */
+img, video, iframe, embed, object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 2 — Contenido de post: palabras largas y URLs no rompen layout */
+.post-content {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.post-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+.post-content pre,
+.post-content code {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* 3 — Inputs siempre 100% del contenedor */
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+
+  /* ── Menú móvil: reducir padding lateral de 32px a 20px ── */
+  .blog-mobile-menu-nav {
+    padding: 8px 20px 16px;
+  }
+  .blog-mobile-menu-footer {
+    padding: 20px 20px 36px;
+  }
+
+  /* ── Padding principal reducido ── */
+  .blog-main {
+    padding: 1.5rem 1.1rem;
+  }
+  .dashboard-main {
+    padding: 1.25rem 1.1rem 2rem;
+  }
+  .articulos-page {
+    padding: 2rem 1.1rem 3rem;
+  }
+  .post-page {
+    padding: 1.5rem 1.1rem 3rem;
+  }
+
+  /* ── Cabecera dashboard: apila si no cabe ── */
+  .dash-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .dash-upgrade-btn {
+    white-space: normal;
+    font-size: 0.78rem;
+    padding: 0.45rem 0.85rem;
+  }
+
+  /* ── article-cta: menos padding lateral ── */
+  .article-cta {
+    padding: 1.5rem 1.1rem;
+  }
+
+  /* ── Watchlist: columnas compactas ── */
+  .watchlist-list-header,
+  .watchlist-row {
+    grid-template-columns: 1fr 90px 64px 30px;
+    gap: 0.5rem;
+    padding: 0.75rem 0.9rem;
+  }
+  .watchlist-list-header {
+    font-size: 0.63rem;
+  }
+  .watchlist-row-symbol { font-size: 0.84rem; }
+  .watchlist-row-price  { font-size: 0.84rem; }
+  .watchlist-row-full   { font-size: 0.7rem; }
+
+  /* ── Buscador home: no desborda ── */
+  .home-search-wrap {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .home-search-results {
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+  }
+
+  /* ── Glosario controles ── */
+  .glosario-controls {
+    gap: 0.75rem;
+  }
+  .glosario-cats {
+    gap: 0.4rem;
+  }
+  .glosario-cat-btn {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.7rem;
+  }
+
+  /* ── Premium gate ── */
+  .premium-gate-page {
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+  }
+
+  /* ── Stats grid en estadísticas ── */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ── Footer: una columna en muy pequeños ── */
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1.1rem 1.5rem;
+  }
+  .footer-brand-col {
+    grid-column: auto;
+    max-width: 100%;
+  }
+  .footer-bottom {
+    padding: 1rem 1.1rem;
+  }
+
+  /* ── Home hero stats ── */
+  .home-hero-stats {
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  .hero-stat-value {
+    font-size: 0.8rem;
+  }
+  .hero-stat-label {
+    font-size: 0.65rem;
+  }
+}
+
+/* ── Pantallas muy pequeñas ≤ 380px ── */
+@media (max-width: 380px) {
+  .blog-main,
+  .dashboard-main,
+  .articulos-page,
+  .post-page {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+  }
+
+  .blog-mobile-menu-nav {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .blog-mobile-menu-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .watchlist-list-header,
+  .watchlist-row {
+    grid-template-columns: 1fr 80px 58px 28px;
+    gap: 0.35rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .home-hero-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .hero-stat-divider { display: none; }
+  .hero-stat { align-items: center; }
+
+  .dash-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .dash-upgrade-btn {
+    align-self: stretch;
+    text-align: center;
+  }
+}
