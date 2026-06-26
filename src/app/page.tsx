@@ -192,8 +192,8 @@ export default async function HomePage() {
                 <BookOpen size={16} className="sidebar-tool-icon" />
                 <span>Glosario</span>
               </Link>
-              <Link href="/cursos" className="sidebar-tool-link">
-                <GraduationCap size={16} className="sidebar-tool-icon" />
+              <Link href="/cursos" className="sidebar-tool-link sidebar-tool-highlight">
+                <Star size={16} className="sidebar-tool-icon" fill="currentColor" />
                 <span>Cursos</span>
               </Link>
               <Link href="/recursos" className="sidebar-tool-link">

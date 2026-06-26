@@ -9183,3 +9183,24 @@ select {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(255, 107, 43, 0.1);
 }
+@media (max-width: 899px) {
+  .home-layout {
+    gap: 0;
+  }
+  .home-feed {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-banner-slogan {
+    flex-wrap: nowrap !important;
+    white-space: nowrap;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.65rem;
+  }
+  .pi-text-hide-mobile {
+    display: none !important;
+  }
+}

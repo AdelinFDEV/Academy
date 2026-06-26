@@ -238,7 +238,7 @@ export default function PostInteractions({
               strokeLinejoin="round"
             />
           </svg>
-          <span>{saved ? "Guardado" : "Guardar"}</span>
+          <span className="pi-text-hide-mobile">{saved ? "Guardado" : "Guardar"}</span>
         </button>
       )}
 
@@ -258,7 +258,9 @@ export default function PostInteractions({
             <path d="M2 9v3.5h10V9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         )}
-        <span>{copied ? "¡Copiado!" : shares > 0 ? shares : "Compartir"}</span>
+        <span className={shares > 0 && !copied ? "" : "pi-text-hide-mobile"}>
+          {copied ? "¡Copiado!" : shares > 0 ? shares : "Compartir"}
+        </span>
       </button>
 
     </div>
