@@ -65,7 +65,7 @@ export default async function HomePage() {
     is_premium: p.is_premium,
     is_featured: p.is_featured,
     created_at: p.created_at,
-    categories: p.categories as { name: string; slug: string } | null,
+    categories: p.categories as unknown as { name: string; slug: string } | null,
     likes: (p.base_likes ?? 0) + (likeMap[p.id] ?? 0),
     comments: commentMap[p.id] ?? 0,
   }));

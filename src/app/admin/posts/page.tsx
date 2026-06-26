@@ -23,7 +23,7 @@ export default async function AdminPostsPage() {
 
   const postsWithReads = (posts ?? []).map((p) => ({
     ...p,
-    categories: p.categories as { name: string } | null,
+    categories: p.categories as unknown as { name: string } | null,
     reads: readMap[p.id] ?? 0,
   }));
 

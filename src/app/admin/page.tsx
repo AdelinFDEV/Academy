@@ -155,7 +155,7 @@ export default async function AdminPage() {
   // ── Top posts by reads ──
   const readMap: Record<string, { title: string; slug: string; count: number }> = {};
   (allReads ?? []).forEach((r) => {
-    const post = r.posts as { title: string; slug: string } | null;
+    const post = r.posts as unknown as { title: string; slug: string } | null;
     if (!post || !r.post_id) return;
     if (!readMap[r.post_id]) readMap[r.post_id] = { title: post.title, slug: post.slug, count: 0 };
     readMap[r.post_id].count++;
