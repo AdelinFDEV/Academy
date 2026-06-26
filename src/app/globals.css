@@ -4283,7 +4283,8 @@ html {
   z-index: 300;
   display: flex;
   flex-direction: column;
-  padding: 70px 32px 48px;
+  padding: 70px 0 0;
+  overflow: hidden;
   animation: menuFadeIn 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -4296,7 +4297,10 @@ html {
   display: flex;
   flex-direction: column;
   flex: 1;
-  padding-top: 8px;
+  padding: 8px 32px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── Nav tools dropdown (desktop) ──────────────────── */
@@ -5388,7 +5392,9 @@ html {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-top: 28px;
+  flex-shrink: 0;
+  padding: 20px 32px 40px;
+  border-top: 1px solid rgba(240, 244, 255, 0.06);
 }
 
 .blog-mobile-btn-cta {
