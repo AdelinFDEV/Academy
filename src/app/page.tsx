@@ -8,6 +8,7 @@ import PostInteractions from "@/components/PostInteractions";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
+import HomeSearchBar from "@/components/HomeSearchBar";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -120,19 +121,8 @@ export default async function HomePage() {
 
       <main className="blog-main" id="contenido">
 
-        {/* Navegación por temas */}
-        {categories && categories.length > 0 && (
-          <div className="topics-nav">
-            <span className="topics-nav-label">Temas</span>
-            <div className="topics-nav-list">
-              {categories.map((c) => (
-                <Link key={c.slug} href={`/categoria/${c.slug}`} className="topic-pill">
-                  {c.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Buscador de artículos */}
+        <HomeSearchBar posts={(posts ?? []).map((p) => ({ slug: p.slug, title: p.title, is_premium: p.is_premium, categories: (p.categories as any) ?? null }))} />
 
         {featured && (
           <div className="featured-post-wrap">

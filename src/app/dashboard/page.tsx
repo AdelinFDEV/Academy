@@ -42,6 +42,8 @@ export default async function DashboardPage() {
 
   const totalPosts = allPosts.length;
   const premiumPosts = allPosts.filter((p) => p.is_premium).length;
+  // static premium items: Diario de Trading, Mis Estadísticas, Portfolio Spot, Cursos, Recursos, Chat y Foro
+  const premiumTotal = premiumPosts + 6;
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
   const readCount = readIds.size;
   const savedIds = new Set(userPosts.filter((up) => up.saved).map((up) => up.post_id));
@@ -67,7 +69,7 @@ export default async function DashboardPage() {
         <div className="premium-banner">
           <div className="premium-banner-text">
             <strong>Desbloquea todo el contenido</strong>
-            <p>Accede a los {premiumPosts} análisis premium y a todo lo que publiquemos con el plan Premium</p>
+            <p>Accede a los <span style={{ color: "var(--accent-orange)", fontWeight: 700 }}>{premiumTotal}</span> contenidos premium: análisis, herramientas y cursos exclusivos</p>
           </div>
           <button className="btn-primary btn-small">Hazte Premium →</button>
         </div>
