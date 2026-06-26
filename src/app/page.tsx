@@ -10,6 +10,7 @@ import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import HomeFeed from "@/components/HomeFeed";
 import LiveCounter from "@/components/LiveCounter";
+import SocialLinks from "@/components/SocialLinks";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -165,9 +166,9 @@ export default async function HomePage() {
                 <Star size={16} className="sidebar-tool-icon" fill="currentColor" />
                 <span>Diario de Trading</span>
               </Link>
-              <Link href={!user ? "/register" : "/dashboard/trading"} className="sidebar-tool-link">
+              <Link href={!user ? "/register" : "/calculadora"} className="sidebar-tool-link">
                 <Calculator size={16} className="sidebar-tool-icon" />
-                <span>Predicción de Precio</span>
+                <span>Calculadora de Precio</span>
               </Link>
               <Link href={!user ? "/register" : "/dashboard/watchlist"} className="sidebar-tool-link">
                 <Eye size={16} className="sidebar-tool-icon" />
@@ -226,6 +227,12 @@ export default async function HomePage() {
               </div>
             </div>
           )}
+
+          {/* Redes sociales */}
+          <div className="sidebar-card">
+            <p className="sidebar-card-title">Sígueme</p>
+            <SocialLinks variant="sidebar" />
+          </div>
 
           {/* Start here */}
           <div className="sidebar-card">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SocialLinks from "@/components/SocialLinks";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -14,6 +15,7 @@ export default function Footer() {
             Formación crypto profesional. Análisis, educación blockchain
             y herramientas para operar con criterio.
           </p>
+          <SocialLinks variant="footer" />
         </div>
 
         <div className="footer-links-group">
@@ -27,6 +29,13 @@ export default function Footer() {
           <span className="footer-links-title">Cuenta</span>
           <Link href="/login">Iniciar sesión</Link>
           <Link href="/register">Crear cuenta</Link>
+        </div>
+
+        <div className="footer-links-group">
+          <span className="footer-links-title">Academia</span>
+          <Link href="/dashboard">Mi dashboard</Link>
+          <Link href="/articulos">Artículos</Link>
+          <Link href="/premium" className="footer-premium-link">Hazte Premium →</Link>
         </div>
 
         <div className="footer-links-group">

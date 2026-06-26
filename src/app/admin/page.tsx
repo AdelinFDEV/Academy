@@ -291,6 +291,37 @@ export default async function AdminPage() {
         </div>
       </div>
 
+      {/* Conversion funnel strip */}
+      <div className="admin-funnel-strip">
+        <div className="admin-funnel-step">
+          <span className="admin-funnel-step-n">{usersCount ?? 0}</span>
+          <span className="admin-funnel-step-label">Registrados</span>
+        </div>
+        <span className="admin-funnel-arrow">→</span>
+        <div className="admin-funnel-step">
+          <span className="admin-funnel-step-n">{(usersCount ?? 0) - (premiumCount ?? 0)}</span>
+          <span className="admin-funnel-step-label">Free</span>
+        </div>
+        <span className="admin-funnel-arrow">→</span>
+        <div className="admin-funnel-step">
+          <span className="admin-funnel-step-n" style={{ color: "var(--accent-orange)" }}>{premiumCount ?? 0}</span>
+          <span className="admin-funnel-step-label">Premium</span>
+        </div>
+        <div className="admin-funnel-divider" />
+        <div className="admin-funnel-kpi">
+          <span className="admin-funnel-kpi-v">
+            {usersCount ? Math.round(((premiumCount ?? 0) / usersCount) * 100) : 0}%
+          </span>
+          <span className="admin-funnel-kpi-l">Conversión</span>
+        </div>
+        <div className="admin-funnel-kpi">
+          <span className="admin-funnel-kpi-v" style={{ color: "var(--accent-orange)" }}>
+            {((premiumCount ?? 0) * 19.99).toFixed(0)}€
+          </span>
+          <span className="admin-funnel-kpi-l">MRR estimado</span>
+        </div>
+      </div>
+
       {/* Charts row */}
       <div className="admin-charts-row">
         {/* User growth line chart */}

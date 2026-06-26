@@ -10,6 +10,7 @@ import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
+import SocialLinks from "@/components/SocialLinks";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -195,6 +196,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               <span className="post-author-sep">·</span>
               <span className="post-date-full">{readingMinutes} min de lectura</span>
             </div>
+            <SocialLinks variant="post" />
           </div>
           <PostInteractions
             postId={post.id}
@@ -247,6 +249,18 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                   <Link href="/register" className="cta-btn-primary">Crear cuenta gratis →</Link>
                   <Link href="/login" className="cta-btn-secondary">Ya tengo cuenta</Link>
                 </div>
+              </div>
+            )}
+
+            {/* Upgrade CTA para usuarios free tras leer un artículo gratuito */}
+            {user && !isPremium && (
+              <div className="post-upgrade-cta">
+                <span className="post-upgrade-cta-tag">PREMIUM</span>
+                <h3>¿Quieres más contenido como este?</h3>
+                <p>Hazte Premium por 19,99€/mes y accede a todos los análisis avanzados, el diario de trading y mucho más.</p>
+                <Link href="/premium" className="btn-primary" style={{ textDecoration: "none" }}>
+                  Ver planes Premium →
+                </Link>
               </div>
             )}
           </>

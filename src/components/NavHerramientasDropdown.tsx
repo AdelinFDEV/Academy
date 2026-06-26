@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronDown, Trophy, TrendingUp, Eye, BarChart2, PieChart, MessageSquare, Target } from "lucide-react";
+import { ChevronDown, Trophy, TrendingUp, Eye, BarChart2, PieChart, MessageSquare, Target, Award } from "lucide-react";
 
 interface Props {
   user: boolean;
@@ -121,6 +121,17 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
           {/* ── Comunidad ── */}
           <p className="nav-tools-section-label" style={{ marginTop: "10px" }}>Comunidad</p>
 
+          <Link href="/ranking" className="nav-tools-item" role="menuitem" onClick={close}>
+            <span className="nav-tools-item-icon">
+              <Award size={16} aria-hidden="true" />
+            </span>
+            <span>
+              <span className="nav-tools-item-name">Ranking de Comunidad</span>
+              <span className="nav-tools-item-desc">Los miembros más activos de la academia</span>
+            </span>
+            <span className="nav-tools-soon-badge">Pronto</span>
+          </Link>
+
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
               <MessageSquare size={16} aria-hidden="true" />
@@ -136,16 +147,15 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
           {/* ── Utilidades ── */}
           <p className="nav-tools-section-label" style={{ marginTop: "10px" }}>Utilidades</p>
 
-          <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
+          <Link href="/calculadora" className="nav-tools-item" role="menuitem" onClick={close}>
             <span className="nav-tools-item-icon">
               <Target size={16} aria-hidden="true" />
             </span>
             <span>
-              <span className="nav-tools-item-name">Predicción de precio</span>
-              <span className="nav-tools-item-desc">Predicción de precio de tokens</span>
+              <span className="nav-tools-item-name">Calculadora de Precio</span>
+              <span className="nav-tools-item-desc">¿Qué precio si alcanza el MC de BTC?</span>
             </span>
-            <span className="nav-tools-soon-badge">Pronto</span>
-          </div>
+          </Link>
 
         </div>
       )}

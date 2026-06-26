@@ -38,6 +38,7 @@ export default async function DashboardPage() {
   const allPosts = posts ?? [];
   const userPosts = userPostsData ?? [];
   const savedTermsList = savedTermsData ?? [];
+  const premiumArticlesCount = allPosts.filter((p) => p.is_premium).length;
 
   const totalPosts = allPosts.length;
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
@@ -57,6 +58,7 @@ export default async function DashboardPage() {
   const TOOLS = [
     { href: "/dashboard/watchlist", icon: "trending" as const, name: "Watchlist", desc: "Sigue precios", locked: false },
     { href: "/glosario", icon: "book" as const, name: "Diccionario Cripto", desc: "40+ términos", locked: false },
+    { href: "/calculadora", icon: "chart" as const, name: "Calculadora", desc: "Escenarios MC", locked: false },
     { href: isPremium ? "/dashboard/trading" : "/dashboard", icon: "chart" as const, name: "Diario Trading", desc: "Registra ops.", locked: !isPremium },
     { href: isPremium ? "/dashboard/estadisticas" : "/dashboard", icon: "chart" as const, name: "Estadísticas", desc: "Tu rendimiento", locked: !isPremium },
   ];
@@ -83,7 +85,7 @@ export default async function DashboardPage() {
           </div>
         </div>
         {!isPremium && (
-          <Link href="#" className="dash-upgrade-btn">Hazte Premium →</Link>
+          <Link href="/premium" className="dash-upgrade-btn">Hazte Premium →</Link>
         )}
       </div>
 
@@ -126,6 +128,28 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Upgrade card (free users only) ── */}
+      {!isPremium && (
+        <div className="dash-upgrade-card">
+          <div className="dash-upgrade-card-body">
+            <span className="dash-upgrade-card-badge">PREMIUM</span>
+            <h3 className="dash-upgrade-card-title">Desbloquea el acceso completo</h3>
+            <ul className="dash-upgrade-card-perks">
+              <li>Acceso a <strong>{premiumArticlesCount} artículos</strong> premium bloqueados</li>
+              <li>Diario de trading y estadísticas avanzadas</li>
+              <li>Todo el contenido futuro sin límites</li>
+            </ul>
+          </div>
+          <div className="dash-upgrade-card-right">
+            <div className="dash-upgrade-card-price">
+              <span className="dash-upgrade-price-main">19,99€</span>
+              <span className="dash-upgrade-price-per">/mes</span>
+            </div>
+            <Link href="/premium" className="dash-upgrade-card-cta">Hazte Premium →</Link>
+          </div>
+        </div>
+      )}
 
       {/* ── Continúa leyendo ── */}
       {continueReading.length > 0 && (
