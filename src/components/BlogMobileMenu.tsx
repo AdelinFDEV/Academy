@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
   FileText, Folder, BookOpen, GraduationCap, Files, LayoutGrid,
-  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target,
+  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award,
 } from "lucide-react";
 
 interface Category {
@@ -138,6 +138,12 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <Target size={15} aria-hidden="true" />
                 Predicción de Precio
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
+              </Link>
+
+              <Link href="/ranking" className={`blog-mobile-tool-link${a("/ranking")}`} onClick={close}>
+                <Award size={15} aria-hidden="true" />
+                Ranking de Comunidad
+                <span className="mobile-tool-soon-badge">Pronto</span>
               </Link>
 
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">

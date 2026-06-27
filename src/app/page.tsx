@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Check } from "lucide-react";
+import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Users } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
@@ -121,9 +121,9 @@ export default async function HomePage() {
           </div>
           
           <div className="home-banner-features">
-            <span className="home-feature"><Check size={18} aria-hidden="true" /> Guías y Cursos</span>
-            <span className="home-feature"><Check size={18} aria-hidden="true" /> Herramientas Exclusivas</span>
-            <span className="home-feature"><Check size={18} aria-hidden="true" /> Comunidad Privada</span>
+            <span className="home-feature"><GraduationCap size={15} aria-hidden="true" /> Guías y Cursos</span>
+            <span className="home-feature"><Target size={15} aria-hidden="true" /> Herramientas Exclusivas</span>
+            <span className="home-feature"><Users size={15} aria-hidden="true" /> Comunidad Privada</span>
           </div>
 
           <div className="home-banner-actions">
