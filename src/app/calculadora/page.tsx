@@ -11,8 +11,8 @@ import LogoutButton from "@/components/LogoutButton";
 import CalculadoraClient from "./CalculadoraClient";
 
 export const metadata: Metadata = {
-  title: "Calculadora de Precio | AdelinBTC Academy",
-  description: "Calcula a qué precio llegaría tu token si alcanzara el Market Cap de Bitcoin, Ethereum o Solana en tiempo real.",
+  title: "Predicción de Precio | AdelinBTC Academy",
+  description: "Calcula qué Market Cap necesita un token para alcanzar tu precio objetivo. Compara con Bitcoin, Ethereum y Solana en tiempo real.",
 };
 
 export default async function CalculadoraPage() {

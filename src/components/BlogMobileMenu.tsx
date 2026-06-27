@@ -130,6 +130,16 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
+              <Link
+                href={!user ? "/register" : "/calculadora"}
+                className={`blog-mobile-tool-link${a("/calculadora")}`}
+                onClick={close}
+              >
+                <Target size={15} aria-hidden="true" />
+                Predicción de Precio
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
+              </Link>
+
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <PieChart size={15} aria-hidden="true" />
                 Portfolio Spot
@@ -144,12 +154,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </div>
 
-              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
-                <Target size={15} aria-hidden="true" />
-                Predicción de precio
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </div>
             </div>
           </nav>
 

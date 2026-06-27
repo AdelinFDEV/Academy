@@ -55,6 +55,22 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             {!user && <span className="nav-tools-badge--premium">PREMIUM</span>}
           </Link>
 
+          <Link
+            href={!user ? "/register" : "/calculadora"}
+            className="nav-tools-item"
+            role="menuitem"
+            onClick={close}
+          >
+            <span className="nav-tools-item-icon">
+              <Target size={16} aria-hidden="true" />
+            </span>
+            <span>
+              <span className="nav-tools-item-name">Predicción de Precio</span>
+              <span className="nav-tools-item-desc">¿Qué Market Cap necesita tu token?</span>
+            </span>
+            {!user && <span className="nav-tools-badge--premium">PREMIUM</span>}
+          </Link>
+
           {/* ── Trading ── */}
           <p className="nav-tools-section-label" style={{ marginTop: "10px" }}>Trading</p>
 
@@ -143,19 +159,6 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             <span className="nav-tools-badge--premium" style={{ marginRight: "4px" }}>PREMIUM</span>
             <span className="nav-tools-soon-badge">Pronto</span>
           </div>
-
-          {/* ── Utilidades ── */}
-          <p className="nav-tools-section-label" style={{ marginTop: "10px" }}>Utilidades</p>
-
-          <Link href="/calculadora" className="nav-tools-item" role="menuitem" onClick={close}>
-            <span className="nav-tools-item-icon">
-              <Target size={16} aria-hidden="true" />
-            </span>
-            <span>
-              <span className="nav-tools-item-name">Calculadora de Precio</span>
-              <span className="nav-tools-item-desc">¿Qué precio si alcanza el MC de BTC?</span>
-            </span>
-          </Link>
 
         </div>
       )}
