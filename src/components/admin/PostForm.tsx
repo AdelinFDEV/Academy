@@ -64,10 +64,10 @@ export default function PostForm({ categories, post }: { categories: Category[];
     if (!isEdit) setSlug(toSlug(e.target.value));
   }
 
-  function handleSeoField(field: string, value: string) {
+  function handleSeoField(field: "seoTitle" | "metaDescription" | "focusKeyword" | string, value: string) {
     if (field === "seoTitle") setSeoTitle(value);
-    if (field === "metaDescription") setMetaDescription(value);
-    if (field === "focusKeyword") setFocusKeyword(value);
+    else if (field === "metaDescription") setMetaDescription(value);
+    else if (field === "focusKeyword") setFocusKeyword(value);
   }
 
   async function handleSubmit(e: React.FormEvent) {
