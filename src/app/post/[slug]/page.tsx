@@ -12,6 +12,7 @@ import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import SocialLinks from "@/components/SocialLinks";
 import LiveCounter from "@/components/LiveCounter";
+import { renderMarkdown } from "@/components/admin/MarkdownEditor";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -21,31 +22,34 @@ export async function generateMetadata(
 
   const { data: post } = await supabase
     .from("posts")
-    .select("title, excerpt, cover_image")
+    .select("title, excerpt, cover_image, seo_title, meta_description, focus_keyword")
     .eq("slug", slug)
     .eq("published", true)
     .single();
 
   if (!post) return { title: "Artículo no encontrado" };
 
-  const description = post.excerpt ?? undefined;
+  const seoTitle = post.seo_title || post.title;
+  const description = post.meta_description || post.excerpt || undefined;
 
   return {
-    title: post.title,
+    title: seoTitle,
     description,
+    keywords: post.focus_keyword ?? undefined,
     openGraph: {
       type: "article",
-      title: post.title,
+      title: seoTitle,
       description,
       ...(post.cover_image ? { images: [{ url: post.cover_image }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
+      title: seoTitle,
       description,
     },
   };
 }
+
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -236,11 +240,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               </div>
             )}
 
-            <div className="post-content">
-              {post.content.split("\n").map((p: string, i: number) =>
-                p ? <p key={i}>{p}</p> : <br key={i} />
-              )}
-            </div>
+            <div
+              className="post-content prose-content"
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
+            />
 
             {/* Prompt suave de registro tras leer un artículo gratis */}
             {!user && (
