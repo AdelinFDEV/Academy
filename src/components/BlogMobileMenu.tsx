@@ -37,6 +37,13 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
       .then(({ data }) => { if (data) setCategories(data); });
   }, []);
 
+  // Ping streak on every authenticated page load
+  useEffect(() => {
+    if (user) {
+      fetch("/api/streak", { method: "POST" }).catch(() => {});
+    }
+  }, [user]);
+
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
