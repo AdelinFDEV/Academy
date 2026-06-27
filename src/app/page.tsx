@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Users, ShieldCheck } from "lucide-react";
+import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import Icon from "@/components/Icon";
 import LogoutButton from "@/components/LogoutButton";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
@@ -11,13 +10,15 @@ import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import HomeFeed from "@/components/HomeFeed";
 import LiveCounter from "@/components/LiveCounter";
 import SocialLinks from "@/components/SocialLinks";
+import HeroVideo from "@/components/HeroVideo";
+import { getLatestVideos } from "@/lib/youtube";
 
 export default async function HomePage() {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [{ data: posts }, { data: categories }, { count: postsTotal }] =
+  const [{ data: posts }, { data: categories }, { count: postsTotal }, youtubeVideos] =
     await Promise.all([
       supabase
         .from("posts")
@@ -29,6 +30,7 @@ export default async function HomePage() {
         .select("name, slug")
         .order("name"),
       supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
+      getLatestVideos(3),
     ]);
 
   const postIds = posts?.map((p) => p.id) ?? [];
@@ -103,10 +105,7 @@ export default async function HomePage() {
 
       {/* ── Hero ── */}
       <div className="home-banner">
-        <video className="home-banner-video" autoPlay loop muted playsInline>
-          <source src="/hero.webm" type="video/webm" />
-          <source src="/hero-opt.mp4" type="video/mp4" />
-        </video>
+        <HeroVideo />
         <div className="home-banner-overlay" />
         <div className="home-banner-content">
 
@@ -116,14 +115,17 @@ export default async function HomePage() {
           </h1>
 
           <p className="hero-subtitle hero-anim hero-anim-3">
-            Deja de improvisar. Aprende a leer el mercado, opera con disciplina
-            y rodéate de traders que hablan claro — no de gurús que venden sueños.
+            Deja de improvisar.{" "}
+            <span className="hero-subtitle-em">Aprende a leer el mercado</span>,{" "}
+            opera con <span className="hero-subtitle-em">disciplina</span>{" "}
+            y rodéate de traders que hablan claro —{" "}
+            <span className="hero-subtitle-muted">no de gurús que venden sueños.</span>
           </p>
 
           <div className="home-banner-features hero-anim hero-anim-4">
-            <span className="home-feature"><GraduationCap size={15} aria-hidden="true" /> Academia</span>
-            <span className="home-feature"><Users size={15} aria-hidden="true" /> Comunidad</span>
-            <span className="home-feature"><Target size={15} aria-hidden="true" /> Herramientas</span>
+            <span className="home-feature"><FlaskConical size={15} aria-hidden="true" /> Academia</span>
+            <span className="home-feature"><Globe size={15} aria-hidden="true" /> Comunidad</span>
+            <span className="home-feature"><Wrench size={15} aria-hidden="true" /> Herramientas</span>
           </div>
 
           <div className="home-banner-actions hero-anim hero-anim-5">
@@ -172,11 +174,31 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* ── Empieza aquí band ── */}
+      <Link href="/guias" className="starthere-band">
+        <span className="starthere-band-glow" aria-hidden="true" />
+        <span className="starthere-band-left">
+          <span className="starthere-band-icon">
+            <Map size={20} aria-hidden="true" />
+          </span>
+          <span className="starthere-band-text">
+            <span className="starthere-band-eyebrow">¿Nuevo en crypto?</span>
+            <span className="starthere-band-title">Empieza aquí — tu hoja de ruta paso a paso</span>
+          </span>
+        </span>
+        <span className="starthere-band-cta">
+          <span className="starthere-band-cta-label">
+            Ver la guía <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
+          </span>
+          <span className="starthere-band-cta-sub">Gratis · 5 min</span>
+        </span>
+      </Link>
+
       {/* ── Main layout ── */}
       <div className="home-layout" id="feed">
 
         {/* Feed */}
-        <HomeFeed posts={enrichedPosts} isLoggedIn={!!user} />
+        <HomeFeed posts={enrichedPosts} isLoggedIn={!!user} youtubeVideos={youtubeVideos} />
 
         {/* Sidebar */}
         <aside className="home-sidebar">
@@ -185,26 +207,47 @@ export default async function HomePage() {
           <div className="sidebar-card">
             <p className="sidebar-card-title">Herramientas</p>
             <div className="sidebar-tools-list">
-              <Link href={!user ? "/register" : "/dashboard/diario"} className="sidebar-tool-link sidebar-tool-highlight">
-                <Star size={16} className="sidebar-tool-icon" fill="currentColor" />
+              {/* Diario — siempre PREMIUM */}
+              <Link href={!user ? "/register" : "/dashboard"} className="sidebar-tool-link sidebar-tool-link--dimmed">
+                <NotebookPen size={16} className="sidebar-tool-icon" />
                 <span>Diario de Trading</span>
+                <span className="sidebar-tool-badge--premium">PREMIUM</span>
               </Link>
               <Link href={!user ? "/register" : "/calculadora"} className="sidebar-tool-link">
-                <Target size={16} className="sidebar-tool-icon" />
+                <Crosshair size={16} className="sidebar-tool-icon" />
                 <span>Predicción de Precio</span>
+                {!user && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
               </Link>
               <Link href={!user ? "/register" : "/dashboard/watchlist"} className="sidebar-tool-link">
-                <Eye size={16} className="sidebar-tool-icon" />
+                <ScanEye size={16} className="sidebar-tool-icon" />
                 <span>Mi Watchlist</span>
-              </Link>
-              <Link href={!user ? "/register" : "/dashboard/estadisticas"} className="sidebar-tool-link">
-                <BarChart2 size={16} className="sidebar-tool-icon" />
-                <span>Estadísticas</span>
+                {!user && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
               </Link>
               <Link href={!user ? "/register" : "/logros"} className="sidebar-tool-link">
-                <Trophy size={16} className="sidebar-tool-icon" />
+                <Medal size={16} className="sidebar-tool-icon" />
                 <span>Logros y XP</span>
+                {!user && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
               </Link>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <Wallet size={16} className="sidebar-tool-icon" />
+                <span>Portfolio Spot</span>
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <ListOrdered size={16} className="sidebar-tool-icon" />
+                <span>Ranking</span>
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <MessagesSquare size={16} className="sidebar-tool-icon" />
+                <span>Chat</span>
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <Network size={16} className="sidebar-tool-icon" />
+                <span>Foro</span>
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
             </div>
           </div>
 
@@ -213,21 +256,24 @@ export default async function HomePage() {
             <p className="sidebar-card-title">Educación</p>
             <div className="sidebar-tools-list">
               <Link href="/glosario" className="sidebar-tool-link">
-                <BookOpen size={16} className="sidebar-tool-icon" />
+                <BookA size={16} className="sidebar-tool-icon" />
                 <span>Diccionario Cripto</span>
               </Link>
-              <Link href="/cursos" className="sidebar-tool-link sidebar-tool-highlight">
-                <Star size={16} className="sidebar-tool-icon" fill="currentColor" />
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <MonitorPlay size={16} className="sidebar-tool-icon" />
                 <span>Cursos</span>
-              </Link>
-              <Link href="/recursos" className="sidebar-tool-link">
-                <Library size={16} className="sidebar-tool-icon" />
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <Layers size={16} className="sidebar-tool-icon" />
                 <span>Recursos</span>
-              </Link>
-              <Link href="/guias" className="sidebar-tool-link">
-                <Compass size={16} className="sidebar-tool-icon" />
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <Route size={16} className="sidebar-tool-icon" />
                 <span>Guías</span>
-              </Link>
+                <span className="sidebar-tool-badge--soon">Pronto</span>
+              </div>
             </div>
           </div>
 
@@ -239,7 +285,7 @@ export default async function HomePage() {
                 {(categories ?? []).map((c) => (
                   <Link key={c.slug} href={`/categoria/${c.slug}`} className="sidebar-tool-link">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <Folder size={16} className="sidebar-tool-icon" />
+                      <Tag size={16} className="sidebar-tool-icon" />
                       <span>{c.name}</span>
                     </div>
                     {catPostMap[c.slug] && (
@@ -251,55 +297,66 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Redes sociales */}
-          <div className="sidebar-card">
-            <p className="sidebar-card-title">Sígueme</p>
-            <SocialLinks variant="sidebar" />
-          </div>
+          {/* Premium pitch */}
+          <div className="premium-pitch">
+            <span className="premium-pitch-glow" aria-hidden="true" />
 
-          {/* Start here */}
-          <div className="sidebar-card">
-            <p className="sidebar-card-title">Empieza aquí</p>
-            <div className="sidebar-steps">
-              <div className="sidebar-step">
-                <span className="sidebar-step-num">01</span>
-                <div>
-                  <strong>Fundamentos</strong>
-                  <p>Qué es Bitcoin y por qué importa. Sin tecnicismos vacíos.</p>
-                </div>
-              </div>
-              <div className="sidebar-step">
-                <span className="sidebar-step-num">02</span>
-                <div>
-                  <strong>Seguridad</strong>
-                  <p>Custodiar cripto y evitar los errores que arruinan a los novatos.</p>
-                </div>
-              </div>
-              <div className="sidebar-step">
-                <span className="sidebar-step-num">03</span>
-                <div>
-                  <strong>Estrategia</strong>
-                  <p>Leer el mercado, gestionar riesgo y construir una tesis propia.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            <span className="premium-pitch-badge">
+              <Crown size={13} aria-hidden="true" /> Premium
+            </span>
 
-          {/* Premium CTA */}
-          {!user && (
-            <div className="sidebar-card sidebar-premium-card">
-              <div className="sidebar-premium-icon">
-                <Icon name="lock" size={18} />
-              </div>
-              <p className="sidebar-premium-title">Acceso Premium</p>
-              <p className="sidebar-premium-desc">
-                Desbloquea análisis semanales, herramientas exclusivas y contenido avanzado.
-              </p>
-              <Link href="/register" className="sidebar-premium-btn">
-                Empieza gratis →
-              </Link>
+            <h3 className="premium-pitch-title">
+              Deja de mirar el mercado.<br />
+              <span className="text-gradient">Empieza a operarlo.</span>
+            </h3>
+            <p className="premium-pitch-sub">
+              Las herramientas que separan a los que improvisan de los que operan con ventaja.
+            </p>
+
+            <ul className="premium-pitch-features">
+              <li className="premium-pitch-feature">
+                <span className="premium-pitch-feature-icon"><NotebookPen size={16} aria-hidden="true" /></span>
+                <span>
+                  <strong>Diario de Trading</strong>
+                  Registra cada operación y descubre qué te hace ganar.
+                </span>
+              </li>
+              <li className="premium-pitch-feature">
+                <span className="premium-pitch-feature-icon"><Radar size={16} aria-hidden="true" /></span>
+                <span>
+                  <strong>Señales en Spot</strong>
+                  Entradas y salidas con criterio, no con corazonadas.
+                </span>
+              </li>
+              <li className="premium-pitch-feature">
+                <span className="premium-pitch-feature-icon"><MessagesSquare size={16} aria-hidden="true" /></span>
+                <span>
+                  <strong>Sala de Chat</strong>
+                  Comunidad privada en tiempo real, sin ruido ni gurús.
+                </span>
+              </li>
+              <li className="premium-pitch-feature">
+                <span className="premium-pitch-feature-icon"><Gem size={16} aria-hidden="true" /></span>
+                <span>
+                  <strong>Herramientas exclusivas</strong>
+                  Watchlist, estadísticas y todo lo que viene después.
+                </span>
+              </li>
+            </ul>
+
+            <div className="premium-pitch-price">
+              <span className="premium-pitch-amount">19,99€</span>
+              <span className="premium-pitch-period">/mes</span>
             </div>
-          )}
+
+            <Link href="/premium" className="premium-pitch-cta">
+              Hazte Premium <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+            </Link>
+
+            <p className="premium-pitch-note">
+              <Check size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
+            </p>
+          </div>
 
         </aside>
       </div>

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { ChevronDown, FileText, Folder } from "lucide-react";
+import { ChevronDown, Newspaper, Tag, Map } from "lucide-react";
 
 interface Category {
   name: string;
@@ -50,6 +50,21 @@ export default function NavArticulosDropdown() {
 
       {open && (
         <div className="nav-tools-menu" role="menu">
+          <Link
+            href="/guias"
+            className="nav-tools-item nav-tools-item--featured"
+            role="menuitem"
+            onClick={() => setOpen(false)}
+          >
+            <span className="nav-tools-item-icon">
+              <Map size={16} aria-hidden="true" />
+            </span>
+            <span>
+              <span className="nav-tools-item-name">Empieza aquí</span>
+              <span className="nav-tools-item-desc">Tu hoja de ruta paso a paso en crypto</span>
+            </span>
+          </Link>
+
           <p className="nav-tools-section-label">Categorías</p>
 
           <Link
@@ -59,7 +74,7 @@ export default function NavArticulosDropdown() {
             onClick={() => setOpen(false)}
           >
             <span className="nav-tools-item-icon">
-              <FileText size={16} aria-hidden="true" />
+              <Newspaper size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Todos los artículos</span>
@@ -76,7 +91,7 @@ export default function NavArticulosDropdown() {
               onClick={() => setOpen(false)}
             >
               <span className="nav-tools-item-icon">
-                <Folder size={16} aria-hidden="true" />
+                <Tag size={16} aria-hidden="true" />
               </span>
               <span>
                 <span className="nav-tools-item-name">{cat.name}</span>

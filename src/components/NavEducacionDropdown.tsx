@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronDown, BookOpen, GraduationCap, Files, LayoutGrid } from "lucide-react";
+import { ChevronDown, BookA, MonitorPlay, Layers, Route } from "lucide-react";
 
 const ITEMS = [
   {
@@ -10,28 +10,28 @@ const ITEMS = [
     label: "Diccionario Cripto",
     desc: "Términos clave de crypto y trading explicados",
     premium: false,
-    icon: <BookOpen size={16} aria-hidden="true" />,
+    icon: <BookA size={16} aria-hidden="true" />,
   },
   {
     href: "/cursos",
     label: "Cursos",
     desc: "Aprende desde cero con nuestros cursos",
     soon: true,
-    icon: <GraduationCap size={16} aria-hidden="true" />,
+    icon: <MonitorPlay size={16} aria-hidden="true" />,
   },
   {
     href: "/recursos",
     label: "Recursos",
     desc: "Herramientas y materiales de referencia",
     soon: true,
-    icon: <Files size={16} aria-hidden="true" />,
+    icon: <Layers size={16} aria-hidden="true" />,
   },
   {
     href: "/guias",
     label: "Guías",
     desc: "Paso a paso para dominar el mercado",
     soon: true,
-    icon: <LayoutGrid size={16} aria-hidden="true" />,
+    icon: <Route size={16} aria-hidden="true" />,
   },
 ];
 

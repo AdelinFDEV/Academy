@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronDown, Trophy, TrendingUp, Eye, BarChart2, PieChart, MessageSquare, Target, Award, Hash } from "lucide-react";
+import { ChevronDown, Medal, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Crosshair, Network } from "lucide-react";
 
 interface Props {
   user: boolean;
@@ -46,7 +46,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
 
           <Link href="/logros" className="nav-tools-item" role="menuitem" onClick={close}>
             <span className="nav-tools-item-icon">
-              <Trophy size={16} aria-hidden="true" />
+              <Medal size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Logros</span>
@@ -62,7 +62,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             onClick={close}
           >
             <span className="nav-tools-item-icon">
-              <Target size={16} aria-hidden="true" />
+              <Crosshair size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Predicción de Precio</span>
@@ -81,7 +81,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             onClick={close}
           >
             <span className="nav-tools-item-icon">
-              <TrendingUp size={16} aria-hidden="true" />
+              <NotebookPen size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Diario de Trading</span>
@@ -97,7 +97,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             onClick={close}
           >
             <span className="nav-tools-item-icon">
-              <Eye size={16} aria-hidden="true" />
+              <ScanEye size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Watchlist</span>
@@ -108,7 +108,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
 
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
-              <PieChart size={16} aria-hidden="true" />
+              <Wallet size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Portfolio Spot</span>
@@ -123,7 +123,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
 
           <Link href="/ranking" className="nav-tools-item" role="menuitem" onClick={close}>
             <span className="nav-tools-item-icon">
-              <Award size={16} aria-hidden="true" />
+              <ListOrdered size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Ranking</span>
@@ -134,7 +134,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
 
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
-              <MessageSquare size={16} aria-hidden="true" />
+              <MessagesSquare size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Chat</span>
@@ -145,7 +145,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
 
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
-              <Hash size={16} aria-hidden="true" />
+              <Network size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Foro</span>

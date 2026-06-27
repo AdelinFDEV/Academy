@@ -2,7 +2,9 @@
 
 import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
-import { Clock, Star, Lock, Heart, MessageSquare, Share2, Check } from "lucide-react";
+import { Flame, Pin, Gem, Heart, MessageSquare, Send, Check, ArrowRight } from "lucide-react";
+import YouTubeLatest from "@/components/YouTubeLatest";
+import type { YouTubeVideo } from "@/lib/youtube";
 
 type Post = {
   id: string;
@@ -88,7 +90,7 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
       </Link>
 
       <button className="feed-action-btn share-btn" onClick={handleShare} title="Compartir">
-        {shared ? <Check size={18} aria-hidden="true" /> : <Share2 size={18} aria-hidden="true" />}
+        {shared ? <Check size={18} aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}
       </button>
     </div>
   );
@@ -173,7 +175,7 @@ function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   );
 }
 
-export default function HomeFeed({ posts, isLoggedIn }: { posts: Post[]; isLoggedIn: boolean }) {
+export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { posts: Post[]; isLoggedIn: boolean; youtubeVideos?: YouTubeVideo[] }) {
   const [tab, setTab] = useState<Tab>("nuevo");
   const tabsRef = useRef<HTMLDivElement>(null);
   
@@ -188,6 +190,11 @@ export default function HomeFeed({ posts, isLoggedIn }: { posts: Post[]; isLogge
     if (tab === "premium")    return regularPosts.filter((p) => p.is_premium);
     return regularPosts;
   }, [regularPosts, tab]);
+
+  // Home only shows the 4 most recent — the rest live in /articulos
+  const MAX_VISIBLE = 4;
+  const visible = filtered.slice(0, MAX_VISIBLE);
+  const hasMore = filtered.length > MAX_VISIBLE;
 
   function switchTab(next: Tab) {
     setTab(next);
@@ -206,31 +213,41 @@ export default function HomeFeed({ posts, isLoggedIn }: { posts: Post[]; isLogge
       {/* Tabs */}
       <div className="feed-tabs" role="tablist" ref={tabsRef}>
         <button role="tab" aria-selected={tab === "nuevo"}      className={`feed-tab${tab === "nuevo"      ? " active" : ""}`} onClick={() => switchTab("nuevo")}>
-          <Clock size={14} aria-hidden="true" />
+          <Flame size={14} aria-hidden="true" />
           Nuevo
         </button>
         <button role="tab" aria-selected={tab === "destacados"} className={`feed-tab${tab === "destacados" ? " active" : ""}`} onClick={() => switchTab("destacados")}>
-          <Star size={14} aria-hidden="true" />
+          <Pin size={14} aria-hidden="true" />
           Destacados
         </button>
         <button role="tab" aria-selected={tab === "premium"}    className={`feed-tab${tab === "premium"    ? " active" : ""}`} onClick={() => switchTab("premium")}>
-          <Lock size={14} aria-hidden="true" />
+          <Gem size={14} aria-hidden="true" />
           Premium
         </button>
       </div>
 
       {/* Feed */}
       <div className="feed-list">
-        {filtered.length === 0 ? (
+        {visible.length === 0 ? (
           <div className="feed-empty">
             <p>No hay artículos en esta sección todavía.</p>
           </div>
         ) : (
-          filtered.map((post) => (
+          visible.map((post) => (
             <FeedPost key={post.id} post={post} isLoggedIn={isLoggedIn} />
           ))
         )}
       </div>
+
+      {hasMore && (
+        <Link href="/articulos" className="feed-seeall">
+          Ver todas las entradas
+          <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+        </Link>
+      )}
+
+      {/* Último contenido en YouTube */}
+      <YouTubeLatest videos={youtubeVideos} />
     </div>
   );
 }
