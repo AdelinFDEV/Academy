@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Calculator, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Check } from "lucide-react";
+import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Check } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
@@ -167,8 +167,8 @@ export default async function HomePage() {
                 <span>Diario de Trading</span>
               </Link>
               <Link href={!user ? "/register" : "/calculadora"} className="sidebar-tool-link">
-                <Calculator size={16} className="sidebar-tool-icon" />
-                <span>Calculadora de Precio</span>
+                <Target size={16} className="sidebar-tool-icon" />
+                <span>Predicción de Precio</span>
               </Link>
               <Link href={!user ? "/register" : "/dashboard/watchlist"} className="sidebar-tool-link">
                 <Eye size={16} className="sidebar-tool-icon" />

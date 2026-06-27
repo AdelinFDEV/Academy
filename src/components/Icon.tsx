@@ -28,7 +28,8 @@ type IconName =
   | "activity"
   | "filter"
   | "globe"
-  | "crown";
+  | "crown"
+  | "target";
 
 type IconProps = SVGProps<SVGSVGElement> & {
   name: IconName;
@@ -180,6 +181,13 @@ const paths: Record<IconName, React.ReactNode> = {
   ),
   crown: (
     <path d="M2 20h20M4 20l2-8 6 4 6-4 2 8" />
+  ),
+  target: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </>
   ),
 };
 
