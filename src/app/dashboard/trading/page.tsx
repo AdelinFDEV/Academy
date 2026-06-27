@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function TradingPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null; // layout already redirects
+  if (!user) redirect("/login");
 
   const { data: profile } = await supabase
     .from("profiles")

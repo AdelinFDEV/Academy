@@ -25,7 +25,7 @@ function pct(n: number, total: number) {
 export default async function EstadisticasPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) redirect("/login");
 
   const { data: profile } = await supabase
     .from("profiles")
