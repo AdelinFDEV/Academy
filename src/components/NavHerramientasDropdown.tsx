@@ -142,7 +142,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               <Award size={16} aria-hidden="true" />
             </span>
             <span>
-              <span className="nav-tools-item-name">Ranking de Comunidad</span>
+              <span className="nav-tools-item-name">Ranking</span>
               <span className="nav-tools-item-desc">Los miembros más activos de la academia</span>
             </span>
             <span className="nav-tools-soon-badge">Pronto</span>

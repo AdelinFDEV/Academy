@@ -142,7 +142,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
               <Link href="/ranking" className={`blog-mobile-tool-link${a("/ranking")}`} onClick={close}>
                 <Award size={15} aria-hidden="true" />
-                Ranking de Comunidad
+                Ranking
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </Link>
 
