@@ -6,6 +6,7 @@ import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
+import LiveCounter from "@/components/LiveCounter";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -24,6 +25,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const userName = profile?.full_name || user.email?.split("@")[0] || "Usuario";
   const planLabel = isAdmin ? "Admin" : isPremium ? "Premium" : "Free";
 
+  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
+
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
@@ -32,6 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <Link href="/" className="blog-brand">
           adelin<span>btc</span>
         </Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

@@ -8,6 +8,7 @@ import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import LogoutButton from "@/components/LogoutButton";
+import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
   title: "Recursos | AdelinBTC Academy",
@@ -25,12 +26,15 @@ export default async function RecursosPage() {
   const isPremium = role === "premium" || role === "admin";
   if (role !== "admin") redirect("/");
 
+  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
+
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

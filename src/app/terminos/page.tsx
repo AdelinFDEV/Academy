@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import LiveCounter from "@/components/LiveCounter";
 
 export const metadata = {
   title: "Términos y condiciones | AdelinBTC Academy",
@@ -12,6 +13,7 @@ export default function TerminosPage() {
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <Link href="/">← Volver al inicio</Link>
         </div>

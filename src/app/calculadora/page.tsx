@@ -9,6 +9,7 @@ import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import LogoutButton from "@/components/LogoutButton";
 import CalculadoraClient from "./CalculadoraClient";
+import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
   title: "Predicción de Precio | AdelinBTC Academy",
@@ -32,12 +33,15 @@ export default async function CalculadoraPage() {
   const isAdmin   = role === "admin";
   const userName  = profile?.full_name ?? user.email?.split("@")[0] ?? "Usuario";
 
+  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
+
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

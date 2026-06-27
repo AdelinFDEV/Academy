@@ -11,6 +11,7 @@ import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import SocialLinks from "@/components/SocialLinks";
+import LiveCounter from "@/components/LiveCounter";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -152,6 +153,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

@@ -9,6 +9,7 @@ import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
+import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
   title: "Artículos | AdelinBTC Academy",
@@ -57,6 +58,7 @@ export default async function ArticulosPage() {
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

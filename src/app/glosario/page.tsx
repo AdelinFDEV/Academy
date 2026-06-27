@@ -8,6 +8,7 @@ import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import LogoutButton from "@/components/LogoutButton";
 import GlosarioClient from "./GlosarioClient";
+import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
   title: "Diccionario Cripto | AdelinBTC Academy",
@@ -17,6 +18,8 @@ export const metadata: Metadata = {
 export default async function GlosarioPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
 
   const initialSaved: string[] = [];
   if (user) {
@@ -33,6 +36,7 @@ export default async function GlosarioPage() {
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

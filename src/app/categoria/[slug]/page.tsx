@@ -10,6 +10,7 @@ import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
+import LiveCounter from "@/components/LiveCounter";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -80,6 +81,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />

@@ -17,7 +17,7 @@ export default async function HomePage() {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [{ data: posts }, { data: categories }, { count: usersCount }, { count: postsTotal }] =
+  const [{ data: posts }, { data: categories }, { count: postsTotal }] =
     await Promise.all([
       supabase
         .from("posts")
@@ -28,7 +28,6 @@ export default async function HomePage() {
         .from("categories")
         .select("name, slug")
         .order("name"),
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
     ]);
 
@@ -82,7 +81,7 @@ export default async function HomePage() {
         <Link href="/" className="blog-brand">
           adelin<span>btc</span>
         </Link>
-        <LiveCounter total={usersCount ?? 126} />
+        <LiveCounter />
         <div className="blog-nav-links">
           <NavArticulosDropdown />
           <NavEducacionDropdown />
