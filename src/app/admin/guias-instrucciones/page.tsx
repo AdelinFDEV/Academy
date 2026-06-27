@@ -134,33 +134,80 @@ export default function GuiasInstruccionesPage() {
       <section className="agi-section">
         <h2 className="agi-section-title">
           <span className="agi-section-num">04</span>
-          Sistema de diseño — reglas estrictas
+          Sistema de diseño — identidad visual de guías
         </h2>
         <div className="agi-card">
-          <p className="agi-warning">⚠️ Las guías son portales independientes pero deben ser <strong>100% fieles a la identidad visual</strong> de AdelinBTC Academy. No se introduce ningún color, tipografía ni estilo ajeno.</p>
+          <p className="agi-warning">⚠️ Las guías tienen su propia identidad premium dentro de la web — <strong>oro + naranja + navy + blanco</strong>. El oro es el color dominante de las guías. El naranja aparece en puntos de acción e interacción. Nunca se mezclan con otros colores.</p>
         </div>
 
         <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Paleta — SOLO estos tres colores</h3>
-          <div className="agi-palette">
+          <h3 className="agi-subsection-title">Paleta completa de guías — 4 colores, cada uno con su rol</h3>
+          <div className="agi-palette agi-palette--4col">
+            <div className="agi-swatch agi-swatch--gold">
+              <span className="agi-swatch-name">Oro</span>
+              <span className="agi-swatch-var">--gold</span>
+              <span className="agi-swatch-hex">#e6b455</span>
+              <span className="agi-swatch-use">Color DOMINANTE de guías. Títulos en gradiente, eyebrows, CTAs principales, borders de cards, stats, badges de acceso premium, pills de características, sección titles. Es lo que hace que las guías se vean como un portal premium diferenciado.</span>
+            </div>
             <div className="agi-swatch agi-swatch--orange">
               <span className="agi-swatch-name">Naranja</span>
               <span className="agi-swatch-var">--accent-orange</span>
               <span className="agi-swatch-hex">#ff6b2b</span>
-              <span className="agi-swatch-use">CTAs, badges activos, highlights, bordes de énfasis, iconos principales</span>
+              <span className="agi-swatch-use">Color de ACCIÓN e INTERACCIÓN. Botones de quiz (enviar, siguiente), respuesta seleccionada en flashcards, progreso de barra de sección, iconos de componentes interactivos, hover states dentro del contenido de la guía.</span>
             </div>
             <div className="agi-swatch agi-swatch--navy">
               <span className="agi-swatch-name">Navy</span>
-              <span className="agi-swatch-var">--bg-dark / --bg-card</span>
-              <span className="agi-swatch-hex">#0a1628 / #112240</span>
-              <span className="agi-swatch-use">Fondos de sección, cards, contenedores. Nunca usar blanco como fondo.</span>
+              <span className="agi-swatch-var">--bg-dark / #060f1f</span>
+              <span className="agi-swatch-hex">#0a1628 / #060f1f</span>
+              <span className="agi-swatch-use">Fondos de página, cards y secciones. Usar gradientes entre #060f1f → #0a1628 → #0c1a2e para dar profundidad. El hero de /guias usa el fondo más oscuro (#060f1f) para máximo contraste con el oro.</span>
             </div>
             <div className="agi-swatch agi-swatch--white">
               <span className="agi-swatch-name">Blanco</span>
               <span className="agi-swatch-var">--text-primary / --text-secondary</span>
               <span className="agi-swatch-hex">#ffffff / #dce8f8</span>
-              <span className="agi-swatch-use">Texto principal y secundario. Nunca texto negro sobre fondo oscuro.</span>
+              <span className="agi-swatch-use">Títulos y cuerpo de texto. El texto secundario (#dce8f8) para descripciones y párrafos de contenido de guía. Nunca negro, nunca gris neutro sobre fondo navy.</span>
             </div>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Variables CSS disponibles para guías</h3>
+          <div className="agi-card agi-card--mono">
+            <div className="agi-table-def">
+              <div className="agi-table-name">Oro</div>
+              <div className="agi-table-fields">
+                --gold: #e6b455 &nbsp;·&nbsp; --gold-soft: rgba(230,180,85,0.18) &nbsp;·&nbsp; --gold-glow: rgba(230,180,85,0.08) &nbsp;·&nbsp; --gold-border: rgba(230,180,85,0.25)
+              </div>
+            </div>
+            <div className="agi-table-def">
+              <div className="agi-table-name">Naranja (ya existía en la web)</div>
+              <div className="agi-table-fields">
+                --accent-orange: #ff6b2b &nbsp;·&nbsp; --accent-orange-soft: #ff8552 &nbsp;·&nbsp; --accent-orange-glow: rgba(255,107,43,0.15)
+              </div>
+            </div>
+            <div className="agi-table-def">
+              <div className="agi-table-name">Fondos</div>
+              <div className="agi-table-fields">
+                --bg-dark: #0a1628 &nbsp;·&nbsp; --bg-card: #112240 &nbsp;·&nbsp; fondo hero: #060f1f
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Estructura visual aprobada — replicar en cada guía</h3>
+          <div className="agi-card">
+            <p>Este es el sistema visual validado por el admin. Toda guía nueva debe seguir esta estructura:</p>
+            <ul className="agi-list">
+              <li><strong>Hero de guía:</strong> fondo <code>#060f1f → #0a1628</code>, glow dorado central radial, eyebrow en oro, título grande con última línea en gradiente oro, pills de características con fondo <code>gold-soft</code> y borde <code>gold-border</code></li>
+              <li><strong>Cards de contenido:</strong> gradiente <code>#0f2040 → #0a1628</code>, borde <code>gold-border</code>, glow dorado en esquina superior derecha, border-radius 18–20px</li>
+              <li><strong>CTA principal (empezar guía):</strong> gradiente <code>var(--gold) → #f5c842</code>, texto navy oscuro, font-weight 800</li>
+              <li><strong>CTAs secundarios / interacciones (quiz, flashcards):</strong> color naranja <code>var(--accent-orange)</code></li>
+              <li><strong>Separadores de sección:</strong> <code>border-top: 1px solid var(--gold-border)</code></li>
+              <li><strong>Stats destacados:</strong> número grande en oro, label en text-muted, fondo gold-soft</li>
+              <li><strong>Sección titles dentro de guía:</strong> texto en oro, uppercase, letter-spacing</li>
+              <li><strong>Topics/pills informativos:</strong> fondo <code>rgba(255,255,255,0.04)</code>, borde <code>rgba(255,255,255,0.08)</code>, texto muted — para diferenciarlos de las pills de características</li>
+            </ul>
           </div>
         </div>
 
@@ -168,11 +215,11 @@ export default function GuiasInstruccionesPage() {
           <h3 className="agi-subsection-title">Layout</h3>
           <div className="agi-card">
             <ul className="agi-list">
-              <li>Las guías ocupan <strong>todo el ancho disponible</strong> — son portales independientes, no artículos en columna estrecha</li>
-              <li>Usar <code>max-width: 1100px; margin: 0 auto</code> para el contenido legible</li>
-              <li>Las secciones de guía pueden tener fondos alternos (navy oscuro / navy medio) para separar visualmente</li>
-              <li>Imagen de cabecera: opcional. Si existe, ocupa el 100% del ancho con overlay oscuro y título encima</li>
-              <li>Si la guía tiene índice (guías muy largas), va en un sidebar sticky a la izquierda en desktop, colapsable en móvil</li>
+              <li>Las guías ocupan <strong>todo el ancho disponible</strong> — portales independientes, no artículos en columna estrecha</li>
+              <li>Contenido: <code>max-width: 1100px; margin: 0 auto</code></li>
+              <li>Secciones alternas: fondos <code>#060f1f</code> y <code>#0a1628</code> para separar sin usar colores ajenos</li>
+              <li>Imagen de cabecera: opcional. Full-width con overlay oscuro y título encima</li>
+              <li>Índice (guías largas): sidebar sticky a izquierda en desktop, colapsable en móvil</li>
             </ul>
           </div>
         </div>

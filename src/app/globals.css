@@ -15160,9 +15160,14 @@ select {
   flex-direction: column;
   gap: 0.35rem;
 }
+.agi-swatch--gold   { background: rgba(230,180,85,0.1);  border: 1px solid rgba(230,180,85,0.35); }
 .agi-swatch--orange { background: rgba(255, 107, 43, 0.12); border: 1px solid rgba(255, 107, 43, 0.3); }
 .agi-swatch--navy   { background: rgba(17, 34, 64, 0.8); border: 1px solid rgba(240,244,255,0.1); }
 .agi-swatch--white  { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); }
+
+.agi-palette--4col { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) { .agi-palette--4col { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .agi-palette--4col { grid-template-columns: 1fr; } }
 .agi-swatch-name { font-weight: 800; font-size: 0.92rem; color: var(--text-primary); }
 .agi-swatch-var  { font-family: monospace; font-size: 0.72rem; color: var(--accent-orange-soft); }
 .agi-swatch-hex  { font-family: monospace; font-size: 0.75rem; color: var(--text-muted); }
