@@ -65,7 +65,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
       >
-        <span className="hamburger-label" aria-hidden="true">{open ? "Cerrar" : "Menú"}</span>
         <span className="hamburger-lines" aria-hidden="true">
           <span />
           <span />
@@ -92,6 +91,14 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Educación</span>
+              <Link
+                href={user ? "/dashboard" : "/register"}
+                className={`blog-mobile-tool-link blog-mobile-tool-link--cta${a("/dashboard")}`}
+                onClick={close}
+              >
+                <GraduationCap size={15} aria-hidden="true" />
+                Mi Dashboard
+              </Link>
               <Link href="/glosario" className={`blog-mobile-tool-link${a("/glosario")}`} onClick={close}>
                 <BookOpen size={15} aria-hidden="true" />
                 Diccionario Cripto

@@ -12,7 +12,10 @@ import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import SocialLinks from "@/components/SocialLinks";
 import LiveCounter from "@/components/LiveCounter";
-import { renderMarkdown } from "@/components/admin/MarkdownEditor";
+import { renderMarkdown, slugId } from "@/lib/renderMarkdown";
+import ReadingProgress from "@/components/ReadingProgress";
+import TableOfContents from "@/components/TableOfContents";
+import CommentForm from "@/components/CommentForm";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -50,6 +53,17 @@ export async function generateMetadata(
   };
 }
 
+
+function extractHeadings(md: string) {
+  return md
+    .split("\n")
+    .filter((l) => /^#{2,3} /.test(l))
+    .map((l) => {
+      const level = l.startsWith("### ") ? 3 : 2;
+      const text = l.replace(/^#{2,3} /, "").trim();
+      return { id: slugId(text), text, level };
+    });
+}
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -126,6 +140,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const youtubeId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
   const wordCount = post.content ? post.content.trim().split(/\s+/).length : 0;
   const readingMinutes = Math.max(1, Math.round(wordCount / 200));
+  const headings = post.content ? extractHeadings(post.content) : [];
 
   // Artículos relacionados: misma categoría, con fallback a los más recientes
   let relatedQuery = supabase
@@ -182,7 +197,26 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 
+      <ReadingProgress />
+
       <main className="post-page">
+
+        {/* Breadcrumb */}
+        <nav className="post-breadcrumb" aria-label="Breadcrumb">
+          <Link href="/">Inicio</Link>
+          <span className="post-breadcrumb-sep">›</span>
+          <Link href="/articulos">Artículos</Link>
+          {(post.categories as any)?.name && (
+            <>
+              <span className="post-breadcrumb-sep">›</span>
+              <Link href={`/categoria/${(post.categories as any).slug}`}>
+                {(post.categories as any).name}
+              </Link>
+            </>
+          )}
+          <span className="post-breadcrumb-sep">›</span>
+          <span className="post-breadcrumb-current">{post.title}</span>
+        </nav>
 
         {/* Header del post */}
         <div className="post-header">
@@ -239,6 +273,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                 />
               </div>
             )}
+
+            <TableOfContents headings={headings} />
 
             <div
               className="post-content prose-content"
@@ -322,25 +358,18 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <div id="comentarios" className="post-comments">
           <h2 className="comments-title">Comentarios ({comments?.length ?? 0})</h2>
 
-          {user && hasAccess && (
-            <form className="comment-form" action={`/api/comments`} method="POST">
-              <input type="hidden" name="post_id" value={post.id} />
-              <textarea
-                name="content"
-                placeholder="Escribe tu comentario..."
-                rows={4}
-                required
-              />
-              <button type="submit" className="btn-primary btn-small">
-                Enviar comentario
-              </button>
-            </form>
-          )}
+          {user && hasAccess && <CommentForm postId={post.id} />}
 
           {!user && (
-            <p className="comments-login">
-              <Link href="/login">Inicia sesión</Link> para dejar un comentario.
-            </p>
+            <div className="comments-register-cta">
+              <p className="comments-register-cta-text">
+                Únete a la comunidad y participa en la conversación.
+              </p>
+              <div className="comments-register-cta-actions">
+                <Link href="/register" className="cta-btn-primary">Crear cuenta gratis →</Link>
+                <Link href="/login" className="cta-btn-secondary">Ya tengo cuenta</Link>
+              </div>
+            </div>
           )}
 
           <div className="comments-list">
@@ -362,6 +391,18 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Botones volver */}
+        <div className="post-back-row">
+          <Link href="/articulos" className="post-back-btn">
+            ← Ver todos los artículos
+          </Link>
+          {user && (
+            <Link href="/dashboard" className="post-back-btn">
+              Ir a Academia →
+            </Link>
+          )}
         </div>
 
       </main>

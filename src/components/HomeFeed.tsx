@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
-import { Flame, Pin, Gem, Heart, MessageSquare, Send, Check, ArrowRight } from "lucide-react";
+import { Flame, Pin, Gem, Heart, MessageSquare, Send, Check, ArrowRight, Bookmark } from "lucide-react";
 import YouTubeLatest from "@/components/YouTubeLatest";
 import type { YouTubeVideo } from "@/lib/youtube";
 
@@ -17,7 +17,10 @@ type Post = {
   created_at: string;
   categories: { name: string; slug: string } | null;
   likes: number;
+  saves: number;
   comments: number;
+  initialLiked: boolean;
+  initialSaved: boolean;
 };
 
 type Tab = "nuevo" | "destacados" | "premium";
@@ -33,16 +36,19 @@ function timeAgo(dateStr: string) {
 
 function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   const [likes, setLikes] = useState(post.likes);
-  const [liked, setLiked] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [liked, setLiked] = useState(post.initialLiked);
+  const [saves, setSaves] = useState(post.saves);
+  const [saved, setSaved] = useState(post.initialSaved);
+  const [loadingLike, setLoadingLike] = useState(false);
+  const [loadingSave, setLoadingSave] = useState(false);
   const [shared, setShared] = useState(false);
 
   async function toggleLike(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
     if (!isLoggedIn) { window.location.href = "/login"; return; }
-    if (loading) return;
-    setLoading(true);
+    if (loadingLike) return;
+    setLoadingLike(true);
     const wasLiked = liked;
     setLiked(!wasLiked);
     setLikes((p) => wasLiked ? p - 1 : p + 1);
@@ -59,7 +65,32 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
       setLiked(wasLiked);
       setLikes((p) => wasLiked ? p + 1 : p - 1);
     }
-    setLoading(false);
+    setLoadingLike(false);
+  }
+
+  async function toggleSave(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isLoggedIn) { window.location.href = "/login"; return; }
+    if (loadingSave) return;
+    setLoadingSave(true);
+    const wasSaved = saved;
+    setSaved(!wasSaved);
+    setSaves((p) => wasSaved ? p - 1 : p + 1);
+    const res = await fetch("/api/user-posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ post_id: post.id, action: "toggle-saved" }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setSaved(data.saved);
+      setSaves((p) => data.saved ? p : p - 1);
+    } else {
+      setSaved(wasSaved);
+      setSaves((p) => wasSaved ? p + 1 : p - 1);
+    }
+    setLoadingSave(false);
   }
 
   async function handleShare(e: React.MouseEvent) {
@@ -67,9 +98,7 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
     e.stopPropagation();
     const url = `${window.location.origin}/post/${post.slug}`;
     if (navigator.share) {
-      try {
-        await navigator.share({ title: post.title, url });
-      } catch (err) {}
+      try { await navigator.share({ title: post.title, url }); } catch {}
     } else {
       navigator.clipboard.writeText(url);
       setShared(true);
@@ -79,7 +108,7 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
 
   return (
     <div className="feed-action-bar" onClick={(e) => e.stopPropagation()}>
-      <button className={`feed-action-btn like-btn ${liked ? "active" : ""}`} onClick={toggleLike} title="Me gusta">
+      <button className={`feed-action-btn like-btn${liked ? " active" : ""}`} onClick={toggleLike} title="Me gusta">
         <Heart size={18} fill={liked ? "currentColor" : "none"} aria-hidden="true" />
         <span>{likes}</span>
       </button>
@@ -88,6 +117,16 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
         <MessageSquare size={18} aria-hidden="true" />
         <span>{post.comments}</span>
       </Link>
+
+      <button
+        className={`feed-action-btn save-btn${saved ? " active" : ""}`}
+        onClick={toggleSave}
+        disabled={loadingSave}
+        title={saved ? "Quitar de guardados" : "Guardar"}
+      >
+        <Bookmark size={18} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
+        <span>{saves}</span>
+      </button>
 
       <button className="feed-action-btn share-btn" onClick={handleShare} title="Compartir">
         {shared ? <Check size={18} aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}
@@ -239,7 +278,7 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { po
         )}
       </div>
 
-      {hasMore && (
+      {filtered.length > 0 && (
         <Link href="/articulos" className="feed-seeall">
           Ver todas las entradas
           <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
