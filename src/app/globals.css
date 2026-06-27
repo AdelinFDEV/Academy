@@ -1165,9 +1165,9 @@ html {
   color: var(--accent-orange);
 }
 
-/* â”€â”€ Live Counter â”€â”€ */
+/* ── Live Counter ── */
 .live-counter {
-  display: none;
+  display: flex;
   align-items: center;
   gap: 0.6rem;
   background: rgba(255,255,255,0.05);
@@ -1180,8 +1180,13 @@ html {
   color: var(--text-secondary);
   z-index: 500;
 }
-@media (min-width: 520px) {
-  .live-counter { display: flex; }
+
+/* En móvil ocultamos “alumnos” y el divisor — solo el dot + online */
+@media (max-width: 519px) {
+  .live-counter-item:first-child,
+  .live-counter-divider {
+    display: none;
+  }
 }
 .live-counter-item {
   display: flex;
