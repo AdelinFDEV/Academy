@@ -344,9 +344,13 @@ export default async function HomePage() {
               </li>
             </ul>
 
-            <div className="premium-pitch-price">
-              <span className="premium-pitch-amount">19,99€</span>
-              <span className="premium-pitch-period">/mes</span>
+            <div className="premium-pitch-price-wrapper">
+              <span className="premium-pitch-limited">Por tiempo limitado</span>
+              <div className="premium-pitch-price">
+                <span className="premium-pitch-old-price">49,99€</span>
+                <span className="premium-pitch-amount">19,99€</span>
+                <span className="premium-pitch-period">/mes</span>
+              </div>
             </div>
 
             <Link href="/premium" className="premium-pitch-cta">

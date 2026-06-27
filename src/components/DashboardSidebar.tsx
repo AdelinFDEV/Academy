@@ -15,16 +15,57 @@ interface Props {
 interface NavTool {
   href: string;
   label: string;
-  icon: "trending" | "chat" | "book" | "wrench" | "shield";
+  icon: any;
   requiresPremium: boolean;
+  isSoon?: boolean;
 }
 
 const TOOLS: NavTool[] = [
   {
+    href: "/calculadora",
+    label: "Predicción de Precio",
+    icon: "target",
+    requiresPremium: false,
+  },
+  {
     href: "/dashboard/trading",
     label: "Diario de Trading",
-    icon: "trending",
+    icon: "pen",
     requiresPremium: true,
+  },
+  {
+    href: "/dashboard/watchlist",
+    label: "Mi Watchlist",
+    icon: "eye",
+    requiresPremium: false,
+  },
+  {
+    href: "#",
+    label: "Portfolio Spot",
+    icon: "folder",
+    requiresPremium: true,
+    isSoon: true,
+  },
+  {
+    href: "/ranking",
+    label: "Ranking",
+    icon: "list",
+    requiresPremium: false,
+    isSoon: true,
+  },
+  {
+    href: "#",
+    label: "Chat",
+    icon: "chat",
+    requiresPremium: true,
+    isSoon: true,
+  },
+  {
+    href: "#",
+    label: "Foro",
+    icon: "users",
+    requiresPremium: false,
+    isSoon: true,
   },
 ];
 
@@ -107,25 +148,38 @@ export default function DashboardSidebar({ role, userName }: Props) {
             <p className="dash-mobile-menu-section">Herramientas</p>
 
             {TOOLS.map(tool => {
-              const locked = tool.requiresPremium && !isPremium;
-              if (locked) {
+              if (tool.isSoon) {
                 return (
-                  <div key={tool.href} className="dash-mobile-menu-link locked">
+                  <div key={tool.label} className="dash-mobile-menu-link locked" style={{ cursor: 'not-allowed' }}>
                     <Icon name={tool.icon} size={18} />
                     <span style={{ flex: 1 }}>{tool.label}</span>
-                    <span className="dash-lock-badge">Premium</span>
+                    {tool.requiresPremium && <span className="dash-lock-badge" style={{ marginRight: '6px' }}>Premium</span>}
+                    <span className="dash-soon-badge" style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(255,255,255,0.1)', color: '#fff', fontWeight: 600 }}>Pronto</span>
                   </div>
                 );
               }
+
+              const locked = tool.requiresPremium && !isPremium;
+              if (locked) {
+                return (
+                  <Link key={tool.label} href="/premium" className="dash-mobile-menu-link locked" onClick={close}>
+                    <Icon name={tool.icon} size={18} />
+                    <span style={{ flex: 1 }}>{tool.label}</span>
+                    <span className="dash-lock-badge" style={{ background: 'var(--accent-orange)' }}>Hazte Premium</span>
+                  </Link>
+                );
+              }
+
               return (
                 <Link
-                  key={tool.href}
+                  key={tool.label}
                   href={tool.href}
                   className={`dash-mobile-menu-link${pathname === tool.href ? " active" : ""}`}
                   onClick={close}
                 >
                   <Icon name={tool.icon} size={18} />
-                  {tool.label}
+                  <span style={{ flex: 1 }}>{tool.label}</span>
+                  {tool.requiresPremium && isPremium && <span className="dash-lock-badge" style={{ background: 'transparent', border: '1px solid rgba(255,107,43,0.3)', color: 'var(--accent-orange)' }}>Premium</span>}
                 </Link>
               );
             })}
@@ -180,24 +234,37 @@ export default function DashboardSidebar({ role, userName }: Props) {
             <span className="dash-nav-section">Herramientas</span>
 
             {TOOLS.map(tool => {
-              const locked = tool.requiresPremium && !isPremium;
-              if (locked) {
+              if (tool.isSoon) {
                 return (
-                  <div key={tool.href} className="dash-nav-link locked" title="Exclusivo Premium">
+                  <div key={tool.label} className="dash-nav-link locked" title="Próximamente" style={{ cursor: 'not-allowed' }}>
                     <Icon name={tool.icon} size={15} />
                     <span className="dash-nav-label" style={{ flex: 1 }}>{tool.label}</span>
-                    <span className="dash-lock-badge">Premium</span>
+                    {tool.requiresPremium && <span className="dash-lock-badge" style={{ marginRight: '6px' }}>Premium</span>}
+                    <span className="dash-soon-badge" style={{ fontSize: '0.65rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(255,255,255,0.1)', color: '#fff', fontWeight: 600 }}>Pronto</span>
                   </div>
                 );
               }
+
+              const locked = tool.requiresPremium && !isPremium;
+              if (locked) {
+                return (
+                  <Link key={tool.label} href="/premium" className="dash-nav-link locked" title="Hazte Premium">
+                    <Icon name={tool.icon} size={15} />
+                    <span className="dash-nav-label" style={{ flex: 1 }}>{tool.label}</span>
+                    <span className="dash-lock-badge" style={{ background: 'var(--accent-orange)' }}>Hazte Premium</span>
+                  </Link>
+                );
+              }
+
               return (
                 <Link
-                  key={tool.href}
+                  key={tool.label}
                   href={tool.href}
                   className={`dash-nav-link${pathname === tool.href ? " active" : ""}`}
                 >
                   <Icon name={tool.icon} size={15} />
-                  <span className="dash-nav-label">{tool.label}</span>
+                  <span className="dash-nav-label" style={{ flex: 1 }}>{tool.label}</span>
+                  {tool.requiresPremium && isPremium && <span className="dash-lock-badge" style={{ background: 'transparent', border: '1px solid rgba(255,107,43,0.3)', color: 'var(--accent-orange)' }}>Premium</span>}
                 </Link>
               );
             })}

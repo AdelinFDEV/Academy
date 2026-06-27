@@ -5,6 +5,8 @@ import { BADGE_DEFS } from "@/components/Badges";
 
 type BadgeDef = (typeof BADGE_DEFS)[number];
 
+import Link from "next/link";
+
 function Popup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
   return (
     <div className="badge-popup-overlay" onClick={onClose}>
@@ -27,6 +29,7 @@ function Popup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
           </p>
         )}
         <button className="badge-popup-close" onClick={onClose}>Genial ✓</button>
+        <Link href="/logros" className="badge-popup-viewall" onClick={onClose}>Ver Logros</Link>
       </div>
     </div>
   );
