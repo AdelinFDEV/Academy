@@ -28,9 +28,8 @@ const ITEMS = [
   },
   {
     href: "/guias",
-    label: "Guías",
-    desc: "Paso a paso para dominar el mercado",
-    soon: true,
+    label: "Guías Interactivas",
+    desc: "Aprende paso a paso con ejercicios y quizzes",
     icon: <Route size={16} aria-hidden="true" />,
   },
 ];

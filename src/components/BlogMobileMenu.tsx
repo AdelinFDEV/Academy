@@ -113,11 +113,10 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Recursos
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </div>
-              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
+              <Link href="/guias" className={`blog-mobile-tool-link${a("/guias")}`} onClick={close}>
                 <LayoutGrid size={15} aria-hidden="true" />
-                Guías
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </div>
+                Guías Interactivas
+              </Link>
             </div>
 
             <div className="blog-mobile-section">

@@ -8,6 +8,7 @@ import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import HomeFeed from "@/components/HomeFeed";
+import GuidesHomeSection from "@/components/GuidesHomeSection";
 import LiveCounter from "@/components/LiveCounter";
 import SocialLinks from "@/components/SocialLinks";
 import HeroVideo from "@/components/HeroVideo";
@@ -22,7 +23,7 @@ export default async function HomePage() {
     await Promise.all([
       supabase
         .from("posts")
-        .select("id, title, slug, excerpt, cover_image, is_premium, is_featured, created_at, base_likes, categories(name, slug)")
+        .select("id, title, slug, excerpt, cover_image, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
         .eq("published", true)
         .order("created_at", { ascending: false }),
       supabase
@@ -35,13 +36,22 @@ export default async function HomePage() {
 
   const postIds = posts?.map((p) => p.id) ?? [];
 
-  // Bulk fetch likes and comments
-  const [{ data: likeRows }, { data: commentRows }] = await Promise.all([
+  // Bulk fetch likes, comments, saves and user state
+  const [{ data: likeRows }, { data: commentRows }, { data: saveRows }, { data: userSaveRows }, { data: userLikeRows }] = await Promise.all([
     postIds.length > 0
       ? supabase.from("post_likes").select("post_id").in("post_id", postIds)
       : Promise.resolve({ data: [] }),
     postIds.length > 0
       ? supabase.from("comments").select("post_id").in("post_id", postIds).eq("approved", true)
+      : Promise.resolve({ data: [] }),
+    postIds.length > 0
+      ? supabase.from("user_posts").select("post_id").in("post_id", postIds).eq("saved", true)
+      : Promise.resolve({ data: [] }),
+    user && postIds.length > 0
+      ? supabase.from("user_posts").select("post_id, saved").eq("user_id", user.id).in("post_id", postIds)
+      : Promise.resolve({ data: [] }),
+    user && postIds.length > 0
+      ? supabase.from("post_likes").select("post_id").eq("user_id", user.id).in("post_id", postIds)
       : Promise.resolve({ data: [] }),
   ]);
 
@@ -50,6 +60,12 @@ export default async function HomePage() {
 
   const commentMap: Record<string, number> = {};
   commentRows?.forEach((r) => { commentMap[r.post_id] = (commentMap[r.post_id] ?? 0) + 1; });
+
+  const saveMap: Record<string, number> = {};
+  saveRows?.forEach((r) => { saveMap[r.post_id] = (saveMap[r.post_id] ?? 0) + 1; });
+
+  const userSavedSet = new Set(userSaveRows?.filter((r) => r.saved).map((r) => r.post_id) ?? []);
+  const userLikedSet = new Set(userLikeRows?.map((r) => r.post_id) ?? []);
 
   // Count posts per category
   const catPostMap: Record<string, number> = {};
@@ -69,7 +85,10 @@ export default async function HomePage() {
     created_at: p.created_at,
     categories: p.categories as unknown as { name: string; slug: string } | null,
     likes: (p.base_likes ?? 0) + (likeMap[p.id] ?? 0),
+    saves: (p.base_saves ?? 0) + (saveMap[p.id] ?? 0),
     comments: commentMap[p.id] ?? 0,
+    initialLiked: userLikedSet.has(p.id),
+    initialSaved: userSavedSet.has(p.id),
   }));
 
   const premiumCount = enrichedPosts.filter((p) => p.is_premium).length;
@@ -269,11 +288,10 @@ export default async function HomePage() {
                 <span>Recursos</span>
                 <span className="sidebar-tool-badge--soon">Pronto</span>
               </div>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
+              <Link href="/guias" className="sidebar-tool-link">
                 <Route size={16} className="sidebar-tool-icon" />
-                <span>Guías</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
+                <span>Guías Interactivas</span>
+              </Link>
             </div>
           </div>
 
@@ -364,6 +382,8 @@ export default async function HomePage() {
 
         </aside>
       </div>
+
+      <GuidesHomeSection />
 
       <Footer />
     </div>
