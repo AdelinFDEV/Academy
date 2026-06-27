@@ -65,9 +65,12 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
       >
-        <span />
-        <span />
-        <span />
+        <span className="hamburger-label" aria-hidden="true">{open ? "Cerrar" : "Menú"}</span>
+        <span className="hamburger-lines" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
       </button>
 
       {open && (

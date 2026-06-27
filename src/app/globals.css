@@ -4893,7 +4893,9 @@ html {
 
 .btn-hamburger {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
   justify-content: center;
   gap: 5px;
   background: none;
@@ -4905,7 +4907,15 @@ html {
   flex-shrink: 0;
 }
 
-.btn-hamburger span {
+.hamburger-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.hamburger-lines span {
   display: block;
   width: 22px;
   height: 2px;
@@ -4917,15 +4927,30 @@ html {
   transform-origin: center;
 }
 
-.btn-hamburger.open span:nth-child(1) {
+.btn-hamburger.open .hamburger-lines span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
-.btn-hamburger.open span:nth-child(2) {
+.btn-hamburger.open .hamburger-lines span:nth-child(2) {
   opacity: 0;
   width: 0;
 }
-.btn-hamburger.open span:nth-child(3) {
+.btn-hamburger.open .hamburger-lines span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
+}
+
+.hamburger-label {
+  display: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+
+@media (min-width: 600px) and (max-width: 900px) {
+  .hamburger-label {
+    display: block;
+  }
 }
 
 /* Full-screen mobile menu */
@@ -8294,6 +8319,12 @@ select {
 @media (min-width: 640px) {
   .home-banner { min-height: 600px; }
   .home-banner-br { display: block; }
+}
+
+@media (max-width: 480px) {
+  .hero-tools-menu {
+    width: 280px;
+  }
 }
 
 /* â”€â”€ Main 2-col layout â”€â”€ */

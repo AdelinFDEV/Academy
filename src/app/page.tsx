@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Users, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Users, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
@@ -110,25 +110,20 @@ export default async function HomePage() {
         <div className="home-banner-overlay" />
         <div className="home-banner-content">
 
-          <div className="hero-eyebrow hero-anim hero-anim-1">
-            <Sparkles size={14} aria-hidden="true" />
-            La academia cripto en español
-          </div>
-
-          <h1 className="home-banner-title hero-anim hero-anim-2">
+          <h1 className="home-banner-title hero-anim hero-anim-1">
             Domina el mundo cripto<br className="home-banner-br" />
             <span className="text-gradient">con criterio propio.</span>
           </h1>
 
           <p className="hero-subtitle hero-anim hero-anim-3">
-            Guías paso a paso, herramientas profesionales y una comunidad privada
-            que te acompaña en cada decisión. Sin humo, sin postureo.
+            Deja de improvisar. Aprende a leer el mercado, opera con disciplina
+            y rodéate de traders que hablan claro — no de gurús que venden sueños.
           </p>
 
           <div className="home-banner-features hero-anim hero-anim-4">
-            <span className="home-feature"><GraduationCap size={15} aria-hidden="true" /> Aprende desde cero</span>
-            <span className="home-feature"><Target size={15} aria-hidden="true" /> Herramientas de pro</span>
-            <span className="home-feature"><Users size={15} aria-hidden="true" /> Comunidad privada</span>
+            <span className="home-feature"><GraduationCap size={15} aria-hidden="true" /> Academia</span>
+            <span className="home-feature"><Users size={15} aria-hidden="true" /> Comunidad</span>
+            <span className="home-feature"><Target size={15} aria-hidden="true" /> Herramientas</span>
           </div>
 
           <div className="home-banner-actions hero-anim hero-anim-5">
