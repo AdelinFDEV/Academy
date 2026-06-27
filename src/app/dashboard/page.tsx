@@ -3,6 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
+import { Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Network, Lock, Clock } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -57,12 +58,31 @@ export default async function DashboardPage() {
     ? savedUnread.slice(0, 3)
     : allPosts.filter((p) => !readIds.has(p.id)).slice(0, 3);
 
-  const TOOLS = [
-    { href: "/dashboard/watchlist", icon: "trending" as const, name: "Watchlist", desc: "Sigue precios", locked: false },
-    { href: "/glosario", icon: "book" as const, name: "Diccionario Cripto", desc: "40+ términos", locked: false },
-    { href: "/calculadora", icon: "target" as const, name: "Predicción de Precio", desc: "Market Cap objetivo", locked: false },
-    { href: isPremium ? "/dashboard/trading" : "/dashboard", icon: "chart" as const, name: "Diario Trading", desc: "Registra ops.", locked: !isPremium },
-    { href: isPremium ? "/dashboard/estadisticas" : "/dashboard", icon: "chart" as const, name: "Estadísticas", desc: "Tu rendimiento", locked: !isPremium },
+  const TOOL_SECTIONS = [
+    {
+      label: "Academia",
+      tools: [
+        { href: "/logros", Icon: Medal,     name: "Logros y XP",          desc: "Tu progreso y rachas",            locked: false, soon: false },
+        { href: "/calculadora", Icon: Crosshair, name: "Predicción de Precio", desc: "¿Qué Market Cap necesita tu token?", locked: false, soon: false },
+        { href: "/glosario",    Icon: BookA,     name: "Diccionario Cripto",   desc: "Términos clave explicados",        locked: false, soon: false },
+      ],
+    },
+    {
+      label: "Trading",
+      tools: [
+        { href: isPremium ? "/dashboard/trading" : "#", Icon: NotebookPen, name: "Diario de Trading", desc: "Registra y analiza tus operaciones", locked: !isPremium, soon: false },
+        { href: "/dashboard/watchlist",                  Icon: ScanEye,    name: "Watchlist",         desc: "Sigue el precio de tus coins",      locked: false,      soon: false },
+        { href: "#",                                     Icon: Wallet,     name: "Portfolio Spot",    desc: "Gestiona tus holdings de crypto",   locked: true,       soon: true  },
+      ],
+    },
+    {
+      label: "Comunidad",
+      tools: [
+        { href: "/ranking", Icon: ListOrdered,  name: "Ranking", desc: "Los miembros más activos",      locked: false, soon: true },
+        { href: "#",        Icon: MessagesSquare, name: "Chat",    desc: "Chat en tiempo real",           locked: false, soon: true },
+        { href: "#",        Icon: Network,       name: "Foro",    desc: "Debates y análisis con otros",  locked: false, soon: true },
+      ],
+    },
   ];
 
   return (
@@ -91,43 +111,56 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      {/* ── Fila superior: progreso + herramientas ── */}
-      <div className="dash-top-row">
-
-        {/* Progreso */}
-        <div className="dash-progress-card">
-          <div className="dash-progress-head">
-            <span className="dash-card-label">Tu progreso</span>
-            <span className="dash-progress-count">
-              {readCount}<span>/{totalPosts}</span>
-            </span>
-          </div>
-          <div className="dash-progress-bar">
-            <div className="dash-progress-fill" style={{ width: `${readPercent}%` }} />
-          </div>
-          <div className="dash-progress-foot">
-            <span>{readPercent}% de artículos leídos</span>
-            <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
-          </div>
+      {/* ── Progreso ── */}
+      <div className="dash-progress-card">
+        <div className="dash-progress-head">
+          <span className="dash-card-label">Tu progreso</span>
+          <span className="dash-progress-count">
+            {readCount}<span>/{totalPosts}</span>
+          </span>
         </div>
+        <div className="dash-progress-bar">
+          <div className="dash-progress-fill" style={{ width: `${readPercent}%` }} />
+        </div>
+        <div className="dash-progress-foot">
+          <span>{readPercent}% de artículos leídos</span>
+          <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+        </div>
+      </div>
 
-        {/* Herramientas */}
-        <div className="dash-tools-card">
-          <span className="dash-card-label">Herramientas</span>
-          <div className="dash-tools-grid">
-            {TOOLS.map((t) => (
-              <Link
-                key={t.name}
-                href={t.href}
-                className={`dash-tool-item${t.locked ? " locked" : ""}`}
-              >
-                {t.locked && <span className="dash-tool-premium-tag">PREMIUM</span>}
-                <div className="dash-tool-icon"><Icon name={t.icon} size={17} /></div>
-                <span className="dash-tool-name">{t.name}</span>
-                <span className="dash-tool-desc">{t.desc}</span>
-              </Link>
-            ))}
-          </div>
+      {/* ── Herramientas ── */}
+      <div className="dash-tools-card">
+        <span className="dash-card-label">Herramientas</span>
+        <div className="dash-tools-sections">
+          {TOOL_SECTIONS.map((section) => (
+            <div key={section.label} className="dash-tools-section">
+              <p className="dash-tools-section-label">{section.label}</p>
+              <div className="dash-tools-grid">
+                {section.tools.map((t) => {
+                  const isClickable = !t.locked && !t.soon;
+                  const cls = `dash-tool-item${t.locked || t.soon ? " locked" : ""}`;
+                  return isClickable ? (
+                    <Link key={t.name} href={t.href} className={cls}>
+                      {t.locked && <span className="dash-tool-premium-tag">PREMIUM</span>}
+                      <div className="dash-tool-icon"><t.Icon size={17} aria-hidden="true" /></div>
+                      <span className="dash-tool-name">{t.name}</span>
+                      <span className="dash-tool-desc">{t.desc}</span>
+                    </Link>
+                  ) : (
+                    <div key={t.name} className={cls}>
+                      {t.soon
+                        ? <span className="dash-tool-soon-tag">Pronto</span>
+                        : <span className="dash-tool-premium-tag">PREMIUM</span>
+                      }
+                      <div className="dash-tool-icon"><t.Icon size={17} aria-hidden="true" /></div>
+                      <span className="dash-tool-name">{t.name}</span>
+                      <span className="dash-tool-desc">{t.desc}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
