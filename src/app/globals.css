@@ -8949,7 +8949,7 @@ select {
 }
 
 .home-banner-title {
-  font-size: clamp(2.5rem, 6.5vw, 3.8rem);
+  font-size: clamp(1.9rem, 7vw, 3.8rem);
   font-weight: 800;
   letter-spacing: -0.025em;
   line-height: 1.12;
@@ -12774,6 +12774,12 @@ select {
   padding: 0 1.5rem;
 }
 
+@media (min-width: 561px) and (max-width: 1024px) {
+  .guias-map-wrap {
+    padding: 0 3rem;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────
    CASCADE — Premium step-by-step
 ───────────────────────────────────────────────────────────── */
@@ -13120,7 +13126,8 @@ select {
   align-items: center;
   justify-content: space-between;
   gap: 1.25rem;
-  max-width: 1180px;
+  max-width: 1136px;
+  width: calc(100% - 2rem);
   margin: 2rem auto 0;
   padding: 1.2rem 1.6rem;
   background: linear-gradient(135deg, rgba(255, 107, 43, 0.13) 0%, rgba(167, 139, 250, 0.06) 55%, rgba(56, 189, 248, 0.06) 100%);
@@ -13130,6 +13137,12 @@ select {
   overflow: hidden;
   transition: all 0.25s ease;
   box-shadow: 0 2px 20px rgba(255, 107, 43, 0.07);
+}
+
+@media (min-width: 900px) {
+  .starthere-band {
+    width: calc(100% - 4rem);
+  }
 }
 
 .starthere-band-glow {
@@ -14949,6 +14962,7 @@ select {
   .guides-home-title { font-size: 1.6rem; }
   .guides-featured-card { padding: 1.5rem; }
   .guides-featured-title { font-size: 1.2rem; }
+  .guides-featured-label { display: none; }
   .guias-hero { padding: 3.5rem 1.25rem 3rem; }
   .guias-hero-title { font-size: 1.8rem; }
   .guias-section { padding: 2.5rem 1.25rem; }

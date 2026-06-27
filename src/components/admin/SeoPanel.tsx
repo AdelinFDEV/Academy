@@ -33,6 +33,67 @@ function CharBar({ value, min, max }: { value: number; min: number; max: number 
   );
 }
 
+// ── Helpers ──────────────────────────────────────────────────────
+function countWords(text: string) {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function getFirstParagraph(content: string) {
+  // First non-empty, non-heading, non-special line block
+  const lines = content.split(/\n+/);
+  for (const line of lines) {
+    const t = line.trim();
+    if (t && !t.startsWith("#") && !t.startsWith(">") && !t.startsWith("-") && !t.startsWith("|") && !t.startsWith(":::") && !t.startsWith("```")) {
+      return t.toLowerCase();
+    }
+  }
+  return "";
+}
+
+function getHeadingsText(content: string) {
+  return content
+    .split("\n")
+    .filter((l) => /^#{2,3} /.test(l))
+    .map((l) => l.replace(/^#+\s/, "").toLowerCase())
+    .join(" ");
+}
+
+function getKeywordDensity(content: string, kw: string): number {
+  if (!kw || !content) return 0;
+  const words = content.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return 0;
+  const kwWords = kw.toLowerCase().split(/\s+/).filter(Boolean);
+  let matches = 0;
+  for (let i = 0; i <= words.length - kwWords.length; i++) {
+    if (kwWords.every((w, j) => words[i + j] === w)) matches++;
+  }
+  return parseFloat(((matches / words.length) * 100).toFixed(2));
+}
+
+function getAvgSentenceLength(content: string): number {
+  // Strip markdown syntax roughly
+  const plain = content
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/#+\s/g, "")
+    .replace(/[*_~`=|>]/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+    .trim();
+  const sentences = plain.split(/[.!?]+/).filter((s) => s.trim().split(/\s+/).length > 1);
+  if (sentences.length === 0) return 0;
+  const totalWords = sentences.reduce((acc, s) => acc + s.trim().split(/\s+/).filter(Boolean).length, 0);
+  return Math.round(totalWords / sentences.length);
+}
+
+function hasImagesWithoutAlt(content: string): boolean {
+  // Find images with empty alt: ![ ](url) or ![](url)
+  return /!\[\s*\]\([^)]+\)/.test(content);
+}
+
+function hasLinks(content: string): boolean {
+  return /\[[^\]]+\]\(https?:\/\/[^)]+\)/.test(content);
+}
+
 // ── SEO scoring ──────────────────────────────────────────────────
 function buildChecks(f: SeoField) {
   const kw = f.focusKeyword.trim().toLowerCase();
@@ -42,72 +103,140 @@ function buildChecks(f: SeoField) {
   const excerptLower = f.excerpt.toLowerCase();
   const titleLen = (f.seoTitle || f.title).length;
   const descLen = f.metaDescription.length;
+  const wordCount = countWords(f.content);
+  const density = getKeywordDensity(f.content, kw);
+  const avgSentLen = getAvgSentenceLength(f.content);
+  const firstPara = getFirstParagraph(f.content);
+  const headingsText = getHeadingsText(f.content);
 
   const checks = [
+    // ── Keyword setup
     {
       id: "kw_set",
+      group: "Palabra clave",
       pass: kw.length > 0,
       label: "Palabra clave establecida",
       tip: "Define una palabra clave principal para el artículo.",
     },
     {
-      id: "seo_title",
-      pass: titleLen >= 40 && titleLen <= 60,
-      label: `Título SEO entre 40-60 caracteres (ahora: ${titleLen})`,
-      tip: "Un título entre 40 y 60 caracteres aparece completo en Google.",
-    },
-    {
       id: "kw_in_title",
+      group: "Palabra clave",
       pass: kw.length > 0 && titleLower.includes(kw),
       label: "Palabra clave en el título SEO",
       tip: "Incluye la palabra clave en el título para mejorar el posicionamiento.",
     },
     {
-      id: "meta_desc",
-      pass: descLen >= 120 && descLen <= 155,
-      label: `Meta descripción entre 120-155 caracteres (ahora: ${descLen})`,
-      tip: "Una buena meta descripción mejora el CTR desde Google.",
+      id: "kw_in_slug",
+      group: "Palabra clave",
+      pass: kw.length > 0 && f.slug.toLowerCase().includes(kw.replace(/\s+/g, "-")),
+      label: "Palabra clave en el slug/URL",
+      tip: "El slug debe contener la keyword principal.",
     },
     {
       id: "kw_in_meta",
+      group: "Palabra clave",
       pass: kw.length > 0 && descLower.includes(kw),
       label: "Palabra clave en meta descripción",
-      tip: "Google pone en negrita la palabra clave en los resultados cuando coincide.",
+      tip: "Google pone en negrita la keyword en los resultados cuando coincide.",
+    },
+    {
+      id: "kw_in_first_para",
+      group: "Palabra clave",
+      pass: kw.length > 0 && firstPara.includes(kw),
+      label: "Palabra clave en el primer párrafo",
+      tip: "Mencionar la keyword al inicio del artículo es una señal fuerte para Google.",
+    },
+    {
+      id: "kw_in_heading",
+      group: "Palabra clave",
+      pass: kw.length > 0 && headingsText.includes(kw),
+      label: "Palabra clave en al menos un H2 o H3",
+      tip: "Usa la keyword en subtítulos para estructurar el contenido.",
     },
     {
       id: "kw_in_content",
+      group: "Palabra clave",
       pass: kw.length > 0 && contentLower.includes(kw),
       label: "Palabra clave en el contenido",
-      tip: "La palabra clave debe aparecer naturalmente en el cuerpo del artículo.",
+      tip: "La keyword debe aparecer de forma natural en el cuerpo del artículo.",
     },
     {
       id: "kw_in_excerpt",
+      group: "Palabra clave",
       pass: kw.length > 0 && excerptLower.includes(kw),
       label: "Palabra clave en el extracto",
       tip: "El extracto ayuda al contexto para los motores de búsqueda.",
     },
     {
+      id: "kw_density",
+      group: "Palabra clave",
+      pass: kw.length > 0 && density >= 0.5 && density <= 2.5,
+      label: `Densidad de keyword: ${kw.length > 0 ? density + "%" : "—"} (objetivo: 0.5–2.5%)`,
+      tip: "Una densidad demasiado baja o alta perjudica el SEO.",
+    },
+    // ── Título & meta
+    {
+      id: "seo_title",
+      group: "Título & Meta",
+      pass: titleLen >= 40 && titleLen <= 60,
+      label: `Título SEO entre 40-60 caracteres (ahora: ${titleLen})`,
+      tip: "Un título entre 40 y 60 caracteres aparece completo en Google.",
+    },
+    {
+      id: "meta_desc",
+      group: "Título & Meta",
+      pass: descLen >= 120 && descLen <= 155,
+      label: `Meta descripción entre 120-155 caracteres (ahora: ${descLen})`,
+      tip: "Una buena meta descripción mejora el CTR desde Google.",
+    },
+    {
       id: "slug_ok",
-      pass: f.slug.length > 0 && !f.slug.includes(" "),
-      label: "Slug/URL amigable (sin espacios)",
+      group: "Título & Meta",
+      pass: f.slug.length > 0 && !f.slug.includes(" ") && f.slug.length <= 75,
+      label: "Slug/URL amigable (sin espacios, ≤75 chars)",
       tip: "La URL debe ser corta, en minúsculas y sin espacios.",
+    },
+    // ── Contenido
+    {
+      id: "content_length",
+      group: "Contenido",
+      pass: wordCount >= 600,
+      label: `Longitud del contenido: ${wordCount} palabras ${wordCount < 300 ? "(mínimo: 300)" : wordCount < 600 ? "(recomendado: 600+)" : wordCount < 1000 ? "(bueno, óptimo: 1000+)" : "(excelente)"}`,
+      tip: "Google favorece artículos con contenido sustancial. 1000+ palabras es lo ideal.",
     },
     {
       id: "cover_img",
+      group: "Contenido",
       pass: f.coverImage.length > 0,
       label: "Imagen de portada definida",
       tip: "Tener imagen de portada mejora el CTR en redes sociales y Google.",
     },
     {
-      id: "content_length",
-      pass: f.content.split(/\s+/).filter(Boolean).length >= 300,
-      label: "Contenido de al menos 300 palabras",
-      tip: "Google favorece artículos con contenido sustancial.",
+      id: "img_alt",
+      group: "Contenido",
+      pass: !hasImagesWithoutAlt(f.content),
+      label: "Todas las imágenes tienen texto alternativo (alt)",
+      tip: "El alt text ayuda al SEO y a la accesibilidad. Evita ![](url), usa ![descripción](url).",
+    },
+    {
+      id: "has_links",
+      group: "Contenido",
+      pass: hasLinks(f.content),
+      label: "El contenido incluye al menos un enlace",
+      tip: "Los enlaces internos y externos enriquecen el artículo y mejoran el SEO.",
+    },
+    // ── Legibilidad
+    {
+      id: "readability",
+      group: "Legibilidad",
+      pass: avgSentLen > 0 && avgSentLen <= 20,
+      label: `Longitud media de frase: ${avgSentLen > 0 ? avgSentLen + " palabras" : "—"} (objetivo: ≤20)`,
+      tip: "Frases cortas mejoran la legibilidad y el tiempo en página.",
     },
   ];
 
   const score = Math.round((checks.filter((c) => c.pass).length / checks.length) * 100);
-  return { checks, score };
+  return { checks, score, wordCount, density, avgSentLen };
 }
 
 function scoreColor(score: number) {
@@ -165,8 +294,11 @@ function SocialPreview({ f }: { f: SeoField }) {
 
 // ── Main component ───────────────────────────────────────────────
 export default function SeoPanel({ onChange, ...f }: Props) {
-  const { checks, score } = buildChecks(f);
+  const { checks, score, wordCount, density, avgSentLen } = buildChecks(f);
   const color = scoreColor(score);
+
+  // Group checks for display
+  const groups = Array.from(new Set(checks.map((c) => c.group)));
 
   return (
     <div className="seo-panel">
@@ -188,6 +320,12 @@ export default function SeoPanel({ onChange, ...f }: Props) {
           <span className="seo-score-sub">
             {checks.filter((c) => c.pass).length} de {checks.length} criterios superados
           </span>
+          {/* Quick stats */}
+          <div className="seo-quick-stats">
+            <span>{wordCount} palabras</span>
+            {f.focusKeyword && <span>densidad: {density}%</span>}
+            {avgSentLen > 0 && <span>~{avgSentLen} words/frase</span>}
+          </div>
         </div>
       </div>
 
@@ -237,13 +375,18 @@ export default function SeoPanel({ onChange, ...f }: Props) {
         </div>
       </div>
 
-      {/* Checklist */}
+      {/* Grouped checklist */}
       <div className="seo-checklist">
         <p className="seo-section-label">Análisis SEO</p>
-        {checks.map((c) => (
-          <div key={c.id} className={`seo-check ${c.pass ? "pass" : "fail"}`} title={c.tip}>
-            <span className="seo-check-icon">{c.pass ? "✅" : "⚠️"}</span>
-            <span className="seo-check-label">{c.label}</span>
+        {groups.map((group) => (
+          <div key={group} className="seo-check-group">
+            <p className="seo-check-group-label">{group}</p>
+            {checks.filter((c) => c.group === group).map((c) => (
+              <div key={c.id} className={`seo-check ${c.pass ? "pass" : "fail"}`} title={c.tip}>
+                <span className="seo-check-icon">{c.pass ? "✅" : "⚠️"}</span>
+                <span className="seo-check-label">{c.label}</span>
+              </div>
+            ))}
           </div>
         ))}
       </div>

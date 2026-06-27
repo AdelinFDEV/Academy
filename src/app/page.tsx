@@ -134,10 +134,7 @@ export default async function HomePage() {
           </h1>
 
           <p className="hero-subtitle hero-anim hero-anim-3">
-            Deja de improvisar.{" "}
-            <span className="hero-subtitle-em">Aprende a leer el mercado</span>,{" "}
-            opera con <span className="hero-subtitle-em">disciplina</span>{" "}
-            y rodéate de traders que hablan claro —{" "}
+            Deja de improvisar. Aprende a leer el mercado y rodéate de traders que hablan claro —{" "}
             <span className="hero-subtitle-muted">no de gurús que venden sueños.</span>
           </p>
 
@@ -157,7 +154,6 @@ export default async function HomePage() {
                 <Link href="/register" className="hero-btn-primary hero-btn-glowing">
                   Empieza Gratis Ahora <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
                 </Link>
-                <a href="#feed" className="hero-btn-secondary">Ver contenido</a>
               </>
             )}
           </div>
@@ -186,7 +182,7 @@ export default async function HomePage() {
 
               <p className="home-banner-guarantee">
                 <ShieldCheck size={14} aria-hidden="true" />
-                Crea tu cuenta en 1 minuto · Sin tarjeta · Gratis para empezar
+                Crea tu cuenta en 1 minuto - Sin Tarjeta - Gratis
               </p>
             </div>
           )}
@@ -194,14 +190,14 @@ export default async function HomePage() {
       </div>
 
       {/* ── Empieza aquí band ── */}
-      <Link href="/guias" className="starthere-band">
+      <Link href="/guia-iniciacion" className="starthere-band">
         <span className="starthere-band-glow" aria-hidden="true" />
         <span className="starthere-band-left">
           <span className="starthere-band-icon">
             <Map size={20} aria-hidden="true" />
           </span>
           <span className="starthere-band-text">
-            <span className="starthere-band-eyebrow">¿Nuevo en crypto?</span>
+            <span className="starthere-band-eyebrow">¿Nuevo en cripto?</span>
             <span className="starthere-band-title">Empieza aquí — tu hoja de ruta paso a paso</span>
           </span>
         </span>

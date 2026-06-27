@@ -56,19 +56,24 @@ export default function SocialLinks({ variant = "footer" }: Props) {
   if (variant === "post") {
     return (
       <div className="post-social-row">
-        <span className="post-social-label">Sígueme en</span>
-        {links.map((l) => (
-          <a
-            key={l.label}
-            href={l.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="post-social-link"
-          >
-            {l.icon}
-            {l.label}
-          </a>
-        ))}
+        <a
+          href="https://www.instagram.com/adelinbtc/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="post-social-link post-social-link--instagram"
+        >
+          <InstagramIcon />
+          Instagram
+        </a>
+        <a
+          href="https://www.youtube.com/@AdelinBTC"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="post-social-link post-social-link--youtube"
+        >
+          <YouTubeIcon />
+          YouTube
+        </a>
       </div>
     );
   }

@@ -46,7 +46,7 @@ export default function GuidesHomeSection() {
             <div className="guides-featured-card-glow" aria-hidden="true" />
 
             <div className="guides-featured-top">
-              <div className="guides-featured-badges">
+              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
                 <span className="guides-diff-badge guides-diff--basic">{g.difficulty}</span>
                 <span className="guides-access-badge">Gratis con registro</span>
               </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import MarkdownEditor from "@/components/admin/MarkdownEditor";
 import SeoPanel from "@/components/admin/SeoPanel";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 type Category = { id: string; name: string };
 type Post = {
@@ -155,13 +156,19 @@ export default function PostForm({ categories, post }: { categories: Category[];
           </div>
 
           <div className="field">
-            <label>Imagen de portada (URL)</label>
-            <input
-              type="text"
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder="https://..."
-            />
+            <label>Imagen de portada</label>
+            <div className="cover-image-row">
+              <input
+                type="text"
+                value={coverImage}
+                onChange={(e) => setCoverImage(e.target.value)}
+                placeholder="https://... o sube desde tu PC"
+              />
+              <ImageUpload onUpload={(url) => setCoverImage(url)} label="Subir" compact />
+            </div>
+            {coverImage && (
+              <img src={coverImage} alt="Vista previa portada" className="cover-image-preview" />
+            )}
           </div>
 
           <div className="field">

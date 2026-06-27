@@ -223,7 +223,6 @@ export default function PostInteractions({
           title={isLoggedIn ? undefined : "Regístrate para guardar"}
         >
           <Bookmark size={13} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
-          <span className="pi-text-hide-mobile">{saved ? "Guardado" : "Guardar"}</span>
         </button>
       )}
 
