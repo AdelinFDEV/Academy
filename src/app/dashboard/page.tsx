@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import DashboardSavedPosts from "@/components/DashboardSavedPosts";
+import DashboardSavedTerms from "@/components/DashboardSavedTerms";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -190,46 +192,18 @@ export default async function DashboardPage() {
             )}
           </h2>
         </div>
-
-        {savedPosts.length === 0 ? (
-          <div className="dash-empty">
-            <div className="dash-empty-icon"><Icon name="bookmark" size={22} /></div>
-            <p>No tienes artículos guardados aún.</p>
-            <Link href="/articulos" className="dash-link-orange">Explorar artículos →</Link>
-          </div>
-        ) : (
-          <div className="dash-saved-list">
-            {savedPosts.map((post) => {
-              const locked = post.is_premium && !isPremium;
-              const isRead = readIds.has(post.id);
-              return (
-                <Link
-                  key={post.id}
-                  href={`/post/${post.slug}`}
-                  className={`dash-saved-item${isRead ? " is-read" : ""}`}
-                >
-                  <div
-                    className="dash-saved-thumb"
-                    style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
-                  >
-                    {!post.cover_image && <Icon name="chart" size={18} />}
-                  </div>
-                  <div className="dash-saved-body">
-                    {(post.categories as any)?.name && (
-                      <span className="dash-saved-cat">{(post.categories as any).name}</span>
-                    )}
-                    <h3 className="dash-saved-title">{post.title}</h3>
-                    <div className="dash-saved-tags">
-                      {isRead && <span className="dash-tag-read">✓ Leído</span>}
-                      {locked && <span className="dash-tag-premium">PREMIUM</span>}
-                    </div>
-                  </div>
-                  <span className="dash-saved-arrow" aria-hidden="true">›</span>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+        <DashboardSavedPosts
+          isPremium={isPremium}
+          initialPosts={savedPosts.map((p) => ({
+            id: p.id,
+            slug: p.slug,
+            title: p.title,
+            cover_image: p.cover_image,
+            is_premium: p.is_premium,
+            isRead: readIds.has(p.id),
+            categoryName: (p.categories as any)?.name ?? null,
+          }))}
+        />
       </div>
 
       {/* ── Diccionario guardado ── */}
@@ -243,26 +217,7 @@ export default async function DashboardPage() {
           </h2>
           <Link href="/glosario" className="dash-link-orange">Ver diccionario →</Link>
         </div>
-
-        {savedTermsList.length === 0 ? (
-          <div className="dash-empty">
-            <div className="dash-empty-icon"><Icon name="book" size={22} /></div>
-            <p>No tienes términos guardados aún.</p>
-            <Link href="/glosario" className="dash-link-orange">Explorar el diccionario →</Link>
-          </div>
-        ) : (
-          <div className="dash-terms-grid">
-            {savedTermsList.map((t) => (
-              <div key={t.term} className="dash-term-card">
-                <div className="dash-term-head">
-                  <span className="dash-term-name">{t.term}</span>
-                  <span className={`glosario-term-cat glosario-term-cat--${t.category}`}>{t.category}</span>
-                </div>
-                <p className="dash-term-def">{t.definition}</p>
-              </div>
-            ))}
-          </div>
-        )}
+        <DashboardSavedTerms initialTerms={savedTermsList} />
       </div>
 
     </main>
