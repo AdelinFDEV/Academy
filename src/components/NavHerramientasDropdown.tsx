@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronDown, Trophy, TrendingUp, Eye, BarChart2, PieChart, MessageSquare, Target, Award } from "lucide-react";
+import { ChevronDown, Trophy, TrendingUp, Eye, BarChart2, PieChart, MessageSquare, Target, Award, Hash } from "lucide-react";
 
 interface Props {
   user: boolean;
@@ -106,12 +106,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             {!user && <span className="nav-tools-badge--premium">PREMIUM</span>}
           </Link>
 
-          <Link
-            href={estadisticasLocked ? (!user ? "/register" : "/dashboard") : "/dashboard/estadisticas"}
-            className={`nav-tools-item${estadisticasLocked ? " nav-tools-item--dimmed" : ""}`}
-            role="menuitem"
-            onClick={close}
-          >
+          <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
               <BarChart2 size={16} aria-hidden="true" />
             </span>
@@ -119,8 +114,8 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               <span className="nav-tools-item-name">Mis Estadísticas</span>
               <span className="nav-tools-item-desc">Rendimiento de tu diario de trading</span>
             </span>
-            {estadisticasLocked && <span className="nav-tools-badge--premium">PREMIUM</span>}
-          </Link>
+            <span className="nav-tools-soon-badge">Pronto</span>
+          </div>
 
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
@@ -153,10 +148,20 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               <MessageSquare size={16} aria-hidden="true" />
             </span>
             <span>
-              <span className="nav-tools-item-name">Chat y Foro Privado</span>
-              <span className="nav-tools-item-desc">Comunidad exclusiva de miembros</span>
+              <span className="nav-tools-item-name">Chat</span>
+              <span className="nav-tools-item-desc">Chat en tiempo real con la comunidad</span>
             </span>
-            <span className="nav-tools-badge--premium" style={{ marginRight: "4px" }}>PREMIUM</span>
+            <span className="nav-tools-soon-badge">Pronto</span>
+          </div>
+
+          <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
+            <span className="nav-tools-item-icon">
+              <Hash size={16} aria-hidden="true" />
+            </span>
+            <span>
+              <span className="nav-tools-item-name">Foro</span>
+              <span className="nav-tools-item-desc">Debates y análisis con otros miembros</span>
+            </span>
             <span className="nav-tools-soon-badge">Pronto</span>
           </div>
 

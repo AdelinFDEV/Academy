@@ -16,21 +16,21 @@ const ITEMS = [
     href: "/cursos",
     label: "Cursos",
     desc: "Aprende desde cero con nuestros cursos",
-    premium: true,
+    soon: true,
     icon: <GraduationCap size={16} aria-hidden="true" />,
   },
   {
     href: "/recursos",
     label: "Recursos",
     desc: "Herramientas y materiales de referencia",
-    premium: true,
+    soon: true,
     icon: <Files size={16} aria-hidden="true" />,
   },
   {
     href: "/guias",
     label: "Guías",
     desc: "Paso a paso para dominar el mercado",
-    premium: false,
+    soon: true,
     icon: <LayoutGrid size={16} aria-hidden="true" />,
   },
 ];
@@ -67,22 +67,32 @@ export default function NavEducacionDropdown() {
         <div className="nav-tools-menu" role="menu">
           <p className="nav-tools-section-label">Educación</p>
 
-          {ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`nav-tools-item${item.premium ? " nav-tools-item--dimmed" : ""}`}
-              role="menuitem"
-              onClick={() => setOpen(false)}
-            >
-              <span className="nav-tools-item-icon">{item.icon}</span>
-              <span>
-                <span className="nav-tools-item-name">{item.label}</span>
-                <span className="nav-tools-item-desc">{item.desc}</span>
-              </span>
-              {item.premium && <span className="nav-tools-badge--premium">PREMIUM</span>}
-            </Link>
-          ))}
+          {ITEMS.map((item) =>
+            item.soon ? (
+              <div key={item.href} className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
+                <span className="nav-tools-item-icon">{item.icon}</span>
+                <span>
+                  <span className="nav-tools-item-name">{item.label}</span>
+                  <span className="nav-tools-item-desc">{item.desc}</span>
+                </span>
+                <span className="nav-tools-soon-badge">Pronto</span>
+              </div>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="nav-tools-item"
+                role="menuitem"
+                onClick={() => setOpen(false)}
+              >
+                <span className="nav-tools-item-icon">{item.icon}</span>
+                <span>
+                  <span className="nav-tools-item-name">{item.label}</span>
+                  <span className="nav-tools-item-desc">{item.desc}</span>
+                </span>
+              </Link>
+            )
+          )}
         </div>
       )}
     </div>

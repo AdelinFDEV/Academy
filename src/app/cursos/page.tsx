@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
@@ -17,16 +18,12 @@ export default async function CursosPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  let isPremium = false;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-    const role = profile?.role ?? "free";
-    isPremium = role === "premium" || role === "admin";
-  }
+  const { data: profile } = user
+    ? await supabase.from("profiles").select("role").eq("id", user.id).single()
+    : { data: null };
+  const role = profile?.role ?? "free";
+  const isPremium = role === "premium" || role === "admin";
+  if (role !== "admin") redirect("/");
 
   return (
     <div className="blog-page">

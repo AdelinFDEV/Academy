@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
   FileText, Folder, BookOpen, GraduationCap, Files, LayoutGrid,
-  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award,
+  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award, Hash,
 } from "lucide-react";
 
 interface Category {
@@ -86,21 +86,21 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <BookOpen size={15} aria-hidden="true" />
                 Diccionario Cripto
               </Link>
-              <Link href="/cursos" className={`blog-mobile-tool-link${a("/cursos")}`} onClick={close}>
+              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <GraduationCap size={15} aria-hidden="true" />
                 Cursos
-                <span className="mobile-premium-badge">PREMIUM</span>
-              </Link>
-              <Link href="/recursos" className={`blog-mobile-tool-link${a("/recursos")}`} onClick={close}>
+                <span className="mobile-tool-soon-badge">Pronto</span>
+              </div>
+              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <Files size={15} aria-hidden="true" />
                 Recursos
-                <span className="mobile-premium-badge">PREMIUM</span>
-              </Link>
-              <Link href="/guias" className={`blog-mobile-tool-link${a("/guias")}`} onClick={close}>
+                <span className="mobile-tool-soon-badge">Pronto</span>
+              </div>
+              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <LayoutGrid size={15} aria-hidden="true" />
                 Guías
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
-              </Link>
+                <span className="mobile-tool-soon-badge">Pronto</span>
+              </div>
             </div>
 
             <div className="blog-mobile-section">
@@ -118,11 +118,11 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
-              <Link href={(!user || !isPremium) ? "/dashboard" : "/dashboard/estadisticas"} className={`blog-mobile-tool-link${a("/dashboard/estadisticas")}`} onClick={close}>
+              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <BarChart2 size={15} aria-hidden="true" />
                 Mis Estadísticas
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
-              </Link>
+                <span className="mobile-tool-soon-badge">Pronto</span>
+              </div>
 
               <Link href="/logros" className={`blog-mobile-tool-link${a("/logros")}`} onClick={close}>
                 <Trophy size={15} aria-hidden="true" />
@@ -155,8 +155,13 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <MessageSquare size={15} aria-hidden="true" />
-                Chat y Foro Privado
-                <span className="mobile-premium-badge" style={{ opacity: 0.7 }}>PREMIUM</span>
+                Chat
+                <span className="mobile-tool-soon-badge">Pronto</span>
+              </div>
+
+              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
+                <Hash size={15} aria-hidden="true" />
+                Foro
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </div>
 
