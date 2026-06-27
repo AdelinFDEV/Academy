@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Icon from "@/components/Icon";
@@ -19,7 +18,6 @@ type Tab = "pending" | "approved" | "all";
 
 export default function CommentManager({ comments }: { comments: Comment[] }) {
   const router = useRouter();
-  const supabase = createClient();
   const [tab, setTab] = useState<Tab>("pending");
 
   const pending  = comments.filter((c) => !c.approved);
@@ -27,19 +25,19 @@ export default function CommentManager({ comments }: { comments: Comment[] }) {
   const visible  = tab === "pending" ? pending : tab === "approved" ? approved : comments;
 
   async function handleApprove(id: string) {
-    await supabase.from("comments").update({ approved: true }).eq("id", id);
+    await fetch(`/api/admin/comments/${id}`, { method: "PATCH" });
     router.refresh();
   }
 
   async function handleDelete(id: string) {
     if (!confirm("¿Borrar este comentario?")) return;
-    await supabase.from("comments").delete().eq("id", id);
+    await fetch(`/api/admin/comments/${id}`, { method: "DELETE" });
     router.refresh();
   }
 
   async function approveAll() {
     if (!confirm(`¿Aprobar todos los ${pending.length} comentarios pendientes?`)) return;
-    await supabase.from("comments").update({ approved: true }).eq("approved", false);
+    await fetch("/api/admin/comments/approve-all", { method: "POST" });
     router.refresh();
   }
 

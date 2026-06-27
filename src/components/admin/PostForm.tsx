@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 type Category = { id: string; name: string };
@@ -31,7 +30,6 @@ function toSlug(text: string) {
 
 export default function PostForm({ categories, post }: { categories: Category[]; post?: Post }) {
   const router = useRouter();
-  const supabase = createClient();
   const isEdit = !!post;
 
   const [title, setTitle] = useState(post?.title ?? "");
@@ -70,12 +68,18 @@ export default function PostForm({ categories, post }: { categories: Category[];
       published,
     };
 
-    const { error } = isEdit
-      ? await supabase.from("posts").update(payload).eq("id", post.id)
-      : await supabase.from("posts").insert(payload);
+    const url = isEdit ? `/api/admin/posts/${post.id}` : "/api/admin/posts";
+    const method = isEdit ? "PUT" : "POST";
 
-    if (error) {
-      setError(error.message);
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Error al guardar");
       setLoading(false);
       return;
     }

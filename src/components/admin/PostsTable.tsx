@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Icon from "@/components/Icon";
 
@@ -36,14 +35,17 @@ function Toggle({
 }) {
   const [active, setActive] = useState(value);
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
   const router = useRouter();
 
   async function toggle() {
     setLoading(true);
     const next = !active;
     setActive(next);
-    await supabase.from("posts").update({ [field]: next }).eq("id", postId);
+    await fetch(`/api/admin/posts/${postId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: next }),
+    });
     setLoading(false);
     router.refresh();
   }
@@ -62,12 +64,11 @@ function Toggle({
 }
 
 function DeleteBtn({ id }: { id: string }) {
-  const supabase = createClient();
   const router = useRouter();
 
   async function handleDelete() {
     if (!confirm("¿Borrar esta entrada permanentemente?")) return;
-    await supabase.from("posts").delete().eq("id", id);
+    await fetch(`/api/admin/posts/${id}`, { method: "DELETE" });
     router.refresh();
   }
 

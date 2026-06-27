@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Icon from "@/components/Icon";
 
@@ -19,7 +18,6 @@ function toSlug(text: string) {
 
 export default function CategoryManager({ categories }: { categories: Category[] }) {
   const router = useRouter();
-  const supabase = createClient();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -28,8 +26,17 @@ export default function CategoryManager({ categories }: { categories: Category[]
     e.preventDefault();
     setLoading(true);
     setError("");
-    const { error } = await supabase.from("categories").insert({ name, slug: toSlug(name) });
-    if (error) { setError(error.message); setLoading(false); return; }
+    const res = await fetch("/api/admin/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, slug: toSlug(name) }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Error al añadir");
+      setLoading(false);
+      return;
+    }
     setName("");
     setLoading(false);
     router.refresh();
@@ -40,7 +47,7 @@ export default function CategoryManager({ categories }: { categories: Category[]
       ? `Esta categoría tiene ${postCount} artículos. ¿Borrarla de todos modos?`
       : "¿Borrar esta categoría?";
     if (!confirm(msg)) return;
-    await supabase.from("categories").delete().eq("id", id);
+    await fetch(`/api/admin/categories/${id}`, { method: "DELETE" });
     router.refresh();
   }
 

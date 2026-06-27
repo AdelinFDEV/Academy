@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
 type Role = "free" | "premium" | "admin";
@@ -10,13 +9,16 @@ export default function UserRoleButton({ userId, role }: { userId: string; role:
   const [current, setCurrent] = useState<Role>(role);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   async function cycleRole() {
     if (current === "admin") return;
     const next: Role = current === "free" ? "premium" : "free";
     setLoading(true);
-    await supabase.from("profiles").update({ role: next }).eq("id", userId);
+    await fetch(`/api/admin/users/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role: next }),
+    });
     setCurrent(next);
     setLoading(false);
     router.refresh();
