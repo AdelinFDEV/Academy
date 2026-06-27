@@ -118,12 +118,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
-              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
-                <BarChart2 size={15} aria-hidden="true" />
-                Mis Estadísticas
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </div>
-
               <Link href="/logros" className={`blog-mobile-tool-link${a("/logros")}`} onClick={close}>
                 <Trophy size={15} aria-hidden="true" />
                 Logros

@@ -108,17 +108,6 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
 
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
             <span className="nav-tools-item-icon">
-              <BarChart2 size={16} aria-hidden="true" />
-            </span>
-            <span>
-              <span className="nav-tools-item-name">Mis Estadísticas</span>
-              <span className="nav-tools-item-desc">Rendimiento de tu diario de trading</span>
-            </span>
-            <span className="nav-tools-soon-badge">Pronto</span>
-          </div>
-
-          <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
-            <span className="nav-tools-item-icon">
               <PieChart size={16} aria-hidden="true" />
             </span>
             <span>
