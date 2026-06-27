@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Users } from "lucide-react";
+import { ArrowRight, Target, Eye, BarChart2, Trophy, Folder, Star, BookOpen, GraduationCap, Library, Compass, Users, Sparkles, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
@@ -101,7 +101,7 @@ export default async function HomePage() {
         <BlogMobileMenu user={!!user} />
       </nav>
 
-      {/* ── Compact hero banner ── */}
+      {/* ── Hero ── */}
       <div className="home-banner">
         <video className="home-banner-video" autoPlay loop muted playsInline>
           <source src="/hero.webm" type="video/webm" />
@@ -109,23 +109,29 @@ export default async function HomePage() {
         </video>
         <div className="home-banner-overlay" />
         <div className="home-banner-content">
-          <h1 className="home-banner-title">
-            El ecosistema cripto<br className="home-banner-br" />
-            <span className="text-gradient">en un solo lugar.</span>
-          </h1>
-          <div className="home-banner-slogan">
-            <span>Aprende en la academia</span>
-            <span className="slogan-line" aria-hidden="true"></span>
-            <span>Crece con la comunidad</span>
-          </div>
-          
-          <div className="home-banner-features">
-            <span className="home-feature"><GraduationCap size={15} aria-hidden="true" /> Guías y Cursos</span>
-            <span className="home-feature"><Target size={15} aria-hidden="true" /> Herramientas Exclusivas</span>
-            <span className="home-feature"><Users size={15} aria-hidden="true" /> Comunidad Privada</span>
+
+          <div className="hero-eyebrow hero-anim hero-anim-1">
+            <Sparkles size={14} aria-hidden="true" />
+            La academia cripto en español
           </div>
 
-          <div className="home-banner-actions">
+          <h1 className="home-banner-title hero-anim hero-anim-2">
+            Domina el mundo cripto<br className="home-banner-br" />
+            <span className="text-gradient">con criterio propio.</span>
+          </h1>
+
+          <p className="hero-subtitle hero-anim hero-anim-3">
+            Guías paso a paso, herramientas profesionales y una comunidad privada
+            que te acompaña en cada decisión. Sin humo, sin postureo.
+          </p>
+
+          <div className="home-banner-features hero-anim hero-anim-4">
+            <span className="home-feature"><GraduationCap size={15} aria-hidden="true" /> Aprende desde cero</span>
+            <span className="home-feature"><Target size={15} aria-hidden="true" /> Herramientas de pro</span>
+            <span className="home-feature"><Users size={15} aria-hidden="true" /> Comunidad privada</span>
+          </div>
+
+          <div className="home-banner-actions hero-anim hero-anim-5">
             {user ? (
               <Link href="/dashboard" className="hero-btn-primary hero-btn-glowing">
                 Ir a mi Academia <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
@@ -133,17 +139,40 @@ export default async function HomePage() {
             ) : (
               <>
                 <Link href="/register" className="hero-btn-primary hero-btn-glowing">
-                  Únete Gratis Ahora <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
+                  Empieza Gratis Ahora <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
                 </Link>
-                <a href="#feed" className="hero-btn-secondary">Explorar contenido</a>
+                <a href="#feed" className="hero-btn-secondary">Ver contenido</a>
               </>
             )}
           </div>
+
           {!user && (
-            <p className="home-banner-guarantee">
-              <Star size={14} aria-hidden="true" />
-              Crea tu cuenta en menos de 1 minuto. Sin tarjeta de crédito.
-            </p>
+            <div className="hero-trust hero-anim hero-anim-6">
+              <div className="hero-social-proof">
+                <div className="hero-avatars" aria-hidden="true">
+                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#ff9a00,#ff6b2b)" }}>A</span>
+                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#4f9dff,#2b6bff)" }}>M</span>
+                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#34d399,#10b981)" }}>J</span>
+                  <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#a78bfa,#7c3aed)" }}>L</span>
+                  <span className="hero-avatar hero-avatar-count">+98</span>
+                </div>
+                <div className="hero-proof-text">
+                  <div className="hero-stars" aria-label="Valoración 4.9 sobre 5">
+                    <Star size={13} fill="currentColor" aria-hidden="true" />
+                    <Star size={13} fill="currentColor" aria-hidden="true" />
+                    <Star size={13} fill="currentColor" aria-hidden="true" />
+                    <Star size={13} fill="currentColor" aria-hidden="true" />
+                    <Star size={13} fill="currentColor" aria-hidden="true" />
+                  </div>
+                  <span><strong>+100 traders</strong> aprendiendo cada día</span>
+                </div>
+              </div>
+
+              <p className="home-banner-guarantee">
+                <ShieldCheck size={14} aria-hidden="true" />
+                Crea tu cuenta en 1 minuto · Sin tarjeta · Gratis para empezar
+              </p>
+            </div>
           )}
         </div>
       </div>
