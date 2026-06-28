@@ -252,27 +252,25 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           />
         </div>
 
-        {/* Imagen de portada */}
-        {post.cover_image && (
+        {/* Portada: vídeo de YouTube si existe, sino imagen estática */}
+        {youtubeId ? (
+          <div className="post-video">
+            <iframe
+              src={`https://www.youtube.com/embed/${youtubeId}`}
+              title={post.title}
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+          </div>
+        ) : post.cover_image ? (
           <div className="post-cover">
             <img src={post.cover_image} alt={post.title} />
           </div>
-        )}
+        ) : null}
 
         {/* Contenido o paywall */}
         {hasAccess ? (
           <>
-            {/* Vídeo de YouTube */}
-            {youtubeId && (
-              <div className="post-video">
-                <iframe
-                  src={`https://www.youtube.com/embed/${youtubeId}`}
-                  title={post.title}
-                  allowFullScreen
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                />
-              </div>
-            )}
 
             <TableOfContents headings={headings} />
 

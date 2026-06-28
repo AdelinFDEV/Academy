@@ -12,6 +12,7 @@ type Post = {
   slug: string;
   excerpt: string | null;
   cover_image: string | null;
+  youtube_url: string | null;
   is_premium: boolean;
   is_featured: boolean;
   created_at: string;
@@ -24,6 +25,11 @@ type Post = {
 };
 
 type Tab = "nuevo" | "destacados" | "premium";
+
+function getYoutubeId(url: string) {
+  const match = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
+  return match?.[1] ?? null;
+}
 
 function timeAgo(dateStr: string) {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -136,6 +142,10 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
 }
 
 function FeedPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
+  const ytId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
+  const thumbUrl = ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : null;
+  const displayImage = thumbUrl || post.cover_image;
+
   return (
     <article className={`feed-post-row${post.is_featured ? " is-featured" : ""}`}>
       <div className="feed-post-body">
@@ -168,9 +178,10 @@ function FeedPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
         <ActionBar post={post} isLoggedIn={isLoggedIn} />
       </div>
 
-      {post.cover_image && (
+      {displayImage && (
         <Link href={`/post/${post.slug}`} className="feed-post-thumb" tabIndex={-1} aria-hidden="true">
-          <img src={post.cover_image} alt="" loading="lazy" />
+          <img src={displayImage} alt="" loading="lazy" />
+          {ytId && <span className="feed-thumb-play" aria-hidden="true">▶</span>}
         </Link>
       )}
     </article>
@@ -178,13 +189,26 @@ function FeedPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
 }
 
 function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
+  const ytId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
   const imageUrl = post.cover_image || "/featured-demo.png";
+
   return (
     <article className="hero-post-card">
-      <Link href={`/post/${post.slug}`} className="hero-post-image-wrap" tabIndex={-1} aria-hidden="true">
-        <img src={imageUrl} alt="" className="hero-post-image" loading="lazy" />
-        <div className="hero-post-image-overlay" />
-      </Link>
+      {ytId ? (
+        <div className="hero-post-video-wrap">
+          <iframe
+            src={`https://www.youtube.com/embed/${ytId}`}
+            title={post.title}
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+        </div>
+      ) : (
+        <Link href={`/post/${post.slug}`} className="hero-post-image-wrap" tabIndex={-1} aria-hidden="true">
+          <img src={imageUrl} alt="" className="hero-post-image" loading="lazy" />
+          <div className="hero-post-image-overlay" />
+        </Link>
+      )}
       <div className="hero-post-content">
         <div className="feed-post-tags">
           {post.categories && (

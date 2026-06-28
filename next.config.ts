@@ -21,6 +21,7 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+      "frame-src https://www.youtube.com",
       "frame-ancestors 'none'",
     ].join("; "),
   },

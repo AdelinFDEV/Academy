@@ -23,7 +23,7 @@ export default async function HomePage() {
     await Promise.all([
       supabase
         .from("posts")
-        .select("id, title, slug, excerpt, cover_image, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
+        .select("id, title, slug, excerpt, cover_image, youtube_url, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
         .eq("published", true)
         .order("created_at", { ascending: false }),
       supabase
@@ -80,6 +80,7 @@ export default async function HomePage() {
     slug: p.slug,
     excerpt: p.excerpt,
     cover_image: p.cover_image,
+    youtube_url: p.youtube_url,
     is_premium: p.is_premium,
     is_featured: p.is_featured,
     created_at: p.created_at,

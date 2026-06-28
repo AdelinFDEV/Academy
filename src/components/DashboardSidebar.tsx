@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import LogoutButton from "@/components/LogoutButton";
-import { X } from "lucide-react";
 
 interface Props {
   role: string;
@@ -105,9 +104,11 @@ export default function DashboardSidebar({ role, userName }: Props) {
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuOpen}
           >
-            <span />
-            <span />
-            <span />
+            <span className="hamburger-lines" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </header>
@@ -115,14 +116,6 @@ export default function DashboardSidebar({ role, userName }: Props) {
       {/* ── Full-screen dashboard mobile menu ── */}
       {menuOpen && (
         <div className="dash-mobile-menu">
-          <div className="dash-mobile-menu-header">
-            <Link href="/" className="blog-brand" onClick={close}>
-              adelin<span>btc</span>
-            </Link>
-            <button className="blog-mobile-close" onClick={close} aria-label="Cerrar menú">
-              <X size={20} aria-hidden="true" />
-            </button>
-          </div>
 
           <nav className="dash-mobile-menu-nav">
             <p className="dash-mobile-menu-section">Academia</p>
