@@ -83,7 +83,17 @@ async function saveBadge() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ badge_id: "guide-blockchain" }),
     });
-  } catch (_) {}
+  } catch {}
+}
+
+async function saveCompletion(score: number, total: number) {
+  try {
+    await fetch("/api/guide-quiz-completion", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ guide_slug: "que-es-la-blockchain", score, total }),
+    });
+  } catch {}
 }
 
 export default function GuideQuiz() {
@@ -111,8 +121,9 @@ export default function GuideQuiz() {
   const next = () => {
     if (current + 1 >= TOTAL) {
       setDone(true);
-      const allCorrect = answers.filter(Boolean).length + (selected === q.ok ? 1 : 0);
-      if (allCorrect === TOTAL) saveBadge();
+      const finalScore = answers.filter(Boolean).length + (selected === q.ok ? 1 : 0);
+      saveCompletion(finalScore, TOTAL);
+      if (finalScore === TOTAL) saveBadge();
     } else {
       setCurrent((c) => c + 1);
       setSelected(null);
@@ -151,10 +162,29 @@ export default function GuideQuiz() {
 
   return (
     <div>
-      {/* Hint */}
-      <div className="gbc-quiz-unlock-hint">
-        🔗 Responde correctamente a <strong>todas las preguntas</strong> para desbloquear tu logro exclusivo{" "}
-        <strong>Arquitecto de Cadenas</strong>.
+      {/* Badge reward CTA */}
+      <div className="gbc-quiz-reward-cta">
+        <div className="gbc-quiz-reward-left">
+          <div className="gbc-quiz-reward-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="1" y="8.5" width="6" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+              <rect x="8.5" y="1" width="7" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+              <rect x="8.5" y="17" width="7" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+              <rect x="17" y="8.5" width="6" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+              <path d="M7 12h1.5M15.5 12H17M12 7v1.5M12 15.5V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.7"/>
+            </svg>
+            <span className="gbc-quiz-reward-lock" aria-hidden="true">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/></svg>
+            </span>
+          </div>
+        </div>
+        <div className="gbc-quiz-reward-body">
+          <span className="gbc-quiz-reward-eyebrow">Badge exclusivo en juego</span>
+          <span className="gbc-quiz-reward-name">Arquitecto de Cadenas</span>
+          <span className="gbc-quiz-reward-req">Responde <strong>5 de 5</strong> preguntas correctamente para desbloquearlo</span>
+        </div>
+        <div className="gbc-quiz-reward-arrow" aria-hidden="true">›</div>
       </div>
 
       {/* Progress dots */}

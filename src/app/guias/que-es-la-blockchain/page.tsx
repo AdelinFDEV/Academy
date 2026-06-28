@@ -15,6 +15,8 @@ import GuideCharts from "./GuideCharts";
 import GuideQuiz from "./GuideQuiz";
 import GuideMineBlock from "./GuideMineBlock";
 import GuideDefiChart from "./GuideDefiChart";
+import GuideInteractions from "@/components/GuideInteractions";
+import GuideVisitTracker from "@/components/GuideVisitTracker";
 
 export const metadata: Metadata = {
   title: "¿Qué es la Blockchain? Guía Completa 2026 | AdelinBTC Academy",
@@ -65,17 +67,39 @@ export default async function QueEsLaBlockchainPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const profileData = user
-    ? (await supabase.from("profiles").select("full_name, role").eq("id", user.id).single()).data
-    : null;
+  const SLUG = "que-es-la-blockchain";
+
+  const [profileResult, likesResult, savedResult, sharesResult] = await Promise.all([
+    user
+      ? supabase.from("profiles").select("full_name, role").eq("id", user.id).single()
+      : Promise.resolve({ data: null }),
+    supabase.from("guide_likes").select("id", { count: "exact", head: true }).eq("guide_slug", SLUG),
+    user
+      ? supabase.from("guide_saves").select("id").eq("guide_slug", SLUG).eq("user_id", user.id).maybeSingle()
+      : Promise.resolve({ data: null }),
+    supabase.from("guide_shares").select("id", { count: "exact", head: true }).eq("guide_slug", SLUG),
+  ]);
+
+  const profileData = profileResult.data;
   const role = profileData?.role ?? "free";
   const isPremium = role === "premium" || role === "admin";
   const isAdmin = role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
   const isRegistered = !!user;
 
+  let initialLiked = false;
+  if (user) {
+    const { data: likeRow } = await supabase
+      .from("guide_likes").select("id").eq("guide_slug", SLUG).eq("user_id", user.id).maybeSingle();
+    initialLiked = !!likeRow;
+  }
+  const initialLikes  = (likesResult as any).count ?? 0;
+  const initialSaved  = !!(savedResult as any).data;
+  const initialShares = (sharesResult as any).count ?? 0;
+
   return (
     <div className="gbc-wrap">
+      <GuideVisitTracker guideSlug={SLUG} />
       <GuideProgressBar />
 
       {/* Nav */}
@@ -500,13 +524,30 @@ export default async function QueEsLaBlockchainPage() {
               <div className="gbc-ey">Quiz final</div>
               <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
               <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas 4/5 respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Arquitecto de Cadenas</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Arquitecto de Cadenas</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
               </div>
               <GuideQuiz />
             </div>
           </section>
         </>
       )}
+
+      {/* ── Interacciones ── */}
+      <section className="gbc-section gbc-interactions-section">
+        <div className="gbc-gc">
+          <div className="gbc-interactions-wrap">
+            <p className="gbc-interactions-label">¿Te ha resultado útil esta guía?</p>
+            <GuideInteractions
+              guideSlug={SLUG}
+              initialLikes={initialLikes}
+              initialLiked={initialLiked}
+              initialSaved={initialSaved}
+              initialShares={initialShares}
+              isLoggedIn={isRegistered}
+            />
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>

@@ -4,6 +4,8 @@ import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
 import { Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Network, Lock, Clock } from "lucide-react";
+import DashboardSavedGuides from "@/components/DashboardSavedGuides";
+import { GUIDES } from "@/lib/guides";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -21,7 +23,7 @@ export default async function DashboardPage() {
   const isPremium = role === "premium" || role === "admin";
   const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
 
-  const [{ data: posts }, { data: userPostsData }, { data: savedTermsData }] = await Promise.all([
+  const [{ data: posts }, { data: userPostsData }, { data: savedTermsData }, { data: savedGuidesData }] = await Promise.all([
     supabase
       .from("posts")
       .select("id, title, slug, cover_image, is_premium, created_at, categories(name, slug)")
@@ -36,11 +38,19 @@ export default async function DashboardPage() {
       .select("term, definition, category")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("guide_saves")
+      .select("guide_slug, saved_at")
+      .eq("user_id", user.id)
+      .order("saved_at", { ascending: false }),
   ]);
 
   const allPosts = posts ?? [];
   const userPosts = userPostsData ?? [];
   const savedTermsList = savedTermsData ?? [];
+  const savedGuidesList = (savedGuidesData ?? [])
+    .map((sg) => ({ slug: sg.guide_slug, savedAt: sg.saved_at, meta: GUIDES.find((g) => g.slug === sg.guide_slug) }))
+    .filter((sg): sg is { slug: string; savedAt: string; meta: NonNullable<typeof sg.meta> } => !!sg.meta);
   const premiumArticlesCount = allPosts.filter((p) => p.is_premium).length;
 
   const totalPosts = allPosts.length;
@@ -237,6 +247,20 @@ export default async function DashboardPage() {
             categoryName: (p.categories as any)?.name ?? null,
           }))}
         />
+      </div>
+
+      {/* ── Guías guardadas ── */}
+      <div className="dash-section">
+        <div className="dash-section-head">
+          <h2 className="dash-section-title">
+            Guías guardadas
+            {savedGuidesList.length > 0 && (
+              <span className="dash-count-pill">{savedGuidesList.length}</span>
+            )}
+          </h2>
+          <Link href="/guias" className="dash-link-orange">Ver guías →</Link>
+        </div>
+        <DashboardSavedGuides initialGuides={savedGuidesList} />
       </div>
 
       {/* ── Diccionario guardado ── */}

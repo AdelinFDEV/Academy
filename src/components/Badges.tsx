@@ -4,6 +4,19 @@ import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Star } from "lucide-react";
 
+function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="1" y="8.5" width="6" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <rect x="8.5" y="1" width="7" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <rect x="8.5" y="17" width="7" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <rect x="17" y="8.5" width="6" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M7 12h1.5M15.5 12H17M12 7v1.5M12 15.5V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.7"/>
+    </svg>
+  );
+}
+
 /* ─── Badge definitions ──────────────────────────────────── */
 
 interface BadgeDef {
@@ -84,8 +97,8 @@ export const GUIDE_BADGE_DEFS: BadgeDef[] = [
     id: "guide-blockchain",
     label: "Arquitecto de Cadenas",
     condition: "Completa el quiz de ¿Qué es la Blockchain? con 5/5 respuestas correctas",
-    icon: <span style={{ fontSize: 24 }}>🔗</span>,
-    bigIcon: <span style={{ fontSize: 48 }}>🔗</span>,
+    icon: <BlockchainBadgeIcon size={24} />,
+    bigIcon: <BlockchainBadgeIcon size={48} />,
     special: true,
     guideSlug: "que-es-la-blockchain",
     guideTitle: "¿Qué es la Blockchain?",

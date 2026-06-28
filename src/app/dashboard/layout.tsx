@@ -7,6 +7,7 @@ import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import LiveCounter from "@/components/LiveCounter";
+import StreakTracker from "@/components/StreakTracker";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -53,6 +54,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <BlogMobileMenu user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
       </nav>
 
+      <StreakTracker />
       {children}
     </div>
   );
