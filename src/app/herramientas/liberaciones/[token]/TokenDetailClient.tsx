@@ -60,13 +60,13 @@ export default function TokenDetailClient({ token, isPremium }: Props) {
 
   // Monthly chart data — next 12 months
   const chartData = useMemo(() => {
-    const months: Record<string, Record<string, number>> = {};
+    const months: Record<string, Record<string, string | number>> = {};
     const allFuture = getUpcomingUnlocks(token, TODAY, 13).filter(e => new Date(e.date) >= TODAY);
 
     for (const e of allFuture) {
       const key = fmtMonth(e.date);
       if (!months[key]) months[key] = { month: key };
-      months[key][e.category] = (months[key][e.category] ?? 0) + e.tokens / 1_000_000;
+      months[key][e.category] = ((months[key][e.category] as number) ?? 0) + e.tokens / 1_000_000;
     }
     return Object.values(months).slice(0, 12);
   }, [token]);
@@ -183,7 +183,7 @@ export default function TokenDetailClient({ token, isPremium }: Props) {
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number) => [`${value.toFixed(1)}%`, "Porcentaje"]}
+                  formatter={(value) => [`${Number(value).toFixed(1)}%`, "Porcentaje"]}
                   contentStyle={{ background: "#0f2040", border: "1px solid rgba(240,244,255,0.1)", borderRadius: 8, color: "#dce8f8", fontSize: 12 }}
                 />
               </PieChart>
@@ -218,7 +218,7 @@ export default function TokenDetailClient({ token, isPremium }: Props) {
                 <XAxis dataKey="month" tick={{ fill: "#b0c4d8", fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: "#b0c4d8", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}B` : `${v}M`} />
                 <Tooltip
-                  formatter={(value: number, name: string) => [`${value.toFixed(1)}M ${token.symbol}`, name]}
+                  formatter={(value, name) => [`${Number(value).toFixed(1)}M ${token.symbol}`, String(name)]}
                   contentStyle={{ background: "#0f2040", border: "1px solid rgba(240,244,255,0.1)", borderRadius: 8, color: "#dce8f8", fontSize: 12 }}
                 />
                 <Legend wrapperStyle={{ fontSize: 11, color: "#b0c4d8" }} />
