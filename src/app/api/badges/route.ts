@@ -62,8 +62,11 @@ export async function POST() {
     );
   }
 
+  // Union computed badges with manually-granted ones already in DB (e.g. guide badges)
+  const allEarned = [...new Set([...earnedNow, ...Array.from(savedBadgeIds)])];
+
   return NextResponse.json({
-    earned: earnedNow,
+    earned: allEarned,
     newlyUnlocked,
     stats: { readCount, savedCount, categoriesRead, maxStreak },
   });

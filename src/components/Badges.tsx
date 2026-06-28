@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
-import { Sprout, BookOpen, Book, Trophy, Flame, Zap, Gem, Bookmark, Compass, Star } from "lucide-react";
+import Link from "next/link";
+import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Star } from "lucide-react";
 
 /* ─── Badge definitions ──────────────────────────────────── */
 
@@ -13,6 +14,8 @@ interface BadgeDef {
   icon: React.ReactNode;
   bigIcon: React.ReactNode;
   special?: boolean;
+  guideSlug?: string;
+  guideTitle?: string;
 }
 
 export const BADGE_DEFS: BadgeDef[] = [
@@ -73,6 +76,19 @@ export const BADGE_DEFS: BadgeDef[] = [
     condition: "Lee artículos de al menos 3 categorías distintas",
     icon: <Compass size={24} aria-hidden="true" />,
     bigIcon: <Compass size={48} aria-hidden="true" />,
+  },
+];
+
+export const GUIDE_BADGE_DEFS: BadgeDef[] = [
+  {
+    id: "guide-blockchain",
+    label: "Arquitecto de Cadenas",
+    condition: "Completa el quiz de ¿Qué es la Blockchain? con 5/5 respuestas correctas",
+    icon: <span style={{ fontSize: 24 }}>🔗</span>,
+    bigIcon: <span style={{ fontSize: 48 }}>🔗</span>,
+    special: true,
+    guideSlug: "que-es-la-blockchain",
+    guideTitle: "¿Qué es la Blockchain?",
   },
 ];
 
@@ -178,6 +194,7 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
   }, []);
 
   const unlockedCount = BADGE_DEFS.filter((b) => earned.has(b.id)).length;
+  const guideUnlockedCount = GUIDE_BADGE_DEFS.filter((b) => earned.has(b.id)).length;
 
   return (
     <>
@@ -201,12 +218,11 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
           <span className="streak-max">Mejor racha: {maxStreak} días</span>
         </div>
 
-        {/* Badges */}
+        {/* Activity badges */}
         <div className="badges-header">
-          <span className="badges-title">Logros</span>
+          <span className="badges-title">Logros de Actividad</span>
           <span className="badges-progress">{unlockedCount} / {BADGE_DEFS.length} desbloqueados</span>
         </div>
-
         <div className="badges-grid">
           {BADGE_DEFS.map((badge) => {
             const unlocked = earned.has(badge.id);
@@ -229,6 +245,40 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
                   )}
                 </div>
               </div>
+            );
+          })}
+        </div>
+
+        {/* Guide badges */}
+        <div className="badges-header" style={{ marginTop: 36 }}>
+          <span className="badges-title">Logros de Guías</span>
+          <span className="badges-progress">{guideUnlockedCount} / {GUIDE_BADGE_DEFS.length} desbloqueados</span>
+        </div>
+        <p className="badges-guide-sub">
+          Completa el quiz de cada guía con puntuación perfecta para desbloquear el badge exclusivo.
+        </p>
+        <div className="badges-guide-grid">
+          {GUIDE_BADGE_DEFS.map((badge) => {
+            const unlocked = earned.has(badge.id);
+            const inner = (
+              <div className={`badge-guide-card${unlocked ? " unlocked" : " locked"}`}>
+                <div className="badge-guide-icon">{badge.icon}</div>
+                <div className="badge-guide-info">
+                  <div className="badge-guide-label">{badge.label}</div>
+                  <div className="badge-guide-title">{badge.guideTitle}</div>
+                  <div className="badge-guide-cond">{badge.condition}</div>
+                </div>
+                <div className={`badge-guide-status${unlocked ? " ok" : " ko"}`}>
+                  {unlocked ? "Desbloqueado" : "Pendiente"}
+                </div>
+              </div>
+            );
+            return badge.guideSlug ? (
+              <Link key={badge.id} href={`/guias/${badge.guideSlug}`} className="badge-guide-link">
+                {inner}
+              </Link>
+            ) : (
+              <div key={badge.id}>{inner}</div>
             );
           })}
         </div>

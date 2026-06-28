@@ -15469,3 +15469,40 @@ select {
   .gbc-mine-wrap { padding: 18px; }
   .gbc-mine-header { flex-direction: column; }
 }
+
+/* ── Quiz enhancements ───────────────────────────────────── */
+.gbc-quiz-unlock-hint { background: rgba(230,180,85,0.07); border: 1px solid rgba(230,180,85,0.2); border-radius: 12px; padding: 14px 18px; font-size: 14px; color: #dce8f8; line-height: 1.6; margin-bottom: 24px; }
+.gbc-quiz-unlock-hint strong { color: var(--gold); }
+.gbc-q-dot.done-ko { background: rgba(239,68,68,0.4); }
+
+@keyframes gbc-correct-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.5); transform: scale(1); }
+  40%  { box-shadow: 0 0 0 10px rgba(34,197,94,0); transform: scale(1.015); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); transform: scale(1); }
+}
+.gbc-quiz-opt.ok { animation: gbc-correct-pulse 0.65s ease forwards; }
+
+@keyframes gbc-burst-up {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  60%  { opacity: 1; transform: translateY(-18px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-36px) scale(0.9); }
+}
+.gbc-correct-burst { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 700; color: #4ade80; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 3px 10px; animation: gbc-burst-up 0.9s ease forwards; pointer-events: none; white-space: nowrap; }
+
+/* ── Guide badges section in dashboard ───────────────────── */
+.badges-guide-sub { font-size: 13px; color: #8fa3b8; margin: 6px 0 18px; }
+.badges-guide-grid { display: flex; flex-direction: column; gap: 12px; }
+.badges-guide-link { text-decoration: none; display: block; }
+.badge-guide-card { display: flex; align-items: center; gap: 16px; background: linear-gradient(135deg, #0f2040, #0a1628); border: 1px solid rgba(230,180,85,0.15); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s, transform 0.15s; cursor: pointer; }
+.badge-guide-card.unlocked { border-color: rgba(230,180,85,0.4); background: linear-gradient(135deg, rgba(230,180,85,0.06), #0a1628); }
+.badge-guide-card.locked { opacity: 0.65; filter: grayscale(0.4); }
+.badges-guide-link:hover .badge-guide-card { border-color: var(--gold-border); transform: translateY(-2px); }
+.badge-guide-icon { font-size: 32px; flex-shrink: 0; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; background: rgba(230,180,85,0.08); border-radius: 12px; border: 1px solid rgba(230,180,85,0.18); }
+.badge-guide-card.locked .badge-guide-icon { filter: grayscale(1); opacity: 0.5; }
+.badge-guide-info { flex: 1; min-width: 0; }
+.badge-guide-label { font-size: 15px; font-weight: 700; color: var(--gold); margin-bottom: 2px; }
+.badge-guide-title { font-size: 12px; color: #8fa3b8; margin-bottom: 3px; }
+.badge-guide-cond { font-size: 12px; color: #4a6080; }
+.badge-guide-status { flex-shrink: 0; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
+.badge-guide-status.ok { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+.badge-guide-status.ko { background: rgba(255,255,255,0.04); color: #4a6080; border: 1px solid rgba(255,255,255,0.08); }
