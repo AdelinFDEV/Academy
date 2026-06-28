@@ -9556,14 +9556,15 @@ select {
 /* â”€â”€ Thumbnail â”€â”€ */
 .feed-post-thumb {
   flex-shrink: 0;
-  width: 72px;
-  height: 72px;
-  border-radius: 8px;
+  width: 350px;
+  height: 196px;
+  border-radius: 12px;
   overflow: hidden;
   background: var(--bg-card-alt);
   display: none;
   border: var(--card-border);
   position: relative;
+  align-self: center;
 }
 
 .feed-post-thumb img {
