@@ -156,12 +156,11 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </Link>
 
-              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
+              <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/portfolio"} className={`blog-mobile-tool-link${a("/portfolio")}`} onClick={close}>
                 <PieChart size={15} aria-hidden="true" />
                 Portfolio Spot
-                <span className="mobile-premium-badge" style={{ opacity: 0.7 }}>PREMIUM</span>
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </div>
+                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
+              </Link>
 
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">
                 <MessageSquare size={15} aria-hidden="true" />

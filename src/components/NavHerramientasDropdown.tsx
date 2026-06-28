@@ -117,7 +117,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             </span>
             <span>
               <span className="nav-tools-item-name">Portfolio Spot</span>
-              <span className="nav-tools-item-desc">Mis posiciones en tiempo real</span>
+              <span className="nav-tools-item-desc">Sigue las compras de AdelinBTC en SPOT</span>
             </span>
             {tradingLocked && <span className="nav-tools-badge--premium">PREMIUM</span>}
           </Link>

@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map } from "lucide-react";
+import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map, Sparkles } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import LogoutButton from "@/components/LogoutButton";
@@ -147,13 +147,21 @@ export default async function HomePage() {
 
           <div className="home-banner-actions hero-anim hero-anim-5">
             {user ? (
-              <Link href="/dashboard" className="hero-btn-primary hero-btn-glowing">
-                Ir a mi Academia <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
-              </Link>
+              <>
+                <Link href="/dashboard" className="hero-btn-primary hero-btn-glowing">
+                  Ir a mi Academia <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
+                </Link>
+                <Link href="#guias-premium" className="hero-btn-gold">
+                  Guías Premium <Sparkles size={18} strokeWidth={2.5} />
+                </Link>
+              </>
             ) : (
               <>
                 <Link href="/register" className="hero-btn-primary hero-btn-glowing">
                   Empieza Gratis Ahora <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
+                </Link>
+                <Link href="#guias-premium" className="hero-btn-gold">
+                  Guías Premium <Sparkles size={18} strokeWidth={2.5} />
                 </Link>
               </>
             )}
@@ -232,23 +240,23 @@ export default async function HomePage() {
               <Link href={!user ? "/register" : "/calculadora"} className="sidebar-tool-link">
                 <Crosshair size={16} className="sidebar-tool-icon" />
                 <span>Predicción de Precio</span>
-                {!user && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
+                {!user && <span className="sidebar-tool-badge--free">GRATIS</span>}
               </Link>
               <Link href={!user ? "/register" : "/dashboard/watchlist"} className="sidebar-tool-link">
                 <ScanEye size={16} className="sidebar-tool-icon" />
                 <span>Mi Watchlist</span>
-                {!user && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
+                {!user && <span className="sidebar-tool-badge--free">GRATIS</span>}
               </Link>
               <Link href={!user ? "/register" : "/logros"} className="sidebar-tool-link">
                 <Medal size={16} className="sidebar-tool-icon" />
                 <span>Logros y XP</span>
-                {!user && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
+                {!user && <span className="sidebar-tool-badge--free">GRATIS</span>}
               </Link>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
+              <Link href={!user ? "/register" : "/portfolio"} className="sidebar-tool-link sidebar-tool-link--dimmed">
                 <Wallet size={16} className="sidebar-tool-icon" />
                 <span>Portfolio Spot</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
+                <span className="sidebar-tool-badge--premium">PREMIUM</span>
+              </Link>
               <div className="sidebar-tool-link sidebar-tool-link--soon">
                 <ListOrdered size={16} className="sidebar-tool-icon" />
                 <span>Ranking</span>

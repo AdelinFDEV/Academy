@@ -8,7 +8,7 @@ import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
-import { NotebookPen, Radar, MessagesSquare, Gem, Check, ArrowRight, Crown } from "lucide-react";
+import { NotebookPen, Radar, Lightbulb, Gem, Check, ArrowRight, Crown, ShieldCheck, Users, Zap, Timer } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Hazte Premium | AdelinBTC Academy",
@@ -17,10 +17,10 @@ export const metadata: Metadata = {
 };
 
 const PERKS = [
-  { Icon: NotebookPen, title: "Diario de Trading", desc: "Registra cada operación y descubre qué te hace ganar." },
+  { Icon: NotebookPen, title: "Diario de Trading Profesional", desc: "Registra todas tus operaciones, calcula tu win rate y descubre qué te hace rentable." },
   { Icon: Radar, title: "Señales en Spot", desc: "Entradas y salidas con criterio, no con corazonadas." },
-  { Icon: MessagesSquare, title: "Sala de Chat", desc: "Comunidad privada en tiempo real, sin ruido ni gurús." },
-  { Icon: Gem, title: "Artículos y herramientas exclusivas", desc: "Análisis avanzados, watchlist, estadísticas y todo lo que viene." },
+  { Icon: Lightbulb, title: "Guías Estratégicas", desc: "Tutoriales y pasos prácticos para aprovechar las mejores oportunidades del mercado." },
+  { Icon: Gem, title: "Artículos y recursos pro", desc: "Análisis avanzados, watchlist, estadísticas y todo lo que viene." },
 ];
 
 export default async function PremiumPage() {
@@ -59,63 +59,96 @@ export default async function PremiumPage() {
         <BlogMobileMenu user={!!user} isPremium={isPremium} />
       </nav>
 
-      <main className="blog-main premium-gate-page">
+      <main className="blog-main">
         {isPremium ? (
-          <div className="premium-gate-unlocked">
-            <div className="premium-gate-unlocked-icon"><Crown size={34} aria-hidden="true" /></div>
-            <h1 className="premium-gate-unlocked-title">Ya eres Premium</h1>
-            <p className="premium-gate-unlocked-sub">
-              Tienes acceso completo a todas las herramientas y contenido exclusivo.
-              Gracias por apoyar el proyecto.
-            </p>
-            <div className="premium-gate-actions">
-              <Link href="/dashboard" className="btn-primary">Ir a mi academia →</Link>
+          <div className="premium-gate-page">
+            <div className="premium-gate-unlocked">
+              <div className="premium-gate-unlocked-icon"><Crown size={34} aria-hidden="true" /></div>
+              <h1 className="premium-gate-unlocked-title">Ya eres Premium</h1>
+              <p className="premium-gate-unlocked-sub">
+                Tienes acceso completo a todas las herramientas y contenido exclusivo.
+                Gracias por apoyar el proyecto.
+              </p>
+              <div className="premium-gate-actions">
+                <Link href="/dashboard" className="btn-primary">Ir a mi academia →</Link>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="premium-plan">
-            <div className="premium-gate-header">
-              <div className="premium-gate-pill">PREMIUM</div>
-              <h1 className="premium-gate-title">Hazte Premium</h1>
-              <p className="premium-gate-sub">
-                Todo lo que necesitas para operar con criterio y aprender de verdad.<br />
-                Sin permanencia. Cancela cuando quieras.
+          <div className="premium-new-layout">
+            <div className="premium-hero">
+              <div className="premium-hero-badge">
+                <span className="pulse-dot"></span> Plazas limitadas
+              </div>
+              <h1 className="premium-hero-title">
+                Deja de operar a ciegas.<br/>Empieza a operar con <span>ventaja</span>.
+              </h1>
+              <p className="premium-hero-sub">
+                Únete a la academia Premium y desbloquea las herramientas, análisis y comunidad que necesitas para dominar el mercado cripto.
               </p>
+              
+              <div className="premium-hero-trust">
+                <div className="trust-item"><Users size={16} /> +100 Traders activos</div>
+                <div className="trust-item"><ShieldCheck size={16} /> Cancela en 1 clic</div>
+              </div>
             </div>
 
-            <div className="premium-plan-card">
-              <ul className="premium-pitch-features premium-plan-features">
-                {PERKS.map(({ Icon, title, desc }) => (
-                  <li key={title} className="premium-pitch-feature">
-                    <span className="premium-pitch-feature-icon"><Icon size={16} aria-hidden="true" /></span>
-                    <span><strong>{title}</strong>{desc}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="premium-plan-checkout">
-                <div className="premium-pitch-price-wrapper">
-                  <span className="premium-pitch-limited">Por tiempo limitado</span>
-                  <div className="premium-pitch-price">
-                    <span className="premium-pitch-old-price">49,99€</span>
-                    <span className="premium-pitch-amount">19,99€</span>
-                    <span className="premium-pitch-period">/mes</span>
-                  </div>
+            <div className="premium-split-view">
+              <div className="premium-features-side">
+                <h2 className="premium-section-title">¿Qué incluye tu acceso?</h2>
+                <div className="premium-features-grid">
+                  {PERKS.map(({ Icon, title, desc }) => (
+                    <div key={title} className="premium-feature-card">
+                      <div className="premium-feature-icon-wrapper">
+                        <Icon size={24} strokeWidth={2} />
+                      </div>
+                      <h3>{title}</h3>
+                      <p>{desc}</p>
+                    </div>
+                  ))}
                 </div>
+              </div>
 
-                <Link href="/api/checkout" prefetch={false} className="premium-pitch-cta premium-plan-cta">
-                  {user ? "Suscribirme ahora" : "Empezar ahora"}
-                  <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-                </Link>
+              <div className="premium-pricing-side">
+                <div className="premium-pricing-card">
+                  <div className="premium-pricing-glow"></div>
+                  <div className="premium-pricing-header">
+                    <h3>Acceso Total</h3>
+                    <div className="premium-pricing-timer">
+                      <Timer size={14} /> Oferta termina pronto
+                    </div>
+                  </div>
+                  
+                  <div className="premium-pricing-amount-wrapper">
+                    <span className="premium-pricing-old">49,99€</span>
+                    <div className="premium-pricing-amount">
+                      19<span>,99€</span><small>/mes</small>
+                    </div>
+                  </div>
 
-                <p className="premium-pitch-note">
-                  <Check size={13} aria-hidden="true" /> Pago seguro con Stripe · Renovación mensual · Cancela cuando quieras
-                </p>
-                {!user && (
-                  <p className="premium-plan-login-note">
-                    ¿Ya tienes cuenta? <Link href="/login?next=/premium">Inicia sesión</Link>
-                  </p>
-                )}
+                  <ul className="premium-pricing-list">
+                    <li><Check size={16} /> Todo el contenido bloqueado</li>
+                    <li><Check size={16} /> Diario de Trading Profesional con Win Rate</li>
+                    <li><Check size={16} /> Alertas y Señales VIP</li>
+                    <li><Check size={16} /> Soporte prioritario</li>
+                  </ul>
+
+                  <Link href="/api/checkout" prefetch={false} className="premium-btn-agressive">
+                    <span className="premium-btn-text">{user ? "Desbloquear todo ahora" : "Empezar ahora"}</span>
+                    <ArrowRight size={18} strokeWidth={2.5} />
+                  </Link>
+
+                  <div className="premium-pricing-footer">
+                    <span><ShieldCheck size={14} style={{display: 'inline', marginBottom: '-2px'}}/> Garantía de satisfacción.</span>
+                    <span>Pagos encriptados por Stripe.</span>
+                  </div>
+                  
+                  {!user && (
+                    <p className="premium-plan-login-note" style={{marginTop: "16px", textAlign: "center"}}>
+                      ¿Ya tienes cuenta? <Link href="/login?next=/premium">Inicia sesión</Link>
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>

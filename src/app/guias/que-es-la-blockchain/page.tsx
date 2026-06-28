@@ -15,7 +15,11 @@ import GuideCharts from "./GuideCharts";
 import GuideQuiz from "./GuideQuiz";
 import GuideMineBlock from "./GuideMineBlock";
 import GuideDefiChart from "./GuideDefiChart";
+import GuideQuantumGame from "@/components/GuideQuantumGame";
+import GuideAnimatedStat from "@/components/GuideAnimatedStat";
+import GuideSpotlightCards from "@/components/GuideSpotlightCards";
 import GuideInteractions from "@/components/GuideInteractions";
+import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 
 export const metadata: Metadata = {
@@ -219,36 +223,7 @@ export default async function QueEsLaBlockchainPage() {
             </p>
           </div>
 
-          <div className="gbc-cards" style={{ marginTop: 28 }}>
-            <div className="gbc-card">
-              <div className="gbc-card-title">1. La transacción</div>
-              <div className="gbc-card-text">
-                <p>Alice quiere enviar 0.5 BTC a Bob. Firma la transacción con su clave privada — una prueba matemática de que ella autoriza el movimiento sin revelar la clave.</p>
-                <p>La transacción se emite a la red de miles de nodos que la validan: ¿Tiene Alice saldo suficiente? ¿La firma es válida?</p>
-              </div>
-            </div>
-            <div className="gbc-card">
-              <div className="gbc-card-title">2. El bloque</div>
-              <div className="gbc-card-text">
-                <p>Las transacciones válidas se agrupan en un bloque. El bloque incluye: un número de versión, el hash del bloque anterior (parent hash), el árbol Merkle de transacciones, la marca de tiempo y el nonce (en PoW).</p>
-                <p>El hash del bloque es la huella digital de todo ese contenido. Si cambias una coma, el hash cambia por completo.</p>
-              </div>
-            </div>
-            <div className="gbc-card">
-              <div className="gbc-card-title">3. El consenso</div>
-              <div className="gbc-card-text">
-                <p><strong style={{ color: "var(--gold)" }}>Proof of Work (Bitcoin):</strong> Los mineros compiten resolviendo un puzzle matemático. El primero en resolverlo añade el bloque y recibe la recompensa. Requiere energía real.</p>
-                <p><strong style={{ color: "var(--gold)" }}>Proof of Stake (Ethereum):</strong> Los validadores depositan ETH como garantía. Son seleccionados aleatoriamente. Si actúan de mala fe, pierden su depósito (slashing).</p>
-              </div>
-            </div>
-            <div className="gbc-card">
-              <div className="gbc-card-title">4. La inmutabilidad</div>
-              <div className="gbc-card-text">
-                <p>Si un atacante quisiera alterar una transacción del bloque 700.000, tendría que recalcular ese bloque y todos los posteriores — más rápido que el resto de la red combinada.</p>
-                <p>En Bitcoin, eso requeriría controlar más del 51% del hashrate global. El coste estimado: miles de millones de dólares en hardware y electricidad.</p>
-              </div>
-            </div>
-          </div>
+          <GuideFlipCards />
 
           <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
             <div className="gbc-box-title">La analogía del libro contable público</div>
@@ -303,36 +278,12 @@ export default async function QueEsLaBlockchainPage() {
               </div>
 
               <div className="gbc-stats">
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">$2.17T</div>
-                  <div className="gbc-stat-lbl">Market cap crypto global</div>
-                  <div className="gbc-stat-src">CoinMarketCap, Jun 2026</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">$71.77B</div>
-                  <div className="gbc-stat-lbl">TVL en DeFi</div>
-                  <div className="gbc-stat-src">DeFiLlama, Jun 2026</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">$32B+</div>
-                  <div className="gbc-stat-lbl">RWA tokenizados</div>
-                  <div className="gbc-stat-src">RWA.xyz, Jun 2026</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">350M+</div>
-                  <div className="gbc-stat-lbl">Usuarios activos estimados</div>
-                  <div className="gbc-stat-src">Chainalysis, Triple-A</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">130+</div>
-                  <div className="gbc-stat-lbl">Países con CBDC en desarrollo</div>
-                  <div className="gbc-stat-src">Atlantic Council CBDC Tracker</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">$10B+</div>
-                  <div className="gbc-stat-lbl">ETFs Bitcoin spot (primeras semanas)</div>
-                  <div className="gbc-stat-src">Bloomberg, ene 2024</div>
-                </div>
+                <GuideAnimatedStat end={2.17} prefix="$" suffix="T" decimals={2} label="Market cap crypto global" source="CoinMarketCap, Jun 2026" />
+                <GuideAnimatedStat end={71.77} prefix="$" suffix="B" decimals={2} label="TVL en DeFi" source="DeFiLlama, Jun 2026" />
+                <GuideAnimatedStat end={32} prefix="$" suffix="B+" decimals={0} label="RWA tokenizados" source="RWA.xyz, Jun 2026" />
+                <GuideAnimatedStat end={350} suffix="M+" decimals={0} label="Usuarios activos estimados" source="Chainalysis, Triple-A" />
+                <GuideAnimatedStat end={130} suffix="+" decimals={0} label="Países con CBDC en desarrollo" source="Atlantic Council CBDC Tracker" />
+                <GuideAnimatedStat end={10} prefix="$" suffix="B+" decimals={0} label="ETFs Bitcoin spot (primeras semanas)" source="Bloomberg, ene 2024" />
               </div>
 
               <GuideCharts chart="adoption" />
@@ -358,16 +309,7 @@ export default async function QueEsLaBlockchainPage() {
                   Más allá del precio de Bitcoin, la blockchain resuelve problemas concretos en industrias reales. Estos no son casos hipotéticos — están en producción hoy, con millones de usuarios y miles de millones en valor.
                 </p>
               </div>
-              <div className="gbc-use-grid">
-                {USES.map((u) => (
-                  <div key={u.title} className="gbc-use-c">
-                    <div className="gbc-use-icon">{u.icon}</div>
-                    <div className="gbc-use-t">{u.title}</div>
-                    <div className="gbc-use-d">{u.desc}</div>
-                    <div className="gbc-use-ex">Ejemplos: {u.ex}</div>
-                  </div>
-                ))}
-              </div>
+              <GuideSpotlightCards uses={USES} />
 
               <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
                 <div className="gbc-box-title">El caso Ethereum: el ordenador mundial</div>
@@ -482,6 +424,8 @@ export default async function QueEsLaBlockchainPage() {
                   </div>
                 </div>
               </div>
+
+              <GuideQuantumGame />
 
               <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
                 <div className="gbc-box-title">El riesgo más inmediato: «harvest now, decrypt later»</div>

@@ -39,11 +39,11 @@ const TOOLS: NavTool[] = [
     requiresPremium: false,
   },
   {
-    href: "#",
+    href: "/portfolio",
     label: "Portfolio Spot",
     icon: "folder",
     requiresPremium: true,
-    isSoon: true,
+    isSoon: false,
   },
   {
     href: "/ranking",

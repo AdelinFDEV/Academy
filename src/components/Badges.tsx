@@ -267,31 +267,35 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
           <span className="badges-title">Logros de Guías</span>
           <span className="badges-progress">{guideUnlockedCount} / {GUIDE_BADGE_DEFS.length} desbloqueados</span>
         </div>
-        <p className="badges-guide-sub">
-          Completa el quiz de cada guía con puntuación perfecta para desbloquear el badge exclusivo.
+        <p className="badges-guide-sub" style={{marginBottom: "20px"}}>
+          Completa el quiz de cada guía con puntuación perfecta para desbloquear el logro exclusivo.
         </p>
-        <div className="badges-guide-grid">
+        <div className="badges-grid">
           {GUIDE_BADGE_DEFS.map((badge) => {
             const unlocked = earned.has(badge.id);
-            const inner = (
-              <div className={`badge-guide-card${unlocked ? " unlocked" : " locked"}`}>
-                <div className="badge-guide-icon">{badge.icon}</div>
-                <div className="badge-guide-info">
-                  <div className="badge-guide-label">{badge.label}</div>
-                  <div className="badge-guide-title">{badge.guideTitle}</div>
-                  <div className="badge-guide-cond">{badge.condition}</div>
+            const content = (
+              <div className={`badge-item${unlocked ? " unlocked" : " locked"}${badge.special ? " special" : ""}`}>
+                <div className="badge-icon">
+                  {badge.icon}
+                  {badge.special && !unlocked && <span className="badge-special-star">★</span>}
                 </div>
-                <div className={`badge-guide-status${unlocked ? " ok" : " ko"}`}>
-                  {unlocked ? "Desbloqueado" : "Pendiente"}
+                <span className="badge-label">{badge.label}</span>
+                <div className="badge-tooltip">
+                  <p className="badge-tooltip-condition">{badge.condition}</p>
+                  {badge.reward && (
+                    <p className="badge-tooltip-reward">
+                      <span className="badge-tooltip-reward-star">★</span> {badge.reward}
+                    </p>
+                  )}
                 </div>
               </div>
             );
             return badge.guideSlug ? (
-              <Link key={badge.id} href={`/guias/${badge.guideSlug}`} className="badge-guide-link">
-                {inner}
+              <Link key={badge.id} href={`/guias/${badge.guideSlug}`} style={{textDecoration: 'none', color: 'inherit', display: 'block'}}>
+                {content}
               </Link>
             ) : (
-              <div key={badge.id}>{inner}</div>
+              <div key={badge.id}>{content}</div>
             );
           })}
         </div>

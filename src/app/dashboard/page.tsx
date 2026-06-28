@@ -3,7 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Network, Lock, Clock } from "lucide-react";
+import { Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Network, Lock, Clock, Newspaper, Map } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import { GUIDES } from "@/lib/guides";
 
@@ -75,6 +75,8 @@ export default async function DashboardPage() {
         { href: "/logros", Icon: Medal,     name: "Logros y XP",          desc: "Tu progreso y rachas",            locked: false, soon: false },
         { href: "/calculadora", Icon: Crosshair, name: "Predicción de Precio", desc: "¿Qué Market Cap necesita tu token?", locked: false, soon: false },
         { href: "/glosario",    Icon: BookA,     name: "Diccionario Cripto",   desc: "Términos clave explicados",        locked: false, soon: false },
+        { href: "/articulos",   Icon: Newspaper, name: "Artículos",            desc: "Lee todo nuestro contenido",       locked: false, soon: false },
+        { href: "/guias",       Icon: Map,       name: "Guías",                desc: "Tu hoja de ruta de aprendizaje",   locked: false, soon: false },
       ],
     },
     {
@@ -82,7 +84,7 @@ export default async function DashboardPage() {
       tools: [
         { href: isPremium ? "/dashboard/trading" : "#", Icon: NotebookPen, name: "Diario de Trading", desc: "Registra y analiza tus operaciones", locked: !isPremium, soon: false },
         { href: "/dashboard/watchlist",                  Icon: ScanEye,    name: "Watchlist",         desc: "Sigue el precio de tus coins",      locked: false,      soon: false },
-        { href: "#",                                     Icon: Wallet,     name: "Portfolio Spot",    desc: "Gestiona tus holdings de crypto",   locked: true,       soon: true  },
+        { href: isPremium ? "/portfolio" : "#",          Icon: Wallet,     name: "Portfolio Spot",    desc: "Sigue las compras de AdelinBTC en SPOT",   locked: !isPremium, soon: false },
       ],
     },
     {
@@ -196,6 +198,58 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      {/* ── Últimas guías publicadas ── */}
+      <div className="dash-section">
+        <div className="dash-section-head">
+          <h2 className="dash-section-title">Últimas guías publicadas</h2>
+          <Link href="/guias" className="dash-link-orange">Ver todas →</Link>
+        </div>
+        <div className="dash-continue-list">
+          {[...GUIDES].reverse().slice(0, 3).map((guide) => (
+            <Link key={guide.slug} href={`/guias/${guide.slug}`} className="dash-continue-card" style={{borderColor: `color-mix(in srgb, ${guide.color} 30%, transparent)`}}>
+              <div
+                className="dash-continue-thumb"
+                style={{ background: `linear-gradient(145deg, var(--card-bg), color-mix(in srgb, ${guide.color} 15%, transparent))` }}
+              >
+                <Icon name="map" size={26} style={{ color: guide.color }} />
+                {guide.type === "premium" && <span className="dash-mini-badge">PREMIUM</span>}
+              </div>
+              <div className="dash-continue-body">
+                <span className="dash-continue-cat" style={{ color: guide.color }}>Guía Interactiva • {guide.difficulty}</span>
+                <h3 className="dash-continue-title">{guide.title}</h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Últimos artículos publicados ── */}
+      <div className="dash-section">
+        <div className="dash-section-head">
+          <h2 className="dash-section-title">Últimos artículos publicados</h2>
+          <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+        </div>
+        <div className="dash-continue-list">
+          {allPosts.slice(0, 3).map((post) => (
+            <Link key={post.id} href={`/post/${post.slug}`} className="dash-continue-card">
+              <div
+                className="dash-continue-thumb"
+                style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
+              >
+                {!post.cover_image && <Icon name="chart" size={26} />}
+                {post.is_premium && <span className="dash-mini-badge">PREMIUM</span>}
+              </div>
+              <div className="dash-continue-body">
+                {(post.categories as any)?.name && (
+                  <span className="dash-continue-cat">{(post.categories as any).name}</span>
+                )}
+                <h3 className="dash-continue-title">{post.title}</h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
       {/* ── Continúa leyendo ── */}
       {continueReading.length > 0 && (
         <div className="dash-section">
@@ -225,11 +279,11 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* ── Guardados ── */}
+      {/* ── Artículos guardados ── */}
       <div className="dash-section">
         <div className="dash-section-head">
           <h2 className="dash-section-title">
-            Guardados
+            Artículos guardados
             {savedPosts.length > 0 && (
               <span className="dash-count-pill">{savedPosts.length}</span>
             )}

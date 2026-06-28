@@ -17,7 +17,7 @@ export default function GuidesHomeSection() {
   const g = PLACEHOLDER_GUIDE;
 
   return (
-    <section className="guides-home-section">
+    <section id="guias-premium" className="guides-home-section">
       {/* Ambient glow */}
       <div className="guides-home-glow" aria-hidden="true" />
 
@@ -73,7 +73,7 @@ export default function GuidesHomeSection() {
               </span>
               <span className="guides-meta-item">
                 <Trophy size={14} aria-hidden="true" />
-                Badge: {g.badge}
+                Logro: {g.badge}
               </span>
             </div>
 
@@ -95,7 +95,7 @@ export default function GuidesHomeSection() {
             </div>
             <div className="guides-stat-card">
               <span className="guides-stat-num">1</span>
-              <span className="guides-stat-label">Badge exclusivo</span>
+              <span className="guides-stat-label">Logro exclusivo</span>
             </div>
             <div className="guides-stat-card guides-stat-card--cta">
               <span className="guides-stat-cta-text">Todas las guías</span>

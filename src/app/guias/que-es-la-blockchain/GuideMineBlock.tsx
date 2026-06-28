@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Pickaxe, Hash, CheckCircle2, XCircle, Zap, RefreshCw, Cpu } from "lucide-react";
 
 async function sha256hex(msg: string): Promise<string> {
   const buf = new TextEncoder().encode(msg);
@@ -28,6 +29,7 @@ export default function GuideMineBlock() {
   const [found, setFound] = useState(false);
   const [difficulty, setDifficulty] = useState(2);
   const [attempts, setAttempts] = useState(0);
+  const [hashRate, setHashRate] = useState(0); // Hashes por segundo simulados
   const stopRef = useRef(false);
 
   useEffect(() => {
@@ -51,15 +53,25 @@ export default function GuideMineBlock() {
     setMining(true);
     setFound(false);
     setAttempts(0);
+    
     let n = 0;
     let att = 0;
-    const BATCH = difficulty >= 3 ? 100 : 30;
+    let startTime = performance.now();
+    const BATCH = difficulty >= 3 ? 200 : 50;
+
     while (!stopRef.current) {
       const promises = Array.from({ length: BATCH }, (_, i) =>
         sha256hex(blockStr(n + i)).then((h) => ({ n: n + i, h }))
       );
       const results = await Promise.all(promises);
       att += BATCH;
+      
+      const currentTime = performance.now();
+      const elapsedSec = (currentTime - startTime) / 1000;
+      if (elapsedSec > 0.5) {
+        setHashRate(Math.floor(att / elapsedSec));
+      }
+
       const hit = results.find((r) => r.h.startsWith(prefix));
       if (hit) {
         setNonce(hit.n);
@@ -68,16 +80,24 @@ export default function GuideMineBlock() {
         setAttempts(att);
         setFound(true);
         setMining(false);
+        setHashRate(0);
         return;
       }
+      
       n += BATCH;
-      setNonce(results[BATCH - 1].n);
-      setNonceInput(String(results[BATCH - 1].n));
-      setHash(results[BATCH - 1].h);
-      setAttempts(att);
+      
+      // Actualizamos UI solo a veces para no trabar el navegador,
+      // pero dando la sensación visual de que cambia súper rápido.
+      if (att % (BATCH * 2) === 0) {
+        setNonceInput(String(results[BATCH - 1].n));
+        setHash(results[BATCH - 1].h);
+        setAttempts(att);
+      }
+      
       await new Promise((r) => setTimeout(r, 0));
     }
     setMining(false);
+    setHashRate(0);
   }, [mining, prefix, difficulty]);
 
   const reset = () => {
@@ -88,6 +108,7 @@ export default function GuideMineBlock() {
       setNonceInput("0");
       setFound(false);
       setAttempts(0);
+      setHashRate(0);
     }, 60);
   };
 
@@ -95,23 +116,26 @@ export default function GuideMineBlock() {
   const rest = hash.slice(difficulty);
 
   return (
-    <div className="gbc-mine-wrap">
+    <div className={`gbc-mine-wrap ${found ? 'is-mined' : ''}`}>
       {/* Header */}
       <div className="gbc-mine-header">
         <div>
-          <div className="gbc-mine-title">Simulador: mina un bloque</div>
+          <div className="gbc-mine-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Cpu size={20} /> Simulador: Mina tu propio Bloque
+          </div>
           <div className="gbc-mine-sub">
-            El minero prueba nonces hasta que el hash empieza por{" "}
+            Modifica el Nonce para cambiar el Hash. El bloque será válido cuando el Hash empiece por{" "}
             <code className="gbc-mine-code">{prefix}...</code>
           </div>
         </div>
         <div className="gbc-mine-diff">
-          <span className="gbc-mine-diff-lbl">Dificultad</span>
+          <span className="gbc-mine-diff-lbl">Nivel de Dificultad</span>
           {[1, 2, 3].map((d) => (
             <button
               key={d}
               className={`gbc-diff-btn${difficulty === d ? " active" : ""}`}
               onClick={() => { setDifficulty(d); reset(); }}
+              disabled={mining}
             >
               {"0".repeat(d)}…
             </button>
@@ -122,13 +146,15 @@ export default function GuideMineBlock() {
       <div className="gbc-mine-body">
         {/* Block card */}
         <div className="gbc-mine-block">
-          <div className="gbc-mine-block-hd">Bloque #842.001</div>
+          <div className="gbc-mine-block-hd" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            Bloque #842.001
+          </div>
           <div className="gbc-mine-row">
-            <span className="gbc-mine-k">Bloque anterior</span>
+            <span className="gbc-mine-k">Bloque anterior (Link a la cadena)</span>
             <code className="gbc-mine-v gbc-mine-v--hash">{PREV}</code>
           </div>
           <div className="gbc-mine-row gbc-mine-row--txs">
-            <span className="gbc-mine-k">Transacciones</span>
+            <span className="gbc-mine-k">Transacciones incluidas</span>
             <div className="gbc-mine-txs">
               {TXNS.map((t, i) => (
                 <div key={i} className="gbc-mine-tx">{t}</div>
@@ -136,9 +162,11 @@ export default function GuideMineBlock() {
             </div>
           </div>
           <div className="gbc-mine-row gbc-mine-row--nonce">
-            <span className="gbc-mine-k">Nonce</span>
+            <span className="gbc-mine-k" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--gold)' }}>
+              Nonce (El número mágico)
+            </span>
             <input
-              className="gbc-mine-nonce-inp"
+              className={`gbc-mine-nonce-inp ${mining ? 'is-mining' : ''}`}
               type="number"
               value={nonceInput}
               min={0}
@@ -150,7 +178,9 @@ export default function GuideMineBlock() {
 
         {/* Result panel */}
         <div className="gbc-mine-result">
-          <div className="gbc-mine-hash-lbl">SHA-256 del bloque</div>
+          <div className="gbc-mine-hash-lbl" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Hash size={14} /> SHA-256 RESULTANTE
+          </div>
           <div className={`gbc-mine-hash${valid ? " gbc-mine-hash--ok" : ""}`}>
             {hash ? (
               <>
@@ -161,40 +191,48 @@ export default function GuideMineBlock() {
               <span className="gbc-hash-rest">calculando…</span>
             )}
           </div>
-          <div className={`gbc-mine-status${valid ? " ok" : " ko"}`}>
+          
+          <div className={`gbc-mine-status${valid ? " ok" : " ko"}`} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {valid ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
             {valid
-              ? `✓ HASH VÁLIDO — empieza por ${prefix}`
-              : `✗ No válido — necesita empezar por ${prefix}`}
+              ? `¡VÁLIDO! El hash empieza por los ${difficulty} ceros requeridos.`
+              : `Inválido. Necesitas que el hash empiece por ${prefix}`}
           </div>
 
-          {attempts > 0 && (
-            <div className="gbc-mine-att">
-              {attempts.toLocaleString("es-ES")} intentos
+          <div className="gbc-mine-stats-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
+            <div className="gbc-mine-stat-box">
+              <span className="stat-label">Intentos realizados</span>
+              <span className="stat-value">{attempts > 0 ? attempts.toLocaleString("es-ES") : "0"}</span>
             </div>
-          )}
+            <div className="gbc-mine-stat-box">
+              <span className="stat-label">Poder de Minado</span>
+              <span className="stat-value" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Zap size={12} color="var(--gold)" />
+                {mining ? `${hashRate.toLocaleString("es-ES")} H/s` : "0 H/s"}
+              </span>
+            </div>
+          </div>
 
           {found && (
-            <div className="gbc-mine-found">
-              Nonce <strong>{nonce.toLocaleString("es-ES")}</strong> produce un hash válido.
-              Así es exactamente como funciona la minería de Bitcoin.
+            <div className="gbc-mine-found" style={{ marginTop: '10px' }}>
+              <strong>¡Bloque sellado!</strong> El Nonce {nonce.toLocaleString("es-ES")} es la solución al puzle matemático. Acabas de ganar la recompensa de bloque.
             </div>
           )}
 
-          <div className="gbc-mine-actions">
+          <div className="gbc-mine-actions" style={{ marginTop: 'auto', paddingTop: '16px' }}>
             <button
               className={`gbc-mine-btn${mining ? " gbc-mine-btn--stop" : ""}`}
               onClick={autoMine}
             >
-              {mining ? "⏹ Detener" : "⛏ Auto-minar"}
+              {mining ? (
+                <><RefreshCw size={16} className="spin-anim" /> Detener Minado</>
+              ) : (
+                <><Pickaxe size={16} /> Iniciar Auto-minar</>
+              )}
             </button>
             <button className="gbc-mine-btn gbc-mine-btn--ghost" onClick={reset}>
               Reiniciar
             </button>
-          </div>
-
-          <div className="gbc-mine-legend">
-            <span className="gbc-mine-leg-z">■</span> ceros requeridos
-            <span className="gbc-mine-leg-r">■</span> resto del hash
           </div>
         </div>
       </div>
