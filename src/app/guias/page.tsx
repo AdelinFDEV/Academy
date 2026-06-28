@@ -18,15 +18,15 @@ export const metadata: Metadata = {
 
 const PLACEHOLDER_GUIDES = [
   {
-    slug: "bitcoin-de-cero-a-entender-la-revolucion-financiera",
-    title: "Bitcoin: De cero a entender la revolución financiera",
+    slug: "que-es-la-blockchain",
+    title: "¿Qué es la Blockchain? El registro que nadie puede falsificar",
     description:
-      "Desde qué es Bitcoin y cómo funciona la blockchain hasta por qué está cambiando el sistema financiero global. Con gráficas, quizzes y ejercicios.",
+      "De Satoshi al presente: entiende qué es la blockchain, cómo funciona, por qué es imposible de falsificar y cuál es su futuro ante la computación cuántica. Con datos reales 2026, gráficas, flashcards y quiz.",
     difficulty: "basic" as const,
     type: "free" as const,
     sections: 8,
-    badge: "Pionero Bitcoin",
-    published: false,
+    badge: "Arquitecto de Cadenas",
+    published: true,
   },
 ];
 
