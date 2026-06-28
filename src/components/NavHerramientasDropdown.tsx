@@ -52,7 +52,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               <span className="nav-tools-item-name">Logros</span>
               <span className="nav-tools-item-desc">Tu progreso y rachas en la academia</span>
             </span>
-            {!user && <span className="nav-tools-badge--premium">PREMIUM</span>}
+            {!user && <span className="nav-tools-badge--free">GRATIS</span>}
           </Link>
 
           <Link
@@ -68,7 +68,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               <span className="nav-tools-item-name">Predicción de Precio</span>
               <span className="nav-tools-item-desc">¿Qué Market Cap necesita tu token?</span>
             </span>
-            {!user && <span className="nav-tools-badge--premium">PREMIUM</span>}
+            {!user && <span className="nav-tools-badge--free">GRATIS</span>}
           </Link>
 
           {/* ── Trading ── */}
@@ -103,7 +103,7 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
               <span className="nav-tools-item-name">Watchlist</span>
               <span className="nav-tools-item-desc">Sigue el precio de tus coins favoritas</span>
             </span>
-            {!user && <span className="nav-tools-badge--premium">PREMIUM</span>}
+            {!user && <span className="nav-tools-badge--free">GRATIS</span>}
           </Link>
 
           <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">

@@ -247,9 +247,18 @@ export default async function QueEsLaBlockchainPage() {
               <p>Las secciones siguientes cubren el estado actual del mercado con datos verificados de 2026, los 8 casos de uso más importantes, el potencial futuro de la blockchain y la amenaza real que representa la computación cuántica — incluyendo quiz interactivo y badge de logro.</p>
             </div>
             <div className="gbc-paywall">
-              <div className="gbc-paywall-t">Crea tu cuenta gratuita para continuar</div>
-              <div className="gbc-paywall-d">Acceso inmediato a esta guía y todas las gratuitas. Sin tarjeta de crédito.</div>
-              <Link href="/register" className="gbc-paywall-btn">Registrarme gratis</Link>
+              <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>
+              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
+              <div className="gbc-paywall-d">
+                Desbloquea las 6 secciones restantes: el estado del mercado en 2026,
+                8 casos de uso reales, el potencial a futuro, la amenaza cuántica,
+                el quiz interactivo y tu badge <strong>Arquitecto de Cadenas</strong>.
+                Sin tarjeta, en 30 segundos.
+              </div>
+              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
+              <div className="gbc-paywall-login">
+                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
+              </div>
             </div>
           </div>
         </section>

@@ -61,6 +61,21 @@ const QUESTIONS = [
 
 const TOTAL = QUESTIONS.length;
 
+// Partículas de confeti para la celebración de respuesta correcta (burst radial).
+const CONFETTI_COLORS = ["#4ade80", "#22c55e", "#86efac", "#e6b455", "#f5c842", "#ffffff"];
+const CONFETTI = Array.from({ length: 18 }, (_, i) => {
+  const angle = (Math.PI * 2 * i) / 18 + (i % 2 ? 0.25 : 0);
+  const dist = 64 + (i % 3) * 26;
+  return {
+    dx: `${Math.round(Math.cos(angle) * dist)}px`,
+    dy: `${Math.round(Math.sin(angle) * dist) - 12}px`,
+    rot: `${(i % 2 ? 1 : -1) * (200 + i * 18)}deg`,
+    delay: `${(i % 5) * 25}ms`,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+    round: i % 2 === 0,
+  };
+});
+
 async function saveBadge() {
   try {
     await fetch("/api/guide-badge", {
@@ -89,7 +104,7 @@ export default function GuideQuiz() {
     setAnswers((prev) => [...prev, correct]);
     if (correct) {
       setShowBurst(true);
-      setTimeout(() => setShowBurst(false), 900);
+      setTimeout(() => setShowBurst(false), 1300);
     }
   };
 
@@ -180,7 +195,22 @@ export default function GuideQuiz() {
             >
               {o}
               {confirmed && i === q.ok && showBurst && (
-                <span className="gbc-correct-burst" aria-hidden="true">✓ correcto</span>
+                <span className="gbc-confetti" aria-hidden="true">
+                  {CONFETTI.map((c, k) => (
+                    <span
+                      key={k}
+                      className={`gbc-confetti-piece${c.round ? " round" : ""}`}
+                      style={{
+                        ["--dx" as string]: c.dx,
+                        ["--dy" as string]: c.dy,
+                        ["--rot" as string]: c.rot,
+                        ["--delay" as string]: c.delay,
+                        background: c.color,
+                      }}
+                    />
+                  ))}
+                  <span className="gbc-correct-check">✓</span>
+                </span>
               )}
             </button>
           );
