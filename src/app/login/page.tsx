@@ -27,7 +27,13 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
+    // Respeta ?next= si es una ruta interna segura (p.ej. el embudo /premium).
+    const nextParam = new URLSearchParams(window.location.search).get("next");
+    const target = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
+      ? nextParam
+      : "/dashboard";
+
+    router.push(target);
     router.refresh();
   }
 

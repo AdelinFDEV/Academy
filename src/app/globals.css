@@ -15545,3 +15545,31 @@ select {
 .badge-guide-status { flex-shrink: 0; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; }
 .badge-guide-status.ok { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
 .badge-guide-status.ko { background: rgba(255,255,255,0.04); color: #4a6080; border: 1px solid rgba(255,255,255,0.08); }
+
+/* ── Página /premium (plan de suscripción) ───────────────────── */
+.premium-plan { width: 100%; max-width: 720px; margin: 0 auto; }
+.premium-plan-card {
+  margin-top: 1.6rem;
+  padding: 1.8rem;
+  border-radius: 20px;
+  background: var(--surface-1, rgba(255,255,255,0.03));
+  border: 1px solid rgba(230, 180, 85, 0.28);
+  box-shadow: 0 20px 60px -30px rgba(230, 180, 85, 0.35);
+}
+.premium-plan-features { margin-bottom: 1.8rem; }
+.premium-plan-checkout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.premium-plan-cta {
+  width: 100%;
+  max-width: 360px;
+  justify-content: center;
+}
+.premium-plan-login-note { font-size: 0.9rem; color: #8aa0bd; margin: 0; }
+.premium-plan-login-note a { color: var(--accent-orange); font-weight: 600; }
+.spin { animation: spin 0.9s linear infinite; }

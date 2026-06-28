@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { supabase, error } = await requireAdmin();
+  const { error } = await requireAdmin();
   if (error) return error;
   const { id } = await params;
 
@@ -11,7 +12,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     return NextResponse.json({ error: "Rol no válido" }, { status: 400 });
   }
 
-  const { error: dbErr } = await supabase!.from("profiles").update({ role }).eq("id", id);
+  // El cambio de rol va con service_role: RLS sólo permite a un usuario tocar
+  // su propia fila, y la GRANT por columnas reserva 'role' al backend.
+  const admin = createAdminClient();
+  const { error: dbErr } = await admin.from("profiles").update({ role }).eq("id", id);
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 400 });
   return NextResponse.json({ ok: true });
 }
