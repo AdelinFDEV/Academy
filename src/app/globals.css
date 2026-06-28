@@ -9335,8 +9335,9 @@ select {
 
 .feed-post-row {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 1rem;
   background: linear-gradient(135deg, rgba(17, 34, 64, 0.7) 0%, rgba(13, 31, 60, 0.6) 100%);
   border: 1px solid rgba(240, 244, 255, 0.07);
   border-radius: 12px;
@@ -9344,6 +9345,14 @@ select {
   transition: all 0.25s ease;
   box-shadow: 0 2px 12px -4px rgba(0, 0, 0, 0.3);
   position: relative;
+}
+
+@media (min-width: 768px) {
+  .feed-post-row {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
 }
 
 .feed-post-row::before {
@@ -9556,12 +9565,13 @@ select {
 /* â”€â”€ Thumbnail â”€â”€ */
 .feed-post-thumb {
   flex-shrink: 0;
-  width: 350px;
-  height: 196px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
   border-radius: 12px;
   overflow: hidden;
   background: var(--bg-card-alt);
-  display: none;
+  display: block;
   border: var(--card-border);
   position: relative;
   align-self: center;
@@ -9586,9 +9596,11 @@ select {
   pointer-events: none;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 768px) {
   .feed-post-thumb {
-    display: block;
+    width: 350px;
+    height: 196px;
+    aspect-ratio: auto;
   }
 }
 
