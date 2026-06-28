@@ -28,7 +28,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["recharts"],
   async headers() {
     return [
       {
