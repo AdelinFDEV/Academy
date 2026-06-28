@@ -31,7 +31,8 @@ type IconName =
   | "crown"
   | "target"
   | "heart"
-  | "share";
+  | "share"
+  | "map";
 
 type IconProps = SVGProps<SVGSVGElement> & {
   name: IconName;
@@ -201,6 +202,13 @@ const paths: Record<IconName, React.ReactNode> = {
       <circle cx="18" cy="19" r="3" />
       <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
       <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+    </>
+  ),
+  map: (
+    <>
+      <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+      <line x1="8" y1="2" x2="8" y2="18" />
+      <line x1="16" y1="6" x2="16" y2="22" />
     </>
   ),
 };
