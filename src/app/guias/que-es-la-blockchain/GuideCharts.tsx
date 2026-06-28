@@ -81,44 +81,58 @@ function AdoptionChart() {
 }
 
 function MarketChart() {
-  const R = 72, cx = 160, cy = 100;
-  const LABEL_R = R + 24;
+  const R = 88, cx = 200, cy = 108;
   let angle = -Math.PI / 2;
   const slices = MARKET.map((m) => {
     const start = angle;
     const sweep = (m.pct / 100) * 2 * Math.PI;
     angle += sweep;
-    const mid = start + sweep / 2;
-    const lx = cx + LABEL_R * Math.cos(mid);
-    const ly = cy + LABEL_R * Math.sin(mid);
     const x1 = cx + R * Math.cos(start), y1 = cy + R * Math.sin(start);
     const x2 = cx + R * Math.cos(start + sweep), y2 = cy + R * Math.sin(start + sweep);
-    return { ...m, x1, y1, x2, y2, lx, ly, large: sweep > Math.PI ? 1 : 0 };
+    return { ...m, x1, y1, x2, y2, large: sweep > Math.PI ? 1 : 0 };
   });
 
+  // Legend: 2 columns of 2 items
+  const LEG_Y = 220, COL_W = 180, PAD_X = 20;
+
   return (
-    <div className="gbc-chart-wrap">
+    <div className="gbc-chart-wrap" style={{ textAlign: "center" }}>
       <div className="gbc-chart-lbl">Distribución capitalización de mercado — Junio 2026</div>
-      <svg viewBox="0 0 460 200" style={{ width: "100%", display: "block" }} aria-label="Gráfica de distribución de mercado crypto">
+      <svg
+        viewBox="0 0 400 270"
+        style={{ width: "100%", maxWidth: 420, display: "block", margin: "0 auto" }}
+        aria-label="Gráfica de distribución de mercado crypto"
+      >
+        {/* Donut slices */}
         {slices.map((s, i) => (
           <path
             key={i}
             d={`M ${cx},${cy} L ${s.x1},${s.y1} A ${R},${R} 0 ${s.large},1 ${s.x2},${s.y2} Z`}
             fill={s.color}
             stroke="#060f1f"
-            strokeWidth={2}
+            strokeWidth={3}
           />
         ))}
-        <circle cx={cx} cy={cy} r={R * 0.52} fill="#060f1f" />
-        <text x={cx} y={cy - 6} textAnchor="middle" fontSize={12} fill="#e6b455" fontWeight="700">$2.17T</text>
-        <text x={cx} y={cy + 9} textAnchor="middle" fontSize={9} fill="#8fa3b8">market cap</text>
-        {slices.map((s, i) => {
-          const anchor = s.lx < cx - 5 ? "end" : s.lx > cx + 5 ? "start" : "middle";
-          const dx = anchor === "end" ? -4 : anchor === "start" ? 4 : 0;
+        {/* Inner hole */}
+        <circle cx={cx} cy={cy} r={R * 0.53} fill="#060f1f" />
+        {/* Center labels */}
+        <text x={cx} y={cy - 9} textAnchor="middle" fontSize={16} fill="#e6b455" fontWeight="800">$2.17T</text>
+        <text x={cx} y={cy + 8} textAnchor="middle" fontSize={10} fill="#8fa3b8">market cap global</text>
+
+        {/* Divider */}
+        <line x1={PAD_X} y1={LEG_Y - 12} x2={400 - PAD_X} y2={LEG_Y - 12} stroke="rgba(255,255,255,0.06)" strokeWidth={1} />
+
+        {/* Legend 2x2 */}
+        {MARKET.map((m, i) => {
+          const col = i % 2;
+          const row = Math.floor(i / 2);
+          const lx = PAD_X + col * COL_W;
+          const ly = LEG_Y + row * 24;
           return (
             <g key={i}>
-              <text x={s.lx + dx} y={s.ly - 4} textAnchor={anchor} fontSize={10} fill={s.color} fontWeight="700">{s.label}</text>
-              <text x={s.lx + dx} y={s.ly + 9} textAnchor={anchor} fontSize={9} fill="#8fa3b8">{s.pct}%</text>
+              <rect x={lx} y={ly - 9} width={11} height={11} rx={3} fill={m.color} />
+              <text x={lx + 16} y={ly} fontSize={11} fill="#dce8f8">{m.label}</text>
+              <text x={lx + 16 + 80} y={ly} fontSize={11} fill={m.color} fontWeight="700">{m.pct}%</text>
             </g>
           );
         })}
