@@ -9,9 +9,12 @@ import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
 import GuideProgressBar from "./GuideProgressBar";
+import GuideHeroStats from "./GuideHeroStats";
 import GuideFlashcards from "./GuideFlashcards";
 import GuideCharts from "./GuideCharts";
 import GuideQuiz from "./GuideQuiz";
+import GuideMineBlock from "./GuideMineBlock";
+import GuideDefiChart from "./GuideDefiChart";
 
 export const metadata: Metadata = {
   title: "¿Qué es la Blockchain? Guía Completa 2026 | AdelinBTC Academy",
@@ -133,28 +136,7 @@ export default async function QueEsLaBlockchainPage() {
           <span className="gbc-pill">Flashcards</span>
         </div>
         <a href="#origen" className="gbc-cta">Comenzar la guía</a>
-        <div className="gbc-hero-stats">
-          <div>
-            <div className="gbc-stat-n">$2.17T</div>
-            <div className="gbc-stat-l">Capitalización<br />crypto global</div>
-          </div>
-          <div>
-            <div className="gbc-stat-n">350M+</div>
-            <div className="gbc-stat-l">Usuarios activos<br />estimados 2026</div>
-          </div>
-          <div>
-            <div className="gbc-stat-n">$71.77B</div>
-            <div className="gbc-stat-l">Total Value Locked<br />en DeFi</div>
-          </div>
-          <div>
-            <div className="gbc-stat-n">$32B+</div>
-            <div className="gbc-stat-l">Activos reales<br />tokenizados (RWA)</div>
-          </div>
-          <div>
-            <div className="gbc-stat-n">15,000+</div>
-            <div className="gbc-stat-l">Proyectos activos<br />en blockchain</div>
-          </div>
-        </div>
+        <GuideHeroStats />
       </header>
 
       {/* ── SECTION 1: ORIGEN ── FREE */}
@@ -251,6 +233,8 @@ export default async function QueEsLaBlockchainPage() {
               <p>Imagina un libro contable que una ciudad entera tiene en copia. Cada vez que alguien quiere añadir una entrada, la mayoría de los ciudadanos debe confirmarla. Si alguien intenta borrar una página antigua, todos los demás tienen la versión correcta. Eso es la blockchain — pero con miles de copias en todo el mundo, actualización en segundos y verificación matemática automática.</p>
             </div>
           </div>
+
+          <GuideMineBlock />
         </div>
       </section>
 
@@ -321,7 +305,7 @@ export default async function QueEsLaBlockchainPage() {
 
               <GuideCharts chart="adoption" />
               <GuideCharts chart="market" />
-              <GuideCharts chart="defi" />
+              <GuideDefiChart />
 
               <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
                 <div className="gbc-box-title">Institucionalización acelerada</div>

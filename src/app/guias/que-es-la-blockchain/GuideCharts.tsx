@@ -142,31 +142,8 @@ function MarketChart() {
   );
 }
 
-function DefiChart() {
-  const max = Math.max(...DEFI.map((d) => d.v));
-  return (
-    <div className="gbc-chart-wrap">
-      <div className="gbc-chart-lbl">TVL por categoría DeFi — Miles de millones USD (Jun 2026)</div>
-      <svg viewBox="0 0 480 140" style={{ width: "100%", display: "block" }} aria-label="Gráfica TVL DeFi por categoría">
-        {DEFI.map((d, i) => {
-          const barW = (d.v / max) * 340;
-          const y = 14 + i * 24;
-          return (
-            <g key={i}>
-              <text x={0} y={y + 10} fontSize={11} fill="#8fa3b8">{d.label}</text>
-              <rect x={96} y={y} width={barW} height={15} rx={4} fill={i === 0 ? "#e6b455" : i === 1 ? "#ff6b2b" : "#2a5080"} opacity={0.85} />
-              <text x={96 + barW + 6} y={y + 11} fontSize={10} fill="#e6b455" fontWeight="700">${d.v}B</text>
-            </g>
-          );
-        })}
-      </svg>
-      <div className="gbc-chart-src">Fuente: DeFiLlama, Junio 2026 — TVL total: $71.77B</div>
-    </div>
-  );
-}
 
-export default function GuideCharts({ chart }: { chart: "adoption" | "market" | "defi" }) {
+export default function GuideCharts({ chart }: { chart: "adoption" | "market" }) {
   if (chart === "adoption") return <AdoptionChart />;
-  if (chart === "market") return <MarketChart />;
-  return <DefiChart />;
+  return <MarketChart />;
 }
