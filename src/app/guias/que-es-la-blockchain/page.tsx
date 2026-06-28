@@ -135,7 +135,6 @@ export default async function QueEsLaBlockchainPage() {
           <span className="gbc-pill">Quiz + Badge</span>
           <span className="gbc-pill">Flashcards</span>
         </div>
-        <a href="#origen" className="gbc-cta">Comenzar la guía</a>
         <GuideHeroStats />
       </header>
 
