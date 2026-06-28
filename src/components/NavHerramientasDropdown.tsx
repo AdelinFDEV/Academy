@@ -106,17 +106,21 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             {!user && <span className="nav-tools-badge--free">GRATIS</span>}
           </Link>
 
-          <div className="nav-tools-item nav-tools-item--soon" aria-disabled="true">
+          <Link
+            href={tradingLocked ? (!user ? "/register" : "/portfolio") : "/portfolio"}
+            className={`nav-tools-item${tradingLocked ? " nav-tools-item--dimmed" : ""}`}
+            role="menuitem"
+            onClick={close}
+          >
             <span className="nav-tools-item-icon">
               <Wallet size={16} aria-hidden="true" />
             </span>
             <span>
               <span className="nav-tools-item-name">Portfolio Spot</span>
-              <span className="nav-tools-item-desc">Gestiona tus holdings de crypto</span>
+              <span className="nav-tools-item-desc">Mis posiciones en tiempo real</span>
             </span>
-            <span className="nav-tools-badge--premium" style={{ marginRight: "4px" }}>PREMIUM</span>
-            <span className="nav-tools-soon-badge">Pronto</span>
-          </div>
+            {tradingLocked && <span className="nav-tools-badge--premium">PREMIUM</span>}
+          </Link>
 
           {/* ── Comunidad ── */}
           <p className="nav-tools-section-label" style={{ marginTop: "10px" }}>Comunidad</p>
