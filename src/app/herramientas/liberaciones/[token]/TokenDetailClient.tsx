@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
-} from "recharts";
 import { ArrowLeft, Calendar, TrendingDown, Info, ExternalLink, Lock, ChevronDown, ChevronUp } from "lucide-react";
+
+const TokenCharts = dynamic(() => import("./TokenCharts"), { ssr: false });
 import { Token, getUpcomingUnlocks, UnlockEvent } from "../tokenData";
 
 const TODAY = new Date();
@@ -159,77 +158,22 @@ export default function TokenDetailClient({ token, isPremium }: Props) {
       {/* ── Main Content Grid ── */}
       <div className="lib-detail-grid">
 
-        {/* Allocation Chart */}
-        <div className="lib-detail-card">
+        {/* Charts — loaded client-side only to avoid SSR module resolution issues */}
+        <div className="lib-detail-card" style={{ gridColumn: "1 / -1" }}>
           <h2 className="lib-detail-card-title">
             <Calendar size={16} />
-            Distribución del Supply
+            Distribución del Supply &amp; Unlocks mensuales
           </h2>
           <div className="lib-alloc-wrap">
-            <ResponsiveContainer width="100%" height={220}>
-              <PieChart>
-                <Pie
-                  data={token.allocations}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={95}
-                  dataKey="pct"
-                  nameKey="name"
-                  paddingAngle={2}
-                >
-                  {token.allocations.map((a, i) => (
-                    <Cell key={i} fill={a.color} stroke="rgba(0,0,0,0.3)" strokeWidth={1} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value) => [`${Number(value).toFixed(1)}%`, "Porcentaje"]}
-                  contentStyle={{ background: "#0f2040", border: "1px solid rgba(240,244,255,0.1)", borderRadius: 8, color: "#dce8f8", fontSize: 12 }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-
-            <div className="lib-alloc-legend">
-              {token.allocations.map((a, i) => (
-                <div key={i} className="lib-alloc-item">
-                  <div className="lib-alloc-dot" style={{ background: a.color }} />
-                  <div className="lib-alloc-info">
-                    <span className="lib-alloc-name">{a.name}</span>
-                    <span className="lib-alloc-tokens">{a.pct}% · {fmtTokens(a.tokens)}</span>
-                    <span className="lib-alloc-schedule">{a.schedule}</span>
-                  </div>
-                  {a.isActive && <span className="lib-alloc-active">activo</span>}
-                </div>
-              ))}
-            </div>
+            <TokenCharts
+              allocations={token.allocations}
+              chartData={chartData}
+              categories={categories}
+              categoryColors={categoryColors}
+              tokenColor={token.color}
+              tokenSymbol={token.symbol}
+            />
           </div>
-        </div>
-
-        {/* Monthly Unlock Chart */}
-        <div className="lib-detail-card">
-          <h2 className="lib-detail-card-title">
-            <TrendingDown size={16} />
-            Unlocks mensuales (próximos 12 meses)
-          </h2>
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(240,244,255,0.06)" />
-                <XAxis dataKey="month" tick={{ fill: "#b0c4d8", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#b0c4d8", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}B` : `${v}M`} />
-                <Tooltip
-                  formatter={(value, name) => [`${Number(value).toFixed(1)}M ${token.symbol}`, String(name)]}
-                  contentStyle={{ background: "#0f2040", border: "1px solid rgba(240,244,255,0.1)", borderRadius: 8, color: "#dce8f8", fontSize: 12 }}
-                />
-                <Legend wrapperStyle={{ fontSize: 11, color: "#b0c4d8" }} />
-                {categories.map(cat => (
-                  <Bar key={cat} dataKey={cat} stackId="a" fill={categoryColors[cat] ?? token.color} radius={[0, 0, 0, 0]} />
-                ))}
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="lib-empty-chart">El vesting de este token ha finalizado</div>
-          )}
         </div>
 
       </div>
