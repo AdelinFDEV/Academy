@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
   FileText, Folder, BookOpen, GraduationCap, Files, LayoutGrid,
-  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award, Hash,
+  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award, Hash, Unlock,
 } from "lucide-react";
 
 interface Category {
@@ -160,6 +160,12 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <PieChart size={15} aria-hidden="true" />
                 Portfolio Spot
                 {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
+              </Link>
+
+              <Link href={user ? "/herramientas/liberaciones" : "/register"} className={`blog-mobile-tool-link${a("/herramientas/liberaciones")}`} onClick={close}>
+                <Unlock size={15} aria-hidden="true" />
+                Liberaciones de Tokens
+                {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">

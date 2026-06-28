@@ -3,8 +3,10 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Network, Lock, Clock, Newspaper, Map } from "lucide-react";
+import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
+import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
+import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES } from "@/lib/guides";
 
 export default async function DashboardPage() {
@@ -68,36 +70,34 @@ export default async function DashboardPage() {
     ? savedUnread.slice(0, 3)
     : allPosts.filter((p) => !readIds.has(p.id)).slice(0, 3);
 
-  const TOOL_SECTIONS = [
+  const TOOL_SECTIONS: ToolSection[] = [
     {
-      label: "Academia",
+      label: "Educación",
       tools: [
-        { href: "/logros", Icon: Medal,     name: "Logros y XP",          desc: "Tu progreso y rachas",            locked: false, soon: false },
-        { href: "/calculadora", Icon: Crosshair, name: "Predicción de Precio", desc: "¿Qué Market Cap necesita tu token?", locked: false, soon: false },
-        { href: "/glosario",    Icon: BookA,     name: "Diccionario Cripto",   desc: "Términos clave explicados",        locked: false, soon: false },
-        { href: "/articulos",   Icon: Newspaper, name: "Artículos",            desc: "Lee todo nuestro contenido",       locked: false, soon: false },
-        { href: "/guias",       Icon: Map,       name: "Guías",                desc: "Tu hoja de ruta de aprendizaje",   locked: false, soon: false },
+        { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
+        { href: "#",         icon: "graduationcap", name: "Cursos",               desc: "Formación paso a paso",          locked: false, soon: true  },
+        { href: "#",         icon: "files",         name: "Recursos",             desc: "Plantillas y materiales",        locked: false, soon: true  },
+        { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
       ],
     },
     {
-      label: "Trading",
+      label: "Herramientas",
       tools: [
-        { href: isPremium ? "/dashboard/trading" : "#", Icon: NotebookPen, name: "Diario de Trading", desc: "Registra y analiza tus operaciones", locked: !isPremium, soon: false },
-        { href: "/dashboard/watchlist",                  Icon: ScanEye,    name: "Watchlist",         desc: "Sigue el precio de tus coins",      locked: false,      soon: false },
-        { href: isPremium ? "/portfolio" : "#",          Icon: Wallet,     name: "Portfolio Spot",    desc: "Sigue las compras de AdelinBTC en SPOT",   locked: !isPremium, soon: false },
-      ],
-    },
-    {
-      label: "Comunidad",
-      tools: [
-        { href: "/ranking", Icon: ListOrdered,  name: "Ranking", desc: "Los miembros más activos",      locked: false, soon: true },
-        { href: "#",        Icon: MessagesSquare, name: "Chat",    desc: "Chat en tiempo real",           locked: false, soon: true },
-        { href: "#",        Icon: Network,       name: "Foro",    desc: "Debates y análisis con otros",  locked: false, soon: true },
+        { href: isPremium ? "/dashboard/trading"         : "#", icon: "notebookpen",  name: "Diario de Trading",      desc: "Registra y analiza tus operaciones",                        locked: !isPremium, soon: false },
+        { href: "/dashboard/watchlist",                         icon: "scaneye",      name: "Watchlist",              desc: "Sigue el precio de tus coins",                              locked: false,      soon: false },
+        { href: "/logros",                                      icon: "trophy",       name: "Logros",                 desc: "Tu progreso y rachas",                                      locked: false,      soon: false },
+        { href: "/calculadora",                                 icon: "target",       name: "Predicción de Precio",   desc: "¿Qué Market Cap necesita tu token?",                        locked: false,      soon: false },
+        { href: "/ranking",                                     icon: "award",        name: "Ranking",                desc: "Los miembros más activos",                                  locked: false,      soon: true  },
+        { href: isPremium ? "/portfolio"                 : "#", icon: "piechart",     name: "Portfolio Spot",         desc: "Sigue las compras de AdelinBTC en SPOT",                    locked: !isPremium, soon: false },
+        { href: isPremium ? "/herramientas/liberaciones" : "#", icon: "unlock",       name: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting", locked: !isPremium, soon: false },
+        { href: "#",                                            icon: "messagessquare", name: "Chat",                 desc: "Chat en tiempo real",                                       locked: false,      soon: true  },
+        { href: "#",                                            icon: "network",      name: "Foro",                   desc: "Debates y análisis con otros",                              locked: false,      soon: true  },
       ],
     },
   ];
 
   return (
+    <div className="dash-page-wrap">
     <main className="dashboard-main">
 
       {/* ── Cabecera ── */}
@@ -140,60 +140,62 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Herramientas ── */}
-      <div className="dash-tools-card">
-        <span className="dash-card-label">Herramientas</span>
-        <div className="dash-tools-sections">
-          {TOOL_SECTIONS.map((section) => (
-            <div key={section.label} className="dash-tools-section">
-              <p className="dash-tools-section-label">{section.label}</p>
-              <div className="dash-tools-grid">
-                {section.tools.map((t) => {
-                  const isClickable = !t.locked && !t.soon;
-                  const cls = `dash-tool-item${t.locked || t.soon ? " locked" : ""}`;
-                  return isClickable ? (
-                    <Link key={t.name} href={t.href} className={cls}>
-                      {t.locked && <span className="dash-tool-premium-tag">PREMIUM</span>}
-                      <div className="dash-tool-icon"><t.Icon size={17} aria-hidden="true" /></div>
-                      <span className="dash-tool-name">{t.name}</span>
-                      <span className="dash-tool-desc">{t.desc}</span>
-                    </Link>
-                  ) : (
-                    <div key={t.name} className={cls}>
-                      {t.soon
-                        ? <span className="dash-tool-soon-tag">Pronto</span>
-                        : <span className="dash-tool-premium-tag">PREMIUM</span>
-                      }
-                      <div className="dash-tool-icon"><t.Icon size={17} aria-hidden="true" /></div>
-                      <span className="dash-tool-name">{t.name}</span>
-                      <span className="dash-tool-desc">{t.desc}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* ── Upgrade card (free users only) ── */}
       {!isPremium && (
-        <div className="dash-upgrade-card">
-          <div className="dash-upgrade-card-body">
-            <span className="dash-upgrade-card-badge">PREMIUM</span>
-            <h3 className="dash-upgrade-card-title">Desbloquea el acceso completo</h3>
-            <ul className="dash-upgrade-card-perks">
-              <li>Acceso a <strong>{premiumArticlesCount} artículos</strong> premium bloqueados</li>
-              <li>Diario de trading y estadísticas avanzadas</li>
-              <li>Todo el contenido futuro sin límites</li>
-            </ul>
-          </div>
-          <div className="dash-upgrade-card-right">
-            <div className="dash-upgrade-card-price">
-              <span className="dash-upgrade-price-main">19,99€</span>
-              <span className="dash-upgrade-price-per">/mes</span>
+        <div className="dash-upsell">
+          <div className="dash-upsell-accent" />
+
+          <div className="dash-upsell-left">
+            <div className="dash-upsell-header">
+              <span className="dash-upsell-eyebrow">
+                <Crown size={11} aria-hidden="true" /> Premium
+              </span>
+              <h3 className="dash-upsell-title">Lleva tu trading al siguiente nivel</h3>
             </div>
-            <Link href="/premium" className="dash-upgrade-card-cta">Hazte Premium →</Link>
+
+            <div className="dash-upsell-features">
+              <div className="dash-upsell-feat">
+                <div className="dash-upsell-feat-icon"><NotebookPen size={15} /></div>
+                <div>
+                  <span className="dash-upsell-feat-name">Diario de Trading</span>
+                  <span className="dash-upsell-feat-desc">Registra cada operación y descubre qué te hace ganar.</span>
+                </div>
+              </div>
+              <div className="dash-upsell-feat">
+                <div className="dash-upsell-feat-icon"><Radar size={15} /></div>
+                <div>
+                  <span className="dash-upsell-feat-name">Señales en Spot</span>
+                  <span className="dash-upsell-feat-desc">Entradas y salidas con criterio, no con corazonadas.</span>
+                </div>
+              </div>
+              <div className="dash-upsell-feat">
+                <div className="dash-upsell-feat-icon"><Unlock size={15} /></div>
+                <div>
+                  <span className="dash-upsell-feat-name">Liberaciones de Tokens</span>
+                  <span className="dash-upsell-feat-desc">Anticipa la presión vendedora con el calendario de vesting.</span>
+                </div>
+              </div>
+              <div className="dash-upsell-feat">
+                <div className="dash-upsell-feat-icon"><Gem size={15} /></div>
+                <div>
+                  <span className="dash-upsell-feat-name">Herramientas exclusivas</span>
+                  <span className="dash-upsell-feat-desc">Watchlist, estadísticas y todo lo que viene después.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="dash-upsell-right">
+            <div className="dash-upsell-price">
+              <span className="dash-upsell-price-main">19,99€</span>
+              <span className="dash-upsell-price-per">/mes</span>
+            </div>
+            <Link href="/premium" className="dash-upsell-cta">
+              Hazte Premium <ArrowRight size={16} strokeWidth={2.5} />
+            </Link>
+            <p className="dash-upsell-note">
+              <Check size={11} /> Sin permanencia · Cancela cuando quieras
+            </p>
           </div>
         </div>
       )}
@@ -332,5 +334,7 @@ export default async function DashboardPage() {
       </div>
 
     </main>
+    <DashboardToolsSidebar sections={TOOL_SECTIONS} />
+    </div>
   );
 }

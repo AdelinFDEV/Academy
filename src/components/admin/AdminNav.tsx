@@ -10,7 +10,8 @@ const links = [
   { href: "/admin/categories",           label: "Categorías",  icon: "folder" as const },
   { href: "/admin/comments",             label: "Comentarios", icon: "chat" as const },
   { href: "/admin/users",                label: "Usuarios",    icon: "users" as const },
-  { href: "/admin/guias-instrucciones",  label: "Guías · Ref", icon: "book" as const },
+  { href: "/admin/guias-instrucciones",        label: "Guías · Ref",        icon: "book" as const },
+  { href: "/admin/liberaciones-instrucciones", label: "Liberaciones · Ref", icon: "list" as const },
 ];
 
 export default function AdminNav() {

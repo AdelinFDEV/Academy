@@ -170,6 +170,8 @@ export async function POST(request: NextRequest) {
           periodEnd = getPeriodEnd(sub);
         }
 
+        const isFirstPayment = !(profile as ProfileRow).premium_since;
+
         await applyToProfile(admin, profile as ProfileRow, {
           customerId,
           subscriptionId,
@@ -177,6 +179,13 @@ export async function POST(request: NextRequest) {
           periodEnd,
           eventType: event.type,
         });
+
+        // Conceder logro "Miembro Fundador" solo en el primer pago premium
+        if (isFirstPayment && statusGrantsPremium(status)) {
+          await admin
+            .from("user_badges")
+            .upsert({ user_id: userId, badge_id: "first-premium" }, { onConflict: "user_id,badge_id" });
+        }
         break;
       }
 

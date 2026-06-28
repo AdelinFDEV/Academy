@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronDown, Medal, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Crosshair, Network } from "lucide-react";
+import { ChevronDown, Medal, NotebookPen, ScanEye, Wallet, ListOrdered, MessagesSquare, Crosshair, Network, Unlock } from "lucide-react";
 
 interface Props {
   user: boolean;
@@ -118,6 +118,22 @@ export default function NavHerramientasDropdown({ user, isPremium = false }: Pro
             <span>
               <span className="nav-tools-item-name">Portfolio Spot</span>
               <span className="nav-tools-item-desc">Sigue las compras de AdelinBTC en SPOT</span>
+            </span>
+            {tradingLocked && <span className="nav-tools-badge--premium">PREMIUM</span>}
+          </Link>
+
+          <Link
+            href={user ? "/herramientas/liberaciones" : "/register"}
+            className={`nav-tools-item${!isPremium ? " nav-tools-item--dimmed" : ""}`}
+            role="menuitem"
+            onClick={close}
+          >
+            <span className="nav-tools-item-icon">
+              <Unlock size={16} aria-hidden="true" />
+            </span>
+            <span>
+              <span className="nav-tools-item-name">Liberaciones de Tokens</span>
+              <span className="nav-tools-item-desc">Calendario de vesting y unlocks por proyecto</span>
             </span>
             {tradingLocked && <span className="nav-tools-badge--premium">PREMIUM</span>}
           </Link>

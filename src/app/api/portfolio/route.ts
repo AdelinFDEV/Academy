@@ -2,10 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
-async function getAdminUser() {
+async function getAuthenticatedUser() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
+  if (!user) return { user: null, isPremium: false };
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -13,10 +13,28 @@ async function getAdminUser() {
     .eq("id", user.id)
     .single();
 
+  const role = profile?.role ?? "free";
+  return { user, isPremium: role === "premium" || role === "admin" };
+}
+
+async function getAdminUser() {
+  const { user, isPremium } = await getAuthenticatedUser();
+  if (!user) return null;
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
   return profile?.role === "admin" ? user : null;
 }
 
 export async function GET() {
+  const { user, isPremium } = await getAuthenticatedUser();
+  if (!user || !isPremium) {
+    return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
+  }
+
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("portfolio_positions")

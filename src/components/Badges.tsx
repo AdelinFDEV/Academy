@@ -4,6 +4,34 @@ import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Star } from "lucide-react";
 
+function PremiumCrownIcon({ size = 24 }: { size?: number }) {
+  const s = size / 24;
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Outer ring */}
+      <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="1.2" opacity="0.9"/>
+      <circle cx="12" cy="10.5" r="0" fill="none"/>
+      {/* Crown base */}
+      <rect x="5.5" y="15" width="13" height="2.5" rx="0.8" fill="currentColor"/>
+      {/* Crown body — 5 points */}
+      <polygon points="5.5,15 5.5,10.5 8,12.5 10.5,7 12,5 13.5,7 16,12.5 18.5,10.5 18.5,15" fill="currentColor"/>
+      {/* Center top gem */}
+      <polygon points="12,5 10.8,7 12,7.8 13.2,7" fill="white" opacity="0.95"/>
+      {/* Left gem */}
+      <polygon points="5.5,10.5 6.8,11.5 8,10.5 6.8,9.5" fill="currentColor" opacity="0.6"/>
+      {/* Right gem */}
+      <polygon points="18.5,10.5 17.2,11.5 16,10.5 17.2,9.5" fill="currentColor" opacity="0.6"/>
+      {/* Base gem center */}
+      <circle cx="12" cy="16.3" r="0.9" fill="white" opacity="0.9"/>
+      {/* Dot accents on ring */}
+      <circle cx="12" cy="1.5" r="0.8" fill="currentColor"/>
+      <circle cx="22.5" cy="12" r="0.8" fill="currentColor"/>
+      <circle cx="12" cy="22.5" r="0.8" fill="currentColor"/>
+      <circle cx="1.5" cy="12" r="0.8" fill="currentColor"/>
+    </svg>
+  );
+}
+
 function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -32,6 +60,15 @@ interface BadgeDef {
 }
 
 export const BADGE_DEFS: BadgeDef[] = [
+  {
+    id: "first-premium",
+    label: "Miembro Fundador",
+    condition: "Realizaste tu primer pago Premium en AdelinBTC Academy",
+    reward: "Tu perfil lleva la corona dorada — apoyas el proyecto desde el principio",
+    icon: <PremiumCrownIcon size={24} />,
+    bigIcon: <PremiumCrownIcon size={48} />,
+    special: true,
+  },
   {
     id: "first-read",
     label: "Primer paso",

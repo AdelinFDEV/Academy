@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map, Sparkles } from "lucide-react";
+import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map, Sparkles, Unlock } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import LogoutButton from "@/components/LogoutButton";
@@ -12,6 +12,7 @@ import GuidesHomeSection from "@/components/GuidesHomeSection";
 import LiveCounter from "@/components/LiveCounter";
 import SocialLinks from "@/components/SocialLinks";
 import HeroVideo from "@/components/HeroVideo";
+import HeroPremiumSlider from "@/components/HeroPremiumSlider";
 import { getLatestVideos } from "@/lib/youtube";
 
 export default async function HomePage() {
@@ -130,20 +131,11 @@ export default async function HomePage() {
         <div className="home-banner-content">
 
           <h1 className="home-banner-title hero-anim hero-anim-1">
-            Domina el mundo cripto<br className="home-banner-br" />
-            <span className="text-gradient">con criterio propio.</span>
+            Domina el mundo Cripto<br className="home-banner-br" />
+            <span className="text-gradient">Todo en un solo lugar.</span>
           </h1>
 
-          <p className="hero-subtitle hero-anim hero-anim-3">
-            Deja de improvisar. Aprende a leer el mercado y rodéate de traders que hablan claro —{" "}
-            <span className="hero-subtitle-muted">no de gurús que venden sueños.</span>
-          </p>
-
-          <div className="home-banner-features hero-anim hero-anim-4">
-            <span className="home-feature"><FlaskConical size={15} aria-hidden="true" /> Academia</span>
-            <span className="home-feature"><Globe size={15} aria-hidden="true" /> Comunidad</span>
-            <span className="home-feature"><Wrench size={15} aria-hidden="true" /> Herramientas</span>
-          </div>
+          <HeroPremiumSlider />
 
           <div className="home-banner-actions hero-anim hero-anim-5">
             {user ? (
@@ -152,7 +144,7 @@ export default async function HomePage() {
                   Ir a mi Academia <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
                 </Link>
                 <Link href="#guias-premium" className="hero-btn-gold">
-                  Guías Premium <Sparkles size={18} strokeWidth={2.5} />
+                  Guías Premium <Gem size={16} strokeWidth={1.75} />
                 </Link>
               </>
             ) : (
@@ -161,7 +153,7 @@ export default async function HomePage() {
                   Empieza Gratis Ahora <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
                 </Link>
                 <Link href="#guias-premium" className="hero-btn-gold">
-                  Guías Premium <Sparkles size={18} strokeWidth={2.5} />
+                  Guías Premium <Gem size={16} strokeWidth={1.75} />
                 </Link>
               </>
             )}
@@ -228,7 +220,7 @@ export default async function HomePage() {
         <aside className="home-sidebar">
 
           {/* Herramientas */}
-          <div className="sidebar-card">
+          <div className="sidebar-card sidebar-card--tools">
             <p className="sidebar-card-title">Herramientas</p>
             <div className="sidebar-tools-list">
               {/* Diario — siempre PREMIUM */}
@@ -255,6 +247,11 @@ export default async function HomePage() {
               <Link href={!user ? "/register" : "/portfolio"} className="sidebar-tool-link sidebar-tool-link--dimmed">
                 <Wallet size={16} className="sidebar-tool-icon" />
                 <span>Portfolio Spot</span>
+                <span className="sidebar-tool-badge--premium">PREMIUM</span>
+              </Link>
+              <Link href={!user ? "/register" : "/herramientas/liberaciones"} className="sidebar-tool-link sidebar-tool-link--dimmed">
+                <Unlock size={16} className="sidebar-tool-icon" />
+                <span>Liberaciones de Tokens</span>
                 <span className="sidebar-tool-badge--premium">PREMIUM</span>
               </Link>
               <div className="sidebar-tool-link sidebar-tool-link--soon">
@@ -352,10 +349,10 @@ export default async function HomePage() {
                 </span>
               </li>
               <li className="premium-pitch-feature">
-                <span className="premium-pitch-feature-icon"><MessagesSquare size={16} aria-hidden="true" /></span>
+                <span className="premium-pitch-feature-icon"><Unlock size={16} aria-hidden="true" /></span>
                 <span>
-                  <strong>Sala de Chat</strong>
-                  Comunidad privada en tiempo real, sin ruido ni gurús.
+                  <strong>Liberaciones de Tokens</strong>
+                  Anticipa la presión vendedora con el calendario de vesting en tiempo real.
                 </span>
               </li>
               <li className="premium-pitch-feature">

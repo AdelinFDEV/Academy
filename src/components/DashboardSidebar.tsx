@@ -46,6 +46,13 @@ const TOOLS: NavTool[] = [
     isSoon: false,
   },
   {
+    href: "/herramientas/liberaciones",
+    label: "Liberaciones de Tokens",
+    icon: "list",
+    requiresPremium: true,
+    isSoon: false,
+  },
+  {
     href: "/ranking",
     label: "Ranking",
     icon: "list",
