@@ -26,13 +26,13 @@ export default function YouTubeLatest({ videos }: { videos: YouTubeVideo[] }) {
       </div>
 
       <div className="yt-latest-grid">
-        {videos.map((v) => (
+        {videos.map((v, i) => (
           <a
             key={v.id}
             href={v.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="yt-card"
+            className={`yt-card${i === 2 ? " yt-card--desktop-only" : ""}`}
           >
             <span className="yt-card-thumb">
               <img src={v.thumbnail} alt="" loading="lazy" />

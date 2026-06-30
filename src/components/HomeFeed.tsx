@@ -254,8 +254,8 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { po
     return regularPosts;
   }, [regularPosts, tab]);
 
-  // Home only shows the 2 most recent — the rest live in /articulos
-  const MAX_VISIBLE = 2;
+  // Home shows up to 3 on desktop, 2 on mobile (3rd hidden via CSS)
+  const MAX_VISIBLE = 3;
   const visible = filtered.slice(0, MAX_VISIBLE);
   const hasMore = filtered.length > MAX_VISIBLE;
 
@@ -296,8 +296,10 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { po
             <p>No hay artículos en esta sección todavía.</p>
           </div>
         ) : (
-          visible.map((post) => (
-            <FeedPost key={post.id} post={post} isLoggedIn={isLoggedIn} />
+          visible.map((post, i) => (
+            <div key={post.id} className={i === 2 ? "feed-desktop-only" : undefined}>
+              <FeedPost post={post} isLoggedIn={isLoggedIn} />
+            </div>
           ))
         )}
       </div>

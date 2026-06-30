@@ -21,11 +21,13 @@ export default async function HomePage() {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Get user role for premium check
+  // Get user profile for nav and premium check
   const profileData = user
-    ? (await supabase.from("profiles").select("role").eq("id", user.id).single()).data
+    ? (await supabase.from("profiles").select("role, full_name").eq("id", user.id).single()).data
     : null;
   const isPremium = profileData?.role === "premium" || profileData?.role === "admin";
+  const isAdmin = profileData?.role === "admin";
+  const userName = profileData?.full_name || user?.email?.split("@")[0] || "";
 
   const [{ data: posts }, { data: categories }, { count: postsTotal }, youtubeVideos] =
     await Promise.all([
@@ -39,7 +41,7 @@ export default async function HomePage() {
         .select("name, slug")
         .order("name"),
       supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
-      getLatestVideos(2),
+      getLatestVideos(3),
     ]);
 
   const postIds = posts?.map((p) => p.id) ?? [];
@@ -118,7 +120,13 @@ export default async function HomePage() {
           <NavHerramientasDropdown user={!!user} />
           {user ? (
             <>
-              <Link href="/dashboard" className="btn-nav-cta">Ir a la academia →</Link>
+              <Link href="/cuenta" className="blog-nav-user" style={{ textDecoration: "none" }}>
+                <span className="blog-nav-user-name">{userName}</span>
+                <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>
+                  {isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}
+                </span>
+              </Link>
+              <Link href="/dashboard" className="btn-nav-cta">Academia →</Link>
               <LogoutButton />
             </>
           ) : (
@@ -128,7 +136,7 @@ export default async function HomePage() {
             </>
           )}
         </div>
-        <BlogMobileMenu user={!!user} />
+        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
       </nav>
 
       {/* ── Hero ── */}

@@ -40,15 +40,17 @@ export default function Footer() {
 
         <div className="footer-links-group">
           <span className="footer-links-title">Legal</span>
+          <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
-          <Link href="/terminos">Términos</Link>
+          <Link href="/cookies">Cookies</Link>
         </div>
       </div>
 
       <div className="footer-bottom">
         <span>© {year} AdelinBTC Academy. Todos los derechos reservados.</span>
         <span className="footer-disclaimer">
-          El contenido es educativo y no constituye asesoramiento financiero.
+          El contenido es educativo y no constituye asesoramiento financiero.{" "}
+          <Link href="/cookies" className="footer-cookie-link">Gestionar cookies</Link>
         </span>
       </div>
     </footer>

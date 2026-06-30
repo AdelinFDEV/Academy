@@ -33,6 +33,8 @@ export default async function LiberacionesPage() {
   const isAdmin = role === "admin";
   const userName = profile?.full_name ?? user.email?.split("@")[0] ?? "Usuario";
 
+  if (!isPremium) redirect("/premium");
+
   return (
     <div className="blog-page">
       <div className="bg-ambient" />

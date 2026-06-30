@@ -187,12 +187,12 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
             {user ? (
               <>
                 {userName && (
-                  <div className="blog-mobile-user-info">
+                  <Link href="/cuenta" className="blog-mobile-user-info" onClick={close} style={{ textDecoration: "none" }}>
                     <span className="blog-mobile-user-name">{userName}</span>
                     <span className={`blog-mobile-user-role${isPremium ? " premium" : ""}`}>
-                      {isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}
+                      {isAdmin ? "Admin" : isPremium ? "Premium" : "Free"} · Mi cuenta →
                     </span>
-                  </div>
+                  </Link>
                 )}
                 {!userName && (
                   <Link href="/dashboard" className="blog-mobile-btn-cta" onClick={close}>

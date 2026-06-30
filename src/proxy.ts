@@ -1,14 +1,24 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard"];
+// Routes that require an authenticated session.
+const protectedRoutes = ["/dashboard", "/cuenta", "/logros", "/portfolio"];
+// Routes that require admin role.
 const adminRoutes = ["/admin"];
-const authRoutes = ["/login", "/register"];
+// Routes that logged-in users should not visit (they're already in).
+// /auth/* is intentionally excluded: /auth/reset-password must stay accessible
+// mid-recovery-flow even when the user has a temporary recovery session.
+const authOnlyRoutes = ["/login", "/register"];
 
-// Rate limiting: máximo 5 intentos por IP cada 15 minutos en rutas de auth
+// Rate limiting for sensitive API routes (checkout, stripe portal).
+// Note: login/register auth is handled client-side by Supabase JS directly,
+// so rate-limiting those POST routes here has no effect — Supabase's own
+// rate limiting covers that path.
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+// Sensitive API routes where we DO control the traffic.
+const rateLimitedApis = ["/api/checkout", "/api/stripe/portal"];
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
@@ -20,7 +30,6 @@ function isRateLimited(ip: string): boolean {
   }
 
   if (entry.count >= RATE_LIMIT_MAX) return true;
-
   entry.count++;
   return false;
 }
@@ -28,8 +37,9 @@ function isRateLimited(ip: string): boolean {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Rate limiting solo en POST a rutas de auth (intentos de login/register)
-  if (request.method === "POST" && authRoutes.some((r) => pathname.startsWith(r))) {
+  // Rate-limit our own API routes (checkout & stripe portal).
+  // These are server-rendered GET routes — limiting per IP prevents abuse.
+  if (rateLimitedApis.some((r) => pathname.startsWith(r))) {
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       request.headers.get("x-real-ip") ??
@@ -66,18 +76,24 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getUser() also refreshes the access token when it has expired.
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // Si no tiene sesión e intenta entrar a ruta protegida → login
+  // Protected routes: redirect to /login and preserve the intended destination
+  // via ?next= so the login page can bounce the user back after authentication.
   if (!user && protectedRoutes.some((r) => pathname.startsWith(r))) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Rutas de admin: requieren sesión y role = admin
+  // Admin routes: require an authenticated session with role = admin.
   if (adminRoutes.some((r) => pathname.startsWith(r))) {
-    if (!user) return NextResponse.redirect(new URL("/login", request.url));
+    if (!user) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
 
     const { data: profile } = await supabase
       .from("profiles")
@@ -90,8 +106,8 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Si ya tiene sesión e intenta ir a login/register → dashboard
-  if (user && authRoutes.some((r) => pathname.startsWith(r))) {
+  // Auth-only routes: redirect logged-in users straight to their dashboard.
+  if (user && authOnlyRoutes.some((r) => pathname.startsWith(r))) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

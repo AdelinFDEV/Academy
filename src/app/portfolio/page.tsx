@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
@@ -32,6 +33,9 @@ export default async function PortfolioPage() {
 
   const isPremium = role === "premium" || role === "admin";
   const isAdmin = role === "admin";
+
+  // Free and unauthenticated users must not see portfolio data
+  if (!isPremium) redirect("/premium");
 
   const { data: positions } = await supabase
     .from("portfolio_positions")

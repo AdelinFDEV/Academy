@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Poppins, DM_Sans, Kalam } from "next/font/google";
 import "./globals.css";
 import BadgeNotifier from "@/components/BadgeNotifier";
+import CookieBanner from "@/components/CookieBanner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -67,6 +68,7 @@ export default function RootLayout({
       <body>
         {children}
         <BadgeNotifier />
+        <CookieBanner />
       </body>
     </html>
   );

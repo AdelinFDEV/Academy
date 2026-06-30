@@ -45,10 +45,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {isAdmin && (
             <Link href="/admin" className="btn-nav-link">Admin</Link>
           )}
-          <div className="blog-nav-user">
+          <Link href="/cuenta" className="blog-nav-user" style={{ textDecoration: "none" }}>
             <span className="blog-nav-user-name">{userName}</span>
             <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>{planLabel}</span>
-          </div>
+          </Link>
           <LogoutButton />
         </div>
         <BlogMobileMenu user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -27,11 +29,19 @@ export default function LoginPage() {
       return;
     }
 
-    // Respeta ?next= si es una ruta interna segura (p.ej. el embudo /premium).
+    // Only redirect to paths on the same origin to prevent open-redirect attacks.
+    // Backslash and encoded variants bypass simple startsWith checks, so we use
+    // URL() which normalises everything before comparing origins.
     const nextParam = new URLSearchParams(window.location.search).get("next");
-    const target = nextParam && nextParam.startsWith("/") && !nextParam.startsWith("//")
-      ? nextParam
-      : "/dashboard";
+    let target = "/dashboard";
+    if (nextParam) {
+      try {
+        const url = new URL(nextParam, window.location.origin);
+        if (url.origin === window.location.origin) {
+          target = url.pathname + url.search + url.hash;
+        }
+      } catch { /* malformed URL → keep default */ }
+    }
 
     router.push(target);
     router.refresh();
@@ -68,15 +78,25 @@ export default function LoginPage() {
           </div>
 
           <div className="field">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <label htmlFor="password">Contraseña</label>
+              <Link href="/forgot-password" className="auth-forgot-link">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
+            <div className="field-pw-wrap">
+              <input
+                id="password"
+                type={showPw ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+              <button type="button" className="field-pw-toggle" onClick={() => setShowPw(v => !v)} tabIndex={-1} aria-label={showPw ? "Ocultar contraseña" : "Mostrar contraseña"}>
+                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && <p className="auth-error">{error}</p>}
