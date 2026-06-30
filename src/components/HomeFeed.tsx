@@ -254,8 +254,8 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { po
     return regularPosts;
   }, [regularPosts, tab]);
 
-  // Home only shows the 4 most recent — the rest live in /articulos
-  const MAX_VISIBLE = 4;
+  // Home only shows the 2 most recent — the rest live in /articulos
+  const MAX_VISIBLE = 2;
   const visible = filtered.slice(0, MAX_VISIBLE);
   const hasMore = filtered.length > MAX_VISIBLE;
 

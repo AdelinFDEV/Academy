@@ -8,6 +8,7 @@ import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
 import NavArticulosDropdown from "@/components/NavArticulosDropdown";
 import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import HomeFeed from "@/components/HomeFeed";
+import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import LiveCounter from "@/components/LiveCounter";
 import SocialLinks from "@/components/SocialLinks";
@@ -19,6 +20,12 @@ export default async function HomePage() {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Get user role for premium check
+  const profileData = user
+    ? (await supabase.from("profiles").select("role").eq("id", user.id).single()).data
+    : null;
+  const isPremium = profileData?.role === "premium" || profileData?.role === "admin";
 
   const [{ data: posts }, { data: categories }, { count: postsTotal }, youtubeVideos] =
     await Promise.all([
@@ -32,7 +39,7 @@ export default async function HomePage() {
         .select("name, slug")
         .order("name"),
       supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
-      getLatestVideos(3),
+      getLatestVideos(2),
     ]);
 
   const postIds = posts?.map((p) => p.id) ?? [];
@@ -213,6 +220,10 @@ export default async function HomePage() {
       {/* ── Main layout ── */}
       <div className="home-layout" id="feed">
 
+        <div className="tools-mobile-only">
+          <SidebarTools isLoggedIn={!!user} isPremium={isPremium} />
+        </div>
+
         {/* Feed */}
         <HomeFeed posts={enrichedPosts} isLoggedIn={!!user} youtubeVideos={youtubeVideos} />
 
@@ -220,56 +231,8 @@ export default async function HomePage() {
         <aside className="home-sidebar">
 
           {/* Herramientas */}
-          <div className="sidebar-card sidebar-card--tools">
-            <p className="sidebar-card-title">Herramientas</p>
-            <div className="sidebar-tools-list">
-              {/* Diario — siempre PREMIUM */}
-              <Link href={!user ? "/register" : "/dashboard"} className="sidebar-tool-link sidebar-tool-link--dimmed">
-                <NotebookPen size={16} className="sidebar-tool-icon" />
-                <span>Diario de Trading</span>
-                <span className="sidebar-tool-badge--premium">PREMIUM</span>
-              </Link>
-              <Link href={!user ? "/register" : "/calculadora"} className="sidebar-tool-link">
-                <Crosshair size={16} className="sidebar-tool-icon" />
-                <span>Predicción de Precio</span>
-                {!user && <span className="sidebar-tool-badge--free">GRATIS</span>}
-              </Link>
-              <Link href={!user ? "/register" : "/dashboard/watchlist"} className="sidebar-tool-link">
-                <ScanEye size={16} className="sidebar-tool-icon" />
-                <span>Mi Watchlist</span>
-                {!user && <span className="sidebar-tool-badge--free">GRATIS</span>}
-              </Link>
-              <Link href={!user ? "/register" : "/logros"} className="sidebar-tool-link">
-                <Medal size={16} className="sidebar-tool-icon" />
-                <span>Logros y XP</span>
-                {!user && <span className="sidebar-tool-badge--free">GRATIS</span>}
-              </Link>
-              <Link href={!user ? "/register" : "/portfolio"} className="sidebar-tool-link sidebar-tool-link--dimmed">
-                <Wallet size={16} className="sidebar-tool-icon" />
-                <span>Portfolio Spot</span>
-                <span className="sidebar-tool-badge--premium">PREMIUM</span>
-              </Link>
-              <Link href={!user ? "/register" : "/herramientas/liberaciones"} className="sidebar-tool-link sidebar-tool-link--dimmed">
-                <Unlock size={16} className="sidebar-tool-icon" />
-                <span>Liberaciones de Tokens</span>
-                <span className="sidebar-tool-badge--premium">PREMIUM</span>
-              </Link>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
-                <ListOrdered size={16} className="sidebar-tool-icon" />
-                <span>Ranking</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
-                <MessagesSquare size={16} className="sidebar-tool-icon" />
-                <span>Chat</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
-                <Network size={16} className="sidebar-tool-icon" />
-                <span>Foro</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
-            </div>
+          <div className="tools-desktop-only">
+            <SidebarTools isLoggedIn={!!user} isPremium={isPremium} />
           </div>
 
           {/* Educación */}

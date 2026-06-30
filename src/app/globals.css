@@ -66,7 +66,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Profundidad premium â€” elevaciÃ³n sutil en superficies */
+/* Profundidad premium Ã¢â‚¬â€ elevaciÃƒÂ³n sutil en superficies */
 .stat-card,
 .course-card,
 .featured-post,
@@ -562,9 +562,9 @@ html {
   border-color: rgba(255, 107, 43, 0.5);
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   DASHBOARD REDISEÃ‘O â€” mobile-first (dash-*)
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+   DASHBOARD REDISEÃƒâ€˜O Ã¢â‚¬â€ mobile-first (dash-*)
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
 /* Cabecera */
 .dash-header {
@@ -647,7 +647,7 @@ html {
   border-color: rgba(255, 107, 43, .5);
 }
 
-/* â”€â”€ Fila superior â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Fila superior Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dash-top-row {
   display: flex;
   flex-direction: column;
@@ -771,7 +771,7 @@ html {
   gap: 0.55rem;
 }
 
-/* Mobile: tarjetas en scroll horizontal para más espacio por item */
+/* Mobile: tarjetas en scroll horizontal para mÃ¡s espacio por item */
 @media (max-width: 759px) {
   .dash-tools-grid {
     display: flex;
@@ -871,7 +871,7 @@ html {
   line-height: 1.3;
 }
 
-/* â”€â”€ Secciones comunes â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Secciones comunes Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dash-section {
   margin-bottom: 0;
 }
@@ -905,7 +905,7 @@ html {
   padding: 2px 9px;
 }
 
-/* â”€â”€ ContinÃºa leyendo â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ ContinÃƒÂºa leyendo Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dash-continue-list {
   display: flex;
   gap: 0.85rem;
@@ -995,7 +995,7 @@ html {
   overflow: hidden;
 }
 
-/* â”€â”€ Guardados (lista compacta) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Guardados (lista compacta) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dash-saved-list {
   display: flex;
   flex-direction: column;
@@ -1095,7 +1095,7 @@ html {
   line-height: 1;
 }
 
-/* â”€â”€ Estado vacÃ­o â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Estado vacÃƒÂ­o Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dash-empty {
   display: flex;
   flex-direction: column;
@@ -1126,9 +1126,9 @@ html {
   color: var(--text-secondary);
 }
 
-/* â”€â”€ Responsive â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Responsive Ã¢â€â‚¬Ã¢â€â‚¬ */
 
-/* Tablet 640px+: continÃºa en grid 3 col, guardados 2 col */
+/* Tablet 640px+: continÃƒÂºa en grid 3 col, guardados 2 col */
 @media (min-width: 640px) {
   .dash-continue-list {
     overflow-x: visible;
@@ -1288,7 +1288,7 @@ html {
   color: var(--accent-orange);
 }
 
-/* ── Live Counter ── */
+/* â”€â”€ Live Counter â”€â”€ */
 .live-counter {
   display: flex;
   align-items: center;
@@ -1304,7 +1304,7 @@ html {
   z-index: 500;
 }
 
-/* Desktop: versión completa */
+/* Desktop: versiÃ³n completa */
 .live-counter-desktop {
   display: flex;
   align-items: center;
@@ -1327,19 +1327,19 @@ html {
   color: #4ade80;
 }
 
-/* Móvil: versión minimalista — oculta en desktop */
+/* MÃ³vil: versiÃ³n minimalista â€” oculta en desktop */
 .live-counter-mobile {
   display: none;
 }
 
 @media (max-width: 519px) {
 
-  /* Ocultar versión desktop */
+  /* Ocultar versiÃ³n desktop */
   .live-counter-desktop {
     display: none;
   }
 
-  /* Mostrar versión móvil */
+  /* Mostrar versiÃ³n mÃ³vil */
   .live-counter-mobile {
     display: flex;
     align-items: center;
@@ -1375,7 +1375,7 @@ html {
     font-weight: 700;
   }
 
-  /* Nav: logo izquierda · counter centro · hamburguesa derecha */
+  /* Nav: logo izquierda Â· counter centro Â· hamburguesa derecha */
   .blog-nav {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -2113,7 +2113,7 @@ html {
   transform: translateX(3px);
 }
 
-/* Variante premium del botÃ³n (desbloquear) */
+/* Variante premium del botÃƒÂ³n (desbloquear) */
 .post-read-more.is-premium {
   color: var(--premium-gold);
   border-color: rgba(230, 180, 85, 0.35);
@@ -2133,7 +2133,7 @@ html {
   color: var(--text-muted);
 }
 
-/* â”€â”€ Post card link wrapper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Post card link wrapper Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .post-card-link {
   display: flex;
   flex-direction: column;
@@ -2142,7 +2142,7 @@ html {
   color: inherit;
 }
 
-/* â”€â”€ Featured post bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Featured post bar Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .featured-post-wrap {
   margin-bottom: 3.5rem;
 }
@@ -2160,7 +2160,7 @@ html {
   border-radius: 0 0 20px 20px;
 }
 
-/* â”€â”€ Post interactions bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Post interactions bar Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .post-interactions {
   display: flex;
   align-items: center;
@@ -2394,7 +2394,7 @@ html {
   color: var(--text-primary);
 }
 
-/* Cabecera de categorÃ­a */
+/* Cabecera de categorÃƒÂ­a */
 .category-header {
   padding-bottom: 2rem;
   margin-bottom: 2.5rem;
@@ -2416,7 +2416,7 @@ html {
   color: var(--text-muted);
 }
 
-/* PÃ¡ginas legales */
+/* PÃƒÂ¡ginas legales */
 .legal-page {
   max-width: 760px;
 }
@@ -2483,7 +2483,7 @@ html {
   width: 100%;
 }
 
-/* Prompt suave al final de un artÃ­culo gratis */
+/* Prompt suave al final de un artÃƒÂ­culo gratis */
 .article-cta {
   margin: 3rem 0 4rem;
   padding: 2.2rem 2rem;
@@ -2518,7 +2518,7 @@ html {
   flex-wrap: wrap;
 }
 
-/* ArtÃ­culos relacionados */
+/* ArtÃƒÂ­culos relacionados */
 .related-posts {
   border-top: 1px solid rgba(240, 244, 255, 0.06);
   padding-top: 2.5rem;
@@ -2669,7 +2669,7 @@ html {
   flex-wrap: wrap;
 }
 
-/* Botón volver al final del post */
+/* BotÃ³n volver al final del post */
 .post-back-row {
   padding-top: 2.5rem;
   padding-bottom: 0.5rem;
@@ -2698,7 +2698,7 @@ html {
   border-color: rgba(255, 107, 43, 0.35);
 }
 
-/* ── Reading progress bar ── */
+/* â”€â”€ Reading progress bar â”€â”€ */
 .reading-progress-bar {
   position: fixed;
   top: 0;
@@ -2710,7 +2710,7 @@ html {
   pointer-events: none;
 }
 
-/* ── Breadcrumb ── */
+/* â”€â”€ Breadcrumb â”€â”€ */
 .post-breadcrumb {
   display: flex;
   align-items: center;
@@ -2744,7 +2744,7 @@ html {
   max-width: 240px;
 }
 
-/* ── Table of contents ── */
+/* â”€â”€ Table of contents â”€â”€ */
 .toc-box {
   border: 1px solid rgba(240, 244, 255, 0.08);
   border-left: 3px solid var(--accent-orange);
@@ -2793,7 +2793,7 @@ html {
   color: var(--text-muted);
 }
 
-/* ── Comment feedback states ── */
+/* â”€â”€ Comment feedback states â”€â”€ */
 .comment-success {
   padding: 1rem 1.25rem;
   border-radius: 10px;
@@ -2811,7 +2811,7 @@ html {
   margin-bottom: 0;
 }
 
-/* ── Post back row — dos botones en una línea ── */
+/* â”€â”€ Post back row â€” dos botones en una lÃ­nea â”€â”€ */
 .post-back-row .post-back-btn {
   flex: 1;
   justify-content: center;
@@ -3020,7 +3020,7 @@ html {
 }
 
 /* ============================================
-   Encabezado de secciÃ³n (reutilizable)
+   Encabezado de secciÃƒÂ³n (reutilizable)
    ============================================ */
 .section-heading {
   max-width: 640px;
@@ -3050,7 +3050,7 @@ html {
   color: var(--text-secondary);
 }
 
-/* NavegaciÃ³n por temas */
+/* NavegaciÃƒÂ³n por temas */
 /* Home search bar */
 .home-search-wrap {
   position: relative;
@@ -3181,7 +3181,7 @@ html {
   color: var(--text-muted);
 }
 
-/* Empieza aquÃ­ */
+/* Empieza aquÃƒÂ­ */
 .starter-section {
   margin-top: 5rem;
 }
@@ -3459,7 +3459,7 @@ html {
   color: #4ade80;
 }
 
-/* â”€â”€ Badge Popup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Badge Popup Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .badge-popup-overlay {
   position: fixed;
   inset: 0;
@@ -3648,7 +3648,7 @@ html {
   text-decoration-color: var(--accent-orange);
 }
 
-/* â”€â”€ Badges & Streak â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Badges & Streak Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .dashboard-header-name {
   display: flex;
   align-items: center;
@@ -3823,7 +3823,7 @@ html {
   gap: 0.85rem;
 }
 
-/* â”€ Badge base â”€ */
+/* Ã¢â€â‚¬ Badge base Ã¢â€â‚¬ */
 .badge-item {
   position: relative;
   display: flex;
@@ -3839,7 +3839,7 @@ html {
   overflow: visible;
 }
 
-/* â”€ Unlocked â”€ */
+/* Ã¢â€â‚¬ Unlocked Ã¢â€â‚¬ */
 .badge-item.unlocked {
   background: rgba(255, 107, 43, 0.06);
   border-color: rgba(255, 107, 43, 0.22);
@@ -3852,7 +3852,7 @@ html {
   border-color: rgba(255, 107, 43, 0.4);
 }
 
-/* â”€ Locked â”€ */
+/* Ã¢â€â‚¬ Locked Ã¢â€â‚¬ */
 .badge-item.locked {
   background: rgba(240, 244, 255, 0.02);
   border-color: rgba(240, 244, 255, 0.06);
@@ -3864,7 +3864,7 @@ html {
   transform: translateY(-2px);
 }
 
-/* â”€ Special (30-day streak) â”€ */
+/* Ã¢â€â‚¬ Special (30-day streak) Ã¢â€â‚¬ */
 .badge-item.special.locked {
   border-color: rgba(245, 158, 11, 0.2);
   background: rgba(245, 158, 11, 0.03);
@@ -3900,7 +3900,7 @@ html {
   background: rgba(245, 158, 11, 0.15);
 }
 
-/* â”€ Icon â”€ */
+/* Ã¢â€â‚¬ Icon Ã¢â€â‚¬ */
 .badge-icon {
   position: relative;
   display: flex;
@@ -3926,7 +3926,7 @@ html {
   filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.6));
 }
 
-/* â”€ Label â”€ */
+/* Ã¢â€â‚¬ Label Ã¢â€â‚¬ */
 .badge-label {
   font-size: 0.72rem;
   font-weight: 700;
@@ -3934,7 +3934,7 @@ html {
   line-height: 1.2;
 }
 
-/* â”€ Tooltip â”€ */
+/* Ã¢â€â‚¬ Tooltip Ã¢â€â‚¬ */
 .badge-tooltip {
   position: absolute;
   bottom: calc(100% + 10px);
@@ -4000,7 +4000,7 @@ html {
   }
 }
 
-/* â”€â”€ ArtÃ­culos page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ ArtÃƒÂ­culos page Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .articulos-page {
   max-width: 1200px;
   margin: 0 auto;
@@ -5223,7 +5223,7 @@ html {
 }
 
 /* ============================================
-   TipografÃ­a editorial â€” titulares en serif
+   TipografÃƒÂ­a editorial Ã¢â‚¬â€ titulares en serif
    (al final para imponerse sobre las reglas previas)
    ============================================ */
 .home-hero-title,
@@ -5245,7 +5245,7 @@ html {
 }
 
 /* ============================================
-   RESPONSIVE â€” Tablet (601pxâ€“900px)
+   RESPONSIVE Ã¢â‚¬â€ Tablet (601pxÃ¢â‚¬â€œ900px)
    ============================================ */
 @media (min-width: 601px) and (max-width: 900px) {
 
@@ -5262,12 +5262,12 @@ html {
     display: flex;
   }
 
-  /* El scroll lo maneja la pÃ¡gina, no el contenedor */
+  /* El scroll lo maneja la pÃƒÂ¡gina, no el contenedor */
   .dash-content {
     overflow-y: visible;
   }
 
-  /* MÃ¡s espacio lateral en tablet */
+  /* MÃƒÂ¡s espacio lateral en tablet */
   .dashboard-main {
     padding: 2rem 2.5rem;
   }
@@ -5354,7 +5354,7 @@ html {
 }
 
 /* ============================================
-   HAMBURGER MENU â€” base styles (all screen sizes)
+   HAMBURGER MENU Ã¢â‚¬â€ base styles (all screen sizes)
    ============================================ */
 .btn-nav-mobile-login {
   display: flex;
@@ -5442,7 +5442,7 @@ html {
   user-select: none;
 }
 
-/* hamburger-label always hidden — no text alongside icon */
+/* hamburger-label always hidden â€” no text alongside icon */
 
 /* Full-screen mobile menu */
 .blog-mobile-menu {
@@ -5484,7 +5484,7 @@ html {
   margin: 0 auto;
 }
 
-/* â”€â”€ Nav tools dropdown (desktop) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Nav tools dropdown (desktop) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .nav-tools-wrap {
   position: relative;
   display: flex;
@@ -5623,7 +5623,7 @@ html {
   white-space: nowrap;
 }
 
-/* â”€â”€ Nav tools lock/premium badges â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Nav tools lock/premium badges Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .nav-tools-badge {
   margin-left: auto;
   font-size: 0.72rem;
@@ -5693,7 +5693,7 @@ html {
   opacity: 0.7;
 }
 
-/* â”€â”€ Desktop nav user info (dashboard) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Desktop nav user info (dashboard) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .blog-nav-user {
   display: flex;
   align-items: center;
@@ -5729,7 +5729,7 @@ html {
   border-color: rgba(255, 107, 43, 0.2);
 }
 
-/* â”€â”€ Mobile menu user info in footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Mobile menu user info in footer Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .blog-mobile-user-info {
   display: flex;
   align-items: center;
@@ -5776,7 +5776,7 @@ html {
   color: var(--accent-orange);
 }
 
-/* â”€â”€ Mobile menu sections â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Mobile menu sections Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .blog-mobile-section {
   border-bottom: 1px solid rgba(240, 244, 255, 0.06);
   padding: 14px 0 8px;
@@ -5838,7 +5838,7 @@ html {
   padding: 2px 6px;
 }
 
-/* â”€â”€ Glosario â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Glosario Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .glosario-page {
   max-width: 860px;
   margin: 0 auto;
@@ -5968,7 +5968,7 @@ html {
   padding: 2px 7px;
 }
 
-.glosario-term-cat--bÃ¡sicos {
+.glosario-term-cat--bÃƒÂ¡sicos {
   color: #60a5fa;
   background: rgba(96, 165, 250, 0.1);
   border: 1px solid rgba(96, 165, 250, 0.2);
@@ -6006,7 +6006,7 @@ html {
   font-size: 0.9rem;
 }
 
-/* â”€â”€ Watchlist â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Watchlist Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .watchlist-page {
   width: 100%;
 }
@@ -6272,7 +6272,7 @@ html {
   color: #ef4444;
 }
 
-/* â”€â”€ EstadÃ­sticas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ EstadÃƒÂ­sticas Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .stats-empty {
   display: flex;
   flex-direction: column;
@@ -6443,7 +6443,7 @@ html {
   color: #ef4444;
 }
 
-/* â”€â”€ Premium gate page (Cursos, Recursos, etc.) â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Premium gate page (Cursos, Recursos, etc.) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .premium-gate-page {
   max-width: 900px;
   margin: 0 auto;
@@ -6599,7 +6599,7 @@ html {
   line-height: 1.4;
 }
 
-/* Unlocked state (premium users â€” coming soon message) */
+/* Unlocked state (premium users Ã¢â‚¬â€ coming soon message) */
 .premium-gate-unlocked {
   display: flex;
   flex-direction: column;
@@ -6662,7 +6662,7 @@ html {
   }
 }
 
-/* â”€â”€ Logros gate page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Logros gate page Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 .logros-gate-page {
   max-width: 860px;
   margin: 0 auto;
@@ -6837,7 +6837,7 @@ html {
 }
 
 /* ============================================
-   HAMBURGER â€” visible en mÃ³vil y tablet (â‰¤ 900px)
+   HAMBURGER Ã¢â‚¬â€ visible en mÃƒÂ³vil y tablet (Ã¢â€°Â¤ 900px)
    ============================================ */
 @media (max-width: 900px) {
   .blog-nav-links {
@@ -6855,11 +6855,11 @@ html {
 }
 
 /* ============================================
-   RESPONSIVE â€” MÃ³vil (â‰¤ 600px)
+   RESPONSIVE Ã¢â‚¬â€ MÃƒÂ³vil (Ã¢â€°Â¤ 600px)
    ============================================ */
 @media (max-width: 600px) {
 
-  /* NavegaciÃ³n */
+  /* NavegaciÃƒÂ³n */
   .blog-nav,
   .dashboard-nav {
     padding: 1rem 1.5rem;
@@ -7019,7 +7019,7 @@ html {
     font-size: 1.45rem;
   }
 
-  /* Stats dashboard â€” 2Ã—2 en mÃ³vil */
+  /* Stats dashboard Ã¢â‚¬â€ 2Ãƒâ€”2 en mÃƒÂ³vil */
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
@@ -7030,7 +7030,7 @@ html {
     align-items: flex-start;
   }
 
-  /* Paywall â€” post */
+  /* Paywall Ã¢â‚¬â€ post */
   .post-paywall {
     padding: 2.5rem 1.25rem;
     border-radius: 16px;
@@ -7061,7 +7061,7 @@ html {
     font-size: 0.88rem;
   }
 
-  /* Premium gate â€” cursos/recursos */
+  /* Premium gate Ã¢â‚¬â€ cursos/recursos */
   .premium-gate-header {
     padding: 2.5rem 1rem 2rem;
   }
@@ -7194,7 +7194,7 @@ html {
 }
 
 /* ============================================
-   Dashboard mobile header â€” hidden on desktop
+   Dashboard mobile header Ã¢â‚¬â€ hidden on desktop
    ============================================ */
 .dash-mobile-header {
   display: none;
@@ -7325,7 +7325,7 @@ html {
 }
 
 /* ============================================
-   MÃ“VIL â€” Dashboard hamburger (â‰¤ 600px)
+   MÃƒâ€œVIL Ã¢â‚¬â€ Dashboard hamburger (Ã¢â€°Â¤ 600px)
    ============================================ */
 @media (max-width: 600px) {
 
@@ -7346,7 +7346,7 @@ html {
     overflow-y: visible;
   }
 
-  /* â”€â”€ Dashboard content â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Dashboard content Ã¢â€â‚¬Ã¢â€â‚¬ */
   .dashboard-main {
     padding: 1.5rem 1.5rem 2rem;
   }
@@ -7359,7 +7359,7 @@ html {
     font-size: 1.65rem;
   }
 
-  /* â”€â”€ Streak teaser â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Streak teaser Ã¢â€â‚¬Ã¢â€â‚¬ */
   .streak-teaser {
     padding: 0.9rem 1.2rem;
     gap: 0.65rem;
@@ -7379,7 +7379,7 @@ html {
     font-size: 0.82rem;
   }
 
-  /* â”€â”€ Badge popup â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Badge popup Ã¢â€â‚¬Ã¢â€â‚¬ */
   .badge-popup {
     padding: 2rem 1.4rem 1.6rem;
     border-radius: 16px;
@@ -7399,7 +7399,7 @@ html {
     font-size: 0.84rem;
   }
 
-  /* â”€â”€ Badges section â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Badges section Ã¢â€â‚¬Ã¢â€â‚¬ */
   .badges-section {
     padding: 1.2rem 1rem;
   }
@@ -7410,12 +7410,12 @@ html {
     gap: 0.5rem;
   }
 
-  /* â”€â”€ Blog nav â€” esconder texto secundario en pantallas muy estrechas â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Blog nav Ã¢â‚¬â€ esconder texto secundario en pantallas muy estrechas Ã¢â€â‚¬Ã¢â€â‚¬ */
   .blog-nav {
     padding: 0.85rem 1.1rem;
   }
 
-  /* â”€â”€ Post page â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Post page Ã¢â€â‚¬Ã¢â€â‚¬ */
   .post-header-bottom {
     flex-direction: column;
     align-items: flex-start;
@@ -7426,7 +7426,7 @@ html {
     flex-wrap: wrap;
   }
 
-  /* â”€â”€ Footer â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Footer Ã¢â€â‚¬Ã¢â€â‚¬ */
   .footer-inner {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -7438,7 +7438,7 @@ html {
 }
 
 /* ============================================
-   MÃ“VIL â€” Tablet pequeÃ±a / landscape (601â€“768px)
+   MÃƒâ€œVIL Ã¢â‚¬â€ Tablet pequeÃƒÂ±a / landscape (601Ã¢â‚¬â€œ768px)
    ============================================ */
 @media (min-width: 601px) and (max-width: 768px) {
   .dashboard-main {
@@ -7451,7 +7451,7 @@ html {
 }
 
 /* ============================================
-   MÃ“VIL â€” Pantallas muy pequeÃ±as (â‰¤ 380px)
+   MÃƒâ€œVIL Ã¢â‚¬â€ Pantallas muy pequeÃƒÂ±as (Ã¢â€°Â¤ 380px)
    ============================================ */
 @media (max-width: 380px) {
   .home-hero-title {
@@ -7464,7 +7464,7 @@ html {
 
   .dash-mobile-tab span {
     display: none;
-    /* solo iconos en pantallas mÃ­nimas */
+    /* solo iconos en pantallas mÃƒÂ­nimas */
   }
 
   .dash-mobile-tab {
@@ -7482,11 +7482,11 @@ html {
   }
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   CORRECCIONES GLOBALES ANTI-SCROLL HORIZONTAL â€” MÃ“VIL
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+   CORRECCIONES GLOBALES ANTI-SCROLL HORIZONTAL Ã¢â‚¬â€ MÃƒâ€œVIL
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
-/* 1 â€” ImÃ¡genes y media: nunca mÃ¡s anchas que su contenedor */
+/* 1 Ã¢â‚¬â€ ImÃƒÂ¡genes y media: nunca mÃƒÂ¡s anchas que su contenedor */
 img,
 video,
 iframe,
@@ -7496,7 +7496,7 @@ object {
   height: auto;
 }
 
-/* 2 â€” Contenido de post: palabras largas y URLs no rompen layout */
+/* 2 Ã¢â‚¬â€ Contenido de post: palabras largas y URLs no rompen layout */
 .post-content {
   overflow-wrap: break-word;
   word-break: break-word;
@@ -7518,7 +7518,7 @@ object {
   word-break: break-all;
 }
 
-/* 3 â€” Inputs siempre 100% del contenedor */
+/* 3 Ã¢â‚¬â€ Inputs siempre 100% del contenedor */
 input[type="text"],
 input[type="search"],
 input[type="email"],
@@ -7531,7 +7531,7 @@ select {
 
 @media (max-width: 600px) {
 
-  /* â”€â”€ MenÃº mÃ³vil: reducir padding lateral de 32px a 20px â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ MenÃƒÂº mÃƒÂ³vil: reducir padding lateral de 32px a 20px Ã¢â€â‚¬Ã¢â€â‚¬ */
   .blog-mobile-menu-nav {
     padding: 8px 20px 16px;
   }
@@ -7540,7 +7540,7 @@ select {
     padding: 20px 20px 36px;
   }
 
-  /* â”€â”€ Padding principal reducido â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Padding principal reducido Ã¢â€â‚¬Ã¢â€â‚¬ */
   .blog-main {
     padding: 1.5rem 1.1rem;
   }
@@ -7557,7 +7557,7 @@ select {
     padding: 1.5rem 1.1rem 3rem;
   }
 
-  /* â”€â”€ Cabecera dashboard: apila si no cabe â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Cabecera dashboard: apila si no cabe Ã¢â€â‚¬Ã¢â€â‚¬ */
   .dash-header {
     flex-wrap: wrap;
     gap: 0.75rem;
@@ -7569,12 +7569,12 @@ select {
     padding: 0.45rem 0.85rem;
   }
 
-  /* â”€â”€ article-cta: menos padding lateral â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ article-cta: menos padding lateral Ã¢â€â‚¬Ã¢â€â‚¬ */
   .article-cta {
     padding: 1.5rem 1.1rem;
   }
 
-  /* â”€â”€ Watchlist: columnas compactas â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Watchlist: columnas compactas Ã¢â€â‚¬Ã¢â€â‚¬ */
   .watchlist-list-header,
   .watchlist-row {
     grid-template-columns: 1fr 90px 64px 30px;
@@ -7598,7 +7598,7 @@ select {
     font-size: 0.7rem;
   }
 
-  /* â”€â”€ Buscador home: no desborda â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Buscador home: no desborda Ã¢â€â‚¬Ã¢â€â‚¬ */
   .home-search-wrap {
     max-width: 100%;
     box-sizing: border-box;
@@ -7610,7 +7610,7 @@ select {
     box-sizing: border-box;
   }
 
-  /* â”€â”€ Glosario controles â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Glosario controles Ã¢â€â‚¬Ã¢â€â‚¬ */
   .glosario-controls {
     gap: 0.75rem;
   }
@@ -7624,18 +7624,18 @@ select {
     padding: 0.35rem 0.7rem;
   }
 
-  /* â”€â”€ Premium gate â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Premium gate Ã¢â€â‚¬Ã¢â€â‚¬ */
   .premium-gate-page {
     padding-left: 1.1rem;
     padding-right: 1.1rem;
   }
 
-  /* â”€â”€ Stats grid en estadÃ­sticas â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Stats grid en estadÃƒÂ­sticas Ã¢â€â‚¬Ã¢â€â‚¬ */
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* â”€â”€ Footer: una columna en muy pequeÃ±os â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Footer: una columna en muy pequeÃƒÂ±os Ã¢â€â‚¬Ã¢â€â‚¬ */
   .footer-inner {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -7651,7 +7651,7 @@ select {
     padding: 1rem 1.1rem;
   }
 
-  /* â”€â”€ Home hero stats â”€â”€ */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Home hero stats Ã¢â€â‚¬Ã¢â€â‚¬ */
   .home-hero-stats {
     gap: 0.75rem;
     justify-content: center;
@@ -7666,7 +7666,7 @@ select {
   }
 }
 
-/* â”€â”€ Pantallas muy pequeÃ±as â‰¤ 380px â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Pantallas muy pequeÃƒÂ±as Ã¢â€°Â¤ 380px Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (max-width: 380px) {
 
   .blog-main,
@@ -7719,11 +7719,11 @@ select {
   }
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-   ADMIN V2 â€” mobile-first complete redesign
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+   ADMIN V2 Ã¢â‚¬â€ mobile-first complete redesign
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
-/* â”€â”€ Layout â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Layout Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-layout {
   display: flex;
   flex-direction: column;
@@ -7822,7 +7822,7 @@ select {
   min-width: 0;
 }
 
-/* â”€â”€ Desktop sidebar â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Desktop sidebar Ã¢â€â‚¬Ã¢â€â‚¬ */
 @media (min-width: 768px) {
   .admin-layout {
     flex-direction: row;
@@ -7882,7 +7882,7 @@ select {
   }
 }
 
-/* â”€â”€ Page shell â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Page shell Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-page {
   max-width: 1100px;
   width: 100%;
@@ -7908,7 +7908,7 @@ select {
   color: var(--text-secondary);
 }
 
-/* â”€â”€ Stat cards v2 â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Stat cards v2 Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-stats-v2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -8009,7 +8009,7 @@ select {
   }
 }
 
-/* â”€â”€ Charts row â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Charts row Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-charts-row {
   display: flex;
   flex-direction: column;
@@ -8217,7 +8217,7 @@ select {
   }
 }
 
-/* â”€â”€ Bottom row â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Bottom row Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-bottom-row {
   display: flex;
   flex-direction: column;
@@ -8463,7 +8463,7 @@ select {
   }
 }
 
-/* â”€â”€ Admin empty state â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Admin empty state Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-empty-state {
   display: flex;
   flex-direction: column;
@@ -8479,7 +8479,7 @@ select {
   color: var(--text-secondary);
 }
 
-/* â”€â”€ Tabs (comments) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Tabs (comments) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-tabs {
   display: flex;
   align-items: center;
@@ -8599,7 +8599,7 @@ select {
   padding: 1px 6px;
 }
 
-/* â”€â”€ Filter bar (posts) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Filter bar (posts) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-filter-bar {
   display: flex;
   flex-direction: column;
@@ -8746,7 +8746,7 @@ select {
   text-align: right;
 }
 
-/* â”€â”€ Category manager improvements â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Category manager improvements Ã¢â€â‚¬Ã¢â€â‚¬ */
 .category-item-left {
   display: flex;
   align-items: center;
@@ -8778,7 +8778,7 @@ select {
   white-space: nowrap;
 }
 
-/* â”€â”€ Users page â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Users page Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-users-stats {
   display: flex;
   gap: 0.75rem;
@@ -8887,7 +8887,7 @@ select {
   border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
-/* â”€â”€ Scrollable tables on mobile â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Scrollable tables on mobile Ã¢â€â‚¬Ã¢â€â‚¬ */
 .admin-table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -8897,11 +8897,11 @@ select {
   min-width: 600px;
 }
 
-/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
    HOME REDDIT-STYLE
-   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
-/* â”€â”€ Compact hero banner â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Compact hero banner Ã¢â€â‚¬Ã¢â€â‚¬ */
 .home-banner {
   position: relative;
   overflow: hidden;
@@ -9039,6 +9039,32 @@ select {
   transition: background 0.15s, border-color 0.15s;
 }
 
+@media (min-width: 900px) {
+  .home-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.75rem 2rem 4rem;
+  }
+}
+
+/* â”€â”€ Tools card visibility: mobile above feed, desktop in sidebar â”€â”€ */
+.tools-mobile-only {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.tools-desktop-only {
+  display: none;
+}
+@media (min-width: 900px) {
+  .tools-mobile-only {
+    display: none;
+  }
+  .tools-desktop-only {
+    display: block;
+  }
+}
+
 .home-feature:hover {
   background: rgba(255, 255, 255, 0.11);
   border-color: rgba(255, 255, 255, 0.2);
@@ -9164,7 +9190,7 @@ select {
   color: #34d399;
 }
 
-/* ── Hero social proof ── */
+/* â”€â”€ Hero social proof â”€â”€ */
 .hero-trust {
   display: flex;
   flex-direction: column;
@@ -9237,7 +9263,7 @@ select {
   font-weight: 700;
 }
 
-/* ── Hero entrance animation ── */
+/* â”€â”€ Hero entrance animation â”€â”€ */
 @keyframes heroFadeUp {
   from {
     opacity: 0;
@@ -9302,7 +9328,7 @@ select {
   }
 }
 
-/* â”€â”€ Main 2-col layout â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Main 2-col layout Ã¢â€â‚¬Ã¢â€â‚¬ */
 .home-layout {
   display: flex;
   flex-direction: column;
@@ -9321,13 +9347,13 @@ select {
   }
 }
 
-/* â”€â”€ Feed â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Feed Ã¢â€â‚¬Ã¢â€â‚¬ */
 .home-feed {
   flex: 1;
   min-width: 0;
 }
 
-/* â”€â”€ Sort tabs â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Sort tabs Ã¢â€â‚¬Ã¢â€â‚¬ */
 .feed-tabs {
   display: flex;
   align-items: center;
@@ -9377,7 +9403,7 @@ select {
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* â”€â”€ Post rows â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Post rows Ã¢â€â‚¬Ã¢â€â‚¬ */
 .feed-list {
   display: flex;
   flex-direction: column;
@@ -9432,7 +9458,7 @@ select {
   background: linear-gradient(135deg, rgba(255, 107, 43, 0.06) 0%, rgba(17, 34, 64, 0.7) 40%);
 }
 
-/* â”€â”€ Vote column â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Vote column Ã¢â€â‚¬Ã¢â€â‚¬ */
 .feed-vote-col {
   display: flex;
   flex-direction: column;
@@ -9492,7 +9518,7 @@ select {
   margin-top: 0.15rem;
 }
 
-/* â”€â”€ Post body â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Post body Ã¢â€â‚¬Ã¢â€â‚¬ */
 .feed-post-body {
   flex: 1;
   min-width: 0;
@@ -9613,7 +9639,7 @@ select {
   color: var(--text-secondary);
 }
 
-/* â”€â”€ Thumbnail â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Thumbnail Ã¢â€â‚¬Ã¢â€â‚¬ */
 .feed-post-thumb {
   flex-shrink: 0;
   width: 100%;
@@ -9655,7 +9681,7 @@ select {
   }
 }
 
-/* â”€â”€ Feed empty â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Feed empty Ã¢â€â‚¬Ã¢â€â‚¬ */
 .feed-empty {
   padding: 3rem 1.5rem;
   text-align: center;
@@ -9666,7 +9692,7 @@ select {
   font-size: 0.9rem;
 }
 
-/* â”€â”€ Sidebar â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Sidebar Ã¢â€â‚¬Ã¢â€â‚¬ */
 .home-sidebar {
   width: 100%;
   flex-shrink: 0;
@@ -9678,7 +9704,7 @@ select {
   }
 }
 
-/* â”€â”€ Sidebar cards â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Sidebar cards Ã¢â€â‚¬Ã¢â€â‚¬ */
 .sidebar-card {
   background: linear-gradient(145deg, rgba(17, 34, 64, 0.85) 0%, rgba(13, 31, 60, 0.7) 100%);
   border: 1px solid rgba(240, 244, 255, 0.08);
@@ -9833,7 +9859,7 @@ select {
   padding: 1px 7px;
 }
 
-/* â”€â”€ Steps (Empieza aquÃ­) â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Steps (Empieza aquÃƒÂ­) Ã¢â€â‚¬Ã¢â€â‚¬ */
 .sidebar-steps {
   display: flex;
   flex-direction: column;
@@ -9878,7 +9904,7 @@ select {
   margin: 0;
 }
 
-/* â”€â”€ Premium CTA sidebar card â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Premium CTA sidebar card Ã¢â€â‚¬Ã¢â€â‚¬ */
 .sidebar-premium-card {
   background: linear-gradient(135deg, rgba(255, 107, 43, 0.1) 0%, rgba(255, 154, 0, 0.05) 50%, rgba(17, 34, 64, 0.85) 100%);
   border-color: rgba(255, 107, 43, 0.25);
@@ -9931,7 +9957,7 @@ select {
   transform: translateY(-1px);
 }
 
-/* â”€â”€ Crypto Markets Table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* Ã¢â€â‚¬Ã¢â€â‚¬ Crypto Markets Table Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
 
 .crypto-markets {
   margin-top: 3rem;
@@ -10617,7 +10643,7 @@ select {
 
 @media (max-width: 480px) {
 
-  /* Feed tabs — prevent active state from visually overflowing container */
+  /* Feed tabs â€” prevent active state from visually overflowing container */
   .feed-tab {
     font-size: 0.72rem;
     padding: 0.5rem 0.45rem;
@@ -10630,15 +10656,15 @@ select {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
   }
 
-  /* Admin — reduce padding on small phones */
+  /* Admin â€” reduce padding on small phones */
   .admin-main {
     padding: 1rem;
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   GLOSARIO — SAVE BUTTON
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   GLOSARIO â€” SAVE BUTTON
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .glosario-term-head {
   display: flex;
@@ -10702,9 +10728,9 @@ select {
   text-decoration: underline;
 }
 
-/* ══════════════════════════════════════════════════════
-   DASHBOARD — SAVED TERMS
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DASHBOARD â€” SAVED TERMS
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .dash-terms-grid {
   display: grid;
@@ -10748,7 +10774,7 @@ select {
   letter-spacing: -0.01em;
 }
 
-/* ── Botón quitar guardado (posts y términos) ── */
+/* â”€â”€ BotÃ³n quitar guardado (posts y tÃ©rminos) â”€â”€ */
 .dash-unsave-btn {
   display: inline-flex;
   align-items: center;
@@ -10785,9 +10811,9 @@ select {
   overflow: hidden;
 }
 
-/* ══════════════════════════════════════════════════════
-   ADMIN — COMMUNITY INTERACTION CHART
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ADMIN â€” COMMUNITY INTERACTION CHART
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .admin-interaction-card {
   margin-bottom: 1.5rem;
@@ -10825,9 +10851,9 @@ select {
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   DASHBOARD — PREMIUM UPSELL CARD
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DASHBOARD â€” PREMIUM UPSELL CARD
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .dash-upsell {
   position: relative;
@@ -11039,9 +11065,9 @@ select {
   .dash-upsell-price-main { font-size: 1.8rem; }
 }
 
-/* ══════════════════════════════════════════════════════
-   POST — IN-ARTICLE UPGRADE CTA (FREE USER)
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POST â€” IN-ARTICLE UPGRADE CTA (FREE USER)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .post-upgrade-cta {
   margin: 2.5rem 0;
@@ -11080,18 +11106,18 @@ select {
   max-width: 400px;
 }
 
-/* ══════════════════════════════════════════════════════
-   FOOTER — PREMIUM LINK
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FOOTER â€” PREMIUM LINK
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .footer-premium-link {
   color: var(--accent-orange) !important;
   font-weight: 600;
 }
 
-/* ══════════════════════════════════════════════════════
-   ADMIN — CONVERSION FUNNEL STRIP
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ADMIN â€” CONVERSION FUNNEL STRIP
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .admin-funnel-strip {
   display: flex;
@@ -11180,9 +11206,9 @@ select {
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   SOCIAL LINKS — FOOTER VARIANT
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SOCIAL LINKS â€” FOOTER VARIANT
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .footer-social {
   display: flex;
@@ -11210,9 +11236,9 @@ select {
   background: rgba(240, 244, 255, 0.04);
 }
 
-/* ══════════════════════════════════════════════════════
-   SOCIAL LINKS — SIDEBAR VARIANT
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SOCIAL LINKS â€” SIDEBAR VARIANT
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .sidebar-social-list {
   display: flex;
@@ -11245,9 +11271,9 @@ select {
   letter-spacing: 0.05em;
 }
 
-/* ══════════════════════════════════════════════════════
-   SOCIAL LINKS — POST VARIANT
-   ══════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SOCIAL LINKS â€” POST VARIANT
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .post-social-row {
   display: flex;
@@ -11293,9 +11319,9 @@ select {
   background: rgba(255, 32, 32, 0.12);
 }
 
-/* ══════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CALCULADORA DE PRECIO
-   ══════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .calc-wrap {
   max-width: 960px;
@@ -11363,7 +11389,7 @@ select {
   margin-bottom: 2.5rem;
 }
 
-/* ── Inputs column ── */
+/* â”€â”€ Inputs column â”€â”€ */
 .calc-inputs-col {
   display: flex;
   flex-direction: column;
@@ -11708,7 +11734,7 @@ select {
   gap: 0.6rem;
 }
 
-/* ── Result card ── */
+/* â”€â”€ Result card â”€â”€ */
 .calc-result-col {
   position: sticky;
   top: 80px;
@@ -11871,7 +11897,7 @@ select {
   margin-top: 1px;
 }
 
-/* ── Scenarios table ── */
+/* â”€â”€ Scenarios table â”€â”€ */
 .calc-scenarios {
   border: 1px solid rgba(240, 244, 255, 0.08);
   border-radius: 16px;
@@ -12026,7 +12052,7 @@ select {
   margin: 0;
 }
 
-/* ── Responsive ── */
+/* â”€â”€ Responsive â”€â”€ */
 @media (max-width: 800px) {
   .calc-grid {
     grid-template-columns: 1fr;
@@ -12091,7 +12117,7 @@ select {
   }
 }
 
-/* ── Calc: new classes for rewritten calculator ── */
+/* â”€â”€ Calc: new classes for rewritten calculator â”€â”€ */
 .calc-input--hero {
   padding: 1rem 1rem;
   font-size: 1.15rem;
@@ -12180,7 +12206,7 @@ select {
   opacity: 0.5;
 }
 
-/* ── Comparison section ── */
+/* â”€â”€ Comparison section â”€â”€ */
 .calc-comparison {
   border: 1px solid rgba(240, 244, 255, 0.09);
   border-radius: 16px;
@@ -12330,15 +12356,15 @@ select {
   }
 }
 
-/* ══════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RANKING PAGE
-   ══════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .ranking-page {
   padding-bottom: 4rem;
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .ranking-header {
   display: flex;
   align-items: flex-start;
@@ -12426,7 +12452,7 @@ select {
   letter-spacing: 0.06em;
 }
 
-/* ── Score legend ── */
+/* â”€â”€ Score legend â”€â”€ */
 .ranking-legend {
   display: flex;
   align-items: center;
@@ -12470,7 +12496,7 @@ select {
   flex-shrink: 0;
 }
 
-/* ── Podium ── */
+/* â”€â”€ Podium â”€â”€ */
 .ranking-podium {
   display: flex;
   justify-content: center;
@@ -12585,7 +12611,7 @@ select {
   padding: 0.75rem 0;
 }
 
-/* ── Role badges (shared) ── */
+/* â”€â”€ Role badges (shared) â”€â”€ */
 .ranking-role-badge {
   display: inline-block;
   font-size: 0.58rem;
@@ -12606,7 +12632,7 @@ select {
   color: #60a5fa;
 }
 
-/* ── Table ── */
+/* â”€â”€ Table â”€â”€ */
 .ranking-table-wrap {
   border: 1px solid rgba(240, 244, 255, 0.07);
   border-radius: 14px;
@@ -12746,7 +12772,7 @@ select {
   letter-spacing: -0.01em;
 }
 
-/* ── Future metrics note ── */
+/* â”€â”€ Future metrics note â”€â”€ */
 .ranking-future-note {
   display: flex;
   flex-direction: column;
@@ -12787,7 +12813,7 @@ select {
   font-size: 0.9rem;
 }
 
-/* ── Locked / coming soon screen ── */
+/* â”€â”€ Locked / coming soon screen â”€â”€ */
 .ranking-locked-wrap {
   position: relative;
   min-height: 480px;
@@ -12941,7 +12967,7 @@ select {
   border-color: rgba(255, 107, 43, 0.5);
 }
 
-/* ── Responsive ── */
+/* â”€â”€ Responsive â”€â”€ */
 @media (max-width: 700px) {
   .ranking-header {
     flex-direction: column;
@@ -12968,7 +12994,7 @@ select {
 
 @media (max-width: 600px) {
 
-  /* En móvil solo mostramos #, Miembro y Puntos */
+  /* En mÃ³vil solo mostramos #, Miembro y Puntos */
   .ranking-th--num,
   .ranking-td--num {
     display: none;
@@ -12994,9 +13020,9 @@ select {
 }
 
 
-/* ─────────────────────────────────────────────────────────────
-   GUÍAS — Cascade wrapper
-───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   GUÃAS â€” Cascade wrapper
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .guias-map-wrap {
   max-width: 620px;
   margin: 4rem auto 6rem;
@@ -13009,9 +13035,9 @@ select {
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CASCADE — Premium step-by-step
-───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   CASCADE â€” Premium step-by-step
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .cascade-root {
   position: relative;
   padding-left: 3.5rem;
@@ -13296,7 +13322,7 @@ select {
 }
 
 
-/* ── Sidebar: Empieza aquí ──────────────────────────────── */
+/* â”€â”€ Sidebar: Empieza aquÃ­ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .sidebar-starthere-desc {
   font-size: 0.82rem;
   color: var(--text-muted);
@@ -13327,7 +13353,7 @@ select {
 }
 
 
-/* ── Nav: featured dropdown item ────────────────────────── */
+/* â”€â”€ Nav: featured dropdown item â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .nav-tools-item--featured {
   background: linear-gradient(135deg, rgba(255, 107, 43, 0.12) 0%, rgba(255, 154, 0, 0.06) 100%);
   border: 1px solid rgba(255, 107, 43, 0.25);
@@ -13348,7 +13374,7 @@ select {
   border-color: rgba(255, 107, 43, 0.45);
 }
 
-/* ── Home: "Empieza aquí" band ──────────────────────────── */
+/* â”€â”€ Home: "Empieza aquÃ­" band â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .starthere-band {
   position: relative;
   display: flex;
@@ -13565,7 +13591,7 @@ select {
 }
 
 
-/* ── Feed: ver todas las entradas ───────────────────────── */
+/* â”€â”€ Feed: ver todas las entradas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .feed-seeall {
   display: flex;
   align-items: center;
@@ -13599,7 +13625,7 @@ select {
 }
 
 
-/* ── YouTube: últimos vídeos ────────────────────────────── */
+/* â”€â”€ YouTube: Ãºltimos vÃ­deos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .yt-latest {
   margin-top: 2.5rem;
   padding-top: 2rem;
@@ -13735,9 +13761,9 @@ select {
 }
 
 
-/* ─────────────────────────────────────────────────────────────
-   PREMIUM PITCH — sidebar upsell
-───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   PREMIUM PITCH â€” sidebar upsell
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .premium-pitch {
   position: relative;
   overflow: hidden;
@@ -13970,9 +13996,9 @@ select {
   color: #4ade80;
 }
 
-/* ══════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    MARKDOWN EDITOR  (admin)
-   ══════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .md-editor {
   display: flex;
@@ -14095,9 +14121,9 @@ select {
   border-radius: 4px;
 }
 
-/* ══════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PROSE CONTENT  (blog post rendering)
-   ══════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .prose-content {
   line-height: 1.8;
@@ -14208,7 +14234,7 @@ select {
   display: block;
 }
 
-/* ── Toolbar extras ── */
+/* â”€â”€ Toolbar extras â”€â”€ */
 .md-toolbar-sep {
   display: inline-block;
   width: 1px;
@@ -14279,7 +14305,7 @@ select {
   color: var(--text-muted);
 }
 
-/* ── ImageUpload component ── */
+/* â”€â”€ ImageUpload component â”€â”€ */
 .img-upload-input {
   display: none;
 }
@@ -14316,7 +14342,7 @@ select {
   margin-left: 0.25rem;
 }
 
-/* ── Cover image row (URL + upload button) ── */
+/* â”€â”€ Cover image row (URL + upload button) â”€â”€ */
 .cover-image-row {
   display: flex;
   gap: 0.5rem;
@@ -14335,7 +14361,7 @@ select {
   border: 1px solid var(--border, #333);
 }
 
-/* ── Drag & drop overlay ── */
+/* â”€â”€ Drag & drop overlay â”€â”€ */
 .md-drop-zone {
   position: relative;
 }
@@ -14361,13 +14387,13 @@ select {
   z-index: 10;
 }
 
-/* ── Syntax highlighting ── */
+/* â”€â”€ Syntax highlighting â”€â”€ */
 .sh-keyword  { color: #c792ea; font-weight: 600; }
 .sh-string   { color: #c3e88d; }
 .sh-number   { color: #f78c6c; }
 .sh-comment  { color: #546e7a; font-style: italic; }
 
-/* ── Footnotes ── */
+/* â”€â”€ Footnotes â”€â”€ */
 .md-footnote-ref {
   color: var(--accent-orange);
   text-decoration: none;
@@ -14393,7 +14419,7 @@ select {
   margin-left: 0.25rem;
 }
 
-/* ── SEO grouped checklist ── */
+/* â”€â”€ SEO grouped checklist â”€â”€ */
 .seo-check-group { margin-bottom: 0.75rem; }
 
 .seo-check-group-label {
@@ -14405,7 +14431,7 @@ select {
   margin: 0 0 0.3rem;
 }
 
-/* ── SEO quick stats strip ── */
+/* â”€â”€ SEO quick stats strip â”€â”€ */
 .seo-quick-stats {
   display: flex;
   gap: 0.6rem;
@@ -14432,7 +14458,7 @@ select {
   color: var(--text-secondary);
 }
 
-/* ── Callouts ── */
+/* â”€â”€ Callouts â”€â”€ */
 .md-callout,
 .prose-content .md-callout {
   display: flex;
@@ -14479,7 +14505,7 @@ select {
   line-height: 1.6;
 }
 
-/* ── Tables ── */
+/* â”€â”€ Tables â”€â”€ */
 .md-table,
 .prose-content .md-table {
   width: 100%;
@@ -14510,7 +14536,7 @@ select {
   background: rgba(240, 244, 255, 0.02);
 }
 
-/* ── Task list ── */
+/* â”€â”€ Task list â”€â”€ */
 .prose-content .md-task {
   list-style: none;
   display: flex;
@@ -14530,7 +14556,7 @@ select {
   text-decoration: line-through;
 }
 
-/* ── Highlight / Mark ── */
+/* â”€â”€ Highlight / Mark â”€â”€ */
 .prose-content mark {
   background: rgba(255, 215, 0, 0.3);
   color: inherit;
@@ -14538,21 +14564,21 @@ select {
   padding: 1px 3px;
 }
 
-/* ── Strikethrough ── */
+/* â”€â”€ Strikethrough â”€â”€ */
 .prose-content del {
   opacity: 0.6;
 }
 
-/* ── Sup / Sub ── */
+/* â”€â”€ Sup / Sub â”€â”€ */
 .prose-content sup,
 .prose-content sub {
   font-size: 0.75em;
   line-height: 0;
 }
 
-/* ══════════════════════════════════════════════════
-   POST FORM — Tab switcher
-   ══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POST FORM â€” Tab switcher
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .post-form-tabs {
   display: flex;
@@ -14585,9 +14611,9 @@ select {
   color: var(--text-secondary);
 }
 
-/* ══════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SEO PANEL
-   ══════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .seo-panel { display: flex; flex-direction: column; gap: 1.8rem; padding: 0.25rem 0; }
 .seo-score-header { display: flex; align-items: center; gap: 1.2rem; background: var(--bg-card); border: var(--card-border); border-radius: 14px; padding: 1.2rem 1.5rem; }
@@ -14627,9 +14653,9 @@ select {
 .seo-og-domain { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
 .seo-og-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; line-height: 1.3; }
 
-/* ══════════════════════════════════════════════════
-   GUÍAS — shared tokens
-   ══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   GUÃAS â€” shared tokens
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 :root {
   --gold: #e6b455;
@@ -14638,7 +14664,7 @@ select {
   --gold-border: rgba(230, 180, 85, 0.25);
 }
 
-/* Difficulty badges — shared between home section + /guias page */
+/* Difficulty badges â€” shared between home section + /guias page */
 .guides-diff-badge {
   font-size: 0.68rem;
   font-weight: 700;
@@ -14669,9 +14695,9 @@ select {
   gap: 0.3rem;
 }
 
-/* ══════════════════════════════════════════════════
-   HOME — Guides section
-   ══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HOME â€” Guides section
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .guides-home-section {
   position: relative;
@@ -14903,9 +14929,9 @@ select {
 
 .guides-stat-link:hover { opacity: 0.75; }
 
-/* ══════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    /guias PAGE
-   ══════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .guias-page {
   min-height: 80vh;
@@ -15221,9 +15247,9 @@ select {
   .guias-grid { grid-template-columns: 1fr; }
   .guias-cta-band { padding: 3rem 1.25rem; }
 }
-/* ══════════════════════════════════════════════════
-   Admin · Guías · Página de instrucciones internas
-   ══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   Admin Â· GuÃ­as Â· PÃ¡gina de instrucciones internas
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .admin-guide-instructions {
   max-width: 900px;
@@ -15522,9 +15548,9 @@ select {
 }
 .seo-og-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
 
-/* ══════════════════════════════════════════════════
-   GUIDE BLOCKCHAIN — /guias/que-es-la-blockchain
-   ══════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   GUIDE BLOCKCHAIN â€” /guias/que-es-la-blockchain
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .gbc-wrap { background: #060f1f; color: #fff; min-height: 100vh; }
 .gbc-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.06); z-index: 999; }
 .gbc-progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--accent-orange)); transition: width 0.15s ease; }
@@ -15561,7 +15587,7 @@ select {
 .gbc-card-text { font-size: 14px; color: #dce8f8; line-height: 1.65; }
 .gbc-card-text p + p { margin-top: 8px; }
 
-/* ── Flip Cards ── */
+/* â”€â”€ Flip Cards â”€â”€ */
 .gbc-flip-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -15645,7 +15671,7 @@ select {
   50% { transform: translateX(3px); }
 }
 
-/* ── Quantum Game ── */
+/* â”€â”€ Quantum Game â”€â”€ */
 .quantum-game-container {
   background: var(--bg-card);
   border: var(--card-border);
@@ -15770,7 +15796,7 @@ select {
 }
 .q-btn-reset:hover { background: var(--bg-elevated); }
 
-/* ── Spotlight Hover ── */
+/* â”€â”€ Spotlight Hover â”€â”€ */
 .spotlight-container {
   position: relative;
 }
@@ -15949,7 +15975,7 @@ select {
   .gbc-tl-item { gap: 10px; }
 }
 
-/* ── Mine-a-block simulator ─────────────────────────────── */
+/* â”€â”€ Mine-a-block simulator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gbc-mine-wrap { background: linear-gradient(135deg,#0a1628,#060f1f); border: 1px solid rgba(230,180,85,0.22); border-radius: 20px; padding: 28px; margin-top: 32px; }
 .gbc-mine-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
 .gbc-mine-title { font-size: 17px; font-weight: 800; color: var(--gold); margin-bottom: 4px; }
@@ -16004,7 +16030,7 @@ select {
   .gbc-mine-header { flex-direction: column; }
 }
 
-/* ── Quiz enhancements ───────────────────────────────────── */
+/* â”€â”€ Quiz enhancements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /* Quiz reward CTA */
 .gbc-quiz-reward-cta { display: flex; align-items: center; gap: 16px; background: linear-gradient(135deg, rgba(230,180,85,0.06) 0%, rgba(10,22,40,0.9) 100%); border: 1px solid rgba(230,180,85,0.35); border-radius: 16px; padding: 18px 20px; margin-bottom: 28px; position: relative; overflow: hidden; }
 .gbc-quiz-reward-cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 0% 50%, rgba(230,180,85,0.08) 0%, transparent 60%); pointer-events: none; }
@@ -16026,7 +16052,7 @@ select {
 }
 .gbc-quiz-opt.ok { animation: gbc-correct-pulse 0.65s ease forwards; }
 
-/* ── Celebración de respuesta correcta: confeti radial + check ── */
+/* â”€â”€ CelebraciÃ³n de respuesta correcta: confeti radial + check â”€â”€ */
 .gbc-confetti { position: absolute; left: 0; top: 0; right: 0; bottom: 0; pointer-events: none; overflow: visible; z-index: 3; }
 .gbc-confetti-piece {
   position: absolute; left: 50%; top: 50%;
@@ -16060,7 +16086,7 @@ select {
   100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
-/* ── Guide badges section in dashboard ───────────────────── */
+/* â”€â”€ Guide badges section in dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .badges-guide-sub { font-size: 13px; color: #8fa3b8; margin: 6px 0 18px; }
 .badges-guide-grid { display: flex; flex-direction: column; gap: 14px; }
 .badges-guide-link { text-decoration: none !important; display: block; color: inherit; }
@@ -16135,7 +16161,7 @@ select {
 
 /* Info block */
 .badge-guide-info { flex: 1; min-width: 0; }
-/* ── Rediseño Página /premium (plan de suscripción) ───────────────────── */
+/* â”€â”€ RediseÃ±o PÃ¡gina /premium (plan de suscripciÃ³n) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .premium-new-layout {
   display: flex;
@@ -16528,7 +16554,7 @@ select {
   border: 1px solid rgba(230,180,85,0.15);
 }
 
-/* ── Guide interactions bar ─────────────────────────────── */
+/* â”€â”€ Guide interactions bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .gbc-interactions-section { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px !important; padding-bottom: 32px !important; }
 .gbc-interactions-wrap { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
 .gbc-interactions-label { font-size: 14px; color: #6a84a0; flex-shrink: 0; }
@@ -16542,11 +16568,11 @@ select {
   .gbc-interactions-wrap { flex-direction: column; align-items: flex-start; gap: 14px; }
 }
 
-/* ── Dashboard saved guides ─────────────────────────────── */
+/* â”€â”€ Dashboard saved guides â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .dash-saved-item--guide { align-items: center; }
 .dash-saved-thumb--guide { background: rgba(230,180,85,0.08); border: 1px solid rgba(230,180,85,0.2); color: var(--gold); display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; width: 52px; height: 52px; }
 
-/* ── Admin guide analytics ──────────────────────────────── */
+/* â”€â”€ Admin guide analytics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .admin-section-header { display: flex; align-items: center; gap: 14px; margin: 36px 0 20px; padding: 20px 24px; background: rgba(230,180,85,0.04); border: 1px solid rgba(230,180,85,0.14); border-radius: 16px; }
 .admin-section-header-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: rgba(230,180,85,0.1); border: 1px solid rgba(230,180,85,0.25); border-radius: 10px; color: var(--gold); flex-shrink: 0; }
 .admin-section-header-title { font-size: 16px; font-weight: 700; color: #dce8f8; margin-bottom: 2px; }
@@ -16573,21 +16599,21 @@ select {
 .admin-guide-table-name { display: flex; align-items: center; gap: 8px; }
 .admin-guide-table-title { font-weight: 600; color: #dce8f8; white-space: nowrap; }
 .admin-guide-table-diff { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px; text-transform: capitalize; }
-.admin-guide-table-diff--básico { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+.admin-guide-table-diff--bÃ¡sico { background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
 .admin-guide-table-diff--intermedio { background: rgba(230,180,85,0.1); color: var(--gold); border: 1px solid rgba(230,180,85,0.2); }
 .admin-guide-table-diff--avanzado { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
 .admin-guide-table-rate { font-weight: 700; color: #4a6080; }
 .admin-guide-table-rate.good { color: #4ade80; }
 .admin-guide-table-rate.mid { color: #f59e0b; }
 
-/* ══════════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PORTFOLIO SPOT
-══════════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Wrapper ─────────────────────────────────────────────────── */
+/* â”€â”€ Wrapper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
 
-/* ── Header ──────────────────────────────────────────────────── */
+/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
 .pf-header-left { display: flex; align-items: center; gap: 16px; }
 .pf-header-icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,107,43,0.1); border: 1px solid rgba(255,107,43,0.25); border-radius: 14px; color: var(--accent-orange); flex-shrink: 0; }
@@ -16601,7 +16627,7 @@ select {
 @keyframes pf-spin { to { transform: rotate(360deg); } }
 .pf-spin { animation: pf-spin 0.8s linear infinite; }
 
-/* ── Summary cards ───────────────────────────────────────────── */
+/* â”€â”€ Summary cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-summary-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 28px; }
 .pf-summary-card { background: var(--bg-card); border: var(--card-border); border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px; }
 .pf-summary-card--pos { border-color: rgba(74,222,128,0.18); background: rgba(74,222,128,0.04); }
@@ -16615,7 +16641,7 @@ select {
 @media (max-width: 768px) { .pf-summary-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 420px) { .pf-summary-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .pf-summary-value { font-size: 18px; } }
 
-/* ── Table ───────────────────────────────────────────────────── */
+/* â”€â”€ Table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-table-wrap { background: var(--bg-card); border: var(--card-border); border-radius: 18px; overflow: hidden; margin-bottom: 32px; overflow-x: auto; }
 .pf-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 680px; }
 .pf-table th { text-align: left; padding: 12px 18px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #3a5070; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: nowrap; }
@@ -16646,23 +16672,23 @@ select {
 .pf-action-btn:hover { background: rgba(255,255,255,0.07); color: var(--text-secondary); }
 .pf-action-btn--del:hover { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.25); color: #f87171; }
 
-/* ── Loading dot ─────────────────────────────────────────────── */
+/* â”€â”€ Loading dot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-loading-dot { display: inline-block; width: 52px; height: 10px; border-radius: 5px; background: rgba(255,255,255,0.07); animation: pf-pulse 1.2s ease-in-out infinite; }
 @keyframes pf-pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
 
-/* ── Empty state ─────────────────────────────────────────────── */
+/* â”€â”€ Empty state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-empty { text-align: center; padding: 64px 24px; color: #4a6080; display: flex; flex-direction: column; align-items: center; gap: 14px; background: var(--bg-card); border: var(--card-border); border-radius: 18px; }
 .pf-empty p { font-size: 14px; }
 .pf-btn-add--center { margin: 0 auto; }
 
-/* ── Admin panel ─────────────────────────────────────────────── */
+/* â”€â”€ Admin panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-admin-panel { margin-top: 40px; border-top: 1px solid rgba(230,180,85,0.1); padding-top: 28px; }
 .pf-admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .pf-admin-label { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(230,180,85,0.6); }
 .pf-btn-add { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 10px; background: rgba(255,107,43,0.1); border: 1px solid rgba(255,107,43,0.25); color: var(--accent-orange); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.18s; }
 .pf-btn-add:hover { background: rgba(255,107,43,0.18); border-color: rgba(255,107,43,0.4); }
 
-/* ── Admin form ──────────────────────────────────────────────── */
+/* â”€â”€ Admin form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-form { background: var(--bg-card); border: 1px solid rgba(230,180,85,0.15); border-radius: 18px; padding: 28px; }
 .pf-form-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; }
 .pf-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
@@ -16682,7 +16708,7 @@ select {
 .pf-btn-cancel:hover { border-color: rgba(255,255,255,0.2); color: var(--text-secondary); }
 @media (max-width: 560px) { .pf-form-grid { grid-template-columns: 1fr; } .pf-form-field--wide { grid-column: span 1; } }
 
-/* ── Locked state (non-premium) ──────────────────────────────── */
+/* â”€â”€ Locked state (non-premium) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-locked-wrap { position: relative; min-height: 80vh; overflow: hidden; }
 .pf-locked-bg { filter: blur(10px) brightness(0.35); pointer-events: none; user-select: none; padding: 48px 24px; max-width: 1100px; margin: 0 auto; }
 .pf-popup-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 10; }
@@ -16701,7 +16727,7 @@ select {
 .pf-popup-login a:hover { color: var(--text-primary); }
 @media (max-width: 600px) { .pf-popup { padding: 24px 20px; max-width: 360px; } .pf-popup-title { font-size: 20px; } .pf-popup-cta { font-size: 13px; padding: 10px 18px; } }
 
-/* ── Skeleton (inside locked blur) ──────────────────────────── */
+/* â”€â”€ Skeleton (inside locked blur) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .pf-skeleton-wrap { opacity: 0.7; }
 .pf-skeleton-header { margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
 .pf-skeleton-block { border-radius: 8px; background: rgba(255,255,255,0.08); }
@@ -16716,13 +16742,13 @@ select {
 .pf-skeleton-block--val { flex: 1; height: 14px; }
 @media (max-width: 768px) { .pf-skeleton-cards { grid-template-columns: repeat(2,1fr); } }
 
-/* ── Mobile specific fixes for interactive guide ── */
+/* â”€â”€ Mobile specific fixes for interactive guide â”€â”€ */
 @media (max-width: 480px) {
   /* Contadores Animados */
   .gbc-stat-num { font-size: 22px; }
   .gbc-stat-lbl { font-size: 11px; }
   
-  /* Simulador Cuántico */
+  /* Simulador CuÃ¡ntico */
   .quantum-game-container { padding: 1rem; }
   .quantum-game-screen { padding: 1.5rem 0.5rem; }
   .q-btn { padding: 0.5rem 1rem; font-size: 0.85rem; width: 100%; }
@@ -16745,14 +16771,14 @@ select {
   .gbc-use-d { font-size: 13px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   LIBERACIONES DE TOKENS — lib-*
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LIBERACIONES DE TOKENS â€” lib-*
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Wrap ── */
+/* â”€â”€ Wrap â”€â”€ */
 .lib-wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
 
-/* ── Hero ── */
+/* â”€â”€ Hero â”€â”€ */
 .lib-hero { text-align: center; padding: 60px 24px 48px; }
 .lib-hero-badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -16775,7 +16801,7 @@ select {
 .lib-stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 .lib-stat-div { width: 1px; height: 40px; background: var(--border-color); }
 
-/* ── Filters ── */
+/* â”€â”€ Filters â”€â”€ */
 .lib-filters { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
 .lib-filters-label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .lib-filter-btns { display: flex; gap: 6px; }
@@ -16783,7 +16809,7 @@ select {
 .lib-filter-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
 .lib-filter-btn.active { background: var(--accent-orange-light); border-color: var(--accent-orange); color: var(--accent-orange); }
 
-/* ── Token List ── */
+/* â”€â”€ Token List â”€â”€ */
 .lib-list { display: flex; flex-direction: column; gap: 8px; }
 .lib-row { display: grid; grid-template-columns: 200px 1fr 1fr 1fr 120px 120px; align-items: center; gap: 16px; padding: 16px 20px; background: linear-gradient(135deg, #0f2040 0%, #0a1628 100%); border: 1px solid var(--border-color); border-radius: 12px; transition: border-color .2s, transform .15s; }
 .lib-row:hover { border-color: rgba(255,107,43,.25); transform: translateX(2px); }
@@ -16819,7 +16845,7 @@ select {
 .lib-upgrade-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; border-radius: 10px; background: linear-gradient(135deg, var(--premium-gold) 0%, #f5c842 100%); color: #0a1628; font-size: 13px; font-weight: 800; text-decoration: none; white-space: nowrap; margin-left: auto; transition: opacity .15s; }
 .lib-upgrade-btn:hover { opacity: .9; }
 
-/* ── Detail Page ── */
+/* â”€â”€ Detail Page â”€â”€ */
 .lib-detail-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; }
 .lib-back { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 13px; text-decoration: none; margin-bottom: 24px; transition: color .15s; }
 .lib-back:hover { color: var(--accent-orange); }
@@ -16883,9 +16909,9 @@ select {
 .lib-events-lock-title { font-size: 15px; font-weight: 800; color: var(--premium-gold); }
 .lib-events-lock-sub { font-size: 13px; color: var(--text-muted); max-width: 400px; }
 
-/* ── Responsive — see bottom of file for complete mobile rules ── */
+/* â”€â”€ Responsive â€” see bottom of file for complete mobile rules â”€â”€ */
 
-/* ── HeroPremiumSlider ─────────────────────────────────────── */
+/* â”€â”€ HeroPremiumSlider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 .hps-wrap {
   position: relative;
@@ -16934,7 +16960,7 @@ select {
   opacity: 0;
 }
 
-/* Left accent — gradient fade top & bottom */
+/* Left accent â€” gradient fade top & bottom */
 .hps-card-accent {
   position: absolute;
   left: 0;
@@ -17028,6 +17054,32 @@ select {
   to   { width: 100%; }
 }
 
+@media (max-width: 400px) {
+  .dtb-fab {
+    right: 12px;
+    height: 44px;
+    padding: 0 14px 0 12px;
+  }
+  .dtb-fab-label { font-size: 0.78rem; }
+}
+
+/* â”€â”€ Tools card visibility: mobile above feed, desktop in sidebar â”€â”€ */
+.tools-mobile-only {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.tools-desktop-only {
+  display: none;
+}
+@media (min-width: 900px) {
+  .tools-mobile-only {
+    display: none;
+  }
+  .tools-desktop-only {
+    display: block;
+  }
+}
+
 /* Dots */
 .hps-dots {
   position: relative;
@@ -17069,9 +17121,9 @@ select {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   HERO — MOBILE REFINEMENTS
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO â€” MOBILE REFINEMENTS
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 480px) {
   .home-banner {
@@ -17125,11 +17177,11 @@ select {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   LIBERACIONES — MOBILE COMPLETE REWRITE
-   ═══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LIBERACIONES â€” MOBILE COMPLETE REWRITE
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── 900px: tablet — 4 visible columns, hide pressure + category ── */
+/* â”€â”€ 900px: tablet â€” 4 visible columns, hide pressure + category â”€â”€ */
 @media (max-width: 900px) {
   .lib-detail-grid { grid-template-columns: 1fr; }
   .lib-detail-stats { grid-template-columns: repeat(2, 1fr); }
@@ -17157,7 +17209,7 @@ select {
   }
 }
 
-/* ── 640px: phone — card layout ── */
+/* â”€â”€ 640px: phone â€” card layout â”€â”€ */
 @media (max-width: 640px) {
   .lib-wrap { padding: 0 14px 60px; }
   .lib-hero { padding: 32px 0 28px; }
@@ -17174,7 +17226,7 @@ select {
   }
   .lib-filter-btns { flex-wrap: wrap; }
 
-  /* Token rows → card layout */
+  /* Token rows â†’ card layout */
   .lib-row {
     grid-template-columns: 1fr auto;
     grid-template-areas:
@@ -17200,7 +17252,7 @@ select {
   .lib-upgrade-inner  { flex-direction: column; align-items: flex-start; gap: 12px; }
   .lib-upgrade-btn    { width: 100%; justify-content: center; margin-left: 0; }
 
-  /* ── Detail page ── */
+  /* â”€â”€ Detail page â”€â”€ */
   .lib-detail-wrap { padding: 20px 14px 60px; }
 
   .lib-detail-hero-inner { padding: 18px; }
@@ -17223,7 +17275,7 @@ select {
   .lib-alloc-wrap { flex-direction: column; gap: 16px; }
   .lib-alloc-legend { min-width: unset; width: 100%; }
 
-  /* Event rows → stacked */
+  /* Event rows â†’ stacked */
   .lib-event-row {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
@@ -17245,7 +17297,7 @@ select {
   .lib-risk-alert p { font-size: 12px; }
 }
 
-/* ── 360px: smallest phones ── */
+/* â”€â”€ 360px: smallest phones â”€â”€ */
 @media (max-width: 360px) {
   .lib-detail-stats { grid-template-columns: 1fr; }
 
@@ -17268,7 +17320,7 @@ select {
   .lib-event-amount { justify-self: start; text-align: left; }
 }
 
-/* Disable translateX hover on touch/mobile — causes jitter */
+/* Disable translateX hover on touch/mobile â€” causes jitter */
 @media (hover: none) {
   .lib-row:hover {
     transform: none;
@@ -17276,11 +17328,11 @@ select {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DASHBOARD TOOLS SIDEBAR + MOBILE BOTTOM SHEET
-   ═══════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* Layout wrapper — content + sidebar side by side on desktop */
+/* Layout wrapper â€” content + sidebar side by side on desktop */
 .dash-page-wrap {
   max-width: 1300px;
   margin: 0 auto;
@@ -17302,11 +17354,11 @@ select {
   padding-right: 0;
 }
 
-/* ══════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DASHBOARD TOOLS SIDEBAR
-   ══════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Desktop sidebar ── */
+/* â”€â”€ Desktop sidebar â”€â”€ */
 .dtb-sidebar {
   width: 264px;
   flex-shrink: 0;
@@ -17468,7 +17520,7 @@ a.dtb-tool:hover .dtb-tool-icon {
   border: 1px solid rgba(240,244,255,0.1);
 }
 
-/* ── Mobile FAB (pill) ── */
+/* â”€â”€ Mobile FAB (pill) â”€â”€ */
 .dtb-fab {
   display: none;
   position: fixed;
@@ -17501,7 +17553,7 @@ a.dtb-tool:hover .dtb-tool-icon {
   box-shadow: 0 2px 12px rgba(255,107,43,0.4);
 }
 
-/* ── Bottom sheet overlay ── */
+/* â”€â”€ Bottom sheet overlay â”€â”€ */
 .dtb-overlay {
   position: fixed;
   inset: 0;
@@ -17589,7 +17641,7 @@ a.dtb-tool:hover .dtb-tool-icon {
 .dtb-sheet .dtb-tool-name { font-size: 0.88rem; }
 .dtb-sheet .dtb-tool-desc { font-size: 0.73rem; white-space: normal; }
 
-/* ── Responsive breakpoints ── */
+/* â”€â”€ Responsive breakpoints â”€â”€ */
 @media (max-width: 960px) {
   .dtb-sidebar { display: none; }
   .dtb-fab     { display: flex; }
@@ -17618,6 +17670,111 @@ a.dtb-tool:hover .dtb-tool-icon {
     height: 44px;
     padding: 0 14px 0 12px;
   }
-
   .dtb-fab-label { font-size: 0.78rem; }
 }
+@media (min-width: 900px) {
+  .mobile-tools-only {
+    display: none;
+  }
+  .desktop-tools-only {
+    display: block;
+    margin-bottom: 0;
+  }
+}
+
+/* â”€â”€ Tool Access Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.tool-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(5, 8, 18, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: tool-modal-fade-in 0.18s ease;
+}
+@keyframes tool-modal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.tool-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-card, #0f1523);
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem 1.75rem 1.75rem;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  animation: tool-modal-slide-up 0.22s cubic-bezier(0.34,1.56,0.64,1);
+  text-align: center;
+}
+@keyframes tool-modal-slide-up {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.tool-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(240,244,255,0.1);
+  background: rgba(240,244,255,0.05);
+  color: var(--text-secondary, #8899aa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.tool-modal-close:hover { background: rgba(240,244,255,0.12); color: var(--text-primary,#f0f4ff); }
+.tool-modal-icon-wrap {
+  width: 64px; height: 64px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+.tool-modal-icon-wrap--login {
+  background: linear-gradient(135deg,rgba(79,157,255,0.15),rgba(43,107,255,0.08));
+  border: 1px solid rgba(79,157,255,0.25); color: #4f9dff;
+}
+.tool-modal-icon-wrap--premium {
+  background: linear-gradient(135deg,rgba(255,107,43,0.15),rgba(255,170,0,0.08));
+  border: 1px solid rgba(255,107,43,0.3); color: var(--accent-orange,#ff6b2b);
+}
+.tool-modal-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.tool-modal-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary,#f0f4ff); margin: 0; }
+.tool-modal-tool-name {
+  font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--accent-orange,#ff6b2b); background: rgba(255,107,43,0.1);
+  border: 1px solid rgba(255,107,43,0.2); border-radius: 100px;
+  padding: 0.2rem 0.75rem; margin: 0.25rem 0 0.5rem;
+}
+.tool-modal-desc { font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary,#8899aa); margin: 0 0 0.75rem; }
+.tool-modal-features { list-style: none; padding: 0; margin: 0 0 1.25rem; display: flex; flex-direction: column; gap: 0.45rem; width: 100%; text-align: left; }
+.tool-modal-features li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-secondary,#8899aa); }
+.tool-modal-features li svg { color: #4f9dff; flex-shrink: 0; }
+.tool-modal-actions { display: flex; flex-direction: column; gap: 0.6rem; width: 100%; }
+.tool-modal-btn-primary, .tool-modal-btn-premium {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  width: 100%; padding: 0.8rem 1.25rem; border-radius: 12px;
+  font-size: 0.95rem; font-weight: 600; text-decoration: none;
+  cursor: pointer; border: none; transition: filter 0.18s, transform 0.12s;
+}
+.tool-modal-btn-primary { background: linear-gradient(135deg,#ff6b2b,#ffaa00); color: #fff; }
+.tool-modal-btn-premium { background: linear-gradient(135deg,#ff6b2b,#ffaa00); color: #fff; }
+.tool-modal-btn-primary:hover, .tool-modal-btn-premium:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.tool-modal-btn-arrow { margin-left: auto; opacity: 0.8; }
+.tool-modal-btn-secondary {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 0.65rem 1rem; border-radius: 10px;
+  font-size: 0.875rem; color: var(--text-secondary,#8899aa);
+  background: transparent; border: 1px solid rgba(240,244,255,0.08);
+  text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.tool-modal-btn-secondary:hover { background: rgba(240,244,255,0.05); color: var(--text-primary,#f0f4ff); }
+
