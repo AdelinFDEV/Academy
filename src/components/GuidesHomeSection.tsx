@@ -1,20 +1,21 @@
 import Link from "next/link";
 import { ArrowRight, Zap, BookOpen, Trophy, BarChart2 } from "lucide-react";
+import { GUIDES } from "@/lib/guides";
 
-const PLACEHOLDER_GUIDE = {
-  slug: "que-es-la-blockchain",
-  title: "¿Qué es la Blockchain? El registro que nadie puede falsificar",
-  description:
-    "De Satoshi al presente: entiende qué es la blockchain, cómo funciona, por qué es imposible de falsificar y cuál es su futuro ante la computación cuántica. Datos reales 2026.",
-  difficulty: "Básico",
-  type: "free" as const,
-  sections: 8,
-  badge: "Arquitecto de Cadenas",
-  topics: ["Origen e historia", "Cómo funciona", "Estado actual 2026", "Amenaza cuántica"],
+const DIFF_CLASS: Record<string, string> = {
+  "básico": "guides-diff--basic",
+  "intermedio": "guides-diff--intermediate",
+  "avanzado": "guides-diff--advanced",
+};
+const DIFF_LABEL: Record<string, string> = {
+  "básico": "Básico",
+  "intermedio": "Intermedio",
+  "avanzado": "Avanzado",
 };
 
 export default function GuidesHomeSection() {
-  const g = PLACEHOLDER_GUIDE;
+  // Siempre la última guía creada — se actualiza sola con cada guía nueva añadida a src/lib/guides.ts
+  const g = GUIDES[GUIDES.length - 1];
 
   return (
     <section id="guias-premium" className="guides-home-section">
@@ -47,8 +48,8 @@ export default function GuidesHomeSection() {
 
             <div className="guides-featured-top">
               <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
-                <span className="guides-diff-badge guides-diff--basic">{g.difficulty}</span>
-                <span className="guides-access-badge">Gratis con registro</span>
+                <span className={`guides-diff-badge ${DIFF_CLASS[g.difficulty]}`}>{DIFF_LABEL[g.difficulty]}</span>
+                <span className="guides-access-badge">{g.type === "premium" ? "Premium" : "Gratis con registro"}</span>
               </div>
               <span className="guides-featured-label">Guía destacada</span>
             </div>
@@ -86,7 +87,7 @@ export default function GuidesHomeSection() {
           {/* Stats column */}
           <div className="guides-home-stats">
             <div className="guides-stat-card">
-              <span className="guides-stat-num">8</span>
+              <span className="guides-stat-num">{g.sections}</span>
               <span className="guides-stat-label">Secciones</span>
             </div>
             <div className="guides-stat-card">

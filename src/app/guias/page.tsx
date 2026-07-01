@@ -28,6 +28,17 @@ const PLACEHOLDER_GUIDES = [
     badge: "Arquitecto de Cadenas",
     published: true,
   },
+  {
+    slug: "ciclos-de-bitcoin",
+    title: "¿Por qué AHORA es el momento de comprar Bitcoin? Ciclos de mercado",
+    description:
+      "El ciclo de 4 años del halving explicado: por qué la fase bajista está terminando, qué esperar de las altcoins antes del próximo halving y los rangos de precio de este ciclo. Con gráfica interactiva y quiz.",
+    difficulty: "intermediate" as const,
+    type: "free" as const,
+    sections: 5,
+    badge: "Cazador de Ciclos",
+    published: true,
+  },
 ];
 
 const DIFF_LABEL: Record<string, string> = {

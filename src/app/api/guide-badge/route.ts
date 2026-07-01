@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-const VALID_GUIDE_BADGES = new Set(["guide-blockchain"]);
+const VALID_GUIDE_BADGES = new Set(["guide-blockchain", "guide-ciclos-bitcoin"]);
 
 export async function POST(req: Request) {
   const supabase = await createClient();

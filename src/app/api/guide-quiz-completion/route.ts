@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
-const VALID_GUIDES = new Set(["que-es-la-blockchain"]);
+const VALID_GUIDES = new Set(["que-es-la-blockchain", "ciclos-de-bitcoin"]);
 
 export async function POST(request: Request) {
   const supabase = await createClient();

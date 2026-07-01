@@ -16322,6 +16322,24 @@ select {
 .gbc-chart-wrap { background: rgba(15,32,64,0.5); border: 1px solid rgba(230,180,85,0.13); border-radius: 14px; padding: 22px; margin-top: 22px; }
 .gbc-chart-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8fa3b8; margin-bottom: 14px; }
 .gbc-chart-src { font-size: 10px; color: #4a6080; margin-top: 10px; }
+.gbc-phase-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.gbc-phase-tab { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #8fa3b8; padding: 8px 14px; border-radius: 100px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.gbc-phase-tab:hover { border-color: rgba(230,180,85,0.35); color: #dce8f8; }
+.gbc-phase-tab.active { background: var(--gold-soft); border-color: var(--gold-border); color: var(--gold); }
+
+.gbc-cycle-wrap { padding: 26px 24px 22px; }
+.gbc-cycle-bands { display: flex; gap: 3px; margin-top: 4px; margin-bottom: 18px; border-radius: 8px; overflow: hidden; }
+.gbc-cycle-band { padding: 8px 6px; font-size: 11px; font-weight: 700; text-align: center; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gbc-cycle-svg-wrap { border-radius: 10px; background: rgba(6,15,31,0.35); }
+.gbc-cycle-legend { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+.gbc-cycle-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #8fa3b8; font-weight: 600; }
+.gbc-cycle-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+@media (max-width: 640px) {
+  .gbc-cycle-wrap { padding: 18px 12px 16px; }
+  .gbc-cycle-band { font-size: 9px; padding: 7px 3px; }
+  .gbc-cycle-legend { gap: 12px 16px; }
+}
 .gbc-tl { margin-top: 32px; }
 .gbc-tl-item { display: flex; gap: 14px; margin-bottom: 20px; }
 .gbc-tl-yr { flex-shrink: 0; width: 48px; text-align: right; font-size: 12px; font-weight: 700; color: var(--gold); padding-top: 2px; }

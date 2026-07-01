@@ -32,6 +32,16 @@ function PremiumCrownIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function CyclesBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 4a8 8 0 1 1-6.93 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M3 4v4h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M9 13l2.2 2.2L16 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -139,6 +149,16 @@ export const GUIDE_BADGE_DEFS: BadgeDef[] = [
     special: true,
     guideSlug: "que-es-la-blockchain",
     guideTitle: "¿Qué es la Blockchain?",
+  },
+  {
+    id: "guide-ciclos-bitcoin",
+    label: "Cazador de Ciclos",
+    condition: "Completa el quiz de ¿Por qué ahora es el momento de comprar Bitcoin? con nota máxima",
+    icon: <CyclesBadgeIcon size={24} />,
+    bigIcon: <CyclesBadgeIcon size={48} />,
+    special: true,
+    guideSlug: "ciclos-de-bitcoin",
+    guideTitle: "¿Por qué ahora es el momento de comprar Bitcoin?",
   },
 ];
 
