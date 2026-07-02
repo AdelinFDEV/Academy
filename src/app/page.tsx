@@ -15,36 +15,57 @@ import SocialLinks from "@/components/SocialLinks";
 import HeroVideo from "@/components/HeroVideo";
 import HeroPremiumSlider from "@/components/HeroPremiumSlider";
 import { getLatestVideos } from "@/lib/youtube";
+import { GUIDES } from "@/lib/guides";
+import { Compass } from "lucide-react";
 
 export default async function HomePage() {
   const supabase = await createClient();
 
+  // Public data doesn't depend on auth — kick it off immediately so it
+  // resolves in parallel with the auth/profile round-trips.
+  const publicDataPromise = Promise.all([
+    supabase
+      .from("posts")
+      .select("id, title, slug, excerpt, cover_image, youtube_url, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
+      .eq("published", true)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("categories")
+      .select("name, slug")
+      .order("name"),
+    getLatestVideos(3),
+  ]);
+
   const { data: { user } } = await supabase.auth.getUser();
 
   // Get user profile for nav and premium check
-  const profileData = user
-    ? (await supabase.from("profiles").select("role, full_name").eq("id", user.id).single()).data
-    : null;
+  const [[{ data: posts }, { data: categories }, youtubeVideos], profileRes] = await Promise.all([
+    publicDataPromise,
+    user
+      ? supabase.from("profiles").select("role, full_name").eq("id", user.id).single()
+      : Promise.resolve(null),
+  ]);
+  const profileData = profileRes?.data ?? null;
   const isPremium = profileData?.role === "premium" || profileData?.role === "admin";
   const isAdmin = profileData?.role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "";
 
-  const [{ data: posts }, { data: categories }, { count: postsTotal }, youtubeVideos] =
-    await Promise.all([
-      supabase
-        .from("posts")
-        .select("id, title, slug, excerpt, cover_image, youtube_url, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
-        .eq("published", true)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("categories")
-        .select("name, slug")
-        .order("name"),
-      supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
-      getLatestVideos(3),
-    ]);
+  const allPosts = posts ?? [];
 
-  const postIds = posts?.map((p) => p.id) ?? [];
+  // The feed only ever renders the hero post + up to 3 posts per tab.
+  // Only those posts get sent to the client and have their metrics queried —
+  // keeps payload and DB work flat as the post count grows.
+  const FEED_TAB_MAX = 3;
+  const heroPost = allPosts.find((p) => p.is_featured);
+  const restPosts = heroPost ? allPosts.filter((p) => p.id !== heroPost.id) : allPosts;
+  const feedIds = new Set<string>();
+  if (heroPost) feedIds.add(heroPost.id);
+  restPosts.slice(0, FEED_TAB_MAX).forEach((p) => feedIds.add(p.id));
+  restPosts.filter((p) => p.is_featured).slice(0, FEED_TAB_MAX).forEach((p) => feedIds.add(p.id));
+  restPosts.filter((p) => p.is_premium).slice(0, FEED_TAB_MAX).forEach((p) => feedIds.add(p.id));
+  const feedPosts = allPosts.filter((p) => feedIds.has(p.id));
+
+  const postIds = feedPosts.map((p) => p.id);
 
   // Bulk fetch likes, comments, saves and user state
   const [{ data: likeRows }, { data: commentRows }, { data: saveRows }, { data: userSaveRows }, { data: userLikeRows }] = await Promise.all([
@@ -77,14 +98,16 @@ export default async function HomePage() {
   const userSavedSet = new Set(userSaveRows?.filter((r) => r.saved).map((r) => r.post_id) ?? []);
   const userLikedSet = new Set(userLikeRows?.map((r) => r.post_id) ?? []);
 
+  const latestGuide = GUIDES[GUIDES.length - 1];
+
   // Count posts per category
   const catPostMap: Record<string, number> = {};
-  posts?.forEach((p) => {
+  allPosts.forEach((p) => {
     const slug = (p.categories as any)?.slug;
     if (slug) catPostMap[slug] = (catPostMap[slug] ?? 0) + 1;
   });
 
-  const enrichedPosts = (posts ?? []).map((p) => ({
+  const enrichedPosts = feedPosts.map((p) => ({
     id: p.id,
     title: p.title,
     slug: p.slug,
@@ -101,8 +124,6 @@ export default async function HomePage() {
     initialLiked: userLikedSet.has(p.id),
     initialSaved: userSavedSet.has(p.id),
   }));
-
-  const premiumCount = enrichedPosts.filter((p) => p.is_premium).length;
 
   return (
     <div className="blog-page">
@@ -145,34 +166,16 @@ export default async function HomePage() {
         <div className="home-banner-overlay" />
         <div className="home-banner-content">
 
-          <h1 className="home-banner-title hero-anim hero-anim-1">
-            Domina el mundo Cripto<br className="home-banner-br" />
-            <span className="text-gradient">Todo en un solo lugar.</span>
+          <span className="hero-eyebrow hero-anim hero-anim-1">
+            <span className="hero-eyebrow-dot" aria-hidden="true" />
+            Academia cripto en español
+          </span>
+
+          <h1 className="home-banner-title home-banner-title--compact hero-anim hero-anim-2">
+            Domina el mundo Cripto. <span className="text-gradient">Todo en un solo lugar.</span>
           </h1>
 
-          <HeroPremiumSlider />
-
-          <div className="home-banner-actions hero-anim hero-anim-5">
-            {user ? (
-              <>
-                <Link href="/dashboard" className="hero-btn-primary hero-btn-glowing">
-                  Ir a mi Academia <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
-                </Link>
-                <Link href="#guias-premium" className="hero-btn-gold">
-                  Guías Premium <Gem size={16} strokeWidth={1.75} />
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/register" className="hero-btn-primary hero-btn-glowing">
-                  Empieza Gratis Ahora <ArrowRight className="btn-arrow" size={20} strokeWidth={2.5} />
-                </Link>
-                <Link href="#guias-premium" className="hero-btn-gold">
-                  Guías Premium <Gem size={16} strokeWidth={1.75} />
-                </Link>
-              </>
-            )}
-          </div>
+          <HeroPremiumSlider isLoggedIn={!!user} isPremium={isPremium} />
 
           {!user && (
             <div className="hero-trust hero-anim hero-anim-6">
@@ -198,32 +201,53 @@ export default async function HomePage() {
 
               <p className="home-banner-guarantee">
                 <ShieldCheck size={14} aria-hidden="true" />
-                Crea tu cuenta en 1 minuto - Sin Tarjeta - Gratis
+                Cancela cuando quieras · Sin permanencia
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── Empieza aquí band ── */}
-      <Link href="/guia-iniciacion" className="starthere-band">
-        <span className="starthere-band-glow" aria-hidden="true" />
-        <span className="starthere-band-left">
-          <span className="starthere-band-icon">
-            <Map size={20} aria-hidden="true" />
+      {/* ── Empieza aquí / Última guía — bandas gemelas ── */}
+      <div className="starthere-row">
+        <Link href="/guia-iniciacion" className="starthere-band">
+          <span className="starthere-band-glow" aria-hidden="true" />
+          <span className="starthere-band-left">
+            <span className="starthere-band-icon">
+              <Map size={20} aria-hidden="true" />
+            </span>
+            <span className="starthere-band-text">
+              <span className="starthere-band-eyebrow">¿Nuevo en cripto?</span>
+              <span className="starthere-band-title">Empieza aquí — tu hoja de ruta paso a paso</span>
+            </span>
           </span>
-          <span className="starthere-band-text">
-            <span className="starthere-band-eyebrow">¿Nuevo en cripto?</span>
-            <span className="starthere-band-title">Empieza aquí — tu hoja de ruta paso a paso</span>
+          <span className="starthere-band-cta">
+            <span className="starthere-band-cta-label">
+              Empieza <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
+            </span>
+            <span className="starthere-band-cta-sub">Gratis · 5 min</span>
           </span>
-        </span>
-        <span className="starthere-band-cta">
-          <span className="starthere-band-cta-label">
-            Ver la guía <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
+        </Link>
+
+        <Link href={`/guias/${latestGuide.slug}`} className="starthere-band starthere-band--latest">
+          <span className="starthere-band-glow" aria-hidden="true" />
+          <span className="starthere-band-left">
+            <span className="starthere-band-icon starthere-band-icon--latest">
+              <Compass size={20} aria-hidden="true" />
+            </span>
+            <span className="starthere-band-text">
+              <span className="starthere-band-eyebrow">Última guía publicada</span>
+              <span className="starthere-band-title">{latestGuide.shortTitle} — {latestGuide.description}</span>
+            </span>
           </span>
-          <span className="starthere-band-cta-sub">Gratis · 5 min</span>
-        </span>
-      </Link>
+          <span className="starthere-band-cta">
+            <span className="starthere-band-cta-label">
+              Ver la guía <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
+            </span>
+            <span className="starthere-band-cta-sub">{latestGuide.type === "premium" ? "Premium" : "Gratis"} · {latestGuide.readTime}</span>
+          </span>
+        </Link>
+      </div>
 
       {/* ── Main layout ── */}
       <div className="home-layout" id="feed">

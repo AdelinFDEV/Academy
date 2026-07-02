@@ -83,13 +83,10 @@ export async function getLatestVideos(limit = 3): Promise<YouTubeVideo[]> {
     }).filter((v) => v.id);
 
     // Filter out Shorts, newest first, take the requested amount.
-    const longform: YouTubeVideo[] = [];
-    for (const video of parsed) {
-      if (longform.length >= limit) break;
-      if (!(await isShort(video.id))) longform.push(video);
-    }
-
-    return longform;
+    // Probe all candidates in parallel — sequential HEAD requests to
+    // youtube.com were blocking the home page render on cache misses.
+    const shortFlags = await Promise.all(parsed.map((v) => isShort(v.id)));
+    return parsed.filter((_, i) => !shortFlags[i]).slice(0, limit);
   } catch {
     return [];
   }
