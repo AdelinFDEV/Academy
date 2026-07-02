@@ -3,8 +3,7 @@
 import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import { Flame, Pin, Gem, Heart, MessageSquare, Send, Check, ArrowRight, Bookmark } from "lucide-react";
-import YouTubeLatest from "@/components/YouTubeLatest";
-import type { YouTubeVideo } from "@/lib/youtube";
+import type { ReactNode } from "react";
 
 type Post = {
   id: string;
@@ -238,7 +237,7 @@ function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   );
 }
 
-export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { posts: Post[]; isLoggedIn: boolean; youtubeVideos?: YouTubeVideo[] }) {
+export default function HomeFeed({ posts, isLoggedIn, youtubeSection }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode }) {
   const [tab, setTab] = useState<Tab>("nuevo");
   const tabsRef = useRef<HTMLDivElement>(null);
   
@@ -311,8 +310,8 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeVideos = [] }: { po
         </Link>
       )}
 
-      {/* Último contenido en YouTube */}
-      <YouTubeLatest videos={youtubeVideos} />
+      {/* Último contenido en YouTube — se resuelve en un Suspense aparte */}
+      {youtubeSection}
     </div>
   );
 }

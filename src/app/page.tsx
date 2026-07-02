@@ -1,12 +1,9 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map, Sparkles, Unlock } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import LogoutButton from "@/components/LogoutButton";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import HomeFeed from "@/components/HomeFeed";
 import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
@@ -14,15 +11,18 @@ import LiveCounter from "@/components/LiveCounter";
 import SocialLinks from "@/components/SocialLinks";
 import HeroVideo from "@/components/HeroVideo";
 import HeroPremiumSlider from "@/components/HeroPremiumSlider";
-import { getLatestVideos } from "@/lib/youtube";
+import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { GUIDES } from "@/lib/guides";
-import { Compass } from "lucide-react";
+import { Compass, Shield } from "lucide-react";
 
 export default async function HomePage() {
   const supabase = await createClient();
 
   // Public data doesn't depend on auth — kick it off immediately so it
-  // resolves in parallel with the auth/profile round-trips.
+  // resolves in parallel with the auth/profile round-trips. YouTube is
+  // deliberately NOT here: it hits youtube.com directly (slow/unreliable),
+  // so it's fetched separately inside a <Suspense> boundary below to avoid
+  // blocking the rest of the page on it.
   const publicDataPromise = Promise.all([
     supabase
       .from("posts")
@@ -33,13 +33,12 @@ export default async function HomePage() {
       .from("categories")
       .select("name, slug")
       .order("name"),
-    getLatestVideos(3),
   ]);
 
   const { data: { user } } = await supabase.auth.getUser();
 
   // Get user profile for nav and premium check
-  const [[{ data: posts }, { data: categories }, youtubeVideos], profileRes] = await Promise.all([
+  const [[{ data: posts }, { data: categories }], profileRes] = await Promise.all([
     publicDataPromise,
     user
       ? supabase.from("profiles").select("role, full_name").eq("id", user.id).single()
@@ -107,6 +106,79 @@ export default async function HomePage() {
     if (slug) catPostMap[slug] = (catPostMap[slug] ?? 0) + 1;
   });
 
+  const premiumPitchCard = (
+    <div className="premium-pitch">
+      <span className="premium-pitch-glow" aria-hidden="true" />
+
+      <span className="premium-pitch-badge">
+        <Crown size={13} aria-hidden="true" /> Premium
+      </span>
+
+      <h3 className="premium-pitch-title">
+        Deja de mirar el mercado.<br />
+        <span className="text-gradient">Empieza a operarlo.</span>
+      </h3>
+      <p className="premium-pitch-sub">
+        Las herramientas que separan a los que improvisan de los que operan con ventaja.
+      </p>
+
+      <ul className="premium-pitch-features">
+        <li className="premium-pitch-feature">
+          <span className="premium-pitch-feature-icon"><NotebookPen size={16} aria-hidden="true" /></span>
+          <span>
+            <strong>Diario de Trading</strong>
+            Registra cada operación y descubre qué te hace ganar.
+          </span>
+        </li>
+        <li className="premium-pitch-feature">
+          <span className="premium-pitch-feature-icon"><Radar size={16} aria-hidden="true" /></span>
+          <span>
+            <strong>Señales en Spot</strong>
+            Entradas y salidas con criterio, no con corazonadas.
+          </span>
+        </li>
+        <li className="premium-pitch-feature">
+          <span className="premium-pitch-feature-icon"><Unlock size={16} aria-hidden="true" /></span>
+          <span>
+            <strong>Liberaciones de Tokens</strong>
+            Anticipa la presión vendedora con el calendario de vesting en tiempo real.
+          </span>
+        </li>
+        <li className="premium-pitch-feature">
+          <span className="premium-pitch-feature-icon"><Shield size={16} aria-hidden="true" /></span>
+          <span>
+            <strong>Calculadora de Riesgo</strong>
+            Calcula el tamaño de tu posición según tu capital y el riesgo que asumes.
+          </span>
+        </li>
+        <li className="premium-pitch-feature">
+          <span className="premium-pitch-feature-icon"><Gem size={16} aria-hidden="true" /></span>
+          <span>
+            <strong>Herramientas exclusivas</strong>
+            Watchlist, estadísticas y todo lo que viene después.
+          </span>
+        </li>
+      </ul>
+
+      <div className="premium-pitch-price-wrapper">
+        <span className="premium-pitch-limited">Por tiempo limitado</span>
+        <div className="premium-pitch-price">
+          <span className="premium-pitch-old-price">49,99€</span>
+          <span className="premium-pitch-amount">19,99€</span>
+          <span className="premium-pitch-period">/mes</span>
+        </div>
+      </div>
+
+      <Link href="/premium" className="premium-pitch-cta">
+        Hazte Premium <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+      </Link>
+
+      <p className="premium-pitch-note">
+        <Check size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
+      </p>
+    </div>
+  );
+
   const enrichedPosts = feedPosts.map((p) => ({
     id: p.id,
     title: p.title,
@@ -135,28 +207,6 @@ export default async function HomePage() {
           adelin<span>btc</span>
         </Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={!!user} />
-          {user ? (
-            <>
-              <Link href="/cuenta" className="blog-nav-user" style={{ textDecoration: "none" }}>
-                <span className="blog-nav-user-name">{userName}</span>
-                <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>
-                  {isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}
-                </span>
-              </Link>
-              <Link href="/dashboard" className="btn-nav-cta">Academia →</Link>
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-              <Link href="/register" className="btn-nav-register">Registrarte</Link>
-            </>
-          )}
-        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
       </nav>
 
@@ -256,8 +306,21 @@ export default async function HomePage() {
           <SidebarTools isLoggedIn={!!user} isPremium={isPremium} />
         </div>
 
+        {/* Premium pitch — en móvil sube aquí, justo tras Herramientas */}
+        <div className="premium-pitch-mobile-only">
+          {premiumPitchCard}
+        </div>
+
         {/* Feed */}
-        <HomeFeed posts={enrichedPosts} isLoggedIn={!!user} youtubeVideos={youtubeVideos} />
+        <HomeFeed
+          posts={enrichedPosts}
+          isLoggedIn={!!user}
+          youtubeSection={
+            <Suspense fallback={null}>
+              <YouTubeLatestSection />
+            </Suspense>
+          }
+        />
 
         {/* Sidebar */}
         <aside className="home-sidebar">
@@ -312,69 +375,9 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Premium pitch */}
-          <div className="premium-pitch">
-            <span className="premium-pitch-glow" aria-hidden="true" />
-
-            <span className="premium-pitch-badge">
-              <Crown size={13} aria-hidden="true" /> Premium
-            </span>
-
-            <h3 className="premium-pitch-title">
-              Deja de mirar el mercado.<br />
-              <span className="text-gradient">Empieza a operarlo.</span>
-            </h3>
-            <p className="premium-pitch-sub">
-              Las herramientas que separan a los que improvisan de los que operan con ventaja.
-            </p>
-
-            <ul className="premium-pitch-features">
-              <li className="premium-pitch-feature">
-                <span className="premium-pitch-feature-icon"><NotebookPen size={16} aria-hidden="true" /></span>
-                <span>
-                  <strong>Diario de Trading</strong>
-                  Registra cada operación y descubre qué te hace ganar.
-                </span>
-              </li>
-              <li className="premium-pitch-feature">
-                <span className="premium-pitch-feature-icon"><Radar size={16} aria-hidden="true" /></span>
-                <span>
-                  <strong>Señales en Spot</strong>
-                  Entradas y salidas con criterio, no con corazonadas.
-                </span>
-              </li>
-              <li className="premium-pitch-feature">
-                <span className="premium-pitch-feature-icon"><Unlock size={16} aria-hidden="true" /></span>
-                <span>
-                  <strong>Liberaciones de Tokens</strong>
-                  Anticipa la presión vendedora con el calendario de vesting en tiempo real.
-                </span>
-              </li>
-              <li className="premium-pitch-feature">
-                <span className="premium-pitch-feature-icon"><Gem size={16} aria-hidden="true" /></span>
-                <span>
-                  <strong>Herramientas exclusivas</strong>
-                  Watchlist, estadísticas y todo lo que viene después.
-                </span>
-              </li>
-            </ul>
-
-            <div className="premium-pitch-price-wrapper">
-              <span className="premium-pitch-limited">Por tiempo limitado</span>
-              <div className="premium-pitch-price">
-                <span className="premium-pitch-old-price">49,99€</span>
-                <span className="premium-pitch-amount">19,99€</span>
-                <span className="premium-pitch-period">/mes</span>
-              </div>
-            </div>
-
-            <Link href="/premium" className="premium-pitch-cta">
-              Hazte Premium <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-            </Link>
-
-            <p className="premium-pitch-note">
-              <Check size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
-            </p>
+          {/* Premium pitch — en desktop se queda al final del sidebar */}
+          <div className="premium-pitch-desktop-only">
+            {premiumPitchCard}
           </div>
 
         </aside>

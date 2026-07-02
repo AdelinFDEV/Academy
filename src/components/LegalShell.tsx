@@ -16,9 +16,6 @@ export default function LegalShell({ title, lastUpdated, children }: Props) {
         <Link href="/" className="blog-brand">
           adelin<span>btc</span>
         </Link>
-        <div className="blog-nav-links">
-          <Link href="/" className="btn-nav-link">← Volver al inicio</Link>
-        </div>
       </nav>
 
       <main className="blog-main">

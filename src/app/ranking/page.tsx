@@ -3,10 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
 import { Lock, Trophy, Flame, BookOpen, MessageSquare, Heart } from "lucide-react";
 
@@ -118,22 +114,6 @@ export default async function RankingPage() {
     <nav className="blog-nav">
       <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
       <LiveCounter />
-      <div className="blog-nav-links">
-        <NavArticulosDropdown />
-        <NavEducacionDropdown />
-        <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
-        {user ? (
-          <>
-            <Link href="/dashboard" className="btn-nav-cta">Ir a la academia →</Link>
-            <LogoutButton />
-          </>
-        ) : (
-          <>
-            <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-            <Link href="/register" className="btn-nav-register">Registrarte</Link>
-          </>
-        )}
-      </div>
       <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
     </nav>
   );

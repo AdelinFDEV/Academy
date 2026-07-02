@@ -4,10 +4,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
 import PortfolioClient from "@/components/PortfolioClient";
 
@@ -51,24 +47,6 @@ export default async function PortfolioPage() {
           adelin<span>btc</span>
         </Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
-          {user ? (
-            <>
-              <Link href="/dashboard" className="btn-nav-link btn-nav-link--dashboard">
-                Academia
-              </Link>
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-              <Link href="/register" className="btn-nav-register">Registrarte</Link>
-            </>
-          )}
-        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} />
       </nav>
 

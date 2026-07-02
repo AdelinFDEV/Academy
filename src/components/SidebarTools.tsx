@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import {
   NotebookPen, Crosshair, ScanEye, Medal, Wallet,
-  Unlock, ListOrdered, MessagesSquare, Network,
+  Unlock, ListOrdered, MessagesSquare, Network, Shield,
 } from "lucide-react";
 import ToolAccessModal, { type ToolModalReason } from "@/components/ToolAccessModal";
 
@@ -71,6 +71,13 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
       label: "Liberaciones de Tokens",
       href: "/herramientas/liberaciones",
       icon: <Unlock size={16} className="sidebar-tool-icon" />,
+      requiresLogin: true,
+      requiresPremium: true,
+    },
+    {
+      label: "Calculadora de Riesgo",
+      href: "/dashboard/calculadora-riesgo",
+      icon: <Shield size={16} className="sidebar-tool-icon" />,
       requiresLogin: true,
       requiresPremium: true,
     },

@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
   FileText, Folder, BookOpen, GraduationCap, Files, LayoutGrid,
-  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award, Hash, Unlock,
+  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award, Hash, Unlock, Shield,
 } from "lucide-react";
 
 interface Category {
@@ -166,6 +166,12 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <Unlock size={15} aria-hidden="true" />
                 Liberaciones de Tokens
                 {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
+              </Link>
+
+              <Link href={tradingLocked ? (!user ? "/register" : "/premium") : "/dashboard/calculadora-riesgo"} className={`blog-mobile-tool-link${a("/dashboard/calculadora-riesgo")}`} onClick={close}>
+                <Shield size={15} aria-hidden="true" />
+                Calculadora de Riesgo
+                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">

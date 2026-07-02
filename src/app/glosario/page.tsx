@@ -3,10 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import GlosarioClient from "./GlosarioClient";
 import LiveCounter from "@/components/LiveCounter";
 
@@ -18,8 +14,6 @@ export const metadata: Metadata = {
 export default async function GlosarioPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-
-  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
 
   const initialSaved: string[] = [];
   if (user) {
@@ -37,22 +31,6 @@ export default async function GlosarioPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={!!user} />
-          {user ? (
-            <>
-              <Link href="/dashboard" className="btn-nav-cta">Ir a la academia →</Link>
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-              <Link href="/register" className="btn-nav-register">Registrarte</Link>
-            </>
-          )}
-        </div>
         <BlogMobileMenu user={!!user} />
       </nav>
 

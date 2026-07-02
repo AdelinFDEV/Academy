@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Medal, Crosshair, NotebookPen, ScanEye, Wallet, Unlock, ArrowRight, Gem } from "lucide-react";
+import { Medal, Crosshair, NotebookPen, ScanEye, Wallet, Unlock, ArrowRight, Gem, Shield } from "lucide-react";
 
 /* Mini-visuales decorativos por herramienta (SVG abstracto, color de la slide) */
 function VisualSparkline({ c }: { c: string }) {
@@ -85,6 +85,33 @@ function VisualTarget({ c }: { c: string }) {
   );
 }
 
+function VisualGauge({ c }: { c: string }) {
+  // Medidor de riesgo: arco con zonas y una aguja apuntando a la zona segura
+  const R = 34, cx = 60, cy = 56;
+  const arc = (start: number, end: number) => {
+    const p = (deg: number) => {
+      const rad = (Math.PI / 180) * deg;
+      return [cx + R * Math.cos(rad), cy + R * Math.sin(rad)];
+    };
+    const [x1, y1] = p(start);
+    const [x2, y2] = p(end);
+    return `M ${x1} ${y1} A ${R} ${R} 0 0 1 ${x2} ${y2}`;
+  };
+  const needleDeg = -155; // apunta a la zona de bajo riesgo
+  const rad = (Math.PI / 180) * needleDeg;
+  const nx = cx + (R - 8) * Math.cos(rad);
+  const ny = cy + (R - 8) * Math.sin(rad);
+  return (
+    <svg viewBox="0 0 120 84" fill="none" aria-hidden="true">
+      <path d={arc(180, 210)} stroke={c} strokeWidth="7" strokeLinecap="round" opacity="0.9" />
+      <path d={arc(212, 330)} stroke={c} strokeWidth="7" strokeLinecap="round" opacity="0.4" />
+      <path d={arc(332, 360)} stroke={c} strokeWidth="7" strokeLinecap="round" opacity="0.22" />
+      <line x1={cx} y1={cy} x2={nx} y2={ny} stroke={c} strokeWidth="2.4" strokeLinecap="round" />
+      <circle cx={cx} cy={cy} r="4" fill={c} />
+    </svg>
+  );
+}
+
 function VisualMedal({ c }: { c: string }) {
   return (
     <svg viewBox="0 0 120 84" fill="none" aria-hidden="true">
@@ -146,6 +173,14 @@ const SLIDES = [
     color: "#fbbf24",
     tag: "Gratis",
     Visual: VisualMedal,
+  },
+  {
+    icon: <Shield size={24} aria-hidden="true" />,
+    label: "Calculadora de Riesgo",
+    description: "Calcula el tamaño exacto de tu posición según tu capital y el riesgo que asumes.",
+    color: "#2dd4bf",
+    tag: "Premium",
+    Visual: VisualGauge,
   },
 ];
 

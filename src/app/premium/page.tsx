@@ -3,12 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
-import { NotebookPen, Radar, Lightbulb, Gem, Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Unlock, Wallet, Star, Lock, Sparkles } from "lucide-react";
+import { NotebookPen, Radar, Lightbulb, Gem, Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Unlock, Wallet, Star, Lock, Sparkles, Shield } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Hazte Premium | AdelinBTC Academy",
@@ -21,6 +17,7 @@ const PERKS = [
   { Icon: Radar, color: "#f87171", title: "Señales en Spot", desc: "Entradas y salidas con criterio, no con corazonadas. Contexto y niveles claros." },
   { Icon: Unlock, color: "#34d399", title: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting del mercado en tiempo real." },
   { Icon: Wallet, color: "#fb923c", title: "Portfolio Spot de AdelinBTC", desc: "Sigue en directo las compras reales del portfolio, con precios de entrada y contexto." },
+  { Icon: Shield, color: "#2dd4bf", title: "Calculadora de Riesgo", desc: "Calcula el tamaño exacto de tu posición según tu capital y el riesgo que asumes por operación." },
   { Icon: Lightbulb, color: "#a78bfa", title: "Guías Estratégicas Premium", desc: "Guías interactivas avanzadas con gráficas, quizzes y pasos accionables." },
   { Icon: Gem, color: "#fbbf24", title: "Todo lo que viene", desc: "Cada herramienta y contenido nuevo entra directo en tu suscripción. Sin pagar más." },
 ];
@@ -34,6 +31,7 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
   { label: "Señales en Spot", free: false, premium: true },
   { label: "Portfolio Spot en tiempo real", free: false, premium: true },
   { label: "Calendario de liberaciones de tokens", free: false, premium: true },
+  { label: "Calculadora de Riesgo (tamaño de posición)", free: false, premium: true },
   { label: "Artículos y análisis Premium", free: false, premium: true },
   { label: "Soporte prioritario", free: false, premium: true },
 ];
@@ -68,22 +66,6 @@ export default async function PremiumPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
-          {user ? (
-            <>
-              <Link href="/dashboard" className="btn-nav-cta">Ir a la academia →</Link>
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-              <Link href="/register" className="btn-nav-register">Registrarte</Link>
-            </>
-          )}
-        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} />
       </nav>
 
@@ -167,6 +149,7 @@ export default async function PremiumPage() {
                     <li><Check size={16} /> Señales en Spot con contexto</li>
                     <li><Check size={16} /> Liberaciones de tokens en tiempo real</li>
                     <li><Check size={16} /> Portfolio Spot de AdelinBTC</li>
+                    <li><Check size={16} /> Calculadora de Riesgo</li>
                     <li><Check size={16} /> Todo el contenido y guías Premium</li>
                     <li><Check size={16} /> Soporte prioritario</li>
                   </ul>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet,
   ListOrdered, MessagesSquare, Network, Unlock, Map,
-  LayoutGrid, X, GraduationCap, Files, Trophy, Target, PieChart, Award,
+  LayoutGrid, X, GraduationCap, Files, Trophy, Target, PieChart, Award, Shield,
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -15,6 +15,7 @@ const ICON_MAP = {
   network: Network, unlock: Unlock, map: Map,
   graduationcap: GraduationCap, files: Files,
   trophy: Trophy, target: Target, piechart: PieChart, award: Award,
+  shield: Shield,
 } as const;
 
 export type ToolItem = {

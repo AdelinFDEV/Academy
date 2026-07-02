@@ -4,10 +4,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
 import CuentaPasswordBtn from "@/components/CuentaPasswordBtn";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User } from "lucide-react";
@@ -92,13 +88,6 @@ export default async function CuentaPage({
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={true} isPremium={isPremium} />
-          <Link href="/dashboard" className="btn-nav-cta">Mi academia →</Link>
-          <LogoutButton />
-        </div>
         <BlogMobileMenu user={true} isPremium={isPremium} userName={name} isAdmin={isAdmin} />
       </nav>
 

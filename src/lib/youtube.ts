@@ -11,6 +11,9 @@
 
 const REVALIDATE_SECONDS = 1800; // 30 min
 const HANDLE = process.env.YOUTUBE_HANDLE || "AdelinBTC";
+// youtube.com no es una API pensada para esto — si tarda, no debe bloquear
+// la home entera. Cortamos cada llamada individual a los 2.5s.
+const FETCH_TIMEOUT_MS = 2500;
 
 export interface YouTubeVideo {
   id: string;
@@ -26,6 +29,7 @@ async function resolveChannelId(): Promise<string | null> {
     const res = await fetch(`https://www.youtube.com/@${HANDLE}`, {
       next: { revalidate: 86400 }, // channel id never changes — cache a day
       headers: { "Accept-Language": "es" },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
     const html = await res.text();
     const m =
@@ -43,6 +47,7 @@ async function isShort(id: string): Promise<boolean> {
       method: "HEAD",
       redirect: "manual",
       next: { revalidate: REVALIDATE_SECONDS },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
     // A real Short responds 200 on the /shorts/ URL.
     // A normal video redirects (3xx) to the /watch page.
@@ -59,7 +64,7 @@ export async function getLatestVideos(limit = 3): Promise<YouTubeVideo[]> {
   try {
     const res = await fetch(
       `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
-      { next: { revalidate: REVALIDATE_SECONDS } }
+      { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
     );
     const xml = await res.text();
 

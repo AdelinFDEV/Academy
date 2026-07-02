@@ -6,9 +6,6 @@ import Footer from "@/components/Footer";
 import Badges from "@/components/Badges";
 import { BADGE_DEFS } from "@/components/Badges";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
@@ -23,8 +20,6 @@ export default async function LogrosPage() {
   // Logged-in users go straight to the dashboard logros
   if (user) redirect("/dashboard/logros");
 
-  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
-
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
@@ -32,13 +27,6 @@ export default async function LogrosPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={false} />
-          <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-          <Link href="/register" className="btn-nav-register">Registrarte</Link>
-        </div>
         <BlogMobileMenu user={false} />
       </nav>
 

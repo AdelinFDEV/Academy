@@ -4,11 +4,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
 import ArticulosClient from "./ArticulosClient";
-import LogoutButton from "@/components/LogoutButton";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
 import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
@@ -59,27 +55,6 @@ export default async function ArticulosPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
-          {user ? (
-            <>
-              <Link href="/dashboard" className="btn-nav-link btn-nav-link--dashboard">Academia</Link>
-              {isAdmin && <Link href="/admin" className="btn-nav-link">Admin</Link>}
-              <div className="blog-nav-user">
-                <span className="blog-nav-user-name">{userName}</span>
-                <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>{isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}</span>
-              </div>
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-nav-link">Iniciar sesión</Link>
-              <Link href="/register" className="btn-nav-cta">Registrarse</Link>
-            </>
-          )}
-        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 

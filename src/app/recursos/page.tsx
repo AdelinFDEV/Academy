@@ -4,10 +4,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
 
 export const metadata: Metadata = {
@@ -26,8 +22,6 @@ export default async function RecursosPage() {
   const isPremium = role === "premium" || role === "admin";
   if (role !== "admin") redirect("/");
 
-  const { count: usersCount } = await supabase.from("profiles").select("*", { count: "exact", head: true });
-
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
@@ -35,22 +29,6 @@ export default async function RecursosPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={!!user} isPremium={isPremium} />
-          {user ? (
-            <>
-              <Link href="/dashboard" className="btn-nav-cta">Ir a la academia →</Link>
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="btn-nav-login">Iniciar sesión</Link>
-              <Link href="/register" className="btn-nav-register">Registrarte</Link>
-            </>
-          )}
-        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} />
       </nav>
 

@@ -90,6 +90,7 @@ export default async function DashboardPage() {
         { href: "/ranking",                                     icon: "award",        name: "Ranking",                desc: "Los miembros más activos",                                  locked: false,      soon: true  },
         { href: isPremium ? "/portfolio"                 : "#", icon: "piechart",     name: "Portfolio Spot",         desc: "Sigue las compras de AdelinBTC en SPOT",                    locked: !isPremium, soon: false },
         { href: isPremium ? "/herramientas/liberaciones" : "#", icon: "unlock",       name: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting", locked: !isPremium, soon: false },
+        { href: isPremium ? "/dashboard/calculadora-riesgo" : "#", icon: "shield",    name: "Calculadora de Riesgo",  desc: "Tamaño de posición según tu capital y riesgo",              locked: !isPremium, soon: false },
         { href: "#",                                            icon: "messagessquare", name: "Chat",                 desc: "Chat en tiempo real",                                       locked: false,      soon: true  },
         { href: "#",                                            icon: "network",      name: "Foro",                   desc: "Debates y análisis con otros",                              locked: false,      soon: true  },
       ],

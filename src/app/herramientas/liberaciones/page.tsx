@@ -4,10 +4,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
-import NavArticulosDropdown from "@/components/NavArticulosDropdown";
-import NavEducacionDropdown from "@/components/NavEducacionDropdown";
-import NavHerramientasDropdown from "@/components/NavHerramientasDropdown";
-import LogoutButton from "@/components/LogoutButton";
 import LiveCounter from "@/components/LiveCounter";
 import LiberacionesClient from "./LiberacionesClient";
 
@@ -42,20 +38,6 @@ export default async function LiberacionesPage() {
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
         <LiveCounter />
-        <div className="blog-nav-links">
-          <NavArticulosDropdown />
-          <NavEducacionDropdown />
-          <NavHerramientasDropdown user={true} isPremium={isPremium} />
-          <Link href="/dashboard" className="btn-nav-link btn-nav-link--dashboard">Academia</Link>
-          {isAdmin && <Link href="/admin" className="btn-nav-link">Admin</Link>}
-          <div className="blog-nav-user">
-            <span className="blog-nav-user-name">{userName}</span>
-            <span className={`blog-nav-user-role${isPremium ? " premium" : ""}`}>
-              {isAdmin ? "Admin" : isPremium ? "Premium" : "Free"}
-            </span>
-          </div>
-          <LogoutButton />
-        </div>
         <BlogMobileMenu user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
       </nav>
 
