@@ -15,6 +15,8 @@ import GuideCycleHeroStats from "./GuideCycleHeroStats";
 import GuideCycleChart from "./GuideCycleChart";
 import GuideCyclePhases from "./GuideCyclePhases";
 import GuideCycleQuiz from "./GuideCycleQuiz";
+import GuideRevealCard from "./GuideRevealCard";
+import { Unlock } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin? Ciclos de Mercado | AdelinBTC Academy",
@@ -208,7 +210,7 @@ export default async function CiclosDeBitcoinPage() {
               cómo posicionarse sin apostarlo todo a una fecha exacta, y el quiz interactivo con badge de logro.</p>
             </div>
             <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔓 Has leído 2 de 5 secciones</div>
+              <div className="gbc-paywall-badge"><Unlock size={13} strokeWidth={2.2} aria-hidden="true" /> Has leído 2 de 5 secciones</div>
               <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
               <div className="gbc-paywall-d">
                 Desbloquea las 3 secciones restantes: señales de compra, estrategia de posicionamiento,
@@ -244,18 +246,12 @@ export default async function CiclosDeBitcoinPage() {
               </div>
 
               <div className="gbc-cards" style={{ marginTop: 28 }}>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Suelo estimado de este ciclo</div>
-                  <div className="gbc-card-text">
-                    <p>Este análisis sitúa el rango de suelo del ciclo actual para Bitcoin entre <strong>$40.000 y $50.000</strong>. No es un precio garantizado — el mercado podría no llegar a tocar ese rango, o perforarlo a la baja en un escenario más bajista de lo esperado.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Objetivo del próximo ciclo alcista</div>
-                  <div className="gbc-card-text">
-                    <p>Para el techo del próximo ciclo, tras el halving de 2028, el rango que maneja este análisis es amplio: entre <strong>$180.000 y $200.000</strong>. Cuanto más lejos en el tiempo, mayor es la incertidumbre — trátalo como una referencia orientativa, no como un objetivo fijo.</p>
-                  </div>
-                </div>
+                <GuideRevealCard title="Suelo estimado de este ciclo" hint="Toca para revelar el rango">
+                  <p>Este análisis sitúa el rango de suelo del ciclo actual para Bitcoin entre <strong>$40.000 y $50.000</strong>. No es un precio garantizado — el mercado podría no llegar a tocar ese rango, o perforarlo a la baja en un escenario más bajista de lo esperado.</p>
+                </GuideRevealCard>
+                <GuideRevealCard title="Objetivo del próximo ciclo alcista" hint="Toca para revelar el rango">
+                  <p>Para el techo del próximo ciclo, tras el halving de 2028, el rango que maneja este análisis es amplio: entre <strong>$180.000 y $200.000</strong>. Cuanto más lejos en el tiempo, mayor es la incertidumbre — trátalo como una referencia orientativa, no como un objetivo fijo.</p>
+                </GuideRevealCard>
               </div>
 
               <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>

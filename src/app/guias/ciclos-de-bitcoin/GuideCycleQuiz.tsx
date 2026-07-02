@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Trophy, BookOpen, Check, X } from "lucide-react";
 
 const QUESTIONS = [
   {
@@ -120,9 +121,28 @@ export default function GuideCycleQuiz() {
 
   if (done) {
     const perfect = score === TOTAL;
+    const R = 44;
+    const C = 2 * Math.PI * R;
+    const ringColor = perfect ? "#e6b455" : score >= 3 ? "#ff8552" : "#8fa3b8";
     return (
       <div className="gbc-badge">
-        <div className="gbc-badge-icon">{perfect ? "🧭" : "📖"}</div>
+        <div className="gbc-score-wrap">
+          <svg viewBox="0 0 120 120" className="gbc-score-ring" aria-label={`Puntuación: ${score} de ${TOTAL}`}>
+            <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="9" />
+            <circle
+              cx="60" cy="60" r={R} fill="none"
+              stroke={ringColor} strokeWidth="9" strokeLinecap="round"
+              strokeDasharray={C}
+              strokeDashoffset={C * (1 - score / TOTAL)}
+              transform="rotate(-90 60 60)"
+              className="gbc-score-arc"
+            />
+          </svg>
+          <div className="gbc-score-center" style={{ color: ringColor }}>
+            {perfect ? <Trophy size={26} strokeWidth={1.8} aria-hidden="true" /> : <BookOpen size={24} strokeWidth={1.8} aria-hidden="true" />}
+            <span className="gbc-score-num">{score}/{TOTAL}</span>
+          </div>
+        </div>
         <div className="gbc-badge-t">
           {perfect ? "¡Badge desbloqueado!" : `${score}/${TOTAL} correctas`}
         </div>
@@ -150,6 +170,13 @@ export default function GuideCycleQuiz() {
         <div className="gbc-quiz-reward-arrow" aria-hidden="true">›</div>
       </div>
 
+      <div className="gbc-quiz-bar" aria-hidden="true">
+        <div
+          className="gbc-quiz-bar-fill"
+          style={{ width: `${((current + (confirmed ? 1 : 0)) / TOTAL) * 100}%` }}
+        />
+      </div>
+
       <div className="gbc-quiz-nav">
         {QUESTIONS.map((_, i) => (
           <div
@@ -159,36 +186,43 @@ export default function GuideCycleQuiz() {
         ))}
       </div>
 
-      <div className="gbc-quiz-q">
-        <span style={{ color: "var(--gold)", fontSize: 13, fontWeight: 700, marginRight: 8 }}>
-          {current + 1}/{TOTAL}
-        </span>
-        {q.q}
-      </div>
-
-      <div className="gbc-quiz-opts">
-        {q.opts.map((o, i) => {
-          let cls = "gbc-quiz-opt";
-          if (confirmed) {
-            if (i === q.ok) cls += " ok";
-            else if (i === selected) cls += " ko";
-          } else if (i === selected) {
-            cls += " sel";
-          }
-          return (
-            <button key={i} className={cls} onClick={() => !confirmed && setSelected(i)} disabled={confirmed}>
-              {o}
-            </button>
-          );
-        })}
-      </div>
-
-      {confirmed && (
-        <div className={`gbc-box ${selected === q.ok ? "gbc-box--green" : "gbc-box--red"}`} style={{ marginBottom: 16 }}>
-          <div className="gbc-box-title">{selected === q.ok ? "Correcto" : "Incorrecto"}</div>
-          <div className="gbc-box-body">{q.exp}</div>
+      <div key={current} className="gbc-quiz-step">
+        <div className="gbc-quiz-q">
+          <span style={{ color: "var(--gold)", fontSize: 13, fontWeight: 700, marginRight: 8 }}>
+            {current + 1}/{TOTAL}
+          </span>
+          {q.q}
         </div>
-      )}
+
+        <div className="gbc-quiz-opts">
+          {q.opts.map((o, i) => {
+            let cls = "gbc-quiz-opt gbc-quiz-opt--lettered";
+            if (confirmed) {
+              if (i === q.ok) cls += " ok";
+              else if (i === selected) cls += " ko";
+            } else if (i === selected) {
+              cls += " sel";
+            }
+            return (
+              <button key={i} className={cls} onClick={() => !confirmed && setSelected(i)} disabled={confirmed}>
+                <span className="gbc-opt-letter" aria-hidden="true">
+                  {confirmed && i === q.ok ? <Check size={13} strokeWidth={3} />
+                    : confirmed && i === selected ? <X size={13} strokeWidth={3} />
+                    : String.fromCharCode(65 + i)}
+                </span>
+                <span className="gbc-opt-text">{o}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {confirmed && (
+          <div className={`gbc-box ${selected === q.ok ? "gbc-box--green" : "gbc-box--red"}`} style={{ marginBottom: 16 }}>
+            <div className="gbc-box-title">{selected === q.ok ? "Correcto" : "Incorrecto"}</div>
+            <div className="gbc-box-body">{q.exp}</div>
+          </div>
+        )}
+      </div>
 
       {!confirmed ? (
         <button className="gbc-quiz-btn" onClick={confirm} disabled={selected === null}>
