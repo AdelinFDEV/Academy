@@ -14,40 +14,73 @@ const authOnlyRoutes = ["/login", "/register"];
 // Note: login/register auth is handled client-side by Supabase JS directly,
 // so rate-limiting those POST routes here has no effect — Supabase's own
 // rate limiting covers that path.
+// Tramo estricto: rutas muy sensibles (pago). Pocas peticiones por ventana larga.
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-// Sensitive API routes where we DO control the traffic.
 const rateLimitedApis = ["/api/checkout", "/api/stripe/portal"];
 
-function isRateLimited(ip: string): boolean {
+// Tramo amplio: rutas públicas de escritura/contadores propensas a spam
+// (inserciones anónimas, likes, comentarios). Límite generoso para no molestar
+// al uso normal pero cortar el abuso trivial.
+const writeLimitMap = new Map<string, { count: number; resetAt: number }>();
+const WRITE_LIMIT_MAX = 80;
+const WRITE_LIMIT_WINDOW_MS = 60 * 1000;
+const writeLimitedApis = [
+  "/api/guide-shares",
+  "/api/guide-visit",
+  "/api/guide-likes",
+  "/api/guide-saves",
+  "/api/guide-quiz-completion",
+  "/api/guide-badge",
+  "/api/comments",
+  "/api/likes",
+  "/api/shares",
+];
+
+function hitLimit(
+  map: Map<string, { count: number; resetAt: number }>,
+  ip: string,
+  max: number,
+  windowMs: number
+): boolean {
   const now = Date.now();
-  const entry = rateLimitMap.get(ip);
+  const entry = map.get(ip);
 
   if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    map.set(ip, { count: 1, resetAt: now + windowMs });
     return false;
   }
 
-  if (entry.count >= RATE_LIMIT_MAX) return true;
+  if (entry.count >= max) return true;
   entry.count++;
   return false;
+}
+
+function isRateLimited(ip: string): boolean {
+  return hitLimit(rateLimitMap, ip, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
 }
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Rate-limit our own API routes (checkout & stripe portal).
-  // These are server-rendered GET routes — limiting per IP prevents abuse.
-  if (rateLimitedApis.some((r) => pathname.startsWith(r))) {
+  // Rate-limit our own API routes. Sensitive payment routes get a strict tier;
+  // public write/counter routes get a generous per-minute tier to stop spam.
+  const isSensitive = rateLimitedApis.some((r) => pathname.startsWith(r));
+  const isWrite = writeLimitedApis.some((r) => pathname.startsWith(r));
+  if (isSensitive || isWrite) {
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       request.headers.get("x-real-ip") ??
       "unknown";
 
-    if (isRateLimited(ip)) {
+    const limited = isSensitive
+      ? isRateLimited(ip)
+      : hitLimit(writeLimitMap, ip, WRITE_LIMIT_MAX, WRITE_LIMIT_WINDOW_MS);
+
+    if (limited) {
       return new NextResponse(
-        JSON.stringify({ error: "Demasiados intentos. Espera 15 minutos." }),
+        JSON.stringify({ error: "Demasiadas peticiones. Espera un momento." }),
         { status: 429, headers: { "Content-Type": "application/json" } }
       );
     }

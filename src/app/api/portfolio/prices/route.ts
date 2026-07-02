@@ -8,7 +8,7 @@ export async function GET(req: Request) {
 
   try {
     const res = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd,eur&include_24hr_change=true`,
+      `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(ids)}&vs_currencies=usd,eur&include_24hr_change=true`,
       {
         headers: { Accept: "application/json" },
         next: { revalidate: 60 },

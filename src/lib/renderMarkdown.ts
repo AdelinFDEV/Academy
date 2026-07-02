@@ -83,6 +83,25 @@ function escapeHtml(str: string) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+/**
+ * Sanea una URL antes de meterla en un atributo href/src.
+ * - Bloquea esquemas peligrosos (javascript:, data:, vbscript:) que permitirían
+ *   ejecutar JS (XSS). Ignora espacios/controles iniciales que se usan para evadir.
+ * - Escapa las comillas para impedir que se rompa el atributo e inyecten otro
+ *   (p.ej. `" onerror="...`). '<', '>' y '&' ya vienen escapados del paso previo.
+ */
+function safeUrl(url: string): string {
+  const scheme = url.replace(/[\u0000-\u0020]+/g, "").toLowerCase();
+  if (
+    scheme.startsWith("javascript:") ||
+    scheme.startsWith("data:") ||
+    scheme.startsWith("vbscript:")
+  ) {
+    return "#";
+  }
+  return url.trim().replace(/"/g, "%22");
+}
+
 export function renderMarkdown(md: string): string {
   const codeBlocks: string[] = [];
   let html = md.replace(/```([\w]*)\n?([\s\S]*?)```/g, (_m, lang, code) => {
@@ -129,8 +148,10 @@ export function renderMarkdown(md: string): string {
   html = html.replace(/==(.+?)==/g, "<mark>$1</mark>");
   html = html.replace(/&lt;sup&gt;(.+?)&lt;\/sup&gt;/g, "<sup>$1</sup>");
   html = html.replace(/&lt;sub&gt;(.+?)&lt;\/sub&gt;/g, "<sub>$1</sub>");
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="md-img" loading="lazy" />');
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, url) =>
+    `<img src="${safeUrl(url)}" alt="${String(alt).replace(/"/g, "&quot;")}" class="md-img" loading="lazy" />`);
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, text, url) =>
+    `<a href="${safeUrl(url)}" target="_blank" rel="noopener noreferrer">${text}</a>`);
   html = html.replace(/\[\^(\d+)\]/g, '<sup><a href="#fn-$1" id="fnref-$1" class="md-footnote-ref">[$1]</a></sup>');
   html = html.replace(/^- \[x\] (.+)$/gm, '<li class="md-task md-task--done"><span class="md-checkbox">✅</span> $1</li>');
   html = html.replace(/^- \[ \] (.+)$/gm, '<li class="md-task"><span class="md-checkbox">☐</span> $1</li>');

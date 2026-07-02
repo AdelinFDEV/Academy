@@ -1,5 +1,14 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
+// 'unsafe-eval' SOLO se necesita en desarrollo (React lo usa para el debugging
+// y HMR). En producción ni React ni Next.js lo usan, así que lo retiramos para
+// reducir la superficie de un posible XSS.
+const scriptSrc = isDev
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+  : "script-src 'self' 'unsafe-inline'";
+
 const securityHeaders = [
   // Evita que el sitio sea embebido en iframes (clickjacking)
   { key: "X-Frame-Options", value: "DENY" },
@@ -16,13 +25,15 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval necesario para Next.js dev
+      scriptSrc,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
       "frame-src https://www.youtube.com",
       "frame-ancestors 'none'",
+      "object-src 'none'",
+      "base-uri 'self'",
     ].join("; "),
   },
 ];
