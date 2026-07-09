@@ -7,6 +7,7 @@ import Badges from "@/components/Badges";
 import { BADGE_DEFS } from "@/components/Badges";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 
 export const metadata: Metadata = {
   title: "Logros | AdelinBTC Academy",
@@ -26,7 +27,11 @@ export default async function LogrosPage() {
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={false} />
       </nav>
 

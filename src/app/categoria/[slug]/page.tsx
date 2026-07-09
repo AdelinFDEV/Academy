@@ -7,6 +7,7 @@ import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -77,7 +78,11 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 

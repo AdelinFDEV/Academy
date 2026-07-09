@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Crown } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
 
 export default function Footer() {
@@ -35,7 +36,10 @@ export default function Footer() {
           <span className="footer-links-title">Academia</span>
           <Link href="/dashboard">Mi dashboard</Link>
           <Link href="/articulos">Artículos</Link>
-          <Link href="/premium" className="footer-premium-link">Hazte Premium →</Link>
+          <Link href="/premium" className="footer-premium-link">
+            <Crown size={14} strokeWidth={2.4} aria-hidden="true" />
+            Hazte Premium
+          </Link>
         </div>
 
         <div className="footer-links-group">

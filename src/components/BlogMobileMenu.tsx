@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
   FileText, Folder, BookOpen, GraduationCap, Files, LayoutGrid,
-  TrendingUp, Eye, BarChart2, Trophy, PieChart, MessageSquare, Target, Award, Hash, Unlock, Shield,
+  TrendingUp, Eye, Trophy, PieChart, MessageSquare, Target, Award, Hash, Unlock, Shield,
 } from "lucide-react";
 
 interface Category {
@@ -36,13 +36,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
       .order("name")
       .then(({ data }) => { if (data) setCategories(data); });
   }, []);
-
-  // Ping streak on every authenticated page load
-  useEffect(() => {
-    if (user) {
-      fetch("/api/streak", { method: "POST" }).catch(() => {});
-    }
-  }, [user]);
 
   useEffect(() => {
     if (open) {

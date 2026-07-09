@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import GlosarioClient from "./GlosarioClient";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 
 export const metadata: Metadata = {
   title: "Diccionario Cripto | AdelinBTC Academy",
@@ -30,7 +31,11 @@ export default async function GlosarioPage() {
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={!!user} />
       </nav>
 

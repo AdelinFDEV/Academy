@@ -5,6 +5,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 import CuentaPasswordBtn from "@/components/CuentaPasswordBtn";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User } from "lucide-react";
 
@@ -87,7 +88,11 @@ export default async function CuentaPage({
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={true} isPremium={isPremium} userName={name} isAdmin={isAdmin} />
       </nav>
 

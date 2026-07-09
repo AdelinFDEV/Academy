@@ -10,6 +10,7 @@ export interface GuideMeta {
   readTime: string;
   color: string;
   topics: string[];
+  tags: string[];
 }
 
 // El último elemento del array es siempre la guía más reciente —
@@ -27,6 +28,7 @@ export const GUIDES: GuideMeta[] = [
     readTime: "25 min",
     color: "#e6b455",
     topics: ["Origen e historia", "Cómo funciona", "Estado actual 2026", "Amenaza cuántica"],
+    tags: ["EXPLICACIONES"],
   },
   {
     slug: "ciclos-de-bitcoin",
@@ -40,6 +42,7 @@ export const GUIDES: GuideMeta[] = [
     readTime: "15 min",
     color: "#e6b455",
     topics: ["El ciclo de 4 años", "Dónde estamos ahora", "Señales de compra", "Estrategia de entrada"],
+    tags: ["EXPLICACIONES"],
   },
 ];
 

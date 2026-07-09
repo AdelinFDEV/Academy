@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import UserRoleButton from "@/components/admin/UserRoleButton";
 import Icon from "@/components/Icon";
+import { getEffectiveStreak } from "@/lib/streak";
 
 export default async function AdminUsersPage() {
   const supabase = await createClient();
@@ -8,7 +9,7 @@ export default async function AdminUsersPage() {
   const [{ data: users }, { data: readRows }, { data: badgeRows }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, role, current_streak, created_at")
+      .select("id, full_name, role, current_streak, last_seen, created_at")
       .order("created_at", { ascending: false }),
     supabase.from("user_posts").select("user_id").not("read_at", "is", null),
     supabase.from("user_badges").select("user_id"),
@@ -96,8 +97,8 @@ export default async function AdminUsersPage() {
                   )}
                 </td>
                 <td className="users-table-num">
-                  {u.current_streak > 0 ? (
-                    <span className="users-streak">{u.current_streak}d</span>
+                  {getEffectiveStreak(u.current_streak, u.last_seen) > 0 ? (
+                    <span className="users-streak">{getEffectiveStreak(u.current_streak, u.last_seen)}d</span>
                   ) : (
                     <span style={{ color: "var(--text-muted)" }}>—</span>
                   )}

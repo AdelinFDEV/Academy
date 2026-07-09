@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, Crosshair, ScanEye, NotebookPen, Medal, Wallet, ListOrdered, MessagesSquare, Network, BookA, MonitorPlay, Layers, Route, FlaskConical, Globe, Wrench, ShieldCheck, Star, GraduationCap, Crown, Gem, Radar, Users, Check, Tag, Map, Sparkles, Unlock } from "lucide-react";
+import { ArrowRight, NotebookPen, BookA, MonitorPlay, Layers, Route, ShieldCheck, Star, Crown, Gem, Radar, Check, Tag, Map, Unlock, MessageCircle, Compass, Shield } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
@@ -8,12 +8,19 @@ import HomeFeed from "@/components/HomeFeed";
 import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import LiveCounter from "@/components/LiveCounter";
-import SocialLinks from "@/components/SocialLinks";
+import GuideSearch from "@/components/GuideSearch";
 import HeroVideo from "@/components/HeroVideo";
 import HeroPremiumSlider from "@/components/HeroPremiumSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { GUIDES } from "@/lib/guides";
-import { Compass, Shield } from "lucide-react";
+
+const InstagramIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -206,7 +213,11 @@ export default async function HomePage() {
         <Link href="/" className="blog-brand">
           adelin<span>btc</span>
         </Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
       </nav>
 
@@ -216,10 +227,9 @@ export default async function HomePage() {
         <div className="home-banner-overlay" />
         <div className="home-banner-content">
 
-          <span className="hero-eyebrow hero-anim hero-anim-1">
-            <span className="hero-eyebrow-dot" aria-hidden="true" />
-            Academia cripto en español
-          </span>
+          <div className="hero-search-mobile hero-anim hero-anim-1">
+            <GuideSearch />
+          </div>
 
           <h1 className="home-banner-title home-banner-title--compact hero-anim hero-anim-2">
             Domina el mundo Cripto. <span className="text-gradient">Todo en un solo lugar.</span>
@@ -228,7 +238,7 @@ export default async function HomePage() {
           <HeroPremiumSlider isLoggedIn={!!user} isPremium={isPremium} />
 
           {!user && (
-            <div className="hero-trust hero-anim hero-anim-6">
+            <div className="hero-trust hero-anim hero-anim-4">
               <div className="hero-social-proof">
                 <div className="hero-avatars" aria-hidden="true">
                   <span className="hero-avatar" style={{ background: "linear-gradient(135deg,#ff9a00,#ff6b2b)" }}>A</span>
@@ -384,6 +394,35 @@ export default async function HomePage() {
       </div>
 
       <GuidesHomeSection />
+
+      {/* ── Contacto cercano — Instagram ── */}
+      <section className="contact-cta-section">
+        <div className="contact-cta-card">
+          <div className="contact-cta-glow" aria-hidden="true" />
+          <div className="contact-cta-content">
+            <span className="contact-cta-eyebrow">
+              <MessageCircle size={13} aria-hidden="true" />
+              Hablemos
+            </span>
+            <h2 className="contact-cta-title">¿Tienes dudas?</h2>
+            <p className="contact-cta-sub">
+              ¿Quieres que añadamos algo a la web? Escríbeme por Instagram y con gusto
+              tratamos cualquier cosa — te leo siempre. 💬
+            </p>
+            <a
+              href="https://www.instagram.com/adelinbtc/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-cta-btn"
+            >
+              <InstagramIcon />
+              Escríbeme en Instagram
+              <ArrowRight size={16} className="contact-cta-btn-arrow" aria-hidden="true" />
+            </a>
+            <span className="contact-cta-handle">@adelinbtc</span>
+          </div>
+        </div>
+      </section>
 
       <Footer />
     </div>

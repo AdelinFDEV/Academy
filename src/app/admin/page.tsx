@@ -123,6 +123,7 @@ export default async function AdminPage() {
     { count: usersCount },
     { count: premiumCount },
     { count: publishedCount },
+    { count: totalSiteVisits },
     { count: newUsersThisWeek },
     { count: newUsersLastWeek },
     { count: newUsersThisMonth },
@@ -142,6 +143,7 @@ export default async function AdminPage() {
     supabase.from("profiles").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "premium"),
     supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
+    supabase.from("site_visits").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d7.toISOString()),
     supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
     supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d30.toISOString()),
@@ -367,6 +369,17 @@ export default async function AdminPage() {
             {(commentsCount ?? 0) > 0 && (
               <Link href="/admin/comments" className="admin-stat-v2-action">Revisar →</Link>
             )}
+          </div>
+        </div>
+
+        <div className="admin-stat-v2">
+          <div className="admin-stat-v2-icon" style={{ "--stat-color": "#4ade80" } as React.CSSProperties}>
+            <Icon name="eye" size={18} />
+          </div>
+          <div className="admin-stat-v2-body">
+            <span className="admin-stat-v2-value">{totalSiteVisits ?? 0}</span>
+            <span className="admin-stat-v2-label">Visitas totales a la web</span>
+            <span className="admin-stat-v2-sub">todas las páginas</span>
           </div>
         </div>
       </div>

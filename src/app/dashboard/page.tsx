@@ -8,6 +8,7 @@ import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES } from "@/lib/guides";
+import { getEffectiveStreak } from "@/lib/streak";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -16,9 +17,11 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role, current_streak, is_featured")
+    .select("full_name, role, current_streak, last_seen, is_featured")
     .eq("id", user.id)
     .single();
+
+  const effectiveStreak = getEffectiveStreak(profile?.current_streak, profile?.last_seen);
 
   const name = profile?.full_name || user.email?.split("@")[0] || "Usuario";
   const role = profile?.role || "free";
@@ -112,9 +115,9 @@ export default async function DashboardPage() {
           </h1>
           <div className="dash-header-meta">
             <span className={`dash-plan-badge${isPremium ? " premium" : ""}`}>{planLabel}</span>
-            {(profile?.current_streak ?? 0) > 0 && (
+            {effectiveStreak > 0 && (
               <Link href="/dashboard/logros" className="dash-streak-badge">
-                🔥 {profile?.current_streak} días
+                🔥 {effectiveStreak} días
               </Link>
             )}
           </div>

@@ -8,6 +8,7 @@ import PostInteractions from "@/components/PostInteractions";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import SocialLinks from "@/components/SocialLinks";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 import { renderMarkdown, slugId } from "@/lib/renderMarkdown";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents from "@/components/TableOfContents";
@@ -168,7 +169,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 

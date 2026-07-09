@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 import GuideProgressBar from "../que-es-la-blockchain/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
@@ -75,7 +76,11 @@ export default async function CiclosDeBitcoinPage() {
       {/* Nav */}
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 

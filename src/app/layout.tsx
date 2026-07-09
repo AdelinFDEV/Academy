@@ -3,6 +3,8 @@ import { Poppins, DM_Sans, Kalam } from "next/font/google";
 import "./globals.css";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
+import SiteVisitTracker from "@/components/SiteVisitTracker";
+import StreakTracker from "@/components/StreakTracker";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -65,10 +67,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${kalam.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <BadgeNotifier />
         <CookieBanner />
+        <SiteVisitTracker />
+        <StreakTracker />
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ import Icon from "@/components/Icon";
 import ArticulosClient from "./ArticulosClient";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 
 export const metadata: Metadata = {
   title: "Artículos | AdelinBTC Academy",
@@ -54,7 +55,11 @@ export default async function ArticulosPage() {
 
       <nav className="blog-nav">
         <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
       </nav>
 

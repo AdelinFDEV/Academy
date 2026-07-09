@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
-import StreakTracker from "@/components/StreakTracker";
+import GuideSearch from "@/components/GuideSearch";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const role = profile?.role ?? "free";
   const isPremium = role === "premium" || role === "admin";
   const isAdmin = role === "admin";
-  const userName = profile?.full_name || user.email?.split("@")[0] || "Usuario";
+  const userName = profile?.full_name || user.email?.split("@")[0] || "Usuario";
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
@@ -28,11 +28,14 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <Link href="/" className="blog-brand">
           adelin<span>btc</span>
         </Link>
-        <LiveCounter />
+        <div className="blog-nav-center">
+          <LiveCounter />
+          <span className="blog-nav-divider" aria-hidden="true" />
+          <GuideSearch />
+        </div>
         <BlogMobileMenu user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
       </nav>
 
-      <StreakTracker />
       {children}
     </div>
   );

@@ -29,6 +29,7 @@ const WRITE_LIMIT_WINDOW_MS = 60 * 1000;
 const writeLimitedApis = [
   "/api/guide-shares",
   "/api/guide-visit",
+  "/api/site-visit",
   "/api/guide-likes",
   "/api/guide-saves",
   "/api/guide-quiz-completion",

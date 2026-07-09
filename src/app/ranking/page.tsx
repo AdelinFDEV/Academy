@@ -4,7 +4,9 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import LiveCounter from "@/components/LiveCounter";
+import GuideSearch from "@/components/GuideSearch";
 import { Lock, Trophy, Flame, BookOpen, MessageSquare, Heart } from "lucide-react";
+import { getEffectiveStreak } from "@/lib/streak";
 
 export const metadata: Metadata = {
   title: "Ranking de Comunidad | AdelinBTC Academy",
@@ -113,7 +115,11 @@ export default async function RankingPage() {
   const nav = (
     <nav className="blog-nav">
       <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-      <LiveCounter />
+      <div className="blog-nav-center">
+        <LiveCounter />
+        <span className="blog-nav-divider" aria-hidden="true" />
+        <GuideSearch />
+      </div>
       <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
     </nav>
   );
@@ -141,7 +147,7 @@ export default async function RankingPage() {
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, role, current_streak, created_at")
+      .select("id, full_name, role, current_streak, last_seen, created_at")
       .order("created_at"),
     supabase
       .from("comments")
@@ -176,7 +182,7 @@ export default async function RankingPage() {
       const comments = commentMap[p.id] ?? 0;
       const reads    = readMap[p.id]    ?? 0;
       const likes    = likeMap[p.id]    ?? 0;
-      const streak   = p.current_streak ?? 0;
+      const streak   = getEffectiveStreak(p.current_streak, p.last_seen);
       return {
         id:       p.id,
         name:     p.full_name ?? "Usuario",

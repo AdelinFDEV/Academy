@@ -224,7 +224,7 @@ export default function HeroPremiumSlider({
   const { Visual } = slide;
 
   return (
-    <div className="hps-wrap hps-v2 hps-v3 hero-anim hero-anim-4">
+    <div className="hps-wrap hps-v2 hps-v3 hero-anim hero-anim-3">
 
       {/* Marco fijo: solo el contenido de la herramienta rota */}
       <div className="hps-card hps-card--frame" style={{ borderColor: `${slide.color}2e` }}>

@@ -1,8 +1,9 @@
 "use client";
 import { useEffect } from "react";
 
-// Fires POST /api/streak on mount so any dashboard page visit counts toward the streak.
-// The endpoint is idempotent: if already called today it returns cached values instantly.
+// Montado una única vez en el layout raíz: cuenta la racha sin importar en qué
+// página del sitio entre el usuario. El endpoint es idempotente — si ya se
+// llamó hoy, devuelve el valor actual sin tocar nada.
 export default function StreakTracker() {
   useEffect(() => {
     fetch("/api/streak", { method: "POST" }).catch(() => {});
