@@ -1,13 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
+  );
+}
+
+function RegisterForm() {
+  const searchParams = useSearchParams();
   const supabase = createClient();
+
+  // Same-origin-only "next" (open-redirect guard) — se anexa a los enlaces
+  // de confirmación de email y de Google para no perder a dónde iba el
+  // usuario (p.ej. /premium tras pulsar "Hazte Premium").
+  function safeNext(): string | null {
+    const next = searchParams.get("next");
+    if (!next || !next.startsWith("/") || next.startsWith("//")) return null;
+    return next;
+  }
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,13 +51,24 @@ export default function RegisterPage() {
       return;
     }
 
+    const next = safeNext();
+    const callbackUrl = `${location.origin}/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`;
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: { data: { full_name: fullName }, emailRedirectTo: callbackUrl },
     });
 
     if (error) {
+      // "Ya registrado" no se muestra tal cual: revelaría si ese email existe
+      // en la base de datos (enumeración de usuarios). En su lugar mostramos
+      // la misma pantalla de éxito que vería alguien registrándose de cero.
+      if (/already|registrad/i.test(error.message)) {
+        setSuccess(true);
+        setLoading(false);
+        return;
+      }
       setError(error.message);
       setLoading(false);
       return;
@@ -51,9 +79,11 @@ export default function RegisterPage() {
   }
 
   async function handleGoogle() {
+    const next = safeNext();
+    const callbackUrl = `${location.origin}/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`;
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${location.origin}/auth/callback` },
+      options: { redirectTo: callbackUrl },
     });
   }
 
@@ -67,7 +97,11 @@ export default function RegisterPage() {
           <p className="auth-success">
             Te hemos enviado un enlace de confirmación a <strong>{email}</strong>. Ábrelo para activar tu cuenta.
           </p>
-          <Link href="/login" className="btn-primary" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
+          <Link
+            href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}
+            className="btn-primary"
+            style={{ display: "block", textAlign: "center", textDecoration: "none" }}
+          >
             Volver al login
           </Link>
         </div>
@@ -152,7 +186,7 @@ export default function RegisterPage() {
 
         <p className="auth-footer">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/login">Inicia sesión</Link>
+          <Link href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}>Inicia sesión</Link>
         </p>
       </div>
     </div>

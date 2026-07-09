@@ -3,12 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { ArrowRight, NotebookPen, BookA, MonitorPlay, Layers, Route, ShieldCheck, Star, Crown, Gem, Radar, Check, Tag, Map, Unlock, MessageCircle, Compass, Shield } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
+import SiteNav from "@/components/SiteNav";
+import GuideSearch from "@/components/GuideSearch";
 import HomeFeed from "@/components/HomeFeed";
 import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
 import HeroVideo from "@/components/HeroVideo";
 import HeroPremiumSlider from "@/components/HeroPremiumSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
@@ -209,17 +208,7 @@ export default async function HomePage() {
       <div className="bg-ambient" />
 
       {/* ── Nav ── */}
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">
-          adelin<span>btc</span>
-        </Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
 
       {/* ── Hero ── */}
       <div className="home-banner">

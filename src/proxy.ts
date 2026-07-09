@@ -18,7 +18,7 @@ const authOnlyRoutes = ["/login", "/register"];
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const rateLimitedApis = ["/api/checkout", "/api/stripe/portal"];
+const rateLimitedApis = ["/api/checkout", "/api/stripe/portal", "/api/account/delete"];
 
 // Tramo amplio: rutas públicas de escritura/contadores propensas a spam
 // (inserciones anónimas, likes, comentarios). Límite generoso para no molestar

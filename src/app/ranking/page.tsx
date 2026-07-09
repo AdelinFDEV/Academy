@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
+import SiteNav from "@/components/SiteNav";
 import { Lock, Trophy, Flame, BookOpen, MessageSquare, Heart } from "lucide-react";
 import { getEffectiveStreak } from "@/lib/streak";
 
@@ -113,15 +111,7 @@ export default async function RankingPage() {
   const userName   = profileRes?.data?.full_name ?? user?.email?.split("@")[0] ?? "Usuario";
 
   const nav = (
-    <nav className="blog-nav">
-      <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-      <div className="blog-nav-center">
-        <LiveCounter />
-        <span className="blog-nav-divider" aria-hidden="true" />
-        <GuideSearch />
-      </div>
-      <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
-    </nav>
+    <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
   );
 
   // ── Non-admin: coming soon ──

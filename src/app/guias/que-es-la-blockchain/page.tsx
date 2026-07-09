@@ -2,11 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
-import GuideProgressBar from "./GuideProgressBar";
-import GuideHeroStats from "./GuideHeroStats";
+import SiteNav from "@/components/SiteNav";
+import GuideProgressBar from "@/components/GuideProgressBar";
+import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideFlashcards from "./GuideFlashcards";
 import GuideCharts from "./GuideCharts";
 import GuideQuiz from "./GuideQuiz";
@@ -29,6 +27,41 @@ export const metadata: Metadata = {
     type: "article",
   },
 };
+
+const BLOCK_FLOW_CARDS = [
+  {
+    title: "1. La transacción",
+    frontText: "Alice quiere enviar 0.5 BTC a Bob. Firma la transacción con su clave privada...",
+    backText1: "Es una prueba matemática de que ella autoriza el movimiento sin revelar la clave.",
+    backText2: "La transacción se emite a la red de miles de nodos que la validan: ¿Tiene Alice saldo suficiente? ¿La firma es válida?",
+  },
+  {
+    title: "2. El bloque",
+    frontText: "Las transacciones válidas se agrupan en un bloque...",
+    backText1: "El bloque incluye: versión, hash del bloque anterior, árbol Merkle, marca de tiempo y nonce.",
+    backText2: "El hash del bloque es la huella digital. Si cambias una coma, el hash cambia por completo.",
+  },
+  {
+    title: "3. El consenso",
+    frontText: "La red debe ponerse de acuerdo sobre cuál es el siguiente bloque verdadero...",
+    backText1: "Proof of Work (Bitcoin): Los mineros compiten resolviendo un puzzle matemático. El primero lo añade.",
+    backText2: "Proof of Stake (Ethereum): Validadores depositan ETH como garantía. Seleccionados aleatoriamente.",
+  },
+  {
+    title: "4. La inmutabilidad",
+    frontText: "Una vez en la cadena, ¿se puede alterar el registro?",
+    backText1: "Si un atacante quisiera alterar el bloque 700.000, tendría que recalcular ese y todos los posteriores.",
+    backText2: "En Bitcoin, eso requiere más del 51% del hashrate global. Coste: miles de millones de dólares en hardware y luz.",
+  },
+];
+
+const HERO_STATS = [
+  { prefix: "$", value: 2.17, suffix: "T", dec: 2, label: "Capitalización\ncrypto global" },
+  { prefix: "", value: 350, suffix: "M+", dec: 0, label: "Usuarios activos\nestimados 2026" },
+  { prefix: "$", value: 71.77, suffix: "B", dec: 2, label: "Total Value Locked\nen DeFi" },
+  { prefix: "$", value: 32, suffix: "B+", dec: 0, label: "Activos reales\ntokenizados (RWA)" },
+  { prefix: "", value: 15000, suffix: "+", dec: 0, label: "Proyectos activos\nen blockchain" },
+];
 
 const SECTIONS = [
   { id: "origen", label: "Origen" },
@@ -104,15 +137,7 @@ export default async function QueEsLaBlockchainPage() {
       <GuideProgressBar />
 
       {/* Nav */}
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       {/* Index */}
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -143,7 +168,7 @@ export default async function QueEsLaBlockchainPage() {
           <span className="gbc-pill">Quiz + Badge</span>
           <span className="gbc-pill">Flashcards</span>
         </div>
-        <GuideHeroStats />
+        <GuideHeroStats stats={HERO_STATS} />
       </header>
 
       {/* ── SECTION 1: ORIGEN ── FREE */}
@@ -203,7 +228,7 @@ export default async function QueEsLaBlockchainPage() {
             </p>
           </div>
 
-          <GuideFlipCards />
+          <GuideFlipCards cards={BLOCK_FLOW_CARDS} />
 
           <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
             <div className="gbc-box-title">La analogía del libro contable público</div>

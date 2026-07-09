@@ -2,18 +2,24 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
-import GuideProgressBar from "../que-es-la-blockchain/GuideProgressBar";
+import SiteNav from "@/components/SiteNav";
+import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
-import GuideCycleHeroStats from "./GuideCycleHeroStats";
+import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideCycleChart from "./GuideCycleChart";
 import GuideCyclePhases from "./GuideCyclePhases";
 import GuideCycleQuiz from "./GuideCycleQuiz";
 import GuideRevealCard from "./GuideRevealCard";
 import { Unlock } from "lucide-react";
+
+const HERO_STATS = [
+  { prefix: "", value: 4, suffix: "", dec: 0, label: "Halvings de Bitcoin\nhasta hoy" },
+  { prefix: "", value: 4, suffix: " años", dec: 0, label: "Duración media\ndel ciclo" },
+  { prefix: "$", value: 45, suffix: "K", dec: 0, label: "Suelo estimado\nde este ciclo" },
+  { prefix: "$", value: 190, suffix: "K", dec: 0, label: "Objetivo estimado\npróximo ciclo" },
+  { prefix: "", value: 2028, suffix: "", dec: 0, label: "Próximo halving\nestimado" },
+];
 
 export const metadata: Metadata = {
   title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin? Ciclos de Mercado | AdelinBTC Academy",
@@ -74,15 +80,7 @@ export default async function CiclosDeBitcoinPage() {
       <GuideProgressBar />
 
       {/* Nav */}
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       {/* Index */}
       <nav className="gbc-index" aria-label="Índice de la guía">
@@ -112,7 +110,7 @@ export default async function CiclosDeBitcoinPage() {
           <span className="gbc-pill">Gráfica interactiva de ciclos</span>
           <span className="gbc-pill">Quiz + Badge</span>
         </div>
-        <GuideCycleHeroStats />
+        <GuideHeroStats stats={HERO_STATS} />
       </header>
 
       {/* ── SECTION 1: LOS CICLOS ── FREE */}

@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
+import SiteNav from "@/components/SiteNav";
 import GlosarioClient from "./GlosarioClient";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
 
 export const metadata: Metadata = {
   title: "Diccionario Cripto | AdelinBTC Academy",
@@ -29,15 +27,7 @@ export default async function GlosarioPage() {
     <div className="blog-page">
       <div className="bg-ambient" />
 
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={!!user} />
-      </nav>
+      <SiteNav user={!!user} />
 
       <main className="blog-main glosario-page">
         <div className="glosario-header">

@@ -3,10 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
+import SiteNav from "@/components/SiteNav";
 import CuentaPasswordBtn from "@/components/CuentaPasswordBtn";
+import CuentaDeleteAccountBtn from "@/components/CuentaDeleteAccountBtn";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -14,7 +13,8 @@ export const metadata: Metadata = {
   description: "Gestiona tu suscripción y datos de cuenta.",
 };
 
-function statusLabel(status: string | null): string {
+function statusLabel(status: string | null, willCancel: boolean): string {
+  if (willCancel) return "Cancelada";
   switch (status) {
     case "active":    return "Activa";
     case "trialing":  return "En prueba";
@@ -25,7 +25,8 @@ function statusLabel(status: string | null): string {
   }
 }
 
-function statusColor(status: string | null): string {
+function statusColor(status: string | null, willCancel: boolean): string {
+  if (willCancel) return "var(--text-muted)";
   switch (status) {
     case "active":
     case "trialing":  return "var(--accent-orange)";
@@ -49,9 +50,11 @@ export default async function CuentaPage({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role, subscription_status, subscription_current_period_end, premium_since, stripe_customer_id")
+    .select("full_name, role, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, premium_since, stripe_customer_id")
     .eq("id", user.id)
     .single();
+
+  const willCancel = !!profile?.subscription_cancel_at_period_end && profile?.subscription_status === "active";
 
   const role = profile?.role ?? "free";
   const isPremium = role === "premium" || role === "admin";
@@ -86,15 +89,7 @@ export default async function CuentaPage({
     <div className="blog-page">
       <div className="bg-ambient" />
 
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={true} isPremium={isPremium} userName={name} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={true} isPremium={isPremium} userName={name} isAdmin={isAdmin} />
 
       <main className="blog-main">
         <div className="cuenta-page">
@@ -161,16 +156,16 @@ export default async function CuentaPage({
                       <span className="cuenta-info-label">Estado</span>
                       <span
                         className="cuenta-info-value"
-                        style={{ color: statusColor(profile?.subscription_status ?? null), fontWeight: 600 }}
+                        style={{ color: statusColor(profile?.subscription_status ?? null, willCancel), fontWeight: 600 }}
                       >
-                        {statusLabel(profile?.subscription_status ?? null)}
+                        {statusLabel(profile?.subscription_status ?? null, willCancel)}
                       </span>
                     </div>
                     {periodEnd && (
                       <div className="cuenta-info-row">
                         <span className="cuenta-info-label">
                           <Calendar size={13} style={{ display: "inline", marginBottom: "-2px", marginRight: "4px" }} />
-                          {profile?.subscription_status === "canceled" ? "Acceso hasta" : "Próxima renovación"}
+                          {profile?.subscription_status === "canceled" || willCancel ? "Acceso hasta" : "Próxima renovación"}
                         </span>
                         <span className="cuenta-info-value">{periodEnd}</span>
                       </div>
@@ -192,6 +187,13 @@ export default async function CuentaPage({
                     </div>
                   </div>
 
+                  {willCancel && (
+                    <p className="cuenta-cancel-notice">
+                      Tu suscripción está cancelada y no se renovará. Conservas el acceso Premium
+                      hasta el {periodEnd}.
+                    </p>
+                  )}
+
                   <a href="/api/stripe/portal" className="cuenta-btn-manage">
                     <CreditCard size={15} />
                     Gestionar suscripción
@@ -199,7 +201,9 @@ export default async function CuentaPage({
                   </a>
                   <p className="cuenta-manage-hint">
                     <ShieldCheck size={13} style={{ display: "inline", marginBottom: "-2px", marginRight: "4px" }} />
-                    Cambia método de pago, descarga facturas o cancela desde el portal seguro de Stripe.
+                    {willCancel
+                      ? "Puedes reactivar la renovación automática desde el portal seguro de Stripe."
+                      : "Cambia método de pago, descarga facturas o cancela desde el portal seguro de Stripe."}
                   </p>
                 </>
               ) : isPremium && isAdmin ? (
@@ -227,6 +231,19 @@ export default async function CuentaPage({
             </div>
 
           </div>
+
+          {!isAdmin && (
+            <div className="cuenta-danger-zone">
+              <div className="cuenta-danger-zone-text">
+                <h3>Eliminar cuenta</h3>
+                <p>
+                  Borra tu perfil, progreso y datos guardados de forma permanente
+                  {isPremium ? " y cancela tu suscripción al instante" : ""}. No se puede deshacer.
+                </p>
+              </div>
+              <CuentaDeleteAccountBtn isPremium={isPremium} />
+            </div>
+          )}
         </div>
       </main>
 

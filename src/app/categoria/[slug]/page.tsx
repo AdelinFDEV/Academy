@@ -5,9 +5,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
+import SiteNav from "@/components/SiteNav";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -76,15 +74,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     <div className="blog-page">
       <div className="bg-ambient" />
 
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       <main className="blog-main">
         <div className="category-header">

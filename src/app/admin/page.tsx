@@ -251,7 +251,7 @@ export default async function AdminPage() {
     const shares    = allGuideShares.filter((s) => s.guide_slug === g.slug).length;
     const attempts  = allQuizCompletions.filter((c) => c.guide_slug === g.slug).length;
     const perfect   = allQuizCompletions.filter((c) => c.guide_slug === g.slug && c.score === c.total).length;
-    const badges    = allGuideBadges.filter((b) => b.badge_id === `guide-${g.slug.split("-")[2] ?? g.slug}`).length;
+    const badges    = allGuideBadges.filter((b) => b.badge_id === g.badgeId).length;
     const passRate  = attempts > 0 ? Math.round((perfect / attempts) * 100) : 0;
     const engagePct = visits > 0 ? Math.round((attempts / visits) * 100) : 0;
     return { ...g, visits, uVisitors, likes, saves, shares, attempts, perfect, badges, passRate, engagePct };

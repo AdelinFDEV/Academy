@@ -7,6 +7,7 @@ export interface GuideMeta {
   type: "free" | "premium";
   sections: number;
   badge: string;
+  badgeId: string;
   readTime: string;
   color: string;
   topics: string[];
@@ -25,6 +26,7 @@ export const GUIDES: GuideMeta[] = [
     type: "free",
     sections: 8,
     badge: "Arquitecto de Cadenas",
+    badgeId: "guide-blockchain",
     readTime: "25 min",
     color: "#e6b455",
     topics: ["Origen e historia", "Cómo funciona", "Estado actual 2026", "Amenaza cuántica"],
@@ -39,10 +41,26 @@ export const GUIDES: GuideMeta[] = [
     type: "free",
     sections: 5,
     badge: "Cazador de Ciclos",
+    badgeId: "guide-ciclos-bitcoin",
     readTime: "15 min",
     color: "#e6b455",
     topics: ["El ciclo de 4 años", "Dónde estamos ahora", "Señales de compra", "Estrategia de entrada"],
     tags: ["EXPLICACIONES"],
+  },
+  {
+    slug: "worldcoin",
+    title: "¿Qué es Worldcoin? La Criptomoneda que Escanea tu Iris",
+    shortTitle: "Worldcoin",
+    description: "El proyecto de Sam Altman que reparte criptomoneda a cambio de escanear tu iris: cómo funciona el Orb, qué es World ID y por qué ha sido prohibido en varios países.",
+    difficulty: "intermedio",
+    type: "free",
+    sections: 8,
+    badge: "Prueba de Humanidad",
+    badgeId: "guide-worldcoin",
+    readTime: "18 min",
+    color: "#e6b455",
+    topics: ["El Orb y World ID", "Proof of Personhood", "Tokenomics de WLD", "Controversias y prohibiciones"],
+    tags: ["CRIPTOMONEDAS"],
   },
 ];
 

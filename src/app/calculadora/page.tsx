@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
+import SiteNav from "@/components/SiteNav";
 import CalculadoraClient from "./CalculadoraClient";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
 
 export const metadata: Metadata = {
   title: "Predicción de Precio | AdelinBTC Academy",
@@ -34,15 +31,7 @@ export default async function CalculadoraPage() {
     <div className="blog-page">
       <div className="bg-ambient" />
 
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={true} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
 
       <main className="blog-main">
         <CalculadoraClient />

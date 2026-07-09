@@ -48,9 +48,19 @@ export default function LoginPage() {
   }
 
   async function handleGoogle() {
+    const nextParam = new URLSearchParams(window.location.search).get("next");
+    let callbackUrl = `${location.origin}/auth/callback`;
+    if (nextParam) {
+      try {
+        const url = new URL(nextParam, window.location.origin);
+        if (url.origin === window.location.origin) {
+          callbackUrl += `?next=${encodeURIComponent(url.pathname + url.search + url.hash)}`;
+        }
+      } catch { /* malformed URL → keep default */ }
+    }
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${location.origin}/auth/callback` },
+      options: { redirectTo: callbackUrl },
     });
   }
 

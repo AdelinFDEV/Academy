@@ -41,7 +41,7 @@ export default function ChangePasswordModal({ open, onClose }: Props) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (password.length < 6) { setError("Mínimo 6 caracteres."); return; }
+    if (password.length < 8) { setError("Mínimo 8 caracteres."); return; }
     if (password !== confirm) { setError("Las contraseñas no coinciden."); return; }
 
     setLoading(true);
@@ -104,7 +104,7 @@ export default function ChangePasswordModal({ open, onClose }: Props) {
                       type={showPw ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Mínimo 6 caracteres"
+                      placeholder="Mínimo 8 caracteres"
                       required
                     />
                     <button type="button" className="field-pw-toggle" onClick={() => setShowPw(v => !v)} tabIndex={-1} aria-label={showPw ? "Ocultar" : "Mostrar"}>

@@ -24,13 +24,10 @@ export default function GuideSearch() {
 
   const q = query.trim().toLowerCase();
   const hasQuery = q.length >= 3;
+  // Solo filtra por título de la guía — a propósito, no busca en
+  // descripción/temas para que los resultados sean siempre predecibles.
   const results = hasQuery
-    ? CRYPTO_GUIDES.filter((g) =>
-        g.title.toLowerCase().includes(q) ||
-        g.shortTitle.toLowerCase().includes(q) ||
-        g.description.toLowerCase().includes(q) ||
-        g.topics.some((t) => t.toLowerCase().includes(q))
-      )
+    ? CRYPTO_GUIDES.filter((g) => g.title.toLowerCase().includes(q))
     : [];
 
   return (

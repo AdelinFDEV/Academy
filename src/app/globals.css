@@ -472,6 +472,15 @@ html {
   line-height: 1.5;
   margin-top: -0.5rem;
 }
+.cuenta-cancel-notice {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
 .cuenta-no-plan {
   color: var(--text-secondary);
   font-size: 0.875rem;
@@ -16333,6 +16342,149 @@ select {
   100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
 }
 
+/* ══════════════════════════════════════════════════════════
+   GUÍA WORLDCOIN — Orb scanner, tokenomics donut, vídeo, quiz v2
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Orb scanner (juego) ── */
+.orb-game {
+  background: rgba(15,32,64,0.5);
+  border: 1px solid rgba(230,180,85,0.15);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 28px;
+  text-align: center;
+}
+.orb-game-header { margin-bottom: 22px; text-align: left; }
+.orb-game-stage { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+.orb-sphere {
+  position: relative;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 35% 30%, #1e3558, #060f1f 70%);
+  border: 1px solid rgba(230,180,85,0.3);
+  box-shadow: 0 0 40px -10px rgba(230,180,85,0.15);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.orb-sphere--scanning { border-color: rgba(255,107,43,0.55); box-shadow: 0 0 50px -6px rgba(255,107,43,0.4); }
+.orb-sphere--verified { border-color: rgba(74,222,128,0.6); box-shadow: 0 0 55px -6px rgba(74,222,128,0.45); }
+.orb-sphere--rejected { border-color: rgba(248,113,113,0.6); box-shadow: 0 0 55px -6px rgba(248,113,113,0.4); }
+
+.orb-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid rgba(230,180,85,0.18);
+}
+.orb-ring-1 { inset: 14px; }
+.orb-ring-2 { inset: 28px; }
+.orb-ring-3 { inset: 42px; }
+.orb-sphere--scanning .orb-ring-1 { animation: orb-pulse-ring 1.8s ease-in-out infinite; }
+.orb-sphere--scanning .orb-ring-2 { animation: orb-pulse-ring 1.8s ease-in-out infinite 0.3s; }
+.orb-sphere--scanning .orb-ring-3 { animation: orb-pulse-ring 1.8s ease-in-out infinite 0.6s; }
+@keyframes orb-pulse-ring {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.06); opacity: 1; border-color: rgba(255,107,43,0.5); }
+}
+
+.orb-scan-line {
+  position: absolute;
+  left: 8%; right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff6b2b, transparent);
+  box-shadow: 0 0 12px 2px rgba(255,107,43,0.7);
+  animation: orb-scan-move 1.4s ease-in-out infinite;
+}
+@keyframes orb-scan-move {
+  0%, 100% { top: 20%; }
+  50% { top: 78%; }
+}
+
+.orb-core {
+  position: relative; z-index: 2;
+  color: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+}
+.orb-sphere--verified .orb-core { color: #4ade80; }
+.orb-sphere--rejected .orb-core { color: #f87171; }
+
+.orb-status { min-height: 78px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); width: 100%; max-width: 340px; }
+.orb-progress-track { width: 100%; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+.orb-progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b2b, var(--gold)); border-radius: 4px; transition: width 0.1s linear; }
+
+.orb-result { display: flex; flex-direction: column; gap: 4px; animation: orb-result-in 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes orb-result-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.orb-result-title { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; }
+.orb-result--ok .orb-result-title { color: #4ade80; }
+.orb-result--ko .orb-result-title { color: #f87171; }
+.orb-result-hash { font-size: 12px; color: var(--text-muted); }
+.orb-result-hash code { color: var(--gold); }
+.orb-result-grant { font-size: 12px; font-weight: 600; color: var(--gold); }
+.orb-result--ko .orb-result-grant { color: #f87171; font-weight: 500; }
+
+.orb-game-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+
+/* ── Tokenomics donut ── */
+.tokenomics-donut-wrap { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+.tokenomics-legend { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
+.tokenomics-legend-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #dce8f8; }
+.tokenomics-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.tokenomics-legend-label { flex: 1; }
+.tokenomics-legend-val { font-weight: 700; color: var(--gold); }
+
+/* ── Vídeo embebido ── */
+.gbc-video-wrap { margin-top: 8px; }
+.gbc-video-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: #ff0000; background: rgba(255,0,0,0.08); border: 1px solid rgba(255,0,0,0.2);
+  padding: 5px 12px; border-radius: 100px; margin-bottom: 14px;
+}
+.gbc-video-frame {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--gold-border, rgba(230,180,85,0.25));
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+  background: #000;
+}
+.gbc-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.gbc-video-caption { margin-top: 14px; font-size: 13px; color: var(--text-muted); }
+
+/* ── Quiz v2 (Worldcoin) ── */
+.wq-wrap { max-width: 760px; }
+.wq-progress-track { width: 100%; height: 8px; border-radius: 6px; background: rgba(255,255,255,0.07); overflow: hidden; margin-bottom: 6px; }
+.wq-progress-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #ff6b2b, var(--gold)); box-shadow: 0 0 10px rgba(230,180,85,0.5); }
+.wq-progress-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+
+.wq-opt { display: flex; align-items: center; gap: 10px; }
+.wq-opt-marker { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex-shrink: 0; }
+.wq-opt.ok .wq-opt-marker { color: #4ade80; }
+.wq-opt.ko .wq-opt-marker { color: #f87171; }
+
+.wq-result {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 40px 24px; max-width: 480px; margin: 0 auto;
+  background: linear-gradient(180deg, rgba(230,180,85,0.06), transparent);
+  border: 1px solid rgba(230,180,85,0.2);
+  border-radius: 20px;
+}
+.wq-result-badge-icon { font-size: 42px; margin: 4px 0 10px; }
+.wq-result-title { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.wq-result-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.wq-result-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 16px; padding: 7px 16px; border-radius: 100px;
+  background: linear-gradient(135deg, rgba(230,180,85,0.18), rgba(255,107,43,0.1));
+  border: 1px solid rgba(230,180,85,0.4);
+  color: var(--gold); font-size: 13px; font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .orb-sphere { width: 112px; height: 112px; }
+  .tokenomics-donut-wrap { flex-direction: column; }
+  .wq-result { padding: 28px 18px; }
+}
+
 /* â”€â”€ Guide badges section in dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .badges-guide-sub { font-size: 13px; color: #8fa3b8; margin: 6px 0 18px; }
 .badges-guide-grid { display: flex; flex-direction: column; gap: 14px; }
@@ -17949,6 +18101,10 @@ a.dtb-tool:hover .dtb-tool-icon {
   background: linear-gradient(135deg,rgba(255,107,43,0.15),rgba(255,170,0,0.08));
   border: 1px solid rgba(255,107,43,0.3); color: var(--accent-orange,#ff6b2b);
 }
+.tool-modal-icon-wrap--danger {
+  background: linear-gradient(135deg,rgba(248,113,113,0.15),rgba(220,38,38,0.08));
+  border: 1px solid rgba(248,113,113,0.3); color: #f87171;
+}
 .tool-modal-content { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
 .tool-modal-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary,#f0f4ff); margin: 0; }
 .tool-modal-tool-name {
@@ -17980,6 +18136,114 @@ a.dtb-tool:hover .dtb-tool-icon {
   text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s;
 }
 .tool-modal-btn-secondary:hover { background: rgba(240,244,255,0.05); color: var(--text-primary,#f0f4ff); }
+
+.tool-modal-btn-danger {
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  width: 100%; padding: 0.8rem 1.25rem; border-radius: 12px;
+  font-size: 0.95rem; font-weight: 600; color: #fff;
+  cursor: pointer; border: none; background: #dc2626;
+  transition: filter 0.18s, transform 0.12s, opacity 0.18s;
+}
+.tool-modal-btn-danger:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
+.tool-modal-btn-danger:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.danger-warning-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  text-align: left;
+}
+.danger-warning-list li {
+  font-size: 0.84rem;
+  color: var(--text-secondary, #8899aa);
+  padding-left: 1rem;
+  position: relative;
+}
+.danger-warning-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f87171;
+}
+.danger-warning-list li strong { color: #f87171; }
+
+.danger-confirm-field {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+.danger-confirm-field label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #8899aa);
+  margin-bottom: 0.4rem;
+}
+.danger-confirm-field label strong { color: var(--text-primary, #f0f4ff); letter-spacing: 0.03em; }
+.danger-confirm-field input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.05);
+  color: var(--text-primary, #f0f4ff);
+  font-size: 0.9rem;
+}
+.danger-confirm-field input:focus {
+  outline: none;
+  border-color: #f87171;
+}
+
+/* — Zona de peligro en Mi cuenta — */
+.cuenta-danger-zone {
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  background: rgba(248, 113, 113, 0.04);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.cuenta-danger-zone-text h3 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary, #f0f4ff);
+  margin-bottom: 0.2rem;
+}
+.cuenta-danger-zone-text p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  max-width: 480px;
+}
+.cuenta-btn-delete-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  color: #f87171;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.cuenta-btn-delete-account:hover {
+  background: #dc2626;
+  color: #fff;
+}
 
 
 /* ═══════════════════════════════════════════════════════════

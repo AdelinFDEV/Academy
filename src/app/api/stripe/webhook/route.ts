@@ -37,6 +37,7 @@ async function applyToProfile(
     subscriptionId: string | null;
     status: string | null;
     periodEnd: string | null;
+    cancelAtPeriodEnd: boolean;
     eventType: string;
   }
 ) {
@@ -46,6 +47,7 @@ async function applyToProfile(
   const update: Record<string, unknown> = {
     subscription_status: opts.status,
     subscription_current_period_end: opts.periodEnd,
+    subscription_cancel_at_period_end: opts.cancelAtPeriodEnd,
   };
   if (opts.customerId) update.stripe_customer_id = opts.customerId;
   if (opts.subscriptionId) update.stripe_subscription_id = opts.subscriptionId;
@@ -164,10 +166,12 @@ export async function POST(request: NextRequest) {
 
         let status: string | null = "active";
         let periodEnd: string | null = null;
+        let cancelAtPeriodEnd = false;
         if (subscriptionId) {
           const sub = await stripe.subscriptions.retrieve(subscriptionId);
           status = sub.status;
           periodEnd = getPeriodEnd(sub);
+          cancelAtPeriodEnd = sub.cancel_at_period_end;
         }
 
         const isFirstPayment = !(profile as ProfileRow).premium_since;
@@ -177,6 +181,7 @@ export async function POST(request: NextRequest) {
           subscriptionId,
           status,
           periodEnd,
+          cancelAtPeriodEnd,
           eventType: event.type,
         });
 
@@ -198,6 +203,8 @@ export async function POST(request: NextRequest) {
           typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
         const status =
           event.type === "customer.subscription.deleted" ? "canceled" : sub.status;
+        const cancelAtPeriodEnd =
+          event.type === "customer.subscription.deleted" ? false : sub.cancel_at_period_end;
 
         const profile = await findProfile(admin, {
           customerId,
@@ -216,6 +223,7 @@ export async function POST(request: NextRequest) {
           subscriptionId: sub.id,
           status,
           periodEnd: getPeriodEnd(sub),
+          cancelAtPeriodEnd,
           eventType: event.type,
         });
         break;

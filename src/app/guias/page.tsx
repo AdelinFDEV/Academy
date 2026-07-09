@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
-import BlogMobileMenu from "@/components/BlogMobileMenu";
-import LiveCounter from "@/components/LiveCounter";
-import GuideSearch from "@/components/GuideSearch";
+import SiteNav from "@/components/SiteNav";
 import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Lock, Star } from "lucide-react";
+import { GUIDES } from "@/lib/guides";
 
 export const metadata: Metadata = {
   title: "Guías Interactivas | AdelinBTC Academy",
@@ -13,35 +12,11 @@ export const metadata: Metadata = {
     "Aprende crypto paso a paso con guías interactivas: gráficas animadas, quizzes, flashcards y badges de logro. Desde Bitcoin hasta DeFi.",
 };
 
-const PLACEHOLDER_GUIDES = [
-  {
-    slug: "que-es-la-blockchain",
-    title: "¿Qué es la Blockchain? El registro que nadie puede falsificar",
-    description:
-      "De Satoshi al presente: entiende qué es la blockchain, cómo funciona, por qué es imposible de falsificar y cuál es su futuro ante la computación cuántica. Con datos reales 2026, gráficas, flashcards y quiz.",
-    difficulty: "basic" as const,
-    type: "free" as const,
-    sections: 8,
-    badge: "Arquitecto de Cadenas",
-    published: true,
-  },
-  {
-    slug: "ciclos-de-bitcoin",
-    title: "¿Por qué AHORA es el momento de comprar Bitcoin? Ciclos de mercado",
-    description:
-      "El ciclo de 4 años del halving explicado: por qué la fase bajista está terminando, qué esperar de las altcoins antes del próximo halving y los rangos de precio de este ciclo. Con gráfica interactiva y quiz.",
-    difficulty: "intermediate" as const,
-    type: "free" as const,
-    sections: 5,
-    badge: "Cazador de Ciclos",
-    published: true,
-  },
-];
-
-const DIFF_LABEL: Record<string, string> = {
-  basic: "Básico",
-  intermediate: "Intermedio",
-  advanced: "Avanzado",
+// Clase CSS por dificultad (las clases guides-diff--* ya existen en globals.css).
+const DIFF_CLASS: Record<string, string> = {
+  "básico": "basic",
+  "intermedio": "intermediate",
+  "avanzado": "advanced",
 };
 
 export default async function GuiasPage() {
@@ -56,22 +31,11 @@ export default async function GuiasPage() {
   const isAdmin = role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
 
-  const publishedGuides = PLACEHOLDER_GUIDES.filter((g) => g.published);
-  const comingSoon = PLACEHOLDER_GUIDES.filter((g) => !g.published);
-
   return (
     <div className="blog-page">
       <div className="bg-ambient" />
 
-      <nav className="blog-nav">
-        <Link href="/" className="blog-brand">adelin<span>btc</span></Link>
-        <div className="blog-nav-center">
-          <LiveCounter />
-          <span className="blog-nav-divider" aria-hidden="true" />
-          <GuideSearch />
-        </div>
-        <BlogMobileMenu user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
-      </nav>
+      <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       <main className="guias-page">
 
@@ -102,59 +66,33 @@ export default async function GuiasPage() {
         </div>
 
         {/* Guías publicadas */}
-        {publishedGuides.length > 0 && (
-          <div className="guias-section">
-            <h2 className="guias-section-title">Disponibles ahora</h2>
-            <div className="guias-grid">
-              {publishedGuides.map((g) => (
-                <Link key={g.slug} href={`/guias/${g.slug}`} className="guias-card">
-                  <div className="guias-card-glow" aria-hidden="true" />
-                  <div className="guias-card-top">
-                    <span className={`guides-diff-badge guides-diff--${g.difficulty}`}>{DIFF_LABEL[g.difficulty]}</span>
-                    {g.type === "free"
-                      ? <span className="guides-access-badge">Gratis con registro</span>
-                      : <span className="guides-access-badge guides-access-badge--premium"><Lock size={11} aria-hidden="true" /> Premium</span>}
-                  </div>
-                  <h3 className="guias-card-title">{g.title}</h3>
-                  <p className="guias-card-desc">{g.description}</p>
-                  <div className="guias-card-meta">
-                    <span><BookOpen size={13} aria-hidden="true" /> {g.sections} secciones</span>
-                    <span><Trophy size={13} aria-hidden="true" /> {g.badge}</span>
-                  </div>
-                  <div className="guias-card-cta">
-                    Empezar <ArrowRight size={14} aria-hidden="true" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Próximamente */}
-        {comingSoon.length > 0 && (
-          <div className="guias-section">
-            <h2 className="guias-section-title">Próximamente</h2>
-            <div className="guias-grid">
-              {comingSoon.map((g) => (
-                <div key={g.slug} className="guias-card guias-card--soon">
-                  <div className="guias-card-top">
-                    <span className={`guides-diff-badge guides-diff--${g.difficulty}`}>{DIFF_LABEL[g.difficulty]}</span>
-                    <span className="guias-soon-badge">En desarrollo</span>
-                  </div>
-                  <h3 className="guias-card-title">{g.title}</h3>
-                  <p className="guias-card-desc">{g.description}</p>
-                  <div className="guias-card-meta">
-                    <span><BookOpen size={13} aria-hidden="true" /> {g.sections} secciones</span>
-                    <span><Trophy size={13} aria-hidden="true" /> {g.badge}</span>
-                  </div>
-                  <div className="guias-card-cta guias-card-cta--disabled">
-                    Pronto disponible
-                  </div>
+        <div className="guias-section">
+          <h2 className="guias-section-title">Disponibles ahora</h2>
+          <div className="guias-grid">
+            {GUIDES.map((g) => (
+              <Link key={g.slug} href={`/guias/${g.slug}`} className="guias-card">
+                <div className="guias-card-glow" aria-hidden="true" />
+                <div className="guias-card-top">
+                  <span className={`guides-diff-badge guides-diff--${DIFF_CLASS[g.difficulty]}`}>
+                    {g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1)}
+                  </span>
+                  {g.type === "free"
+                    ? <span className="guides-access-badge">Gratis con registro</span>
+                    : <span className="guides-access-badge guides-access-badge--premium"><Lock size={11} aria-hidden="true" /> Premium</span>}
                 </div>
-              ))}
-            </div>
+                <h3 className="guias-card-title">{g.title}</h3>
+                <p className="guias-card-desc">{g.description}</p>
+                <div className="guias-card-meta">
+                  <span><BookOpen size={13} aria-hidden="true" /> {g.sections} secciones</span>
+                  <span><Trophy size={13} aria-hidden="true" /> {g.badge}</span>
+                </div>
+                <div className="guias-card-cta">
+                  Empezar <ArrowRight size={14} aria-hidden="true" />
+                </div>
+              </Link>
+            ))}
           </div>
-        )}
+        </div>
 
         {/* CTA registro */}
         {!user && (
