@@ -313,9 +313,6 @@ export default async function AdminPage() {
           <h1>Panel de administración</h1>
           <p className="admin-page-subtitle">Resumen de actividad y crecimiento</p>
         </div>
-        <Link href="/admin/posts/new" className="btn-primary btn-small">
-          + Nueva entrada
-        </Link>
       </div>
 
       {/* Stat cards */}
@@ -885,10 +882,6 @@ export default async function AdminPage() {
             </h2>
           </div>
           <div className="admin-quick-actions">
-            <Link href="/admin/posts/new" className="admin-quick-action">
-              <span className="admin-quick-action-icon"><Icon name="pen" size={16} /></span>
-              <span>Nueva entrada</span>
-            </Link>
             <Link href="/admin/categories" className="admin-quick-action">
               <span className="admin-quick-action-icon"><Icon name="folder" size={16} /></span>
               <span>Categorías</span>

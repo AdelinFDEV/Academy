@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { BADGE_DEFS } from "@/components/Badges";
+import { BADGE_DEFS, GUIDE_BADGE_DEFS } from "@/components/Badges";
 
 type BadgeDef = (typeof BADGE_DEFS)[number];
+
+const ALL_BADGE_DEFS: BadgeDef[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS];
 
 import Link from "next/link";
 
@@ -56,7 +58,7 @@ export default function BadgeNotifier() {
     function onBadge(e: Event) {
       const ids: string[] = (e as CustomEvent).detail.ids;
       const badges = ids
-        .map((id) => BADGE_DEFS.find((b) => b.id === id))
+        .map((id) => ALL_BADGE_DEFS.find((b) => b.id === id))
         .filter(Boolean) as BadgeDef[];
 
       if (badges.length === 0) return;

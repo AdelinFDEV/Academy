@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Flame, Pin, Gem, Heart, MessageSquare, Send, Check, ArrowRight, Bookmark } from "lucide-react";
+import { Heart, MessageSquare, Send, Check, ArrowRight, Bookmark } from "lucide-react";
 import type { ReactNode } from "react";
 
 type Post = {
@@ -22,8 +22,6 @@ type Post = {
   initialLiked: boolean;
   initialSaved: boolean;
 };
-
-type Tab = "nuevo" | "destacados" | "premium";
 
 function getYoutubeId(url: string) {
   const match = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
@@ -90,7 +88,7 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
     if (res.ok) {
       const data = await res.json();
       setSaved(data.saved);
-      setSaves((p) => data.saved ? p : p - 1);
+      setSaves(data.count);
     } else {
       setSaved(wasSaved);
       setSaves((p) => wasSaved ? p + 1 : p - 1);
@@ -238,32 +236,15 @@ function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
 }
 
 export default function HomeFeed({ posts, isLoggedIn, youtubeSection }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode }) {
-  const [tab, setTab] = useState<Tab>("nuevo");
-  const tabsRef = useRef<HTMLDivElement>(null);
-  
   // Find the first featured post to show as Hero
   const mainPost = posts.find(p => p.is_featured);
-  
+
   // Remove the mainPost from the regular list to avoid duplication
   const regularPosts = mainPost ? posts.filter(p => p.id !== mainPost.id) : posts;
 
-  const filtered = useMemo(() => {
-    if (tab === "destacados") return regularPosts.filter((p) => p.is_featured);
-    if (tab === "premium")    return regularPosts.filter((p) => p.is_premium);
-    return regularPosts;
-  }, [regularPosts, tab]);
-
   // Home shows up to 3 on desktop, 2 on mobile (3rd hidden via CSS)
   const MAX_VISIBLE = 3;
-  const visible = filtered.slice(0, MAX_VISIBLE);
-  const hasMore = filtered.length > MAX_VISIBLE;
-
-  function switchTab(next: Tab) {
-    setTab(next);
-    requestAnimationFrame(() => {
-      tabsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-  }
+  const visible = regularPosts.slice(0, MAX_VISIBLE);
 
   return (
     <div className="home-feed">
@@ -271,22 +252,6 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection }: { posts:
       {mainPost && (
         <HeroPost post={mainPost} isLoggedIn={isLoggedIn} />
       )}
-
-      {/* Tabs */}
-      <div className="feed-tabs" role="tablist" ref={tabsRef}>
-        <button role="tab" aria-selected={tab === "nuevo"}      className={`feed-tab${tab === "nuevo"      ? " active" : ""}`} onClick={() => switchTab("nuevo")}>
-          <Flame size={14} aria-hidden="true" />
-          Nuevo
-        </button>
-        <button role="tab" aria-selected={tab === "destacados"} className={`feed-tab${tab === "destacados" ? " active" : ""}`} onClick={() => switchTab("destacados")}>
-          <Pin size={14} aria-hidden="true" />
-          Destacados
-        </button>
-        <button role="tab" aria-selected={tab === "premium"}    className={`feed-tab${tab === "premium"    ? " active" : ""}`} onClick={() => switchTab("premium")}>
-          <Gem size={14} aria-hidden="true" />
-          Premium
-        </button>
-      </div>
 
       {/* Feed */}
       <div className="feed-list">
@@ -303,7 +268,7 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection }: { posts:
         )}
       </div>
 
-      {filtered.length > 0 && (
+      {regularPosts.length > 0 && (
         <Link href="/articulos" className="feed-seeall">
           Ver todas las entradas
           <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />

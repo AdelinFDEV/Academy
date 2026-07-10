@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
 import PostsTable from "@/components/admin/PostsTable";
 
 export default async function AdminPostsPage() {
@@ -34,9 +33,6 @@ export default async function AdminPostsPage() {
           <h1>Entradas</h1>
           <p className="admin-page-subtitle">{postsWithReads.length} entradas en total</p>
         </div>
-        <Link href="/admin/posts/new" className="btn-primary btn-small">
-          + Nueva entrada
-        </Link>
       </div>
       <PostsTable posts={postsWithReads} categories={categories ?? []} />
     </div>

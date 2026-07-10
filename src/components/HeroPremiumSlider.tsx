@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Medal, Crosshair, NotebookPen, ScanEye, Wallet, Unlock, ArrowRight, Gem, Shield } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Medal, Crosshair, NotebookPen, ScanEye, Wallet, Unlock, ArrowRight, Gem, Shield, Compass } from "lucide-react";
 
 /* Mini-visuales decorativos por herramienta (SVG abstracto, color de la slide) */
 function VisualSparkline({ c }: { c: string }) {
@@ -127,7 +128,7 @@ function VisualMedal({ c }: { c: string }) {
 
 const SLIDES = [
   {
-    icon: <NotebookPen size={24} aria-hidden="true" />,
+    icon: <NotebookPen size={22} aria-hidden="true" />,
     label: "Diario de Trading",
     description: "Registra cada operación. Encuentra tus patrones. Mejora con datos reales.",
     color: "#4f9dff",
@@ -135,7 +136,7 @@ const SLIDES = [
     Visual: VisualSparkline,
   },
   {
-    icon: <Unlock size={24} aria-hidden="true" />,
+    icon: <Unlock size={22} aria-hidden="true" />,
     label: "Liberaciones de Tokens",
     description: "Anticipa la presión vendedora con el calendario de vesting del mercado.",
     color: "#34d399",
@@ -143,7 +144,7 @@ const SLIDES = [
     Visual: VisualBars,
   },
   {
-    icon: <Wallet size={24} aria-hidden="true" />,
+    icon: <Wallet size={22} aria-hidden="true" />,
     label: "Portfolio Spot",
     description: "Sigue en tiempo real las compras SPOT de AdelinBTC con precios y contexto.",
     color: "#fb923c",
@@ -151,7 +152,7 @@ const SLIDES = [
     Visual: VisualDonut,
   },
   {
-    icon: <ScanEye size={24} aria-hidden="true" />,
+    icon: <ScanEye size={22} aria-hidden="true" />,
     label: "Watchlist",
     description: "Monitoriza el precio de tus coins favoritas desde un solo lugar.",
     color: "#a78bfa",
@@ -159,7 +160,7 @@ const SLIDES = [
     Visual: VisualRows,
   },
   {
-    icon: <Crosshair size={24} aria-hidden="true" />,
+    icon: <Crosshair size={22} aria-hidden="true" />,
     label: "Predicción de Precio",
     description: "Calcula qué Market Cap necesita tu token para alcanzar tu objetivo.",
     color: "#22d3ee",
@@ -167,7 +168,7 @@ const SLIDES = [
     Visual: VisualTarget,
   },
   {
-    icon: <Medal size={24} aria-hidden="true" />,
+    icon: <Medal size={22} aria-hidden="true" />,
     label: "Logros",
     description: "Gana insignias, mantén rachas y sube en el ranking de la academia.",
     color: "#fbbf24",
@@ -175,7 +176,7 @@ const SLIDES = [
     Visual: VisualMedal,
   },
   {
-    icon: <Shield size={24} aria-hidden="true" />,
+    icon: <Shield size={22} aria-hidden="true" />,
     label: "Calculadora de Riesgo",
     description: "Calcula el tamaño exacto de tu posición según tu capital y el riesgo que asumes.",
     color: "#2dd4bf",
@@ -184,27 +185,24 @@ const SLIDES = [
   },
 ];
 
-const INTERVAL = 3800;
+const INTERVAL = 4200;
 
 export default function HeroPremiumSlider({
   isLoggedIn = false,
   isPremium = false,
+  latestGuide,
 }: {
   isLoggedIn?: boolean;
   isPremium?: boolean;
+  latestGuide: { slug: string; shortTitle: string };
 }) {
   const [active, setActive] = useState(0);
-  const [animating, setAnimating] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const startTimer = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
-      setAnimating(true);
-      setTimeout(() => {
-        setActive((prev) => (prev + 1) % SLIDES.length);
-        setAnimating(false);
-      }, 240);
+      setActive((prev) => (prev + 1) % SLIDES.length);
     }, INTERVAL);
   };
 
@@ -214,9 +212,8 @@ export default function HeroPremiumSlider({
   }, []);
 
   const goTo = (idx: number) => {
-    if (idx === active || animating) return;
-    setAnimating(true);
-    setTimeout(() => { setActive(idx); setAnimating(false); }, 240);
+    if (idx === active) return;
+    setActive(idx);
     startTimer();
   };
 
@@ -224,58 +221,104 @@ export default function HeroPremiumSlider({
   const { Visual } = slide;
 
   return (
-    <div className="hps-wrap hps-v2 hps-v3 hero-anim hero-anim-3">
+    <div className="hero-showcase hero-anim hero-anim-3">
+      {/* Resplandor ambiental que sigue el color de la herramienta activa */}
+      <motion.div
+        className="hero-showcase-glow"
+        animate={{ background: slide.color }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        aria-hidden="true"
+      />
 
-      {/* Marco fijo: solo el contenido de la herramienta rota */}
-      <div className="hps-card hps-card--frame" style={{ borderColor: `${slide.color}2e` }}>
-
-        {/* Left accent */}
-        <div className="hps-card-accent" style={{ background: `linear-gradient(to bottom, transparent, ${slide.color}, transparent)` }} />
-
-        {/* Counter (fijo, cambia el color) */}
-        <div className="hps-counter" aria-hidden="true">
-          <span className="hps-counter-n" style={{ color: slide.color }}>{String(active + 1).padStart(2, "0")}</span>
-          <span className="hps-counter-sep"> / {String(SLIDES.length).padStart(2, "0")}</span>
-        </div>
-
-        {/* Zona rotatoria: icono + texto + visual */}
-        <div className={`hps-rotor${animating ? " hps-rotor--out" : " hps-rotor--in"}`}>
-          <div className="hps-icon" style={{ color: slide.color, background: `${slide.color}12`, boxShadow: `0 0 0 6px ${slide.color}0d, 0 0 28px ${slide.color}30` }}>
-            {slide.icon}
-          </div>
-
-          <div className="hps-text">
-            <span className="hps-label-row">
-              <span className="hps-label" style={{ color: slide.color }}>{slide.label}</span>
-              <span className={`hps-tag${slide.tag === "Gratis" ? " hps-tag--free" : ""}`}>{slide.tag}</span>
+      {/* Selector de herramientas — pastillas con resaltado deslizante */}
+      <div className="hero-tabs" role="tablist" aria-label="Herramientas de la academia">
+        {SLIDES.map((s, i) => (
+          <button
+            key={s.label}
+            type="button"
+            role="tab"
+            aria-selected={i === active}
+            aria-label={s.label}
+            className={`hero-tab${i === active ? " hero-tab--active" : ""}`}
+            onClick={() => goTo(i)}
+          >
+            {i === active && (
+              <motion.span
+                layoutId="hero-tab-highlight"
+                className="hero-tab-highlight"
+                style={{ borderColor: `${s.color}55`, background: `${s.color}1c` }}
+                transition={{ type: "spring", stiffness: 480, damping: 38 }}
+              />
+            )}
+            <span className="hero-tab-icon" style={{ color: i === active ? s.color : undefined }}>
+              {s.icon}
             </span>
-            <span className="hps-desc">{slide.description}</span>
-          </div>
+            <span className="hero-tab-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
 
-          <div className="hps-visual" aria-hidden="true">
-            <Visual c={slide.color} />
-          </div>
+      {/* Ventana de producto: marco fijo tipo "app", solo rota el contenido */}
+      <div className="hero-window" style={{ borderColor: `${slide.color}33` }}>
+        <div className="hero-window-bar">
+          <span className="hero-window-dots" aria-hidden="true">
+            <i /><i /><i />
+          </span>
+          <span className={`hero-window-tag${slide.tag === "Gratis" ? " hero-window-tag--free" : ""}`}>
+            {slide.tag}
+          </span>
         </div>
 
-        {/* CTA fijos dentro del marco */}
-        <div className="hps-cta-row">
+        <div className="hero-window-body">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              className="hero-window-content"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="hero-window-info">
+                <div
+                  className="hero-window-icon"
+                  style={{
+                    color: slide.color,
+                    background: `${slide.color}14`,
+                    boxShadow: `0 0 0 6px ${slide.color}0d, 0 0 32px ${slide.color}35`,
+                  }}
+                >
+                  {slide.icon}
+                </div>
+                <h2 className="hero-window-label" style={{ color: slide.color }}>{slide.label}</h2>
+                <p className="hero-window-desc">{slide.description}</p>
+              </div>
+
+              <div className="hero-window-visual" aria-hidden="true">
+                <Visual c={slide.color} />
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        <div className="hero-window-cta">
           {isLoggedIn ? (
             <>
-              <Link href="/dashboard" className="hero-cta-main hps-cta-main">
+              <Link href="/dashboard" className="hero-cta-main">
                 <span className="hero-cta-main-label">
                   Ir a mi Academia <ArrowRight className="hero-cta-arrow" size={18} strokeWidth={2.6} aria-hidden="true" />
                 </span>
                 <span className="hero-cta-main-sub">Continúa donde lo dejaste</span>
               </Link>
               {isPremium ? (
-                <Link href="#guias-premium" className="hero-cta-secondary hps-cta-secondary">
+                <Link href={`/guias/${latestGuide.slug}`} className="hero-cta-secondary hero-cta-secondary--latest">
                   <span className="hero-cta-secondary-label">
-                    <Gem size={14} strokeWidth={1.75} aria-hidden="true" /> Guías Premium
+                    <Compass size={14} strokeWidth={1.75} aria-hidden="true" /> Última Guía
                   </span>
-                  <span className="hero-cta-secondary-sub">Contenido exclusivo</span>
+                  <span className="hero-cta-secondary-sub">{latestGuide.shortTitle}</span>
                 </Link>
               ) : (
-                <Link href="/premium" className="hero-cta-secondary hps-cta-secondary">
+                <Link href="/premium" className="hero-cta-secondary">
                   <span className="hero-cta-secondary-label">
                     <Gem size={14} strokeWidth={1.75} aria-hidden="true" /> Ver Premium
                   </span>
@@ -287,13 +330,13 @@ export default function HeroPremiumSlider({
             </>
           ) : (
             <>
-              <Link href="/register" className="hero-cta-main hps-cta-main">
+              <Link href="/register" className="hero-cta-main">
                 <span className="hero-cta-main-label">
                   Empieza Gratis Ahora <ArrowRight className="hero-cta-arrow" size={18} strokeWidth={2.6} aria-hidden="true" />
                 </span>
                 <span className="hero-cta-main-sub">Sin tarjeta · Acceso en 1 minuto</span>
               </Link>
-              <Link href="/premium" className="hero-cta-secondary hps-cta-secondary">
+              <Link href="/premium" className="hero-cta-secondary">
                 <span className="hero-cta-secondary-label">
                   <Gem size={14} strokeWidth={1.75} aria-hidden="true" /> Ver Premium
                 </span>
@@ -304,22 +347,6 @@ export default function HeroPremiumSlider({
             </>
           )}
         </div>
-
-      </div>
-
-      {/* Dots */}
-      <div className="hps-dots" role="tablist" aria-label="Herramientas">
-        {SLIDES.map((s, i) => (
-          <button
-            key={i}
-            role="tab"
-            aria-selected={i === active}
-            aria-label={s.label}
-            className={`hps-dot${i === active ? " hps-dot--active" : ""}`}
-            style={i === active ? { background: slide.color, boxShadow: `0 0 10px ${slide.color}90` } : undefined}
-            onClick={() => goTo(i)}
-          />
-        ))}
       </div>
     </div>
   );

@@ -24,7 +24,12 @@ export async function POST(request: Request) {
       { user_id: user.id, post_id, saved: newSaved, read_at: existing?.read_at ?? null },
       { onConflict: "user_id,post_id" }
     );
-    return NextResponse.json({ saved: newSaved });
+    const { count: savesCount } = await supabase
+      .from("user_posts")
+      .select("id", { count: "exact", head: true })
+      .eq("post_id", post_id)
+      .eq("saved", true);
+    return NextResponse.json({ saved: newSaved, count: savesCount ?? 0 });
   }
 
   if (action === "mark-read") {

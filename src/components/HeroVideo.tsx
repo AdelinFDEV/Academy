@@ -32,7 +32,7 @@ export default function HeroVideo() {
   return (
     <video
       ref={ref}
-      className="home-banner-video"
+      className="hero-video"
       autoPlay
       loop
       muted

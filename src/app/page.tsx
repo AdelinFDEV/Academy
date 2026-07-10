@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, NotebookPen, BookA, MonitorPlay, Layers, Route, ShieldCheck, Star, Crown, Gem, Radar, Check, Tag, Map, Unlock, MessageCircle, Compass, Shield } from "lucide-react";
+import { ArrowRight, NotebookPen, BookA, MonitorPlay, Layers, Route, ShieldCheck, Star, Crown, Gem, Radar, Check, Tag, Map, Unlock, MessageCircle, Shield } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -12,6 +12,7 @@ import HeroVideo from "@/components/HeroVideo";
 import HeroPremiumSlider from "@/components/HeroPremiumSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { GUIDES } from "@/lib/guides";
+import "./home.css";
 
 const InstagramIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -211,20 +212,20 @@ export default async function HomePage() {
       <SiteNav user={!!user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
 
       {/* ── Hero ── */}
-      <div className="home-banner">
+      <div className="hero">
         <HeroVideo />
-        <div className="home-banner-overlay" />
-        <div className="home-banner-content">
+        <div className="hero-scrim" />
+        <div className="hero-aurora" aria-hidden="true" />
 
-          <div className="hero-search-mobile hero-anim hero-anim-1">
+        <div className="hero-content">
+          {/* H1 accesible para SEO — el diseño visual vive en el showcase de herramientas */}
+          <h1 className="sr-only">AdelinBTC Academy — Formación, análisis y herramientas para criptomonedas</h1>
+
+          <div className="hero-search-bar hero-anim hero-anim-1">
             <GuideSearch />
           </div>
 
-          <h1 className="home-banner-title home-banner-title--compact hero-anim hero-anim-2">
-            Domina el mundo Cripto. <span className="text-gradient">Todo en un solo lugar.</span>
-          </h1>
-
-          <HeroPremiumSlider isLoggedIn={!!user} isPremium={isPremium} />
+          <HeroPremiumSlider isLoggedIn={!!user} isPremium={isPremium} latestGuide={latestGuide} />
 
           {!user && (
             <div className="hero-trust hero-anim hero-anim-4">
@@ -248,7 +249,7 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <p className="home-banner-guarantee">
+              <p className="hero-guarantee">
                 <ShieldCheck size={14} aria-hidden="true" />
                 Cancela cuando quieras · Sin permanencia
               </p>
@@ -275,25 +276,6 @@ export default async function HomePage() {
               Empieza <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
             </span>
             <span className="starthere-band-cta-sub">Gratis · 5 min</span>
-          </span>
-        </Link>
-
-        <Link href={`/guias/${latestGuide.slug}`} className="starthere-band starthere-band--latest">
-          <span className="starthere-band-glow" aria-hidden="true" />
-          <span className="starthere-band-left">
-            <span className="starthere-band-icon starthere-band-icon--latest">
-              <Compass size={20} aria-hidden="true" />
-            </span>
-            <span className="starthere-band-text">
-              <span className="starthere-band-eyebrow">Última guía publicada</span>
-              <span className="starthere-band-title">{latestGuide.shortTitle} — {latestGuide.description}</span>
-            </span>
-          </span>
-          <span className="starthere-band-cta">
-            <span className="starthere-band-cta-label">
-              Ver la guía <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
-            </span>
-            <span className="starthere-band-cta-sub">{latestGuide.type === "premium" ? "Premium" : "Gratis"} · {latestGuide.readTime}</span>
           </span>
         </Link>
       </div>

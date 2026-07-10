@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { saveGuideBadge } from "@/lib/guideBadge";
 
 const QUESTIONS = [
   {
@@ -76,16 +77,6 @@ const CONFETTI = Array.from({ length: 18 }, (_, i) => {
   };
 });
 
-async function saveBadge() {
-  try {
-    await fetch("/api/guide-badge", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ badge_id: "guide-blockchain" }),
-    });
-  } catch {}
-}
-
 async function saveCompletion(score: number, total: number) {
   try {
     await fetch("/api/guide-quiz-completion", {
@@ -123,7 +114,7 @@ export default function GuideQuiz() {
       setDone(true);
       const finalScore = answers.filter(Boolean).length + (selected === q.ok ? 1 : 0);
       saveCompletion(finalScore, TOTAL);
-      if (finalScore === TOTAL) saveBadge();
+      if (finalScore === TOTAL) saveGuideBadge("guide-blockchain");
     } else {
       setCurrent((c) => c + 1);
       setSelected(null);

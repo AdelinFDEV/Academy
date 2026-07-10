@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Check, X, Sparkles, RotateCcw } from "lucide-react";
+import { saveGuideBadge } from "@/lib/guideBadge";
 
 const QUESTIONS = [
   {
@@ -73,16 +74,6 @@ function fireConfetti(originX: number, originY: number, big = false) {
     confetti({ particleCount: 40, spread: 120, startVelocity: 45, origin: { x: 0.15, y: 0.6 }, colors, zIndex: 20000 });
     confetti({ particleCount: 40, spread: 120, startVelocity: 45, origin: { x: 0.85, y: 0.6 }, colors, zIndex: 20000 });
   }
-}
-
-async function saveBadge() {
-  try {
-    await fetch("/api/guide-badge", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ badge_id: "guide-worldcoin" }),
-    });
-  } catch {}
 }
 
 async function saveCompletion(score: number, total: number) {
@@ -170,7 +161,7 @@ export default function GuideWorldQuiz() {
       setDone(true);
       saveCompletion(finalScore, TOTAL);
       if (finalScore === TOTAL) {
-        saveBadge();
+        saveGuideBadge("guide-worldcoin");
         setTimeout(() => fireConfetti(0.5, 0.4, true), 300);
       }
     } else {

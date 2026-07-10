@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Trophy, BookOpen, Check, X } from "lucide-react";
+import { saveGuideBadge } from "@/lib/guideBadge";
 
 const QUESTIONS = [
   {
@@ -62,16 +63,6 @@ const QUESTIONS = [
 
 const TOTAL = QUESTIONS.length;
 
-async function saveBadge() {
-  try {
-    await fetch("/api/guide-badge", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ badge_id: "guide-ciclos-bitcoin" }),
-    });
-  } catch {}
-}
-
 async function saveCompletion(score: number, total: number) {
   try {
     await fetch("/api/guide-quiz-completion", {
@@ -103,7 +94,7 @@ export default function GuideCycleQuiz() {
       setDone(true);
       const finalScore = answers.filter(Boolean).length + (selected === q.ok ? 1 : 0);
       saveCompletion(finalScore, TOTAL);
-      if (finalScore === TOTAL) saveBadge();
+      if (finalScore === TOTAL) saveGuideBadge("guide-ciclos-bitcoin");
     } else {
       setCurrent((c) => c + 1);
       setSelected(null);
