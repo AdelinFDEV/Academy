@@ -91,7 +91,7 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
     <section className="crypto-markets">
       <div className="crypto-markets-header">
         <div>
-          <h2 className="crypto-markets-title">Mercado — Top 50</h2>
+          <h2 className="crypto-markets-title">Mercado — Top 200</h2>
           {lastUpdate && (
             <span className="crypto-markets-update">
               Actualizado {lastUpdate.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}

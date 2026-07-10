@@ -118,19 +118,26 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
 
   return (
     <div className="watchlist-page">
-      <div className="dashboard-header">
-        <h1>Watchlist</h1>
-        <p>Sigue el precio de tus coins favoritas. Se actualiza cada minuto.</p>
+      <div className="dashboard-header watchlist-header">
+        <div className="watchlist-header-icon">
+          <Eye size={20} aria-hidden="true" />
+        </div>
+        <div>
+          <h1>Watchlist</h1>
+          <p>Sigue en tiempo real el precio de tus criptomonedas favoritas — se actualiza cada minuto.</p>
+        </div>
       </div>
 
       {/* ── Search / Add ── */}
       <div className="watchlist-add-wrap">
         <div className="watchlist-search-box">
-          <Search size={16} aria-hidden="true" className="watchlist-search-icon" />
+          <span className="watchlist-search-icon-badge">
+            <Search size={15} aria-hidden="true" />
+          </span>
           <input
             type="text"
             className="watchlist-search-input"
-            placeholder="Añadir coin — busca por nombre o símbolo…"
+            placeholder="Busca una criptomoneda por nombre o símbolo para añadirla…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             autoComplete="off"
@@ -168,10 +175,14 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
       {coins.length === 0 ? (
         <div className="watchlist-empty">
           <Eye size={40} aria-hidden="true" />
-          <p>Tu watchlist está vacía. Busca una coin arriba o añádela desde el mercado.</p>
+          <p>Aún no sigues ninguna criptomoneda. Búscala arriba o añádela desde el mercado en tiempo real.</p>
         </div>
       ) : (
         <div className="watchlist-list">
+          <div className="watchlist-list-title-row">
+            <span className="watchlist-list-title">Tu selección</span>
+            <span className="watchlist-list-count">{coins.length}</span>
+          </div>
           <div className="watchlist-list-header">
             <span>Moneda</span>
             <span>Precio</span>
@@ -183,10 +194,13 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
             const change = p?.usd_24h_change ?? null;
             const positive = change !== null && change >= 0;
             return (
-              <div key={coin.id} className="watchlist-row">
+              <div key={coin.id} className={`watchlist-row${change !== null ? (positive ? " watchlist-row--up" : " watchlist-row--down") : ""}`}>
                 <div className="watchlist-row-name">
-                  <span className="watchlist-row-symbol">{coin.coin_symbol}</span>
-                  <span className="watchlist-row-full">{coin.coin_name}</span>
+                  <span className="watchlist-row-avatar">{coin.coin_symbol.charAt(0)}</span>
+                  <span className="watchlist-row-name-text">
+                    <span className="watchlist-row-symbol">{coin.coin_symbol}</span>
+                    <span className="watchlist-row-full">{coin.coin_name}</span>
+                  </span>
                 </div>
                 <div className="watchlist-row-price">
                   {loadingPrices && !p ? (
@@ -214,7 +228,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
         </div>
       )}
 
-      {/* ── Top 50 real-time market table ── */}
+      {/* ── Top 200 real-time market table ── */}
       <CryptoMarkets
         watchedIds={coins.map((c) => c.coin_id)}
         onAdd={addCoin}

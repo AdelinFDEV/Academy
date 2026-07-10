@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Star, Trophy } from "lucide-react";
+import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Star, Trophy, Check } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 
 function PremiumCrownIcon({ size = 24 }: { size?: number }) {
@@ -299,7 +299,10 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
               </span>
             )}
           </div>
-          <span className="streak-max">Mejor racha: {maxStreak} días</span>
+          <span className="streak-max">
+            <Trophy size={13} aria-hidden="true" />
+            Tu récord: <strong>{maxStreak}</strong> día{maxStreak !== 1 ? "s" : ""} seguidos
+          </span>
         </div>
 
         {/* Activity badges */}
@@ -315,12 +318,19 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
                 key={badge.id}
                 className={`badge-item${unlocked ? " unlocked" : " locked"}${badge.special ? " special" : ""}`}
               >
+                {unlocked && (
+                  <span className={`badge-unlocked-check${badge.special ? " badge-unlocked-check--gold" : ""}`} title="Logro obtenido">
+                    <Check size={11} strokeWidth={3.2} aria-hidden="true" />
+                  </span>
+                )}
                 <div className="badge-icon">
                   {badge.icon}
                   {badge.special && !unlocked && <span className="badge-special-star">★</span>}
                 </div>
                 <span className="badge-label">{badge.label}</span>
+                {badge.special && <span className="badge-special-tag">Especial</span>}
                 <div className="badge-tooltip">
+                  {badge.special && <p className="badge-tooltip-special">★ Logro especial</p>}
                   <p className="badge-tooltip-condition">{badge.condition}</p>
                   {badge.reward && (
                     <p className="badge-tooltip-reward">
@@ -346,12 +356,19 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
             const unlocked = earned.has(badge.id);
             const content = (
               <div className={`badge-item${unlocked ? " unlocked" : " locked"}${badge.special ? " special" : ""}`}>
+                {unlocked && (
+                  <span className={`badge-unlocked-check${badge.special ? " badge-unlocked-check--gold" : ""}`} title="Logro obtenido">
+                    <Check size={11} strokeWidth={3.2} aria-hidden="true" />
+                  </span>
+                )}
                 <div className="badge-icon">
                   {badge.icon}
                   {badge.special && !unlocked && <span className="badge-special-star">★</span>}
                 </div>
                 <span className="badge-label">{badge.label}</span>
+                {badge.special && <span className="badge-special-tag">Especial</span>}
                 <div className="badge-tooltip">
+                  {badge.special && <p className="badge-tooltip-special">★ Logro especial</p>}
                   <p className="badge-tooltip-condition">{badge.condition}</p>
                   {badge.reward && (
                     <p className="badge-tooltip-reward">

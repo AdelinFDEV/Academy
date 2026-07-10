@@ -2498,16 +2498,22 @@ html {
 /* Ã¢â€â‚¬ Unlocked Ã¢â€â‚¬ */
 
 .badge-item.unlocked {
-  background: rgba(255, 107, 43, 0.06);
-  border-color: rgba(255, 107, 43, 0.22);
-  color: var(--accent-orange);
+  background: linear-gradient(150deg, rgba(255, 107, 43, 0.22) 0%, rgba(255, 154, 0, 0.1) 100%);
+  border-color: rgba(255, 107, 43, 0.5);
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px -8px rgba(255, 107, 43, 0.35);
 }
 
 .badge-item.unlocked:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px -6px rgba(255, 107, 43, 0.3);
-  border-color: rgba(255, 107, 43, 0.4);
+  box-shadow: 0 10px 24px -8px rgba(255, 107, 43, 0.45);
+  border-color: rgba(255, 107, 43, 0.7);
 }
+
+.badge-item.unlocked .badge-label {
+  color: #ffb27a;
+}
+
 
 /* Ã¢â€â‚¬ Locked Ã¢â€â‚¬ */
 
@@ -2524,40 +2530,6 @@ html {
 
 /* Ã¢â€â‚¬ Special (30-day streak) Ã¢â€â‚¬ */
 
-.badge-item.special.locked {
-  border-color: rgba(245, 158, 11, 0.2);
-  background: rgba(245, 158, 11, 0.03);
-  color: rgba(245, 158, 11, 0.35);
-}
-
-.badge-item.special.locked:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px -6px rgba(245, 158, 11, 0.15);
-}
-
-.badge-item.special.unlocked {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(255, 107, 43, 0.07) 100%);
-  border-color: rgba(245, 158, 11, 0.45);
-  color: #f59e0b;
-  animation: badge-glow 2.5s ease-in-out infinite;
-}
-
-@keyframes badge-glow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
-  }
-
-  50% {
-    box-shadow: 0 0 18px 2px rgba(245, 158, 11, 0.2);
-  }
-}
-
-.badge-item.special.unlocked .badge-icon {
-  background: rgba(245, 158, 11, 0.15);
-}
 
 /* Ã¢â€â‚¬ Icon Ã¢â€â‚¬ */
 
@@ -2574,7 +2546,9 @@ html {
 }
 
 .badge-item.unlocked .badge-icon {
-  background: rgba(255, 107, 43, 0.1);
+  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
+  color: #1a0800;
+  box-shadow: 0 4px 14px -4px rgba(255, 107, 43, 0.55);
 }
 
 /* Ã¢â€â‚¬ Label Ã¢â€â‚¬ */
@@ -5096,14 +5070,14 @@ select {
 }
 
 .crypto-table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--hairline);
   border-radius: 10px;
+  overflow: hidden;
 }
 
 .crypto-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 0.875rem;
 }
@@ -5119,21 +5093,24 @@ select {
   border-bottom: 1px solid var(--hairline);
   background: rgba(255, 255, 255, 0.02);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .crypto-th-rank {
-  width: 36px;
+  width: 34px;
   text-align: right;
 }
 
 .crypto-th-price,
 .crypto-th-pct,
 .crypto-th-big {
+  width: 15%;
   text-align: right;
 }
 
 .crypto-th-add {
-  width: 40px;
+  width: 46px;
 }
 
 .crypto-row {
@@ -5152,7 +5129,7 @@ select {
 .crypto-table td {
   padding: 0.65rem 0.85rem;
   vertical-align: middle;
-  white-space: nowrap;
+  overflow: hidden;
 }
 
 .crypto-td-rank {
@@ -5166,7 +5143,7 @@ select {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-width: 140px;
+  min-width: 0;
 }
 
 .crypto-logo {
@@ -5181,12 +5158,17 @@ select {
   font-weight: 600;
   font-size: 0.875rem;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .crypto-coin-sym {
   font-size: 0.72rem;
   color: var(--text-muted);
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .crypto-td-price {
@@ -5195,6 +5177,9 @@ select {
   font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: color 0.3s, background 0.3s;
 }
 
@@ -5213,6 +5198,9 @@ select {
   font-weight: 600;
   font-size: 0.825rem;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .crypto-td-pct.pos {
@@ -5228,10 +5216,16 @@ select {
   font-size: 0.8rem;
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .crypto-td-add {
   text-align: center;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  overflow: visible;
 }
 
 .crypto-watched-star {
@@ -5563,6 +5557,80 @@ select {
   border-radius: 4px;
   padding: 2px 6px;
   white-space: nowrap;
+}
+
+.sidebar-tool-link--dimmed {
+  opacity: 0.7;
+}
+
+.sidebar-tool-link--gold {
+  background: linear-gradient(135deg, rgba(230, 180, 85, 0.12) 0%, rgba(230, 180, 85, 0.03) 100%);
+  border-color: rgba(230, 180, 85, 0.32);
+}
+
+.sidebar-tool-link--gold .sidebar-tool-icon {
+  color: var(--premium-gold);
+  opacity: 1;
+}
+
+.sidebar-tool-link--gold span {
+  color: var(--premium-gold);
+  font-weight: 700;
+}
+
+.sidebar-tool-link--gold:hover {
+  background: linear-gradient(135deg, rgba(230, 180, 85, 0.2) 0%, rgba(230, 180, 85, 0.06) 100%);
+  border-color: rgba(230, 180, 85, 0.5);
+  color: var(--premium-gold);
+}
+
+.sidebar-card--tools {
+  animation: tools-card-glow 4s ease-in-out infinite;
+}
+
+@keyframes tools-card-glow {
+  0%, 100% {
+    box-shadow: 0 4px 24px -8px rgba(0,0,0,0.4),
+                0 0 12px rgba(255,255,255,0.06),
+                0 0 32px rgba(255,255,255,0.03),
+                inset 0 1px 0 rgba(255,255,255,0.03);
+    border-color: rgba(240,244,255,0.08);
+  }
+  50% {
+    box-shadow: 0 4px 24px -8px rgba(0,0,0,0.4),
+                0 0 24px rgba(255,255,255,0.20),
+                0 0 60px rgba(255,255,255,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+    border-color: rgba(240,244,255,0.28);
+  }
+}
+
+.sidebar-tool-badge--premium {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sidebar-tool-badge--free {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 @media (max-width: 899px) {

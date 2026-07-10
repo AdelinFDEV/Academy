@@ -329,7 +329,7 @@ export default async function HomePage() {
                 <span>Recursos</span>
                 <span className="sidebar-tool-badge--soon">Pronto</span>
               </div>
-              <Link href="/guias" className="sidebar-tool-link">
+              <Link href="/guias" className="sidebar-tool-link sidebar-tool-link--gold">
                 <Route size={16} className="sidebar-tool-icon" />
                 <span>Guías Interactivas</span>
               </Link>

@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import {
   NotebookPen, Crosshair, ScanEye, Medal, Wallet,
-  Unlock, ListOrdered, MessagesSquare, Network, Shield,
+  Unlock, ListOrdered, Shield,
 } from "lucide-react";
 import ToolAccessModal, { type ToolModalReason } from "@/components/ToolAccessModal";
 
@@ -85,8 +85,6 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
 
   const soonTools = [
     { label: "Ranking",  icon: <ListOrdered size={16} className="sidebar-tool-icon" /> },
-    { label: "Chat",     icon: <MessagesSquare size={16} className="sidebar-tool-icon" /> },
-    { label: "Foro",     icon: <Network size={16} className="sidebar-tool-icon" /> },
   ];
 
   function handleToolClick(tool: ToolDef, e: React.MouseEvent) {
