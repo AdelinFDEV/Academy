@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Icon from "@/components/Icon";
 
@@ -200,9 +199,6 @@ export default function PostsTable({
                 </td>
                 <td className="posts-reads-count">{post.reads > 0 ? post.reads : <span style={{ color: "var(--text-muted)" }}>—</span>}</td>
                 <td className="admin-actions">
-                  <Link href={`/admin/posts/edit/${post.id}`} className="action-btn edit" title="Editar">
-                    <Icon name="pen" size={13} />
-                  </Link>
                   <DeleteBtn id={post.id} />
                 </td>
               </tr>

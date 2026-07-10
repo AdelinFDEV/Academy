@@ -24,12 +24,20 @@ export async function POST(request: Request) {
       { user_id: user.id, post_id, saved: newSaved, read_at: existing?.read_at ?? null },
       { onConflict: "user_id,post_id" }
     );
-    const { count: savesCount } = await supabase
-      .from("user_posts")
-      .select("id", { count: "exact", head: true })
-      .eq("post_id", post_id)
-      .eq("saved", true);
-    return NextResponse.json({ saved: newSaved, count: savesCount ?? 0 });
+    // Igual que /api/likes: total = semilla base del post + filas reales guardadas.
+    // Requiere que la política RLS de SELECT en user_posts sea pública (ver
+    // scripts/fix-user-posts-rls.sql) — si no, este count solo ve la fila del
+    // usuario actual y el número se descuadra al recargar.
+    const [{ count: savesCount }, { data: postData }] = await Promise.all([
+      supabase
+        .from("user_posts")
+        .select("id", { count: "exact", head: true })
+        .eq("post_id", post_id)
+        .eq("saved", true),
+      supabase.from("posts").select("base_saves").eq("id", post_id).maybeSingle(),
+    ]);
+    const totalSaves = (postData?.base_saves ?? 0) + (savesCount ?? 0);
+    return NextResponse.json({ saved: newSaved, count: totalSaves });
   }
 
   if (action === "mark-read") {
