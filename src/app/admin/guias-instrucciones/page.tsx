@@ -26,6 +26,9 @@ export default function GuiasInstruccionesPage() {
             <li>Una vez publicada, la guía se puede <strong>editar desde el panel admin</strong> en la sección Guías</li>
           </ul>
         </div>
+        <div className="agi-card" style={{ marginTop: "1rem" }}>
+          <p className="agi-warning">⚠️ <strong>Cada guía nueva es siempre un componente React nuevo e independiente</strong> (archivo propio + CSS propio, ver bloque 03). Esto es al revés que las entradas del blog (<code>/admin/posts-instrucciones</code>), que nunca son componentes de código — son filas en Supabase. No mezclar los dos patrones. Decisión explícita del admin — detalle completo en <code>AGENTS.md</code>.</p>
+        </div>
       </section>
 
       {/* ── BLOQUE 2: WORKFLOW ── */}
@@ -86,6 +89,13 @@ export default function GuiasInstruccionesPage() {
             <div className="agi-code-row"><span className="agi-code-path">/guias</span><span>Listado de todas las guías publicadas</span></div>
             <div className="agi-code-row"><span className="agi-code-path">/guias/[slug]</span><span>Guía individual — portal independiente</span></div>
             <div className="agi-code-row"><span className="agi-code-path">/admin/guias</span><span>Gestión de guías (editar, publicar, despublicar)</span></div>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">CSS — un archivo por guía, siempre</h3>
+          <div className="agi-card">
+            <p className="agi-warning">⚠️ Cada guía nueva lleva su propio archivo <code>src/app/guias/[slug]/[slug].css</code>, importado solo en esa guía — <strong>nunca</strong> en <code>guias.css</code> ni en <code>globals.css</code>. Regla completa y motivo en <code>AGENTS.md</code> → «Regla especial: cada guía nueva, su propio archivo CSS». Así <code>guias.css</code> se queda solo con lo que de verdad comparten todas las guías, y no vuelve a crecer sin control.</p>
           </div>
         </div>
 
@@ -368,6 +378,7 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Establecer dificultad: Básico / Intermedio / Avanzado</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Decidir si es guía FREE o PREMIUM</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Identificar qué componentes interactivos son pertinentes para el tema</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear <code>src/app/guias/[slug]/[slug].css</code> propio — nunca añadir a <code>guias.css</code> ni a <code>globals.css</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido completo (no esqueletos, no placeholders)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear mínimo 3 preguntas de quiz relevantes y no triviales</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Usar SOLO colores: <code>--accent-orange</code>, navy (<code>--bg-dark</code>, <code>--bg-card</code>), blanco (<code>--text-primary</code>)</span></label>

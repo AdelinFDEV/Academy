@@ -6,8 +6,8 @@ import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
-  FileText, Folder, BookOpen, GraduationCap, Files, LayoutGrid,
-  TrendingUp, Eye, Trophy, PieChart, Target, Award, Unlock, Shield,
+  FileText, Folder, BookOpen, GraduationCap, LayoutGrid,
+  TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield,
 } from "lucide-react";
 
 interface Category {
@@ -101,11 +101,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Cursos
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </div>
-              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
-                <Files size={15} aria-hidden="true" />
-                Recursos
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </div>
               <Link href="/guias" className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/guias")}`} onClick={close}>
                 <LayoutGrid size={15} aria-hidden="true" />
                 Guías Interactivas
@@ -144,12 +139,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
-              <Link href="/ranking" className={`blog-mobile-tool-link${a("/ranking")}`} onClick={close}>
-                <Award size={15} aria-hidden="true" />
-                Ranking
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </Link>
-
               <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/portfolio"} className={`blog-mobile-tool-link${a("/portfolio")}`} onClick={close}>
                 <PieChart size={15} aria-hidden="true" />
                 Portfolio Spot
@@ -162,10 +151,10 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={tradingLocked ? (!user ? "/register" : "/premium") : "/dashboard/calculadora-riesgo"} className={`blog-mobile-tool-link${a("/dashboard/calculadora-riesgo")}`} onClick={close}>
+              <Link href={!user ? "/register" : "/dashboard/calculadora-riesgo"} className={`blog-mobile-tool-link${a("/dashboard/calculadora-riesgo")}`} onClick={close}>
                 <Shield size={15} aria-hidden="true" />
                 Calculadora de Riesgo
-                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
+                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
             </div>

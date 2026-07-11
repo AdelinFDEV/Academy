@@ -1,6 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+const RESULTS = ["win", "loss", "breakeven"] as const;
+const NOTES_MAX = 150;
+
 async function getAuthenticatedPremiumUser() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -14,6 +17,62 @@ async function getAuthenticatedPremiumUser() {
 
   const isPremium = profile?.role === "premium" || profile?.role === "admin";
   return { user: isPremium ? user : null, supabase };
+}
+
+interface TradeValues {
+  date: string;
+  pair: string;
+  direction: string;
+  risk_amount: number;
+  expected_gain: number;
+  pnl: number;
+  result: string;
+  strategy: string | null;
+  notes: string | null;
+}
+
+type ParsedTrade =
+  | { ok: false; error: string }
+  | { ok: true; values: TradeValues };
+
+function parseTradeBody(body: any): ParsedTrade {
+  const { date, pair, direction, risk_amount, expected_gain, result, strategy, notes } = body;
+
+  if (!date || !pair || !direction || !risk_amount || !expected_gain || !result) {
+    return { ok: false, error: "Faltan campos obligatorios" };
+  }
+
+  const risk = parseFloat(risk_amount);
+  const gain = parseFloat(expected_gain);
+
+  if (isNaN(risk) || risk < 0 || isNaN(gain) || gain < 0) {
+    return { ok: false, error: "Riesgo asumido o ganancia esperada inválidos" };
+  }
+
+  if (!RESULTS.includes(result)) {
+    return { ok: false, error: "Resultado inválido" };
+  }
+
+  if (typeof notes === "string" && notes.length > NOTES_MAX) {
+    return { ok: false, error: `Las notas no pueden superar ${NOTES_MAX} caracteres` };
+  }
+
+  const pnl = result === "win" ? gain : result === "loss" ? -risk : 0;
+
+  return {
+    ok: true,
+    values: {
+      date,
+      pair: String(pair).toUpperCase(),
+      direction,
+      risk_amount: risk,
+      expected_gain: gain,
+      pnl,
+      result,
+      strategy: strategy?.trim() || null,
+      notes: notes?.trim() || null,
+    },
+  };
 }
 
 export async function GET() {
@@ -35,38 +94,36 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { date, pair, direction, entry_price, exit_price, size, strategy, notes } = body;
-
-  if (!date || !pair || !direction || !entry_price || !exit_price || !size) {
-    return NextResponse.json({ error: "Faltan campos obligatorios" }, { status: 400 });
-  }
-
-  const ep = parseFloat(entry_price);
-  const xp = parseFloat(exit_price);
-  const sz = parseFloat(size);
-
-  if (isNaN(ep) || isNaN(xp) || isNaN(sz) || sz <= 0) {
-    return NextResponse.json({ error: "Valores numéricos inválidos" }, { status: 400 });
-  }
-
-  const pnl = direction === "long" ? (xp - ep) * sz : (ep - xp) * sz;
-  const result = pnl > 0 ? "win" : pnl < 0 ? "loss" : "breakeven";
+  const parsed = parseTradeBody(body);
+  if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
 
   const { data, error } = await supabase
     .from("trades")
-    .insert({
-      user_id: user.id,
-      date,
-      pair: pair.toUpperCase(),
-      direction,
-      entry_price: ep,
-      exit_price: xp,
-      size: sz,
-      pnl,
-      result,
-      strategy: strategy?.trim() || null,
-      notes: notes?.trim() || null,
-    })
+    .insert({ user_id: user.id, ...parsed.values })
+    .select()
+    .single();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+export async function PATCH(req: Request) {
+  const { user, supabase } = await getAuthenticatedPremiumUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const body = await req.json();
+  const { id } = body;
+  if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+
+  const parsed = parseTradeBody(body);
+  if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
+  const values = parsed.values;
+
+  const { data, error } = await supabase
+    .from("trades")
+    .update(values)
+    .eq("id", id)
+    .eq("user_id", user.id)
     .select()
     .single();
 

@@ -194,7 +194,7 @@ function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
       {ytId ? (
         <div className="hero-post-video-wrap">
           <iframe
-            src={`https://www.youtube.com/embed/${ytId}`}
+            src={`https://www.youtube-nocookie.com/embed/${ytId}`}
             title={post.title}
             allowFullScreen
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -34,7 +34,7 @@ export default function CookieBanner() {
         <div className="cookie-banner-text">
           <p className="cookie-banner-title">Usamos cookies</p>
           <p className="cookie-banner-desc">
-            Utilizamos cookies esenciales para que el sitio funcione correctamente (sesión, seguridad de pagos). No usamos cookies de publicidad ni rastreo.{" "}
+            Utilizamos solo cookies esenciales para mantener tu sesión y la seguridad del sitio. No usamos cookies de publicidad ni de rastreo.{" "}
             <Link href="/cookies" className="cookie-banner-link">Ver política de cookies</Link>
           </p>
         </div>

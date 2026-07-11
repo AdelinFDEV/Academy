@@ -37,7 +37,12 @@ export async function POST() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "No autenticado" }, { status: 401 });
 
-  const { data: profile } = await supabase
+  // `stripe_subscription_id`/`subscription_status` no tienen GRANT SELECT para
+  // `authenticated` (ver /cuenta y /dashboard/trading). Es crítico leerlos bien
+  // aquí: si esta consulta fallara en silencio, `hasActiveSub` daría `false` y
+  // se borraría la cuenta sin cancelar el cobro recurrente en Stripe.
+  const admin = createAdminClient();
+  const { data: profile } = await admin
     .from("profiles")
     .select("role, stripe_subscription_id, subscription_status")
     .eq("id", user.id)
@@ -52,22 +57,23 @@ export async function POST() {
     );
   }
 
-  // Si hay una suscripción de Stripe activa, se cancela YA (no al final del
-  // periodo) antes de borrar nada. Si esto falla, abortamos: mejor dejar la
-  // cuenta intacta que borrarla con un cobro recurrente huérfano en Stripe.
-  const hasActiveSub =
-    profile?.stripe_subscription_id &&
-    (profile.subscription_status === "active" || profile.subscription_status === "trialing");
-
-  if (hasActiveSub) {
+  // Si existe CUALQUIER suscripción de Stripe vinculada, se cancela YA (no al
+  // final del periodo) antes de borrar nada. No se condiciona a que el estado
+  // sea "active"/"trialing": un estado "past_due"/"unpaid" (Stripe reintentando
+  // el cobro con su lógica de dunning) sigue siendo cobrable — si borrásemos la
+  // cuenta sin cancelar y el reintento prosperase, cobraríamos a alguien cuya
+  // cuenta ya no existe. Si esto falla, abortamos: mejor dejar la cuenta
+  // intacta que borrarla con un cobro recurrente huérfano en Stripe.
+  if (profile?.stripe_subscription_id) {
     try {
       const stripe = getStripe();
-      await stripe.subscriptions.cancel(profile!.stripe_subscription_id!);
+      await stripe.subscriptions.cancel(profile.stripe_subscription_id);
     } catch (err) {
       // Si Stripe dice que ya no está activa (p.ej. el webhook la canceló
-      // justo antes que nosotros), no es un fallo real: seguimos adelante.
+      // justo antes que nosotros, o ya estaba cancelada), no es un fallo real:
+      // seguimos adelante.
       const message = err instanceof Error ? err.message : "";
-      const alreadyInactive = /already|not in an active|no such subscription/i.test(message);
+      const alreadyInactive = /already|not in an active|no such subscription|resource_missing/i.test(message);
 
       if (!alreadyInactive) {
         console.error("[account-delete] No se pudo cancelar la suscripción de Stripe:", err);
@@ -78,8 +84,6 @@ export async function POST() {
       }
     }
   }
-
-  const admin = createAdminClient();
 
   for (const table of OWNED_TABLES) {
     const { error } = await admin.from(table).delete().eq("user_id", user.id);

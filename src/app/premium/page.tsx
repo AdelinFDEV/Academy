@@ -3,35 +3,27 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import { NotebookPen, Radar, Lightbulb, Gem, Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Unlock, Wallet, Star, Lock, Sparkles, Shield } from "lucide-react";
+import PremiumFeatureGrid from "@/components/PremiumFeatureGrid";
+import PremiumStickyBar from "@/components/PremiumStickyBar";
+import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Star, Lock, Sparkles } from "lucide-react";
+import "./premium.css";
 
 export const metadata: Metadata = {
   title: "Hazte Premium | AdelinBTC Academy",
   description:
-    "Desbloquea el diario de trading, señales, herramientas exclusivas y todo el contenido Premium por 19,99€/mes. Sin permanencia.",
+    "Desbloquea el diario de trading con retos, guías premium, cursos incluidos y el calendario de liberaciones de tokens por 19,99€/mes. Sin permanencia.",
 };
-
-const PERKS = [
-  { Icon: NotebookPen, color: "#4f9dff", title: "Diario de Trading Profesional", desc: "Registra cada operación, calcula tu win rate y descubre con datos qué te hace rentable." },
-  { Icon: Radar, color: "#f87171", title: "Señales en Spot", desc: "Entradas y salidas con criterio, no con corazonadas. Contexto y niveles claros." },
-  { Icon: Unlock, color: "#34d399", title: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting del mercado en tiempo real." },
-  { Icon: Wallet, color: "#fb923c", title: "Portfolio Spot de AdelinBTC", desc: "Sigue en directo las compras reales del portfolio, con precios de entrada y contexto." },
-  { Icon: Shield, color: "#2dd4bf", title: "Calculadora de Riesgo", desc: "Calcula el tamaño exacto de tu posición según tu capital y el riesgo que asumes por operación." },
-  { Icon: Lightbulb, color: "#a78bfa", title: "Guías Estratégicas Premium", desc: "Guías interactivas avanzadas con gráficas, quizzes y pasos accionables." },
-  { Icon: Gem, color: "#fbbf24", title: "Todo lo que viene", desc: "Cada herramienta y contenido nuevo entra directo en tu suscripción. Sin pagar más." },
-];
 
 const COMPARE: { label: string; free: boolean | string; premium: boolean | string }[] = [
   { label: "Artículos y análisis semanales", free: true, premium: true },
   { label: "Guías interactivas con quiz y logros", free: "Básicas", premium: "Todas" },
   { label: "Watchlist y predicción de precio", free: true, premium: true },
-  { label: "Logros, rachas y ranking", free: true, premium: true },
-  { label: "Diario de Trading con win rate", free: false, premium: true },
-  { label: "Señales en Spot", free: false, premium: true },
+  { label: "Logros y rachas", free: true, premium: true },
+  { label: "Calculadora de Riesgo", free: true, premium: true },
+  { label: "Diario de Trading con retos y niveles", free: false, premium: true },
+  { label: "Liberaciones de tokens en tiempo real", free: false, premium: true },
   { label: "Portfolio Spot en tiempo real", free: false, premium: true },
-  { label: "Calendario de liberaciones de tokens", free: false, premium: true },
-  { label: "Calculadora de Riesgo (tamaño de posición)", free: false, premium: true },
-  { label: "Artículos y análisis Premium", free: false, premium: true },
+  { label: "Cursos completos", free: false, premium: true },
   { label: "Soporte prioritario", free: false, premium: true },
 ];
 
@@ -80,87 +72,112 @@ export default async function PremiumPage() {
             </div>
           </div>
         ) : (
-          <div className="premium-new-layout">
-            <div className="premium-hero">
-              <div className="premium-hero-badge">
-                <span className="pulse-dot"></span> Oferta de lanzamiento · –60%
-              </div>
-              <h1 className="premium-hero-title">
-                Deja de operar a ciegas.<br/>Empieza a operar con <span>ventaja</span>.
+          <div className="prem-page">
+
+            {/* ── Hero ── */}
+            <section className="prem-hero">
+              <span className="prem-hero-glow" aria-hidden="true" />
+
+              <span className="prem-hero-badge">
+                <span className="prem-pulse-dot" aria-hidden="true" /> Oferta de lanzamiento · −60%
+              </span>
+
+              <h1 className="prem-hero-title">
+                Deja de operar a ciegas.<br />
+                Empieza a operar con <span className="prem-hero-title-accent">ventaja</span>.
               </h1>
-              <p className="premium-hero-sub">
-                Las herramientas, señales y análisis que separan a los que improvisan
-                de los que operan con un plan. Todo en una sola suscripción.
+
+              <p className="prem-hero-sub">
+                El diario de trading más completo e interactivo, guías premium, cursos incluidos
+                para siempre y el calendario de liberaciones en tiempo real — todo en una sola suscripción.
               </p>
 
-              <div className="premium-hero-trust">
-                <div className="trust-item"><Users size={16} /> +100 traders activos</div>
-                <div className="trust-item"><ShieldCheck size={16} /> Cancela en 1 clic</div>
-                <div className="trust-item"><Lock size={16} /> Pago seguro con Stripe</div>
-              </div>
-            </div>
-
-            <div className="premium-split-view">
-              <div className="premium-features-side">
-                <h2 className="premium-section-title">Todo lo que desbloqueas</h2>
-                <div className="premium-features-grid">
-                  {PERKS.map(({ Icon, color, title, desc }) => (
-                    <div key={title} className="premium-feature-card pv2-feature-card">
-                      <div
-                        className="premium-feature-icon-wrapper"
-                        style={{ color, background: `${color}14`, borderColor: `${color}33` }}
-                      >
-                        <Icon size={24} strokeWidth={2} />
-                      </div>
-                      <h3>{title}</h3>
-                      <p>{desc}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className="prem-hero-cta-row">
+                <Link href="/api/checkout" prefetch={false} className="prem-hero-cta pv2-shine">
+                  {user ? "Desbloquear todo ahora" : "Empezar ahora"} <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+                </Link>
+                <span className="prem-hero-cta-price">
+                  <s>49,99€</s> 19,99€<span>/mes</span>
+                </span>
               </div>
 
-              <div className="premium-pricing-side">
-                <div className="premium-pricing-card">
-                  <div className="premium-pricing-glow"></div>
-                  <span className="pv2-ribbon"><Sparkles size={12} aria-hidden="true" /> Ahorras un 60%</span>
+              <div className="prem-hero-trust">
+                <div className="prem-trust-item"><Users size={16} aria-hidden="true" /> +100 traders activos</div>
+                <div className="prem-trust-item"><ShieldCheck size={16} aria-hidden="true" /> Cancela en 1 clic</div>
+                <div className="prem-trust-item"><Lock size={16} aria-hidden="true" /> Pago seguro con Stripe</div>
+              </div>
+            </section>
 
-                  <div className="premium-pricing-header">
+            {/* ── Anclas de valor ── */}
+            <section className="prem-anchor">
+              <div className="prem-anchor-item">
+                <span className="prem-anchor-figure">0,70€</span>
+                <span className="prem-anchor-label">al día — menos que un café</span>
+              </div>
+              <span className="prem-anchor-divider" aria-hidden="true" />
+              <div className="prem-anchor-item">
+                <span className="prem-anchor-figure">100%</span>
+                <span className="prem-anchor-label">incluido, sin letra pequeña ni upsells</span>
+              </div>
+              <span className="prem-anchor-divider" aria-hidden="true" />
+              <div className="prem-anchor-item">
+                <span className="prem-anchor-figure">1 clic</span>
+                <span className="prem-anchor-label">para cancelar cuando quieras</span>
+              </div>
+            </section>
+
+            {/* Sentinela para la barra flotante — justo después del CTA principal */}
+            <PremiumStickyBar isLoggedIn={!!user} />
+
+            {/* ── Features + Pricing ── */}
+            <div className="prem-split-view">
+              <div className="prem-features-side">
+                <h2 className="prem-section-title">Todo lo que desbloqueas</h2>
+                <PremiumFeatureGrid />
+              </div>
+
+              <div className="prem-pricing-side">
+                <div className="prem-pricing-card">
+                  <span className="prem-pricing-glow" aria-hidden="true" />
+                  <span className="prem-pricing-shine" aria-hidden="true" />
+                  <span className="prem-pricing-ribbon"><Sparkles size={12} aria-hidden="true" /> Ahorras un 60%</span>
+
+                  <div className="prem-pricing-header">
                     <h3>Acceso Total</h3>
-                    <div className="premium-pricing-timer">
-                      <Timer size={14} /> Por tiempo limitado
+                    <div className="prem-pricing-timer">
+                      <Timer size={14} aria-hidden="true" /> Por tiempo limitado
                     </div>
                   </div>
 
-                  <div className="premium-pricing-amount-wrapper">
-                    <span className="premium-pricing-old">49,99€</span>
-                    <div className="premium-pricing-amount">
+                  <div className="prem-pricing-amount-wrapper">
+                    <span className="prem-pricing-old">49,99€</span>
+                    <div className="prem-pricing-amount">
                       19<span>,99€</span><small>/mes</small>
                     </div>
-                    <span className="pv2-perday">Menos de 0,70€ al día — un café a la semana</span>
+                    <span className="prem-pricing-perday">Menos de 0,70€ al día — un café a la semana</span>
                   </div>
 
-                  <ul className="premium-pricing-list">
-                    <li><Check size={16} /> Diario de Trading con win rate</li>
-                    <li><Check size={16} /> Señales en Spot con contexto</li>
-                    <li><Check size={16} /> Liberaciones de tokens en tiempo real</li>
-                    <li><Check size={16} /> Portfolio Spot de AdelinBTC</li>
-                    <li><Check size={16} /> Calculadora de Riesgo</li>
-                    <li><Check size={16} /> Todo el contenido y guías Premium</li>
-                    <li><Check size={16} /> Soporte prioritario</li>
+                  <ul className="prem-pricing-list">
+                    <li><Check size={16} aria-hidden="true" /> Diario de Trading con retos y niveles</li>
+                    <li><Check size={16} aria-hidden="true" /> Guías premium desbloqueadas</li>
+                    <li><Check size={16} aria-hidden="true" /> Cursos incluidos, siempre</li>
+                    <li><Check size={16} aria-hidden="true" /> Liberaciones de tokens en tiempo real</li>
+                    <li><Check size={16} aria-hidden="true" /> Portfolio Spot de AdelinBTC</li>
+                    <li><Check size={16} aria-hidden="true" /> Soporte prioritario</li>
                   </ul>
 
-                  <Link href="/api/checkout" prefetch={false} className="premium-btn-agressive pv2-shine">
-                    <span className="premium-btn-text">{user ? "Desbloquear todo ahora" : "Empezar ahora"}</span>
-                    <ArrowRight size={18} strokeWidth={2.5} />
+                  <Link href="/api/checkout" prefetch={false} className="prem-pricing-cta pv2-shine">
+                    <span>{user ? "Desbloquear todo ahora" : "Empezar ahora"}</span>
+                    <ArrowRight size={18} strokeWidth={2.5} aria-hidden="true" />
                   </Link>
 
-                  <div className="premium-pricing-footer">
-                    <span><ShieldCheck size={14} style={{display: 'inline', marginBottom: '-2px'}}/> Sin permanencia · Cancela cuando quieras</span>
+                  <div className="prem-pricing-footer">
+                    <span><ShieldCheck size={14} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras</span>
                     <span>Pagos encriptados por Stripe.</span>
                   </div>
 
                   {!user && (
-                    <p className="premium-plan-login-note" style={{marginTop: "16px", textAlign: "center"}}>
+                    <p className="prem-pricing-login-note">
                       ¿Ya tienes cuenta? <Link href="/login?next=/premium">Inicia sesión</Link>
                     </p>
                   )}
@@ -240,9 +257,9 @@ export default async function PremiumPage() {
               <p className="pv2-final-sub">
                 <s className="pv2-final-old">49,99€</s> <strong>19,99€/mes</strong> · Sin permanencia · Acceso inmediato
               </p>
-              <Link href="/api/checkout" prefetch={false} className="premium-btn-agressive pv2-shine pv2-final-btn">
-                <span className="premium-btn-text">{user ? "Desbloquear todo ahora" : "Hazte Premium ahora"}</span>
-                <ArrowRight size={18} strokeWidth={2.5} />
+              <Link href="/api/checkout" prefetch={false} className="prem-pricing-cta pv2-shine pv2-final-btn">
+                <span>{user ? "Desbloquear todo ahora" : "Hazte Premium ahora"}</span>
+                <ArrowRight size={18} strokeWidth={2.5} aria-hidden="true" />
               </Link>
               <p className="pv2-final-note">
                 <ShieldCheck size={13} aria-hidden="true" /> Si no es para ti, cancelas en 1 clic. Sin preguntas.

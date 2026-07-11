@@ -28,7 +28,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, alreadyHad: true });
   }
 
-  await supabase.from("user_badges").insert({ user_id: user.id, badge_id });
+  const { error } = await supabase.from("user_badges").insert({ user_id: user.id, badge_id });
+  if (error) {
+    console.error("[guide-badge] insert failed:", error.message);
+    return NextResponse.json({ error: "DB error" }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, alreadyHad: false });
 }

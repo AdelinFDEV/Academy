@@ -45,3 +45,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Auditoría de seguridad interna — no publicar (repo público)
+INFORME-SEGURIDAD.md

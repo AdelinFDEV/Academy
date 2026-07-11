@@ -5,11 +5,12 @@ import { usePathname } from "next/navigation";
 import Icon from "@/components/Icon";
 
 const links = [
-  { href: "/admin",                      label: "Panel",       icon: "bar-chart" as const },
+  { href: "/admin",                      label: "Panel",       icon: "bar-chart" as const, priority: true },
+  { href: "/admin/users",                label: "Usuarios",    icon: "users" as const,     priority: true },
+  { href: "/admin/comments",             label: "Comentarios", icon: "chat" as const },
   { href: "/admin/posts",                label: "Entradas",    icon: "list" as const },
   { href: "/admin/categories",           label: "Categorías",  icon: "folder" as const },
-  { href: "/admin/comments",             label: "Comentarios", icon: "chat" as const },
-  { href: "/admin/users",                label: "Usuarios",    icon: "users" as const },
+  { href: "/admin/posts-instrucciones",        label: "Entradas · Ref",     icon: "pen" as const },
   { href: "/admin/guias-instrucciones",        label: "Guías · Ref",        icon: "book" as const },
   { href: "/admin/liberaciones-instrucciones", label: "Liberaciones · Ref", icon: "list" as const },
 ];
@@ -28,7 +29,7 @@ export default function AdminNav() {
         <Link
           key={l.href}
           href={l.href}
-          className={`admin-nav-link${isActive(l.href) ? " active" : ""}`}
+          className={`admin-nav-link${l.priority ? " admin-nav-link--priority" : ""}${isActive(l.href) ? " active" : ""}`}
         >
           <Icon name={l.icon} size={16} />
           <span>{l.label}</span>

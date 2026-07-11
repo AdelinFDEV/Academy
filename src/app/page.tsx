@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, NotebookPen, BookA, MonitorPlay, Layers, Route, ShieldCheck, Star, Crown, Gem, Radar, Check, Tag, Map, Unlock, MessageCircle, Shield } from "lucide-react";
+import { ArrowRight, NotebookPen, BookA, MonitorPlay, Route, ShieldCheck, Star, Crown, Gem, Check, Tag, Map, Unlock, MessageCircle, Wallet, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -9,7 +9,7 @@ import HomeFeed from "@/components/HomeFeed";
 import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
-import HeroPremiumSlider from "@/components/HeroPremiumSlider";
+import HeroSpotlight from "@/components/HeroSpotlight";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { GUIDES } from "@/lib/guides";
 import "./home.css";
@@ -117,9 +117,12 @@ export default async function HomePage() {
     <div className="premium-pitch">
       <span className="premium-pitch-glow" aria-hidden="true" />
 
-      <span className="premium-pitch-badge">
-        <Crown size={13} aria-hidden="true" /> Premium
-      </span>
+      <div className="premium-pitch-top">
+        <span className="premium-pitch-badge">
+          <Crown size={13} aria-hidden="true" /> Premium
+        </span>
+        <span className="premium-pitch-discount">-60%</span>
+      </div>
 
       <h3 className="premium-pitch-title">
         Deja de mirar el mercado.<br />
@@ -131,41 +134,47 @@ export default async function HomePage() {
 
       <ul className="premium-pitch-features">
         <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon"><NotebookPen size={16} aria-hidden="true" /></span>
+          <span className="premium-pitch-feature-icon" style={{ color: "#ff9a4d", background: "rgba(255,154,77,0.14)", borderColor: "rgba(255,154,77,0.3)" }}>
+            <NotebookPen size={16} aria-hidden="true" />
+          </span>
           <span>
             <strong>Diario de Trading</strong>
-            Registra cada operación y descubre qué te hace ganar.
+            No solo registras: completas retos que te convierten en un trader disciplinado.
           </span>
         </li>
         <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon"><Radar size={16} aria-hidden="true" /></span>
-          <span>
-            <strong>Señales en Spot</strong>
-            Entradas y salidas con criterio, no con corazonadas.
+          <span className="premium-pitch-feature-icon" style={{ color: "#34d399", background: "rgba(52,211,153,0.14)", borderColor: "rgba(52,211,153,0.3)" }}>
+            <Unlock size={16} aria-hidden="true" />
           </span>
-        </li>
-        <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon"><Unlock size={16} aria-hidden="true" /></span>
           <span>
             <strong>Liberaciones de Tokens</strong>
             Anticipa la presión vendedora con el calendario de vesting en tiempo real.
           </span>
         </li>
         <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon"><Shield size={16} aria-hidden="true" /></span>
+          <span className="premium-pitch-feature-icon" style={{ color: "#fb923c", background: "rgba(251,146,60,0.14)", borderColor: "rgba(251,146,60,0.3)" }}>
+            <Wallet size={16} aria-hidden="true" />
+          </span>
           <span>
-            <strong>Calculadora de Riesgo</strong>
-            Calcula el tamaño de tu posición según tu capital y el riesgo que asumes.
+            <strong>Portfolio Spot</strong>
+            Sigue en directo las compras reales de AdelinBTC, con precios de entrada y contexto.
           </span>
         </li>
         <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon"><Gem size={16} aria-hidden="true" /></span>
+          <span className="premium-pitch-feature-icon" style={{ color: "#ffd166", background: "rgba(255,209,102,0.14)", borderColor: "rgba(255,209,102,0.3)" }}>
+            <Gem size={16} aria-hidden="true" />
+          </span>
           <span>
-            <strong>Herramientas exclusivas</strong>
-            Watchlist, estadísticas y todo lo que viene después.
+            <strong>Guías Premium</strong>
+            Desbloquea todas las guías interactivas, no solo las básicas.
           </span>
         </li>
       </ul>
+
+      <div className="premium-pitch-included">
+        <GraduationCap size={13} aria-hidden="true" />
+        Lancemos los cursos que lancemos, siempre estarán incluidos — sin coste extra.
+      </div>
 
       <div className="premium-pitch-price-wrapper">
         <span className="premium-pitch-limited">Por tiempo limitado</span>
@@ -177,7 +186,7 @@ export default async function HomePage() {
       </div>
 
       <Link href="/premium" className="premium-pitch-cta">
-        Hazte Premium <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
+        Más información <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
       </Link>
 
       <p className="premium-pitch-note">
@@ -218,14 +227,20 @@ export default async function HomePage() {
         <div className="hero-aurora" aria-hidden="true" />
 
         <div className="hero-content">
-          {/* H1 accesible para SEO — el diseño visual vive en el showcase de herramientas */}
-          <h1 className="sr-only">AdelinBTC Academy — Formación, análisis y herramientas para criptomonedas</h1>
-
           <div className="hero-search-bar hero-anim hero-anim-1">
             <GuideSearch />
           </div>
 
-          <HeroPremiumSlider isLoggedIn={!!user} isPremium={isPremium} latestGuide={latestGuide} />
+          <div className="hero-headline hero-anim hero-anim-2">
+            <h1 className="hero-title">
+              Todo lo que necesitas para <span className="text-gradient">dejar de improvisar</span> en cripto
+            </h1>
+            <p className="hero-subtitle">
+              Una única academia para tu camino cripto — sin dispersión, sin letra pequeña.
+            </p>
+          </div>
+
+          <HeroSpotlight isLoggedIn={!!user} isPremium={isPremium} latestGuide={latestGuide} />
 
           {!user && (
             <div className="hero-trust hero-anim hero-anim-4">
@@ -264,11 +279,14 @@ export default async function HomePage() {
           <span className="starthere-band-glow" aria-hidden="true" />
           <span className="starthere-band-left">
             <span className="starthere-band-icon">
-              <Map size={20} aria-hidden="true" />
+              <Map size={22} aria-hidden="true" />
             </span>
             <span className="starthere-band-text">
               <span className="starthere-band-eyebrow">¿Nuevo en cripto?</span>
               <span className="starthere-band-title">Empieza aquí — tu hoja de ruta paso a paso</span>
+              <span className="starthere-band-steps" aria-hidden="true">
+                <i /><em /><i /><em /><i />
+              </span>
             </span>
           </span>
           <span className="starthere-band-cta">
@@ -315,46 +333,53 @@ export default async function HomePage() {
           <div className="sidebar-card">
             <p className="sidebar-card-title">Educación</p>
             <div className="sidebar-tools-list">
-              <Link href="/glosario" className="sidebar-tool-link">
-                <BookA size={16} className="sidebar-tool-icon" />
-                <span>Diccionario Cripto</span>
+              <Link href="/glosario" className="sidebar-tool-link" style={{ "--tool-color": "#2f8fff" } as React.CSSProperties}>
+                <BookA size={16} className="sidebar-tool-icon" style={{ color: "#2f8fff" }} />
+                <span className="sidebar-tool-label" style={{ color: "#2f8fff" }}>Diccionario Cripto</span>
               </Link>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
-                <MonitorPlay size={16} className="sidebar-tool-icon" />
-                <span>Cursos</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
-                <Layers size={16} className="sidebar-tool-icon" />
-                <span>Recursos</span>
+              <div className="sidebar-tool-link sidebar-tool-link--soon" style={{ "--tool-color": "#b98bff" } as React.CSSProperties}>
+                <MonitorPlay size={16} className="sidebar-tool-icon" style={{ color: "#b98bff" }} />
+                <span className="sidebar-tool-label" style={{ color: "#b98bff" }}>Cursos</span>
                 <span className="sidebar-tool-badge--soon">Pronto</span>
               </div>
               <Link href="/guias" className="sidebar-tool-link sidebar-tool-link--gold">
                 <Route size={16} className="sidebar-tool-icon" />
-                <span>Guías Interactivas</span>
+                <span className="sidebar-tool-label">Guías Interactivas</span>
               </Link>
             </div>
           </div>
 
-          {/* Categorías */}
-          {(categories ?? []).length > 0 && (
-            <div className="sidebar-card">
-              <p className="sidebar-card-title">Categorías</p>
-              <div className="sidebar-tools-list">
-                {(categories ?? []).map((c) => (
-                  <Link key={c.slug} href={`/categoria/${c.slug}`} className="sidebar-tool-link">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <Tag size={16} className="sidebar-tool-icon" />
-                      <span>{c.name}</span>
-                    </div>
-                    {catPostMap[c.slug] && (
-                      <span className="sidebar-cat-count">{catPostMap[c.slug]}</span>
-                    )}
-                  </Link>
-                ))}
+          {/* Categorías — Noticias siempre primero, separada del resto:
+              agrupa toda la actualidad cripto, mientras que el resto de
+              categorías son temáticas específicas (Bitcoin, Ondo, etc.). */}
+          {(categories ?? []).length > 0 && (() => {
+            const allCats = categories ?? [];
+            const newsCat = allCats.find((c) => c.slug === "noticias");
+            const restCats = allCats.filter((c) => c.slug !== "noticias");
+
+            const renderCat = (c: { name: string; slug: string }) => (
+              <Link key={c.slug} href={`/categoria/${c.slug}`} className="sidebar-tool-link">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <Tag size={16} className="sidebar-tool-icon" />
+                  <span>{c.name}</span>
+                </div>
+                {catPostMap[c.slug] && (
+                  <span className="sidebar-cat-count">{catPostMap[c.slug]}</span>
+                )}
+              </Link>
+            );
+
+            return (
+              <div className="sidebar-card">
+                <p className="sidebar-card-title">Categorías</p>
+                <div className="sidebar-tools-list">
+                  {newsCat && renderCat(newsCat)}
+                  {newsCat && restCats.length > 0 && <div className="sidebar-cat-separator" aria-hidden="true" />}
+                  {restCats.map(renderCat)}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Premium pitch — en desktop se queda al final del sidebar */}
           <div className="premium-pitch-desktop-only">
@@ -370,28 +395,42 @@ export default async function HomePage() {
       <section className="contact-cta-section">
         <div className="contact-cta-card">
           <div className="contact-cta-glow" aria-hidden="true" />
-          <div className="contact-cta-content">
-            <span className="contact-cta-eyebrow">
-              <MessageCircle size={13} aria-hidden="true" />
-              Hablemos
-            </span>
-            <h2 className="contact-cta-title">¿Tienes dudas?</h2>
-            <p className="contact-cta-sub">
-              ¿Quieres que añadamos algo a la web? Escríbeme por Instagram y con gusto
-              tratamos cualquier cosa — te leo siempre. 💬
-            </p>
-            <a
-              href="https://www.instagram.com/adelinbtc/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="contact-cta-btn"
-            >
+
+          <div className="contact-cta-left">
+            <div className="contact-cta-avatar">
               <InstagramIcon />
-              Escríbeme en Instagram
-              <ArrowRight size={16} className="contact-cta-btn-arrow" aria-hidden="true" />
-            </a>
-            <span className="contact-cta-handle">@adelinbtc</span>
+            </div>
+            <div className="contact-cta-text">
+              <span className="contact-cta-eyebrow">
+                <MessageCircle size={12} aria-hidden="true" />
+                Hablemos
+              </span>
+              <h2 className="contact-cta-title">¿Dudas, ideas o algo que le falta a la academia?</h2>
+              <p className="contact-cta-sub">
+                Cuéntamelo por Instagram — leo cada mensaje personalmente, y varias mejoras
+                de la web han salido de ahí.
+              </p>
+              <div className="contact-cta-footer">
+                <span className="contact-cta-handle">@adelinbtc</span>
+                <span className="contact-cta-footer-sep" aria-hidden="true" />
+                <span className="contact-cta-response">
+                  <span className="contact-cta-response-dot" aria-hidden="true" />
+                  Responde en menos de 24h
+                </span>
+              </div>
+            </div>
           </div>
+
+          <a
+            href="https://www.instagram.com/adelinbtc/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-cta-btn"
+          >
+            <InstagramIcon />
+            Escríbeme
+            <ArrowRight size={15} className="contact-cta-btn-arrow" aria-hidden="true" />
+          </a>
         </div>
       </section>
 

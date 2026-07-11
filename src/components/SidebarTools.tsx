@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import {
   NotebookPen, Crosshair, ScanEye, Medal, Wallet,
-  Unlock, ListOrdered, Shield,
+  Unlock, Shield,
 } from "lucide-react";
 import ToolAccessModal, { type ToolModalReason } from "@/components/ToolAccessModal";
 
@@ -16,10 +16,12 @@ interface Props {
 interface ToolDef {
   label: string;
   href: string;
-  icon: React.ReactNode;
+  Icon: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
+  color?: string;
   requiresLogin: boolean;
   requiresPremium: boolean;
   soon?: boolean;
+  gold?: boolean;
 }
 
 export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
@@ -35,56 +37,59 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
     {
       label: "Diario de Trading",
       href: "/dashboard",
-      icon: <NotebookPen size={16} className="sidebar-tool-icon" />,
+      Icon: NotebookPen,
       requiresLogin: true,
       requiresPremium: true,
+      gold: true,
     },
     {
       label: "Predicción de Precio",
       href: "/calculadora",
-      icon: <Crosshair size={16} className="sidebar-tool-icon" />,
+      Icon: Crosshair,
+      color: "#00e5ff",
       requiresLogin: true,
       requiresPremium: false,
     },
     {
       label: "Mi Watchlist",
       href: "/dashboard/watchlist",
-      icon: <ScanEye size={16} className="sidebar-tool-icon" />,
+      Icon: ScanEye,
+      color: "#c150ff",
       requiresLogin: true,
       requiresPremium: false,
     },
     {
       label: "Logros y XP",
       href: "/logros",
-      icon: <Medal size={16} className="sidebar-tool-icon" />,
+      Icon: Medal,
+      color: "#ff3d81",
       requiresLogin: true,
       requiresPremium: false,
     },
     {
       label: "Portfolio Spot",
       href: "/portfolio",
-      icon: <Wallet size={16} className="sidebar-tool-icon" />,
+      Icon: Wallet,
       requiresLogin: true,
       requiresPremium: true,
+      gold: true,
     },
     {
       label: "Liberaciones de Tokens",
       href: "/herramientas/liberaciones",
-      icon: <Unlock size={16} className="sidebar-tool-icon" />,
+      Icon: Unlock,
+      color: "#00ffab",
       requiresLogin: true,
       requiresPremium: true,
     },
     {
       label: "Calculadora de Riesgo",
       href: "/dashboard/calculadora-riesgo",
-      icon: <Shield size={16} className="sidebar-tool-icon" />,
+      Icon: Shield,
+      color: "#18ffd5",
       requiresLogin: true,
-      requiresPremium: true,
+      requiresPremium: false,
     },
-  ];
-
-  const soonTools = [
-    { label: "Ranking",  icon: <ListOrdered size={16} className="sidebar-tool-icon" /> },
   ];
 
   function handleToolClick(tool: ToolDef, e: React.MouseEvent) {
@@ -120,21 +125,14 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
             <Link
               key={tool.label}
               href={tool.href}
-              className={`sidebar-tool-link${isLocked(tool) ? " sidebar-tool-link--dimmed" : ""}`}
+              className={`sidebar-tool-link${tool.gold ? " sidebar-tool-link--gold" : ""}${isLocked(tool) ? " sidebar-tool-link--dimmed" : ""}`}
+              style={tool.color ? ({ "--tool-color": tool.color } as React.CSSProperties) : undefined}
               onClick={(e) => handleToolClick(tool, e)}
             >
-              {tool.icon}
-              <span>{tool.label}</span>
+              <tool.Icon size={16} className="sidebar-tool-icon" style={tool.color ? { color: tool.color } : undefined} />
+              <span className="sidebar-tool-label" style={tool.color ? { color: tool.color } : undefined}>{tool.label}</span>
               {getBadge(tool)}
             </Link>
-          ))}
-
-          {soonTools.map((tool) => (
-            <div key={tool.label} className="sidebar-tool-link sidebar-tool-link--soon">
-              {tool.icon}
-              <span>{tool.label}</span>
-              <span className="sidebar-tool-badge--soon">Pronto</span>
-            </div>
           ))}
         </div>
       </div>

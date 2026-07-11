@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -13,7 +14,11 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/login?next=/cuenta`);
   }
 
-  const { data: profile } = await supabase
+  // `stripe_customer_id` no tiene GRANT SELECT para `authenticated` (ver
+  // /cuenta y /dashboard/trading) — se lee con el cliente admin tras
+  // verificar la sesión arriba con el cliente normal.
+  const admin = createAdminClient();
+  const { data: profile } = await admin
     .from("profiles")
     .select("role, stripe_customer_id")
     .eq("id", user.id)

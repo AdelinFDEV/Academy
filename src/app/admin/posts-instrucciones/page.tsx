@@ -1,0 +1,289 @@
+export default function PostsInstruccionesPage() {
+  return (
+    <div className="admin-guide-instructions">
+
+      <div className="agi-hero">
+        <div className="agi-hero-label">SOLO ADMIN · REFERENCIA INTERNA</div>
+        <h1 className="agi-hero-title">Sistema de Entradas del Blog</h1>
+        <p className="agi-hero-sub">
+          Instrucciones para Claude sobre cómo redactar una entrada nueva a partir de un artículo o noticia que da el admin.
+          Leer antes de escribir cualquier entrada nueva o si se pierde el contexto de la conversación.
+        </p>
+      </div>
+
+      {/* ── BLOQUE 1: FILOSOFÍA ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">01</span>
+          Filosofía y propósito
+        </h2>
+        <div className="agi-card">
+          <p>Las entradas son <strong>artículos de lectura rápida</strong> (3–5 minutos), muy distintas de las guías: nada de minijuegos, quiz ni progreso — solo texto bien estructurado, cercano y fácil de seguir, con al menos un gráfico para hacer la lectura más amena.</p>
+          <ul className="agi-list">
+            <li>El admin pasa un artículo o noticia (texto o link) como base — <strong>nunca se traduce ni se copia</strong>, siempre se reescribe entero con voz propia</li>
+            <li>Cada entrada debe ser <strong>única e independiente</strong>: sin enlaces externos ni promociones del artículo original</li>
+            <li>Público objetivo fijo: <strong>principiantes e intermedios</strong> en cripto — todo concepto técnico se explica al mencionarlo</li>
+            <li>Todas las entradas siguen <strong>el mismo patrón</strong> de estructura, tono y metadatos descrito en esta página</li>
+          </ul>
+        </div>
+        <div className="agi-card" style={{ marginTop: "1rem" }}>
+          <p className="agi-warning">⚠️ <strong>Una entrada nunca es un componente de código.</strong> Es una fila nueva en la tabla <code>posts</code> de Supabase — jamás crear un archivo <code>.tsx</code> ni <code>.css</code> para una entrada. Así se publica sin desplegar código y sin que <code>globals.css</code> vuelva a crecer. Esto es justo al revés que las guías (bloque «Guías·Ref»), donde cada guía nueva <strong>sí</strong> es un componente React independiente con su propio CSS. Decisión explícita del admin — detalle completo en <code>AGENTS.md</code>.</p>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 2: PREGUNTAS OBLIGATORIAS ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">02</span>
+          Preguntas obligatorias antes de escribir
+        </h2>
+        <div className="agi-card">
+          <p className="agi-warning">⚠️ Estas tres preguntas se hacen <strong>siempre</strong>, antes de escribir una sola palabra del artículo. Nunca se asumen ni se dejan para después.</p>
+        </div>
+        <div className="agi-steps">
+          <div className="agi-step">
+            <div className="agi-step-num">1</div>
+            <div>
+              <strong>¿Qué categoría?</strong>
+              <p>El admin da la categoría. Si no existe todavía, Claude la crea (ver bloque 06) y confirma que aparece correctamente en home, listado de artículos y páginas de categoría — es todo dinámico, no hace falta tocar código aparte de crear la fila.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">2</div>
+            <div>
+              <strong>¿Free o Premium?</strong>
+              <p>Define <code>is_premium</code>. Sin esta respuesta no se empieza a redactar.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">3</div>
+            <div>
+              <strong>¿Imagen de portada?</strong>
+              <p>El admin la da. Claude la sube a Supabase Storage (bucket <code>media</code>, mismo sistema que ya usa el panel) y guarda la URL pública resultante en <code>cover_image</code> — nunca se enlaza una imagen externa directamente.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 3: FLUJO DE TRABAJO ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">03</span>
+          Flujo de creación — paso a paso
+        </h2>
+        <div className="agi-steps">
+          <div className="agi-step">
+            <div className="agi-step-num">1</div>
+            <div>
+              <strong>Admin pasa el artículo</strong>
+              <p>Texto completo pegado, o un link. Si es un link, Claude confirma que puede leerlo (WebFetch). Si no se puede leer, se avisa y se investiga el tema en otras fuentes para escribir el artículo igualmente — nunca se inventa información.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">2</div>
+            <div>
+              <strong>Claude hace las 3 preguntas obligatorias</strong>
+              <p>Categoría, Free/Premium, imagen de portada (bloque 02). Sin las tres respuestas no se redacta nada.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">3</div>
+            <div>
+              <strong>Claude redacta la entrada completa</strong>
+              <p>Siguiendo el tono (bloque 04) y la estructura (bloque 05): título, extracto, contenido en HTML con mínimo un gráfico, y todos los campos SEO.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">4</div>
+            <div>
+              <strong>Admin revisa</strong>
+              <p>Claude muestra el borrador completo (título, extracto, contenido, categoría, free/premium). El admin aprueba o pide cambios. Sin aprobación explícita, no se publica nada.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">5</div>
+            <div>
+              <strong>Claude publica</strong>
+              <p>Inserta la fila en la tabla <code>posts</code> de Supabase directamente (Claude tiene acceso de servidor vía service role key — no hace falta editor en el panel ni SQL manual del admin). Por defecto <code>published = true</code>, salvo que el admin pida dejarlo en borrador.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 4: TONO Y ESTILO ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">04</span>
+          Tono y estilo — voz de AdelinBTC
+        </h2>
+        <div className="agi-card">
+          <ul className="agi-list">
+            <li>Lenguaje <strong>cercano</strong>, como explicándoselo a un amigo — nunca acartonado ni de manual técnico</li>
+            <li>Todo concepto técnico se aclara en el momento en que aparece, con una analogía o ejemplo sencillo si ayuda</li>
+            <li>Se puede usar primera persona / trato directo al lector («seguramente has visto…», «vamos a bajarle un poco a la intensidad»)</li>
+            <li>Cierre cálido y personal — la web ya tiene un estilo de despedida reconocible, mantenerlo</li>
+            <li>Extraer la información más relevante del artículo original, pero siempre reescrita y reestructurada — nunca es una traducción</li>
+            <li><strong>Nunca</strong> incluir enlaces externos, menciones promocionales, ni CTAs del artículo original</li>
+          </ul>
+        </div>
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Ejemplo real ya publicado (referencia de tono)</h3>
+          <div className="agi-card agi-card--mono">
+            <p style={{ fontStyle: "italic", color: "var(--text-secondary)" }}>
+              «Seguramente han visto los titulares que pintan un panorama un poco oscuro para MicroStrategy, la empresa famosa por apostar todo a Bitcoin. […] Sé que esto puede sonar alarmante, especialmente si seguimos de cerca el ecosistema, pero vamos a bajarle un poco a la intensidad y a explicarlo de forma clara, como siempre, entre amigos.»
+            </p>
+            <p style={{ fontStyle: "italic", color: "var(--text-secondary)", marginTop: "0.75rem" }}>
+              «Muchas gracias por acompañarme hoy y dedicarle este tiempo a entender mejor lo que mueve los mercados. ¡Sigan educándose y analizando, que esa es nuestra mejor ventaja en este mundo! Un abrazo enorme, ¡seguimos en contacto!»
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 5: ESTRUCTURA ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">05</span>
+          Estructura de la entrada
+        </h2>
+        <div className="agi-card">
+          <ul className="agi-list">
+            <li><strong>Longitud:</strong> lectura rápida, 3–5 minutos (aprox. 500–800 palabras). Las guías son las únicas piezas largas — las entradas no</li>
+            <li><strong>Mínimo un gráfico</strong> por entrada (ver HTML en bloque 08) — hace la lectura más entretenida y visual</li>
+            <li>Subtítulos (<code>&lt;h2&gt;</code>) para separar bloques temáticos — nunca un muro de texto sin cortes</li>
+            <li>Párrafos cortos (<code>&lt;p&gt;</code>), variar su longitud para dar ritmo — no todos del mismo tamaño</li>
+            <li>Negrita (<code>&lt;strong&gt;</code>) en lo más importante de cada párrafo — cifras clave, conclusiones, nombres propios relevantes</li>
+            <li>Usar <code>.prose-callout--tip</code> / <code>--info</code> / <code>--warning</code> (ver bloque 08) para destacar un dato o aviso puntual</li>
+            <li>Extracto (<code>excerpt</code>): 1–2 frases que resuman el gancho del artículo, se muestra en las cards del listado</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 6: ESQUEMA REAL EN SUPABASE ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">06</span>
+          Esquema real en Supabase
+        </h2>
+        <div className="agi-subsection">
+          <div className="agi-card agi-card--mono">
+            <div className="agi-table-def">
+              <div className="agi-table-name">posts</div>
+              <div className="agi-table-fields">
+                id · title · slug · excerpt · content (HTML) · cover_image · youtube_url · category_id · is_premium (bool) · is_featured (bool) · published (bool) · seo_title · meta_description · focus_keyword · created_at · updated_at · base_likes · base_saves · shares_count
+              </div>
+            </div>
+            <div className="agi-table-def">
+              <div className="agi-table-name">categories</div>
+              <div className="agi-table-fields">
+                id · name · slug · created_at
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="agi-card" style={{ marginTop: "1rem" }}>
+          <p><strong>Importante:</strong> <code>content</code> es <strong>HTML final</strong>, escrito directamente por Claude — no hay Markdown ni ningún parser de por medio (se quitó a propósito: no tiene sentido una sintaxis simplificada pensada para que un humano escriba a mano, cuando quien redacta cada entrada es Claude). Se inserta tal cual con <code>dangerouslySetInnerHTML</code> en <code>post/[slug]/page.tsx</code>.</p>
+          <p style={{ marginTop: "0.6rem" }}>Etiquetas disponibles y ya con estilo propio en <code>.prose-content</code> (globals.css): <code>h1–h4</code>, <code>p</code>, <code>strong</code>, <code>em</code>, <code>a</code>, <code>ul</code>/<code>ol</code>/<code>li</code>, <code>blockquote</code>, <code>pre</code>/<code>code</code>, <code>hr</code>, <code>table</code> (clase <code>.prose-table</code>), imágenes (clase <code>.prose-img</code>), callouts (<code>.prose-callout</code>) y el gráfico de barras (<code>.prose-chart</code>, bloque 08). Cualquier otra etiqueta se renderiza igualmente pero sin estilo propio garantizado — usar solo lo de esta lista.</p>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 7: CATEGORÍA NUEVA ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">07</span>
+          Cómo crear una categoría nueva
+        </h2>
+        <div className="agi-card">
+          <p>Las categorías son 100% dinámicas — se leen de la tabla <code>categories</code> en <strong>home, menú, listado de artículos y páginas <code>/categoria/[slug]</code></strong>. No hay ninguna lista hardcodeada que tocar en el código.</p>
+          <p style={{ marginTop: "0.6rem" }}>Claude inserta la fila directamente en Supabase (vía service role key) con <code>name</code> y <code>slug</code> (slug en minúsculas, sin acentos, con guiones). En cuanto existe la fila, la categoría aparece sola en todos los sitios correspondientes — no hace falta ningún cambio de código adicional.</p>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 8: GRÁFICO Y CALLOUTS ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">08</span>
+          Gráfico (obligatorio, mínimo 1 por entrada) y callouts
+        </h2>
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Gráfico de barras — HTML a escribir directamente en <code>content</code></h3>
+          <div className="agi-card agi-card--mono">
+            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+{`<div class="prose-chart">
+  <div class="prose-chart-title">Dominancia de mercado</div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">Bitcoin</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:100%"></div></div>
+    <span class="prose-chart-value">54%</span>
+  </div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">Ethereum</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:33%"></div></div>
+    <span class="prose-chart-value">18%</span>
+  </div>
+</div>`}
+            </pre>
+          </div>
+          <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <ul className="agi-list">
+              <li>El <code>width</code> de <code>.prose-chart-fill</code> es un porcentaje calculado a mano por Claude: <code>(valor / valor_más_alto) × 100</code></li>
+              <li>Barras horizontales, 100% estático — sin JS de cliente, sin dependencias</li>
+              <li>Usar para: comparativas de precio, reparto porcentual, ranking de valores — cualquier dato que se entienda mejor visualmente</li>
+            </ul>
+          </div>
+        </div>
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Callouts — para destacar un dato o aviso puntual</h3>
+          <div className="agi-card agi-card--mono">
+            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+{`<div class="prose-callout prose-callout--tip">
+  <span class="prose-callout-icon">✅</span>
+  <div class="prose-callout-body">Texto del aviso o dato destacado.</div>
+</div>`}
+            </pre>
+          </div>
+          <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <p>Variantes disponibles: <code>--info</code> (💡), <code>--tip</code> (✅), <code>--warning</code> (⚠️), <code>--danger</code> (🚨) — cambiar la clase y el emoji del icono según el caso.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 9: SEO ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">09</span>
+          SEO — lo gestiona Claude siempre
+        </h2>
+        <div className="agi-card">
+          <p>El admin no interviene en SEO salvo que quiera dar una keyword concreta. Por defecto, Claude rellena los tres campos pensando siempre en el público objetivo (principiante/intermedio):</p>
+          <ul className="agi-list">
+            <li><code>seo_title</code>: claro, con la keyword principal, sin clickbait vacío</li>
+            <li><code>meta_description</code>: 1–2 frases, responde «qué me llevo si leo esto» en lenguaje simple</li>
+            <li><code>focus_keyword</code>: término de búsqueda realista para alguien que no es experto (evitar jerga que un principiante no buscaría en Google)</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 10: CHECKLIST ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">10</span>
+          Checklist para Claude al crear una entrada nueva
+        </h2>
+        <div className="agi-checklist">
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Preguntar categoría, Free/Premium e imagen de portada — <strong>antes</strong> de redactar</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Leer el artículo original (WebFetch si es link) o investigar el tema si no se puede leer</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido 100% reescrito, tono cercano, sin enlaces externos ni promociones</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Estructurar en subtítulos y párrafos cortos, con negrita en lo importante</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Incluir mínimo un <code>.prose-chart</code> (bloque 08)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Longitud 3–5 minutos de lectura (~500–800 palabras)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar <code>excerpt</code>, <code>seo_title</code>, <code>meta_description</code> y <code>focus_keyword</code></span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Si la categoría no existe, crearla en Supabase antes de asignarla</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Subir la imagen a Supabase Storage (bucket <code>media</code>) y usar la URL pública en <code>cover_image</code></span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar el borrador completo al admin y esperar aprobación antes de publicar</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Insertar en la tabla <code>posts</code> tras la aprobación (<code>published = true</code> salvo que se pida borrador)</span></label>
+        </div>
+      </section>
+
+    </div>
+  );
+}

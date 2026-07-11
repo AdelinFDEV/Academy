@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import UserRoleButton from "@/components/admin/UserRoleButton";
+import AdminMfaResetButton from "@/components/admin/AdminMfaResetButton";
 import Icon from "@/components/Icon";
-import { getEffectiveStreak } from "@/lib/streak";
 
 export default async function AdminUsersPage() {
   const supabase = await createClient();
@@ -9,7 +10,7 @@ export default async function AdminUsersPage() {
   const [{ data: users }, { data: readRows }, { data: badgeRows }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, full_name, role, current_streak, last_seen, created_at")
+      .select("id, full_name, role, created_at")
       .order("created_at", { ascending: false }),
     supabase.from("user_posts").select("user_id").not("read_at", "is", null),
     supabase.from("user_badges").select("user_id"),
@@ -21,6 +22,34 @@ export default async function AdminUsersPage() {
 
   const badgeMap: Record<string, number> = {};
   (badgeRows ?? []).forEach((b) => { badgeMap[b.user_id] = (badgeMap[b.user_id] ?? 0) + 1; });
+
+  // El email vive en auth.users (Supabase), no en profiles — hace falta la
+  // service role key para leerlo. Si no está configurada (p.ej. en local sin
+  // la key), no rompemos la página: simplemente no se muestra el email.
+  const emailMap: Record<string, string> = {};
+  const mfaMap: Record<string, boolean> = {};
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const admin = createAdminClient();
+      const { data: authData, error } = await admin.auth.admin.listUsers({ perPage: 1000 });
+      if (error) throw error;
+      (authData?.users ?? []).forEach((u) => {
+        if (u.email) emailMap[u.id] = u.email;
+      });
+
+      // listUsers() no incluye los factores de 2FA (siempre vienen undefined) —
+      // hay que pedirlos aparte, uno por usuario.
+      const mfaResults = await Promise.all(
+        (authData?.users ?? []).map((u) => admin.auth.admin.mfa.listFactors({ userId: u.id }))
+      );
+      (authData?.users ?? []).forEach((u, i) => {
+        const factors = mfaResults[i].data?.factors ?? [];
+        mfaMap[u.id] = factors.some((f) => f.status === "verified");
+      });
+    } catch (err) {
+      console.error("[admin/users] no se pudieron cargar los emails:", err);
+    }
+  }
 
   const total    = users?.length ?? 0;
   const premium  = (users ?? []).filter((u) => u.role === "premium").length;
@@ -58,17 +87,18 @@ export default async function AdminUsersPage() {
           <thead>
             <tr>
               <th>Nombre</th>
+              <th>Email</th>
               <th>Rol</th>
               <th>Artículos leídos</th>
               <th>Logros</th>
-              <th>Racha</th>
+              <th>2FA</th>
               <th>Registrado</th>
             </tr>
           </thead>
           <tbody>
             {(users ?? []).length === 0 && (
               <tr>
-                <td colSpan={6} className="admin-empty">No hay usuarios</td>
+                <td colSpan={7} className="admin-empty">No hay usuarios</td>
               </tr>
             )}
             {(users ?? []).map((u) => (
@@ -78,6 +108,9 @@ export default async function AdminUsersPage() {
                     {(u.full_name ?? "?")[0].toUpperCase()}
                   </div>
                   <span>{u.full_name ?? <span style={{ color: "var(--text-muted)" }}>Sin nombre</span>}</span>
+                </td>
+                <td className="users-table-email">
+                  {emailMap[u.id] ?? <span style={{ color: "var(--text-muted)" }}>—</span>}
                 </td>
                 <td>
                   <UserRoleButton userId={u.id} role={u.role as "free" | "premium" | "admin"} />
@@ -97,8 +130,8 @@ export default async function AdminUsersPage() {
                   )}
                 </td>
                 <td className="users-table-num">
-                  {getEffectiveStreak(u.current_streak, u.last_seen) > 0 ? (
-                    <span className="users-streak">{getEffectiveStreak(u.current_streak, u.last_seen)}d</span>
+                  {mfaMap[u.id] ? (
+                    <AdminMfaResetButton userId={u.id} />
                   ) : (
                     <span style={{ color: "var(--text-muted)" }}>—</span>
                   )}

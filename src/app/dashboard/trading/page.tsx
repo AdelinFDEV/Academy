@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import TradingJournal from "@/components/TradingJournal";
 
@@ -13,9 +14,14 @@ export default async function TradingPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
+  // `trading_starting_capital` no tiene GRANT SELECT para `authenticated` (y no
+  // debería: la policy de profiles es USING(true), así que dárselo dejaría a
+  // cualquier usuario leer el capital inicial de los demás). Se lee con el
+  // cliente admin, ya verificada la identidad arriba con el cliente normal.
+  const admin = createAdminClient();
+  const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, role")
+    .select("full_name, role, trading_starting_capital")
     .eq("id", user.id)
     .single();
 
@@ -33,7 +39,11 @@ export default async function TradingPage() {
 
   return (
     <main className="dashboard-main">
-      <TradingJournal initialTrades={trades ?? []} userName={name} />
+      <TradingJournal
+        initialTrades={trades ?? []}
+        userName={name}
+        initialCapital={profile?.trading_starting_capital ?? null}
+      />
     </main>
   );
 }

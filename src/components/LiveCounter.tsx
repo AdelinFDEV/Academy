@@ -9,6 +9,7 @@ function randomOnline() {
 
 export default function LiveCounter() {
   const [online, setOnline] = useState(42);
+  const [users, setUsers] = useState(102);
 
   useEffect(() => {
     setOnline(randomOnline());
@@ -16,12 +17,21 @@ export default function LiveCounter() {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    fetch("/api/user-count")
+      .then((r) => r.json())
+      .then((data) => {
+        if (typeof data.count === "number") setUsers(data.count);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="live-counter">
       {/* Desktop: icono + texto completo */}
       <div className="live-counter-item live-counter-desktop">
         <Users size={12} aria-hidden="true" />
-        <span><strong>102</strong> alumnos</span>
+        <span><strong>{users}</strong> alumnos</span>
       </div>
       <div className="live-counter-divider live-counter-desktop" />
       <div className="live-counter-item live-counter-online live-counter-desktop">
@@ -29,11 +39,11 @@ export default function LiveCounter() {
         <span><strong>{online}</strong> online</span>
       </div>
 
-      {/* Móvil: minimalista — icono+102 · dot+número */}
+      {/* Móvil: minimalista — icono+users · dot+número */}
       <div className="live-counter-mobile">
         <span className="live-counter-mobile-users">
           <Users size={13} aria-hidden="true" />
-          <strong>102</strong>
+          <strong>{users}</strong>
         </span>
         <span className="live-counter-mobile-sep" />
         <span className="live-counter-mobile-online">

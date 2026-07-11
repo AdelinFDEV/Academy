@@ -15,10 +15,14 @@ export async function POST(request: Request) {
     return NextResponse.redirect(new URL("/blog", request.url));
   }
 
+  // Tope de longitud: evita abuso de almacenamiento con comentarios enormes.
+  // Se recorta en vez de rechazar para no perder el comentario del usuario.
+  const cleanContent = content.trim().slice(0, 2000);
+
   await supabase.from("comments").insert({
     post_id,
     user_id: user.id,
-    content: content.trim(),
+    content: cleanContent,
     approved: false,
   });
 

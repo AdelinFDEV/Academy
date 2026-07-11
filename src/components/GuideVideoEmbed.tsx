@@ -13,7 +13,7 @@ export default function GuideVideoEmbed({ youtubeId, title }: Props) {
       </div>
       <div className="gbc-video-frame">
         <iframe
-          src={`https://www.youtube.com/embed/${youtubeId}`}
+          src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
           title={title}
           loading="lazy"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

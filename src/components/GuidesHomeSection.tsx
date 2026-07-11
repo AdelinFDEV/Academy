@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Zap, BookOpen, Trophy, BarChart2 } from "lucide-react";
+import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Map, Star } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 
 const DIFF_CLASS: Record<string, string> = {
@@ -45,13 +45,20 @@ export default function GuidesHomeSection() {
 
           <div className="guides-featured-card">
             <div className="guides-featured-card-glow" aria-hidden="true" />
+            <div className="guides-featured-card-shine" aria-hidden="true" />
 
             <div className="guides-featured-top">
-              <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.6rem' }}>
-                <span className={`guides-diff-badge ${DIFF_CLASS[g.difficulty]}`}>{DIFF_LABEL[g.difficulty]}</span>
-                <span className="guides-access-badge">{g.type === "premium" ? "Premium" : "Gratis con registro"}</span>
+              <div className="guides-featured-icon">
+                <Map size={22} aria-hidden="true" />
               </div>
-              <span className="guides-featured-label">Guía destacada</span>
+              <span className="guides-featured-label">
+                <Star size={11} aria-hidden="true" /> <span className="guides-featured-label-text">Guía destacada</span>
+              </span>
+            </div>
+
+            <div className="guides-featured-badges">
+              <span className={`guides-diff-badge ${DIFF_CLASS[g.difficulty]}`}>{DIFF_LABEL[g.difficulty]}</span>
+              <span className="guides-access-badge">{g.type === "premium" ? "Premium" : "Gratis con registro"}</span>
             </div>
 
             <h3 className="guides-featured-title">{g.title}</h3>
@@ -59,7 +66,10 @@ export default function GuidesHomeSection() {
 
             <div className="guides-featured-topics">
               {g.topics.map((t) => (
-                <span key={t} className="guides-topic-pill">{t}</span>
+                <span key={t} className="guides-topic-pill">
+                  <span className="guides-topic-dot" aria-hidden="true" />
+                  {t}
+                </span>
               ))}
             </div>
 
@@ -79,6 +89,7 @@ export default function GuidesHomeSection() {
             </div>
 
             <Link href={`/guias/${g.slug}`} className="guides-featured-cta">
+              <span className="guides-featured-cta-shine" aria-hidden="true" />
               Empezar guía
               <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
             </Link>
@@ -87,14 +98,17 @@ export default function GuidesHomeSection() {
           {/* Stats column */}
           <div className="guides-home-stats">
             <div className="guides-stat-card">
+              <span className="guides-stat-icon"><BookOpen size={15} aria-hidden="true" /></span>
               <span className="guides-stat-num">{g.sections}</span>
               <span className="guides-stat-label">Secciones</span>
             </div>
             <div className="guides-stat-card">
+              <span className="guides-stat-icon"><BarChart2 size={15} aria-hidden="true" /></span>
               <span className="guides-stat-num">10</span>
               <span className="guides-stat-label">Puntos máx.</span>
             </div>
             <div className="guides-stat-card">
+              <span className="guides-stat-icon"><Trophy size={15} aria-hidden="true" /></span>
               <span className="guides-stat-num">1</span>
               <span className="guides-stat-label">Logro exclusivo</span>
             </div>

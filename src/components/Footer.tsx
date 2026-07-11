@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Crown } from "lucide-react";
+import { Crown, ShieldAlert } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
 
 export default function Footer() {
@@ -50,12 +50,26 @@ export default function Footer() {
         </div>
       </div>
 
+      <div className="footer-disclaimer-band">
+        <div className="footer-disclaimer-inner">
+          <ShieldAlert size={20} className="footer-disclaimer-icon" aria-hidden="true" />
+          <div>
+            <p className="footer-disclaimer-title">Aviso de riesgo</p>
+            <p className="footer-disclaimer-text">
+              El contenido de AdelinBTC Academy tiene fines exclusivamente educativos e informativos y no
+              constituye asesoramiento financiero, de inversión, legal ni fiscal. Las criptomonedas son activos
+              de alto riesgo y alta volatilidad: su valor puede caer drásticamente y podrías perder la totalidad
+              del capital invertido. Rentabilidades pasadas no garantizan resultados futuros. Ninguna herramienta,
+              guía o análisis de esta web debe interpretarse como una recomendación de compra o venta. Realiza
+              siempre tu propia investigación (DYOR) y consulta con un asesor financiero cualificado antes de
+              tomar decisiones de inversión.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="footer-bottom">
         <span>© {year} AdelinBTC Academy. Todos los derechos reservados.</span>
-        <span className="footer-disclaimer">
-          El contenido es educativo y no constituye asesoramiento financiero.{" "}
-          <Link href="/cookies" className="footer-cookie-link">Gestionar cookies</Link>
-        </span>
       </div>
     </footer>
   );

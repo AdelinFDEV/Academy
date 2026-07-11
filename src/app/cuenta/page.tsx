@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import CuentaPasswordBtn from "@/components/CuentaPasswordBtn";
 import CuentaDeleteAccountBtn from "@/components/CuentaDeleteAccountBtn";
-import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User } from "lucide-react";
+import TwoFactorSettings from "@/components/TwoFactorSettings";
+import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User, Lock } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Mi cuenta | AdelinBTC Academy",
@@ -48,7 +50,13 @@ export default async function CuentaPage({
 
   if (!user) redirect("/login?next=/cuenta");
 
-  const { data: profile } = await supabase
+  // Igual que en /dashboard/trading: `subscription_status`, `stripe_customer_id`,
+  // etc. no tienen GRANT SELECT para `authenticated` (y no deberían, ya que la
+  // policy de profiles es USING(true) — dárselo expondría los datos de Stripe
+  // de todos los usuarios a cualquier autenticado). Se leen con el cliente
+  // admin, ya verificada la identidad arriba con el cliente normal.
+  const admin = createAdminClient();
+  const { data: profile } = await admin
     .from("profiles")
     .select("full_name, role, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, premium_since, stripe_customer_id")
     .eq("id", user.id)
@@ -228,6 +236,15 @@ export default async function CuentaPage({
                   </Link>
                 </>
               )}
+            </div>
+
+            {/* — Seguridad — */}
+            <div className="cuenta-card cuenta-card--full" id="seguridad">
+              <div className="cuenta-card-header">
+                <Lock size={18} />
+                <h2>Seguridad</h2>
+              </div>
+              <TwoFactorSettings />
             </div>
 
           </div>

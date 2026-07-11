@@ -7,7 +7,6 @@ import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import SiteNav from "@/components/SiteNav";
 import SocialLinks from "@/components/SocialLinks";
-import { renderMarkdown, slugId } from "@/lib/renderMarkdown";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents from "@/components/TableOfContents";
 import CommentForm from "@/components/CommentForm";
@@ -49,15 +48,27 @@ export async function generateMetadata(
 }
 
 
-function extractHeadings(md: string) {
-  return md
-    .split("\n")
-    .filter((l) => /^#{2,3} /.test(l))
-    .map((l) => {
-      const level = l.startsWith("### ") ? 3 : 2;
-      const text = l.replace(/^#{2,3} /, "").trim();
-      return { id: slugId(text), text, level };
-    });
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+// El contenido ya es HTML (lo escribe Claude directamente, sin Markdown de por
+// medio) — el índice se saca leyendo los <h2>/<h3> reales del artículo.
+function extractHeadings(html: string) {
+  const matches = [...html.matchAll(/<h([23])(?:\s+id="([^"]*)")?[^>]*>([\s\S]*?)<\/h\1>/gi)];
+  return matches.map((m) => {
+    const level = Number(m[1]);
+    const text = m[3].replace(/<[^>]+>/g, "").trim();
+    const id = m[2] || slugify(text);
+    return { id, text, level };
+  });
 }
 
 function formatDate(date: string) {
@@ -133,7 +144,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const initialShares = post.shares_count ?? 0;
 
   const youtubeId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
-  const wordCount = post.content ? post.content.trim().split(/\s+/).length : 0;
+  const wordCount = post.content ? post.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length : 0;
   const readingMinutes = Math.max(1, Math.round(wordCount / 200));
   const headings = post.content ? extractHeadings(post.content) : [];
 
@@ -226,7 +237,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {youtubeId ? (
           <div className="post-video">
             <iframe
-              src={`https://www.youtube.com/embed/${youtubeId}`}
+              src={`https://www.youtube-nocookie.com/embed/${youtubeId}`}
               title={post.title}
               allowFullScreen
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -246,7 +257,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
             <div
               className="post-content prose-content"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content) }}
+              dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
             {/* Prompt suave de registro tras leer un artículo gratis */}

@@ -121,6 +121,24 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // 2FA: si el usuario tiene un factor TOTP verificado pero la sesión actual
+  // todavía está en aal1 (no ha completado el reto de este login), lo mandamos
+  // a completarlo antes de dejarle entrar a rutas protegidas o de admin. Sin
+  // esto, el 2FA solo se mostraría en /cuenta pero no bloquearía nada de verdad.
+  const needsMfaGate =
+    protectedRoutes.some((r) => pathname.startsWith(r)) ||
+    adminRoutes.some((r) => pathname.startsWith(r));
+
+  if (user && needsMfaGate && pathname !== "/mfa-challenge") {
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    const mfaPending = aal?.nextLevel === "aal2" && aal.currentLevel !== "aal2";
+    if (mfaPending) {
+      const mfaUrl = new URL("/mfa-challenge", request.url);
+      mfaUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(mfaUrl);
+    }
+  }
+
   // Admin routes: require an authenticated session with role = admin.
   if (adminRoutes.some((r) => pathname.startsWith(r))) {
     if (!user) {

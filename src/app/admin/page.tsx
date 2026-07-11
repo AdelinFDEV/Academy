@@ -138,16 +138,16 @@ export default async function AdminPage() {
     { data: comments30 },
     { data: shares30 },
   ] = await Promise.all([
-    supabase.from("posts").select("*", { count: "exact", head: true }),
-    supabase.from("comments").select("*", { count: "exact", head: true }).eq("approved", false),
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "premium"),
-    supabase.from("posts").select("*", { count: "exact", head: true }).eq("published", true),
-    supabase.from("site_visits").select("*", { count: "exact", head: true }),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d7.toISOString()),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d30.toISOString()),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", d60.toISOString()).lt("created_at", d30.toISOString()),
+    supabase.from("posts").select("id", { count: "exact", head: true }),
+    supabase.from("comments").select("id", { count: "exact", head: true }).eq("approved", false),
+    supabase.from("profiles").select("id", { count: "exact", head: true }),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
+    supabase.from("posts").select("id", { count: "exact", head: true }).eq("published", true),
+    supabase.from("site_visits").select("id", { count: "exact", head: true }),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d7.toISOString()),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d30.toISOString()),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d60.toISOString()).lt("created_at", d30.toISOString()),
     supabase.from("profiles").select("created_at").gte("created_at", d30.toISOString()).order("created_at"),
     supabase.from("posts").select("created_at, published").gte("created_at", m6.toISOString()),
     supabase.from("posts").select("is_premium").eq("published", true),
@@ -305,6 +305,15 @@ export default async function AdminPage() {
   const userWeekTrend  = trend(newUsersThisWeek, newUsersLastWeek);
   const userMonthTrend = trend(newUsersThisMonth, newUsersLastMonth);
 
+  // ── Objetivo de MRR ──
+  const PREMIUM_PRICE   = 19.99;
+  const MRR_GOAL        = 600;
+  const currentMRR      = (premiumCount ?? 0) * PREMIUM_PRICE;
+  const goalPct         = Math.min((currentMRR / MRR_GOAL) * 100, 100);
+  const usersNeededGoal = Math.ceil(MRR_GOAL / PREMIUM_PRICE);
+  const usersRemaining  = Math.max(usersNeededGoal - (premiumCount ?? 0), 0);
+  const goalReached     = currentMRR >= MRR_GOAL;
+
   return (
     <div className="admin-page">
       {/* Header */}
@@ -312,6 +321,106 @@ export default async function AdminPage() {
         <div>
           <h1>Panel de administración</h1>
           <p className="admin-page-subtitle">Resumen de actividad y crecimiento</p>
+        </div>
+      </div>
+
+      {/* Revenue hero — lo primero que se ve: cuánto dinero genera la academia */}
+      <div className="admin-revenue-hero">
+        <div className="admin-revenue-hero-top">
+          <div className="admin-revenue-hero-main">
+            <span className="admin-revenue-hero-icon"><Icon name="crown" size={20} /></span>
+            <div>
+              <span className="admin-revenue-hero-label">MRR estimado</span>
+              <span className="admin-revenue-hero-value">{currentMRR.toFixed(0)}€<small>/mes</small></span>
+              <span className="admin-revenue-hero-sub">{premiumCount ?? 0} suscripción{premiumCount === 1 ? "" : "es"} premium × 19,99€</span>
+            </div>
+          </div>
+
+          <div className="admin-revenue-hero-divider" />
+
+          <div className="admin-funnel-strip">
+            <div className="admin-funnel-step">
+              <span className="admin-funnel-step-n">{usersCount ?? 0}</span>
+              <span className="admin-funnel-step-label">Registrados</span>
+            </div>
+            <span className="admin-funnel-arrow">→</span>
+            <div className="admin-funnel-step">
+              <span className="admin-funnel-step-n">{(usersCount ?? 0) - (premiumCount ?? 0)}</span>
+              <span className="admin-funnel-step-label">Free</span>
+            </div>
+            <span className="admin-funnel-arrow">→</span>
+            <div className="admin-funnel-step">
+              <span className="admin-funnel-step-n" style={{ color: "var(--accent-orange)" }}>{premiumCount ?? 0}</span>
+              <span className="admin-funnel-step-label">Premium</span>
+            </div>
+            <div className="admin-funnel-divider" />
+            <div className="admin-funnel-kpi">
+              <span className="admin-funnel-kpi-v">
+                {usersCount ? Math.round(((premiumCount ?? 0) / usersCount) * 100) : 0}%
+              </span>
+              <span className="admin-funnel-kpi-l">Conversión</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="admin-revenue-goal">
+          <div className="admin-revenue-goal-head">
+            <span className="admin-revenue-goal-label">
+              Objetivo <strong>{MRR_GOAL}€/mes</strong>
+            </span>
+            <span className={`admin-revenue-goal-status${goalReached ? " reached" : ""}`}>
+              {goalReached
+                ? "¡Objetivo conseguido! 🎉"
+                : `Te falta${usersRemaining === 1 ? "" : "n"} ${usersRemaining} usuario${usersRemaining === 1 ? "" : "s"} premium`}
+            </span>
+          </div>
+          <div className="admin-revenue-goal-bar-track">
+            <div className="admin-revenue-goal-bar-fill" style={{ width: `${goalPct}%` }} />
+          </div>
+          <div className="admin-revenue-goal-foot">
+            <span>{currentMRR.toFixed(0)}€ de {MRR_GOAL}€</span>
+            <span>{goalPct.toFixed(0)}%</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent activity */}
+      <div className="admin-card admin-activity-card">
+        <div className="admin-card-head">
+          <h2 className="admin-card-title">
+            <Icon name="activity" size={16} />
+            Actividad reciente
+          </h2>
+        </div>
+        <div className="admin-activity-feed">
+          {(recentSignups ?? []).map((u) => (
+            <div key={u.id} className="admin-activity-item">
+              <div className="admin-activity-dot signup" />
+              <div className="admin-activity-body">
+                <span className="admin-activity-text">
+                  <strong>{u.full_name ?? "Usuario"}</strong> se registró
+                </span>
+                <span className="admin-activity-meta">
+                  <span className={`admin-activity-role ${u.role}`}>{u.role}</span>
+                  · {new Date(u.created_at).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}
+                </span>
+              </div>
+            </div>
+          ))}
+          {(recentComments ?? []).slice(0, 3).map((c: any) => (
+            <div key={c.id} className="admin-activity-item">
+              <div className={`admin-activity-dot ${c.approved ? "comment" : "comment-pending"}`} />
+              <div className="admin-activity-body">
+                <span className="admin-activity-text">
+                  <strong>{c.profiles?.full_name ?? "Usuario"}</strong> comentó en <em>{c.posts?.title ?? "—"}</em>
+                </span>
+                <span className="admin-activity-meta">
+                  {!c.approved && <span className="admin-activity-badge">Pendiente</span>}
+                  · {new Date(c.created_at).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -378,37 +487,6 @@ export default async function AdminPage() {
             <span className="admin-stat-v2-label">Visitas totales a la web</span>
             <span className="admin-stat-v2-sub">todas las páginas</span>
           </div>
-        </div>
-      </div>
-
-      {/* Conversion funnel strip */}
-      <div className="admin-funnel-strip">
-        <div className="admin-funnel-step">
-          <span className="admin-funnel-step-n">{usersCount ?? 0}</span>
-          <span className="admin-funnel-step-label">Registrados</span>
-        </div>
-        <span className="admin-funnel-arrow">→</span>
-        <div className="admin-funnel-step">
-          <span className="admin-funnel-step-n">{(usersCount ?? 0) - (premiumCount ?? 0)}</span>
-          <span className="admin-funnel-step-label">Free</span>
-        </div>
-        <span className="admin-funnel-arrow">→</span>
-        <div className="admin-funnel-step">
-          <span className="admin-funnel-step-n" style={{ color: "var(--accent-orange)" }}>{premiumCount ?? 0}</span>
-          <span className="admin-funnel-step-label">Premium</span>
-        </div>
-        <div className="admin-funnel-divider" />
-        <div className="admin-funnel-kpi">
-          <span className="admin-funnel-kpi-v">
-            {usersCount ? Math.round(((premiumCount ?? 0) / usersCount) * 100) : 0}%
-          </span>
-          <span className="admin-funnel-kpi-l">Conversión</span>
-        </div>
-        <div className="admin-funnel-kpi">
-          <span className="admin-funnel-kpi-v" style={{ color: "var(--accent-orange)" }}>
-            {((premiumCount ?? 0) * 19.99).toFixed(0)}€
-          </span>
-          <span className="admin-funnel-kpi-l">MRR estimado</span>
         </div>
       </div>
 
@@ -808,105 +886,27 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {/* Bottom row: top posts + recent activity */}
-      <div className="admin-bottom-row">
-        {/* Top posts by reads */}
-        <div className="admin-card">
-          <div className="admin-card-head">
-            <h2 className="admin-card-title">
-              <Icon name="eye" size={16} />
-              Artículos más leídos
-            </h2>
-          </div>
-          {topPosts.length === 0 ? (
-            <p className="admin-empty">Sin datos de lectura todavía</p>
-          ) : (
-            <div className="admin-top-posts">
-              {topPosts.map((p, i) => (
-                <div key={p.slug} className="admin-top-post-row">
-                  <span className="admin-top-post-rank">{i + 1}</span>
-                  <span className="admin-top-post-title">{p.title}</span>
-                  <span className="admin-top-post-reads">{p.count} lecturas</span>
-                </div>
-              ))}
-            </div>
-          )}
+      {/* Top posts by reads */}
+      <div className="admin-card">
+        <div className="admin-card-head">
+          <h2 className="admin-card-title">
+            <Icon name="eye" size={16} />
+            Artículos más leídos
+          </h2>
         </div>
-
-        {/* Recent activity */}
-        <div className="admin-card">
-          <div className="admin-card-head">
-            <h2 className="admin-card-title">
-              <Icon name="activity" size={16} />
-              Actividad reciente
-            </h2>
-          </div>
-          <div className="admin-activity-feed">
-            {(recentSignups ?? []).map((u) => (
-              <div key={u.id} className="admin-activity-item">
-                <div className="admin-activity-dot signup" />
-                <div className="admin-activity-body">
-                  <span className="admin-activity-text">
-                    <strong>{u.full_name ?? "Usuario"}</strong> se registró
-                  </span>
-                  <span className="admin-activity-meta">
-                    <span className={`admin-activity-role ${u.role}`}>{u.role}</span>
-                    · {new Date(u.created_at).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}
-                  </span>
-                </div>
-              </div>
-            ))}
-            {(recentComments ?? []).slice(0, 3).map((c: any) => (
-              <div key={c.id} className="admin-activity-item">
-                <div className={`admin-activity-dot ${c.approved ? "comment" : "comment-pending"}`} />
-                <div className="admin-activity-body">
-                  <span className="admin-activity-text">
-                    <strong>{c.profiles?.full_name ?? "Usuario"}</strong> comentó en <em>{c.posts?.title ?? "—"}</em>
-                  </span>
-                  <span className="admin-activity-meta">
-                    {!c.approved && <span className="admin-activity-badge">Pendiente</span>}
-                    · {new Date(c.created_at).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}
-                  </span>
-                </div>
+        {topPosts.length === 0 ? (
+          <p className="admin-empty">Sin datos de lectura todavía</p>
+        ) : (
+          <div className="admin-top-posts">
+            {topPosts.map((p, i) => (
+              <div key={p.slug} className="admin-top-post-row">
+                <span className="admin-top-post-rank">{i + 1}</span>
+                <span className="admin-top-post-title">{p.title}</span>
+                <span className="admin-top-post-reads">{p.count} lecturas</span>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Quick actions */}
-        <div className="admin-card">
-          <div className="admin-card-head">
-            <h2 className="admin-card-title">
-              <Icon name="spark" size={16} />
-              Acciones rápidas
-            </h2>
-          </div>
-          <div className="admin-quick-actions">
-            <Link href="/admin/categories" className="admin-quick-action">
-              <span className="admin-quick-action-icon"><Icon name="folder" size={16} /></span>
-              <span>Categorías</span>
-            </Link>
-            <Link href="/admin/comments" className="admin-quick-action">
-              <span className="admin-quick-action-icon"><Icon name="chat" size={16} /></span>
-              <span>Comentarios</span>
-              {(commentsCount ?? 0) > 0 && (
-                <span className="admin-quick-action-badge">{commentsCount}</span>
-              )}
-            </Link>
-            <Link href="/admin/users" className="admin-quick-action">
-              <span className="admin-quick-action-icon"><Icon name="users" size={16} /></span>
-              <span>Usuarios</span>
-            </Link>
-            <Link href="/admin/posts" className="admin-quick-action">
-              <span className="admin-quick-action-icon"><Icon name="list" size={16} /></span>
-              <span>Todas las entradas</span>
-            </Link>
-            <Link href="/" target="_blank" className="admin-quick-action">
-              <span className="admin-quick-action-icon"><Icon name="globe" size={16} /></span>
-              <span>Ver web</span>
-            </Link>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

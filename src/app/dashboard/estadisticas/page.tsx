@@ -34,7 +34,6 @@ export default async function EstadisticasPage() {
     .single();
 
   const role = profile?.role ?? "free";
-  const isPremium = role === "premium" || role === "admin";
   if (role !== "admin") redirect("/dashboard");
 
   const { data: trades } = await supabase

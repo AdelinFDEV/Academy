@@ -25,7 +25,16 @@ export async function POST(request: Request) {
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { term, definition, category } = await request.json();
-    if (!term) return NextResponse.json({ error: "Missing term" }, { status: 400 });
+    if (!term || typeof term !== "string") return NextResponse.json({ error: "Missing term" }, { status: 400 });
+
+    // Límites de longitud: evita abuso de almacenamiento con payloads enormes.
+    if (
+      term.length > 120 ||
+      (typeof definition === "string" && definition.length > 2000) ||
+      (typeof category === "string" && category.length > 120)
+    ) {
+      return NextResponse.json({ error: "Contenido demasiado largo" }, { status: 400 });
+    }
 
     const { data: existing } = await supabase
       .from("saved_terms")

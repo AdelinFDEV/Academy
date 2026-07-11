@@ -3,8 +3,10 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check } from "lucide-react";
+import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, User, Lock, Sprout, BookOpen, Book, Flame, Zap } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
+import TwoFactorNudge from "@/components/TwoFactorNudge";
+import DashboardSpotlight from "@/components/DashboardSpotlight";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES } from "@/lib/guides";
@@ -28,7 +30,7 @@ export default async function DashboardPage() {
   const isPremium = role === "premium" || role === "admin";
   const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
 
-  const [{ data: posts }, { data: userPostsData }, { data: savedTermsData }, { data: savedGuidesData }] = await Promise.all([
+  const [{ data: posts }, { data: userPostsData }, { data: savedTermsData }, { data: savedGuidesData }, { data: userBadgesData }] = await Promise.all([
     supabase
       .from("posts")
       .select("id, title, slug, cover_image, is_premium, created_at, categories(name, slug)")
@@ -48,6 +50,10 @@ export default async function DashboardPage() {
       .select("guide_slug, saved_at")
       .eq("user_id", user.id)
       .order("saved_at", { ascending: false }),
+    supabase
+      .from("user_badges")
+      .select("badge_id")
+      .eq("user_id", user.id),
   ]);
 
   const allPosts = posts ?? [];
@@ -56,14 +62,25 @@ export default async function DashboardPage() {
   const savedGuidesList = (savedGuidesData ?? [])
     .map((sg) => ({ slug: sg.guide_slug, savedAt: sg.saved_at, meta: GUIDES.find((g) => g.slug === sg.guide_slug) }))
     .filter((sg): sg is { slug: string; savedAt: string; meta: NonNullable<typeof sg.meta> } => !!sg.meta);
-  const premiumArticlesCount = allPosts.filter((p) => p.is_premium).length;
+  const earnedBadgeIds = new Set((userBadgesData ?? []).map((b) => b.badge_id));
 
-  const totalPosts = allPosts.length;
+  const DASH_BADGES = [
+    { id: "first-read", label: "Primer paso", icon: <Sprout size={18} aria-hidden="true" />, condition: "Lee tu primer artículo de la academia" },
+    { id: "reader",     label: "Lector",       icon: <BookOpen size={18} aria-hidden="true" />, condition: "Completa 5 artículos leídos" },
+    { id: "scholar",    label: "Estudioso",    icon: <Book size={18} aria-hidden="true" />, condition: "Alcanza 10 artículos leídos" },
+    { id: "streak3",    label: "Constante",    icon: <Flame size={18} aria-hidden="true" />, condition: "Entra 3 días seguidos a la academia" },
+    { id: "streak7",    label: "Dedicado",     icon: <Zap size={18} aria-hidden="true" />, condition: "Mantén una racha de 7 días consecutivos" },
+    {
+      id: "streak30", label: "Imparable", icon: <Gem size={18} aria-hidden="true" />,
+      condition: "Consigue 30 días consecutivos en la academia",
+      reward: "Tu perfil lucirá una ★ dorada visible en todos tus comentarios",
+    },
+  ];
+  const badgesUnlockedCount = DASH_BADGES.filter((b) => earnedBadgeIds.has(b.id)).length;
+
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
-  const readCount = readIds.size;
   const savedIds = new Set(userPosts.filter((up) => up.saved).map((up) => up.post_id));
   const savedPosts = allPosts.filter((p) => savedIds.has(p.id));
-  const readPercent = totalPosts > 0 ? Math.round((readCount / totalPosts) * 100) : 0;
 
   const savedUnread = allPosts.filter((p) => {
     const up = userPosts.find((u) => u.post_id === p.id);
@@ -79,7 +96,6 @@ export default async function DashboardPage() {
       tools: [
         { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
         { href: "#",         icon: "graduationcap", name: "Cursos",               desc: "Formación paso a paso",          locked: false, soon: true  },
-        { href: "#",         icon: "files",         name: "Recursos",             desc: "Plantillas y materiales",        locked: false, soon: true  },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
       ],
     },
@@ -90,10 +106,9 @@ export default async function DashboardPage() {
         { href: "/dashboard/watchlist",                         icon: "scaneye",      name: "Watchlist",              desc: "Sigue el precio de tus coins",                              locked: false,      soon: false },
         { href: "/logros",                                      icon: "trophy",       name: "Logros",                 desc: "Tu progreso y rachas",                                      locked: false,      soon: false },
         { href: "/calculadora",                                 icon: "target",       name: "Predicción de Precio",   desc: "¿Qué Market Cap necesita tu token?",                        locked: false,      soon: false },
-        { href: "/ranking",                                     icon: "award",        name: "Ranking",                desc: "Los miembros más activos",                                  locked: false,      soon: true  },
         { href: isPremium ? "/portfolio"                 : "#", icon: "piechart",     name: "Portfolio Spot",         desc: "Sigue las compras de AdelinBTC en SPOT",                    locked: !isPremium, soon: false },
         { href: isPremium ? "/herramientas/liberaciones" : "#", icon: "unlock",       name: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting", locked: !isPremium, soon: false },
-        { href: isPremium ? "/dashboard/calculadora-riesgo" : "#", icon: "shield",    name: "Calculadora de Riesgo",  desc: "Tamaño de posición según tu capital y riesgo",              locked: !isPremium, soon: false },
+        { href: "/dashboard/calculadora-riesgo",                icon: "shield",    name: "Calculadora de Riesgo",  desc: "Tamaño de posición según tu capital y riesgo",              locked: false,      soon: false },
       ],
     },
   ];
@@ -120,25 +135,58 @@ export default async function DashboardPage() {
             )}
           </div>
         </div>
-        {!isPremium && (
-          <Link href="/premium" className="dash-upgrade-btn">Hazte Premium →</Link>
-        )}
+        <div className="dash-header-actions">
+          <Link href="/cuenta" className="dash-account-btn">
+            <User size={15} /> Mi cuenta
+          </Link>
+          {!isPremium && (
+            <Link href="/premium" className="dash-upgrade-btn">Hazte Premium →</Link>
+          )}
+        </div>
       </div>
 
-      {/* ── Progreso ── */}
-      <div className="dash-progress-card">
+      <TwoFactorNudge />
+
+      {/* ── Spotlight: herramientas top ── */}
+      <DashboardSpotlight isPremium={isPremium} />
+
+      {/* ── Logros ── */}
+      <div className="dash-badges-card">
         <div className="dash-progress-head">
-          <span className="dash-card-label">Tu progreso</span>
+          <span className="dash-card-label">Tus logros</span>
           <span className="dash-progress-count">
-            {readCount}<span>/{totalPosts}</span>
+            {badgesUnlockedCount}<span>/{DASH_BADGES.length}</span>
           </span>
         </div>
-        <div className="dash-progress-bar">
-          <div className="dash-progress-fill" style={{ width: `${readPercent}%` }} />
+        <div className="dash-badges-row">
+          {DASH_BADGES.map((badge) => {
+            const unlocked = earnedBadgeIds.has(badge.id);
+            return (
+              <div key={badge.id} className={`dash-badge-tile${unlocked ? " dash-badge-tile--unlocked" : ""}`}>
+                {unlocked && (
+                  <span className="dash-badge-tile-check" title="Logro obtenido">
+                    <Check size={10} strokeWidth={3.2} aria-hidden="true" />
+                  </span>
+                )}
+                <div className="dash-badge-tile-icon">
+                  {unlocked ? badge.icon : <Lock size={16} aria-hidden="true" />}
+                </div>
+                <span className="dash-badge-tile-label">{badge.label}</span>
+                <div className="badge-tooltip">
+                  <p className="badge-tooltip-condition">{badge.condition}</p>
+                  {badge.reward && (
+                    <p className="badge-tooltip-reward">
+                      <span className="badge-tooltip-reward-star">★</span> {badge.reward}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
         <div className="dash-progress-foot">
-          <span>{readPercent}% de artículos leídos</span>
-          <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+          <span>{badgesUnlockedCount === 0 ? "Empieza a leer para desbloquear tu primer logro" : `${badgesUnlockedCount} de ${DASH_BADGES.length} logros desbloqueados`}</span>
+          <Link href="/dashboard/logros" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
       </div>
 
@@ -206,7 +254,7 @@ export default async function DashboardPage() {
       <div className="dash-section">
         <div className="dash-section-head">
           <h2 className="dash-section-title">Últimas guías publicadas</h2>
-          <Link href="/guias" className="dash-link-orange">Ver todas →</Link>
+          <Link href="/guias" className="dash-link-orange"><span>Ver todas</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
         <div className="dash-continue-list">
           {[...GUIDES].reverse().slice(0, 3).map((guide) => (
@@ -231,7 +279,7 @@ export default async function DashboardPage() {
       <div className="dash-section">
         <div className="dash-section-head">
           <h2 className="dash-section-title">Últimos artículos publicados</h2>
-          <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+          <Link href="/articulos" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
         <div className="dash-continue-list">
           {allPosts.slice(0, 3).map((post) => (
@@ -259,7 +307,7 @@ export default async function DashboardPage() {
         <div className="dash-section">
           <div className="dash-section-head">
             <h2 className="dash-section-title">Continúa leyendo</h2>
-            <Link href="/articulos" className="dash-link-orange">Ver todos →</Link>
+            <Link href="/articulos" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
           </div>
           <div className="dash-continue-list">
             {continueReading.map((post) => (
@@ -316,7 +364,7 @@ export default async function DashboardPage() {
               <span className="dash-count-pill">{savedGuidesList.length}</span>
             )}
           </h2>
-          <Link href="/guias" className="dash-link-orange">Ver guías →</Link>
+          <Link href="/guias" className="dash-link-orange"><span>Ver guías</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
         <DashboardSavedGuides initialGuides={savedGuidesList} />
       </div>
@@ -330,7 +378,7 @@ export default async function DashboardPage() {
               <span className="dash-count-pill">{savedTermsList.length}</span>
             )}
           </h2>
-          <Link href="/glosario" className="dash-link-orange">Ver diccionario →</Link>
+          <Link href="/glosario" className="dash-link-orange"><span>Ver diccionario</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
         <DashboardSavedTerms initialTerms={savedTermsList} />
       </div>
