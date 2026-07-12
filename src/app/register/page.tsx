@@ -5,6 +5,20 @@ import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
+import { Check } from "lucide-react";
+
+// Requisitos de contraseña. Deben coincidir con la política de Supabase Auth
+// (minúscula + mayúscula + número + símbolo, mínimo 8) para que el usuario vea
+// EN VIVO qué le falta, en vez de un error genérico de Supabase tras enviar.
+function passwordChecks(pw: string) {
+  return [
+    { label: "Al menos 8 caracteres", ok: pw.length >= 8 },
+    { label: "Una letra minúscula (a-z)", ok: /[a-z]/.test(pw) },
+    { label: "Una letra mayúscula (A-Z)", ok: /[A-Z]/.test(pw) },
+    { label: "Un número (0-9)", ok: /\d/.test(pw) },
+    { label: "Un símbolo (!@#$%…)", ok: /[^A-Za-z0-9\s]/.test(pw) },
+  ];
+}
 
 export default function RegisterPage() {
   return (
@@ -48,8 +62,8 @@ function RegisterForm() {
     setLoading(true);
     setError("");
 
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
+    if (!passwordChecks(password).every((c) => c.ok)) {
+      setError("La contraseña no cumple todos los requisitos indicados abajo.");
       setLoading(false);
       return;
     }
@@ -83,7 +97,13 @@ function RegisterForm() {
         setLoading(false);
         return;
       }
-      setError(error.message);
+      // Traduce el error de política de contraseña de Supabase (llega en inglés
+      // y con la lista de símbolos) a un mensaje limpio que remite al checklist.
+      setError(
+        /password/i.test(error.message) && /(should contain|at least|character)/i.test(error.message)
+          ? "La contraseña no cumple todos los requisitos indicados abajo."
+          : error.message
+      );
       setLoading(false);
       return;
     }
@@ -181,6 +201,15 @@ function RegisterForm() {
               required
             />
           </div>
+
+          <ul className="pw-requirements" aria-live="polite">
+            {passwordChecks(password).map((req) => (
+              <li key={req.label} className={req.ok ? "ok" : ""}>
+                <Check size={13} aria-hidden="true" />
+                {req.label}
+              </li>
+            ))}
+          </ul>
 
           {error && <p className="auth-error">{error}</p>}
 

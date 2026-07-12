@@ -1,14 +1,34 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
+// Tipos de OTP por email que puede traer el enlace (confirmación / recuperación).
+type EmailOtpType = "email" | "signup" | "recovery" | "invite" | "magiclink" | "email_change";
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
+  const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const next = searchParams.get("next");
 
-  if (code) {
-    const supabase = await createClient();
+  const supabase = await createClient();
+
+  if (tokenHash && type) {
+    // Flujo token_hash: valida el enlace directamente a partir del token, SIN
+    // depender del verificador PKCE guardado en el navegador que inició el
+    // registro → funciona abriendo el email en CUALQUIER dispositivo. Es el que
+    // usan los enlaces de las plantillas de email (confirmación y recuperación).
+    const { error } = await supabase.auth.verifyOtp({
+      type: type as EmailOtpType,
+      token_hash: tokenHash,
+    });
+    // Si el enlace de confirmación es inválido/caducado, a login. En recuperación
+    // dejamos seguir: la propia /auth/reset-password avisa de enlace caducado.
+    if (error && type !== "recovery") {
+      return NextResponse.redirect(`${origin}/login?error=confirm`);
+    }
+  } else if (code) {
+    // Flujo PKCE (OAuth de Google) — ocurre en el mismo navegador por naturaleza.
     await supabase.auth.exchangeCodeForSession(code);
   }
 

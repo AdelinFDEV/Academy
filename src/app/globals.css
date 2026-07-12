@@ -196,6 +196,35 @@ html {
   min-height: 65px;
 }
 
+/* Requisitos de contraseña en el registro: se marcan en verde en vivo. */
+.pw-requirements {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: -0.2rem 0 0;
+  padding: 0;
+}
+.pw-requirements li {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+.pw-requirements li svg {
+  opacity: 0.3;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+.pw-requirements li.ok {
+  color: var(--free-green);
+}
+.pw-requirements li.ok svg {
+  opacity: 1;
+}
+
 .field {
   display: flex;
   flex-direction: column;
