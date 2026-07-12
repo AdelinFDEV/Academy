@@ -97,12 +97,20 @@ function RegisterForm() {
         setLoading(false);
         return;
       }
-      // Traduce el error de política de contraseña de Supabase (llega en inglés
-      // y con la lista de símbolos) a un mensaje limpio que remite al checklist.
+      const rawMsg = error.message || "";
+      const isPwPolicy =
+        /password/i.test(rawMsg) && /(should contain|at least|character)/i.test(rawMsg);
+      // Fallo opaco ("{}", vacío) o de envío de email (SMTP) → mensaje claro en
+      // vez del error crudo. Deja el detalle real en consola para depurar.
+      const isEmailSend =
+        !rawMsg || rawMsg === "{}" || /(sending|smtp|confirmation email)/i.test(rawMsg);
+      console.error("[register] signUp error:", error);
       setError(
-        /password/i.test(error.message) && /(should contain|at least|character)/i.test(error.message)
+        isPwPolicy
           ? "La contraseña no cumple todos los requisitos indicados abajo."
-          : error.message
+          : isEmailSend
+            ? "No pudimos enviarte el correo de confirmación ahora mismo. Inténtalo de nuevo en unos minutos."
+            : rawMsg
       );
       setLoading(false);
       return;
