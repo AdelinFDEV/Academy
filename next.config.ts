@@ -9,8 +9,8 @@ const isDev = process.env.NODE_ENV === "development";
 // su script y su iframe desde challenges.cloudflare.com — hay que permitirlo en
 // la CSP o el widget quedaría bloqueado.
 const scriptSrc = isDev
-  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com"
-  : "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com";
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com"
+  : "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com";
 
 const securityHeaders = [
   // Evita que el sitio sea embebido en iframes (clickjacking)
@@ -32,7 +32,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com https://cloudflareinsights.com",
       // Los vídeos se incrustan con youtube-nocookie.com (más privado / RGPD).
       // Debe listarse explícitamente: la CSP no cubre youtube-nocookie.com por
       // permitir youtube.com. Sin esto, TODOS los embeds de vídeo se bloquean.

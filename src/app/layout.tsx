@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, DM_Sans, Kalam } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
@@ -77,6 +78,12 @@ export default function RootLayout({
         <CookieBanner />
         <SiteVisitTracker />
         <StreakTracker />
+        {/* Cloudflare Web Analytics (gratis, sin cookies) */}
+        <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          strategy="afterInteractive"
+          data-cf-beacon='{"token": "7969fb64e16745b899eaf16b074d07c4"}'
+        />
       </body>
     </html>
   );
