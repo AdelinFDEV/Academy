@@ -30,7 +30,10 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
       "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
-      "frame-src https://www.youtube.com",
+      // Los vídeos se incrustan con youtube-nocookie.com (más privado / RGPD).
+      // Debe listarse explícitamente: la CSP no cubre youtube-nocookie.com por
+      // permitir youtube.com. Sin esto, TODOS los embeds de vídeo se bloquean.
+      "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",
