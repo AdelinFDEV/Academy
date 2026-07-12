@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
+import Turnstile from "@/components/Turnstile";
 
 export default function ForgotPasswordPage() {
   const supabase = createClient();
@@ -11,6 +12,8 @@ export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [cooldown, setCooldown] = useState(0);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,9 +27,13 @@ export default function ForgotPasswordPage() {
     // Supabase will ignore it and redirect to the Site URL (home page).
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${location.origin}/auth/callback?type=recovery`,
+      captchaToken,
     });
 
     setLoading(false);
+    // El token de captcha es de un solo uso: se regenera tras cada intento.
+    setCaptchaToken("");
+    setCaptchaKey((k) => k + 1);
     if (error) {
       setError("No se pudo enviar el email. Verifica que la dirección sea correcta.");
       return;
@@ -82,7 +89,13 @@ export default function ForgotPasswordPage() {
 
             {error && <p className="auth-error">{error}</p>}
 
-            <button type="submit" className="btn-primary" disabled={loading || cooldown > 0}>
+            <Turnstile
+              onVerify={setCaptchaToken}
+              onExpire={() => setCaptchaToken("")}
+              resetKey={captchaKey}
+            />
+
+            <button type="submit" className="btn-primary" disabled={loading || cooldown > 0 || !captchaToken}>
               {loading ? "Enviando..." : cooldown > 0 ? `Reenviar en ${cooldown}s` : "Enviar enlace de recuperación"}
             </button>
           </form>

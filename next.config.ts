@@ -5,9 +5,12 @@ const isDev = process.env.NODE_ENV === "development";
 // 'unsafe-eval' SOLO se necesita en desarrollo (React lo usa para el debugging
 // y HMR). En producción ni React ni Next.js lo usan, así que lo retiramos para
 // reducir la superficie de un posible XSS.
+// Cloudflare Turnstile (captcha anti-bots en login/registro/recuperación) carga
+// su script y su iframe desde challenges.cloudflare.com — hay que permitirlo en
+// la CSP o el widget quedaría bloqueado.
 const scriptSrc = isDev
-  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
-  : "script-src 'self' 'unsafe-inline'";
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com"
+  : "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com";
 
 const securityHeaders = [
   // Evita que el sitio sea embebido en iframes (clickjacking)
@@ -29,11 +32,11 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com",
       // Los vídeos se incrustan con youtube-nocookie.com (más privado / RGPD).
       // Debe listarse explícitamente: la CSP no cubre youtube-nocookie.com por
       // permitir youtube.com. Sin esto, TODOS los embeds de vídeo se bloquean.
-      "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
+      "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com",
       "frame-ancestors 'none'",
       "object-src 'none'",
       "base-uri 'self'",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
@@ -139,6 +140,23 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
   const comments = commentsRes.data;
   const userPost = userPostRes.data as { saved: boolean; read_at: string | null } | null;
+
+  // Anti-spam: ¿el usuario ya tiene un comentario pendiente (en cualquier post)?
+  // Se lee con el cliente admin porque la policy pública de `comments` solo
+  // expone los aprobados. Si lo tiene, el formulario aparece deshabilitado.
+  let hasPendingComment = false;
+  if (user && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    // Guardado igual que en /admin/users: si faltara la service key no
+    // rompemos la página (pública); el trigger de la BD sigue bloqueando el
+    // doble comentario de todas formas.
+    const admin = createAdminClient();
+    const { count } = await admin
+      .from("comments")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("approved", false);
+    hasPendingComment = (count ?? 0) > 0;
+  }
   const initialLikes = (post.base_likes ?? 0) + (likeCountRes.count ?? 0);
   const initialLiked = !!userLikedRes.data;
   const initialShares = post.shares_count ?? 0;
@@ -337,7 +355,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <div id="comentarios" className="post-comments">
           <h2 className="comments-title">Comentarios ({comments?.length ?? 0})</h2>
 
-          {user && hasAccess && <CommentForm postId={post.id} />}
+          {user && hasAccess && <CommentForm postId={post.id} hasPending={hasPendingComment} />}
 
           {!user && (
             <div className="comments-register-cta">

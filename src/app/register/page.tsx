@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Turnstile from "@/components/Turnstile";
 
 export default function RegisterPage() {
   return (
@@ -33,6 +34,14 @@ function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaKey, setCaptchaKey] = useState(0);
+
+  function resetCaptcha() {
+    // El token de captcha es de un solo uso: se regenera tras cada intento.
+    setCaptchaToken("");
+    setCaptchaKey((k) => k + 1);
+  }
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
@@ -57,10 +66,15 @@ function RegisterForm() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName }, emailRedirectTo: callbackUrl },
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: callbackUrl,
+        captchaToken,
+      },
     });
 
     if (error) {
+      resetCaptcha();
       // "Ya registrado" no se muestra tal cual: revelaría si ese email existe
       // en la base de datos (enumeración de usuarios). En su lugar mostramos
       // la misma pantalla de éxito que vería alguien registrándose de cero.
@@ -170,7 +184,13 @@ function RegisterForm() {
 
           {error && <p className="auth-error">{error}</p>}
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <Turnstile
+            onVerify={setCaptchaToken}
+            onExpire={() => setCaptchaToken("")}
+            resetKey={captchaKey}
+          />
+
+          <button type="submit" className="btn-primary" disabled={loading || !captchaToken}>
             {loading ? "Creando cuenta..." : "Crear cuenta"}
           </button>
         </form>

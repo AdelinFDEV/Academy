@@ -15,8 +15,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid guide" }, { status: 400 });
   }
 
-  const { error: insertErr } = await supabase.from("guide_shares").insert({ guide_slug, user_id: user?.id ?? null });
-  if (insertErr) console.error("[guide-shares] insert failed:", insertErr.message);
+  // Anti-spam: solo cuenta quien tiene sesión, y como MÁXIMO 1 por guía
+  // (unique user_id, guide_slug — ver scripts/shares-antispam.sql). Los
+  // anónimos pueden compartir pero no suman, así que un bot sin cuenta no
+  // puede inflar el número. El contador = usuarios distintos que compartieron.
+  if (user) {
+    const { error: insertErr } = await supabase
+      .from("guide_shares")
+      .insert({ guide_slug, user_id: user.id });
+    // 23505 = ya lo había compartido → no suma. Otro error sí se registra.
+    if (insertErr && insertErr.code !== "23505") {
+      console.error("[guide-shares] insert failed:", insertErr.message);
+    }
+  }
 
   const { count } = await supabase
     .from("guide_shares")

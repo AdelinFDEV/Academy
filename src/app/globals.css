@@ -189,6 +189,13 @@ html {
   gap: 0.8rem;
 }
 
+/* Widget de captcha (Cloudflare Turnstile) centrado dentro de la tarjeta. */
+.turnstile-widget {
+  display: flex;
+  justify-content: center;
+  min-height: 65px;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -2327,6 +2334,19 @@ html {
   border: 1px solid rgba(95, 211, 154, 0.2);
   color: var(--free-green);
   font-size: 0.9rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Aviso cuando el usuario ya tiene un comentario pendiente de aprobación
+   (anti-spam: un único pendiente global a la vez). */
+.comment-pending-notice {
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  background: rgba(224, 168, 79, 0.08);
+  border: 1px solid rgba(224, 168, 79, 0.25);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
   margin-bottom: 2.5rem;
 }
 

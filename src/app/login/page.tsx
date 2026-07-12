@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import Turnstile from "@/components/Turnstile";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,16 +16,25 @@ export default function LoginPage() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: { captchaToken },
+    });
 
     if (error) {
       setError("Email o contraseña incorrectos");
+      // El token de captcha es de un solo uso: se regenera para el reintento.
+      setCaptchaToken("");
+      setCaptchaKey((k) => k + 1);
       setLoading(false);
       return;
     }
@@ -111,7 +121,13 @@ export default function LoginPage() {
 
           {error && <p className="auth-error">{error}</p>}
 
-          <button type="submit" className="btn-primary" disabled={loading}>
+          <Turnstile
+            onVerify={setCaptchaToken}
+            onExpire={() => setCaptchaToken("")}
+            resetKey={captchaKey}
+          />
+
+          <button type="submit" className="btn-primary" disabled={loading || !captchaToken}>
             {loading ? "Entrando..." : "Iniciar sesión"}
           </button>
         </form>

@@ -2,10 +2,19 @@
 
 import { useState } from "react";
 
-export default function CommentForm({ postId }: { postId: string }) {
+export default function CommentForm({
+  postId,
+  hasPending = false,
+}: {
+  postId: string;
+  hasPending?: boolean;
+}) {
   const [content, setContent] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  // Se bloquea si el usuario ya tenía un pendiente al cargar, o si el servidor
+  // lo rechaza por ese motivo (código 409) durante el envío.
+  const [pending, setPending] = useState(hasPending);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,10 +31,27 @@ export default function CommentForm({ postId }: { postId: string }) {
     if (res.ok || res.redirected) {
       setStatus("success");
       setContent("");
-    } else {
-      setErrorMsg("No se pudo enviar el comentario. Inténtalo de nuevo.");
-      setStatus("error");
+      return;
     }
+
+    // El servidor devuelve 409 con un mensaje cuando ya hay un comentario
+    // pendiente; cualquier otro error trae también un `error` legible.
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 409) {
+      setPending(true);
+      return;
+    }
+    setErrorMsg(data.error || "No se pudo enviar el comentario. Inténtalo de nuevo.");
+    setStatus("error");
+  }
+
+  if (pending && status !== "success") {
+    return (
+      <div className="comment-pending-notice">
+        Ya tienes un comentario pendiente de aprobación. Podrás comentar de nuevo
+        en cuanto lo revisemos.
+      </div>
+    );
   }
 
   if (status === "success") {
