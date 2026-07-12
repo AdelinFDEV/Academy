@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Check } from "lucide-react";
+import { passwordChecks } from "@/lib/passwordRules";
 
 export default function ResetPasswordPage() {
   const supabase = createClient();
@@ -51,8 +52,8 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError("");
 
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres.");
+    if (!passwordChecks(password).every((c) => c.ok)) {
+      setError("La contraseña no cumple todos los requisitos indicados abajo.");
       return;
     }
     if (password !== confirm) {
@@ -65,7 +66,12 @@ export default function ResetPasswordPage() {
 
     if (error) {
       setLoading(false);
-      setError("No se pudo actualizar la contraseña. El enlace puede haber expirado.");
+      const msg = error.message || "";
+      setError(
+        /password/i.test(msg) && /(should contain|at least|character)/i.test(msg)
+          ? "La contraseña no cumple todos los requisitos indicados abajo."
+          : "No se pudo actualizar la contraseña. El enlace puede haber expirado."
+      );
       return;
     }
 
@@ -146,6 +152,15 @@ export default function ResetPasswordPage() {
                   </button>
                 </div>
               </div>
+
+              <ul className="pw-requirements" aria-live="polite">
+                {passwordChecks(password).map((req) => (
+                  <li key={req.label} className={req.ok ? "ok" : ""}>
+                    <Check size={13} aria-hidden="true" />
+                    {req.label}
+                  </li>
+                ))}
+              </ul>
 
               {error && <p className="auth-error">{error}</p>}
 
