@@ -62,6 +62,21 @@ export const GUIDES: GuideMeta[] = [
     topics: ["El Orb y World ID", "Proof of Personhood", "Tokenomics de WLD", "Controversias y prohibiciones"],
     tags: ["CRIPTOMONEDAS"],
   },
+  {
+    slug: "render",
+    title: "¿Qué es Render (RENDER)? La Red que Alquila la Potencia de tu GPU",
+    shortTitle: "Render",
+    description: "El proyecto que conecta a artistas 3D con GPUs ociosas de todo el mundo: cómo funciona el renderizado descentralizado, su tokenomics Burn-and-Mint, la migración a Solana y por qué es la estrella del sector DePIN.",
+    difficulty: "intermedio",
+    type: "free",
+    sections: 8,
+    badge: "Nodo Verificado",
+    badgeId: "guide-render",
+    readTime: "18 min",
+    color: "#e6b455",
+    topics: ["GPUs ociosas en red", "Proof of Render", "Burn-and-Mint Equilibrium", "DePIN e IA"],
+    tags: ["CRIPTOMONEDAS"],
+  },
 ];
 
 export function getGuide(slug: string): GuideMeta | undefined {

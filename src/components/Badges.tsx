@@ -54,6 +54,18 @@ function WorldcoinBadgeIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function RenderBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Isometric cube — símbolo del renderizado 3D */}
+      <path d="M12 2.5l8 4.5v9l-8 4.5-8-4.5v-9l8-4.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M4 7l8 4.5L20 7" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M12 11.5V21" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <circle cx="12" cy="11.5" r="1.4" fill="currentColor"/>
+    </svg>
+  );
+}
+
 function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -158,6 +170,7 @@ const GUIDE_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
   "que-es-la-blockchain": (size) => <BlockchainBadgeIcon size={size} />,
   "ciclos-de-bitcoin": (size) => <CyclesBadgeIcon size={size} />,
   "worldcoin": (size) => <WorldcoinBadgeIcon size={size} />,
+  "render": (size) => <RenderBadgeIcon size={size} />,
 };
 
 // Derivado de GUIDES (fuente única de verdad) — cada guía nueva con su

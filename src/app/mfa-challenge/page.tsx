@@ -65,8 +65,15 @@ export default function MfaChallengePage() {
         }
       } catch { /* malformed URL → keep default */ }
     }
-    router.push(target);
-    router.refresh();
+    // Navegación DURA (no router.push): tras verificar el 2FA, el cliente de
+    // Supabase acaba de escribir las cookies de la nueva sesión AAL2. Una
+    // navegación blanda de Next dispara la petición al servidor antes de que
+    // esas cookies se propaguen (sobre todo en Safari/iOS, que las escribe más
+    // lento), así el middleware leería la cookie vieja (AAL1), creería que el
+    // 2FA sigue pendiente y rebotaría aquí → página colgada en "Verificando...".
+    // `location.replace` fuerza una carga nueva con las cookies AAL2 ya puestas
+    // y, además, no deja /mfa-challenge en el historial (el botón atrás no vuelve).
+    window.location.replace(target);
   }
 
   async function handleLogout() {

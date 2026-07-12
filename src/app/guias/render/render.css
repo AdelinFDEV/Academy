@@ -1,0 +1,323 @@
+/* ==========================================================================
+   render.css — estilos EXCLUSIVOS de la guía /guias/render
+   Solo clases propias de esta guía (simulador de red + tokenomics BME).
+   Las clases estructurales compartidas (gbc-*, wq-*, tokenomics-*) viven en
+   guias.css y se reutilizan tal cual. Ver AGENTS.md → "cada guía, su CSS".
+   ========================================================================== */
+
+/* ── Simulador de renderizado distribuido ───────────────────────────────── */
+.render-sim {
+  margin-top: 28px;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
+  padding: 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.render-sim-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.render-sim-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.render-sim-progress {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.render-sim-body {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.render-canvas {
+  display: grid;
+  gap: 3px;
+  aspect-ratio: 8 / 6;
+  padding: 6px;
+  border-radius: 12px;
+  background: #060f1f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.render-tile {
+  border-radius: 3px;
+  width: 100%;
+  height: 100%;
+}
+
+.render-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.render-nodes-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.render-node {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.render-node.is-active {
+  border-color: var(--gold-border);
+  background: var(--gold-glow);
+}
+
+.render-node-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: box-shadow 0.2s;
+}
+
+.render-node-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.render-node-load {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.render-nodes-foot {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.render-sim-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.render-sim-reset {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.render-sim-reset:hover { color: var(--accent-orange); }
+
+/* ── Tokenomics: Burn-and-Mint Equilibrium ──────────────────────────────── */
+.render-bme {
+  margin-top: 28px;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
+  padding: 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.render-bme-lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.render-bme-flow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.render-bme-side {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+
+.render-bme-side-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.render-bme-side-icon.burn { background: rgba(255, 107, 43, 0.16); color: var(--accent-orange); }
+.render-bme-side-icon.mint { background: var(--gold-soft); color: var(--gold); }
+
+.render-bme-side-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.render-bme-side-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.render-bme-bar-track {
+  margin: 14px 0 10px;
+  height: 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.render-bme-bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.render-bme-bar.burn { background: linear-gradient(90deg, #ff6b2b, #ff8552); }
+.render-bme-bar.mint { background: linear-gradient(90deg, var(--gold), #f5d07a); }
+
+.render-bme-side-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.render-bme-side-val span {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.render-bme-control {
+  margin: 22px 0 18px;
+}
+
+.render-bme-control-lbl {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.render-bme-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, var(--accent-orange), var(--gold));
+  outline: none;
+  cursor: pointer;
+}
+.render-bme-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+.render-bme-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.render-bme-control-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.render-bme-result {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid;
+}
+.render-bme-result.defl { background: rgba(74, 222, 128, 0.08); border-color: rgba(74, 222, 128, 0.28); color: #4ade80; }
+.render-bme-result.infl { background: rgba(248, 113, 113, 0.08); border-color: rgba(248, 113, 113, 0.28); color: #f87171; }
+.render-bme-result.eq   { background: var(--gold-glow); border-color: var(--gold-border); color: var(--gold); }
+
+.render-bme-result-label {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.render-bme-result-desc {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 3px;
+}
+
+.render-bme-note {
+  margin-top: 14px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .render-sim-body { grid-template-columns: 1fr; }
+  .render-bme-flow { grid-template-columns: 1fr; }
+}

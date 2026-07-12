@@ -48,26 +48,33 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-step">
             <div className="agi-step-num">2</div>
             <div>
+              <strong>Claude pregunta SIEMPRE: ¿guía GRATIS o PREMIUM?</strong>
+              <p className="agi-warning" style={{ marginTop: 8 }}>⚠️ <strong>Paso obligatorio antes de escribir una sola línea.</strong> Claude nunca decide por su cuenta el tipo de acceso — se lo pregunta al admin. La respuesta cambia el paywall y qué usuarios pueden leer la guía completa (ver bloque 06). <strong>Gratis:</strong> el resto se desbloquea con registro gratuito. <strong>Premium:</strong> el resto solo se desbloquea con suscripción y rol premium.</p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">3</div>
+            <div>
               <strong>Claude construye la guía completa</strong>
               <p>Redacta el contenido, elige los componentes interactivos adecuados (quiz, flashcards, gráficas, calculadora si encaja), define secciones gratuitas vs premium, asigna dificultad y crea el badge de logro correspondiente.</p>
             </div>
           </div>
           <div className="agi-step">
-            <div className="agi-step-num">3</div>
+            <div className="agi-step-num">4</div>
             <div>
               <strong>Admin revisa en preview</strong>
               <p>Claude muestra la guía. El admin la aprueba o solicita cambios. Sin aprobación explícita, no se implementa nada.</p>
             </div>
           </div>
           <div className="agi-step">
-            <div className="agi-step-num">4</div>
+            <div className="agi-step-num">5</div>
             <div>
               <strong>Claude implementa</strong>
               <p>Crea el archivo en <code>/src/app/guias/[slug]/page.tsx</code>, registra la guía en Supabase (tabla <code>guides</code>) y el badge en la tabla <code>achievements</code>.</p>
             </div>
           </div>
           <div className="agi-step">
-            <div className="agi-step-num">5</div>
+            <div className="agi-step-num">6</div>
             <div>
               <strong>Admin publica desde el panel</strong>
               <p>La guía aparece en <code>/guias</code> y en el menú de Educación. Se puede despublicar o editar en cualquier momento desde <code>/admin/guias</code>.</p>
@@ -374,9 +381,10 @@ export default function GuiasInstruccionesPage() {
           Checklist para Claude al crear una guía nueva
         </h2>
         <div className="agi-checklist">
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>ANTES DE NADA: preguntar al admin si la guía es GRATIS o PREMIUM</strong> — nunca asumirlo</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir slug SEO-friendly: <code>/guias/[tema-especifico]</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Establecer dificultad: Básico / Intermedio / Avanzado</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Decidir si es guía FREE o PREMIUM</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Aplicar el paywall correcto según la respuesta free/premium del admin (ver bloque 06)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Identificar qué componentes interactivos son pertinentes para el tema</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear <code>src/app/guias/[slug]/[slug].css</code> propio — nunca añadir a <code>guias.css</code> ni a <code>globals.css</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido completo (no esqueletos, no placeholders)</span></label>
