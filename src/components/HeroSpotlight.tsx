@@ -10,11 +10,20 @@ import {
   Trophy, ClipboardCheck, BadgeCheck, Hourglass, Sparkles, BookOpenText,
   LayoutDashboard, Gem,
 } from "lucide-react";
+import { DefiLlamaGlyph } from "@/components/BrandMarks";
 
 interface Props {
   isLoggedIn: boolean;
   isPremium: boolean;
   latestGuide: { slug: string; shortTitle: string };
+}
+
+function DefiLlamaMark() {
+  return (
+    <span className="hero-collab-mark" aria-hidden="true">
+      <DefiLlamaGlyph size={13} />
+    </span>
+  );
 }
 
 const FEATURES = [
@@ -68,6 +77,7 @@ const FEATURES = [
       { icon: ClipboardCheck, label: "Calendario en vivo" },
       { icon: BadgeCheck, label: "Datos por token" },
     ],
+    collab: "defillama",
     premiumGate: true,
   },
 ];
@@ -166,6 +176,16 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, latestGuide }: Pr
                   </span>
                 ))}
               </div>
+
+              {"collab" in f && f.collab === "defillama" && (
+                <span className="hero-bento-collab">
+                  Datos oficiales en colaboración con
+                  <span className="hero-bento-collab-badge">
+                    <DefiLlamaMark />
+                    Defi<span>Llama</span>
+                  </span>
+                </span>
+              )}
 
               {href && (
                 <span className="hero-bento-cta" style={{ color: f.color }}>

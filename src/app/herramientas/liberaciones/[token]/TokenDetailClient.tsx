@@ -1,14 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft, Calendar, TrendingDown, Info, ExternalLink, Lock, ChevronDown, ChevronUp } from "lucide-react";
 
 const TokenCharts = dynamic(() => import("./TokenCharts"), { ssr: false });
-import { Token, getUpcomingUnlocks, UnlockEvent } from "../tokenData";
+import { Token, getUpcomingUnlocks, type LiveUnlockDetail } from "../tokenData";
 
 const TODAY = new Date();
+const TODAY_ISO = TODAY.toISOString().slice(0, 10);
+
+// Evento tal como lo consume el render (estático o en vivo comparten esta forma).
+type DisplayEvent = { date: string; category: string; color: string; tokens: number; type: "monthly" | "cliff" };
+
+const LIVE_PALETTE = ["#7c9cff", "#34d399", "#fbbf24", "#f472b6", "#22d3ee", "#a78bfa", "#fb923c", "#60a5fa"];
 
 function fmtTokens(n: number): string {
   if (n >= 1e9) return (n / 1e9).toFixed(2) + "B";
@@ -43,24 +49,60 @@ interface Props {
 
 export default function TokenDetailClient({ token, isPremium }: Props) {
   const [showAll, setShowAll] = useState(false);
+  const [live, setLive] = useState<LiveUnlockDetail | null>(null);
 
-  const upcomingEvents = useMemo(() =>
-    getUpcomingUnlocks(token, TODAY, 18).filter(e => new Date(e.date) >= TODAY),
-    [token]
-  );
+  // Datos en vivo de DefiLlama para este token. Si no hay (XRP, o emisión lineal
+  // continua sin eventos discretos, o fallo de red), se usa el calendario estático.
+  useEffect(() => {
+    let alive = true;
+    fetch(`/api/unlocks?token=${encodeURIComponent(token.id)}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (alive) setLive(d && Array.isArray(d.events) && d.events.length ? d : null); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, [token.id]);
 
-  const pastEvents = useMemo(() =>
-    getUpcomingUnlocks(token, new Date("2020-01-01"), 120)
+  const isLive = live !== null;
+
+  // Color por categoría para los eventos en vivo (los estáticos ya traen color).
+  const liveCategoryColors = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (live) {
+      [...new Set(live.events.map(e => e.category))].forEach((c, i) => {
+        map[c] = i === 0 ? token.color : LIVE_PALETTE[(i - 1) % LIVE_PALETTE.length];
+      });
+    }
+    return map;
+  }, [live, token.color]);
+
+  const upcomingEvents: DisplayEvent[] = useMemo(() => {
+    if (live) {
+      return live.events
+        .filter(e => e.date >= TODAY_ISO)
+        .map(e => ({ date: e.date, category: e.category, color: liveCategoryColors[e.category] ?? token.color, tokens: e.tokens, type: "cliff" as const }));
+    }
+    return getUpcomingUnlocks(token, TODAY, 18).filter(e => new Date(e.date) >= TODAY);
+  }, [token, live, liveCategoryColors]);
+
+  const pastEvents: DisplayEvent[] = useMemo(() => {
+    if (live) {
+      return live.events
+        .filter(e => e.date < TODAY_ISO)
+        .slice(-6).reverse()
+        .map(e => ({ date: e.date, category: e.category, color: liveCategoryColors[e.category] ?? token.color, tokens: e.tokens, type: "cliff" as const }));
+    }
+    return getUpcomingUnlocks(token, new Date("2020-01-01"), 120)
       .filter(e => new Date(e.date) < TODAY)
       .slice(-6)
-      .reverse(),
-    [token]
-  );
+      .reverse();
+  }, [token, live, liveCategoryColors]);
 
   // Monthly chart data — next 12 months
   const chartData = useMemo(() => {
     const months: Record<string, Record<string, string | number>> = {};
-    const allFuture = getUpcomingUnlocks(token, TODAY, 13).filter(e => new Date(e.date) >= TODAY);
+    const allFuture = live
+      ? live.events.filter(e => e.date >= TODAY_ISO)
+      : getUpcomingUnlocks(token, TODAY, 13).filter(e => new Date(e.date) >= TODAY);
 
     for (const e of allFuture) {
       const key = fmtMonth(e.date);
@@ -68,11 +110,20 @@ export default function TokenDetailClient({ token, isPremium }: Props) {
       months[key][e.category] = ((months[key][e.category] as number) ?? 0) + e.tokens / 1_000_000;
     }
     return Object.values(months).slice(0, 12);
-  }, [token]);
+  }, [token, live]);
 
-  const categories = [...new Set(token.schedules.map(s => s.category))];
-  const categoryColors: Record<string, string> = {};
-  token.schedules.forEach(s => { categoryColors[s.category] = s.color; });
+  const categories = useMemo(() => (
+    live
+      ? [...new Set(live.events.filter(e => e.date >= TODAY_ISO).map(e => e.category))]
+      : [...new Set(token.schedules.map(s => s.category))]
+  ), [token, live]);
+
+  const categoryColors = useMemo(() => {
+    if (live) return liveCategoryColors;
+    const map: Record<string, string> = {};
+    token.schedules.forEach(s => { map[s.category] = s.color; });
+    return map;
+  }, [token, live, liveCategoryColors]);
 
   // Next unlock
   const nextEvent = upcomingEvents[0];
@@ -109,6 +160,20 @@ export default function TokenDetailClient({ token, isPremium }: Props) {
             </div>
           </div>
           <p className="lib-detail-desc">{token.description}</p>
+
+          {isLive && (
+            <a
+              className="lib-detail-live"
+              href="https://defillama.com/unlocks"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Ver la fuente en DefiLlama"
+            >
+              <span className="lib-live-pill-dot" />
+              Calendario en directo desde <strong>DefiLlama</strong>
+              <ExternalLink size={11} />
+            </a>
+          )}
 
           {/* Key stats */}
           <div className="lib-detail-stats">

@@ -48,50 +48,57 @@ export interface UnlockEvent {
   type: "monthly" | "cliff"
 }
 
+// Fecha (en ms UTC) del día de liberación de un mes concreto, anclada al día
+// real de vesting del token. Si ese día no existe en el mes (p. ej. el 31 en
+// febrero) se ajusta al último día del mes, evitando el desbordamiento de
+// setMonth() que saltaría al mes siguiente.
+function unlockDayUTC(year: number, month: number, anchorDay: number): number {
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
+  return Date.UTC(year, month, Math.min(anchorDay, lastDay))
+}
+
 export function getUpcomingUnlocks(token: Token, fromDate: Date, months = 12): UnlockEvent[] {
   const events: UnlockEvent[] = []
-  const to = new Date(fromDate)
-  to.setMonth(to.getMonth() + months)
+  const from = Date.UTC(fromDate.getUTCFullYear(), fromDate.getUTCMonth(), fromDate.getUTCDate())
+  const toDate = new Date(from)
+  toDate.setUTCMonth(toDate.getUTCMonth() + months)
+  const to = toDate.getTime()
 
   for (const s of token.schedules) {
-    const start = new Date(s.startDate)
-    const end = new Date(s.endDate)
+    const start = new Date(s.startDate + "T00:00:00Z")
+    const end = new Date(s.endDate + "T00:00:00Z").getTime()
+    // Día del mes en que este tramo libera (23 para ARB, 17 para ZK, 1 para el
+    // escrow de XRP, etc.) — se toma del propio startDate, que es la verdad.
+    const anchorDay = start.getUTCDate()
 
     // Cliff event
     if (s.cliffDate && s.cliffTokens) {
-      const cliff = new Date(s.cliffDate)
-      if (cliff >= fromDate && cliff <= to) {
+      const cliff = new Date(s.cliffDate + "T00:00:00Z").getTime()
+      if (cliff >= from && cliff <= to) {
         events.push({ date: s.cliffDate, category: s.category, color: s.color, tokens: s.cliffTokens, type: "cliff" })
       }
     }
 
-    // Monthly linear events
-    const cursor = new Date(Math.max(start.getTime(), fromDate.getTime()))
-    cursor.setDate(1)
-    if (cursor < start) cursor.setMonth(cursor.getMonth() + 1)
-
-    while (cursor <= end && cursor <= to) {
-      const dateStr = cursor.toISOString().slice(0, 10)
-      events.push({ date: dateStr, category: s.category, color: s.color, tokens: s.monthlyTokens, type: "monthly" })
-      cursor.setMonth(cursor.getMonth() + 1)
+    // Monthly linear events — en el día real de vesting de cada token, no el 1
+    let year  = start.getUTCFullYear()
+    let month = start.getUTCMonth()
+    let t = unlockDayUTC(year, month, anchorDay)
+    const lower = Math.max(start.getTime(), from)
+    while (t < lower) {
+      month++; if (month > 11) { month = 0; year++ }
+      t = unlockDayUTC(year, month, anchorDay)
+    }
+    while (t <= end && t <= to) {
+      events.push({
+        date: new Date(t).toISOString().slice(0, 10),
+        category: s.category, color: s.color, tokens: s.monthlyTokens, type: "monthly",
+      })
+      month++; if (month > 11) { month = 0; year++ }
+      t = unlockDayUTC(year, month, anchorDay)
     }
   }
 
   return events.sort((a, b) => a.date.localeCompare(b.date))
-}
-
-export function getNextUnlock(token: Token, fromDate: Date): UnlockEvent | null {
-  const events = getUpcomingUnlocks(token, fromDate, 24)
-  return events.find(e => new Date(e.date) >= fromDate) ?? null
-}
-
-export function getMonthlyTotal(token: Token, fromDate: Date): number {
-  const now = new Date(fromDate)
-  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0)
-  const events = getUpcomingUnlocks(token, now, 2)
-  return events
-    .filter(e => new Date(e.date) <= monthEnd)
-    .reduce((sum, e) => sum + e.tokens, 0)
 }
 
 // ─── Tokens ───────────────────────────────────────────────────────────────────
@@ -371,3 +378,41 @@ export const TOKENS: Token[] = [
 ]
 
 export const FREE_TOKEN_IDS = ["arbitrum", "zksync"]
+
+// ─── Datos en vivo (DefiLlama) ─────────────────────────────────────────────────
+
+// DefiLlama protocolSlug por cada token, VERIFICADO por símbolo/gecko_id contra
+// https://defillama-datasets.llama.fi/emissionsIndex (arbitrum→ARB, zksync-era→ZK,
+// starknet-bridge→STRK, sui-foundation→SUI, etc.). XRP no aparece en DefiLlama
+// (su escrow no se modela como vesting), así que se queda con el cálculo estático.
+export const DEFILLAMA_SLUGS: Record<string, string> = {
+  arbitrum:  "arbitrum",
+  zksync:    "zksync-era",
+  starknet:  "starknet-bridge",
+  sui:       "sui-foundation",
+  worldcoin: "worldcoin",
+  jupiter:   "jupiter",
+  aptos:     "aptos",
+  celestia:  "celestia",
+  solana:    "solana",
+}
+
+// Próxima liberación real de un token, extraída del emissionsIndex de DefiLlama.
+export interface LiveUnlock {
+  nextDate: string    // YYYY-MM-DD del próximo unlock
+  toUnlock: number    // nº de tokens del próximo evento
+  proportion: number  // fracción del circulante que representa (0..1)
+}
+
+// Evento de liberación discreto (para la página de detalle).
+export interface LiveEvent {
+  date: string        // YYYY-MM-DD
+  tokens: number      // nº de tokens liberados en ese evento
+  category: string    // destinatario/asignación (p. ej. "Investors", "Team")
+  type: "cliff" | "linear"
+}
+
+// Detalle completo de un token: próximo unlock + lista de eventos reales.
+export interface LiveUnlockDetail extends LiveUnlock {
+  events: LiveEvent[]
+}

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { todayStr, yesterdayStr } from "@/lib/streak";
 import { NextResponse } from "next/server";
 
 export async function POST() {
@@ -19,7 +20,7 @@ export async function POST() {
     .eq("id", user.id)
     .single();
 
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  const today = todayStr(); // YYYY-MM-DD en la zona de la academia (Europe/Madrid)
   const lastSeen = profile?.last_seen ?? null;
 
   if (lastSeen === today) {
@@ -31,11 +32,7 @@ export async function POST() {
     });
   }
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split("T")[0];
-
-  const newStreak = lastSeen === yesterdayStr
+  const newStreak = lastSeen === yesterdayStr()
     ? (profile?.current_streak ?? 0) + 1
     : 1;
 

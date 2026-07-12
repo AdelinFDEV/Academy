@@ -15,7 +15,7 @@ export default async function WatchlistPage() {
 
   const { data: coins } = await supabase
     .from("watchlist")
-    .select("id, coin_id, coin_symbol, coin_name")
+    .select("id, coin_id, coin_symbol, coin_name, amount")
     .eq("user_id", user.id)
     .order("created_at", { ascending: true });
 

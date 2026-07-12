@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet,
@@ -34,6 +34,29 @@ export type ToolSection = {
 
 export default function DashboardToolsSidebar({ sections }: { sections: ToolSection[] }) {
   const [open, setOpen] = useState(false);
+  const [closing, setClosing] = useState(false);
+
+  // Cierre animado: reproduce la salida y desmonta al terminar.
+  const close = useCallback(() => {
+    setClosing(true);
+    window.setTimeout(() => {
+      setOpen(false);
+      setClosing(false);
+    }, 260);
+  }, []);
+
+  // Con el sheet abierto: bloquea el scroll del fondo y permite cerrar con Escape.
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, close]);
 
   function renderTool(t: ToolItem) {
     const Icon = ICON_MAP[t.icon];
@@ -51,7 +74,7 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
       </>
     );
     return isClickable ? (
-      <Link key={t.name} href={t.href} className={cls} onClick={() => setOpen(false)}>{content}</Link>
+      <Link key={t.name} href={t.href} className={cls} onClick={close}>{content}</Link>
     ) : (
       <div key={t.name} className={cls}>{content}</div>
     );
@@ -82,12 +105,15 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
 
       {/* ── Mobile bottom sheet ── */}
       {open && (
-        <div className="dtb-overlay" onClick={() => setOpen(false)}>
-          <div className="dtb-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="dtb-sheet-handle" />
+        <div className={`dtb-overlay${closing ? " dtb-overlay--closing" : ""}`} onClick={close}>
+          <div className={`dtb-sheet${closing ? " dtb-sheet--closing" : ""}`} onClick={(e) => e.stopPropagation()}>
+            <button className="dtb-sheet-handle" onClick={close} aria-label="Cerrar" />
             <div className="dtb-sheet-head">
-              <span className="dtb-sheet-title">Herramientas</span>
-              <button className="dtb-sheet-close" onClick={() => setOpen(false)}>
+              <span className="dtb-sheet-title">
+                <LayoutGrid size={16} aria-hidden="true" />
+                Herramientas
+              </span>
+              <button className="dtb-sheet-close" onClick={close} aria-label="Cerrar">
                 <X size={18} />
               </button>
             </div>

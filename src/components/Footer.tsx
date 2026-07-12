@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Crown, ShieldAlert } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
+import { DefiLlamaGlyph, CoinGeckoGlyph, MexcGlyph } from "@/components/BrandMarks";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -47,6 +48,42 @@ export default function Footer() {
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
           <Link href="/cookies">Cookies</Link>
+        </div>
+      </div>
+
+      <div className="footer-partners">
+        <span className="footer-partners-label">En colaboración con</span>
+        <div className="footer-partners-list">
+          <a
+            href="https://defillama.com/unlocks"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-partner footer-partner--dl"
+            title="Datos de liberaciones por DefiLlama"
+          >
+            <span className="footer-partner-mark footer-partner-mark--dl"><DefiLlamaGlyph /></span>
+            <span className="footer-partner-word">Defi<span>Llama</span></span>
+          </a>
+          <a
+            href="https://www.coingecko.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-partner footer-partner--cg"
+            title="Datos de mercado por CoinGecko"
+          >
+            <span className="footer-partner-mark footer-partner-mark--cg"><CoinGeckoGlyph /></span>
+            <span className="footer-partner-word">Coin<span>Gecko</span></span>
+          </a>
+          <a
+            href="https://www.mexc.com/es/register?inviteCode=mexc-1xydM"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-partner footer-partner--mx"
+            title="Abre tu cuenta en MEXC"
+          >
+            <span className="footer-partner-mark footer-partner-mark--mx"><MexcGlyph /></span>
+            <span className="footer-partner-word">MEXC</span>
+          </a>
         </div>
       </div>
 

@@ -1,15 +1,25 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import CryptoMarkets from "@/components/CryptoMarkets";
-import { Search, Eye, Minus } from "lucide-react";
+import { Search, Eye, Minus, Sparkles } from "lucide-react";
+import { CoinGeckoGlyph } from "@/components/BrandMarks";
+
+function CoinGeckoMark() {
+  return (
+    <span className="wl-cg-mark" aria-hidden="true">
+      <CoinGeckoGlyph size={15} />
+    </span>
+  );
+}
 
 interface WatchCoin {
   id: string;
   coin_id: string;
   coin_symbol: string;
   coin_name: string;
+  amount: number | null;
 }
 
 interface PriceData {
@@ -35,6 +45,42 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
   const [searching, setSearching]     = useState(false);
   const [adding, setAdding]           = useState<string | null>(null);
   const [removing, setRemoving]       = useState<string | null>(null);
+  // Cantidades del mini-portfolio. Se inicializan desde la BD (columna
+  // watchlist.amount) y se persisten por usuario en Supabase.
+  const [holdings, setHoldings] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      initialCoins
+        .filter((c) => c.amount != null)
+        .map((c) => [c.coin_id, String(c.amount)])
+    )
+  );
+  const holdingTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  const persistHolding = useCallback(async (rowId: string, raw: string) => {
+    const num = raw ? parseFloat(raw) : NaN;
+    const amount = Number.isFinite(num) ? num : null;
+    const supabase = createClient();
+    await supabase.from("watchlist").update({ amount }).eq("id", rowId);
+  }, []);
+
+  function setHolding(coin: WatchCoin, value: string) {
+    // Solo dígitos, un separador decimal.
+    const clean = value.replace(/[^\d.,]/g, "").replace(",", ".");
+    setHoldings((prev) => {
+      const next = { ...prev };
+      if (clean) next[coin.coin_id] = clean;
+      else delete next[coin.coin_id];
+      return next;
+    });
+    // Persistencia diferida (evita un write por cada tecla).
+    clearTimeout(holdingTimers.current[coin.id]);
+    holdingTimers.current[coin.id] = setTimeout(() => persistHolding(coin.id, clean), 600);
+  }
+
+  function flushHolding(coin: WatchCoin) {
+    clearTimeout(holdingTimers.current[coin.id]);
+    persistHolding(coin.id, holdings[coin.coin_id] ?? "");
+  }
 
   const fetchPrices = useCallback(async (coinList: WatchCoin[]) => {
     if (coinList.length === 0) return;
@@ -90,7 +136,7 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
         coin_symbol: result.symbol.toUpperCase(),
         coin_name: result.name,
       })
-      .select("id, coin_id, coin_symbol, coin_name")
+      .select("id, coin_id, coin_symbol, coin_name, amount")
       .single();
     if (!error && data) {
       const updated = [...coins, data];
@@ -107,6 +153,14 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
     const supabase = createClient();
     await supabase.from("watchlist").delete().eq("id", coin.id);
     setCoins((prev) => prev.filter((c) => c.id !== coin.id));
+    clearTimeout(holdingTimers.current[coin.id]);
+    if (holdings[coin.coin_id]) {
+      setHoldings((prev) => {
+        const next = { ...prev };
+        delete next[coin.coin_id];
+        return next;
+      });
+    }
     setRemoving(null);
   }
 
@@ -116,17 +170,93 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
     return n.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 8 });
   }
 
+  // ── Live summary of the tracked coins ──
+  const priced = coins
+    .map((c) => ({ coin: c, change: prices[c.coin_id]?.usd_24h_change }))
+    .filter((x): x is { coin: WatchCoin; change: number } => typeof x.change === "number");
+  const ups   = priced.filter((x) => x.change >= 0).length;
+  const downs = priced.length - ups;
+  const best  = priced.length > 0
+    ? priced.reduce((a, b) => (b.change > a.change ? b : a))
+    : null;
+
+  const portfolioTotal = coins.reduce((sum, c) => {
+    const qty = parseFloat(holdings[c.coin_id] || "0") || 0;
+    const price = prices[c.coin_id]?.usd;
+    return sum + (price && qty > 0 ? qty * price : 0);
+  }, 0);
+
   return (
     <div className="watchlist-page">
-      <div className="dashboard-header watchlist-header">
+      <div className="watchlist-header">
         <div className="watchlist-header-icon">
-          <Eye size={20} aria-hidden="true" />
+          <Eye size={22} aria-hidden="true" />
         </div>
-        <div>
-          <h1>Watchlist</h1>
-          <p>Sigue en tiempo real el precio de tus criptomonedas favoritas — se actualiza cada minuto.</p>
+        <div className="watchlist-header-text">
+          <span className="watchlist-eyebrow">
+            <span className="watchlist-eyebrow-dot" />
+            Seguimiento en directo
+          </span>
+          <h1 className="watchlist-title">
+            Tu <span>Watchlist</span>
+          </h1>
+          <p>Sigue el precio de tus criptomonedas favoritas en tiempo real y descubre las gemas que acaban de entrar al Top 200.</p>
+
+          <div className="wl-badges">
+            <span className="wl-source">
+              <span className="wl-live-dot" />
+              En colaboración con
+              <a
+                className="wl-cg-badge"
+                href="https://www.coingecko.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Datos de mercado por CoinGecko"
+              >
+                <CoinGeckoMark />
+                <span className="wl-cg-word">Coin<span>Gecko</span></span>
+              </a>
+            </span>
+            <span className="wl-gem-pill">
+              <Sparkles size={13} aria-hidden="true" />
+              Radar de gemas emergentes
+            </span>
+          </div>
         </div>
       </div>
+
+      {/* ── Live summary ── */}
+      {coins.length > 0 && (
+        <div className="watchlist-summary">
+          <div className="watchlist-summary-item">
+            <span className="watchlist-summary-l">Siguiendo</span>
+            <span className="watchlist-summary-v">{coins.length}</span>
+          </div>
+          <span className="watchlist-summary-sep" />
+          <div className="watchlist-summary-item">
+            <span className="watchlist-summary-l">Suben</span>
+            <span className="watchlist-summary-v pos">{ups}</span>
+          </div>
+          <div className="watchlist-summary-item">
+            <span className="watchlist-summary-l">Bajan</span>
+            <span className="watchlist-summary-v neg">{downs}</span>
+          </div>
+          {best && (
+            <>
+              <span className="watchlist-summary-sep" />
+              <div className="watchlist-summary-item watchlist-summary-best">
+                <span className="watchlist-summary-l">Mejor 24h</span>
+                <span className="watchlist-summary-v">
+                  {best.coin.coin_symbol}
+                  <span className={best.change >= 0 ? "pos" : "neg"}>
+                    {`${best.change >= 0 ? "+" : ""}${best.change.toFixed(2)}%`}
+                  </span>
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── Search / Add ── */}
       <div className="watchlist-add-wrap">
@@ -187,12 +317,15 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
             <span>Moneda</span>
             <span>Precio</span>
             <span>24h</span>
+            <span>Posición</span>
             <span />
           </div>
           {coins.map((coin) => {
             const p = prices[coin.coin_id];
             const change = p?.usd_24h_change ?? null;
             const positive = change !== null && change >= 0;
+            const qty = parseFloat(holdings[coin.coin_id] || "0") || 0;
+            const posValue = p && qty > 0 ? qty * p.usd : 0;
             return (
               <div key={coin.id} className={`watchlist-row${change !== null ? (positive ? " watchlist-row--up" : " watchlist-row--down") : ""}`}>
                 <div className="watchlist-row-name">
@@ -211,8 +344,30 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
                     <span className="watchlist-no-price">—</span>
                   )}
                 </div>
-                <div className={`watchlist-row-change${positive ? " positive" : " negative"}`}>
-                  {change !== null ? `${positive ? "+" : ""}${change.toFixed(2)}%` : "—"}
+                <div className="watchlist-row-change-cell">
+                  {change !== null ? (
+                    <span className={`watchlist-change-pill${positive ? " positive" : " negative"}`}>
+                      <span className="watchlist-change-arrow">{positive ? "▲" : "▼"}</span>
+                      {`${positive ? "+" : ""}${change.toFixed(2)}%`}
+                    </span>
+                  ) : (
+                    <span className="watchlist-no-price">—</span>
+                  )}
+                </div>
+                <div className="watchlist-pos">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    className="watchlist-qty"
+                    placeholder="0"
+                    value={holdings[coin.coin_id] ?? ""}
+                    onChange={(e) => setHolding(coin, e.target.value)}
+                    onBlur={() => flushHolding(coin)}
+                    aria-label={`Cantidad de ${coin.coin_name}`}
+                  />
+                  {posValue > 0 && (
+                    <span className="watchlist-pos-value">${fmt(posValue)}</span>
+                  )}
                 </div>
                 <button
                   className="watchlist-remove-btn"
@@ -225,6 +380,12 @@ export default function WatchlistClient({ initialCoins }: { initialCoins: WatchC
               </div>
             );
           })}
+          {portfolioTotal > 0 && (
+            <div className="watchlist-total-row">
+              <span className="watchlist-total-label">Valor total de tu cartera</span>
+              <span className="watchlist-total-value">${fmt(portfolioTotal)}</span>
+            </div>
+          )}
         </div>
       )}
 

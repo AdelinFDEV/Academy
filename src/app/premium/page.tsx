@@ -6,6 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import PremiumFeatureGrid from "@/components/PremiumFeatureGrid";
 import PremiumStickyBar from "@/components/PremiumStickyBar";
 import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Star, Lock, Sparkles } from "lucide-react";
+import { DefiLlamaGlyph, CoinGeckoGlyph, MexcGlyph } from "@/components/BrandMarks";
 import "./premium.css";
 
 export const metadata: Metadata = {
@@ -123,6 +124,45 @@ export default async function PremiumPage() {
               <div className="prem-anchor-item">
                 <span className="prem-anchor-figure">1 clic</span>
                 <span className="prem-anchor-label">para cancelar cuando quieras</span>
+              </div>
+            </section>
+
+            {/* ── Datos oficiales / colaboradores ── */}
+            <section className="prem-partners">
+              <div className="prem-partners-head">
+                <span className="prem-partners-eyebrow">
+                  <ShieldCheck size={14} aria-hidden="true" /> Datos oficiales, no estimaciones
+                </span>
+                <h2 className="prem-partners-title">
+                  Herramientas que funcionan con <span className="pv2-gold">datos reales en directo</span>
+                </h2>
+                <p className="prem-partners-sub">
+                  No inventamos cifras. Cada precio, mercado y calendario de liberaciones viene
+                  directamente de las mayores fuentes del sector, en colaboración con ellas.
+                </p>
+              </div>
+              <div className="prem-partners-grid">
+                <div className="prem-partner prem-partner--dl">
+                  <span className="prem-partner-mark"><DefiLlamaGlyph size={20} /></span>
+                  <div className="prem-partner-text">
+                    <strong>DefiLlama</strong>
+                    <span>Calendario oficial de liberaciones de tokens</span>
+                  </div>
+                </div>
+                <div className="prem-partner prem-partner--cg">
+                  <span className="prem-partner-mark"><CoinGeckoGlyph size={20} /></span>
+                  <div className="prem-partner-text">
+                    <strong>CoinGecko</strong>
+                    <span>Precios y datos de mercado en tiempo real</span>
+                  </div>
+                </div>
+                <div className="prem-partner prem-partner--mx">
+                  <span className="prem-partner-mark"><MexcGlyph size={20} /></span>
+                  <div className="prem-partner-text">
+                    <strong>MEXC</strong>
+                    <span>Exchange colaborador de la academia</span>
+                  </div>
+                </div>
               </div>
             </section>
 

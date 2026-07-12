@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { RefreshCw, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 
 // ── Types ──────────────────────────────────────────────────
@@ -60,6 +60,36 @@ function fmtShort(n: number): string {
   return n.toLocaleString("en-US");
 }
 
+// ── Count-up animation ─────────────────────────────────────
+function useCountUp(target: number, duration = 650): number {
+  const [val, setVal] = useState(target);
+  const fromRef = useRef(target);
+
+  useEffect(() => {
+    const start = fromRef.current;
+    const diff  = target - start;
+    if (diff === 0) {
+      setVal(target);
+      return;
+    }
+    const t0 = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const p     = Math.min((now - t0) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const cur   = start + diff * eased;
+      fromRef.current = cur;
+      setVal(cur);
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else fromRef.current = target;
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+
+  return val;
+}
+
 // ── Feasibility ────────────────────────────────────────────
 type Feasibility = "factible" | "desafiante" | "muy-dificil" | "extremo" | "imposible";
 
@@ -79,6 +109,15 @@ const FEASIBILITY: Record<Feasibility, { label: string; desc: string; color: str
   "imposible":   { label: "Prácticamente imposible",   desc: "Superaría a Bitcoin. Nunca ocurrido en la historia del crypto.", color: "#f87171", icon: "x"  },
 };
 
+// Marker position (%) on the difficulty gauge, log-scaled from $1M to BTC's cap.
+function gaugePosition(mc: number, btcMC: number): number {
+  if (mc <= 0) return 0;
+  const min = 1e6;
+  const max = Math.max(btcMC, 1e9);
+  const p = (Math.log10(mc) - Math.log10(min)) / (Math.log10(max) - Math.log10(min));
+  return Math.min(Math.max(p, 0.015), 1) * 100;
+}
+
 // ── Supply presets ─────────────────────────────────────────
 const SUPPLY_PRESETS = [
   { label: "100M",        value: 100e6   },
@@ -96,6 +135,9 @@ const COIN_COLORS: Record<string, string> = {
 };
 const COIN_SYMBOLS: Record<string, string> = {
   bitcoin: "BTC", ethereum: "ETH", solana: "SOL",
+};
+const COIN_NAMES: Record<string, string> = {
+  bitcoin: "Bitcoin", ethereum: "Ethereum", solana: "Solana",
 };
 
 // ── Component ──────────────────────────────────────────────
@@ -134,12 +176,15 @@ export default function CalculadoraClient() {
   const neededMC    = supply > 0 && targetPrice > 0 ? supply * targetPrice : 0;
   const hasResult   = neededMC > 0;
 
+  const displayMC = useCountUp(neededMC);
+
   const btcMC = liveData?.bitcoin.usd_market_cap  ?? 0;
   const ethMC = liveData?.ethereum.usd_market_cap ?? 0;
   const solMC = liveData?.solana.usd_market_cap   ?? 0;
 
   const feasibility = hasResult && btcMC > 0 ? getFeasibility(neededMC, btcMC) : null;
   const feasCfg     = feasibility ? FEASIBILITY[feasibility] : null;
+  const gaugePct    = feasibility && btcMC > 0 ? gaugePosition(neededMC, btcMC) : 0;
 
   const vsEth = ethMC > 0 && neededMC > 0 ? neededMC / ethMC : null;
   const vsBtc = btcMC > 0 && neededMC > 0 ? neededMC / btcMC : null;
@@ -149,7 +194,7 @@ export default function CalculadoraClient() {
     const coins = liveData
       ? (["solana", "ethereum", "bitcoin"] as (keyof LiveData)[]).map(id => ({
           key:   id,
-          label: id === "bitcoin" ? "Bitcoin" : id === "ethereum" ? "Ethereum" : "Solana",
+          label: COIN_NAMES[id],
           symbol: COIN_SYMBOLS[id],
           mc:    liveData[id].usd_market_cap,
           color: COIN_COLORS[id],
@@ -173,10 +218,46 @@ export default function CalculadoraClient() {
 
       {/* Header */}
       <div className="calc-page-header">
+        <span className="calc-eyebrow">
+          <span className="calc-eyebrow-dot" />
+          Herramienta · Datos en tiempo real
+        </span>
         <h1 className="calc-page-title">Predicción de Precio</h1>
         <p className="calc-page-sub">
           ¿A qué precio puede llegar un token? Calcula el Market Cap que necesitaría y descubre si es realista comparándolo con Bitcoin, Ethereum y Solana en tiempo real.
         </p>
+      </div>
+
+      {/* Live price ticker */}
+      <div className="calc-ticker">
+        {(["bitcoin", "ethereum", "solana"] as (keyof LiveData)[]).map(id => {
+          const coin = liveData?.[id];
+          const chg  = coin?.usd_24h_change ?? 0;
+          const up   = chg >= 0;
+          return (
+            <div key={id} className="calc-ticker-item">
+              <span className="calc-ticker-dot" style={{ background: COIN_COLORS[id] }} />
+              <div className="calc-ticker-body">
+                <div className="calc-ticker-top">
+                  <span className="calc-ticker-sym">{COIN_SYMBOLS[id]}</span>
+                  <span className="calc-ticker-name">{COIN_NAMES[id]}</span>
+                </div>
+                {coin ? (
+                  <div className="calc-ticker-figures">
+                    <span className="calc-ticker-price">{fmtPrice(coin.usd)}</span>
+                    <span className={`calc-ticker-chg ${up ? "up" : "down"}`}>
+                      {up ? "▲" : "▼"} {Math.abs(chg).toFixed(2)}%
+                    </span>
+                  </div>
+                ) : (
+                  <span className="calc-ticker-loading">
+                    {liveError ? "Sin datos" : "Cargando…"}
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Formula */}
@@ -269,7 +350,7 @@ export default function CalculadoraClient() {
               <>
                 <span className="calc-result-label">Market Cap necesario</span>
 
-                <div className="calc-result-price">{fmtMC(neededMC)}</div>
+                <div className="calc-result-price">{fmtMC(displayMC)}</div>
 
                 {/* Breakdown */}
                 <div className="calc-breakdown">
@@ -280,18 +361,29 @@ export default function CalculadoraClient() {
                   <span className="calc-breakdown-result">{fmtMC(neededMC)}</span>
                 </div>
 
-                {/* Feasibility badge */}
+                {/* Difficulty gauge */}
                 {feasCfg && (
-                  <div
-                    className="calc-feasibility"
-                    style={{ borderColor: feasCfg.color + "50", background: feasCfg.color + "12" }}
-                  >
-                    <span className="calc-feasibility-label" style={{ color: feasCfg.color }}>
-                      {feasCfg.icon === "check" && <CheckCircle size={13} />}
-                      {feasCfg.icon === "warn"  && <AlertTriangle size={13} />}
-                      {feasCfg.icon === "x"     && <XCircle size={13} />}
+                  <div className="calc-gauge">
+                    <div className="calc-gauge-track">
+                      <div
+                        className="calc-gauge-marker"
+                        style={{ left: `${gaugePct}%`, borderColor: feasCfg.color }}
+                      />
+                    </div>
+                    <div className="calc-gauge-scale">
+                      <span>Factible</span>
+                      <span>Difícil</span>
+                      <span>Imposible</span>
+                    </div>
+                    <div
+                      className="calc-feasibility-label calc-gauge-verdict"
+                      style={{ color: feasCfg.color }}
+                    >
+                      {feasCfg.icon === "check" && <CheckCircle size={14} />}
+                      {feasCfg.icon === "warn"  && <AlertTriangle size={14} />}
+                      {feasCfg.icon === "x"     && <XCircle size={14} />}
                       {feasCfg.label}
-                    </span>
+                    </div>
                     <span className="calc-feasibility-desc">{feasCfg.desc}</span>
                   </div>
                 )}
@@ -366,6 +458,7 @@ export default function CalculadoraClient() {
               return (
                 <div key={item.key} className={`calc-bar-row${item.isTarget ? " calc-bar-row--target" : ""}`}>
                   <div className="calc-bar-meta">
+                    <span className="calc-bar-dot" style={{ background: item.isTarget ? "var(--accent-orange)" : item.color }} />
                     <span className="calc-bar-symbol" style={{ color: item.isTarget ? "var(--accent-orange)" : item.color }}>
                       {item.symbol}
                     </span>
@@ -376,8 +469,9 @@ export default function CalculadoraClient() {
                       className="calc-bar-fill"
                       style={{
                         width: `${pct}%`,
-                        background: item.isTarget ? "var(--accent-orange)" : item.color,
-                        opacity: item.isTarget ? 1 : 0.7,
+                        background: item.isTarget
+                          ? "linear-gradient(90deg, var(--accent-orange-soft), var(--accent-orange))"
+                          : `linear-gradient(90deg, ${item.color}99, ${item.color})`,
                       }}
                     />
                   </div>

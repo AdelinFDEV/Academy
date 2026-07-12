@@ -176,6 +176,34 @@ export const GUIDE_BADGE_DEFS: BadgeDef[] = GUIDES.map((g) => {
   };
 });
 
+/* ─── Progress ring ──────────────────────────────────────── */
+
+function ProgressRing({ pct }: { pct: number }) {
+  const r = 34;
+  const circ = 2 * Math.PI * r;
+  const offset = circ * (1 - Math.max(0, Math.min(pct, 100)) / 100);
+  return (
+    <svg className="logros-ring" width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">
+      <defs>
+        <linearGradient id="logros-ring-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ff8552" />
+          <stop offset="100%" stopColor="#ff6b2b" />
+        </linearGradient>
+      </defs>
+      <circle className="logros-ring-track" cx="42" cy="42" r={r} />
+      <circle
+        className="logros-ring-fill"
+        cx="42"
+        cy="42"
+        r={r}
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        transform="rotate(-90 42 42)"
+      />
+    </svg>
+  );
+}
+
 /* ─── Celebration popup ──────────────────────────────────── */
 
 function BadgePopup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
@@ -199,7 +227,9 @@ function BadgePopup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }
             <span>★</span> {badge.reward}
           </p>
         )}
-        <button className="badge-popup-close" onClick={onClose}>Genial ✓</button>
+        <button className="badge-popup-close" onClick={onClose}>
+          <Check size={15} strokeWidth={3} aria-hidden="true" /> Genial
+        </button>
       </div>
     </div>
   );
@@ -280,15 +310,56 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
   const unlockedCount = BADGE_DEFS.filter((b) => earned.has(b.id)).length;
   const guideUnlockedCount = GUIDE_BADGE_DEFS.filter((b) => earned.has(b.id)).length;
 
+  const totalBadges   = BADGE_DEFS.length + GUIDE_BADGE_DEFS.length;
+  const totalUnlocked = unlockedCount + guideUnlockedCount;
+  const totalPct      = totalBadges > 0 ? (totalUnlocked / totalBadges) * 100 : 0;
+  const activityPct   = BADGE_DEFS.length > 0 ? (unlockedCount / BADGE_DEFS.length) * 100 : 0;
+  const guidePct      = GUIDE_BADGE_DEFS.length > 0 ? (guideUnlockedCount / GUIDE_BADGE_DEFS.length) * 100 : 0;
+
   return (
     <>
       {current && <BadgePopup badge={current} onClose={dismissCurrent} />}
 
       <div className="badges-section">
+        {/* Overview: progreso global */}
+        <div className="logros-overview">
+          <div className="logros-ring-wrap">
+            <ProgressRing pct={totalPct} />
+            <div className="logros-ring-center">
+              <span className="logros-ring-num">{totalUnlocked}</span>
+              <span className="logros-ring-den">de {totalBadges}</span>
+            </div>
+          </div>
+          <div className="logros-overview-text">
+            <span className="logros-overview-eyebrow">Progreso total</span>
+            <h2 className="logros-overview-title">
+              {totalUnlocked === totalBadges
+                ? "¡Has desbloqueado todos los logros!"
+                : `${totalUnlocked} de ${totalBadges} logros desbloqueados`}
+            </h2>
+            <div className="logros-ov-bars">
+              <div className="logros-ov-row">
+                <span className="logros-ov-name">Actividad</span>
+                <span className="logros-ov-track">
+                  <span className="logros-ov-fill" style={{ width: `${activityPct}%` }} />
+                </span>
+                <span className="logros-ov-count">{unlockedCount}/{BADGE_DEFS.length}</span>
+              </div>
+              <div className="logros-ov-row">
+                <span className="logros-ov-name">Guías</span>
+                <span className="logros-ov-track">
+                  <span className="logros-ov-fill" style={{ width: `${guidePct}%` }} />
+                </span>
+                <span className="logros-ov-count">{guideUnlockedCount}/{GUIDE_BADGE_DEFS.length}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Streak bar */}
         <div className="streak-bar">
           <div className="streak-info">
-            <span className="streak-flame">🔥</span>
+            <span className="streak-flame"><Flame size={20} aria-hidden="true" /></span>
             <div>
               <span className="streak-value">{streak}</span>
               <span className="streak-label">día{streak !== 1 ? "s" : ""} de racha actual</span>

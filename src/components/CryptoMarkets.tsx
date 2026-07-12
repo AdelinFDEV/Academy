@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Plus } from "lucide-react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Plus, TrendingUp, Star, Search, X } from "lucide-react";
 
 type MarketCoin = {
   id: string;
@@ -17,6 +17,17 @@ type MarketCoin = {
 };
 
 type CoinInput = { id: string; symbol: string; name: string };
+
+type SortKey = "rank" | "price" | "pct24" | "pct7d" | "mcap" | "vol";
+
+const SORT_VALUE: Record<SortKey, (c: MarketCoin) => number> = {
+  rank:  (c) => c.market_cap_rank ?? Number.MAX_SAFE_INTEGER,
+  price: (c) => c.current_price ?? 0,
+  pct24: (c) => c.price_change_percentage_24h ?? 0,
+  pct7d: (c) => c.price_change_percentage_7d_in_currency ?? 0,
+  mcap:  (c) => c.market_cap ?? 0,
+  vol:   (c) => c.total_volume ?? 0,
+};
 
 type Props = {
   watchedIds: string[];
@@ -47,7 +58,19 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
   const [flash, setFlash]   = useState<Record<string, "up" | "down">>({});
   const [adding, setAdding] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [query, setQuery]   = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("rank");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const prevPrices = useRef<Record<string, number>>({});
+
+  function toggleSort(key: SortKey) {
+    if (key === sortKey) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir(key === "rank" ? "asc" : "desc");
+    }
+  }
 
   async function fetchMarkets() {
     try {
@@ -87,7 +110,117 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
     setAdding(null);
   }
 
+  // "Recién llegada al Top 200": la moneda situada en el filo del ranking
+  // (rank más alto), excluyendo stablecoins para que la narrativa de
+  // crecimiento tenga sentido.
+  const newcomer = useMemo(() => {
+    const STABLES = new Set([
+      "usdt", "usdc", "dai", "busd", "tusd", "usde", "fdusd", "usds",
+      "pyusd", "gusd", "usdp", "usdd", "frax", "lusd", "eurc", "eurs",
+    ]);
+    const eligible = coins.filter(
+      (c) => c.market_cap_rank != null && !STABLES.has(c.symbol.toLowerCase())
+    );
+    if (eligible.length === 0) return null;
+    return eligible.reduce((a, b) => (b.market_cap_rank > a.market_cap_rank ? b : a));
+  }, [coins]);
+
+  const displayed = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const filtered = q
+      ? coins.filter(
+          (c) =>
+            c.name.toLowerCase().includes(q) ||
+            c.symbol.toLowerCase().includes(q)
+        )
+      : coins;
+    const getVal = SORT_VALUE[sortKey];
+    const dir = sortDir === "asc" ? 1 : -1;
+    return [...filtered].sort((a, b) => (getVal(a) - getVal(b)) * dir);
+  }, [coins, query, sortKey, sortDir]);
+
   return (
+    <>
+      {!loading && newcomer && (() => {
+        const watched = watchedIds.includes(newcomer.id);
+        const pct24 = newcomer.price_change_percentage_24h;
+        const pct7d = newcomer.price_change_percentage_7d_in_currency;
+        return (
+          <div className="newcomer-banner">
+            <span className="newcomer-glow" aria-hidden="true" />
+            <div className="newcomer-logo-wrap">
+              <img
+                src={newcomer.image}
+                alt={newcomer.name}
+                className="newcomer-logo"
+                loading="lazy"
+                width={52}
+                height={52}
+              />
+              <span className="newcomer-rank">#{newcomer.market_cap_rank}</span>
+            </div>
+
+            <div className="newcomer-body">
+              <span className="newcomer-eyebrow">
+                <TrendingUp size={13} aria-hidden="true" />
+                Recién llegada al Top 200
+              </span>
+              <h3 className="newcomer-name">
+                {newcomer.name}
+                <span className="newcomer-sym">{newcomer.symbol.toUpperCase()}</span>
+              </h3>
+              <p className="newcomer-tagline">
+                Acaba de colarse entre las 200 mayores criptomonedas. Una candidata a
+                vigilar de cerca por su posible crecimiento.
+              </p>
+            </div>
+
+            <div className="newcomer-side">
+              <div className="newcomer-stats">
+                <div className="newcomer-stat">
+                  <span className="newcomer-stat-l">Precio</span>
+                  <span className="newcomer-stat-v">{fmtPrice(newcomer.current_price)}</span>
+                </div>
+                <div className="newcomer-stat">
+                  <span className="newcomer-stat-l">24h</span>
+                  <span className={`newcomer-stat-v ${(pct24 ?? 0) >= 0 ? "pos" : "neg"}`}>
+                    {fmtPct(pct24)}
+                  </span>
+                </div>
+                <div className="newcomer-stat">
+                  <span className="newcomer-stat-l">7d</span>
+                  <span className={`newcomer-stat-v ${(pct7d ?? 0) >= 0 ? "pos" : "neg"}`}>
+                    {fmtPct(pct7d)}
+                  </span>
+                </div>
+              </div>
+
+              {watched ? (
+                <span className="newcomer-cta watched">
+                  <Star size={14} aria-hidden="true" />
+                  En tu watchlist
+                </span>
+              ) : (
+                <button
+                  className="newcomer-cta"
+                  onClick={() => handleAdd(newcomer)}
+                  disabled={adding === newcomer.id}
+                >
+                  {adding === newcomer.id ? (
+                    <span className="crypto-add-spinner" />
+                  ) : (
+                    <>
+                      <Plus size={14} aria-hidden="true" />
+                      Vigilar
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
     <section className="crypto-markets">
       <div className="crypto-markets-header">
         <div>
@@ -104,6 +237,29 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
         </div>
       </div>
 
+      {!loading && (
+        <div className="crypto-search-box">
+          <Search size={15} aria-hidden="true" />
+          <input
+            type="text"
+            className="crypto-search-input"
+            placeholder="Filtra el Top 200 por nombre o símbolo…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoComplete="off"
+          />
+          {query && (
+            <button
+              className="crypto-search-clear"
+              onClick={() => setQuery("")}
+              aria-label="Limpiar búsqueda"
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      )}
+
       {loading ? (
         <div className="crypto-markets-loading">
           <span className="watchlist-search-spinner" />
@@ -114,18 +270,49 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
           <table className="crypto-table">
             <thead>
               <tr>
-                <th className="crypto-th-rank">#</th>
+                <th className="crypto-th-rank">
+                  <button className={`crypto-th-sort${sortKey === "rank" ? " active" : ""}`} onClick={() => toggleSort("rank")}>
+                    # {sortKey === "rank" && <span className="crypto-sort-caret">{sortDir === "asc" ? "▲" : "▼"}</span>}
+                  </button>
+                </th>
                 <th className="crypto-th-name">Moneda</th>
-                <th className="crypto-th-price">Precio</th>
-                <th className="crypto-th-pct">24h</th>
-                <th className="crypto-th-pct crypto-col-hide-sm">7d</th>
-                <th className="crypto-th-big crypto-col-hide-md">Market Cap</th>
-                <th className="crypto-th-big crypto-col-hide-md">Vol 24h</th>
+                <th className="crypto-th-price">
+                  <button className={`crypto-th-sort${sortKey === "price" ? " active" : ""}`} onClick={() => toggleSort("price")}>
+                    Precio {sortKey === "price" && <span className="crypto-sort-caret">{sortDir === "asc" ? "▲" : "▼"}</span>}
+                  </button>
+                </th>
+                <th className="crypto-th-pct">
+                  <button className={`crypto-th-sort${sortKey === "pct24" ? " active" : ""}`} onClick={() => toggleSort("pct24")}>
+                    24h {sortKey === "pct24" && <span className="crypto-sort-caret">{sortDir === "asc" ? "▲" : "▼"}</span>}
+                  </button>
+                </th>
+                <th className="crypto-th-pct crypto-col-hide-sm">
+                  <button className={`crypto-th-sort${sortKey === "pct7d" ? " active" : ""}`} onClick={() => toggleSort("pct7d")}>
+                    7d {sortKey === "pct7d" && <span className="crypto-sort-caret">{sortDir === "asc" ? "▲" : "▼"}</span>}
+                  </button>
+                </th>
+                <th className="crypto-th-big crypto-col-hide-md">
+                  <button className={`crypto-th-sort${sortKey === "mcap" ? " active" : ""}`} onClick={() => toggleSort("mcap")}>
+                    Market Cap {sortKey === "mcap" && <span className="crypto-sort-caret">{sortDir === "asc" ? "▲" : "▼"}</span>}
+                  </button>
+                </th>
+                <th className="crypto-th-big crypto-col-hide-md">
+                  <button className={`crypto-th-sort${sortKey === "vol" ? " active" : ""}`} onClick={() => toggleSort("vol")}>
+                    Vol 24h {sortKey === "vol" && <span className="crypto-sort-caret">{sortDir === "asc" ? "▲" : "▼"}</span>}
+                  </button>
+                </th>
                 <th className="crypto-th-add"></th>
               </tr>
             </thead>
             <tbody>
-              {coins.map((coin) => {
+              {displayed.length === 0 && (
+                <tr className="crypto-row">
+                  <td className="crypto-empty-row" colSpan={8}>
+                    No hay ninguna moneda que coincida con «{query}».
+                  </td>
+                </tr>
+              )}
+              {displayed.map((coin) => {
                 const watched = watchedIds.includes(coin.id);
                 const f = flash[coin.id];
                 const pct24 = coin.price_change_percentage_24h ?? 0;
@@ -175,5 +362,6 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
         </div>
       )}
     </section>
+    </>
   );
 }

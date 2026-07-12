@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, ChevronRight, Lock, TrendingDown, Clock, Zap, Filter } from "lucide-react";
-import { TOKENS, FREE_TOKEN_IDS, getNextUnlock, getMonthlyTotal, getUpcomingUnlocks } from "./tokenData";
+import { TOKENS, FREE_TOKEN_IDS, type LiveUnlock } from "./tokenData";
+import { DefiLlamaGlyph } from "@/components/BrandMarks";
 
 const TODAY = new Date();
 
@@ -36,32 +37,54 @@ interface Props {
 
 export default function LiberacionesClient({ isPremium }: Props) {
   const [filter, setFilter] = useState<Filter>("month");
+  const [live, setLive] = useState<Record<string, LiveUnlock>>({});
+  const [loaded, setLoaded] = useState(false);
+
+  // Datos en vivo de DefiLlama (próxima fecha + cantidad reales). Solo se
+  // muestran tokens con datos reales; no usamos estimaciones.
+  useEffect(() => {
+    let alive = true;
+    fetch("/api/unlocks")
+      .then(r => (r.ok ? r.json() : {}))
+      .then(data => { if (alive) { setLive(data ?? {}); setLoaded(true); } })
+      .catch(() => { if (alive) setLoaded(true); });
+    return () => { alive = false; };
+  }, []);
+
+  // Solo tokens con próximo unlock EN VIVO de DefiLlama. Los que no lo tienen
+  // (XRP no está en DefiLlama; JUP sin evento próximo) se excluyen de la lista.
+  const liveRows = useMemo(() => {
+    return TOKENS
+      .map(token => {
+        const lv = live[token.id];
+        if (!lv) return null;
+        return {
+          token,
+          amount: lv.toUnlock,
+          next: { date: lv.nextDate, category: token.category, color: token.color, tokens: lv.toUnlock, type: "monthly" as const },
+        };
+      })
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+  }, [live]);
 
   const filteredTokens = useMemo(() => {
-    return TOKENS.map(token => {
-      const next = getNextUnlock(token, TODAY);
-      const monthly = getMonthlyTotal(token, TODAY);
-      return { token, next, monthly };
-    }).filter(({ next }) => {
-      if (!next) return false;
+    return liveRows.filter(({ next }) => {
       const days = daysUntil(next.date);
       if (filter === "week") return days <= 7;
       if (filter === "month") return days <= 31;
       if (filter === "quarter") return days <= 90;
       return true;
-    }).sort((a, b) => {
-      if (!a.next) return 1;
-      if (!b.next) return -1;
-      return a.next.date.localeCompare(b.next.date);
-    });
-  }, [filter]);
+    }).sort((a, b) => a.next.date.localeCompare(b.next.date));
+  }, [liveRows, filter]);
 
-  // Global stats
-  const totalMonthlyTokensByUSD = TOKENS.reduce((sum, t) => sum + getMonthlyTotal(t, TODAY), 0);
-  const upcomingThisWeek = TOKENS.filter(t => {
-    const n = getNextUnlock(t, TODAY);
-    return n && daysUntil(n.date) <= 7;
-  }).length;
+  // Global stats — solo datos reales
+  const trackedCount = liveRows.length;
+  const tokensNext30 = liveRows
+    .filter(r => daysUntil(r.next.date) <= 31)
+    .reduce((sum, r) => sum + r.amount, 0);
+  const upcomingThisWeek = liveRows.filter(r => daysUntil(r.next.date) <= 7).length;
+
+  const fetchFailed = loaded && Object.keys(live).length === 0;
 
   return (
     <div className="lib-wrap">
@@ -74,18 +97,21 @@ export default function LiberacionesClient({ isPremium }: Props) {
         </div>
         <h1 className="lib-hero-title">Liberaciones de Tokens</h1>
         <p className="lib-hero-sub">
-          Anticipa la presión vendedora. Calendario de vesting en tiempo real para los proyectos más importantes del mercado cripto.
+          Anticipa la presión vendedora con <strong>datos reales, no estimaciones</strong>. Fechas y cantidades de cada liberación en directo desde DefiLlama, la mayor fuente de datos on-chain del mercado cripto.
         </p>
+
+        <DefiLlamaBadge />
+
 
         <div className="lib-stats-row">
           <div className="lib-stat">
-            <span className="lib-stat-num">{TOKENS.length}</span>
+            <span className="lib-stat-num">{trackedCount}</span>
             <span className="lib-stat-label">Tokens rastreados</span>
           </div>
           <div className="lib-stat-div" />
           <div className="lib-stat">
-            <span className="lib-stat-num">{fmtTokens(totalMonthlyTokensByUSD)}</span>
-            <span className="lib-stat-label">Tokens liberados este mes</span>
+            <span className="lib-stat-num">{fmtTokens(tokensNext30)}</span>
+            <span className="lib-stat-label">En unlocks (30 días)</span>
           </div>
           <div className="lib-stat-div" />
           <div className="lib-stat">
@@ -116,10 +142,10 @@ export default function LiberacionesClient({ isPremium }: Props) {
 
       {/* ── Token List ── */}
       <div className="lib-list">
-        {filteredTokens.map(({ token, next, monthly }, idx) => {
+        {filteredTokens.map(({ token, next, amount }) => {
           const isFree = FREE_TOKEN_IDS.includes(token.id);
           const isLocked = !isPremium && !isFree;
-          const days = next ? daysUntil(next.date) : 999;
+          const days = daysUntil(next.date);
 
           return (
             <div key={token.id} className={`lib-row${isLocked ? " lib-row--locked" : ""}`}>
@@ -142,7 +168,7 @@ export default function LiberacionesClient({ isPremium }: Props) {
                     <Lock size={12} />
                     Premium
                   </div>
-                ) : next ? (
+                ) : (
                   <>
                     <div className="lib-next-date">{fmtDate(next.date)}</div>
                     <div className={`lib-days-badge${days <= 7 ? " lib-days-badge--urgent" : days <= 14 ? " lib-days-badge--soon" : ""}`}>
@@ -150,28 +176,28 @@ export default function LiberacionesClient({ isPremium }: Props) {
                       {days === 0 ? "Hoy" : days === 1 ? "Mañana" : `en ${days}d`}
                     </div>
                   </>
-                ) : <span className="lib-text-muted">—</span>}
+                )}
               </div>
 
               {/* Category */}
               <div className="lib-row-category">
                 {isLocked ? (
                   <div className="lib-locked-field"><Lock size={12} />Premium</div>
-                ) : next ? (
+                ) : (
                   <span className="lib-category-pill" style={{ borderColor: token.color + "40", color: token.color }}>
                     {next.category}
                   </span>
-                ) : null}
+                )}
               </div>
 
-              {/* Monthly amount */}
+              {/* Unlock amount */}
               <div className="lib-row-amount">
                 {isLocked ? (
                   <div className="lib-locked-field"><Lock size={12} />Premium</div>
                 ) : (
                   <>
-                    <div className="lib-amount-tokens">{fmtTokens(monthly)}</div>
-                    <div className="lib-amount-pct">{pctOfSupply(monthly, token.totalSupply)} del supply</div>
+                    <div className="lib-amount-tokens">{fmtTokens(amount)}</div>
+                    <div className="lib-amount-pct">{pctOfSupply(amount, token.totalSupply)} del supply</div>
                   </>
                 )}
               </div>
@@ -179,7 +205,7 @@ export default function LiberacionesClient({ isPremium }: Props) {
               {/* Pressure indicator */}
               <div className="lib-row-pressure">
                 {isLocked ? null : (
-                  <PressureBar tokens={monthly} total={token.totalSupply} color={token.color} />
+                  <PressureBar tokens={amount} total={token.totalSupply} color={token.color} />
                 )}
               </div>
 
@@ -200,12 +226,22 @@ export default function LiberacionesClient({ isPremium }: Props) {
           );
         })}
 
-        {filteredTokens.length === 0 && (
+        {!loaded ? (
+          <div className="lib-empty">
+            <Calendar size={32} />
+            <p>Cargando calendario de unlocks…</p>
+          </div>
+        ) : fetchFailed ? (
+          <div className="lib-empty">
+            <Calendar size={32} />
+            <p>No se pudieron cargar los datos de liberaciones. Vuelve a intentarlo en unos minutos.</p>
+          </div>
+        ) : filteredTokens.length === 0 ? (
           <div className="lib-empty">
             <Calendar size={32} />
             <p>No hay unlocks en el período seleccionado</p>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* ── Premium CTA (si no es premium) ── */}
@@ -216,7 +252,7 @@ export default function LiberacionesClient({ isPremium }: Props) {
             <div>
               <div className="lib-upgrade-title">Accede a todos los tokens</div>
               <div className="lib-upgrade-sub">
-                {FREE_TOKEN_IDS.length} tokens disponibles en el plan gratuito. Hazte Premium para ver los {TOKENS.length - FREE_TOKEN_IDS.length} restantes con calendario completo y análisis de impacto.
+                {FREE_TOKEN_IDS.length} tokens disponibles en el plan gratuito. Hazte Premium para ver los {Math.max(0, trackedCount - FREE_TOKEN_IDS.length)} restantes con calendario completo y análisis de impacto.
               </div>
             </div>
             <Link href="/premium" className="lib-upgrade-btn">
@@ -226,6 +262,39 @@ export default function LiberacionesClient({ isPremium }: Props) {
         </div>
       )}
 
+    </div>
+  );
+}
+
+function DefiLlamaMark() {
+  return (
+    <span className="lib-dl-mark" aria-hidden="true">
+      <DefiLlamaGlyph size={15} />
+    </span>
+  );
+}
+
+function DefiLlamaBadge() {
+  return (
+    <div className="lib-dl-badge-row">
+      <span className="lib-live-pill">
+        <span className="lib-live-pill-dot" />
+        En directo
+      </span>
+      <span className="lib-dl-sep">·</span>
+      <span className="lib-dl-powered">Datos oficiales en colaboración con</span>
+      <a
+        className="lib-dl-badge"
+        href="https://defillama.com/unlocks"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Ver la fuente en DefiLlama"
+      >
+        <DefiLlamaMark />
+        <span className="lib-dl-word">Defi<span>Llama</span></span>
+      </a>
+      <span className="lib-dl-sep">·</span>
+      <span className="lib-dl-refresh">actualizado cada 6&nbsp;h</span>
     </div>
   );
 }

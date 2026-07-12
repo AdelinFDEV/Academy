@@ -107,7 +107,16 @@
 @media (max-width: 640px) {
   .hero {
     min-height: 0;
-    padding: 2.5rem 0 2.75rem;
+    padding: 3.5rem 0 2.75rem;
+  }
+
+  .hero-search-bar {
+    margin-bottom: 2.4rem;
+  }
+
+  .hero-headline {
+    gap: 1.35rem;
+    margin-bottom: 2.75rem;
   }
 }
 
@@ -130,6 +139,13 @@
 
   .hero-search-bar .guide-search,
   .hero-search-bar .guide-search-box {
+    width: 100%;
+  }
+
+  /* En el hero el buscador NO encoge al enfocar/escribir: mantiene su ancho.
+     (Sin este override ganaría .guide-search-box:focus-within { width: 260px }
+     y el campo se encogía de golpe de ~360px a 260px). */
+  .hero-search-bar .guide-search-box:focus-within {
     width: 100%;
   }
 
@@ -401,6 +417,44 @@ a.hero-bento-card-link:hover {
   border: 1px solid rgba(240, 244, 255, 0.08);
   padding: 0.28rem 0.5rem;
   border-radius: 100px;
+}
+
+/* Mención de colaboración (p. ej. DefiLlama en Liberaciones) */
+.hero-bento-collab {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.4rem;
+  margin-top: 0.15rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.hero-bento-collab-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.28rem 0.62rem 0.28rem 0.32rem;
+  border-radius: 100px;
+  background: rgba(33, 114, 229, 0.14);
+  border: 1px solid rgba(33, 114, 229, 0.4);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #eaf1ff;
+}
+
+.hero-bento-collab-badge span { color: #5aa2ff; }
+
+.hero-collab-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  background: #2172E5;
 }
 
 .hero-bento-cta {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { Trophy } from "lucide-react";
 import Badges from "@/components/Badges";
 
 export const metadata: Metadata = {
@@ -28,9 +29,18 @@ export default async function LogrosPage() {
 
   return (
     <main className="dashboard-main">
-      <div className="dashboard-header">
-        <h1>Logros</h1>
-        <p>Tu progreso y rachas en la academia</p>
+      <div className="logros-header">
+        <div className="logros-header-icon">
+          <Trophy size={22} aria-hidden="true" />
+        </div>
+        <div className="logros-header-text">
+          <span className="logros-eyebrow">
+            <span className="logros-eyebrow-dot" />
+            Tu progreso
+          </span>
+          <h1 className="logros-title">Logros</h1>
+          <p>Rachas, hitos y recompensas que vas desbloqueando en la academia.</p>
+        </div>
       </div>
 
       <Badges

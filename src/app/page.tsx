@@ -11,6 +11,7 @@ import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
 import HeroSpotlight from "@/components/HeroSpotlight";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
+import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 import { GUIDES } from "@/lib/guides";
 import "./home.css";
 
@@ -170,6 +171,22 @@ export default async function HomePage() {
           </span>
         </li>
       </ul>
+
+      <div className="premium-pitch-partners">
+        <span className="premium-pitch-partners-label">
+          <ShieldCheck size={12} aria-hidden="true" /> Datos oficiales, no estimaciones
+        </span>
+        <div className="premium-pitch-partners-logos">
+          <span className="premium-pitch-partner premium-pitch-partner--dl">
+            <span className="premium-pitch-partner-mark"><DefiLlamaGlyph size={12} /></span>
+            DefiLlama
+          </span>
+          <span className="premium-pitch-partner premium-pitch-partner--cg">
+            <span className="premium-pitch-partner-mark"><CoinGeckoGlyph size={12} /></span>
+            CoinGecko
+          </span>
+        </div>
+      </div>
 
       <div className="premium-pitch-included">
         <GraduationCap size={13} aria-hidden="true" />
