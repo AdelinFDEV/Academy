@@ -27,7 +27,9 @@ const kalam = Kalam({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+// Fallback al dominio de producción (no a localhost): si NEXT_PUBLIC_SITE_URL
+// no estuviera disponible en build, los metadatos/OpenGraph siguen correctos.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com";
 const description =
   "Academia de criptomonedas: análisis de mercado, educación blockchain y herramientas para operar con criterio. Publicaciones semanales para inversores que van en serio.";
 
