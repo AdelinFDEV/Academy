@@ -269,6 +269,27 @@
   background: radial-gradient(circle, rgba(140,140,255,0.16) 0%, transparent 70%);
 }
 
+/* Variante genérica por color de acento (--spot): evita una clase por color.
+   La usan las tarjetas de herramientas añadidas al spotlight. */
+.dash-spot-card--accent {
+  border-color: color-mix(in srgb, var(--spot) 22%, transparent);
+}
+.dash-spot-card--accent .dash-spot-glow {
+  background: radial-gradient(circle, color-mix(in srgb, var(--spot) 22%, transparent) 0%, transparent 70%);
+}
+.dash-spot-card--accent:hover {
+  border-color: color-mix(in srgb, var(--spot) 45%, transparent);
+  box-shadow: 0 12px 40px color-mix(in srgb, var(--spot) 16%, transparent);
+}
+.dash-spot-icon--accent {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--spot) 22%, transparent), color-mix(in srgb, var(--spot) 8%, transparent));
+  color: var(--spot);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--spot) 20%, transparent) inset;
+}
+.dash-spot-cta--accent {
+  color: var(--spot);
+}
+
 .dash-spot-top {
   display: flex;
   align-items: flex-start;
@@ -333,6 +354,12 @@
   background: rgba(240, 244, 255, 0.07);
   color: var(--text-muted);
   border: 1px solid rgba(240, 244, 255, 0.1);
+}
+
+.dash-spot-badge--free {
+  background: rgba(52, 211, 153, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .dash-spot-title {
