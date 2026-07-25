@@ -1,17 +1,18 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, NotebookPen, BookA, MonitorPlay, Route, ShieldCheck, Star, Crown, Gem, Check, Tag, Map, Unlock, MessageCircle, Wallet, GraduationCap } from "lucide-react";
+import { ArrowRight, BookA, MonitorPlay, Route, ShieldCheck, Star, Tag, Map, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import GuideSearch from "@/components/GuideSearch";
-import HomeFeed from "@/components/HomeFeed";
+import HomeFeed, { HeroPost } from "@/components/HomeFeed";
+import FeaturedGuideCard from "@/components/FeaturedGuideCard";
+import PremiumPitch from "@/components/PremiumPitch";
 import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
 import HeroSpotlight from "@/components/HeroSpotlight";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
-import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 import { GUIDES } from "@/lib/guides";
 import "./home.css";
 
@@ -114,104 +115,6 @@ export default async function HomePage() {
     if (slug) catPostMap[slug] = (catPostMap[slug] ?? 0) + 1;
   });
 
-  const premiumPitchCard = (
-    <div className="premium-pitch">
-      <span className="premium-pitch-glow" aria-hidden="true" />
-
-      <div className="premium-pitch-top">
-        <span className="premium-pitch-badge">
-          <Crown size={13} aria-hidden="true" /> Premium
-        </span>
-        <span className="premium-pitch-discount">-60%</span>
-      </div>
-
-      <h3 className="premium-pitch-title">
-        Deja de mirar el mercado.<br />
-        <span className="text-gradient">Empieza a operarlo.</span>
-      </h3>
-      <p className="premium-pitch-sub">
-        Las herramientas que separan a los que improvisan de los que operan con ventaja.
-      </p>
-
-      <ul className="premium-pitch-features">
-        <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon" style={{ color: "#ff9a4d", background: "rgba(255,154,77,0.14)", borderColor: "rgba(255,154,77,0.3)" }}>
-            <NotebookPen size={16} aria-hidden="true" />
-          </span>
-          <span>
-            <strong>Diario de Trading</strong>
-            No solo registras: completas retos que te convierten en un trader disciplinado.
-          </span>
-        </li>
-        <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon" style={{ color: "#34d399", background: "rgba(52,211,153,0.14)", borderColor: "rgba(52,211,153,0.3)" }}>
-            <Unlock size={16} aria-hidden="true" />
-          </span>
-          <span>
-            <strong>Liberaciones de Tokens</strong>
-            Anticipa la presión vendedora con el calendario de vesting en tiempo real.
-          </span>
-        </li>
-        <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon" style={{ color: "#fb923c", background: "rgba(251,146,60,0.14)", borderColor: "rgba(251,146,60,0.3)" }}>
-            <Wallet size={16} aria-hidden="true" />
-          </span>
-          <span>
-            <strong>Portfolio Spot</strong>
-            Sigue en directo las compras reales de AdelinBTC, con precios de entrada y contexto.
-          </span>
-        </li>
-        <li className="premium-pitch-feature">
-          <span className="premium-pitch-feature-icon" style={{ color: "#ffd166", background: "rgba(255,209,102,0.14)", borderColor: "rgba(255,209,102,0.3)" }}>
-            <Gem size={16} aria-hidden="true" />
-          </span>
-          <span>
-            <strong>Guías Premium</strong>
-            Desbloquea todas las guías interactivas, no solo las básicas.
-          </span>
-        </li>
-      </ul>
-
-      <div className="premium-pitch-partners">
-        <span className="premium-pitch-partners-label">
-          <ShieldCheck size={12} aria-hidden="true" /> Datos oficiales, no estimaciones
-        </span>
-        <div className="premium-pitch-partners-logos">
-          <span className="premium-pitch-partner premium-pitch-partner--dl">
-            <span className="premium-pitch-partner-mark"><DefiLlamaGlyph size={12} /></span>
-            DefiLlama
-          </span>
-          <span className="premium-pitch-partner premium-pitch-partner--cg">
-            <span className="premium-pitch-partner-mark"><CoinGeckoGlyph size={12} /></span>
-            CoinGecko
-          </span>
-        </div>
-      </div>
-
-      <div className="premium-pitch-included">
-        <GraduationCap size={13} aria-hidden="true" />
-        Lancemos los cursos que lancemos, siempre estarán incluidos — sin coste extra.
-      </div>
-
-      <div className="premium-pitch-price-wrapper">
-        <span className="premium-pitch-limited">Por tiempo limitado</span>
-        <div className="premium-pitch-price">
-          <span className="premium-pitch-old-price">49,99€</span>
-          <span className="premium-pitch-amount">19,99€</span>
-          <span className="premium-pitch-period">/mes</span>
-        </div>
-      </div>
-
-      <Link href="/premium" className="premium-pitch-cta">
-        Más información <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
-      </Link>
-
-      <p className="premium-pitch-note">
-        <Check size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
-      </p>
-    </div>
-  );
-
   const enrichedPosts = feedPosts.map((p) => ({
     id: p.id,
     title: p.title,
@@ -229,6 +132,8 @@ export default async function HomePage() {
     initialLiked: userLikedSet.has(p.id),
     initialSaved: userSavedSet.has(p.id),
   }));
+
+  const enrichedHero = enrichedPosts.find((p) => p.is_featured) ?? null;
 
   return (
     <div className="blog-page">
@@ -315,6 +220,14 @@ export default async function HomePage() {
         </Link>
       </div>
 
+      {/* ── Fila destacada: entrada principal + última guía (50/50, full width) ── */}
+      {(enrichedHero || latestGuide) && (
+        <div className="home-featured-row">
+          {enrichedHero && <HeroPost post={enrichedHero} isLoggedIn={!!user} />}
+          {latestGuide && <FeaturedGuideCard guide={latestGuide} />}
+        </div>
+      )}
+
       {/* ── Main layout ── */}
       <div className="home-layout" id="feed">
 
@@ -322,17 +235,19 @@ export default async function HomePage() {
           <SidebarTools isLoggedIn={!!user} isPremium={isPremium} />
         </div>
 
-        {/* Premium pitch — en móvil sube aquí, justo tras Herramientas */}
+        {/* Premium pitch — en móvil sube aquí, justo tras Herramientas.
+            En desktop no se muestra aquí: va como sección tras el layout. */}
         <div className="premium-pitch-mobile-only">
-          {premiumPitchCard}
+          <PremiumPitch variant="card" />
         </div>
 
-        {/* Feed */}
+        {/* Feed — el hero ya se muestra en la fila destacada de arriba */}
         <HomeFeed
           posts={enrichedPosts}
           isLoggedIn={!!user}
+          showHero={false}
           youtubeSection={
-            <Suspense fallback={null}>
+            <Suspense key="yt-latest" fallback={null}>
               <YouTubeLatestSection />
             </Suspense>
           }
@@ -387,13 +302,13 @@ export default async function HomePage() {
             </div>
           )}
 
-          {/* Premium pitch — en desktop se queda al final del sidebar */}
-          <div className="premium-pitch-desktop-only">
-            {premiumPitchCard}
-          </div>
-
         </aside>
       </div>
+
+      {/* ── Premium — sección full-width en desktop (en móvil va arriba, tras Herramientas) ── */}
+      <section className="premium-section">
+        <PremiumPitch variant="section" />
+      </section>
 
       <GuidesHomeSection />
 

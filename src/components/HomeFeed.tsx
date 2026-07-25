@@ -185,7 +185,7 @@ function FeedPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   );
 }
 
-function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
+export function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   const ytId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
   const imageUrl = post.cover_image || "/featured-demo.png";
 
@@ -235,7 +235,7 @@ function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
   );
 }
 
-export default function HomeFeed({ posts, isLoggedIn, youtubeSection }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode }) {
+export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero = true }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode; showHero?: boolean }) {
   // Find the first featured post to show as Hero
   const mainPost = posts.find(p => p.is_featured);
 
@@ -249,7 +249,7 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection }: { posts:
   return (
     <div className="home-feed">
       {/* Hero Post */}
-      {mainPost && (
+      {showHero && mainPost && (
         <HeroPost post={mainPost} isLoggedIn={isLoggedIn} />
       )}
 

@@ -340,6 +340,49 @@ a.hero-bento-card-link:hover {
   flex-shrink: 0;
 }
 
+/* Micro-animación en bucle del glifo: la baldosa de color queda fija
+   como ancla y el icono flota/balancea muy suave. Escalonado por tarjeta
+   (delays distintos) para que no se muevan todos a la vez. */
+@keyframes hero-icon-loop {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-2.5px) rotate(-3deg); }
+}
+
+.hero-bento-icon svg {
+  animation: hero-icon-loop 4.8s ease-in-out infinite;
+  transform-origin: 50% 60%;
+  will-change: transform;
+}
+
+.hero-bento-cell:nth-child(1) .hero-bento-icon svg { animation-delay: 0s; }
+.hero-bento-cell:nth-child(2) .hero-bento-icon svg { animation-delay: 0.65s; }
+.hero-bento-cell:nth-child(3) .hero-bento-icon svg { animation-delay: 1.3s; }
+.hero-bento-cell:nth-child(4) .hero-bento-icon svg { animation-delay: 1.95s; }
+
+/* Un pelín más de vida al pasar el ratón, sin brusquedad */
+a.hero-bento-card-link:hover .hero-bento-icon svg {
+  animation-duration: 3.4s;
+}
+
+/* En táctil (móvil/tablet) no hay hover: mantenemos el movimiento vivo
+   de forma constante, con un recorrido un poco mayor para que se note. */
+@media (hover: none) {
+  @keyframes hero-icon-loop-touch {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-3.5px) rotate(-4deg); }
+  }
+  .hero-bento-icon svg {
+    animation-name: hero-icon-loop-touch;
+    animation-duration: 3.4s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bento-icon svg {
+    animation: none;
+  }
+}
+
 .hero-bento-badge {
   display: inline-flex;
   align-items: center;
@@ -379,18 +422,20 @@ a.hero-bento-card-link:hover {
   line-height: 1.5;
   color: rgba(203, 218, 240, 0.62);
   margin: 0;
-  flex: 1;
+  /* Reserva ~3 líneas para que el bloque de texto de las 4 tarjetas
+     empiece a la misma altura (evita que unas queden más "huecas"). */
+  min-height: 3.35rem;
 }
 
 .hero-bento-note {
   display: flex;
   align-items: flex-start;
   gap: 0.4rem;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  line-height: 1.45;
+  line-height: 1.4;
   margin: 0;
-  padding: 0.55rem 0.65rem;
+  padding: 0.5rem 0.6rem;
   border-radius: 10px;
   border: 1px solid;
 }
@@ -404,6 +449,9 @@ a.hero-bento-card-link:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+  /* Empuja el pie (chips + colaboración + CTA) al fondo de la tarjeta,
+     así los pies de las 4 tarjetas quedan alineados. */
+  margin-top: auto;
 }
 
 .hero-bento-chip {
@@ -1533,5 +1581,121 @@ a.hero-bento-card-link:hover .hero-bento-cta {
   .contact-cta-btn {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FILA DESTACADA — entrada principal + última guía (50/50).
+   Full width del contenedor, encima del layout feed+sidebar.
+   ═══════════════════════════════════════════════════════════ */
+
+.home-featured-row {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 900px) {
+  .home-featured-row {
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    gap: 1.5rem;
+    padding: 1.75rem 2rem 0;
+  }
+}
+
+/* En la fila, cada tarjeta llena la altura y suelta su margen propio */
+.home-featured-row > .hero-post-card,
+.home-featured-row > .guides-featured-card {
+  margin: 0;
+  height: 100%;
+  min-width: 0;
+}
+
+/* En móvil, en la fila destacada solo mostramos la entrada principal:
+   la última guía ya tiene su propia sección grande (GuidesHomeSection)
+   más abajo, así evitamos verla duplicada al hacer scroll. */
+@media (max-width: 899px) {
+  .home-featured-row > .guides-featured-card {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PREMIUM COMO SECCIÓN — solo desktop (≥900px).
+   En móvil el pitch se muestra como tarjeta arriba
+   (.premium-pitch-mobile-only), así que esta sección se oculta.
+   ═══════════════════════════════════════════════════════════ */
+
+.premium-section {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .premium-section {
+    display: block;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.5rem 2rem 2.5rem;
+  }
+}
+
+/* Pitch en modo sección: 2 columnas (izq pitch, der beneficios) */
+.premium-pitch--section {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 2.5rem 3rem;
+}
+
+.premium-pitch-col {
+  position: relative;
+  min-width: 0;
+}
+
+/* Izquierda: título + sub + precio + CTA + nota */
+.premium-pitch--section .premium-pitch-title {
+  font-size: 1.85rem;
+}
+
+.premium-pitch--section .premium-pitch-sub {
+  font-size: 0.98rem;
+  margin-bottom: 1.75rem;
+}
+
+.premium-pitch--section .premium-pitch-price-wrapper {
+  margin-bottom: 1.1rem;
+}
+
+/* Derecha: los 4 beneficios en cuadrícula 2x2 */
+.premium-pitch--section .premium-pitch-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Nº impar de beneficios: el último ocupa el ancho completo (sin hueco) */
+.premium-pitch--section .premium-pitch-features > li:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* Bajo la cuadrícula, partners + "incluido" ocupan el ancho de la columna */
+.premium-pitch--section .premium-pitch-included {
+  margin-top: 0.25rem;
+}
+
+/* En pantallas medianas, si aprieta, apila las 2 columnas del pitch */
+@media (min-width: 900px) and (max-width: 1080px) {
+  .premium-pitch--section {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  .premium-pitch--section .premium-pitch-features {
+    grid-template-columns: 1fr 1fr;
   }
 }
