@@ -6233,9 +6233,16 @@ select {
     justify-content: center;
     gap: 4rem;
     max-width: 1200px;
-    align-items: flex-start;
-    padding-top: 60px;
-    overflow-y: visible;
+    /* Centrado vertical del bloque; si no cabe (pantalla baja), cae a
+       arriba + scroll en vez de cortar los enlaces de abajo. */
+    align-items: safe center;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    /* Red de seguridad: con muchos ítems, permitir scroll para que el
+       footer nunca quede por debajo del viewport. min-height:0 es
+       necesario para que un hijo flex pueda hacer scroll. */
+    overflow-y: auto;
+    min-height: 0;
   }
 
   .blog-mobile-section {
@@ -6243,6 +6250,25 @@ select {
     min-width: 250px;
     border-bottom: none;
     padding-top: 0;
+  }
+
+  /* Enlaces más compactos en desktop para que quepan las 9 herramientas
+     sin necesitar scroll en pantallas de altura normal. */
+  .blog-mobile-menu-nav .blog-mobile-tool-link {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    margin: 1px -12px;
+    gap: 10px;
+  }
+
+  .blog-mobile-menu-nav .blog-mobile-tool-link > svg {
+    width: 30px;
+    height: 30px;
+    padding: 8px;
+  }
+
+  .blog-mobile-menu-nav .blog-mobile-section-label {
+    margin-bottom: 0.55rem;
   }
 
   .blog-mobile-menu-footer {
