@@ -350,13 +350,13 @@ export default async function HomePage() {
           <div className="sidebar-card">
             <p className="sidebar-card-title">Educación</p>
             <div className="sidebar-tools-list">
-              <Link href="/glosario" className="sidebar-tool-link" style={{ "--tool-color": "#2f8fff" } as React.CSSProperties}>
-                <BookA size={16} className="sidebar-tool-icon" style={{ color: "#2f8fff" }} />
-                <span className="sidebar-tool-label" style={{ color: "#2f8fff" }}>Diccionario Cripto</span>
+              <Link href="/glosario" className="sidebar-tool-link">
+                <BookA size={16} className="sidebar-tool-icon" />
+                <span className="sidebar-tool-label">Diccionario Cripto</span>
               </Link>
-              <div className="sidebar-tool-link sidebar-tool-link--soon" style={{ "--tool-color": "#b98bff" } as React.CSSProperties}>
-                <MonitorPlay size={16} className="sidebar-tool-icon" style={{ color: "#b98bff" }} />
-                <span className="sidebar-tool-label" style={{ color: "#b98bff" }}>Cursos</span>
+              <div className="sidebar-tool-link sidebar-tool-link--soon">
+                <MonitorPlay size={16} className="sidebar-tool-icon" />
+                <span className="sidebar-tool-label">Cursos</span>
                 <span className="sidebar-tool-badge--soon">Pronto</span>
               </div>
               <Link href="/guias" className="sidebar-tool-link sidebar-tool-link--gold">

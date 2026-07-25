@@ -6294,13 +6294,27 @@ select {
 }
 
 .sidebar-tool-icon {
-  color: var(--accent-orange);
+  color: var(--text-muted);
   opacity: 1;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-tool-link:hover .sidebar-tool-icon {
   transform: scale(1.08);
+  color: var(--accent-orange);
+}
+
+/* Herramientas premium: un sutil toque oro fijo en el icono para dar jerarquía,
+   sin volver al arcoíris de colores. Hover en oro (identidad de marca). */
+.sidebar-tool-link--premium .sidebar-tool-icon {
+  color: var(--premium-gold, #e6b455);
+}
+.sidebar-tool-link--premium:hover .sidebar-tool-icon {
+  color: #f5c842;
+}
+.sidebar-tool-link--premium:hover {
+  background: color-mix(in srgb, var(--premium-gold, #e6b455) 12%, transparent);
+  border-color: color-mix(in srgb, var(--premium-gold, #e6b455) 45%, transparent);
 }
 
 .sidebar-tool-label {

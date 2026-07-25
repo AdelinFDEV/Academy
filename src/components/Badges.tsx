@@ -66,6 +66,31 @@ function RenderBadgeIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function XrpBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Red de validadores en consenso — tres nodos conectados de acuerdo */}
+      <path d="M12 6.2 6 16M12 6.2 18 16M7 16.5h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="12" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="5.5" cy="17.5" r="2.5" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="18.5" cy="17.5" r="2.5" stroke="currentColor" strokeWidth="1.5"/>
+      <circle cx="12" cy="5" r="0.9" fill="currentColor"/>
+    </svg>
+  );
+}
+
+function HyperliquidBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Libro de órdenes — panel con niveles de asks/bids separados por el precio medio */}
+      <rect x="3" y="3.5" width="18" height="17" rx="3" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M7 7.5h9M7 10h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M6 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.55"/>
+      <path d="M7 14h8M7 16.5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -171,6 +196,8 @@ const GUIDE_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
   "ciclos-de-bitcoin": (size) => <CyclesBadgeIcon size={size} />,
   "worldcoin": (size) => <WorldcoinBadgeIcon size={size} />,
   "render": (size) => <RenderBadgeIcon size={size} />,
+  "hyperliquid": (size) => <HyperliquidBadgeIcon size={size} />,
+  "xrp": (size) => <XrpBadgeIcon size={size} />,
 };
 
 // Derivado de GUIDES (fuente única de verdad) — cada guía nueva con su

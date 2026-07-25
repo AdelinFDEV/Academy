@@ -1,0 +1,199 @@
+/* ==========================================================================
+   xrp.css — estilos EXCLUSIVOS de la guía /guias/xrp
+   Solo clases propias de esta guía (simulador de consenso RPCA/UNL).
+   Las clases estructurales compartidas (gbc-*, wq-*) viven en guias.css y se
+   reutilizan tal cual. Ver AGENTS.md → "cada guía, su propio archivo CSS".
+   ========================================================================== */
+
+.xrp-cs {
+  margin-top: 28px;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
+  padding: 22px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.xrp-cs-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.xrp-cs-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.xrp-cs-round {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Validadores (nodos de la UNL) */
+.xrp-cs-nodes {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.xrp-cs-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: border-color 0.3s, background 0.3s;
+}
+.xrp-cs-node.agreed {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.08);
+}
+
+.xrp-cs-node-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #64748b;
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.14);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.xrp-cs-node.agreed .xrp-cs-node-dot {
+  background: #4ade80;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.22);
+}
+
+.xrp-cs-node-lbl {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Medidor de acuerdo con umbral del 80% */
+.xrp-cs-meter {
+  margin-bottom: 18px;
+}
+
+.xrp-cs-meter-track {
+  position: relative;
+  height: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: visible;
+}
+
+.xrp-cs-meter-fill {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--accent-orange), var(--gold));
+  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+}
+.xrp-cs-meter-fill.ok {
+  background: linear-gradient(90deg, #34d399, #4ade80);
+}
+
+.xrp-cs-threshold {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.55);
+  transform: translateX(-1px);
+}
+.xrp-cs-threshold-lbl {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.64rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.xrp-cs-meter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.xrp-cs-meter-val {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.xrp-cs-meter-pct {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+/* Estado del consenso */
+.xrp-cs-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.xrp-cs-status.ok {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+  border-color: rgba(74, 222, 128, 0.28);
+}
+.xrp-cs-status.ok strong { color: #86efac; }
+.xrp-cs-status svg { flex-shrink: 0; margin-top: 1px; }
+
+.xrp-cs-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.xrp-cs-reset {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.xrp-cs-reset:hover { color: var(--accent-orange); }
+
+.xrp-cs-note {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+@media (max-width: 720px) {
+  .xrp-cs-nodes { grid-template-columns: repeat(4, 1fr); }
+}

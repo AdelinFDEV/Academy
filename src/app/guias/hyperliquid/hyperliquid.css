@@ -1,0 +1,232 @@
+/* ==========================================================================
+   hyperliquid.css — estilos EXCLUSIVOS de la guía /guias/hyperliquid
+   Solo clases propias de esta guía (simulador de libro de órdenes on-chain).
+   Las clases estructurales compartidas (gbc-*, wq-*) viven en guias.css y se
+   reutilizan tal cual. Ver AGENTS.md → "cada guía, su propio archivo CSS".
+   ========================================================================== */
+
+.hl-ob {
+  margin-top: 28px;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
+  padding: 20px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.hl-ob-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.hl-ob-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.hl-ob-live {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.28);
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+
+.hl-ob-side {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.hl-ob-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Barra de profundidad (tamaño disponible en cada nivel), anclada a la derecha */
+.hl-ob-depth {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+  border-radius: 6px;
+}
+.hl-ob-depth.ask { background: rgba(248, 113, 113, 0.13); }
+.hl-ob-depth.bid { background: rgba(74, 222, 128, 0.13); }
+
+/* Porción "comida" por la orden a mercado — se ilumina en naranja */
+.hl-ob-eat {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  border-radius: 6px;
+  background: rgba(255, 107, 43, 0.32);
+  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hl-ob-row.is-eaten { box-shadow: inset 0 0 0 1px rgba(255, 107, 43, 0.4); }
+
+.hl-ob-price {
+  position: relative;
+  z-index: 2;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.hl-ob-price.ask { color: #f87171; }
+.hl-ob-price.bid { color: #4ade80; }
+
+.hl-ob-size {
+  position: relative;
+  z-index: 2;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.hl-ob-mid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.hl-ob-mid strong {
+  color: var(--text-primary);
+  font-size: 0.86rem;
+}
+
+.hl-ob-control {
+  margin: 22px 0 18px;
+}
+
+.hl-ob-control-lbl {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.hl-ob-control-lbl strong { color: var(--gold); }
+
+.hl-ob-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, var(--gold), var(--accent-orange));
+  outline: none;
+  cursor: pointer;
+}
+.hl-ob-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+.hl-ob-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--gold);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+}
+
+.hl-ob-control-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.hl-ob-result {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.hl-ob-res-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.hl-ob-res-lbl {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.hl-ob-res-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.hl-ob-res-val.good { color: #4ade80; }
+.hl-ob-res-val.bad { color: var(--accent-orange); }
+
+.hl-ob-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.hl-ob-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--gold);
+}
+
+@media (max-width: 720px) {
+  .hl-ob-result { grid-template-columns: 1fr; }
+}

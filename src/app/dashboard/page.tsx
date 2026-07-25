@@ -108,6 +108,8 @@ export default async function DashboardPage() {
         { href: "/calculadora",                                 icon: "target",       name: "Predicción de Precio",   desc: "¿Qué Market Cap necesita tu token?",                        locked: false,      soon: false },
         { href: isPremium ? "/portfolio"                 : "#", icon: "piechart",     name: "Portfolio Spot",         desc: "Sigue las compras de AdelinBTC en SPOT",                    locked: !isPremium, soon: false },
         { href: isPremium ? "/herramientas/liberaciones" : "#", icon: "unlock",       name: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting", locked: !isPremium, soon: false },
+        { href: isPremium ? "/herramientas/radar"        : "#", icon: "radar",        name: "Radar Diario",           desc: "Resumen del mercado y macro de EE. UU. (inflación y tipos)", locked: !isPremium, soon: false },
+        { href: isPremium ? "/dashboard/mi-portfolio"    : "#", icon: "piechart",     name: "Mi Portfolio",           desc: "Registra compras y ventas y sigue tu P&L en tiempo real",    locked: !isPremium, soon: false },
         { href: "/dashboard/calculadora-riesgo",                icon: "shield",    name: "Calculadora de Riesgo",  desc: "Tamaño de posición según tu capital y riesgo",              locked: false,      soon: false },
       ],
     },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, type ReactNode } from "react";
 import { Plus, TrendingUp, Star, Search, X } from "lucide-react";
 
 type MarketCoin = {
@@ -32,7 +32,10 @@ const SORT_VALUE: Record<SortKey, (c: MarketCoin) => number> = {
 type Props = {
   watchedIds: string[];
   onAdd: (coin: CoinInput) => Promise<void>;
+  topSlot?: ReactNode;
 };
+
+const PER_PAGE = 30;
 
 function fmtPrice(n: number): string {
   if (n >= 1000) return "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 });
@@ -52,7 +55,7 @@ function fmtPct(n: number | null | undefined): string {
   return (n >= 0 ? "+" : "") + n.toFixed(2) + "%";
 }
 
-export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
+export default function CryptoMarkets({ watchedIds, onAdd, topSlot }: Props) {
   const [coins, setCoins]   = useState<MarketCoin[]>([]);
   const [loading, setLoading] = useState(true);
   const [flash, setFlash]   = useState<Record<string, "up" | "down">>({});
@@ -61,7 +64,10 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
   const [query, setQuery]   = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [page, setPage] = useState(1);
+  const [moversPeriod, setMoversPeriod] = useState<"24h" | "7d">("24h");
   const prevPrices = useRef<Record<string, number>>({});
+  const sectionRef = useRef<HTMLElement>(null);
 
   function toggleSort(key: SortKey) {
     if (key === sortKey) {
@@ -138,6 +144,28 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
     const dir = sortDir === "asc" ? 1 : -1;
     return [...filtered].sort((a, b) => (getVal(a) - getVal(b)) * dir);
   }, [coins, query, sortKey, sortDir]);
+
+  // Top 5 que más suben y bajan, según el periodo elegido (24h o 7d).
+  const movers = useMemo(() => {
+    const key: "price_change_percentage_24h" | "price_change_percentage_7d_in_currency" =
+      moversPeriod === "24h" ? "price_change_percentage_24h" : "price_change_percentage_7d_in_currency";
+    const eligible = coins.filter((c) => typeof c[key] === "number");
+    const sorted = [...eligible].sort((a, b) => (b[key] as number) - (a[key] as number));
+    return { gainers: sorted.slice(0, 5), losers: sorted.slice(-5).reverse(), key };
+  }, [coins, moversPeriod]);
+
+  // Paginación de 30 en 30 para no renderizar una única lista enorme.
+  const totalPages = Math.max(1, Math.ceil(displayed.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = displayed.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  // Al filtrar u ordenar, volver a la primera página.
+  useEffect(() => { setPage(1); }, [query, sortKey, sortDir]);
+
+  function goPage(n: number) {
+    setPage(Math.min(Math.max(1, n), totalPages));
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <>
@@ -221,7 +249,53 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
         );
       })()}
 
-    <section className="crypto-markets">
+      {!loading && coins.length > 0 && (
+        <div className="movers-panel">
+          <div className="movers-head">
+            <h3 className="movers-title">
+              <TrendingUp size={16} aria-hidden="true" /> Los que más se mueven
+            </h3>
+            <div className="movers-toggle">
+              <button
+                className={`movers-toggle-btn${moversPeriod === "24h" ? " active" : ""}`}
+                onClick={() => setMoversPeriod("24h")}
+              >24h</button>
+              <button
+                className={`movers-toggle-btn${moversPeriod === "7d" ? " active" : ""}`}
+                onClick={() => setMoversPeriod("7d")}
+              >7d</button>
+            </div>
+          </div>
+          <div className="movers-grid">
+            <div className="movers-col">
+              <span className="movers-col-title up">Top 5 subidas · {moversPeriod}</span>
+              {movers.gainers.map((coin) => (
+                <div key={coin.id} className="mover-row">
+                  <img src={coin.image} alt="" className="mover-logo" loading="lazy" width={20} height={20} />
+                  <span className="mover-sym">{coin.symbol.toUpperCase()}</span>
+                  <span className="mover-price">{fmtPrice(coin.current_price)}</span>
+                  <span className="mover-pct pos">{fmtPct(coin[movers.key])}</span>
+                </div>
+              ))}
+            </div>
+            <div className="movers-col">
+              <span className="movers-col-title down">Top 5 bajadas · {moversPeriod}</span>
+              {movers.losers.map((coin) => (
+                <div key={coin.id} className="mover-row">
+                  <img src={coin.image} alt="" className="mover-logo" loading="lazy" width={20} height={20} />
+                  <span className="mover-sym">{coin.symbol.toUpperCase()}</span>
+                  <span className="mover-price">{fmtPrice(coin.current_price)}</span>
+                  <span className="mover-pct neg">{fmtPct(coin[movers.key])}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+    {topSlot}
+
+    <section className="crypto-markets" ref={sectionRef}>
       <div className="crypto-markets-header">
         <div>
           <h2 className="crypto-markets-title">Mercado — Top 200</h2>
@@ -266,6 +340,7 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
           <span>Cargando datos de mercado…</span>
         </div>
       ) : (
+        <>
         <div className="crypto-table-wrap">
           <table className="crypto-table">
             <thead>
@@ -312,7 +387,7 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
                   </td>
                 </tr>
               )}
-              {displayed.map((coin) => {
+              {pageItems.map((coin) => {
                 const watched = watchedIds.includes(coin.id);
                 const f = flash[coin.id];
                 const pct24 = coin.price_change_percentage_24h ?? 0;
@@ -360,6 +435,19 @@ export default function CryptoMarkets({ watchedIds, onAdd }: Props) {
             </tbody>
           </table>
         </div>
+
+        {totalPages > 1 && (
+          <div className="crypto-pagination">
+            <button className="crypto-page-btn" onClick={() => goPage(currentPage - 1)} disabled={currentPage === 1}>‹ Anterior</button>
+            <div className="crypto-page-nums">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                <button key={n} className={`crypto-page-num${n === currentPage ? " active" : ""}`} onClick={() => goPage(n)}>{n}</button>
+              ))}
+            </div>
+            <button className="crypto-page-btn" onClick={() => goPage(currentPage + 1)} disabled={currentPage === totalPages}>Siguiente ›</button>
+          </div>
+        )}
+        </>
       )}
     </section>
     </>

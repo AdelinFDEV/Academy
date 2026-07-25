@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
   FileText, Folder, BookOpen, GraduationCap, LayoutGrid,
-  TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield,
+  TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar,
 } from "lucide-react";
 
 interface Category {
@@ -148,6 +148,18 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
               <Link href={user ? "/herramientas/liberaciones" : "/register"} className={`blog-mobile-tool-link${a("/herramientas/liberaciones")}`} onClick={close}>
                 <Unlock size={15} aria-hidden="true" />
                 Liberaciones de Tokens
+                {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
+              </Link>
+
+              <Link href={user ? "/herramientas/radar" : "/register"} className={`blog-mobile-tool-link${a("/herramientas/radar")}`} onClick={close}>
+                <Radar size={15} aria-hidden="true" />
+                Radar Diario
+                {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
+              </Link>
+
+              <Link href={user ? "/dashboard/mi-portfolio" : "/register"} className={`blog-mobile-tool-link${a("/dashboard/mi-portfolio")}`} onClick={close}>
+                <PieChart size={15} aria-hidden="true" />
+                Mi Portfolio
                 {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 

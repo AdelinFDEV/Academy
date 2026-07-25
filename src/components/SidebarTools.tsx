@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import {
   NotebookPen, Crosshair, ScanEye, Medal, Wallet,
-  Unlock, Shield,
+  Unlock, Shield, Radar, PieChart,
 } from "lucide-react";
 import ToolAccessModal, { type ToolModalReason } from "@/components/ToolAccessModal";
 
@@ -17,11 +17,9 @@ interface ToolDef {
   label: string;
   href: string;
   Icon: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>;
-  color?: string;
   requiresLogin: boolean;
   requiresPremium: boolean;
   soon?: boolean;
-  gold?: boolean;
 }
 
 export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
@@ -34,62 +32,15 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
   const closeModal = useCallback(() => setModal((m) => ({ ...m, open: false })), []);
 
   const tools: ToolDef[] = [
-    {
-      label: "Diario de Trading",
-      href: "/dashboard",
-      Icon: NotebookPen,
-      requiresLogin: true,
-      requiresPremium: true,
-      gold: true,
-    },
-    {
-      label: "Predicción de Precio",
-      href: "/calculadora",
-      Icon: Crosshair,
-      color: "#00e5ff",
-      requiresLogin: true,
-      requiresPremium: false,
-    },
-    {
-      label: "Mi Watchlist",
-      href: "/dashboard/watchlist",
-      Icon: ScanEye,
-      color: "#c150ff",
-      requiresLogin: true,
-      requiresPremium: false,
-    },
-    {
-      label: "Logros y XP",
-      href: "/logros",
-      Icon: Medal,
-      color: "#ff3d81",
-      requiresLogin: true,
-      requiresPremium: false,
-    },
-    {
-      label: "Portfolio Spot",
-      href: "/portfolio",
-      Icon: Wallet,
-      requiresLogin: true,
-      requiresPremium: true,
-      gold: true,
-    },
-    {
-      label: "Liberaciones de Tokens",
-      href: "/herramientas/liberaciones",
-      Icon: Unlock,
-      color: "#00ffab",
-      requiresLogin: true,
-      requiresPremium: true,
-    },
-    {
-      label: "Calculadora de Riesgo",
-      href: "/dashboard/calculadora-riesgo",
-      Icon: Shield,
-      color: "#18ffd5",
-      requiresLogin: true,
-      requiresPremium: false,
-    },
+    { label: "Diario de Trading", href: "/dashboard", Icon: NotebookPen, requiresLogin: true, requiresPremium: true },
+    { label: "Predicción de Precio", href: "/calculadora", Icon: Crosshair, requiresLogin: true, requiresPremium: false },
+    { label: "Mi Watchlist", href: "/dashboard/watchlist", Icon: ScanEye, requiresLogin: true, requiresPremium: false },
+    { label: "Logros y XP", href: "/logros", Icon: Medal, requiresLogin: true, requiresPremium: false },
+    { label: "Portfolio Spot", href: "/portfolio", Icon: Wallet, requiresLogin: true, requiresPremium: true },
+    { label: "Liberaciones de Tokens", href: "/herramientas/liberaciones", Icon: Unlock, requiresLogin: true, requiresPremium: true },
+    { label: "Radar Diario", href: "/herramientas/radar", Icon: Radar, requiresLogin: true, requiresPremium: true },
+    { label: "Mi Portfolio", href: "/dashboard/mi-portfolio", Icon: PieChart, requiresLogin: true, requiresPremium: true },
+    { label: "Calculadora de Riesgo", href: "/dashboard/calculadora-riesgo", Icon: Shield, requiresLogin: true, requiresPremium: false },
   ];
 
   function handleToolClick(tool: ToolDef, e: React.MouseEvent) {
@@ -125,12 +76,11 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
             <Link
               key={tool.label}
               href={tool.href}
-              className={`sidebar-tool-link${tool.gold ? " sidebar-tool-link--gold" : ""}${isLocked(tool) ? " sidebar-tool-link--dimmed" : ""}`}
-              style={tool.color ? ({ "--tool-color": tool.color } as React.CSSProperties) : undefined}
+              className={`sidebar-tool-link${tool.requiresPremium ? " sidebar-tool-link--premium" : ""}${isLocked(tool) ? " sidebar-tool-link--dimmed" : ""}`}
               onClick={(e) => handleToolClick(tool, e)}
             >
-              <tool.Icon size={16} className="sidebar-tool-icon" style={tool.color ? { color: tool.color } : undefined} />
-              <span className="sidebar-tool-label" style={tool.color ? { color: tool.color } : undefined}>{tool.label}</span>
+              <tool.Icon size={16} className="sidebar-tool-icon" />
+              <span className="sidebar-tool-label">{tool.label}</span>
               {getBadge(tool)}
             </Link>
           ))}
