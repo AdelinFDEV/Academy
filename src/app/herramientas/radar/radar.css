@@ -197,4 +197,27 @@
   .rd-links { grid-template-columns: 1fr; }
   .rd-explainer-grid { grid-template-columns: 1fr; }
   .rd-hero { padding: 32px 0 24px; }
+
+  /* Eventos macro: en móvil la cuenta atrás + fecha bajan a una 2ª línea
+     limpia (pastilla a la izquierda, fecha a la derecha) para que el título
+     tenga todo el ancho y no se apelotone. */
+  .rd-macro-row { flex-wrap: wrap; row-gap: 10px; padding: 12px; align-items: flex-start; }
+  .rd-macro-icon { margin-top: 1px; }
+  .rd-macro-when {
+    flex-basis: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    padding-left: 48px; /* alinear bajo el título: icono (36px) + gap (12px) */
+    gap: 10px;
+  }
+  .rd-macro-countdown {
+    background: rgba(240, 244, 255, 0.06);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .rd-macro-row.soon .rd-macro-countdown { background: rgba(255, 107, 43, 0.14); }
+  .rd-macro-row.key .rd-macro-countdown { background: rgba(230, 180, 85, 0.14); color: #e6b455; }
+  .rd-macro-date { flex-shrink: 0; }
 }
