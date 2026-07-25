@@ -804,6 +804,7 @@ a.hero-bento-card-link:hover .hero-bento-cta {
 
   .hero-cta-row .hero-premium-cta,
   .hero-cta-row .hero-cta-mini--gold {
+    flex: none;
     width: 100%;
   }
 
