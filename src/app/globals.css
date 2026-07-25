@@ -5460,12 +5460,6 @@ select {
   padding: 1px 7px;
 }
 
-.sidebar-cat-separator {
-  height: 1px;
-  margin: 0.35rem 0.25rem;
-  background: var(--hairline);
-}
-
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Steps (Empieza aquÃƒÂ­) Ã¢â€â‚¬Ã¢â€â‚¬ */
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Premium CTA sidebar card Ã¢â€â‚¬Ã¢â€â‚¬ */
@@ -9668,10 +9662,10 @@ select {
   align-items: center;
   gap: 0.55rem;
   flex-wrap: wrap;
-  margin: 1.25rem 0 2.5rem;
+  margin: 1.25rem 0 0;
   padding: 0.4rem 0.55rem 0.4rem 0.75rem;
   border: 1px solid var(--hairline);
-  border-radius: 100px;
+  border-radius: 8px;
   background: rgba(240, 244, 255, 0.03);
   font-size: 12px;
   color: var(--text-muted);
@@ -9706,7 +9700,7 @@ select {
   align-items: center;
   gap: 0.55rem;
   padding: 0.5rem 1.1rem 0.5rem 0.55rem;
-  border-radius: 100px;
+  border-radius: 8px;
   background: rgba(33, 114, 229, 0.12);
   border: 1px solid rgba(33, 114, 229, 0.35);
   text-decoration: none;
@@ -9738,6 +9732,31 @@ select {
 .lib-dl-word span { color: #5aa2ff; }
 
 .lib-dl-refresh { color: var(--text-muted); }
+
+/* Mini-CTA bajo el badge de DefiLlama: sugerir una cripto nueva por Instagram */
+.lib-add-token {
+  display: flex; width: fit-content; max-width: 100%;
+  align-items: center; gap: 0.5rem;
+  margin: 0.9rem auto 2.5rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid var(--hairline); border-radius: 8px;
+  background: rgba(240, 244, 255, 0.03);
+  font-size: 12.5px; color: var(--text-secondary); text-decoration: none;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.lib-add-token:hover { border-color: rgba(221, 42, 123, .5); color: var(--text-primary); background: rgba(221, 42, 123, .07); }
+.lib-add-token span { line-height: 1.4; }
+.lib-add-token strong {
+  font-weight: 700;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+/* Chip con el degradado icónico de Instagram (icono en blanco encima) */
+.lib-add-token-ig {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 7px; flex-shrink: 0; color: #fff;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
 
 /* Badge "en directo" en la cabecera de la página de detalle */
 .lib-detail-live {
@@ -9772,6 +9791,9 @@ select {
 .lib-amount-tokens { font-size: 14px; font-weight: 700; color: var(--text-primary); }
 
 .lib-amount-pct { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* Etiquetas de campo solo visibles en la tarjeta móvil (ocultas en la tabla PC) */
+.lib-field-label { display: none; }
 
 .lib-pressure { display: flex; align-items: center; gap: 8px; }
 
@@ -9865,10 +9887,6 @@ select {
 
 .lib-detail-card-title { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; color: var(--text-secondary); margin-bottom: 24px; text-transform: uppercase; letter-spacing: .05em; }
 
-.lib-card-toggle { width: 100%; background: none; border: none; cursor: pointer; justify-content: flex-start; padding: 0; margin-bottom: 0; transition: color .15s; }
-
-.lib-card-toggle:hover { color: var(--accent-orange); }
-
 .lib-alloc-wrap { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
 
 .lib-alloc-legend { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 15px; }
@@ -9891,15 +9909,11 @@ select {
 
 .lib-events-list { display: flex; flex-direction: column; gap: 10px; position: relative; }
 
-.lib-events-list--past { margin-top: 16px; }
-
 .lib-event-row { display: grid; grid-template-columns: 170px 1fr 150px 1fr; align-items: center; gap: 18px; padding: 17px 20px; background: rgba(240,244,255,.03); border-radius: 12px; border: 1px solid transparent; transition: border-color .2s, background .2s; }
 
 .lib-event-row:hover { border-color: var(--border-color); background: rgba(240,244,255,.05); }
 
 .lib-event-row--next { background: rgba(255,107,43,.05); border-color: rgba(255,107,43,.2) !important; }
-
-.lib-event-row--past { opacity: .6; }
 
 .lib-event-date-main { display: block; font-size: 15px; font-weight: 700; color: var(--text-primary); }
 
@@ -9908,8 +9922,6 @@ select {
 .lib-event-countdown.urgent { background: rgba(248,113,113,.12); color: #f87171; }
 
 .lib-event-countdown.soon { background: rgba(251,191,36,.1); color: #fbbf24; }
-
-.lib-event-countdown.past { background: rgba(240,244,255,.04); color: var(--text-muted); }
 
 .lib-event-cat { display: flex; align-items: center; gap: 9px; font-size: 14.5px; color: var(--text-secondary); }
 
@@ -9993,17 +10005,51 @@ select {
     grid-template-columns: 1fr auto;
     grid-template-areas:
       "token  cta"
-      "next   next"
-      "amount amount";
-    gap: 10px;
-    padding: 14px 16px;
+      "next   amount";
+    gap: 4px 12px;
+    padding: 15px 16px;
   }
 
   .lib-row-token  { grid-area: token; }
-  .lib-row-next   { grid-area: next; display: flex; align-items: center; gap: 8px; }
+
+  /* Fila inferior en dos columnas etiquetadas: "Próximo unlock" (izq.) y
+     "Cantidad" (der.), separadas de la identidad por una fina línea. */
+  .lib-field-label {
+    display: block;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .05em;
+    color: var(--text-muted);
+  }
+
+  .lib-row-next {
+    grid-area: next;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin-top: 12px;
+    padding-top: 13px;
+    border-top: 1px solid var(--border-color);
+  }
+  .lib-next-date { font-size: 14px; color: var(--text-primary); }
+  .lib-days-badge { padding: 2px 8px; border-radius: 6px; background: rgba(240, 244, 255, .06); }
+  .lib-days-badge--soon { background: rgba(251, 191, 36, .12); }
+  .lib-days-badge--urgent { background: rgba(248, 113, 113, .12); }
+
   .lib-row-category { display: none; }
-  .lib-row-amount { grid-area: amount; display: flex; align-items: center; gap: 12px; }
-  .lib-amount-tokens { font-size: 13px; }
+  .lib-row-amount {
+    grid-area: amount;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+    justify-self: end;
+    text-align: right;
+    margin-top: 12px;
+    padding-top: 13px;
+    border-top: 1px solid var(--border-color);
+  }
+  .lib-amount-tokens { font-size: 16px; }
+  .lib-amount-pct { margin-top: 0; }
   .lib-row-pressure { display: none; }
   .lib-row-cta    { grid-area: cta; align-self: start; }
 

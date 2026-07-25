@@ -366,37 +366,26 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Categorías — Noticias siempre primero, separada del resto:
-              agrupa toda la actualidad cripto, mientras que el resto de
-              categorías son temáticas específicas (Bitcoin, Ondo, etc.). */}
-          {(categories ?? []).length > 0 && (() => {
-            const allCats = categories ?? [];
-            const newsCat = allCats.find((c) => c.slug === "noticias");
-            const restCats = allCats.filter((c) => c.slug !== "noticias");
-
-            const renderCat = (c: { name: string; slug: string }) => (
-              <Link key={c.slug} href={`/categoria/${c.slug}`} className="sidebar-tool-link">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Tag size={16} className="sidebar-tool-icon" />
-                  <span>{c.name}</span>
-                </div>
-                {catPostMap[c.slug] && (
-                  <span className="sidebar-cat-count">{catPostMap[c.slug]}</span>
-                )}
-              </Link>
-            );
-
-            return (
-              <div className="sidebar-card">
-                <p className="sidebar-card-title">Categorías</p>
-                <div className="sidebar-tools-list">
-                  {newsCat && renderCat(newsCat)}
-                  {newsCat && restCats.length > 0 && <div className="sidebar-cat-separator" aria-hidden="true" />}
-                  {restCats.map(renderCat)}
-                </div>
+          {/* Categorías — temáticas educativas (Bitcoin, blockchain, etc.).
+              Se leen dinámicamente de la tabla `categories` de Supabase. */}
+          {(categories ?? []).length > 0 && (
+            <div className="sidebar-card">
+              <p className="sidebar-card-title">Categorías</p>
+              <div className="sidebar-tools-list">
+                {(categories ?? []).map((c) => (
+                  <Link key={c.slug} href={`/categoria/${c.slug}`} className="sidebar-tool-link">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <Tag size={16} className="sidebar-tool-icon" />
+                      <span>{c.name}</span>
+                    </div>
+                    {catPostMap[c.slug] && (
+                      <span className="sidebar-cat-count">{catPostMap[c.slug]}</span>
+                    )}
+                  </Link>
+                ))}
               </div>
-            );
-          })()}
+            </div>
+          )}
 
           {/* Premium pitch — en desktop se queda al final del sidebar */}
           <div className="premium-pitch-desktop-only">

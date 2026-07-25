@@ -14,7 +14,7 @@ export const LEGAL = {
   /** Nombre comercial / marca bajo la que opera el sitio. */
   marca: "AdelinBTC Academy",
   /** Dominio del sitio (sin protocolo). */
-  dominio: "adelinbtc.com",
+  dominio: "adelinacademy.com",
   /** Email de contacto para asuntos legales, privacidad y ejercicio de derechos. */
   email: "georgeadelingombosredes@gmail.com",
   /** Actividad del sitio. */

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Calendar, ChevronRight, Lock, TrendingDown, Clock, Zap, Filter } from "lucide-react";
 import { TOKENS, FREE_TOKEN_IDS, type LiveUnlock } from "./tokenData";
 import { DefiLlamaGlyph } from "@/components/BrandMarks";
+import { InstagramIcon } from "@/components/SocialLinks";
 
 const TODAY = new Date();
 
@@ -102,6 +103,15 @@ export default function LiberacionesClient({ isPremium }: Props) {
 
         <DefiLlamaBadge />
 
+        <a
+          className="lib-add-token"
+          href="https://www.instagram.com/adelinbtc/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span className="lib-add-token-ig"><InstagramIcon /></span>
+          <span>¿Quieres que añadamos una nueva criptomoneda? <strong>Escríbeme</strong></span>
+        </a>
 
         <div className="lib-stats-row">
           <div className="lib-stat">
@@ -163,6 +173,7 @@ export default function LiberacionesClient({ isPremium }: Props) {
 
               {/* Next unlock */}
               <div className="lib-row-next">
+                <span className="lib-field-label">Próximo unlock</span>
                 {isLocked ? (
                   <div className="lib-locked-field">
                     <Lock size={12} />
@@ -192,6 +203,7 @@ export default function LiberacionesClient({ isPremium }: Props) {
 
               {/* Unlock amount */}
               <div className="lib-row-amount">
+                <span className="lib-field-label">Cantidad</span>
                 {isLocked ? (
                   <div className="lib-locked-field"><Lock size={12} />Premium</div>
                 ) : (

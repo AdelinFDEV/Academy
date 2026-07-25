@@ -436,7 +436,7 @@ a.hero-bento-card-link:hover {
   align-items: center;
   gap: 0.32rem;
   padding: 0.28rem 0.62rem 0.28rem 0.32rem;
-  border-radius: 100px;
+  border-radius: 8px;
   background: rgba(33, 114, 229, 0.14);
   border: 1px solid rgba(33, 114, 229, 0.4);
   font-size: 0.66rem;
@@ -494,6 +494,14 @@ a.hero-bento-card-link:hover .hero-bento-cta {
   width: 100%;
 }
 
+/* Ambos CTA ocupan el mismo ancho en PC (se reparten la fila a partes iguales).
+   En móvil la fila pasa a columna y flex-basis:0 no reparte alto: se quedan
+   a ancho completo por el width:100% de la media query. */
+.hero-cta-row .hero-premium-cta,
+.hero-cta-row .hero-cta-mini--gold {
+  flex: 1 1 0;
+}
+
 .hero-cta-mini {
   display: inline-flex;
   align-items: center;
@@ -514,9 +522,9 @@ a.hero-bento-card-link:hover .hero-bento-cta {
   color: #f5d68a;
   background: linear-gradient(135deg, rgba(230, 180, 85, 0.16) 0%, rgba(230, 180, 85, 0.06) 100%);
   border: 1px solid rgba(230, 180, 85, 0.35);
-  padding: 0.7rem 1.2rem 0.7rem 0.7rem;
-  border-radius: 14px;
-  gap: 0.75rem;
+  padding: 0.85rem 1.6rem 0.85rem 0.85rem;
+  border-radius: 15px;
+  gap: 0.9rem;
   box-shadow: 0 6px 20px rgba(230, 180, 85, 0.1);
   transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
 }
@@ -532,9 +540,9 @@ a.hero-bento-card-link:hover .hero-bento-cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
   flex-shrink: 0;
   background: linear-gradient(135deg, rgba(245, 214, 138, 0.28), rgba(230, 180, 85, 0.12));
   color: #f5d68a;
@@ -550,7 +558,7 @@ a.hero-bento-card-link:hover .hero-bento-cta {
 }
 
 .hero-cta-mini-text strong {
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   font-weight: 800;
   color: #f5d68a;
 }
@@ -787,6 +795,18 @@ a.hero-bento-card-link:hover .hero-bento-cta {
 }
 
 @media (max-width: 760px) {
+  /* Los dos CTA del hero premium se apilan a ancho completo. Sus dimensiones
+     ya son idénticas desde la base (.hero-cta-mini--gold = .hero-premium-cta). */
+  .hero-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-cta-row .hero-premium-cta,
+  .hero-cta-row .hero-cta-mini--gold {
+    width: 100%;
+  }
+
   .hero-premium-band {
     flex-direction: column;
     align-items: stretch;
@@ -904,6 +924,19 @@ a.hero-bento-card-link:hover .hero-bento-cta {
 
 .hero-guarantee svg {
   color: #34d399;
+}
+
+/* En móvil el social-proof se apila (avatares arriba, valoración debajo) y se
+   centra: si no, al hacer wrap las estrellas quedan alineadas a la izquierda. */
+@media (max-width: 480px) {
+  .hero-social-proof {
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .hero-proof-text {
+    align-items: center;
+    text-align: center;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════

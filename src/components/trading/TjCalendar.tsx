@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, CalendarDays, TrendingUp, Target, Crown } from "lucide-react";
+import { ChevronLeft, ChevronRight, CalendarDays, TrendingUp, Target, Crown, X } from "lucide-react";
 import { WEEKDAYS, MONTHS } from "./tjDateConstants";
 import { pnlStr } from "./tjFormat";
 
@@ -56,12 +56,18 @@ export default function TjTradeCalendar({ trades }: { trades: CalendarTrade[] })
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [direction, setDirection] = useState(1);
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const dayMap = useMemo(() => buildDayMap(trades), [trades]);
   const today = dayKey(now);
 
+  const selectedInfo = selectedDay != null
+    ? dayMap[dayKey(new Date(year, month, selectedDay))]
+    : undefined;
+
   function shiftMonth(delta: number) {
     setDirection(delta);
+    setSelectedDay(null);
     let m = month + delta;
     let y = year;
     if (m < 0) { m = 11; y -= 1; }
@@ -72,6 +78,7 @@ export default function TjTradeCalendar({ trades }: { trades: CalendarTrade[] })
 
   function goToday() {
     setDirection(0);
+    setSelectedDay(null);
     setYear(now.getFullYear());
     setMonth(now.getMonth());
   }
@@ -170,6 +177,7 @@ export default function TjTradeCalendar({ trades }: { trades: CalendarTrade[] })
                   key={i}
                   className={`tj-cal-day${cls ? ` ${cls}` : ""}${isToday ? " today" : ""}${info ? " has-data" : ""}${isBest ? " best" : ""}`}
                   style={info ? { "--intensity": intensity } as React.CSSProperties : undefined}
+                  onClick={info ? () => setSelectedDay(day) : undefined}
                 >
                   {isBest && (
                     <div className="tj-cal-best-badge" title="Mejor día del mes">
@@ -217,6 +225,61 @@ export default function TjTradeCalendar({ trades }: { trades: CalendarTrade[] })
         <span><i className="tj-cal-dot today-dot" /> Hoy</span>
         <span><Crown size={11} className="tj-cal-dot-crown" /> Mejor día del mes</span>
       </div>
+
+      {/* Detalle del día en móvil: modal centrado con fondo desenfocado.
+          En PC se usa el tooltip al hover (este modal queda oculto por CSS). */}
+      <AnimatePresence>
+        {selectedInfo && selectedDay != null && (
+          <motion.div
+            className="tj-cal-modal-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            onClick={() => setSelectedDay(null)}
+          >
+            <motion.div
+              className="tj-cal-modal"
+              role="dialog"
+              aria-modal="true"
+              initial={{ opacity: 0, scale: 0.9, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: 10 }}
+              transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+              onClick={e => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                className="tj-cal-modal-close"
+                onClick={() => setSelectedDay(null)}
+                aria-label="Cerrar"
+              >
+                <X size={18} />
+              </button>
+
+              <div className="tj-cal-modal-head">
+                <span className="tj-cal-modal-date">{selectedDay} de {MONTHS[month]}</span>
+                <span className={`tj-cal-modal-pnl ${dayClass(selectedInfo)}`}>{pnlStr(selectedInfo.pnl)}</span>
+              </div>
+
+              <div className="tj-cal-modal-stats">
+                {selectedInfo.wins > 0 && <span className="win">{selectedInfo.wins} {selectedInfo.wins === 1 ? "ganada" : "ganadas"}</span>}
+                {selectedInfo.losses > 0 && <span className="loss">{selectedInfo.losses} {selectedInfo.losses === 1 ? "perdida" : "perdidas"}</span>}
+                {selectedInfo.bes > 0 && <span className="neutral">{selectedInfo.bes} breakeven</span>}
+              </div>
+
+              <div className="tj-cal-modal-list">
+                {selectedInfo.trades.map(t => (
+                  <div key={t.id} className={`tj-cal-modal-row ${t.result}`}>
+                    <span className="tj-cal-modal-pair">{t.pair}</span>
+                    <span className="tj-cal-modal-trade-pnl">{pnlStr(t.pnl)}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
