@@ -13,7 +13,6 @@ const OWNED_TABLES = [
   "guide_likes",
   "guide_saves",
   "guide_quiz_completions",
-  "portfolio_positions",
   "saved_terms",
   "user_posts",
   "trades",
@@ -21,6 +20,10 @@ const OWNED_TABLES = [
   "user_badges",
   "post_likes",
 ] as const;
+// Nota: `portfolio_positions` NO va aquí — es el portfolio-escaparate
+// compartido del admin (no tiene `user_id`, lo gestiona solo el admin), así que
+// no es dato del usuario y no debe borrarse al eliminar una cuenta. Incluirla
+// rompía el borrado de cuenta con "column user_id does not exist" (500).
 
 // Tablas de analítica/auditoría: no se borran, se anonimizan (user_id →
 // null) para no perder totales históricos ni el rastro de facturación.
