@@ -106,6 +106,40 @@ function Donut({ pct, color }: { pct: number; color: string }) {
   );
 }
 
+// ── Insignia de hito (medallón SVG, usa currentColor para el tema) ──
+function MilestoneBadge({ variant }: { variant: string }) {
+  const ring = (
+    <>
+      <circle cx="24" cy="24" r="21" fill="currentColor" fillOpacity="0.12" />
+      <circle cx="24" cy="24" r="21" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.5" />
+    </>
+  );
+  if (variant === "first") {
+    return (
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        {ring}
+        <path d="M24 13.5l2.9 6 6.6.9-4.8 4.6 1.1 6.6L24 28.5l-5.9 3.1 1.1-6.6-4.8-4.6 6.6-.9z" fill="currentColor" />
+      </svg>
+    );
+  }
+  if (variant === "ten") {
+    return (
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        {ring}
+        <text x="24" y="30" textAnchor="middle" fontSize="16" fontWeight="800" fill="currentColor" fontFamily="var(--font-poppins, sans-serif)">10</text>
+      </svg>
+    );
+  }
+  // goal — corona
+  return (
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      {ring}
+      <path d="M15 30l-2-11 6 4 5-8 5 8 6-4-2 11z" fill="currentColor" />
+      <rect x="15" y="30.5" width="18" height="2.6" rx="1.3" fill="currentColor" />
+    </svg>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -123,7 +157,6 @@ export default async function AdminPage() {
     { count: usersCount },
     { count: premiumCount },
     { count: publishedCount },
-    { count: totalSiteVisits },
     { count: newUsersThisWeek },
     { count: newUsersLastWeek },
     { count: newUsersThisMonth },
@@ -143,7 +176,6 @@ export default async function AdminPage() {
     supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
     supabase.from("posts").select("id", { count: "exact", head: true }).eq("published", true),
-    supabase.from("site_visits").select("id", { count: "exact", head: true }),
     supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d7.toISOString()),
     supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
     supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d30.toISOString()),
@@ -307,12 +339,20 @@ export default async function AdminPage() {
 
   // ── Objetivo de MRR ──
   const PREMIUM_PRICE   = 19.99;
-  const MRR_GOAL        = 600;
+  const MRR_GOAL        = 1000;
   const currentMRR      = (premiumCount ?? 0) * PREMIUM_PRICE;
   const goalPct         = Math.min((currentMRR / MRR_GOAL) * 100, 100);
   const usersNeededGoal = Math.ceil(MRR_GOAL / PREMIUM_PRICE);
   const usersRemaining  = Math.max(usersNeededGoal - (premiumCount ?? 0), 0);
   const goalReached     = currentMRR >= MRR_GOAL;
+
+  // ── Hitos / objetivos con insignias ──
+  const premiumUsers = premiumCount ?? 0;
+  const milestones = [
+    { key: "first", label: "Primer Premium", target: 1,               desc: "Tu primer suscriptor",                    color: "#4ade80" },
+    { key: "ten",   label: "Club de los 10", target: 10,              desc: "10 usuarios premium",                     color: "var(--accent-orange)" },
+    { key: "goal",  label: "Meta 1.000€",    target: usersNeededGoal, desc: `${usersNeededGoal} premium · 1.000€/mes`, color: "var(--premium-gold)" },
+  ].map((m) => ({ ...m, reached: premiumUsers >= m.target }));
 
   return (
     <div className="admin-page">
@@ -370,7 +410,7 @@ export default async function AdminPage() {
             </span>
             <span className={`admin-revenue-goal-status${goalReached ? " reached" : ""}`}>
               {goalReached
-                ? "¡Objetivo conseguido! 🎉"
+                ? "¡Objetivo conseguido!"
                 : `Te falta${usersRemaining === 1 ? "" : "n"} ${usersRemaining} usuario${usersRemaining === 1 ? "" : "s"} premium`}
             </span>
           </div>
@@ -382,6 +422,34 @@ export default async function AdminPage() {
             <span>{goalPct.toFixed(0)}%</span>
           </div>
         </div>
+      </div>
+
+      {/* Hitos / objetivos con insignias */}
+      <div className="admin-milestones">
+        {milestones.map((m) => (
+          <div
+            key={m.key}
+            className={`admin-milestone${m.reached ? " reached" : ""}`}
+            style={{ "--ms-color": m.color } as React.CSSProperties}
+          >
+            <div className="admin-milestone-badge">
+              <MilestoneBadge variant={m.key} />
+            </div>
+            <div className="admin-milestone-body">
+              <span className="admin-milestone-title">{m.label}</span>
+              <span className="admin-milestone-desc">{m.desc}</span>
+              <span className="admin-milestone-status">
+                {m.reached ? (
+                  <>
+                    <Icon name="check" size={12} /> Conseguido
+                  </>
+                ) : (
+                  `${premiumUsers} / ${m.target}`
+                )}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Recent activity */}
@@ -475,17 +543,6 @@ export default async function AdminPage() {
             {(commentsCount ?? 0) > 0 && (
               <Link href="/admin/comments" className="admin-stat-v2-action">Revisar →</Link>
             )}
-          </div>
-        </div>
-
-        <div className="admin-stat-v2">
-          <div className="admin-stat-v2-icon" style={{ "--stat-color": "#4ade80" } as React.CSSProperties}>
-            <Icon name="eye" size={18} />
-          </div>
-          <div className="admin-stat-v2-body">
-            <span className="admin-stat-v2-value">{totalSiteVisits ?? 0}</span>
-            <span className="admin-stat-v2-label">Visitas totales a la web</span>
-            <span className="admin-stat-v2-sub">todas las páginas</span>
           </div>
         </div>
       </div>
