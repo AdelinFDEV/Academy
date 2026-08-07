@@ -2497,8 +2497,6 @@ html {
 
 /* Home search bar */
 
-/* Empieza aquÃƒÂ­ */
-
 /* Herramientas */
 
 .tool-icon {
@@ -3143,7 +3141,6 @@ html {
 
 .footer-partner-mark--dl { background: #2172E5; }
 .footer-partner-mark--cg { background: #8bc53f; }
-.footer-partner-mark--mx { background: linear-gradient(135deg, #1ea7e1 0%, #1652f0 100%); }
 
 .footer-partner--dl {
   background: rgba(33, 114, 229, 0.12);
@@ -3160,13 +3157,6 @@ html {
 .footer-partner--cg:hover { background: rgba(139, 197, 63, 0.2); border-color: rgba(139, 197, 63, 0.6); }
 .footer-partner--cg .footer-partner-word { color: #eef7e2; }
 .footer-partner--cg .footer-partner-word span { color: #a6d95f; }
-
-.footer-partner--mx {
-  background: rgba(30, 110, 240, 0.12);
-  border-color: rgba(30, 110, 240, 0.4);
-}
-.footer-partner--mx:hover { background: rgba(30, 110, 240, 0.2); border-color: rgba(30, 110, 240, 0.6); }
-.footer-partner--mx .footer-partner-word { color: #e6efff; }
 
 .footer-disclaimer-band {
   border-top: 1px solid rgba(240, 244, 255, 0.06);
@@ -5460,8 +5450,6 @@ select {
   padding: 1px 7px;
 }
 
-/* Ã¢â€â‚¬Ã¢â€â‚¬ Steps (Empieza aquÃƒÂ­) Ã¢â€â‚¬Ã¢â€â‚¬ */
-
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Premium CTA sidebar card Ã¢â€â‚¬Ã¢â€â‚¬ */
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Crypto Markets Table Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
@@ -7534,576 +7522,6 @@ select {
   .calc-bar-value {
     min-width: 52px;
     font-size: 0.72rem;
-  }
-}
-
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   GUÃAS â€” Cascade wrapper
-â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-.guias-map-wrap {
-  max-width: 620px;
-  margin: 4rem auto 6rem;
-  padding: 0 1.5rem;
-}
-
-@media (min-width: 561px) and (max-width: 1024px) {
-  .guias-map-wrap {
-    padding: 0 3rem;
-  }
-}
-
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   CASCADE â€” Premium step-by-step
-â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-.cascade-root {
-  position: relative;
-  padding-left: 3.5rem;
-}
-
-/* Vertical progress rail */
-
-.cascade-rail {
-  position: absolute;
-  left: 1.5rem;
-  top: 1.5rem;
-  bottom: 1.5rem;
-  width: 2px;
-  background: var(--border-color);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.cascade-rail-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: linear-gradient(180deg, #ff6b2b 0%, #00c9a7 40%, #a78bfa 70%, #38bdf8 100%);
-  border-radius: 2px;
-  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 12px rgba(255, 107, 43, 0.4);
-}
-
-.cascade-track {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-/* Each step */
-
-.cascade-step {
-  position: relative;
-  animation: cascade-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes cascade-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-    filter: blur(4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-
-/* Node on the rail */
-
-.cascade-node {
-  position: absolute;
-  left: -3.5rem;
-  top: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-card);
-  border: 2px solid var(--step-color);
-  color: var(--step-color);
-  z-index: 2;
-  box-shadow: 0 0 0 5px var(--bg-primary), 0 0 22px color-mix(in srgb, var(--step-color) 45%, transparent);
-}
-
-.cascade-node-ring {
-  position: absolute;
-  inset: -2px;
-  border-radius: 50%;
-  border: 2px solid var(--step-color);
-  opacity: 0.35;
-  animation: cascade-ring 2.4s ease-in-out infinite;
-}
-
-@keyframes cascade-ring {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.35;
-  }
-
-  50% {
-    transform: scale(1.18);
-    opacity: 0;
-  }
-}
-
-.cascade-node-num {
-  font-size: 1.05rem;
-  font-weight: 800;
-}
-
-.cascade-node-check {
-  width: 20px;
-  height: 20px;
-}
-
-/* Card */
-
-.cascade-card {
-  background: linear-gradient(160deg, color-mix(in srgb, var(--step-color) 7%, var(--bg-card)) 0%, var(--bg-card) 60%);
-  border: 1.5px solid color-mix(in srgb, var(--step-color) 28%, transparent);
-  border-radius: 20px;
-  padding: 1.75rem 1.9rem;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-}
-
-.cascade-card-step {
-  font-size: 0.68rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--step-color);
-  margin-bottom: 0.5rem;
-}
-
-.cascade-card-title {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-  margin-bottom: 0.75rem;
-}
-
-.cascade-card-desc {
-  font-size: 0.96rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
-  margin-bottom: 1.4rem;
-}
-
-.cascade-card-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 1.7rem;
-}
-
-.cascade-card-item {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-.cascade-card-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--step-color);
-  flex-shrink: 0;
-  box-shadow: 0 0 8px color-mix(in srgb, var(--step-color) 60%, transparent);
-}
-
-.cascade-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.cascade-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.5rem;
-  background: var(--step-color);
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 700;
-  border-radius: 11px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.cascade-btn:hover {
-  filter: brightness(1.12);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px color-mix(in srgb, var(--step-color) 40%, transparent);
-}
-
-/* Advance trigger */
-
-.cascade-advance {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 1.5rem 0 0;
-  padding: 0.7rem 1.4rem;
-  background: transparent;
-  border: 1px solid var(--border-color);
-  border-radius: 50px;
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.22s ease;
-}
-
-.cascade-advance svg {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.22s ease;
-}
-
-.cascade-advance:hover {
-  border-color: var(--step-color);
-  color: #fff;
-  background: color-mix(in srgb, var(--step-color) 8%, transparent);
-}
-
-.cascade-advance:hover svg {
-  transform: translateY(3px);
-}
-
-/* Finish */
-
-.cascade-finish {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.75rem;
-  padding: 1.25rem 1.6rem;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(167, 139, 250, 0.08) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 16px;
-}
-
-.cascade-finish-icon {
-  font-size: 1.8rem;
-  line-height: 1;
-}
-
-.cascade-finish p {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #fff;
-  line-height: 1.4;
-}
-
-/* Mobile */
-
-@media (max-width: 560px) {
-  .cascade-root {
-    padding-left: 2.75rem;
-  }
-
-  .cascade-rail {
-    left: 1.1rem;
-  }
-
-  .cascade-node {
-    left: -2.75rem;
-    width: 38px;
-    height: 38px;
-  }
-
-  .cascade-node-num {
-    font-size: 0.95rem;
-  }
-
-  .cascade-card {
-    padding: 1.4rem 1.5rem;
-  }
-
-  .cascade-card-title {
-    font-size: 1.2rem;
-  }
-
-  .cascade-btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* â”€â”€ Sidebar: Empieza aquÃ­ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-/* â”€â”€ Home: "Empieza aquÃ­" band â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-.starthere-band {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  max-width: 1136px;
-  width: calc(100% - 2rem);
-  margin: 2rem auto 0;
-  padding: 1.2rem 1.6rem;
-  background: linear-gradient(135deg, rgba(255, 107, 43, 0.13) 0%, rgba(167, 139, 250, 0.06) 55%, rgba(56, 189, 248, 0.06) 100%);
-  border: 1.5px solid rgba(255, 107, 43, 0.32);
-  border-radius: 18px;
-  text-decoration: none;
-  overflow: hidden;
-  transition: all 0.25s ease;
-  box-shadow: 0 2px 20px rgba(255, 107, 43, 0.07);
-}
-
-@media (min-width: 900px) {
-  .starthere-band {
-    width: calc(100% - 4rem);
-  }
-}
-
-.starthere-band-glow {
-  position: absolute;
-  top: 50%;
-  left: -10%;
-  width: 220px;
-  height: 220px;
-  transform: translateY(-50%);
-  background: radial-gradient(circle, rgba(255, 107, 43, 0.22) 0%, transparent 70%);
-  pointer-events: none;
-  transition: left 0.5s ease;
-}
-
-.starthere-band:hover {
-  border-color: rgba(255, 107, 43, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 34px rgba(255, 107, 43, 0.12);
-}
-
-.starthere-band:hover .starthere-band-glow {
-  left: 80%;
-}
-
-.starthere-band-left {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  position: relative;
-  z-index: 1;
-  min-width: 0;
-}
-
-.starthere-band-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(255, 154, 0, 0.28) 0%, rgba(255, 107, 43, 0.14) 100%);
-  box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.3) inset, 0 6px 18px rgba(255, 107, 43, 0.2);
-  color: #ffb673;
-  flex-shrink: 0;
-}
-
-.starthere-band-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  min-width: 0;
-}
-
-.starthere-band-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  font-size: 0.66rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: #ffb673;
-  background: rgba(255, 107, 43, 0.12);
-  border: 1px solid rgba(255, 107, 43, 0.28);
-  padding: 0.22rem 0.6rem;
-  border-radius: 100px;
-}
-
-.starthere-band-title {
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #fff;
-  line-height: 1.3;
-}
-
-/* Mini indicador de "hoja de ruta": puntos conectados, decorativo */
-.starthere-band-steps {
-  display: none;
-  align-items: center;
-  gap: 4px;
-  margin-top: 0.15rem;
-}
-
-.starthere-band-steps i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent-orange);
-  flex-shrink: 0;
-}
-
-.starthere-band-steps i:last-child {
-  background: rgba(255, 107, 43, 0.35);
-}
-
-.starthere-band-steps em {
-  width: 16px;
-  height: 1px;
-  background: rgba(255, 107, 43, 0.3);
-  flex-shrink: 0;
-}
-
-@media (min-width: 820px) {
-  .starthere-band-steps {
-    display: flex;
-  }
-}
-
-.starthere-band-cta {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.1rem;
-  position: relative;
-  z-index: 1;
-  padding: 0.65rem 1.5rem;
-  background: linear-gradient(135deg, #ff8c3a 0%, var(--accent-orange) 50%, #e8520a 100%);
-  color: #fff;
-  font-size: 0.92rem;
-  font-weight: 800;
-  border-radius: 12px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(255, 107, 43, 0.5), 0 0 0 0 rgba(255, 107, 43, 0.3);
-  animation: starthere-pulse 2.5s ease-in-out infinite;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.starthere-band-cta-label {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  line-height: 1;
-}
-
-.starthere-band-cta-sub {
-  font-size: 0.67rem;
-  font-weight: 600;
-  opacity: 0.82;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.starthere-band-cta::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
-  transform: translateX(-100%);
-  animation: starthere-shimmer 3s ease-in-out infinite;
-}
-
-.starthere-band-cta .starthere-cta-arrow {
-  transition: transform 0.3s ease;
-}
-
-.starthere-band:hover .starthere-band-cta {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(255, 107, 43, 0.65), 0 0 0 4px rgba(255, 107, 43, 0.15);
-  animation: none;
-}
-
-.starthere-band:hover .starthere-cta-arrow {
-  transform: translateX(4px);
-}
-
-@keyframes starthere-pulse {
-
-  0%,
-  100% {
-    box-shadow: 0 4px 20px rgba(255, 107, 43, 0.5), 0 0 0 0 rgba(255, 107, 43, 0.3);
-  }
-
-  50% {
-    box-shadow: 0 4px 28px rgba(255, 107, 43, 0.65), 0 0 0 6px rgba(255, 107, 43, 0);
-  }
-}
-
-@keyframes starthere-shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  40%,
-  100% {
-    transform: translateX(200%);
-  }
-}
-
-@media (max-width: 720px) {
-  .starthere-band {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 1.25rem 1rem 0;
-    /* Add margin horizontal to avoid touching screen edges if it was full width, or just reduce padding */
-    padding: 0.85rem 1rem;
-    border-radius: 14px;
-  }
-
-  .starthere-band-left {
-    gap: 0.75rem;
-  }
-
-  .starthere-band-icon {
-    width: 38px;
-    height: 38px;
-  }
-
-  .starthere-band-title {
-    font-size: 0.9rem;
-  }
-
-  .starthere-band-eyebrow {
-    font-size: 0.65rem;
-  }
-
-  .starthere-band-cta {
-    width: auto;
-    flex-direction: row;
-    padding: 0.5rem 0.85rem;
-    gap: 0.4rem;
-  }
-
-  .starthere-band-cta-sub {
-    display: none;
-    /* Hide the subtext on mobile to ensure it fits well on one line */
   }
 }
 
@@ -10536,35 +9954,190 @@ select {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   STARTHERE ROW — dos bandas gemelas (guía inicio + última guía)
+   ASESORÍA — banda de entrada (dashboard, premium, guías)
+   Compartida por 3 secciones, por eso vive aquí y no en el CSS
+   de un módulo. En la home el acceso es el dúo hero-duo (home.css).
+   Los estilos propios de /asesoria están en asesoria.css.
    ═══════════════════════════════════════════════════════════ */
 
-.starthere-row {
+.aseband {
+  --aseband-accent: #7ea6ff;
+
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  max-width: 1136px;
-  width: calc(100% - 2rem);
-  margin: 2rem auto 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  overflow: hidden;
+  padding: 1.15rem 1.5rem;
+  border: 1px solid rgba(126, 166, 255, 0.28);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(126, 166, 255, 0.12) 0%, rgba(167, 139, 250, 0.06) 58%, rgba(13, 31, 60, 0.5) 100%);
+  box-shadow: 0 2px 20px rgba(126, 166, 255, 0.06);
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
-@media (min-width: 900px) {
-  .starthere-row {
-    width: calc(100% - 4rem);
-    flex-direction: row;
-  }
+.aseband:hover {
+  transform: translateY(-2px);
+  border-color: rgba(126, 166, 255, 0.5);
+  box-shadow: 0 12px 32px -18px rgba(126, 166, 255, 0.6);
 }
 
-.starthere-row .starthere-band {
-  max-width: none;
-  width: 100%;
-  margin: 0;
-  flex: 1;
+.aseband-glow {
+  position: absolute;
+  top: -70%;
+  left: -10%;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(126, 166, 255, 0.22) 0%, transparent 68%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.aseband:hover .aseband-glow {
+  opacity: 1;
+}
+
+.aseband-left {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
   min-width: 0;
 }
 
-@media (max-width: 720px) {
-  .starthere-row {
-    gap: 0.75rem;
+.aseband-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(126, 166, 255, 0.14);
+  color: var(--aseband-accent);
+  box-shadow: inset 0 0 0 1px rgba(126, 166, 255, 0.26);
+}
+
+.aseband-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.16rem;
+  min-width: 0;
+}
+
+.aseband-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--aseband-accent);
+}
+
+.aseband-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-primary);
+}
+
+.aseband-sub {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.aseband-right {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-shrink: 0;
+}
+
+.aseband-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.1;
+}
+
+.aseband-price-from {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.aseband-price-amount {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.aseband-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.62rem 1.05rem;
+  border-radius: 11px;
+  background: rgba(126, 166, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(126, 166, 255, 0.34);
+  color: #eaf1ff;
+  font-size: 0.86rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.aseband:hover .aseband-cta {
+  background: rgba(126, 166, 255, 0.26);
+  box-shadow: inset 0 0 0 1px rgba(126, 166, 255, 0.55);
+}
+
+/* ── Ajustes por contexto ─────────────────────────────────── */
+
+/* En el dashboard y en las guías la banda es un bloque suelto y necesita
+   sus propios márgenes. */
+.aseband--dashboard {
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+.aseband--premium {
+  width: 100%;
+  max-width: 900px;
+  margin: 2.5rem auto 0;
+}
+
+.aseband--guide {
+  width: calc(100% - 2.4rem);
+  max-width: 780px;
+  margin: 0 auto 3.5rem;
+}
+
+/* ── Móvil ────────────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  .aseband {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1.15rem 1.2rem;
+  }
+
+  .aseband-right {
+    justify-content: space-between;
+  }
+
+  .aseband-cta {
+    justify-content: center;
+    flex: 1;
+  }
+
+  .aseband-price {
+    align-items: flex-start;
   }
 }

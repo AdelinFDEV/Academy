@@ -21,6 +21,16 @@ Cada guía es un componente React independiente (ver `/admin/guias-instrucciones
 - `guias.css` se reserva para lo que de verdad comparten **todas** las guías: el listado `/guias`, la estructura visual replicada en cada una (hero, cards, paleta oro/naranja) y componentes reutilizables entre guías.
 - Nunca dumpear el CSS de una guía concreta en `guias.css` "porque ya está importado ahí" — es exactamente lo que hace que ese archivo crezca sin control (ya pasó una vez: `guias.css` mezcla las 3 guías actuales en un único archivo de 1200+ líneas — pendiente de separar si se decide abordarlo).
 
+### Cierre obligatorio de toda guía
+
+Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
+
+1. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
+2. `<AsesoriaBand variant="guide" />` — banda de asesoría 1:1
+3. `<Footer />`
+
+El import va junto al de `Footer`: `import AsesoriaBand from "@/components/AsesoriaBand";`. La banda **no lleva CSS en el `[slug].css` de la guía** — sus estilos están en `globals.css` porque se comparte con home, dashboard y premium. Precios y textos salen de `src/lib/asesoria.ts`, nunca hardcodeados en la guía. Detalle completo en `/admin/guias-instrucciones` (bloque 04).
+
 Las **entradas del blog no necesitan este patrón**: todas se renderizan con la misma plantilla genérica (`post/[slug]/page.tsx`) y comparten el mismo vocabulario de estilos (`.prose-content` y clases `.prose-*` en `globals.css`) — no hay CSS por-entrada que crear. **Decisión confirmada explícitamente por el admin**: cada entrada nueva es una fila en la tabla `posts` (título + HTML + metadatos), nunca un componente/página de código propia. Motivos: (1) cero código nuevo por entrada = cero riesgo de que `globals.css` vuelva a crecer sin control, (2) publicar así no consume prácticamente nada de la cuota gratuita de Supabase — el texto de cientos de entradas pesa unos pocos MB, muy lejos del límite de 500MB de la BD; lo único remotamente relevante es el storage de imágenes de portada (1GB gratis), y a un ritmo de 1 entrada cada 1–3 días tardaría años en acercarse al límite.
 
 ## Regla resumen: "componente independiente" significa cosas distintas para guías y entradas

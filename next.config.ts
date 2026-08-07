@@ -53,6 +53,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Rutas retiradas que aún pueden recibir tráfico desde Google o enlaces
+  // externos. Se redirigen en vez de devolver 404: el visitante aterriza en
+  // algo útil y los buscadores traspasan el posicionamiento al destino.
+  // permanent: true = HTTP 308 (el cambio es definitivo y Google lo indexa así).
+  async redirects() {
+    return [
+      {
+        source: "/guia-iniciacion",
+        destination: "/guias",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

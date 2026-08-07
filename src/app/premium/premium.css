@@ -1168,10 +1168,6 @@
 .prem-partner--cg:hover { border-color: rgba(139, 197, 63, 0.6); }
 .prem-partner--cg .prem-partner-mark { background: #8bc53f; }
 
-.prem-partner--mx { border-color: rgba(30, 110, 240, 0.35); }
-.prem-partner--mx:hover { border-color: rgba(30, 110, 240, 0.6); }
-.prem-partner--mx .prem-partner-mark { background: linear-gradient(135deg, #1ea7e1 0%, #1652f0 100%); }
-
 @media (max-width: 720px) {
   .prem-partners { padding: 1.75rem 1.25rem; margin-bottom: 2.5rem; }
   .prem-partners-title { font-size: 1.35rem; }

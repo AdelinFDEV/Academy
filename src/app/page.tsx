@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, BookA, MonitorPlay, Route, ShieldCheck, Star, Tag, Map, MessageCircle } from "lucide-react";
+import { ArrowRight, BookA, MonitorPlay, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -193,31 +193,6 @@ export default async function HomePage() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* ── Empieza aquí / Última guía — bandas gemelas ── */}
-      <div className="starthere-row">
-        <Link href="/guia-iniciacion" className="starthere-band">
-          <span className="starthere-band-glow" aria-hidden="true" />
-          <span className="starthere-band-left">
-            <span className="starthere-band-icon">
-              <Map size={22} aria-hidden="true" />
-            </span>
-            <span className="starthere-band-text">
-              <span className="starthere-band-eyebrow">¿Nuevo en cripto?</span>
-              <span className="starthere-band-title">Empieza aquí — tu hoja de ruta paso a paso</span>
-              <span className="starthere-band-steps" aria-hidden="true">
-                <i /><em /><i /><em /><i />
-              </span>
-            </span>
-          </span>
-          <span className="starthere-band-cta">
-            <span className="starthere-band-cta-label">
-              Empieza <ArrowRight size={15} strokeWidth={2.5} className="starthere-cta-arrow" aria-hidden="true" />
-            </span>
-            <span className="starthere-band-cta-sub">Gratis · 5 min</span>
-          </span>
-        </Link>
       </div>
 
       {/* ── Fila destacada: entrada principal + última guía (50/50, full width) ── */}

@@ -8,6 +8,7 @@ import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardSpotlight from "@/components/DashboardSpotlight";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
+import AsesoriaBand from "@/components/AsesoriaBand";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
@@ -191,6 +192,9 @@ export default async function DashboardPage() {
           <Link href="/dashboard/logros" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
       </div>
+
+      {/* ── Asesoría 1:1 ── */}
+      <AsesoriaBand variant="dashboard" />
 
       {/* ── Upgrade card (free users only) ── */}
       {!isPremium && (

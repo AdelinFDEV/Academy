@@ -250,444 +250,12 @@
   width: 100%;
 }
 
-.hero-bento {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.85rem;
-  width: 100%;
-}
 
-@media (min-width: 640px) {
-  .hero-bento {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1180px) {
-  .hero-bento {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.hero-bento-cell {
-  height: 100%;
-}
-
-.hero-bento-card {
-  height: 100%;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-
-.hero-bento-card-link {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  height: 100%;
-  background: rgba(9, 18, 36, 0.72);
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 18px;
-  padding: 1.3rem 1.3rem 1.4rem;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  text-decoration: none;
-  color: inherit;
-  overflow: hidden;
-  isolation: isolate;
-  cursor: pointer;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-a.hero-bento-card-link:hover {
-  border-color: rgba(240, 244, 255, 0.22);
-  transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-}
-
-.hero-bento-card--soon .hero-bento-card-link {
-  cursor: default;
-  opacity: 0.82;
-}
-
-.hero-bento-glow {
-  position: absolute;
-  top: -60%;
-  right: -40%;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  filter: blur(60px);
-  opacity: 0.22;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.hero-bento-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.hero-bento-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  flex-shrink: 0;
-}
-
-/* Micro-animación en bucle del glifo: la baldosa de color queda fija
-   como ancla y el icono flota/balancea muy suave. Escalonado por tarjeta
-   (delays distintos) para que no se muevan todos a la vez. */
-@keyframes hero-icon-loop {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-2.5px) rotate(-3deg); }
-}
-
-.hero-bento-icon svg {
-  animation: hero-icon-loop 4.8s ease-in-out infinite;
-  transform-origin: 50% 60%;
-  will-change: transform;
-}
-
-.hero-bento-cell:nth-child(1) .hero-bento-icon svg { animation-delay: 0s; }
-.hero-bento-cell:nth-child(2) .hero-bento-icon svg { animation-delay: 0.65s; }
-.hero-bento-cell:nth-child(3) .hero-bento-icon svg { animation-delay: 1.3s; }
-.hero-bento-cell:nth-child(4) .hero-bento-icon svg { animation-delay: 1.95s; }
-
-/* Un pelín más de vida al pasar el ratón, sin brusquedad */
-a.hero-bento-card-link:hover .hero-bento-icon svg {
-  animation-duration: 3.4s;
-}
-
-/* En táctil (móvil/tablet) no hay hover: mantenemos el movimiento vivo
-   de forma constante, con un recorrido un poco mayor para que se note. */
-@media (hover: none) {
-  @keyframes hero-icon-loop-touch {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50%      { transform: translateY(-3.5px) rotate(-4deg); }
-  }
-  .hero-bento-icon svg {
-    animation-name: hero-icon-loop-touch;
-    animation-duration: 3.4s;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-bento-icon svg {
-    animation: none;
-  }
-}
-
-.hero-bento-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.26rem 0.5rem;
-  border-radius: 100px;
-  border: 1px solid transparent;
-  white-space: nowrap;
-}
-
-.hero-bento-badge--soon {
-  color: rgba(213, 224, 246, 0.6);
-  background: rgba(240, 244, 255, 0.07);
-  border-color: rgba(240, 244, 255, 0.1);
-}
-
-.hero-bento-badge--premium {
-  color: var(--premium-gold);
-  background: rgba(230, 180, 85, 0.12);
-  border-color: rgba(230, 180, 85, 0.3);
-}
-
-.hero-bento-label {
-  font-size: 1.02rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #fff;
-  margin: 0;
-}
-
-.hero-bento-desc {
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: rgba(203, 218, 240, 0.62);
-  margin: 0;
-  /* Reserva ~3 líneas para que el bloque de texto de las 4 tarjetas
-     empiece a la misma altura (evita que unas queden más "huecas"). */
-  min-height: 3.35rem;
-}
-
-.hero-bento-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.4rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  line-height: 1.4;
-  margin: 0;
-  padding: 0.5rem 0.6rem;
-  border-radius: 10px;
-  border: 1px solid;
-}
-
-.hero-bento-note svg {
-  flex-shrink: 0;
-  margin-top: 0.15rem;
-}
-
-.hero-bento-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  /* Empuja el pie (chips + colaboración + CTA) al fondo de la tarjeta,
-     así los pies de las 4 tarjetas quedan alineados. */
-  margin-top: auto;
-}
-
-.hero-bento-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.28rem;
-  font-size: 0.64rem;
-  font-weight: 600;
-  color: rgba(226, 232, 240, 0.8);
-  background: rgba(240, 244, 255, 0.05);
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  padding: 0.28rem 0.5rem;
-  border-radius: 100px;
-}
-
-/* Mención de colaboración (p. ej. DefiLlama en Liberaciones) */
-.hero-bento-collab {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.3rem 0.4rem;
-  margin-top: 0.15rem;
-  font-size: 0.62rem;
-  font-weight: 600;
-  color: rgba(226, 232, 240, 0.55);
-}
-
-.hero-bento-collab-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  padding: 0.28rem 0.62rem 0.28rem 0.32rem;
-  border-radius: 8px;
-  background: rgba(33, 114, 229, 0.14);
-  border: 1px solid rgba(33, 114, 229, 0.4);
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #eaf1ff;
-}
-
-.hero-bento-collab-badge span { color: #5aa2ff; }
-
-.hero-collab-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  background: #2172E5;
-}
-
-.hero-bento-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  margin-top: 0.2rem;
-  transition: gap 0.2s ease;
-}
-
-a.hero-bento-card-link:hover .hero-bento-cta {
-  gap: 0.55rem;
-}
-
-.hero-bento-cta--soon {
-  color: rgba(213, 224, 246, 0.5);
-}
-
-/* ── CTA zone ── */
-
-.hero-cta-zone {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.85rem;
-  width: 100%;
-}
-
-.hero-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-  justify-content: center;
-  gap: 0.85rem;
-  width: 100%;
-}
-
-/* Ambos CTA ocupan el mismo ancho en PC (se reparten la fila a partes iguales).
-   En móvil la fila pasa a columna y flex-basis:0 no reparte alto: se quedan
-   a ancho completo por el width:100% de la media query. */
-.hero-cta-row .hero-premium-cta,
-.hero-cta-row .hero-cta-mini--gold {
-  flex: 1 1 0;
-}
-
-.hero-cta-mini {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: rgba(226, 232, 240, 0.75);
-  text-decoration: none;
-  padding: 0.5rem 0;
-  transition: color 0.2s ease;
-}
-
-.hero-cta-mini:hover {
-  color: #fff;
-}
-
-.hero-cta-mini--gold {
-  color: #f5d68a;
-  background: linear-gradient(135deg, rgba(230, 180, 85, 0.16) 0%, rgba(230, 180, 85, 0.06) 100%);
-  border: 1px solid rgba(230, 180, 85, 0.35);
-  padding: 0.85rem 1.6rem 0.85rem 0.85rem;
-  border-radius: 15px;
-  gap: 0.9rem;
-  box-shadow: 0 6px 20px rgba(230, 180, 85, 0.1);
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
-}
-
-.hero-cta-mini--gold:hover {
-  color: #ffe6ad;
-  border-color: rgba(245, 200, 66, 0.7);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(230, 180, 85, 0.22);
-}
-
-.hero-cta-mini-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(245, 214, 138, 0.28), rgba(230, 180, 85, 0.12));
-  color: #f5d68a;
-  box-shadow: 0 0 0 1px rgba(230, 180, 85, 0.3) inset;
-}
-
-.hero-cta-mini-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  line-height: 1.25;
-  text-align: left;
-}
-
-.hero-cta-mini-text strong {
-  font-size: 0.94rem;
-  font-weight: 800;
-  color: #f5d68a;
-}
-
-.hero-cta-mini-text span {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: rgba(245, 214, 138, 0.7);
-}
-
-/* Botón "Ir a mi Academia" para usuarios Premium ya logueados */
-.hero-premium-cta {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  padding: 0.85rem 1.6rem 0.85rem 0.85rem;
-  border-radius: 15px;
-  text-decoration: none;
-  color: #fff;
-  background: linear-gradient(135deg, #ff9a00 0%, #ff6b2b 100%);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 10px 30px rgba(255, 107, 43, 0.35);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-}
-
-.hero-premium-cta-shine {
-  position: absolute;
-  top: 0;
-  left: -80%;
-  width: 55%;
-  height: 100%;
-  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.35) 50%, transparent 80%);
-  transform: skewX(-20deg);
-  animation: hero-cta-shine 4.5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.hero-premium-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 14px 38px rgba(255, 107, 43, 0.48);
-}
-
-.hero-premium-cta-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-.hero-premium-cta-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  line-height: 1.25;
-}
-
-.hero-premium-cta-text strong {
-  font-size: 0.94rem;
-  font-weight: 800;
-}
-
-.hero-premium-cta-text span {
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.hero-premium-cta-arrow {
-  margin-left: 0.3rem;
-  transition: transform 0.25s ease;
-}
-
-.hero-premium-cta:hover .hero-premium-cta-arrow {
-  transform: translateX(4px);
+/* Destello compartido por la banda premium y sus variantes */
+@keyframes hero-cta-shine {
+  0% { left: -60%; }
+  55% { left: 130%; }
+  100% { left: 130%; }
 }
 
 /* ── Banda Premium: el CTA principal del hero ── */
@@ -843,19 +411,6 @@ a.hero-bento-card-link:hover .hero-bento-cta {
 }
 
 @media (max-width: 760px) {
-  /* Los dos CTA del hero premium se apilan a ancho completo. Sus dimensiones
-     ya son idénticas desde la base (.hero-cta-mini--gold = .hero-premium-cta). */
-  .hero-cta-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .hero-cta-row .hero-premium-cta,
-  .hero-cta-row .hero-cta-mini--gold {
-    flex: none;
-    width: 100%;
-  }
-
   .hero-premium-band {
     flex-direction: column;
     align-items: stretch;
@@ -880,7 +435,6 @@ a.hero-bento-card-link:hover .hero-bento-cta {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-premium-cta-shine,
   .hero-premium-band-shine {
     animation: none;
   }
@@ -1697,5 +1251,967 @@ a.hero-bento-card-link:hover .hero-bento-cta {
   }
   .premium-pitch--section .premium-pitch-features {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO DUO — dos tarjetas 50/50 sobre el bento: Asesoría 1:1
+   y suscripción Premium, cada una con su botón.
+   ═══════════════════════════════════════════════════════════ */
+
+.hero-duo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hero-duo-card {
+  --duo-color: #7ea6ff;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.35rem 1.5rem 1.3rem;
+  border: 1px solid color-mix(in srgb, var(--duo-color) 28%, transparent);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 100% at 90% -10%, color-mix(in srgb, var(--duo-color) 13%, transparent) 0%, transparent 55%),
+    linear-gradient(165deg, color-mix(in srgb, var(--duo-color) 6%, var(--bg-card)) 0%, var(--bg-card-alt) 60%);
+  text-decoration: none;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-duo-card--prem {
+  --duo-color: #e6b455;
+}
+
+.hero-duo-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--duo-color) 50%, transparent);
+  box-shadow:
+    var(--card-shadow),
+    0 20px 48px -26px color-mix(in srgb, var(--duo-color) 65%, transparent);
+}
+
+.hero-duo-glow {
+  position: absolute;
+  top: -60%;
+  right: -12%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--duo-color) 20%, transparent) 0%, transparent 66%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hero-duo-card:hover .hero-duo-glow {
+  opacity: 1;
+}
+
+.hero-duo-top {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hero-duo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--duo-color) 15%, transparent);
+  color: var(--duo-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--duo-color) 35%, transparent);
+}
+
+.hero-duo-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--duo-color);
+}
+
+.hero-duo-title {
+  margin: 0.85rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.hero-duo-desc {
+  margin: 0.4rem 0 1.1rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.hero-duo-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.hero-duo-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  line-height: 1;
+}
+
+.hero-duo-price em {
+  font-size: 0.72rem;
+  font-style: normal;
+  color: var(--text-muted);
+}
+
+.hero-duo-price strong {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* Botón sólido del color identitario de cada tarjeta */
+.hero-duo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.68rem 1.15rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--duo-color), color-mix(in srgb, var(--duo-color) 65%, #ffffff));
+  color: #0a1628;
+  font-size: 0.88rem;
+  font-weight: 800;
+  white-space: nowrap;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 26px -12px color-mix(in srgb, var(--duo-color) 80%, transparent);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.hero-duo-btn svg {
+  transition: transform 0.25s ease;
+}
+
+.hero-duo-card:hover .hero-duo-btn {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 0 0 4px color-mix(in srgb, var(--duo-color) 18%, transparent),
+    0 14px 32px -12px color-mix(in srgb, var(--duo-color) 90%, transparent);
+}
+
+.hero-duo-card:hover .hero-duo-btn svg {
+  transform: translateX(3px);
+}
+
+@media (max-width: 800px) {
+  .hero-duo {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-duo-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-duo-price {
+    justify-content: center;
+  }
+
+  .hero-duo-btn {
+    justify-content: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ARSENAL — mosaico asimétrico de herramientas del hero.
+   Sustituye al antiguo bento de 4 columnas iguales: Guías es
+   el buque insignia (ancha), Diario columna alta, y cada
+   tarjeta enseña su herramienta con un microvisual propio.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Riel editorial sobre el mosaico */
+
+.hero-arsenal-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 0.95rem;
+}
+
+.hero-arsenal-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--premium-gold);
+  white-space: nowrap;
+}
+
+.hero-arsenal-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(230, 180, 85, 0.35), rgba(240, 244, 255, 0.06));
+}
+
+.hero-arsenal-count {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Mosaico */
+
+.hero-arsenal {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 1.6rem;
+}
+
+@media (min-width: 680px) {
+  .hero-arsenal {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .hero-arsenal {
+    grid-template-columns: 1.12fr 1fr 1.02fr;
+    grid-template-areas:
+      "guias pred diario"
+      "liber cursos folio";
+  }
+
+  .hero-tool--guias { grid-area: guias; }
+  .hero-tool--prediccion { grid-area: pred; }
+  .hero-tool--diario { grid-area: diario; }
+  .hero-tool--portfolio { grid-area: folio; }
+  .hero-tool--liberaciones { grid-area: liber; }
+  .hero-tool--cursos { grid-area: cursos; }
+}
+
+/* Tarjeta de herramienta */
+
+.hero-tool {
+  --tool-color: #ffd166;
+
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 22%, transparent);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 90% at 88% -8%, color-mix(in srgb, var(--tool-color) 11%, transparent) 0%, transparent 55%),
+    linear-gradient(168deg, color-mix(in srgb, var(--tool-color) 4%, var(--bg-card)) 0%, rgba(10, 22, 40, 0.92) 60%);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-tool:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--tool-color) 45%, transparent);
+  box-shadow:
+    var(--card-shadow),
+    0 24px 55px -30px color-mix(in srgb, var(--tool-color) 60%, transparent);
+}
+
+.hero-tool--soon:hover {
+  transform: none;
+}
+
+.hero-tool-link {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1.5rem 1.55rem 1.4rem;
+  text-decoration: none;
+}
+
+/* Foco que sigue al cursor (posición vía --mx/--my desde el componente) */
+.hero-tool-spot {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    240px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--tool-color) 12%, transparent),
+    transparent 72%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hero-tool:hover .hero-tool-spot {
+  opacity: 1;
+}
+
+/* Línea de acento superior, firma de cada tarjeta */
+.hero-tool-topline {
+  position: absolute;
+  top: 0;
+  left: 14%;
+  right: 14%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--tool-color), transparent);
+  box-shadow: 0 0 16px 1px color-mix(in srgb, var(--tool-color) 50%, transparent);
+  opacity: 0.85;
+}
+
+.hero-tool-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.05rem;
+}
+
+.hero-tool-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--tool-color) 14%, transparent);
+  color: var(--tool-color);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--tool-color) 34%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.hero-tool:hover .hero-tool-icon {
+  transform: rotate(-5deg) scale(1.05);
+}
+
+.hero-tool-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-tool-badge--top {
+  border: 1px solid color-mix(in srgb, var(--tool-color) 45%, transparent);
+  background: color-mix(in srgb, var(--tool-color) 14%, transparent);
+  color: var(--tool-color);
+}
+
+.hero-tool-badge--premium {
+  border: 1px solid rgba(230, 180, 85, 0.45);
+  background: rgba(230, 180, 85, 0.12);
+  color: var(--premium-gold);
+}
+
+.hero-tool-badge--soon {
+  border: 1px solid rgba(240, 244, 255, 0.14);
+  background: rgba(240, 244, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.hero-tool-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  color: var(--text-primary);
+}
+
+/* El buque insignia habla más alto */
+.hero-tool--guias .hero-tool-name {
+  font-size: 1.42rem;
+}
+
+.hero-tool-desc {
+  margin: 0.45rem 0 0;
+  max-width: 460px;
+  font-size: 0.86rem;
+  line-height: 1.58;
+  color: var(--text-muted);
+}
+
+/* ── Microvisuales ────────────────────────────────────────── */
+
+.hero-tool-viz {
+  margin-top: 1.05rem;
+}
+
+/* Guías: ruta de nodos hacia el logro */
+.hero-viz-path {
+  display: flex;
+  align-items: center;
+  max-width: 340px;
+}
+
+.hero-viz-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  background: rgba(240, 244, 255, 0.05);
+  color: var(--text-muted);
+}
+
+.hero-viz-node.is-done {
+  border-color: color-mix(in srgb, var(--tool-color) 55%, transparent);
+  background: color-mix(in srgb, var(--tool-color) 18%, transparent);
+  color: var(--tool-color);
+}
+
+.hero-viz-node.is-now {
+  position: relative;
+  border-color: var(--tool-color);
+  background: color-mix(in srgb, var(--tool-color) 30%, transparent);
+}
+
+.hero-viz-node.is-now::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 55%, transparent);
+  animation: hero-viz-ring 2.2s ease-out infinite;
+}
+
+@keyframes hero-viz-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+.hero-viz-node.is-badge {
+  border-color: rgba(230, 180, 85, 0.55);
+  background: rgba(230, 180, 85, 0.16);
+  color: var(--premium-gold);
+  box-shadow: 0 0 18px -4px rgba(230, 180, 85, 0.6);
+}
+
+.hero-viz-link {
+  flex: 1;
+  height: 2px;
+  margin: 0 0.35rem;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.1);
+}
+
+.hero-viz-link.is-done {
+  background: color-mix(in srgb, var(--tool-color) 55%, transparent);
+}
+
+/* Diario: curva de equity */
+.hero-viz-spark {
+  display: block;
+  width: 100%;
+  height: 64px;
+  border-radius: 10px;
+  background:
+    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 16px,
+    rgba(6, 15, 31, 0.45);
+}
+
+/* Predicción: histórico → proyección punteada hasta el objetivo */
+.hero-viz-target {
+  display: block;
+  width: 100%;
+  height: 64px;
+  border-radius: 10px;
+  background:
+    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 16px,
+    rgba(6, 15, 31, 0.45);
+}
+
+/* Liberaciones: barra de vesting */
+.hero-viz-vest-bar {
+  position: relative;
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.07);
+  overflow: visible;
+}
+
+.hero-viz-vest-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 42%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tool-color) 65%, transparent), var(--tool-color));
+  box-shadow: 0 0 14px -2px color-mix(in srgb, var(--tool-color) 70%, transparent);
+}
+
+.hero-viz-vest-mark {
+  position: absolute;
+  top: 50%;
+  left: 42%;
+  width: 15px;
+  height: 15px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid var(--tool-color);
+  background: var(--bg-dark);
+  box-shadow: 0 0 12px -1px color-mix(in srgb, var(--tool-color) 80%, transparent);
+}
+
+.hero-viz-vest-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.55rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+
+/* Portfolio: posiciones con barra de asignación */
+.hero-viz-folio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Cada fila lleva el color de marca de su activo vía --row-color */
+.hero-viz-folio-row {
+  --row-color: var(--tool-color);
+
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.hero-viz-folio-dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--row-color) 80%, #ffffff);
+  box-shadow: 0 0 8px -1px color-mix(in srgb, var(--row-color) 80%, transparent);
+}
+
+.hero-viz-folio-bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.07);
+  overflow: hidden;
+}
+
+.hero-viz-folio-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--row-color) 55%, transparent), var(--row-color));
+  box-shadow: 0 0 10px -2px color-mix(in srgb, var(--row-color) 70%, transparent);
+}
+
+.hero-viz-folio-tag {
+  flex-shrink: 0;
+  min-width: 46px;
+  text-align: center;
+  padding: 0.14rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--row-color) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--row-color) 10%, transparent);
+  font-family: var(--font-display);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--row-color) 85%, #ffffff);
+}
+
+/* Cursos: módulos encendiéndose */
+.hero-viz-modules {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.45rem;
+}
+
+.hero-viz-modules span {
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  background: rgba(240, 244, 255, 0.04);
+}
+
+.hero-viz-modules span.is-on {
+  border-color: color-mix(in srgb, var(--tool-color) 50%, transparent);
+  background: color-mix(in srgb, var(--tool-color) 20%, transparent);
+}
+
+.hero-viz-modules span.is-pulse {
+  border-color: color-mix(in srgb, var(--tool-color) 40%, transparent);
+  animation: hero-viz-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hero-viz-pulse {
+  0%, 100% { background: rgba(240, 244, 255, 0.04); }
+  50% { background: color-mix(in srgb, var(--tool-color) 16%, transparent); }
+}
+
+/* ── Nota, chips, colaboración, CTA de tarjeta ────────────── */
+
+.hero-tool-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 28%, transparent);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--tool-color) 9%, transparent);
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--tool-color) 80%, #ffffff);
+}
+
+.hero-tool-note svg {
+  flex-shrink: 0;
+  margin-top: 0.14rem;
+}
+
+.hero-tool-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.05rem;
+}
+
+.hero-tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.05);
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.hero-tool-collab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.hero-tool-collab-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.24rem 0.55rem;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0a1628;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.hero-tool-collab-badge span {
+  color: #2172E5;
+}
+
+.hero-collab-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  background: #2172E5;
+}
+
+.hero-tool-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 1.15rem;
+  font-family: var(--font-display);
+  font-size: 0.87rem;
+  font-weight: 700;
+  color: var(--tool-color);
+}
+
+.hero-tool-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.hero-tool:hover .hero-tool-cta svg {
+  transform: translateX(4px);
+}
+
+.hero-tool-cta--soon {
+  color: var(--text-muted);
+}
+
+/* ── Dock de acciones (usuario premium) ───────────────────── */
+
+.hero-cta-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.hero-dock {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hero-dock-primary {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1.35;
+  padding: 1.1rem 1.5rem;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
+  text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 0 1px rgba(255, 154, 0, 0.35),
+    0 14px 34px -14px rgba(255, 107, 43, 0.65);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-dock-primary:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(255, 107, 43, 0.2),
+    0 18px 42px -14px rgba(255, 107, 43, 0.85);
+}
+
+.hero-dock-shine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -80%;
+  width: 45%;
+  transform: skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: hero-dock-shine 3.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes hero-dock-shine {
+  0% { left: -80%; }
+  55% { left: 135%; }
+  100% { left: 135%; }
+}
+
+.hero-dock-primary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.hero-dock-primary-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.hero-dock-primary-text strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.hero-dock-primary-text span {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.hero-dock-arrow {
+  margin-left: auto;
+  color: #fff;
+  transition: transform 0.25s ease;
+}
+
+.hero-dock-primary:hover .hero-dock-arrow {
+  transform: translateX(4px);
+}
+
+.hero-dock-guide {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex: 1;
+  padding: 1.1rem 1.4rem;
+  border: 1px solid rgba(230, 180, 85, 0.4);
+  border-radius: 18px;
+  background: rgba(230, 180, 85, 0.07);
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-dock-guide:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 200, 66, 0.65);
+  background: rgba(230, 180, 85, 0.12);
+  box-shadow: 0 14px 34px -18px rgba(230, 180, 85, 0.5);
+}
+
+.hero-dock-guide-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(230, 180, 85, 0.14);
+  color: var(--premium-gold);
+  box-shadow: inset 0 0 0 1px rgba(230, 180, 85, 0.32);
+}
+
+.hero-dock-guide-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.hero-dock-guide-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--premium-gold);
+}
+
+.hero-dock-guide-text strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hero-dock-guide-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--premium-gold);
+}
+
+.hero-dock-guide-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.hero-dock-guide:hover .hero-dock-guide-cta svg {
+  transform: translateX(3px);
+}
+
+/* Enlace mini bajo la banda premium (visitantes sin cuenta) */
+.hero-cta-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.75);
+  text-decoration: none;
+  padding: 0.5rem 0;
+  transition: color 0.2s ease;
+}
+
+.hero-cta-mini:hover {
+  color: #fff;
+}
+
+/* ── Responsive y movimiento reducido ─────────────────────── */
+
+@media (max-width: 760px) {
+  .hero-dock {
+    flex-direction: column;
+  }
+
+  .hero-dock-guide-text strong {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-dock-shine,
+  .hero-viz-node.is-now::after,
+  .hero-viz-modules span.is-pulse {
+    animation: none;
+  }
+
+  .hero-tool:hover,
+  .hero-dock-primary:hover,
+  .hero-dock-guide:hover {
+    transform: none;
   }
 }

@@ -242,6 +242,37 @@ export default function GuiasInstruccionesPage() {
         </div>
 
         <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Cierre obligatorio — toda guía termina igual</h3>
+          <div className="agi-card">
+            <p>
+              Las tres últimas piezas de <code>src/app/guias/[slug]/page.tsx</code> son <strong>fijas y no negociables</strong>, siempre en este orden.
+              Una guía sin ellas está incompleta:
+            </p>
+            <ul className="agi-list">
+              <li><strong>1. Interacciones</strong> — <code>&lt;GuideInteractions /&gt;</code> dentro de <code>section.gbc-section.gbc-interactions-section</code> (me gusta, guardar, compartir)</li>
+              <li><strong>2. Asesoría 1:1</strong> — <code>&lt;AsesoriaBand variant=&quot;guide&quot; /&gt;</code>. Quien acaba una guía es el lector más receptivo que hay: es el mejor punto de conversión a la asesoría, y por eso va en todas sin excepción</li>
+              <li><strong>3. Footer</strong> — <code>&lt;Footer /&gt;</code></li>
+            </ul>
+            <div className="agi-card agi-card--mono">
+              {`{/* ── Interacciones ── */}`}<br />
+              {`<section className="gbc-section gbc-interactions-section">`}<br />
+              {`  ...<GuideInteractions ... />`}<br />
+              {`</section>`}<br />
+              <br />
+              {`{/* Asesoria 1:1 */}`}<br />
+              {`<AsesoriaBand variant="guide" />`}<br />
+              <br />
+              {`<Footer />`}
+            </div>
+            <p>
+              El import va junto al de <code>Footer</code>: <code>import AsesoriaBand from &quot;@/components/AsesoriaBand&quot;;</code>.
+              La banda <strong>no lleva CSS propio</strong> — sus estilos ya están en <code>globals.css</code> porque se comparte con home, dashboard y premium.
+              No dupliques nada en el <code>[slug].css</code> de la guía ni cambies precios ahí: el precio sale de <code>src/lib/asesoria.ts</code>.
+            </p>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
           <h3 className="agi-subsection-title">Dificultad — badge visual</h3>
           <div className="agi-card">
             <div className="agi-diff-row">
@@ -393,6 +424,7 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Layout full-width con <code>max-width: 1100px</code> en contenido</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir qué secciones son gratuitas (primeras 1–2) y cuáles tienen paywall</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear el badge de logro: nombre + descripción + emoji</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Cerrar la guía con el bloque obligatorio</strong>: interacciones → <code>&lt;AsesoriaBand variant=&quot;guide&quot; /&gt;</code> → <code>&lt;Footer /&gt;</code> (ver bloque 04)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar preview al admin y esperar aprobación antes de implementar</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Registrar la guía en Supabase tabla <code>guides</code> tras aprobación</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Insertar badge en tabla <code>achievements</code></span></label>

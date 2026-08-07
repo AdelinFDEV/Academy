@@ -1,0 +1,1454 @@
+/* ═══════════════════════════════════════════════════════════
+   ASESORÍAS 1:1 — estilos exclusivos de /asesoria
+   Se importa solo en src/app/asesoria/page.tsx. La banda de
+   entrada compartida (hero/dashboard/premium/guías) vive en
+   globals.css.
+
+   Dirección de arte: editorial premium con acento de sala de
+   trading — rejilla técnica de fondo, cinta marquesina, hero
+   asimétrico con marca de agua, secciones numeradas 01/02/03,
+   línea de tiempo y firma. Tipografía: SOLO las fuentes del
+   sitio (Poppins display + DM Sans texto), nada de mono.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Ángulo animable del borde cónico del plan destacado */
+@property --aseRot {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.ase-main {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+/* ── Fondo técnico ────────────────────────────────────────── */
+
+.ase-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Rejilla de terminal: se desvanece radialmente hacia abajo */
+.ase-backdrop-grid {
+  position: absolute;
+  inset: 0 -2rem;
+  background-image:
+    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 244, 255, 0.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(120% 55% at 50% 0%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(120% 55% at 50% 0%, #000 30%, transparent 78%);
+}
+
+.ase-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+  animation: ase-drift 18s ease-in-out infinite alternate;
+}
+
+.ase-orb--gold {
+  top: 2%;
+  left: 4%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(230, 180, 85, 0.18) 0%, transparent 70%);
+}
+
+.ase-orb--orange {
+  top: 14%;
+  right: -4%;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(255, 107, 43, 0.15) 0%, transparent 70%);
+  animation-delay: -7s;
+}
+
+.ase-orb--blue {
+  top: 42%;
+  left: 30%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(126, 166, 255, 0.11) 0%, transparent 70%);
+  animation-delay: -12s;
+}
+
+@keyframes ase-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(4%, 6%, 0) scale(1.1); }
+}
+
+/* Todo el contenido por encima del fondo */
+.ase-marquee,
+.ase-hero,
+.ase-pillars,
+.ase-plans,
+.ase-how,
+.ase-faq,
+.ase-final {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Cinta marquesina ─────────────────────────────────────── */
+
+.ase-marquee {
+  overflow: hidden;
+  margin-top: 1.6rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid rgba(230, 180, 85, 0.16);
+  border-bottom: 1px solid rgba(230, 180, 85, 0.16);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.ase-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: ase-marquee 42s linear infinite;
+}
+
+.ase-marquee-seq {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.ase-marquee-item {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(240, 244, 255, 0.4);
+}
+
+/* Diamante separador */
+.ase-marquee-item i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin: 0 1.6rem;
+  transform: rotate(45deg);
+  background: var(--premium-gold);
+  opacity: 0.75;
+}
+
+@keyframes ase-marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* ── Hero editorial ───────────────────────────────────────── */
+
+.ase-hero {
+  padding: 4.6rem 0 4.2rem;
+  text-align: left;
+}
+
+/* Marca de agua gigante en trazo hueco, detrás del titular */
+.ase-hero-watermark {
+  position: absolute;
+  top: 0.6rem;
+  right: -1.2rem;
+  z-index: -1;
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 24vw, 17rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(230, 180, 85, 0.1);
+  pointer-events: none;
+  user-select: none;
+}
+
+.ase-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.36rem 1rem;
+  border: 1px solid rgba(230, 180, 85, 0.35);
+  border-radius: 999px;
+  background: rgba(230, 180, 85, 0.08);
+  color: var(--premium-gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+.ase-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--premium-gold);
+  box-shadow: 0 0 0 0 rgba(230, 180, 85, 0.55);
+  animation: ase-pulse 2.4s ease-out infinite;
+}
+
+@keyframes ase-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(230, 180, 85, 0.55); }
+  70% { box-shadow: 0 0 0 8px rgba(230, 180, 85, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(230, 180, 85, 0); }
+}
+
+.ase-hero-title {
+  max-width: 850px;
+  margin: 1.7rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6vw, 4.1rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.032em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.ase-hero-title-grad {
+  background: linear-gradient(100deg, var(--premium-gold) 0%, #f5c842 45%, var(--accent-orange) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ase-hero-sub {
+  max-width: 580px;
+  margin: 1.6rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.68;
+  color: var(--text-muted);
+}
+
+.ase-hero-sub em {
+  color: var(--premium-gold);
+  font-style: italic;
+}
+
+/* Barra de cifras: separadores verticales, valores en display */
+
+.ase-hero-stats {
+  display: flex;
+  margin-top: 3rem;
+}
+
+.ase-hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0 2.2rem;
+  border-left: 1px solid var(--hairline);
+}
+
+.ase-hero-stat:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
+.ase-hero-stat-value {
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  background: linear-gradient(120deg, #ffffff 30%, var(--premium-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ase-hero-stat-label {
+  max-width: 190px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* ── Franja de pilares ────────────────────────────────────── */
+
+.ase-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0 0 4.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  background: rgba(13, 31, 60, 0.45);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.ase-pillar {
+  position: relative;
+  padding: 1.5rem 1.5rem 1.4rem;
+  border-left: 1px solid var(--hairline);
+  transition: background 0.3s ease;
+}
+
+.ase-pillar:first-child {
+  border-left: none;
+}
+
+.ase-pillar:hover {
+  background: rgba(230, 180, 85, 0.05);
+}
+
+.ase-pillar-num {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: rgba(230, 180, 85, 0.65);
+}
+
+.ase-pillar-num::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 1px;
+  margin-top: 0.5rem;
+  background: rgba(230, 180, 85, 0.35);
+}
+
+.ase-pillar-title {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ase-pillar-desc {
+  display: block;
+  font-size: 0.8rem;
+  line-height: 1.52;
+  color: var(--text-muted);
+}
+
+/* ── Cabecera de sección numerada ─────────────────────────── */
+
+.ase-sechead {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.3rem;
+  margin-bottom: 2.6rem;
+}
+
+.ase-sechead-num {
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+  padding: 0.34rem 0.72rem;
+  border: 1px solid rgba(230, 180, 85, 0.3);
+  border-radius: 999px;
+  background: rgba(230, 180, 85, 0.07);
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--premium-gold);
+}
+
+.ase-sechead-text {
+  min-width: 0;
+}
+
+.ase-sechead-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.ase-sechead-sub {
+  max-width: 560px;
+  margin: 0.55rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Nota lateral en mono, alineada a la derecha */
+.ase-sechead-side {
+  margin-left: auto;
+  padding-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+/* ── Planes ───────────────────────────────────────────────── */
+
+.ase-plans {
+  padding: 0 0 4rem;
+}
+
+.ase-plan-grid {
+  display: grid;
+  /* Asimétrico: el programa completo pesa más en el layout. */
+  grid-template-columns: 1fr 1.16fr;
+  gap: 1.5rem;
+  /* Sin align-items: ambas tarjetas se estiran a la altura de la más alta,
+     y el margin-top:auto del CTA alinea los botones abajo. */
+}
+
+.ase-plan {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 2.1rem 1.9rem 2rem;
+  border: 1px solid color-mix(in srgb, var(--plan-color) 24%, transparent);
+  border-radius: 22px;
+  background:
+    radial-gradient(130% 90% at 85% -10%, color-mix(in srgb, var(--plan-color) 13%, transparent) 0%, transparent 55%),
+    linear-gradient(168deg, color-mix(in srgb, var(--plan-color) 5%, var(--bg-card)) 0%, var(--bg-card-alt) 58%);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.ase-plan:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--plan-color) 44%, transparent);
+  box-shadow:
+    var(--card-shadow),
+    0 26px 60px -30px color-mix(in srgb, var(--plan-color) 60%, transparent);
+}
+
+/* Línea de acento superior — la firma de cada tarjeta */
+.ase-plan-topbar {
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--plan-color), transparent);
+  box-shadow: 0 0 18px 1px color-mix(in srgb, var(--plan-color) 55%, transparent);
+}
+
+/* Borde cónico girando en el plan destacado. Se dibuja en un ::before
+   enmascarado al perímetro, sobre el borde estático que hace de fallback
+   en navegadores sin @property. */
+.ase-plan--featured::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--aseRot),
+    transparent 0deg,
+    color-mix(in srgb, var(--plan-color) 90%, transparent) 55deg,
+    rgba(255, 209, 102, 0.9) 100deg,
+    transparent 190deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: ase-rot 5.5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes ase-rot {
+  to { --aseRot: 360deg; }
+}
+
+.ase-plan--featured {
+  border-color: color-mix(in srgb, var(--plan-color) 40%, transparent);
+  box-shadow:
+    var(--card-shadow),
+    0 0 0 1px color-mix(in srgb, var(--plan-color) 12%, transparent),
+    0 28px 70px -34px color-mix(in srgb, var(--plan-color) 60%, transparent);
+}
+
+.ase-plan-flag {
+  position: absolute;
+  top: -0.02rem;
+  right: 1.7rem;
+  padding: 0.34rem 0.85rem;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(135deg, var(--plan-color), #f5c842);
+  color: #0a1628;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--plan-color) 80%, transparent);
+}
+
+/* Glifo del plan en marca de agua, esquina superior derecha */
+.ase-plan-watermark {
+  position: absolute;
+  top: -16px;
+  right: -14px;
+  z-index: 0;
+  color: var(--plan-color);
+  opacity: 0.08;
+  transform: rotate(-8deg);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ase-plan:hover .ase-plan-watermark {
+  opacity: 0.13;
+  transform: rotate(-4deg) scale(1.04);
+}
+
+/* Cabecera tipo expediente, cerrada por perforación de ticket */
+
+.ase-plan-head {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 1.3rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--plan-color) 26%, transparent);
+}
+
+.ase-plan-index {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--plan-color);
+}
+
+.ase-plan-index::after {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--plan-color) 55%, transparent), transparent);
+}
+
+.ase-plan-name {
+  margin: 0.7rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.ase-plan-tagline {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--plan-color) 72%, var(--text-muted));
+}
+
+/* Ficha técnica: chips monoespaciados, estética terminal */
+
+.ase-plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+.ase-plan-meta span {
+  padding: 0.3rem 0.62rem;
+  border: 1px solid color-mix(in srgb, var(--plan-color) 26%, transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--plan-color) 6%, transparent);
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--plan-color) 72%, var(--text-muted));
+}
+
+/* Precio-placa: la cifra es la protagonista de la tarjeta */
+
+.ase-plan-price {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1.3rem;
+  padding: 1.15rem 1.3rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--plan-color) 20%, transparent);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--plan-color) 12%, transparent) 0%, transparent 55%),
+    rgba(6, 15, 31, 0.5);
+}
+
+/* Halo detrás de la cifra */
+.ase-plan-price-halo {
+  position: absolute;
+  top: -60%;
+  left: -8%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--plan-color) 22%, transparent) 0%, transparent 65%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+/* Destello diagonal que barre la placa al pasar por la tarjeta */
+.ase-plan-price::after {
+  content: "";
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: -70%;
+  width: 45%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+
+.ase-plan:hover .ase-plan-price::after {
+  left: 135%;
+}
+
+.ase-plan-price-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  line-height: 1;
+}
+
+.ase-plan-price-value {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.ase-plan-price-amount {
+  font-family: var(--font-display);
+  font-size: clamp(2.7rem, 4.6vw, 3.4rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  background: linear-gradient(
+    105deg,
+    #ffffff 12%,
+    color-mix(in srgb, var(--plan-color) 55%, #ffffff) 55%,
+    var(--plan-color) 96%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ase-plan-price-currency {
+  margin-top: 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--plan-color) 75%, #ffffff);
+}
+
+/* Precio anterior: a la derecha de la cifra, para no alterar la altura
+   de la placa. Tachón rojo diagonal + píldora con el % de ahorro. */
+.ase-plan-price-was {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.32rem;
+}
+
+.ase-plan-price-old-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ase-plan-price-old {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: color-mix(in srgb, var(--text-muted) 82%, #ffffff);
+}
+
+/* El tachón: trazo rojo inclinado con brillo, en vez del line-through plano */
+.ase-plan-price-old::after {
+  content: "";
+  position: absolute;
+  left: -9%;
+  right: -9%;
+  top: 52%;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff5f5f, #ff8f7a);
+  transform: rotate(-7deg);
+  box-shadow: 0 0 10px rgba(255, 95, 95, 0.55);
+}
+
+.ase-plan-price-save {
+  padding: 0.24rem 0.6rem;
+  border: 1px solid rgba(255, 107, 107, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 107, 107, 0.13);
+  color: #ff8a8a;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ase-plan-price-note {
+  position: relative;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  color: var(--text-muted);
+}
+
+.ase-plan-summary {
+  margin: 1.25rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.62;
+  color: var(--text-secondary);
+}
+
+/* Etiqueta de zona: "INCLUYE ────", en el eyebrow propio del sitio */
+.ase-plan-zone,
+.ase-plan-audience-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--plan-color) 78%, var(--text-muted));
+}
+
+.ase-plan-zone::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--plan-color) 28%, transparent), transparent);
+}
+
+.ase-plan-zone {
+  margin: 1.5rem 0 0.25rem;
+}
+
+.ase-plan-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hoja de especificaciones: índice mono + concepto + check al margen */
+.ase-plan-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0.3rem;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.05);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  transition: background 0.2s ease;
+}
+
+.ase-plan-item:last-child {
+  border-bottom: none;
+}
+
+.ase-plan-item:hover {
+  background: color-mix(in srgb, var(--plan-color) 6%, transparent);
+}
+
+.ase-plan-item-num {
+  flex-shrink: 0;
+  min-width: 20px;
+  margin-top: 0.18rem;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  color: color-mix(in srgb, var(--plan-color) 78%, var(--text-muted));
+}
+
+.ase-plan-item > span {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Check compacto al margen derecho, con anillo del color del plan */
+.ase-plan-item svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 0.12rem;
+  padding: 3px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--plan-color) 14%, transparent);
+  color: var(--plan-color);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--plan-color) 38%, transparent);
+}
+
+/* "Para quién es": apunte editorial con filete lateral, sin caja */
+.ase-plan-audience {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* El margen inferior garantiza la separación mínima con el CTA cuando la
+     tarjeta no tiene espacio sobrante que repartir. */
+  margin: 1.6rem 0 1.6rem;
+  padding: 0.2rem 0 0.2rem 1.05rem;
+  border-left: 2px solid color-mix(in srgb, var(--plan-color) 55%, transparent);
+}
+
+.ase-plan-audience p {
+  margin: 0;
+  font-size: 0.83rem;
+  line-height: 1.58;
+  color: var(--text-muted);
+}
+
+/* CTA en el lenguaje canónico del sitio (mismo que /premium): naranja→ámbar,
+   texto blanco, peso 800, glow potente y destello que barre en bucle. */
+.ase-plan-cta {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  /* auto empuja el CTA al fondo de la tarjeta: con las dos estiradas a la
+     misma altura, los dos botones quedan a la misma línea. */
+  margin-top: auto;
+  padding: 1.08rem 1.3rem;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 0 1px rgba(255, 154, 0, 0.35),
+    0 10px 30px -10px rgba(255, 107, 43, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+/* Icono del CTA en placa translúcida sobre el degradado */
+.ase-plan-cta-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.ase-plan-cta-arrow {
+  transition: transform 0.25s ease;
+}
+
+.ase-plan-cta:hover .ase-plan-cta-arrow {
+  transform: translateX(4px);
+}
+
+.ase-plan-cta:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Destello en bucle: el botón está vivo aunque nadie lo toque */
+.ase-plan-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -80%;
+  width: 45%;
+  transform: skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: ase-shine 3.4s ease-in-out infinite;
+}
+
+@keyframes ase-shine {
+  0% { left: -80%; }
+  55% { left: 135%; }
+  100% { left: 135%; }
+}
+
+.ase-plan-cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.07);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(255, 107, 43, 0.22),
+    0 16px 42px -12px rgba(255, 107, 43, 0.85);
+}
+
+/* Instrucción del DM como burbuja de chat — es literalmente lo que el
+   cliente va a escribir en Instagram */
+.ase-plan-dm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.95rem 0 0;
+}
+
+.ase-plan-dm-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ase-plan-dm-bubble {
+  max-width: 100%;
+  padding: 0.58rem 0.95rem;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 14px 14px 14px 4px;
+  background: rgba(240, 244, 255, 0.05);
+  font-size: 0.78rem;
+  font-style: italic;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* ── Cómo se reserva: línea de tiempo ─────────────────────── */
+
+.ase-how {
+  padding: 0 0 4rem;
+}
+
+.ase-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 0.6rem;
+}
+
+/* Conector horizontal que une los nodos */
+.ase-steps::before {
+  content: "";
+  position: absolute;
+  top: 21px;
+  left: 4%;
+  right: 4%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 107, 43, 0.45) 18%,
+    rgba(255, 107, 43, 0.45) 82%,
+    transparent
+  );
+}
+
+.ase-step {
+  position: relative;
+  padding-top: 3.6rem;
+}
+
+/* Nodo sobre la línea */
+.ase-step-node {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 107, 43, 0.4);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 107, 43, 0.22), transparent 65%),
+    var(--bg-dark);
+  color: var(--accent-orange);
+  box-shadow:
+    0 0 0 5px var(--bg-dark),
+    0 0 22px -4px rgba(255, 107, 43, 0.5);
+}
+
+.ase-step-index {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 107, 43, 0.8);
+}
+
+.ase-step-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ase-step-desc {
+  margin: 0;
+  max-width: 300px;
+  font-size: 0.85rem;
+  line-height: 1.58;
+  color: var(--text-muted);
+}
+
+.ase-how-note {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 2.4rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.ase-how-note svg {
+  flex-shrink: 0;
+  color: var(--free-green);
+}
+
+/* ── FAQ ──────────────────────────────────────────────────── */
+
+.ase-faq {
+  padding: 0 0 4rem;
+}
+
+.ase-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-width: 820px;
+}
+
+.ase-faq-item {
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: rgba(13, 31, 60, 0.5);
+  transition: border-color 0.25s ease;
+}
+
+.ase-faq-item[open] {
+  border-color: rgba(230, 180, 85, 0.3);
+}
+
+.ase-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.05rem 1.3rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ase-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Indicador +/× */
+.ase-faq-item summary::after {
+  content: "+";
+  flex-shrink: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--premium-gold);
+  transition: transform 0.25s ease;
+}
+
+.ase-faq-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.ase-faq-item p {
+  margin: 0;
+  padding: 0 1.3rem 1.15rem;
+  font-size: 0.87rem;
+  line-height: 1.62;
+  color: var(--text-muted);
+}
+
+/* ── CTA final ────────────────────────────────────────────── */
+
+.ase-final {
+  position: relative;
+  overflow: hidden;
+  padding: 3.8rem 2rem;
+  border: 1px solid rgba(255, 107, 43, 0.28);
+  border-radius: 26px;
+  background:
+    radial-gradient(110% 130% at 50% -20%, rgba(255, 107, 43, 0.14) 0%, transparent 60%),
+    linear-gradient(160deg, rgba(255, 107, 43, 0.07) 0%, var(--bg-card-alt) 55%);
+  text-align: center;
+}
+
+.ase-final-glow {
+  position: absolute;
+  top: -55%;
+  left: 50%;
+  width: 520px;
+  height: 520px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 107, 43, 0.2) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+/* Marca de agua tipográfica gigante */
+.ase-final-watermark {
+  position: absolute;
+  bottom: -3.2rem;
+  right: -0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(8rem, 20vw, 13rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  user-select: none;
+}
+
+.ase-final-title,
+.ase-final-sub,
+.ase-final-cta,
+.ase-final-sign {
+  position: relative;
+  z-index: 1;
+}
+
+.ase-final-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 3.4vw, 2.15rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.ase-final-sub {
+  max-width: 520px;
+  margin: 1rem auto 0;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.ase-final-cta {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.9rem;
+  padding: 1.08rem 2.2rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 0 1px rgba(255, 154, 0, 0.35),
+    0 16px 38px -16px rgba(255, 107, 43, 0.8);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ase-final-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -80%;
+  width: 45%;
+  transform: skewX(-20deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: ase-shine 3.4s ease-in-out infinite;
+}
+
+.ase-final-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 4px rgba(255, 107, 43, 0.22),
+    0 20px 46px -16px rgba(255, 107, 43, 0.9);
+}
+
+/* Firma con filetes dorados a los lados */
+.ase-final-sign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  margin: 1.4rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.ase-final-sign::before,
+.ase-final-sign::after {
+  content: "";
+  width: 30px;
+  height: 1px;
+  background: rgba(230, 180, 85, 0.4);
+}
+
+/* ── Revelado al hacer scroll ─────────────────────────────────
+   Solo donde animation-timeline existe (Chromium). En el resto
+   de navegadores no se aplica nada: contenido visible siempre. */
+
+@supports (animation-timeline: view()) {
+  .ase-pillar,
+  .ase-plan,
+  .ase-step,
+  .ase-faq-item,
+  .ase-final {
+    animation: ase-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 55%;
+  }
+}
+
+@keyframes ase-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Movimiento reducido ──────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .ase-orb,
+  .ase-eyebrow-dot,
+  .ase-marquee-track,
+  .ase-plan--featured::before,
+  .ase-plan-cta::after,
+  .ase-final-cta::after {
+    animation: none;
+  }
+
+  .ase-pillar,
+  .ase-plan,
+  .ase-step,
+  .ase-faq-item,
+  .ase-final {
+    animation: none;
+  }
+
+  .ase-plan:hover,
+  .ase-pillar:hover,
+  .ase-plan-cta:hover,
+  .ase-final-cta:hover {
+    transform: none;
+  }
+}
+
+/* ── Tablet ───────────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+  .ase-pillars {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* En la rejilla 2x2 la segunda fila necesita separador superior */
+  .ase-pillar:nth-child(3) {
+    border-left: none;
+  }
+
+  .ase-pillar:nth-child(3),
+  .ase-pillar:nth-child(4) {
+    border-top: 1px solid var(--hairline);
+  }
+
+  .ase-sechead-side {
+    display: none;
+  }
+}
+
+/* ── Móvil ────────────────────────────────────────────────── */
+
+@media (max-width: 860px) {
+  .ase-plan-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ase-main {
+    padding: 0 1.1rem 3.5rem;
+  }
+
+  .ase-hero {
+    padding: 3.2rem 0 3rem;
+  }
+
+  .ase-hero-watermark {
+    top: auto;
+    bottom: -1rem;
+    right: -0.8rem;
+    font-size: 8.5rem;
+  }
+
+  .ase-hero-stats {
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .ase-hero-stat {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.9rem;
+    padding: 0;
+    border-left: none;
+  }
+
+  .ase-hero-stat-value {
+    min-width: 64px;
+    font-size: 1.7rem;
+  }
+
+  .ase-hero-stat-label {
+    max-width: none;
+  }
+
+  .ase-pillars {
+    margin-bottom: 3.2rem;
+  }
+
+  .ase-sechead {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .ase-plan {
+    padding: 1.8rem 1.35rem;
+  }
+
+  .ase-plan-name {
+    font-size: 1.32rem;
+  }
+
+  .ase-plan-watermark svg {
+    width: 110px;
+    height: 110px;
+  }
+
+  .ase-plan-price-amount {
+    font-size: 2.5rem;
+  }
+
+  .ase-plan-flag {
+    right: 1.1rem;
+  }
+
+  /* Timeline en vertical: línea a la izquierda, contenido a la derecha */
+  .ase-steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .ase-steps::before {
+    top: 0;
+    bottom: 0;
+    left: 21px;
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: linear-gradient(
+      180deg,
+      transparent,
+      rgba(255, 107, 43, 0.45) 12%,
+      rgba(255, 107, 43, 0.45) 88%,
+      transparent
+    );
+  }
+
+  .ase-step {
+    padding-top: 0;
+    padding-left: 3.6rem;
+  }
+
+  .ase-step-desc {
+    max-width: none;
+  }
+
+  .ase-final {
+    padding: 2.8rem 1.3rem;
+  }
+
+  .ase-final-watermark {
+    bottom: -1.6rem;
+    right: -0.4rem;
+  }
+}
+
+@media (max-width: 460px) {
+  .ase-pillars {
+    grid-template-columns: 1fr;
+  }
+
+  .ase-pillar {
+    border-left: none;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .ase-pillar:first-child {
+    border-top: none;
+  }
+}

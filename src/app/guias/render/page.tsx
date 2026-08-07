@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
+import AsesoriaBand from "@/components/AsesoriaBand";
 import SiteNav from "@/components/SiteNav";
 import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
@@ -469,6 +470,9 @@ export default async function RenderPage() {
           </div>
         </div>
       </section>
+
+      {/* Asesoria 1:1 */}
+      <AsesoriaBand variant="guide" />
 
       <Footer />
     </div>

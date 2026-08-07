@@ -5,8 +5,9 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import PremiumFeatureGrid from "@/components/PremiumFeatureGrid";
 import PremiumStickyBar from "@/components/PremiumStickyBar";
+import AsesoriaBand from "@/components/AsesoriaBand";
 import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Star, Lock, Sparkles } from "lucide-react";
-import { DefiLlamaGlyph, CoinGeckoGlyph, MexcGlyph } from "@/components/BrandMarks";
+import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 import "./premium.css";
 
 export const metadata: Metadata = {
@@ -156,13 +157,6 @@ export default async function PremiumPage() {
                     <span>Precios y datos de mercado en tiempo real</span>
                   </div>
                 </div>
-                <div className="prem-partner prem-partner--mx">
-                  <span className="prem-partner-mark"><MexcGlyph size={20} /></span>
-                  <div className="prem-partner-text">
-                    <strong>MEXC</strong>
-                    <span>Exchange colaborador de la academia</span>
-                  </div>
-                </div>
               </div>
             </section>
 
@@ -305,6 +299,9 @@ export default async function PremiumPage() {
                 <ShieldCheck size={13} aria-hidden="true" /> Si no es para ti, cancelas en 1 clic. Sin preguntas.
               </p>
             </section>
+
+            {/* ── Asesoría 1:1 — el escalón por encima de la suscripción ── */}
+            <AsesoriaBand variant="premium" />
           </div>
         )}
       </main>

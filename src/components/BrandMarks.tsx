@@ -4,7 +4,7 @@
 // paths en otros sitios: importa el glyph desde aquí.
 //
 // Cada glyph está pensado para ir sobre un "chip" del color de marca:
-//   DefiLlama → azul  #2172E5   ·  CoinGecko → verde #8bc53f   ·  MEXC → azul gradiente
+//   DefiLlama → azul  #2172E5   ·  CoinGecko → verde #8bc53f
 
 export function DefiLlamaGlyph({ size = 14 }: { size?: number }) {
   return (
@@ -27,21 +27,6 @@ export function CoinGeckoGlyph({ size = 14 }: { size?: number }) {
       <circle cx="14.9" cy="9.6" r="2.15" fill="#3f5c18" />
       <circle cx="9.1" cy="9.6" r="0.8" fill="#fff" />
       <circle cx="14.9" cy="9.6" r="0.8" fill="#fff" />
-    </svg>
-  );
-}
-
-export function MexcGlyph({ size = 14 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-      <path
-        d="M6 17.5 L6 7 L12 13.5 L18 7 L18 17.5"
-        fill="none"
-        stroke="#fff"
-        strokeWidth="2.6"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-      />
     </svg>
   );
 }
