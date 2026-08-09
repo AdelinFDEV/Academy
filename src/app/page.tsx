@@ -60,10 +60,11 @@ export default async function HomePage() {
 
   const allPosts = posts ?? [];
 
-  // The feed only ever renders the hero post + up to 3 posts per tab.
+  // The feed only ever renders the hero post + up to 5 posts per tab
+  // (desktop shows 5; mobile hides from the 3rd onward via CSS).
   // Only those posts get sent to the client and have their metrics queried —
   // keeps payload and DB work flat as the post count grows.
-  const FEED_TAB_MAX = 3;
+  const FEED_TAB_MAX = 5;
   const heroPost = allPosts.find((p) => p.is_featured);
   const restPosts = heroPost ? allPosts.filter((p) => p.id !== heroPost.id) : allPosts;
   const feedIds = new Set<string>();

@@ -242,8 +242,8 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero =
   // Remove the mainPost from the regular list to avoid duplication
   const regularPosts = mainPost ? posts.filter(p => p.id !== mainPost.id) : posts;
 
-  // Home shows up to 3 on desktop, 2 on mobile (3rd hidden via CSS)
-  const MAX_VISIBLE = 3;
+  // Home shows up to 5 on desktop, 2 on mobile (3rd onward hidden via CSS)
+  const MAX_VISIBLE = 5;
   const visible = regularPosts.slice(0, MAX_VISIBLE);
 
   return (
@@ -261,7 +261,7 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero =
           </div>
         ) : (
           visible.map((post, i) => (
-            <div key={post.id} className={i === 2 ? "feed-desktop-only" : undefined}>
+            <div key={post.id} className={i >= 2 ? "feed-desktop-only" : undefined}>
               <FeedPost post={post} isLoggedIn={isLoggedIn} />
             </div>
           ))
