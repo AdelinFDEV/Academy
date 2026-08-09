@@ -3,17 +3,27 @@
 // How it works:
 //   1. Resolve the channel ID from the @handle (or use YOUTUBE_CHANNEL_ID env).
 //   2. Read the public RSS feed of uploads (no key required).
-//   3. The RSS feed has no duration, so we detect Shorts by probing the
-//      /shorts/<id> URL — a real Short serves 200, a normal video redirects.
-//   4. Keep only non-Shorts, newest first.
+//   3. The RSS feed has no duration, so we read it from the watch page
+//      ("lengthSeconds" in the embedded player JSON) and drop anything under
+//      MIN_DURATION_SECONDS — that excludes Shorts AND short normal videos.
+//      (The old /shorts/<id> probe is gone: YouTube now answers 302 for
+//      Shorts and normal videos alike, so it stopped detecting anything.)
+//   4. A video whose duration can't be read is NOT shown — the requirement is
+//      "no short videos ever"; durations are cached a day, so a transient
+//      fetch failure only hides a video until the next revalidation.
 //
 // Results are cached/revalidated, so a new upload appears automatically.
 
 const REVALIDATE_SECONDS = 1800; // 30 min
+const MIN_DURATION_SECONDS = 300; // vídeos de menos de 5 min no se muestran en la home
 const HANDLE = process.env.YOUTUBE_HANDLE || "AdelinBTC";
 // youtube.com no es una API pensada para esto — si tarda, no debe bloquear
 // la home entera. Cortamos cada llamada individual a los 2.5s.
 const FETCH_TIMEOUT_MS = 2500;
+// Las páginas /watch pesan ~1.2MB: con el timeout corto y varias en paralelo
+// se abortaban todas. Van con su propio margen y en tandas pequeñas.
+const WATCH_FETCH_TIMEOUT_MS = 8000;
+const WATCH_CONCURRENCY = 4;
 
 export interface YouTubeVideo {
   id: string;
@@ -41,19 +51,20 @@ async function resolveChannelId(): Promise<string | null> {
   }
 }
 
-async function isShort(id: string): Promise<boolean> {
+// La duración de un vídeo publicado no cambia — cache larga (1 día) para que
+// los misses solo cuesten una vez por vídeo nuevo.
+async function getDurationSeconds(id: string): Promise<number | null> {
   try {
-    const res = await fetch(`https://www.youtube.com/shorts/${id}`, {
-      method: "HEAD",
-      redirect: "manual",
-      next: { revalidate: REVALIDATE_SECONDS },
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    const res = await fetch(`https://www.youtube.com/watch?v=${id}`, {
+      next: { revalidate: 86400 },
+      headers: { "Accept-Language": "es" },
+      signal: AbortSignal.timeout(WATCH_FETCH_TIMEOUT_MS),
     });
-    // A real Short responds 200 on the /shorts/ URL.
-    // A normal video redirects (3xx) to the /watch page.
-    return res.status === 200;
+    const html = await res.text();
+    const m = html.match(/"lengthSeconds":"(\d+)"/);
+    return m ? parseInt(m[1], 10) : null;
   } catch {
-    return false; // on error, don't drop the video
+    return null;
   }
 }
 
@@ -87,11 +98,20 @@ export async function getLatestVideos(limit = 3): Promise<YouTubeVideo[]> {
       };
     }).filter((v) => v.id);
 
-    // Filter out Shorts, newest first, take the requested amount.
-    // Probe all candidates in parallel — sequential HEAD requests to
-    // youtube.com were blocking the home page render on cache misses.
-    const shortFlags = await Promise.all(parsed.map((v) => isShort(v.id)));
-    return parsed.filter((_, i) => !shortFlags[i]).slice(0, limit);
+    // Keep only videos of MIN_DURATION_SECONDS or more, newest first.
+    // Tandas pequeñas con corte anticipado: en cuanto hay `limit` vídeos
+    // largos se deja de pedir a youtube.com. El orden (más nuevo primero)
+    // se conserva porque las tandas recorren `parsed` en orden.
+    const result: YouTubeVideo[] = [];
+    for (let i = 0; i < parsed.length && result.length < limit; i += WATCH_CONCURRENCY) {
+      const chunk = parsed.slice(i, i + WATCH_CONCURRENCY);
+      const durations = await Promise.all(chunk.map((v) => getDurationSeconds(v.id)));
+      for (let j = 0; j < chunk.length && result.length < limit; j++) {
+        const d = durations[j];
+        if (d != null && d >= MIN_DURATION_SECONDS) result.push(chunk[j]);
+      }
+    }
+    return result;
   } catch {
     return [];
   }

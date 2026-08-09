@@ -162,7 +162,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <HeroSpotlight isLoggedIn={!!user} isPremium={isPremium} latestGuide={latestGuide} />
+          <HeroSpotlight isLoggedIn={!!user} isPremium={isPremium} guidesCount={GUIDES.length} />
 
           {!user && (
             <div className="hero-trust hero-anim hero-anim-4">

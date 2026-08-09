@@ -13,7 +13,7 @@ import { ASESORIA_PLANS } from "@/lib/asesoria";
 interface Props {
   isLoggedIn: boolean;
   isPremium: boolean;
-  latestGuide: { slug: string; shortTitle: string };
+  guidesCount: number;
 }
 
 function DefiLlamaMark() {
@@ -24,7 +24,8 @@ function DefiLlamaMark() {
   );
 }
 
-// El arsenal: las 6 herramientas del showcase. `viz` decide qué microvisual
+// El arsenal: showcase de la academia (la etiqueta cuenta 8 herramientas
+// reales; aquí se enseñan las 6 destacadas). `viz` decide qué microvisual
 // de producto pinta la tarjeta — enseñar la herramienta vende más que
 // describirla.
 const FEATURES = [
@@ -271,7 +272,7 @@ function trackSpot(e: React.MouseEvent<HTMLElement>) {
   el.style.setProperty("--my", `${e.clientY - r.top}px`);
 }
 
-export default function HeroSpotlight({ isLoggedIn, isPremium, latestGuide }: Props) {
+export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Props) {
   const reduceMotion = useReducedMotion();
 
   const cardVariants = {
@@ -350,7 +351,7 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, latestGuide }: Pr
       >
         <span className="hero-arsenal-eyebrow">Arsenal de la academia</span>
         <span className="hero-arsenal-rule" aria-hidden="true" />
-        <span className="hero-arsenal-count">06 herramientas</span>
+        <span className="hero-arsenal-count">08 herramientas</span>
       </motion.div>
 
       {/* ── Mosaico asimétrico de herramientas ── */}
@@ -457,16 +458,16 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, latestGuide }: Pr
               </span>
               <ArrowRight size={18} strokeWidth={2.5} className="hero-dock-arrow" aria-hidden="true" />
             </Link>
-            <Link href={`/guias/${latestGuide.slug}`} className="hero-dock-guide">
+            <Link href="/guias" className="hero-dock-guide">
               <span className="hero-dock-guide-icon" aria-hidden="true">
                 <BookOpenText size={17} strokeWidth={2} />
               </span>
               <span className="hero-dock-guide-text">
-                <span className="hero-dock-guide-eyebrow">Última guía publicada</span>
-                <strong>{latestGuide.shortTitle}</strong>
+                <span className="hero-dock-guide-eyebrow">Guías de la academia</span>
+                <strong>Explora las {guidesCount} guías publicadas</strong>
               </span>
               <span className="hero-dock-guide-cta">
-                Leer <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
+                Ver <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
               </span>
             </Link>
           </div>
