@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import SiteNav from "@/components/SiteNav";
+import type { PostCategoryRef } from "@/lib/types";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -104,8 +105,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                   </div>
                   <div className="post-card-body">
                     <div className="post-card-meta">
-                      {(post.categories as any)?.name && (
-                        <span className="post-category">{(post.categories as any).name}</span>
+                      {(post.categories as PostCategoryRef | null)?.name && (
+                        <span className="post-category">{(post.categories as PostCategoryRef).name}</span>
                       )}
                       <span className="post-date">{formatDate(post.created_at)}</span>
                     </div>

@@ -4,7 +4,6 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from "recharts";
-import { Token } from "../tokenData";
 
 interface Allocation {
   name: string;

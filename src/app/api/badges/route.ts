@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import type { PostCategoryRef } from "@/lib/types";
 
 // Computes which badges the user has earned based on current stats
 function computeEarned(stats: {
@@ -47,7 +48,7 @@ export async function POST() {
   const readCount    = readIds.size;
   const savedCount   = userPosts.filter((up) => up.saved).length;
   const readPosts    = allPosts.filter((p) => readIds.has(p.id));
-  const categoriesRead = new Set(readPosts.map((p) => (p.categories as any)?.slug).filter(Boolean)).size;
+  const categoriesRead = new Set(readPosts.map((p) => (p.categories as PostCategoryRef | null)?.slug).filter(Boolean)).size;
   const maxStreak    = profile?.max_streak ?? 0;
 
   const earnedNow = computeEarned({ readCount, savedCount, categoriesRead, maxStreak });

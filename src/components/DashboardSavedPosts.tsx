@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Bookmark, X } from "lucide-react";
+import { X } from "lucide-react";
 import Icon from "@/components/Icon";
 
 type SavedPost = {

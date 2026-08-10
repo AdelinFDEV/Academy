@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lock, Unlock, AlertTriangle, ShieldAlert } from "lucide-react";
+import { Lock, Unlock, ShieldAlert } from "lucide-react";
 
 type AttackState = "idle" | "classic" | "quantum" | "cracked";
 

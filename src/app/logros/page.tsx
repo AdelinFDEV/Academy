@@ -3,7 +3,6 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import Badges from "@/components/Badges";
 import { BADGE_DEFS } from "@/components/Badges";
 import SiteNav from "@/components/SiteNav";
 

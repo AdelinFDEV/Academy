@@ -12,6 +12,7 @@ import AsesoriaBand from "@/components/AsesoriaBand";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
+import type { PostCategoryRef } from "@/lib/types";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -298,8 +299,8 @@ export default async function DashboardPage() {
                 {post.is_premium && <span className="dash-mini-badge">PREMIUM</span>}
               </div>
               <div className="dash-continue-body">
-                {(post.categories as any)?.name && (
-                  <span className="dash-continue-cat">{(post.categories as any).name}</span>
+                {(post.categories as PostCategoryRef | null)?.name && (
+                  <span className="dash-continue-cat">{(post.categories as PostCategoryRef).name}</span>
                 )}
                 <h3 className="dash-continue-title">{post.title}</h3>
               </div>
@@ -326,8 +327,8 @@ export default async function DashboardPage() {
                   {post.is_premium && <span className="dash-mini-badge">PREMIUM</span>}
                 </div>
                 <div className="dash-continue-body">
-                  {(post.categories as any)?.name && (
-                    <span className="dash-continue-cat">{(post.categories as any).name}</span>
+                  {(post.categories as PostCategoryRef | null)?.name && (
+                    <span className="dash-continue-cat">{(post.categories as PostCategoryRef).name}</span>
                   )}
                   <h3 className="dash-continue-title">{post.title}</h3>
                 </div>
@@ -356,7 +357,7 @@ export default async function DashboardPage() {
             cover_image: p.cover_image,
             is_premium: p.is_premium,
             isRead: readIds.has(p.id),
-            categoryName: (p.categories as any)?.name ?? null,
+            categoryName: (p.categories as PostCategoryRef | null)?.name ?? null,
           }))}
         />
       </div>

@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import { GUIDES } from "@/lib/guides";
+import type { AdminComment } from "@/lib/types";
 
 // ── Helpers ──────────────────────────────────────────────
 function buildDayBuckets(n: number) {
@@ -61,7 +62,9 @@ function LineChart({ data }: { data: { count: number }[] }) {
 
 // ── SVG multi-line chart (community interaction) ──────────
 interface Series { label: string; color: string; data: { count: number }[] }
-function MultiLineChart({ series, labels }: { series: Series[]; labels: string[] }) {
+// `labels` se recibe por compatibilidad con las llamadas existentes, pero este
+// grafico no rotula el eje X: no se desestructura para no dejar una variable muerta.
+function MultiLineChart({ series }: { series: Series[]; labels: string[] }) {
   const W = 400, H = 80, PAD_X = 2, PAD_Y = 8;
   const allCounts = series.flatMap((s) => s.data.map((d) => d.count));
   const max = Math.max(...allCounts, 1);
@@ -475,7 +478,7 @@ export default async function AdminPage() {
               </div>
             </div>
           ))}
-          {(recentComments ?? []).slice(0, 3).map((c: any) => (
+          {((recentComments ?? []) as unknown as AdminComment[]).slice(0, 3).map((c) => (
             <div key={c.id} className="admin-activity-item">
               <div className={`admin-activity-dot ${c.approved ? "comment" : "comment-pending"}`} />
               <div className="admin-activity-body">

@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
+import type { PostCategoryRef } from "@/lib/types";
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("es-ES", {
@@ -13,7 +14,7 @@ function formatDate(date: string) {
   });
 }
 
-interface Post {
+export interface Post {
   id: string;
   title: string;
   slug: string;
@@ -44,7 +45,7 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
     return posts.filter((p) => {
       const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = activeCategory
-        ? (p.categories as any)?.slug === activeCategory
+        ? (p.categories as PostCategoryRef | null)?.slug === activeCategory
         : true;
       return matchesSearch && matchesCategory;
     });
@@ -80,7 +81,7 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
             <span className="articulos-cat-count">{posts.length}</span>
           </button>
           {categories.map((cat) => {
-            const count = posts.filter((p) => (p.categories as any)?.slug === cat.slug).length;
+            const count = posts.filter((p) => (p.categories as PostCategoryRef | null)?.slug === cat.slug).length;
             return (
               <button
                 key={cat.slug}
@@ -129,8 +130,8 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
                     </div>
                     <div className="post-card-body">
                       <div className="post-card-meta">
-                        {(post.categories as any)?.name && (
-                          <span className="post-category">{(post.categories as any).name}</span>
+                        {(post.categories as PostCategoryRef | null)?.name && (
+                          <span className="post-category">{(post.categories as PostCategoryRef).name}</span>
                         )}
                         <span className="post-date">{formatDate(post.created_at)}</span>
                       </div>

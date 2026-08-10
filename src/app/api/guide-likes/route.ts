@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       : Promise.resolve({ data: null }),
   ]);
 
-  return NextResponse.json({ count: count ?? 0, liked: !!(userRow as any).data });
+  return NextResponse.json({ count: count ?? 0, liked: !!(userRow as { data?: unknown }).data });
 }
 
 export async function POST(request: Request) {

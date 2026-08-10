@@ -6,7 +6,7 @@ import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Star, Troph
 import { GUIDES } from "@/lib/guides";
 
 function PremiumCrownIcon({ size = 24 }: { size?: number }) {
-  const s = size / 24;
+  // El escalado lo resuelve el viewBox, no hace falta factor manual.
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       {/* Outer ring */}
@@ -297,7 +297,7 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
   const [maxStreak, setMaxStreak] = useState(initialMax);
   const [featured, setFeatured]   = useState(initialFeatured);
   const [earned, setEarned]       = useState<Set<string>>(new Set(initialEarned));
-  const [queue, setQueue]         = useState<BadgeDef[]>([]);
+  const [, setQueue]              = useState<BadgeDef[]>([]);
   const [current, setCurrent]     = useState<BadgeDef | null>(null);
 
   const nextTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);

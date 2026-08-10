@@ -17,6 +17,10 @@ import { pnlStr } from "@/components/trading/tjFormat";
 type Direction = "long" | "short";
 type TradeResult = "win" | "loss" | "breakeven";
 
+/** Mensaje legible de cualquier cosa que se lance, no solo de un Error. */
+const errorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "Ha ocurrido un error inesperado";
+
 interface Trade {
   id: string;
   date: string;
@@ -98,21 +102,50 @@ interface EquityPoint {
   trade: Trade | null;
 }
 
-function EquityDot(props: any) {
+/**
+ * Recharts inyecta estas props en los render-props de puntos, etiquetas y
+ * tooltips. Su tipado publico es demasiado laxo para lo que necesitamos aqui,
+ * asi que declaramos las formas minimas que este componente consume.
+ */
+interface DotRenderProps {
+  cx?: number;
+  cy?: number;
+  index?: number;
+  payload?: EquityPoint;
+}
+
+/** Payload de un tooltip de Recharts: cada entrada envuelve el dato original. */
+interface TooltipRenderProps<T> {
+  active?: boolean;
+  payload?: { name?: string; value?: number | string; payload: T }[];
+}
+
+// Recharts declara estas coordenadas como `string | number`, asi que se
+// aceptan tal cual y se normalizan a numero al usarlas.
+interface BarLabelRenderProps {
+  x?: number | string;
+  y?: number | string;
+  width?: number | string;
+  height?: number | string;
+  index?: number;
+}
+
+const resultColor = (result: TradeResult) =>
+  result === "win" ? "#5fd39a" : result === "loss" ? "#ff5555" : "#93a3c4";
+
+function EquityDot(props: DotRenderProps) {
   const { cx, cy, payload, index } = props;
   if (cx == null || cy == null) return null;
-  if (!payload.trade) {
+  if (!payload?.trade) {
     return <circle key={`dot-${index}`} cx={cx} cy={cy} r={4.5} fill="#93a3c4" stroke="#0a1628" strokeWidth={2} />;
   }
-  const color = payload.trade.result === "win" ? "#5fd39a" : payload.trade.result === "loss" ? "#ff5555" : "#93a3c4";
+  const color = resultColor(payload.trade.result);
   return <circle key={`dot-${index}`} cx={cx} cy={cy} r={5.5} fill={color} stroke="#0a1628" strokeWidth={2} />;
 }
 
-function EquityActiveDot(props: any) {
+function EquityActiveDot(props: DotRenderProps) {
   const { cx, cy, payload } = props;
-  const color = payload.trade
-    ? payload.trade.result === "win" ? "#5fd39a" : payload.trade.result === "loss" ? "#ff5555" : "#93a3c4"
-    : "#93a3c4";
+  const color = payload?.trade ? resultColor(payload.trade.result) : "#93a3c4";
   return (
     <g>
       <circle cx={cx} cy={cy} r={13} fill={color} opacity={0.2} />
@@ -121,7 +154,7 @@ function EquityActiveDot(props: any) {
   );
 }
 
-function EquityTooltip({ active, payload }: any) {
+function EquityTooltip({ active, payload }: TooltipRenderProps<EquityPoint>) {
   if (!active || !payload || !payload.length) return null;
   const p: EquityPoint = payload[0].payload;
   return (
@@ -240,7 +273,7 @@ function EquityCurve({ trades, startingCapital }: { trades: Trade[]; startingCap
   );
 }
 
-function DonutTooltip({ active, payload }: any) {
+function DonutTooltip({ active, payload }: TooltipRenderProps<{ color: string }>) {
   if (!active || !payload || !payload.length) return null;
   const p = payload[0];
   return (
@@ -292,7 +325,7 @@ function WinRateDonut({ wins, losses, breakevens }: { wins: number; losses: numb
   );
 }
 
-function PairTooltip({ active, payload }: any) {
+function PairTooltip({ active, payload }: TooltipRenderProps<{ pair: string; pnl: number }>) {
   if (!active || !payload || !payload.length) return null;
   const p = payload[0].payload;
   return (
@@ -324,8 +357,12 @@ function PnlByPair({ trades }: { trades: Trade[] }) {
   );
   const maxAbs = Math.max(...chartData.map(p => p.absPnl), 1);
 
-  function renderValueLabel(props: any) {
-    const { x, y, width, height, index } = props;
+  function renderValueLabel(props: BarLabelRenderProps) {
+    const x = Number(props.x ?? 0);
+    const y = Number(props.y ?? 0);
+    const width = Number(props.width ?? 0);
+    const height = Number(props.height ?? 0);
+    const index = props.index ?? 0;
     const item = chartData[index];
     const color = item.pnl >= 0 ? "#5fd39a" : "#ff5555";
     return (
@@ -492,8 +529,8 @@ export default function TradingJournal({
           .sort((a, b) => a.date.localeCompare(b.date))
       );
       closeForm();
-    } catch (err: any) {
-      setFormError(err.message);
+    } catch (err) {
+      setFormError(errorMessage(err));
     } finally {
       setSubmitting(false);
     }
@@ -530,8 +567,8 @@ export default function TradingJournal({
       setOpenNotes(null);
       closeForm();
       setShowResetConfirm(false);
-    } catch (err: any) {
-      setResetError(err.message);
+    } catch (err) {
+      setResetError(errorMessage(err));
     } finally {
       setResetting(false);
     }
@@ -558,8 +595,8 @@ export default function TradingJournal({
       }
       setCapital(value);
       setEditingCapital(false);
-    } catch (err: any) {
-      setCapitalError(err.message);
+    } catch (err) {
+      setCapitalError(errorMessage(err));
     } finally {
       setSavingCapital(false);
     }

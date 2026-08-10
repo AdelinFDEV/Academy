@@ -35,7 +35,26 @@ type ParsedTrade =
   | { ok: false; error: string }
   | { ok: true; values: TradeValues };
 
-function parseTradeBody(body: any): ParsedTrade {
+type TradeResult = (typeof RESULTS)[number];
+
+/** Estrecha un string cualquiera a uno de los tres resultados validos. */
+function isTradeResult(v: string): v is TradeResult {
+  return (RESULTS as readonly string[]).includes(v);
+}
+
+/** Cuerpo crudo del POST/PUT, antes de validar. Todo opcional: lo comprueba parseTradeBody. */
+interface TradeBody {
+  date?: string;
+  pair?: string;
+  direction?: string;
+  risk_amount?: string;
+  expected_gain?: string;
+  result?: string;
+  strategy?: string | null;
+  notes?: string | null;
+}
+
+function parseTradeBody(body: TradeBody): ParsedTrade {
   const { date, pair, direction, risk_amount, expected_gain, result, strategy, notes } = body;
 
   if (!date || !pair || !direction || !risk_amount || !expected_gain || !result) {
@@ -49,7 +68,7 @@ function parseTradeBody(body: any): ParsedTrade {
     return { ok: false, error: "Riesgo asumido o ganancia esperada inválidos" };
   }
 
-  if (!RESULTS.includes(result)) {
+  if (!isTradeResult(result)) {
     return { ok: false, error: "Resultado inválido" };
   }
 

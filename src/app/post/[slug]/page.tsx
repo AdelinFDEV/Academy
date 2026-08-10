@@ -11,6 +11,7 @@ import SocialLinks from "@/components/SocialLinks";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents from "@/components/TableOfContents";
 import CommentForm from "@/components/CommentForm";
+import type { PostCategoryRef, CommentProfileRef } from "@/lib/types";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -205,11 +206,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <Link href="/">Inicio</Link>
           <span className="post-breadcrumb-sep">›</span>
           <Link href="/articulos">Artículos</Link>
-          {(post.categories as any)?.name && (
+          {(post.categories as PostCategoryRef | null)?.name && (
             <>
               <span className="post-breadcrumb-sep">›</span>
-              <Link href={`/categoria/${(post.categories as any).slug}`}>
-                {(post.categories as any).name}
+              <Link href={`/categoria/${(post.categories as PostCategoryRef).slug}`}>
+                {(post.categories as PostCategoryRef).name}
               </Link>
             </>
           )}
@@ -220,8 +221,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {/* Header del post */}
         <div className="post-header">
           <div className="post-header-meta">
-            {(post.categories as any)?.name && (
-              <span className="post-category">{(post.categories as any).name}</span>
+            {(post.categories as PostCategoryRef | null)?.name && (
+              <span className="post-category">{(post.categories as PostCategoryRef).name}</span>
             )}
             {post.is_premium && <span className="post-category premium-cat">Premium</span>}
           </div>
@@ -340,8 +341,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                     {rp.is_premium && <span className="post-premium-badge">Premium</span>}
                   </div>
                   <div className="related-card-body">
-                    {(rp.categories as any)?.name && (
-                      <span className="related-card-cat">{(rp.categories as any).name}</span>
+                    {(rp.categories as PostCategoryRef | null)?.name && (
+                      <span className="related-card-cat">{(rp.categories as PostCategoryRef).name}</span>
                     )}
                     <h3 className="related-card-title">{rp.title}</h3>
                   </div>
@@ -377,8 +378,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               <div key={c.id} className="comment-item">
                 <div className="comment-item-meta">
                   <span className="comment-author">
-                    {(c.profiles as any)?.full_name ?? "Usuario"}
-                    {(c.profiles as any)?.is_featured && (
+                    {(c.profiles as CommentProfileRef | null)?.full_name ?? "Usuario"}
+                    {(c.profiles as CommentProfileRef | null)?.is_featured && (
                       <span className="featured-star" title="Usuario destacado — 30 días de racha">★</span>
                     )}
                   </span>

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
-import Icon from "@/components/Icon";
-import ArticulosClient from "./ArticulosClient";
+import ArticulosClient, { type Post as ArticulosPost } from "./ArticulosClient";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
@@ -55,7 +54,7 @@ export default async function ArticulosPage() {
       <main className="articulos-page">
         <div className="articulos-layout">
           <ArticulosClient
-            posts={(posts ?? []) as any}
+            posts={(posts ?? []) as unknown as ArticulosPost[]}
             categories={categories ?? []}
             commentCountMap={commentCountMap}
             isLoggedIn={!!user}

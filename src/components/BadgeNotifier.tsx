@@ -38,7 +38,7 @@ function Popup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
 }
 
 export default function BadgeNotifier() {
-  const [queue, setQueue] = useState<BadgeDef[]>([]);
+  const [, setQueue] = useState<BadgeDef[]>([]);
   const [current, setCurrent] = useState<BadgeDef | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
