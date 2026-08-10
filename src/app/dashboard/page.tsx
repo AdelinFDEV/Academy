@@ -10,7 +10,7 @@ import DashboardSpotlight from "@/components/DashboardSpotlight";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import AsesoriaBand from "@/components/AsesoriaBand";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
-import { GUIDES } from "@/lib/guides";
+import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
 import type { PostCategoryRef } from "@/lib/types";
 
@@ -264,7 +264,7 @@ export default async function DashboardPage() {
           <Link href="/guias" className="dash-link-orange"><span>Ver todas</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
         </div>
         <div className="dash-continue-list">
-          {[...GUIDES].reverse().slice(0, 3).map((guide) => (
+          {GUIDES_NEWEST_FIRST.slice(0, 3).map((guide) => (
             <Link key={guide.slug} href={`/guias/${guide.slug}`} className="dash-continue-card" style={{borderColor: `color-mix(in srgb, ${guide.color} 30%, transparent)`}}>
               <div
                 className="dash-continue-thumb"

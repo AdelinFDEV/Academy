@@ -1741,26 +1741,82 @@
   background: color-mix(in srgb, var(--tool-color) 55%, transparent);
 }
 
-/* Diario: curva de equity */
-.hero-viz-spark {
-  display: block;
-  width: 100%;
-  height: 64px;
-  border-radius: 10px;
-  background:
-    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 16px,
-    rgba(6, 15, 31, 0.45);
-}
-
-/* Predicción: histórico → proyección punteada hasta el objetivo */
+/* ── Micrográficos de las tarjetas de herramientas ──────────────────────
+   Rejilla en los dos ejes, viñeta radial para dar hueco al centro y un
+   borde interior que apoya el gráfico en la tarjeta en vez de dejarlo
+   flotando. El color lo hereda cada tarjeta vía --tool-color.            */
+.hero-viz-spark,
 .hero-viz-target {
   display: block;
   width: 100%;
-  height: 64px;
-  border-radius: 10px;
+  height: 68px;
+  border-radius: 12px;
+  overflow: visible;
   background:
-    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 16px,
-    rgba(6, 15, 31, 0.45);
+    radial-gradient(120% 130% at 50% 100%, color-mix(in srgb, var(--tool-color) 9%, transparent), transparent 62%),
+    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px) 0 0 / 100% 17px,
+    linear-gradient(90deg, rgba(240, 244, 255, 0.03) 1px, transparent 1px) 0 0 / 44px 100%,
+    rgba(4, 11, 24, 0.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 244, 255, 0.05),
+    inset 0 14px 26px -18px color-mix(in srgb, var(--tool-color) 55%, transparent);
+}
+
+/* El trazo se dibuja al entrar: da sensación de dato vivo, no de adorno. */
+.hero-viz-draw {
+  stroke-dasharray: 320;
+  stroke-dashoffset: 320;
+  animation: heroVizDraw 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tool-color) 45%, transparent));
+}
+
+/* La proyección aparece después, cuando el histórico ya se ha trazado. */
+.hero-viz-proj {
+  opacity: 0;
+  animation: heroVizFade 0.55s ease-out 1.15s forwards;
+}
+
+.hero-viz-tip {
+  opacity: 0;
+  animation: heroVizFade 0.4s ease-out 1.35s forwards;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tool-color) 85%, transparent));
+}
+
+.hero-viz-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation:
+    heroVizFade 0.4s ease-out 1.35s forwards,
+    heroVizPulse 2.8s ease-in-out 1.75s infinite;
+}
+
+@keyframes heroVizDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes heroVizFade {
+  to { opacity: 1; }
+}
+
+@keyframes heroVizPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.45; }
+  50%      { transform: scale(1.28); opacity: 0.12; }
+}
+
+/* Sin animación para quien la haya desactivado en su sistema: el gráfico
+   se muestra ya completo, no a medio dibujar. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-viz-draw,
+  .hero-viz-proj,
+  .hero-viz-tip,
+  .hero-viz-halo {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  .hero-viz-proj { opacity: 0.8; }
+  .hero-viz-halo { opacity: 0.45; }
 }
 
 /* Liberaciones: barra de vesting */

@@ -124,6 +124,17 @@ export const GUIDES: GuideMeta[] = [
   },
 ];
 
+/**
+ * Las guías de la MÁS NUEVA a la más antigua — el orden en que se le muestran
+ * al usuario en cualquier listado.
+ *
+ * `GUIDES` se mantiene en orden cronológico (la más antigua primero) a
+ * propósito, porque la home toma la guía destacada con
+ * `GUIDES[GUIDES.length - 1]`. Invertir el array original romperia eso, así
+ * que aquí se expone una copia invertida y los listados usan esta.
+ */
+export const GUIDES_NEWEST_FIRST: GuideMeta[] = [...GUIDES].reverse();
+
 export function getGuide(slug: string): GuideMeta | undefined {
   return GUIDES.find((g) => g.slug === slug);
 }

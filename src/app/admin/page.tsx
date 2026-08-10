@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Icon from "@/components/Icon";
-import { GUIDES } from "@/lib/guides";
+import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import type { AdminComment } from "@/lib/types";
 
 // ── Helpers ──────────────────────────────────────────────
@@ -278,7 +278,7 @@ export default async function AdminPage() {
   const totalGuideBadges    = allGuideBadges.length;
 
   // Per-guide breakdown
-  const perGuideStats = GUIDES.map((g) => {
+  const perGuideStats = GUIDES_NEWEST_FIRST.map((g) => {
     const visits    = allGuideVisits.filter((v) => v.guide_slug === g.slug).length;
     const uVisitors = new Set(allGuideVisits.filter((v) => v.guide_slug === g.slug && v.user_id).map((v) => v.user_id)).size;
     const likes     = allGuideLikes.filter((l) => l.guide_slug === g.slug).length;

@@ -137,7 +137,21 @@ function VizPath() {
   );
 }
 
-// Diario: curva de equity con relleno degradado
+// Diario: curva de equity.
+//
+// Los dos micrográficos se estiran a lo ancho de la tarjeta con
+// preserveAspectRatio="none", lo que deforma el grosor del trazo según la
+// inclinación de cada tramo. Por eso todos los trazos llevan
+// vector-effect="non-scaling-stroke": el grosor se calcula tras la
+// transformación y queda uniforme sea cual sea el ancho de la tarjeta.
+// Termina en x=200 y no en 220: el punto final necesita aire contra el borde
+// derecho de la tarjeta. Queda a la altura de la diana del gráfico de
+// Predicción (x=192), así las dos tarjetas respiran igual.
+const SPARK_LINE =
+  "M0 50 C11 47 15 44 22 45 C31 46 33 48 40 48 C51 48 53 38 62 36 " +
+  "C73 34 75 40 84 40 C95 40 96 29 105 28 C116 27 118 32 127 32 " +
+  "C140 32 140 20 151 19 C162 18 164 23 173 23 C185 23 189 12 200 8";
+
 function VizSpark() {
   return (
     <svg
@@ -148,22 +162,33 @@ function VizSpark() {
     >
       <defs>
         <linearGradient id="heroSparkFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ff9a4d" stopOpacity="0.32" />
+          <stop offset="0" stopColor="#ff9a4d" stopOpacity="0.34" />
+          <stop offset="0.7" stopColor="#ff9a4d" stopOpacity="0.06" />
           <stop offset="1" stopColor="#ff9a4d" stopOpacity="0" />
         </linearGradient>
+        {/* El trazo se enciende de izquierda a derecha: sugiere progresión. */}
+        <linearGradient id="heroSparkLine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#ff9a4d" stopOpacity="0.45" />
+          <stop offset="0.55" stopColor="#ff9a4d" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#ffb877" stopOpacity="1" />
+        </linearGradient>
       </defs>
+
+      <path d={`${SPARK_LINE} L200 58 L0 58 Z`} fill="url(#heroSparkFill)" />
+
       <path
-        d="M0 47 L22 41 L40 44 L62 31 L84 35 L106 22 L130 26 L152 14 L178 18 L204 7 L220 10 L220 58 L0 58 Z"
-        fill="url(#heroSparkFill)"
-      />
-      <path
-        d="M0 47 L22 41 L40 44 L62 31 L84 35 L106 22 L130 26 L152 14 L178 18 L204 7 L220 10"
+        className="hero-viz-draw"
+        d={SPARK_LINE}
         fill="none"
-        stroke="#ff9a4d"
-        strokeWidth="2"
+        stroke="url(#heroSparkLine)"
+        strokeWidth="2.25"
         strokeLinejoin="round"
         strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
       />
+
+      {/* Último punto: donde está la cuenta ahora mismo */}
+      <circle className="hero-viz-tip" cx="200" cy="8" r="3.6" fill="#ffb877" />
     </svg>
   );
 }
@@ -184,7 +209,12 @@ function VizVest() {
   );
 }
 
-// Predicción: histórico sólido → proyección punteada hasta el objetivo
+// Predicción: histórico sólido → proyección punteada hasta el precio objetivo.
+const TARGET_HIST =
+  "M0 50 C14 47 18 43 30 43 C42 43 44 46 56 45 C70 44 70 34 84 33 " +
+  "C96 32 100 36 112 34 C118 33 120 31 124 30";
+const TARGET_PROJ = "M124 30 C148 26 168 18 192 11";
+
 function VizTarget() {
   return (
     <svg
@@ -193,25 +223,53 @@ function VizTarget() {
       preserveAspectRatio="none"
       aria-hidden="true"
     >
+      <defs>
+        <linearGradient id="heroTargetFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#22d3ee" stopOpacity="0.3" />
+          <stop offset="0.75" stopColor="#22d3ee" stopOpacity="0.05" />
+          <stop offset="1" stopColor="#22d3ee" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      {/* Area del tramo ya conocido, para que no flote una linea suelta */}
+      <path d={`${TARGET_HIST} L124 58 L0 58 Z`} fill="url(#heroTargetFill)" />
+
+      {/* Nivel del precio objetivo: explica hacia donde apunta la proyeccion */}
+      <line
+        x1="0" y1="11" x2="192" y2="11"
+        stroke="#22d3ee"
+        strokeWidth="1"
+        strokeDasharray="2 6"
+        opacity="0.28"
+        vectorEffect="non-scaling-stroke"
+      />
+
       <path
-        d="M0 48 L26 42 L48 45 L74 34 L98 37 L122 26"
+        className="hero-viz-draw"
+        d={TARGET_HIST}
         fill="none"
         stroke="#22d3ee"
-        strokeWidth="2"
+        strokeWidth="2.25"
         strokeLinejoin="round"
         strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
       />
+
       <path
-        d="M122 26 L156 19 L196 10"
+        className="hero-viz-proj"
+        d={TARGET_PROJ}
         fill="none"
         stroke="#22d3ee"
         strokeWidth="2"
         strokeDasharray="5 5"
         strokeLinecap="round"
-        opacity="0.75"
+        opacity="0.8"
+        vectorEffect="non-scaling-stroke"
       />
-      <circle cx="196" cy="10" r="7.5" fill="none" stroke="#22d3ee" strokeWidth="1.5" opacity="0.45" />
-      <circle cx="196" cy="10" r="3.4" fill="#22d3ee" />
+
+      {/* Diana del objetivo */}
+      <circle className="hero-viz-halo" cx="192" cy="11" r="7.5" fill="none" stroke="#22d3ee" strokeWidth="1.5" opacity="0.45" vectorEffect="non-scaling-stroke" />
+      <circle className="hero-viz-tip" cx="192" cy="11" r="3.6" fill="#22d3ee" />
     </svg>
   );
 }

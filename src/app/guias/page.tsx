@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Lock, Star } from "lucide-react";
-import { GUIDES } from "@/lib/guides";
+import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 
 export const metadata: Metadata = {
   title: "Guías Interactivas",
@@ -69,7 +69,7 @@ export default async function GuiasPage() {
         <div className="guias-section">
           <h2 className="guias-section-title">Disponibles ahora</h2>
           <div className="guias-grid">
-            {GUIDES.map((g) => (
+            {GUIDES_NEWEST_FIRST.map((g) => (
               <Link key={g.slug} href={`/guias/${g.slug}`} className="guias-card">
                 <div className="guias-card-glow" aria-hidden="true" />
                 <div className="guias-card-top">

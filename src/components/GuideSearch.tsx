@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Search, X } from "lucide-react";
-import { GUIDES } from "@/lib/guides";
+import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 
-const CRYPTO_GUIDES = GUIDES.filter((g) => g.tags.includes("CRIPTOMONEDAS"));
+const CRYPTO_GUIDES = GUIDES_NEWEST_FIRST.filter((g) => g.tags.includes("CRIPTOMONEDAS"));
 
 export default function GuideSearch() {
   const [query, setQuery] = useState("");
