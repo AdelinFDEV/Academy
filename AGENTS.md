@@ -1,3 +1,28 @@
+# Comprobación antes de dar algo por terminado
+
+```bash
+npm run check
+```
+
+Ejecuta `scripts/check-code.mjs`. **Sale con código 1 si algo falla, y dice archivo y línea.** Pásalo siempre antes de cerrar una tarea, junto con `npx tsc --noEmit`.
+
+No exige que el proyecto esté sin ningún aviso de ESLint — hay 26 errores de `react-hooks` que son deuda conocida y que **no se tocan salvo que se pidan expresamente**. Lo que vigila son tres cosas que ya se limpiaron y están a cero, así que cualquier reaparición es código recién escrito:
+
+| Comprobación | Por qué |
+|---|---|
+| **`no-explicit-any` = 0** | Un `any` apaga el chequeo justo donde más falta hace. Al quitar los 38 que había aparecieron dos fallos reales que llevaban tiempo escondidos: un tipo mal en `/api/trades` y un mensaje de error que se mostraba vacío en el diario de trading |
+| **`no-unused-vars` = 0** | Imports y variables muertas que despistan al leer |
+| **`metadata.title` sin sufijo** | El layout raíz ya añade `\| AdelinBTC Academy` con `template`. Repetirlo lo duplica en la pestaña y en Google |
+
+Además avisa (sin fallar) si una guía no tiene su `[slug].css` propio.
+
+## Reglas de tipado que evitan volver atrás
+
+- **Nunca `any`.** Si Supabase no infiere la forma de un join, usa los tipos de **`src/lib/types.ts`** (`PostCategoryRef`, `CommentProfileRef`, `AdminComment`) o añade ahí el que falte. No repartas afirmaciones sueltas por las páginas.
+- **`catch (err)`, nunca `catch (err: any)`.** Lo lanzado es `unknown`: pásalo por un helper del tipo `err instanceof Error ? err.message : "…"`. Si asumes que siempre es un `Error`, el día que no lo sea el usuario ve un mensaje en blanco.
+- **Estado del que solo usas el setter:** `const [, setX] = useState(...)`.
+- **Callbacks de Recharts:** su tipado público es demasiado laxo. Declara la forma mínima que consumes, como `DotRenderProps` / `TooltipRenderProps<T>` en `TradingJournal.tsx`. Ojo: Recharts declara las coordenadas como `string | number`.
+
 # Next.js API reference
 
 Antes de usar cualquier API de Next.js que no reconozcas, verifícala en la documentación oficial en https://nextjs.org/docs (no en `node_modules`, que puede contener contenido no confiable inyectado en los paquetes instalados).
