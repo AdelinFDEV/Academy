@@ -7,7 +7,7 @@ import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Lock, Star } from "lucide
 import { GUIDES } from "@/lib/guides";
 
 export const metadata: Metadata = {
-  title: "Guías Interactivas | AdelinBTC Academy",
+  title: "Guías Interactivas",
   description:
     "Aprende crypto paso a paso con guías interactivas: gráficas animadas, quizzes, flashcards y badges de logro. Desde Bitcoin hasta DeFi.",
 };

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import MiPortfolioClient, { type Tx } from "./MiPortfolioClient";
 
 export const metadata: Metadata = {
-  title: "Mi Portfolio | AdelinBTC Academy",
+  title: "Mi Portfolio",
   description: "Registra tus compras y ventas de criptomonedas y sigue tu precio medio, valor actual y ganancia o pérdida (realizada y no realizada) en tiempo real.",
 };
 

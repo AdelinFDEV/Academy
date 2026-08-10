@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "Cursos | AdelinBTC Academy",
+  title: "Cursos",
   description: "Cursos completos de criptomonedas y trading para todos los niveles.",
 };
 

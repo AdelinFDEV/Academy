@@ -8,7 +8,7 @@ import { BADGE_DEFS } from "@/components/Badges";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "Logros | AdelinBTC Academy",
+  title: "Logros",
   description: "Desbloquea logros y rachas completando artículos en la academia.",
 };
 

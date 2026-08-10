@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import WatchlistClient from "./WatchlistClient";
 
 export const metadata: Metadata = {
-  title: "Watchlist | AdelinBTC Academy",
+  title: "Watchlist",
   description: "Sigue el precio de tus criptomonedas favoritas en tiempo real.",
 };
 

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import TradingJournal from "@/components/TradingJournal";
 
 export const metadata: Metadata = {
-  title: "Diario de Trading | AdelinBTC Academy",
+  title: "Diario de Trading",
   description: "Registra, analiza y mejora tus operaciones de trading.",
 };
 

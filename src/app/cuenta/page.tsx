@@ -11,7 +11,7 @@ import TwoFactorSettings from "@/components/TwoFactorSettings";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User, Lock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Mi cuenta | AdelinBTC Academy",
+  title: "Mi cuenta",
   description: "Gestiona tu suscripción y datos de cuenta.",
 };
 

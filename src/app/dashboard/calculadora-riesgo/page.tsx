@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import RiskCalculatorClient from "./RiskCalculatorClient";
 
 export const metadata: Metadata = {
-  title: "Calculadora de Riesgo | AdelinBTC Academy",
+  title: "Calculadora de Riesgo",
   description: "Calcula el tamaño de tu posición según tu capital y el riesgo que asumes por operación.",
 };
 

@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Mis Estadísticas | AdelinBTC Academy",
+  title: "Mis Estadísticas",
   description: "Analiza tu rendimiento como trader con datos reales de tu diario.",
 };
 

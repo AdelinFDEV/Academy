@@ -5,7 +5,7 @@ import { Trophy } from "lucide-react";
 import Badges from "@/components/Badges";
 
 export const metadata: Metadata = {
-  title: "Logros | AdelinBTC Academy",
+  title: "Logros",
 };
 
 export default async function LogrosPage() {

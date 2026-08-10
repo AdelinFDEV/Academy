@@ -6,7 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import LiberacionesClient from "./LiberacionesClient";
 
 export const metadata: Metadata = {
-  title: "Liberaciones de Tokens | AdelinBTC Academy",
+  title: "Liberaciones de Tokens",
   description: "Calendario de vesting y liberaciones de tokens cripto. Anticipa la presión vendedora con datos reales de ARB, ZK, STRK, SUI y más.",
 };
 

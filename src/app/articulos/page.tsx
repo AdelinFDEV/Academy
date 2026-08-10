@@ -6,7 +6,7 @@ import ArticulosClient from "./ArticulosClient";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "Artículos | AdelinBTC Academy",
+  title: "Artículos",
   description: "Todos los análisis, guías y publicaciones de AdelinBTC Academy.",
 };
 

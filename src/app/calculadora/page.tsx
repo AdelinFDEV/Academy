@@ -6,7 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import CalculadoraClient from "./CalculadoraClient";
 
 export const metadata: Metadata = {
-  title: "Predicción de Precio | AdelinBTC Academy",
+  title: "Predicción de Precio",
   description: "Calcula qué Market Cap necesita un token para alcanzar tu precio objetivo. Compara con Bitcoin, Ethereum y Solana en tiempo real.",
 };
 
