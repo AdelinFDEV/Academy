@@ -188,53 +188,89 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.9rem;
-  max-width: 680px;
-  margin: 0 auto 1.6rem;
+  gap: 0.95rem;
+  max-width: 720px;
+  margin: 0 auto 1.9rem;
+}
+
+/* Hairline editorial que cierra el bloque de titular: da un final
+   deliberado al texto antes de que empiecen las tarjetas. */
+.hero-headline::after {
+  content: "";
+  width: 92px;
+  height: 1px;
+  margin-top: 0.35rem;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 154, 0, 0.55),
+    transparent);
 }
 
 .hero-title {
   font-family: var(--font-display);
   font-size: 2.1rem;
   font-weight: 800;
-  line-height: 1.18;
-  letter-spacing: -0.02em;
+  line-height: 1.14;
+  letter-spacing: -0.028em;
   color: #fff;
   margin: 0;
+  /* Evita la línea huérfana de una sola palabra al partir el titular */
+  text-wrap: balance;
+  /* El vídeo de fondo asoma bajo el texto: una sombra muy suave
+     mantiene el blanco legible sin que se note como sombra. */
+  text-shadow: 0 2px 22px rgba(4, 9, 20, 0.55);
 }
 
 .hero-title .text-gradient {
+  position: relative;
   font-family: inherit;
   font-size: 1em;
   font-weight: inherit;
   padding: 0;
+  /* Naranja de tres paradas: el degradado de dos era plano al ocupar
+     media línea de titular. */
+  background: linear-gradient(100deg, #ffc46b 0%, #ff9a00 46%, #ff6b2b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* Halo cálido detrás de las palabras acentuadas — el propio texto no
+     puede llevar sombra (está recortado al degradado). */
+  filter: drop-shadow(0 4px 26px rgba(255, 122, 26, 0.28));
 }
 
 .hero-subtitle {
   font-size: 0.98rem;
-  line-height: 1.6;
-  color: rgba(213, 224, 246, 0.72);
-  max-width: 600px;
+  line-height: 1.62;
+  letter-spacing: 0.005em;
+  color: rgba(217, 227, 248, 0.78);
+  max-width: 560px;
   margin: 0;
+  text-wrap: pretty;
 }
 
 @media (min-width: 900px) {
   .hero-title {
-    font-size: 2.9rem;
+    font-size: 3.05rem;
+    line-height: 1.1;
   }
 
   .hero-subtitle {
-    font-size: 1.05rem;
+    font-size: 1.06rem;
   }
 }
 
 @media (max-width: 640px) {
   .hero-title {
     font-size: 1.6rem;
+    line-height: 1.2;
   }
 
   .hero-subtitle {
     font-size: 0.88rem;
+  }
+
+  .hero-headline::after {
+    width: 64px;
   }
 }
 
@@ -1262,7 +1298,7 @@
 .hero-duo {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 1.1rem;
   margin-bottom: 1rem;
 }
 
@@ -1273,27 +1309,106 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding: 1.35rem 1.5rem 1.3rem;
-  border: 1px solid color-mix(in srgb, var(--duo-color) 28%, transparent);
-  border-radius: 20px;
+  padding: 1.6rem 1.65rem 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--duo-color) 24%, transparent);
+  border-radius: 22px;
   background:
     radial-gradient(120% 100% at 90% -10%, color-mix(in srgb, var(--duo-color) 13%, transparent) 0%, transparent 55%),
     linear-gradient(165deg, color-mix(in srgb, var(--duo-color) 6%, var(--bg-card)) 0%, var(--bg-card-alt) 60%);
   text-decoration: none;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow:
+    var(--card-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Filo superior teñido: marca la identidad de cada tarjeta desde el
+   primer píxel, sin necesidad de más color en el cuerpo. */
+.hero-duo-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--duo-color) 75%, transparent),
+    transparent);
+  opacity: 0.7;
+  transition: opacity 0.3s ease, left 0.45s ease, right 0.45s ease;
+  pointer-events: none;
+}
+
+/* Barrido de luz al pasar el ratón */
+.hero-duo-card::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: -35%;
+  width: 28%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent);
+  transform: skewX(-14deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Premium es la conversión principal del hero: mismo formato que Asesoría,
+   pero con algo más de peso — borde y sombra propia — para que la mirada
+   caiga primero ahí sin romper la simetría del dúo. */
 .hero-duo-card--prem {
   --duo-color: #e6b455;
+
+  border-color: color-mix(in srgb, var(--duo-color) 36%, transparent);
+  box-shadow:
+    var(--card-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 44px -30px color-mix(in srgb, var(--duo-color) 60%, transparent);
+}
+
+.hero-duo-card--prem::before {
+  opacity: 1;
 }
 
 .hero-duo-card:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--duo-color) 50%, transparent);
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--duo-color) 52%, transparent);
   box-shadow:
     var(--card-shadow),
-    0 20px 48px -26px color-mix(in srgb, var(--duo-color) 65%, transparent);
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 24px 56px -26px color-mix(in srgb, var(--duo-color) 68%, transparent);
+}
+
+.hero-duo-card:hover::before {
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+.hero-duo-card:hover::after {
+  animation: heroDuoSheen 0.85s ease-out;
+}
+
+@keyframes heroDuoSheen {
+  from { left: -35%; opacity: 0; }
+  25%  { opacity: 1; }
+  to   { left: 115%; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-duo-card:hover {
+    transform: none;
+  }
+
+  .hero-duo-card:hover::after {
+    animation: none;
+  }
 }
 
 .hero-duo-glow {
@@ -1314,9 +1429,22 @@
 }
 
 .hero-duo-top {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.75rem;
+}
+
+/* Regla que continúa hasta el borde tras el eyebrow: aire estructurado
+   en lugar de un hueco vacío a la derecha. */
+.hero-duo-top::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--duo-color) 30%, transparent),
+    transparent);
 }
 
 .hero-duo-icon {
@@ -1324,65 +1452,138 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--duo-color) 15%, transparent);
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background:
+    linear-gradient(150deg,
+      color-mix(in srgb, var(--duo-color) 24%, transparent),
+      color-mix(in srgb, var(--duo-color) 9%, transparent));
   color: var(--duo-color);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--duo-color) 35%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--duo-color) 34%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+.hero-duo-card:hover .hero-duo-icon {
+  transform: translateY(-1px) scale(1.04);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--duo-color) 50%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 8px 22px -12px color-mix(in srgb, var(--duo-color) 75%, transparent);
 }
 
 .hero-duo-eyebrow {
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--duo-color);
+  white-space: nowrap;
 }
 
 .hero-duo-title {
-  margin: 0.85rem 0 0;
+  margin: 1rem 0 0;
   font-family: var(--font-display);
-  font-size: 1.18rem;
+  font-size: 1.24rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
+  text-wrap: balance;
 }
 
 .hero-duo-desc {
-  margin: 0.4rem 0 1.1rem;
-  font-size: 0.85rem;
-  line-height: 1.55;
+  margin: 0.5rem 0 1.35rem;
+  font-size: 0.855rem;
+  line-height: 1.6;
   color: var(--text-muted);
+  text-wrap: pretty;
 }
 
 .hero-duo-foot {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   margin-top: auto;
+  padding-top: 1.15rem;
+}
+
+/* Separador sutil: el precio y el botón forman su propia banda */
+.hero-duo-foot::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--duo-color) 22%, transparent),
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent);
+}
+
+.hero-duo-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .hero-duo-price {
   display: flex;
   align-items: baseline;
-  gap: 0.3rem;
+  gap: 0.35rem;
   line-height: 1;
 }
 
+/* Precio anterior tachado — el tachón va con el color de la tarjeta para
+   que se lea como oferta y no como una errata. */
+.hero-duo-old {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--text-muted) 75%, transparent);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--duo-color) 70%, transparent);
+  text-decoration-thickness: 1.5px;
+}
+
+/* Letra pequeña honesta: duración de la sesión / condiciones */
+.hero-duo-note {
+  font-size: 0.7rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, var(--text-muted) 78%, transparent);
+}
+
+/* "desde" (precede al importe) va en versalitas; "/mes" (lo sigue) no */
 .hero-duo-price em {
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-style: normal;
-  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text-muted) 88%, transparent);
+}
+
+.hero-duo-price strong + em {
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .hero-duo-price strong {
   font-family: var(--font-display);
-  font-size: 1.45rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
 }
 
@@ -1391,12 +1592,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.68rem 1.15rem;
-  border-radius: 12px;
+  padding: 0.72rem 1.25rem;
+  border-radius: 13px;
   background: linear-gradient(135deg, var(--duo-color), color-mix(in srgb, var(--duo-color) 65%, #ffffff));
   color: #0a1628;
   font-size: 0.88rem;
   font-weight: 800;
+  letter-spacing: -0.005em;
   white-space: nowrap;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
@@ -1429,9 +1631,19 @@
 }
 
 @media (max-width: 560px) {
+  .hero-duo-card {
+    padding: 1.35rem 1.3rem 1.25rem;
+  }
+
   .hero-duo-foot {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  .hero-duo-price-block {
+    align-items: center;
+    text-align: center;
   }
 
   .hero-duo-price {

@@ -342,7 +342,9 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
     }),
   };
 
-  const asesoriaFrom = ASESORIA_PLANS.reduce((min, p) => (p.priceValue < min.priceValue ? p : min)).price;
+  // El "desde" del dúo sale del plan más barato — precio y nota (duración)
+  // vienen de src/lib/asesoria.ts, nunca escritos a mano aquí.
+  const asesoriaEntry = ASESORIA_PLANS.reduce((min, p) => (p.priceValue < min.priceValue ? p : min));
 
   return (
     <div className="hero-spotlight">
@@ -366,9 +368,12 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
             Trading, estrategia, gestión de riesgo y psicología — sobre tu operativa real, no sobre teoría.
           </p>
           <div className="hero-duo-foot">
-            <span className="hero-duo-price">
-              <em>desde</em>
-              <strong>{asesoriaFrom}</strong>
+            <span className="hero-duo-price-block">
+              <span className="hero-duo-price">
+                <em>desde</em>
+                <strong>{asesoriaEntry.price}</strong>
+              </span>
+              <span className="hero-duo-note">{asesoriaEntry.priceNote}</span>
             </span>
             <span className="hero-duo-btn">
               Ver asesorías <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
@@ -389,9 +394,13 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
             Diario de trading, liberaciones de tokens y cada herramienta nueva — una sola suscripción.
           </p>
           <div className="hero-duo-foot">
-            <span className="hero-duo-price">
-              <strong>19,99€</strong>
-              <em>/mes</em>
+            <span className="hero-duo-price-block">
+              <span className="hero-duo-price">
+                <s className="hero-duo-old">49,99€</s>
+                <strong>19,99€</strong>
+                <em>/mes</em>
+              </span>
+              <span className="hero-duo-note">Cancela cuando quieras · Sin permanencia</span>
             </span>
             <span className="hero-duo-btn">
               Hazte Premium <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
