@@ -16,7 +16,7 @@ import GuideHyperliquidQuiz from "./GuideHyperliquidQuiz";
 import "./hyperliquid.css";
 
 export const metadata: Metadata = {
-  title: "¿Qué es Hyperliquid? El Exchange de Perpetuos que Vive On-Chain | AdelinBTC Academy",
+  title: "¿Qué es Hyperliquid? El Exchange de Perpetuos que Vive On-Chain",
   description:
     "Hyperliquid explicado a fondo: cómo funciona un libro de órdenes 100% on-chain, su blockchain propia con consenso HyperBFT, la capa HyperEVM, el vault HLP, el token HYPE del airdrop sin fondos de inversores y los riesgos reales del proyecto. Con simulador, quiz y badge.",
   openGraph: {

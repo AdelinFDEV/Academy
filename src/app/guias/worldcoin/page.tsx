@@ -17,7 +17,7 @@ import GuideWorldTokenomics from "./GuideWorldTokenomics";
 import GuideWorldQuiz from "./GuideWorldQuiz";
 
 export const metadata: Metadata = {
-  title: "¿Qué es Worldcoin? La Criptomoneda que Escanea tu Iris | AdelinBTC Academy",
+  title: "¿Qué es Worldcoin? La Criptomoneda que Escanea tu Iris",
   description:
     "Worldcoin explicado a fondo: el Orb, World ID, World Chain, el token WLD y por qué el proyecto de Sam Altman ha sido prohibido en varios países. Guía completa con quiz y badge.",
   openGraph: {

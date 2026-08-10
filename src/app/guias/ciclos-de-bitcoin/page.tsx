@@ -23,7 +23,7 @@ const HERO_STATS = [
 ];
 
 export const metadata: Metadata = {
-  title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin? Ciclos de Mercado | AdelinBTC Academy",
+  title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin? Ciclos de Mercado",
   description:
     "El ciclo de 4 años del halving explicado en lenguaje simple: por qué la fase bajista está terminando, qué esperar de las altcoins antes del próximo halving y los rangos de precio de este ciclo.",
   openGraph: {

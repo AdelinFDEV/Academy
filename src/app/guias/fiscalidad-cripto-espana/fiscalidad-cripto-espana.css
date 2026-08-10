@@ -1,0 +1,403 @@
+/* ============================================================
+   Guía: Fiscalidad cripto en España
+   CSS exclusivo de esta guía (AGENTS.md → "cada guía nueva, su
+   propio archivo CSS"). Todo va con prefijo .fisc- para no
+   colisionar con las clases compartidas .gbc-* de guias.css.
+   Paleta: oro (dominante) + naranja (acción) + navy + blanco.
+   ============================================================ */
+
+/* ── Aviso legal ─────────────────────────────────────────── */
+.fisc-disclaimer {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 18px 20px;
+  border: 1px solid var(--gold-border);
+  border-left: 3px solid var(--gold);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(230, 180, 85, 0.07), rgba(6, 15, 31, 0.4));
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #b9cade;
+}
+.fisc-disclaimer strong { color: var(--gold); }
+.fisc-disclaimer-icon { font-size: 20px; line-height: 1.3; flex-shrink: 0; }
+
+/* ── Tabla de hechos imponibles ──────────────────────────── */
+.fisc-table {
+  margin-top: 28px;
+  border: 1px solid var(--gold-border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.fisc-table-head {
+  display: grid;
+  grid-template-columns: 1.1fr 90px 2fr;
+  gap: 14px;
+  padding: 13px 18px;
+  background: rgba(230, 180, 85, 0.09);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.fisc-table-row {
+  display: grid;
+  grid-template-columns: 1.1fr 90px 2fr;
+  gap: 14px;
+  align-items: start;
+  padding: 16px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.fisc-table-row.is-yes { background: rgba(255, 107, 43, 0.045); }
+.fisc-table-row.is-no  { background: rgba(95, 211, 154, 0.04); }
+.fisc-table-op  { font-weight: 700; color: #fff; }
+.fisc-table-why { color: #97a9bd; font-size: 13.5px; }
+.fisc-table-tag {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 100px;
+  font-size: 11.5px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+.fisc-table-tag--yes { background: rgba(255, 107, 43, 0.16); color: #ff8552; border: 1px solid rgba(255, 107, 43, 0.32); }
+.fisc-table-tag--no  { background: rgba(95, 211, 154, 0.14); color: #5fd39a; border: 1px solid rgba(95, 211, 154, 0.3); }
+
+/* ── Lista de secciones bloqueadas (paywall premium) ─────── */
+.fisc-locked-list { margin-top: 26px; display: flex; flex-direction: column; gap: 10px; }
+.fisc-locked-item {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 13px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 14px;
+  line-height: 1.5;
+  color: #97a9bd;
+}
+.fisc-locked-item span {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+/* ── Cabecera común de simulador / calculadora ───────────── */
+.fisc-sim,
+.fisc-calc {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid var(--gold-border);
+  border-radius: 20px;
+  background:
+    radial-gradient(90% 70% at 100% 0%, rgba(230, 180, 85, 0.07), transparent 60%),
+    linear-gradient(180deg, #0f2040, #0a1628);
+}
+.fisc-sim-head { display: flex; gap: 13px; align-items: flex-start; margin-bottom: 22px; color: var(--gold); }
+.fisc-sim-title { font-size: 16.5px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+.fisc-sim-sub { font-size: 13.5px; line-height: 1.6; color: #8fa3b8; }
+.fisc-sim-foot { margin-top: 18px; font-size: 12.5px; line-height: 1.55; color: #6f8298; font-style: italic; }
+
+/* ── Controles de rango ──────────────────────────────────── */
+.fisc-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+.fisc-control { display: block; }
+.fisc-control-lbl {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: #8fa3b8;
+  margin-bottom: 10px;
+}
+.fisc-control-lbl strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+
+.fisc-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  cursor: pointer;
+}
+.fisc-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  border: 3px solid #0a1628;
+  box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.fisc-range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.fisc-range::-moz-range-thumb {
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  border: 3px solid #0a1628;
+  box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.5);
+  cursor: pointer;
+}
+
+/* ── Lotes FIFO ──────────────────────────────────────────── */
+.fisc-lots { display: flex; flex-direction: column; gap: 10px; }
+.fisc-lot {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  transition: border-color 0.25s;
+}
+.fisc-lot.is-used { border-color: rgba(255, 107, 43, 0.4); }
+.fisc-lot.is-full { border-color: rgba(255, 107, 43, 0.65); }
+.fisc-lot-bar { position: absolute; inset: 0; pointer-events: none; }
+.fisc-lot-fill { height: 100%; background: linear-gradient(90deg, rgba(255, 107, 43, 0.22), rgba(255, 107, 43, 0.08)); }
+.fisc-lot-body { position: relative; padding: 14px 16px; }
+.fisc-lot-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.fisc-lot-date { font-size: 11.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #8fa3b8; }
+.fisc-lot-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #6f8298;
+}
+.fisc-lot-tag--part { background: rgba(255, 107, 43, 0.16); color: #ff8552; }
+.fisc-lot-tag--full { background: rgba(255, 107, 43, 0.26); color: #ff8552; }
+.fisc-lot-main { font-size: 15px; color: #dce8f8; }
+.fisc-lot-main strong { color: #fff; font-variant-numeric: tabular-nums; }
+.fisc-lot-used { margin-top: 6px; font-size: 12.5px; color: var(--gold); font-variant-numeric: tabular-nums; }
+
+/* ── Resultado FIFO ──────────────────────────────────────── */
+.fisc-result {
+  margin-top: 20px;
+  border: 1px solid var(--gold-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.fisc-result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 18px;
+  font-size: 14px;
+  color: #97a9bd;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.fisc-result-row strong { color: #dce8f8; font-variant-numeric: tabular-nums; }
+.fisc-result-row--total {
+  border-bottom: none;
+  background: rgba(230, 180, 85, 0.08);
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #fff;
+}
+.fisc-result-row--total.is-gain strong { color: var(--gold); font-size: 18px; }
+.fisc-result-row--total.is-loss strong { color: #f87171; font-size: 18px; }
+
+.fisc-counter {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(255, 107, 43, 0.07);
+  border: 1px solid rgba(255, 107, 43, 0.2);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #b9cade;
+}
+.fisc-counter svg { color: var(--accent-orange); flex-shrink: 0; margin-top: 3px; }
+.fisc-counter strong { color: #ff8552; }
+
+/* ── Calculadora de tramos ───────────────────────────────── */
+.fisc-calc-input-wrap { margin-bottom: 22px; }
+.fisc-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.fisc-preset {
+  padding: 7px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: #97a9bd;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-variant-numeric: tabular-nums;
+}
+.fisc-preset:hover { border-color: rgba(255, 107, 43, 0.45); color: #ff8552; }
+.fisc-preset.is-active {
+  background: rgba(255, 107, 43, 0.16);
+  border-color: var(--accent-orange);
+  color: #ff8552;
+}
+
+.fisc-calc-bar { display: flex; height: 16px; border-radius: 100px; overflow: hidden; background: rgba(255, 255, 255, 0.05); }
+.fisc-calc-seg { min-width: 2px; }
+
+.fisc-calc-rows { margin-top: 18px; display: flex; flex-direction: column; }
+.fisc-calc-row {
+  display: grid;
+  grid-template-columns: 12px 1fr 52px 1fr 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 13.5px;
+  color: #97a9bd;
+  font-variant-numeric: tabular-nums;
+}
+.fisc-calc-dot { width: 10px; height: 10px; border-radius: 50%; }
+.fisc-calc-range { color: #b9cade; }
+.fisc-calc-rate { font-weight: 800; color: #fff; }
+.fisc-calc-amount { text-align: right; }
+.fisc-calc-tax { text-align: right; color: var(--gold); font-weight: 700; }
+
+.fisc-calc-totals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+}
+.fisc-calc-total {
+  padding: 14px 12px;
+  border-radius: 13px;
+  background: var(--gold-soft);
+  border: 1px solid var(--gold-border);
+  text-align: center;
+}
+.fisc-calc-total-lbl { display: block; font-size: 11.5px; color: #8fa3b8; margin-bottom: 6px; }
+.fisc-calc-total-val { display: block; font-size: 20px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.fisc-calc-total-val--tax { color: var(--gold); }
+
+.fisc-calc-note {
+  margin-top: 20px;
+  padding: 15px 17px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #b9cade;
+}
+.fisc-calc-note strong { color: var(--gold); }
+
+/* ── Ficha del modelo 721 ────────────────────────────────── */
+.fisc-721 { margin-top: 28px; display: flex; flex-direction: column; gap: 1px; border-radius: 16px; overflow: hidden; border: 1px solid var(--gold-border); }
+.fisc-721-item {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 18px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.022);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.fisc-721-item--star {
+  background: rgba(230, 180, 85, 0.09);
+  border-top: 1px solid var(--gold-border);
+  border-bottom: 1px solid var(--gold-border);
+}
+.fisc-721-k { font-weight: 800; color: var(--gold); font-size: 13.5px; }
+.fisc-721-v { color: #b9cade; }
+.fisc-721-v strong { color: #fff; }
+
+/* ── Pasos numerados (compensación de pérdidas) ──────────── */
+.fisc-steps { margin-top: 26px; display: flex; flex-direction: column; gap: 14px; }
+.fisc-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 17px 19px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.022);
+}
+.fisc-step-n {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--gold), #f5c842);
+  color: #060f1f;
+  font-weight: 800;
+  font-size: 15px;
+}
+.fisc-step strong { display: block; color: #fff; font-size: 15px; margin-bottom: 6px; }
+.fisc-step p { margin: 0; font-size: 13.8px; line-height: 1.65; color: #97a9bd; }
+.fisc-step p strong { display: inline; color: var(--gold); font-size: inherit; }
+
+/* ── Calendario fiscal ───────────────────────────────────── */
+.fisc-cal { margin-top: 26px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.fisc-cal-item {
+  padding: 17px 19px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid var(--accent-orange);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.022);
+}
+.fisc-cal-when {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  margin-bottom: 8px;
+}
+.fisc-cal-what strong { display: block; color: #fff; font-size: 14.5px; margin-bottom: 5px; }
+.fisc-cal-what span { display: block; font-size: 13.2px; line-height: 1.6; color: #97a9bd; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .fisc-controls { grid-template-columns: 1fr; gap: 18px; }
+  .fisc-calc-totals { grid-template-columns: repeat(2, 1fr); }
+  .fisc-cal { grid-template-columns: 1fr; }
+  .fisc-721-item { grid-template-columns: 1fr; gap: 6px; }
+}
+
+@media (max-width: 640px) {
+  .fisc-sim, .fisc-calc { padding: 18px 15px; }
+  .fisc-table-head { display: none; }
+  .fisc-table-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "op tag" "why why";
+    gap: 8px 12px;
+  }
+  .fisc-table-op  { grid-area: op; }
+  .fisc-table-tag { grid-area: tag; }
+  .fisc-table-why { grid-area: why; }
+  .fisc-calc-row {
+    grid-template-columns: 12px 1fr auto;
+    grid-template-areas: "dot range rate" ". amount tax";
+    row-gap: 3px;
+  }
+  .fisc-calc-dot { grid-area: dot; }
+  .fisc-calc-range { grid-area: range; }
+  .fisc-calc-rate { grid-area: rate; }
+  .fisc-calc-amount { grid-area: amount; text-align: left; font-size: 12.5px; }
+  .fisc-calc-tax { grid-area: tax; }
+  .fisc-disclaimer { font-size: 13.5px; padding: 15px 16px; }
+}

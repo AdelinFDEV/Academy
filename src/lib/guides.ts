@@ -107,6 +107,21 @@ export const GUIDES: GuideMeta[] = [
     topics: ["Ripple vs XRP vs XRPL", "Consenso sin minería (RPCA/UNL)", "Moneda puente y ODL", "El caso SEC y el escrow"],
     tags: ["CRIPTOMONEDAS"],
   },
+  {
+    slug: "fiscalidad-cripto-espana",
+    title: "Fiscalidad Cripto en España: Modelo 721, Staking, FIFO y Ganancias",
+    shortTitle: "Fiscalidad cripto",
+    description: "Qué tributa y qué no, el método FIFO obligatorio, la escala del ahorro del 19% al 30%, cómo declarar staking, airdrops y minería, el modelo 721 de criptomonedas en el extranjero, el Impuesto sobre el Patrimonio y la compensación de pérdidas. Con simulador FIFO y calculadora de impuestos por tramos.",
+    difficulty: "avanzado",
+    type: "premium",
+    sections: 9,
+    badge: "Cuentas Claras",
+    badgeId: "guide-fiscalidad-cripto",
+    readTime: "28 min",
+    color: "#e6b455",
+    topics: ["Hechos imponibles", "FIFO y tramos del ahorro", "Staking, airdrops y minería", "Modelo 721 y Patrimonio"],
+    tags: ["EXPLICACIONES"],
+  },
 ];
 
 export function getGuide(slug: string): GuideMeta | undefined {
