@@ -71,9 +71,9 @@ export default async function CiclosDeBitcoinPage() {
       .from("guide_likes").select("id").eq("guide_slug", SLUG).eq("user_id", user.id).maybeSingle();
     initialLiked = !!likeRow;
   }
-  const initialLikes  = (likesResult as any).count ?? 0;
-  const initialSaved  = !!(savedResult as any).data;
-  const initialShares = (sharesResult as any).count ?? 0;
+  const initialLikes  = (likesResult as { count?: number | null }).count ?? 0;
+  const initialSaved  = !!(savedResult as { data?: unknown }).data;
+  const initialShares = (sharesResult as { count?: number | null }).count ?? 0;
 
   return (
     <div className="gbc-wrap">

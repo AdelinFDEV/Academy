@@ -21,13 +21,8 @@ const MARKET = [
   { label: "Altcoins", pct: 20, color: "#2a4060" },
 ];
 
-const DEFI = [
-  { label: "Lending", v: 28.4 },
-  { label: "DEX", v: 19.1 },
-  { label: "Liquid Staking", v: 12.3 },
-  { label: "RWA", v: 8.8 },
-  { label: "Otros", v: 3.2 },
-];
+// (El array DEFI vivía aquí, sin usarse: su copia real y en uso está en
+//  GuideDefiChart.tsx, que es quien pinta ese gráfico.)
 
 function AdoptionChart() {
   const max = Math.max(...ADOPTION.map((d) => d.v));
@@ -82,11 +77,16 @@ function AdoptionChart() {
 
 function MarketChart() {
   const R = 88, cx = 200, cy = 108;
-  let angle = -Math.PI / 2;
-  const slices = MARKET.map((m) => {
-    const start = angle;
+  const START = -Math.PI / 2; // arriba del todo (12 en punto)
+
+  // El ángulo de inicio de cada porción se calcula sumando las anteriores, en
+  // lugar de acumular sobre una variable externa dentro del .map(). Mutar una
+  // variable del cuerpo del componente desde un callback impide que el React
+  // Compiler memoice el resultado con seguridad, y es lo que hace saltar la
+  // regla "Cannot reassign variable after render completes".
+  const slices = MARKET.map((m, i) => {
+    const start = START + MARKET.slice(0, i).reduce((acc, prev) => acc + (prev.pct / 100) * 2 * Math.PI, 0);
     const sweep = (m.pct / 100) * 2 * Math.PI;
-    angle += sweep;
     const x1 = cx + R * Math.cos(start), y1 = cy + R * Math.sin(start);
     const x2 = cx + R * Math.cos(start + sweep), y2 = cy + R * Math.sin(start + sweep);
     return { ...m, x1, y1, x2, y2, large: sweep > Math.PI ? 1 : 0 };

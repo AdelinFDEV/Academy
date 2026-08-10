@@ -56,7 +56,7 @@ export default function GuideMineBlock() {
     
     let n = 0;
     let att = 0;
-    let startTime = performance.now();
+    const startTime = performance.now();
     const BATCH = difficulty >= 3 ? 200 : 50;
 
     while (!stopRef.current) {
