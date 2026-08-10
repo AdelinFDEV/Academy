@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# Se ejecuta solo, antes de cada `git push`.
+#
+# Va en pre-push y no en pre-commit a propósito: tarda unos 15 segundos, que
+# es molesto en cada commit pero irrelevante una vez por push. Lo que importa
+# es que nada roto salga de esta máquina.
+#
+# Este archivo está versionado en .githooks/ y git lo encuentra gracias a
+# core.hooksPath, que configura sola la primera `npm install` (script
+# "prepare" de package.json). No hace falta instalar husky ni nada.
+#
+# Para saltárselo puntualmente:  git push --no-verify
+
+echo ""
+echo "→ Comprobaciones antes del push"
+echo ""
+
+if ! npm run --silent check; then
+  echo ""
+  echo "✗ Push cancelado: no pasa npm run check."
+  echo "  Arregla lo de arriba, o usa 'git push --no-verify' si sabes lo que haces."
+  echo ""
+  exit 1
+fi
+
+echo "→ Comprobando tipos…"
+if ! npx --no-install tsc --noEmit; then
+  echo ""
+  echo "✗ Push cancelado: hay errores de TypeScript."
+  echo "  Arregla lo de arriba, o usa 'git push --no-verify' si sabes lo que haces."
+  echo ""
+  exit 1
+fi
+
+echo ""
+echo "✓ Todo correcto. Subiendo…"
+echo ""
+exit 0

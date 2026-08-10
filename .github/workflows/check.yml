@@ -1,0 +1,32 @@
+name: Comprobaciones
+
+# El hook de pre-push ya bloquea en local, pero solo en la maquina que lo
+# tenga configurado. Esto es la red de seguridad: se ejecuta en GitHub y no
+# se puede saltar con --no-verify.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Reglas que estan a cero y no deben volver: no-explicit-any,
+      # no-unused-vars y el sufijo duplicado en metadata.title.
+      - name: Guardarrail de codigo
+        run: npm run check
+
+      - name: Comprobar tipos
+        run: npx tsc --noEmit

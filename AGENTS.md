@@ -6,6 +6,21 @@ npm run check
 
 Ejecuta `scripts/check-code.mjs`. **Sale con código 1 si algo falla, y dice archivo y línea.** Pásalo siempre antes de cerrar una tarea, junto con `npx tsc --noEmit`.
 
+## Se ejecuta solo — dos capas
+
+No hace falta acordarse: hay dos redes, y **la primera bloquea antes de que nada salga de la máquina**.
+
+| Cuándo | Qué | Dónde |
+|---|---|---|
+| **Antes de cada `git push`** | `npm run check` + `tsc --noEmit`. Si falla, **cancela el push** | `.githooks/pre-push` |
+| **Al llegar a GitHub** | lo mismo, y esto no se puede saltar | `.github/workflows/check.yml` |
+
+El hook está **versionado** en `.githooks/` — git lo encuentra por `core.hooksPath`, que configura sola la primera `npm install` gracias al script `prepare` de `package.json`. **No hay dependencia de husky ni de nada.** En un clon nuevo basta con `npm install`.
+
+Tarda unos 15 s. Va en `pre-push` y no en `pre-commit` a propósito: molesto en cada commit, irrelevante una vez por push.
+
+Para saltárselo puntualmente: `git push --no-verify`. **No lo uses para esquivar un fallo real** — CI lo va a cazar igual y el commit ya estará en el historial.
+
 No exige que el proyecto esté sin ningún aviso de ESLint — hay 26 errores de `react-hooks` que son deuda conocida y que **no se tocan salvo que se pidan expresamente**. Lo que vigila son tres cosas que ya se limpiaron y están a cero, así que cualquier reaparición es código recién escrito:
 
 | Comprobación | Por qué |
