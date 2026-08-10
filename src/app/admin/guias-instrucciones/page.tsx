@@ -70,7 +70,7 @@ export default function GuiasInstruccionesPage() {
             <div className="agi-step-num">5</div>
             <div>
               <strong>Claude implementa</strong>
-              <p>Crea el archivo en <code>/src/app/guias/[slug]/page.tsx</code>, registra la guía en Supabase (tabla <code>guides</code>) y el badge en la tabla <code>achievements</code>.</p>
+              <p>Crea <code>/src/app/guias/[slug]/page.tsx</code>, su <code>[slug].css</code> propio y los componentes interactivos que haga falta. Después añade la entrada de la guía en <code>src/lib/guides.ts</code> — y con eso ya está publicada. <strong>No hay que tocar Supabase</strong> (ver bloque 03).</p>
             </div>
           </div>
           <div className="agi-step">
@@ -107,32 +107,55 @@ export default function GuiasInstruccionesPage() {
         </div>
 
         <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Tablas en Supabase</h3>
-          <div className="agi-card agi-card--mono">
+          <h3 className="agi-subsection-title">Dónde vive el catálogo de guías ⭐</h3>
+          <div className="agi-card">
+            <p className="agi-warning">⚠️ <strong>El catálogo de guías NO está en Supabase: está en el código.</strong> La fuente única de verdad es <code>src/lib/guides.ts</code> (array <code>GUIDES</code>). Publicar una guía nueva es añadir su objeto ahí — no hay que insertar ninguna fila en ninguna tabla.</p>
+            <p style={{ marginTop: 12 }}>Todo lo demás se deriva solo de ese array, y por eso una guía nueva funciona entera sin tocar la base de datos:</p>
+            <ul className="agi-list">
+              <li><code>/guias</code> y la home leen <code>GUIDES</code> para pintar el listado y la guía destacada</li>
+              <li><code>/api/guide-badge</code> valida el <code>badgeId</code> contra <code>GUIDES</code> — el badge de una guía nueva es válido automáticamente</li>
+              <li><code>/api/guide-quiz-completion</code> valida el <code>slug</code> contra <code>GUIDES</code></li>
+              <li><code>Badges.tsx</code> construye <code>GUIDE_BADGE_DEFS</code> desde <code>GUIDES</code>, así que el badge aparece solo en Logros</li>
+            </ul>
+          </div>
+          <div className="agi-card agi-card--mono" style={{ marginTop: "1rem" }}>
             <div className="agi-table-def">
-              <div className="agi-table-name">guides</div>
+              <div className="agi-table-name">GuideMeta — campos de src/lib/guides.ts</div>
               <div className="agi-table-fields">
-                id · title · slug · description · difficulty (basic|intermediate|advanced) · is_premium (boolean) · cover_image · published (boolean) · badge_id · created_at · updated_at
+                slug · title · shortTitle · description · difficulty (básico|intermedio|avanzado) · type (free|premium) · sections · badge · badgeId · readTime · color · topics[] · tags[]
               </div>
             </div>
+          </div>
+          <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <p>⚠️ <strong>El último elemento del array es la guía destacada</strong> de la home (lo usa <code>GuidesHomeSection</code>). Añade siempre la guía nueva al final.</p>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Tablas de Supabase que SÍ existen</h3>
+          <div className="agi-card">
+            <p>Son todas tablas de <strong>eventos por usuario</strong>, indexadas por <code>guide_slug</code> o por <code>badge_id</code>. No guardan la definición de la guía, así que <strong>no requieren registro previo</strong>: empiezan a llenarse solas en cuanto un usuario interactúa.</p>
+          </div>
+          <div className="agi-card agi-card--mono" style={{ marginTop: "1rem" }}>
             <div className="agi-table-def">
-              <div className="agi-table-name">guide_sections</div>
-              <div className="agi-table-fields">
-                id · guide_id · title · order · is_free (boolean: primeras secciones gratis)
-              </div>
+              <div className="agi-table-name">guide_likes · guide_saves · guide_shares</div>
+              <div className="agi-table-fields">user_id · guide_slug — las escribe <code>GuideInteractions</code></div>
             </div>
             <div className="agi-table-def">
-              <div className="agi-table-name">user_guide_progress</div>
-              <div className="agi-table-fields">
-                id · user_id · guide_id · sections_completed (array) · quiz_score (0–10) · completed_at · badge_awarded (boolean)
-              </div>
+              <div className="agi-table-name">guide_visits</div>
+              <div className="agi-table-fields">guide_slug — la escribe <code>GuideVisitTracker</code></div>
             </div>
             <div className="agi-table-def">
-              <div className="agi-table-name">achievements</div>
-              <div className="agi-table-fields">
-                id · title · description · icon · guide_id (nullable) · type (guide_completion|streak|etc.)
-              </div>
+              <div className="agi-table-name">guide_quiz_completions</div>
+              <div className="agi-table-fields">user_id · guide_slug · score · total — vía <code>/api/guide-quiz-completion</code></div>
             </div>
+            <div className="agi-table-def">
+              <div className="agi-table-name">user_badges</div>
+              <div className="agi-table-fields">user_id · badge_id — vía <code>/api/guide-badge</code>. Compartida con los badges de racha y de artículos</div>
+            </div>
+          </div>
+          <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <p className="agi-warning">⛔ <strong>Las tablas <code>guides</code>, <code>guide_sections</code>, <code>user_guide_progress</code> y <code>achievements</code> no existen y no se usan en ninguna parte del código.</strong> Aparecían en versiones anteriores de este manual como arquitectura prevista, pero el sistema se implementó finalmente sobre <code>src/lib/guides.ts</code>. Si lees esas tablas en algún sitio, está desactualizado.</p>
           </div>
         </div>
 
@@ -304,7 +327,7 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-comp-card">
             <div className="agi-comp-icon">📊</div>
             <div className="agi-comp-name">QuizBlock</div>
-            <div className="agi-comp-desc">Preguntas de opción múltiple, verdadero/falso o completar huecos. Al finalizar el quiz completo de la guía, se calcula una puntuación 0–10 que se guarda en <code>user_guide_progress.quiz_score</code> y aparece en el perfil del alumno.</div>
+            <div className="agi-comp-desc">Preguntas de opción múltiple, verdadero/falso o completar huecos. Al enviarlo se guarda <code>score</code> / <code>total</code> en <code>guide_quiz_completions</code>, y si se acierta entero se desbloquea el badge de la guía.</div>
             <div className="agi-comp-rule">⚡ Obligatorio en toda guía. Al menos 3 preguntas por guía.</div>
           </div>
 
@@ -339,7 +362,7 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-comp-card">
             <div className="agi-comp-icon">📏</div>
             <div className="agi-comp-name">ProgressTracker</div>
-            <div className="agi-comp-desc">Barra de progreso por secciones visible en la parte superior de la guía. Cada sección completada (scrolled + tiempo mínimo de lectura) se marca. El porcentaje se guarda en <code>user_guide_progress</code>.</div>
+            <div className="agi-comp-desc">Componente <code>GuideProgressBar</code>: barra de progreso de lectura en la parte superior, ligada al scroll. Es <strong>puramente visual y no persiste nada</strong>. Quien sí registra la visita es <code>GuideVisitTracker</code>, que escribe en <code>guide_visits</code>.</div>
             <div className="agi-comp-rule">Obligatorio en toda guía de más de 2 secciones.</div>
           </div>
 
@@ -386,21 +409,22 @@ export default function GuiasInstruccionesPage() {
         <div className="agi-card">
           <h3 className="agi-subsection-title" style={{ marginTop: 0 }}>Puntuación del quiz</h3>
           <ul className="agi-list">
-            <li>Escala de <strong>0 a 10</strong>, con un decimal (ej: 7.3)</li>
-            <li>Fórmula: <code>(respuestas correctas / total preguntas) × 10</code></li>
-            <li>Se guarda en <code>user_guide_progress.quiz_score</code> al enviar el quiz</li>
-            <li>Si el usuario repite el quiz, se guarda la puntuación más alta</li>
-            <li>Visible en el <strong>dashboard del usuario</strong> en una nueva sección «Mis Guías»</li>
+            <li>Se registra como <code>score</code> sobre <code>total</code> (ej: 4 de 5) al enviar el quiz</li>
+            <li>Se guarda en la tabla <code>guide_quiz_completions</code> vía <code>/api/guide-quiz-completion</code></li>
+            <li>El endpoint valida el <code>guide_slug</code> contra <code>GUIDES</code>: si la guía no está en <code>src/lib/guides.ts</code>, devuelve 400 y no guarda nada</li>
+            <li>Requiere sesión: sin usuario logueado responde 401</li>
           </ul>
         </div>
         <div className="agi-card" style={{ marginTop: '1rem' }}>
           <h3 className="agi-subsection-title" style={{ marginTop: 0 }}>Logros (Achievements)</h3>
           <ul className="agi-list">
-            <li>Cada guía tiene un badge único que se desbloquea al <strong>completar la guía al 100%</strong> (todas las secciones leídas + quiz enviado)</li>
-            <li>El badge se define en la tabla <code>achievements</code> con: nombre, descripción, icono, guide_id</li>
-            <li>Al desbloquearse, aparece en el perfil del usuario en la sección «Logros»</li>
-            <li>Claude crea el badge (nombre + descripción + emoji de icono) al crear la guía</li>
-            <li>Los logros existentes por racha de lectura de artículos son independientes y coexisten</li>
+            <li>Cada guía tiene un badge único que se desbloquea al <strong>acertar el quiz entero</strong> (todas las respuestas correctas)</li>
+            <li>El badge se define <strong>en el código</strong>, con los campos <code>badge</code> (nombre) y <code>badgeId</code> del objeto de la guía en <code>src/lib/guides.ts</code> — no hay tabla de definiciones</li>
+            <li><code>Badges.tsx</code> deriva <code>GUIDE_BADGE_DEFS</code> de <code>GUIDES</code>, así que el badge aparece en Logros automáticamente sin tocar ese archivo</li>
+            <li>El desbloqueo se persiste en <code>user_badges</code> vía <code>/api/guide-badge</code>, que valida el <code>badgeId</code> contra <code>GUIDES</code></li>
+            <li>El quiz llama a <code>saveGuideBadge(badgeId)</code> de <code>src/lib/guideBadge.ts</code>, que además dispara el popup de desbloqueo</li>
+            <li>Convención de <code>badgeId</code>: <code>guide-[tema]</code> (ej. <code>guide-fiscalidad-cripto</code>)</li>
+            <li>Los logros por racha de lectura de artículos son independientes y coexisten en la misma tabla</li>
           </ul>
         </div>
       </section>
@@ -426,9 +450,10 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear el badge de logro: nombre + descripción + emoji</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Cerrar la guía con el bloque obligatorio</strong>: interacciones → <code>&lt;AsesoriaBand variant=&quot;guide&quot; /&gt;</code> → <code>&lt;Footer /&gt;</code> (ver bloque 04)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar preview al admin y esperar aprobación antes de implementar</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Registrar la guía en Supabase tabla <code>guides</code> tras aprobación</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Insertar badge en tabla <code>achievements</code></span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir la entrada de la guía al final del array <code>GUIDES</code> en <code>src/lib/guides.ts</code></strong> — es lo único que hace falta para publicarla. <strong>Supabase no se toca</strong></span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Comprobar que <code>badgeId</code> sigue la convención <code>guide-[tema]</code> y que el <code>badge</code> tiene nombre</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar que el paywall funciona para usuarios sin sesión, free y premium</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npx tsc --noEmit</code> y comprobar la guía en el navegador antes de dar por cerrada</span></label>
         </div>
       </section>
 
@@ -439,14 +464,20 @@ export default function GuiasInstruccionesPage() {
           Gestión post-publicación
         </h2>
         <div className="agi-card">
-          <p>Las guías publicadas se gestionan desde <strong><code>/admin/guias</code></strong> (pendiente de implementar cuando se cree la primera guía). Desde ahí el admin puede:</p>
+          <p className="agi-warning">⚠️ <strong>El panel <code>/admin/guias</code> no existe.</strong> Se planteó en su día, pero el sistema acabó siendo enteramente de código, así que hoy las guías se gestionan editando archivos — no desde una interfaz.</p>
+        </div>
+        <div className="agi-card" style={{ marginTop: "1rem" }}>
+          <p>Qué se toca para cada cambio:</p>
           <ul className="agi-list">
-            <li>Ver listado de guías con estado (publicada / borrador)</li>
-            <li>Publicar o despublicar</li>
-            <li>Cambiar dificultad, tipo de acceso (free/premium) y descripción</li>
-            <li>Ver estadísticas: cuántos usuarios la han completado y puntuación media</li>
-            <li>Para modificar el <em>contenido</em> interactivo, se pide a Claude que edite el archivo <code>/src/app/guias/[slug]/page.tsx</code></li>
+            <li><strong>Título, descripción, dificultad, tiempo de lectura, topics o tags</strong> → el objeto de esa guía en <code>src/lib/guides.ts</code></li>
+            <li><strong>Cambiar de gratis a premium o al revés</strong> → el campo <code>type</code> en <code>src/lib/guides.ts</code> <em>y</em> la condición del paywall en el <code>page.tsx</code> de la guía (<code>!isPremium</code> para premium, <code>!isRegistered</code> para gratis)</li>
+            <li><strong>Despublicar</strong> → quitar su entrada de <code>GUIDES</code>. La ruta <code>/guias/[slug]</code> seguirá existiendo y accesible por URL directa; para cortarla del todo hay que borrar o proteger la carpeta</li>
+            <li><strong>Contenido, secciones o componentes interactivos</strong> → pedir a Claude que edite <code>/src/app/guias/[slug]/page.tsx</code> y sus componentes</li>
+            <li><strong>Estilos de esa guía</strong> → su <code>[slug].css</code>, nunca <code>guias.css</code> ni <code>globals.css</code></li>
           </ul>
+        </div>
+        <div className="agi-card" style={{ marginTop: "1rem" }}>
+          <p>Las <strong>estadísticas de uso</strong> sí están en Supabase y se pueden consultar por <code>guide_slug</code>: <code>guide_visits</code> (visitas), <code>guide_likes</code>, <code>guide_saves</code>, <code>guide_shares</code> y <code>guide_quiz_completions</code> (puntuaciones del quiz).</p>
         </div>
       </section>
 
