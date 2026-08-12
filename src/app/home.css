@@ -4,6 +4,25 @@
    clases nuevas aquí: solo lo que usa exclusivamente esta página.
    ═══════════════════════════════════════════════════════════ */
 
+/* ── Malla técnica de fondo ─────────────────────────────────
+   La misma rejilla de /asesoria (46px, alfa 4,5%), aquí extendida a
+   toda la página. Va como fondo del contenedor y no como capa extra en
+   el DOM: así queda siempre por detrás del contenido sin pelearse con
+   los z-index del hero, la nav pegajosa ni las tarjetas.
+
+   `background-attachment: fixed` deja el patrón quieto mientras el
+   contenido pasa por encima — evita las costuras que salen al empalmar
+   secciones de distinta altura. Donde una sección tiene fondo propio
+   opaco (el vídeo del hero, la banda premium) la malla no se ve, y es
+   lo correcto: es respiración de fondo, no textura sobre los bloques. */
+.home-page {
+  background-image:
+    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 244, 255, 0.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+  background-attachment: fixed;
+}
+
 .hero {
   position: relative;
   overflow: hidden;
@@ -21,7 +40,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.2;
+  opacity: 0.26;
   transform: scale(1.05);
 }
 
@@ -1719,7 +1738,7 @@
     grid-template-columns: 1.12fr 1fr 1.02fr;
     grid-template-areas:
       "guias pred diario"
-      "liber cursos folio";
+      "liber directo folio";
   }
 
   .hero-tool--guias { grid-area: guias; }
@@ -1727,7 +1746,7 @@
   .hero-tool--diario { grid-area: diario; }
   .hero-tool--portfolio { grid-area: folio; }
   .hero-tool--liberaciones { grid-area: liber; }
-  .hero-tool--cursos { grid-area: cursos; }
+  .hero-tool--directo { grid-area: directo; }
 }
 
 /* Tarjeta de herramienta */
@@ -1953,12 +1972,11 @@
   background: color-mix(in srgb, var(--tool-color) 55%, transparent);
 }
 
-/* ── Micrográficos de las tarjetas de herramientas ──────────────────────
+/* ── Micrográfico del Diario ────────────────────────────────────────────
    Rejilla en los dos ejes, viñeta radial para dar hueco al centro y un
    borde interior que apoya el gráfico en la tarjeta en vez de dejarlo
    flotando. El color lo hereda cada tarjeta vía --tool-color.            */
-.hero-viz-spark,
-.hero-viz-target {
+.hero-viz-spark {
   display: block;
   width: 100%;
   height: 68px;
@@ -1982,25 +2000,10 @@
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tool-color) 45%, transparent));
 }
 
-/* La proyección aparece después, cuando el histórico ya se ha trazado. */
-.hero-viz-proj {
-  opacity: 0;
-  animation: heroVizFade 0.55s ease-out 1.15s forwards;
-}
-
 .hero-viz-tip {
   opacity: 0;
   animation: heroVizFade 0.4s ease-out 1.35s forwards;
   filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tool-color) 85%, transparent));
-}
-
-.hero-viz-halo {
-  transform-box: fill-box;
-  transform-origin: center;
-  opacity: 0;
-  animation:
-    heroVizFade 0.4s ease-out 1.35s forwards,
-    heroVizPulse 2.8s ease-in-out 1.75s infinite;
 }
 
 @keyframes heroVizDraw {
@@ -2011,24 +2014,110 @@
   to { opacity: 1; }
 }
 
-@keyframes heroVizPulse {
-  0%, 100% { transform: scale(1);    opacity: 0.45; }
-  50%      { transform: scale(1.28); opacity: 0.12; }
-}
-
 /* Sin animación para quien la haya desactivado en su sistema: el gráfico
    se muestra ya completo, no a medio dibujar. */
 @media (prefers-reduced-motion: reduce) {
   .hero-viz-draw,
-  .hero-viz-proj,
   .hero-viz-tip,
-  .hero-viz-halo {
+  .hero-viz-readout-num.is-result,
+  .hero-viz-readout-ref {
     animation: none;
     opacity: 1;
     stroke-dashoffset: 0;
   }
-  .hero-viz-proj { opacity: 0.8; }
-  .hero-viz-halo { opacity: 0.45; }
+}
+
+/* ── Predicción: lectura del resultado ──────────────────────────────────
+   Sin curva: la calculadora no proyecta un precio en el tiempo, responde
+   cuánto market cap exige un precio objetivo. La tarjeta reproduce ese
+   panel de resultado — pregunta arriba, cifra abajo, referencia debajo —
+   con el mismo fondo hundido que el micrográfico del Diario para que el
+   mosaico no se descuadre.                                              */
+.hero-viz-readout {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.68rem 0.8rem 0.6rem;
+  border-radius: 12px;
+  background:
+    radial-gradient(120% 130% at 100% 0%, color-mix(in srgb, var(--tool-color) 11%, transparent), transparent 62%),
+    rgba(4, 11, 24, 0.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 244, 255, 0.05),
+    inset 0 14px 26px -18px color-mix(in srgb, var(--tool-color) 55%, transparent);
+}
+
+.hero-viz-readout-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hero-viz-readout-key {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.hero-viz-readout-num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* La cifra que devuelve la herramienta: es la que tiene que cantar. */
+.hero-viz-readout-num.is-result {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--tool-color);
+  opacity: 0;
+  animation: heroVizFade 0.5s ease-out 0.5s forwards;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--tool-color) 45%, transparent);
+}
+
+/* "necesita" con hairlines a los lados: marca el paso de dato a resultado. */
+.hero-viz-readout-op {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tool-color) 70%, transparent);
+}
+
+.hero-viz-readout-op::before,
+.hero-viz-readout-op::after {
+  content: "";
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(240, 244, 255, 0.14), transparent);
+}
+
+.hero-viz-readout-op::before { width: 14px; flex: none; }
+.hero-viz-readout-op::after  { flex: 1; }
+
+.hero-viz-readout-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.15rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.06);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: heroVizFade 0.5s ease-out 0.85s forwards;
+}
+
+.hero-viz-readout-ref svg {
+  color: var(--tool-color);
+  flex-shrink: 0;
 }
 
 /* Liberaciones: barra de vesting */
@@ -2128,33 +2217,100 @@
   color: color-mix(in srgb, var(--row-color) 85%, #ffffff);
 }
 
-/* Cursos: módulos encendiéndose */
-.hero-viz-modules {
+/* Trading en Directo: cabecera de la sala. La barra imita la cinta de una
+   retransmisión —señal, par y temporalidad— y debajo va lo que se ve durante
+   la sesión. El punto late para que se lea "en directo" de un vistazo. */
+.hero-viz-live {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.hero-viz-live-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 26%, transparent);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--tool-color) 13%, transparent), transparent 70%),
+    rgba(4, 11, 24, 0.5);
+}
+
+.hero-viz-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tool-color) 88%, #ffffff);
+}
+
+.hero-viz-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff5555;
+  box-shadow: 0 0 0 0 rgba(255, 85, 85, 0.55);
+  animation: hero-viz-live-beat 1.9s ease-out infinite;
+}
+
+@keyframes hero-viz-live-beat {
+  0%        { box-shadow: 0 0 0 0 rgba(255, 85, 85, 0.5); }
+  70%, 100% { box-shadow: 0 0 0 7px rgba(255, 85, 85, 0); }
+}
+
+.hero-viz-live-pair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.hero-viz-live-pair em {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.hero-viz-live-pair b {
+  padding: 0.1rem 0.38rem;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tool-color) 18%, transparent);
+  font-size: 0.68rem;
+  color: color-mix(in srgb, var(--tool-color) 88%, #ffffff);
+}
+
+/* Lo que se ve en la sesión: viñetas con guion, no otra fila de chips —
+   los chips de la tarjeta ya están justo debajo. */
+.hero-viz-live-feed {
+  display: grid;
+  gap: 0.28rem;
+  padding-left: 0.15rem;
+}
+
+.hero-viz-live-feed span {
+  display: flex;
+  align-items: center;
   gap: 0.45rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-.hero-viz-modules span {
-  height: 26px;
-  border-radius: 8px;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  background: rgba(240, 244, 255, 0.04);
-}
-
-.hero-viz-modules span.is-on {
-  border-color: color-mix(in srgb, var(--tool-color) 50%, transparent);
-  background: color-mix(in srgb, var(--tool-color) 20%, transparent);
-}
-
-.hero-viz-modules span.is-pulse {
-  border-color: color-mix(in srgb, var(--tool-color) 40%, transparent);
-  animation: hero-viz-pulse 2s ease-in-out infinite;
-}
-
-@keyframes hero-viz-pulse {
-  0%, 100% { background: rgba(240, 244, 255, 0.04); }
-  50% { background: color-mix(in srgb, var(--tool-color) 16%, transparent); }
+.hero-viz-live-feed span::before {
+  content: "";
+  width: 10px;
+  height: 1px;
+  flex: none;
+  background: color-mix(in srgb, var(--tool-color) 60%, transparent);
 }
 
 /* ── Nota, chips, colaboración, CTA de tarjeta ────────────── */
@@ -2473,7 +2629,7 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-dock-shine,
   .hero-viz-node.is-now::after,
-  .hero-viz-modules span.is-pulse {
+  .hero-viz-live-dot {
     animation: none;
   }
 

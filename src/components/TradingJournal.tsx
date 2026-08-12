@@ -48,6 +48,15 @@ interface FormState {
 
 const NOTES_MAX = 150;
 
+/**
+ * Orden cronologico estable. El selector guarda la fecha con precision de minutos,
+ * asi que dos operaciones seguidas empatan a menudo: sin desempate, el orden que
+ * devuelve la BD es arbitrario y la curva de capital acumula el P&L al reves.
+ */
+function byChronology(a: Trade, b: Trade): number {
+  return a.date.localeCompare(b.date) || a.created_at.localeCompare(b.created_at);
+}
+
 function nowForInput(): string {
   const d = new Date();
   d.setSeconds(0, 0);
@@ -428,7 +437,7 @@ export default function TradingJournal({
   userName: string;
   initialCapital: number | null;
 }) {
-  const [trades, setTrades] = useState<Trade[]>(initialTrades);
+  const [trades, setTrades] = useState<Trade[]>(() => [...initialTrades].sort(byChronology));
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -526,7 +535,7 @@ export default function TradingJournal({
       const savedTrade: Trade = await res.json();
       setTrades(prev =>
         (editingId ? prev.map(t => (t.id === editingId ? savedTrade : t)) : [...prev, savedTrade])
-          .sort((a, b) => a.date.localeCompare(b.date))
+          .sort(byChronology)
       );
       closeForm();
     } catch (err) {

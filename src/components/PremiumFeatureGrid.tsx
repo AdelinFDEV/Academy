@@ -5,7 +5,7 @@ import {
   motion, useMotionValue, useSpring, useReducedMotion,
 } from "framer-motion";
 import {
-  NotebookPen, Gem, GraduationCap, Unlock, Wallet, Sparkles,
+  NotebookPen, Gem, Radio, Unlock, Wallet, Sparkles,
   ClipboardCheck, Trophy, BadgeCheck, Infinity as InfinityIcon,
 } from "lucide-react";
 
@@ -27,12 +27,12 @@ const PERKS = [
     chips: ["Todas desbloqueadas", "Quizzes y logros"],
   },
   {
-    id: "cursos",
-    icon: GraduationCap,
+    id: "directo",
+    icon: Radio,
     color: "#a3a3ff",
-    title: "Cursos",
-    desc: "Por muchos cursos que lancemos, todos estarán siempre incluidos en tu misma suscripción.",
-    chips: ["Incluidos siempre", "Sin coste extra"],
+    title: "Trading en Directo",
+    desc: "Futuros sobre Solana en gráficos de 5 minutos, operados en directo y con cada decisión explicada en el momento.",
+    chips: ["Próximamente", "Incluido sin coste extra"],
   },
   {
     id: "liberaciones",

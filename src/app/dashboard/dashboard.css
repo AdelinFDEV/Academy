@@ -204,7 +204,7 @@
   }
 }
 
-/* ── Spotlight cards (Diario / Guías / Cursos) ── */
+/* ── Spotlight cards (Diario / Guías / Trading en Directo) ── */
 
 .dash-spot-grid {
   display: grid;
@@ -262,10 +262,10 @@
   box-shadow: 0 12px 40px rgba(255,209,102,0.14);
 }
 
-.dash-spot-card--cursos {
+.dash-spot-card--directo {
   border-color: rgba(140,140,255,0.16);
 }
-.dash-spot-card--cursos .dash-spot-glow {
+.dash-spot-card--directo .dash-spot-glow {
   background: radial-gradient(circle, rgba(140,140,255,0.16) 0%, transparent 70%);
 }
 
@@ -319,7 +319,7 @@
   box-shadow: 0 0 0 1px rgba(255,209,102,0.2) inset;
 }
 
-.dash-spot-icon--cursos {
+.dash-spot-icon--directo {
   background: linear-gradient(135deg, rgba(140,140,255,0.2), rgba(140,140,255,0.06));
   color: #a3a3ff;
   box-shadow: 0 0 0 1px rgba(140,140,255,0.18) inset;
@@ -4640,12 +4640,10 @@ a.dash-spot-cta:hover {
 @media (max-width: 768px) { .pf-skeleton-cards { grid-template-columns: repeat(2,1fr); } }
 
 @media (max-width: 400px) {
-  .dtb-fab {
-    right: 12px;
-    height: 44px;
-    padding: 0 14px 0 12px;
+  .dtb-dock {
+    padding: 11px 14px calc(11px + env(safe-area-inset-bottom, 0px));
   }
-  .dtb-fab-label { font-size: 0.78rem; }
+  .dtb-dock-label { font-size: 0.84rem; }
 }
 
 .dash-page-wrap {
@@ -4825,109 +4823,103 @@ a.dtb-tool:hover .dtb-tool-icon {
   border: 1px solid rgba(240,244,255,0.1);
 }
 
-.dtb-fab {
+/* ── Barra inferior de herramientas (móvil) ──────────────────────────────
+   Sólida y anclada al borde inferior del dispositivo, no flotante: se lee
+   como parte del chasis de la app y no tapa contenido al azar. Los colores
+   son los de la web —superficie oscura del sitio y hairline— y el naranja
+   se reserva para el acento: el icono y la flecha. */
+.dtb-dock {
   display: none;
   position: fixed;
-  bottom: calc(22px + env(safe-area-inset-bottom, 0px));
   left: 0;
   right: 0;
-  margin: 0 auto;
-  width: max-content;
-  height: 52px;
-  padding: 0 20px 0 15px;
-  border-radius: 50px;
-  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
-  color: #fff;
-  border: none;
-  cursor: pointer;
+  bottom: 0;
+  width: 100%;
   align-items: center;
-  justify-content: center;
-  gap: 9px;
-  box-shadow:
-    0 8px 26px -6px rgba(255, 107, 43, 0.65),
-    0 2px 6px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.14) inset;
+  gap: 10px;
+  padding: 13px 18px calc(13px + env(safe-area-inset-bottom, 0px));
+  border: none;
+  border-top: 1px solid rgba(255, 107, 43, 0.18);
+  background: linear-gradient(180deg, rgba(17, 34, 64, 0.98) 0%, rgba(10, 22, 40, 0.99) 100%);
+  color: var(--text-primary);
+  cursor: pointer;
   z-index: 100;
-  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.18s;
+  box-shadow: 0 -12px 30px -18px rgba(0, 0, 0, 0.9);
+  transition: background 0.18s;
 }
 
-.dtb-fab svg { flex-shrink: 0; }
+.dtb-dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 9px;
+  background: rgba(255, 107, 43, 0.12);
+  border: 1px solid rgba(255, 107, 43, 0.22);
+  color: var(--accent-orange);
+}
 
-.dtb-fab-label {
-  font-size: 0.85rem;
+.dtb-dock-label {
+  flex: 1;
+  text-align: left;
+  font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
-.dtb-fab:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 12px 30px -6px rgba(255, 107, 43, 0.75),
-    0 2px 6px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+/* La flecha es el único indicio de que esto despliega: se mueve un poco
+   para invitar al toque, y se queda quieta si se pide menos animación. */
+.dtb-dock-chevron {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--accent-orange);
+  animation: dtb-chevron-hint 2.6s ease-in-out infinite;
 }
 
-.dtb-fab:active {
-  transform: scale(0.95);
-  box-shadow: 0 3px 14px rgba(255, 107, 43, 0.45);
+@keyframes dtb-chevron-hint {
+  0%, 100% { transform: translateY(1px); }
+  50%      { transform: translateY(-2px); }
+}
+
+.dtb-dock:active {
+  background: linear-gradient(180deg, rgba(22, 43, 78, 0.99) 0%, rgba(13, 28, 51, 1) 100%);
 }
 
 .dtb-overlay {
   position: fixed;
   inset: 0;
   background: rgba(4,12,30,0.7);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
   z-index: 200;
   display: flex;
-  align-items: flex-end;
   animation: dtb-fade-in 0.28s ease both;
 }
 
+/* Panel a pantalla completa: al desplegarse ocupa todo el dispositivo, así
+   la lista entera se ve sin competir con el contenido de detrás. */
 .dtb-sheet {
   width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
-  background: linear-gradient(160deg, #0e1a38 0%, #090f22 100%);
-  border: 1px solid rgba(255, 107, 43, 0.16);
-  border-bottom: none;
-  border-radius: 24px 24px 0 0;
-  padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 16px);
-  animation: dtb-sheet-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  height: 100%;
+  background: linear-gradient(170deg, var(--bg-card) 0%, var(--bg-dark) 55%);
+  border: none;
+  border-radius: 0;
+  padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 14px);
+  animation: dtb-sheet-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
   transform-origin: bottom center;
-  max-height: 82vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, 0.7);
-}
-
-.dtb-sheet-handle {
-  width: 44px;
-  height: 5px;
-  border-radius: 3px;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  background: rgba(240, 244, 255, 0.2);
-  margin: 11px auto 2px;
-  flex-shrink: 0;
-  transition: background 0.15s, width 0.15s;
-}
-
-.dtb-sheet-handle:hover,
-.dtb-sheet-handle:active {
-  background: rgba(240, 244, 255, 0.38);
-  width: 52px;
 }
 
 .dtb-sheet-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px 12px;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 14px;
   flex-shrink: 0;
-  border-bottom: 1px solid rgba(240,244,255,0.06);
+  border-bottom: 1px solid rgba(240,244,255,0.07);
+  background: rgba(10, 22, 40, 0.6);
 }
 
 .dtb-sheet-title {
@@ -4942,11 +4934,11 @@ a.dtb-tool:hover .dtb-tool-icon {
 .dtb-sheet-title svg { color: var(--accent-orange); flex-shrink: 0; }
 
 .dtb-sheet-close {
-  background: rgba(240,244,255,0.07);
-  border: none;
-  border-radius: 8px;
-  width: 32px;
-  height: 32px;
+  background: rgba(240,244,255,0.06);
+  border: 1px solid rgba(240,244,255,0.1);
+  border-radius: 10px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4958,6 +4950,7 @@ a.dtb-tool:hover .dtb-tool-icon {
 .dtb-sheet-close:hover { background: rgba(240,244,255,0.12); }
 
 .dtb-sheet-body {
+  flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 10px 14px 8px;
@@ -4975,15 +4968,18 @@ a.dtb-tool:hover .dtb-tool-icon {
 
 @media (max-width: 960px) {
   .dtb-sidebar { display: none; }
-  .dtb-fab     { display: flex; animation: dtb-fab-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .dtb-dock    { display: flex; animation: dtb-dock-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
+  /* Hueco para que la barra no se coma el final de la página */
   .dash-page-wrap {
     padding: 0 1.25rem;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dtb-fab,
+  .dtb-dock,
+  .dtb-dock-chevron,
   .dtb-overlay,
   .dtb-sheet { animation: none !important; }
 }
@@ -4991,12 +4987,14 @@ a.dtb-tool:hover .dtb-tool-icon {
 @media (max-width: 640px) {
   .dash-page-wrap {
     padding: 0 1rem;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 400px) {
   .dash-page-wrap {
     padding: 0 0.875rem;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -5031,8 +5029,8 @@ a.dtb-tool:hover .dtb-tool-icon {
   to   { opacity: 1; transform: none; }
 }
 
-@keyframes dtb-fab-in {
-  from { opacity: 0; transform: translateY(16px) scale(0.9); }
+@keyframes dtb-dock-in {
+  from { opacity: 0; transform: translateY(100%); }
   to   { opacity: 1; transform: none; }
 }
 

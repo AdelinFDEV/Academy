@@ -2,15 +2,20 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { Radio } from "lucide-react";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
-  title: "Cursos",
-  description: "Cursos completos de criptomonedas y trading para todos los niveles.",
+  title: "Trading en Directo",
+  description:
+    "Sesiones en directo operando futuros sobre Solana en gráficos de 5 minutos, con la operativa y la gestión de riesgo explicadas en el momento.",
 };
 
-export default async function CursosPage() {
+// Igual que la antigua página de cursos: sigue cerrada a todo el mundo salvo
+// al admin mientras la herramienta no esté lista. El resto de la web ya la
+// anuncia como "Próximamente", así que aquí no debe aterrizar nadie todavía.
+export default async function TradingEnDirectoPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -32,14 +37,12 @@ export default async function CursosPage() {
         {isPremium ? (
           <div className="premium-gate-unlocked">
             <div className="premium-gate-unlocked-icon">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M8 1L1 5l7 4 7-4-7-4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-                <path d="M1 5v6M4 6.5v4.5a6 6 0 0 0 8 0V6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <Radio size={36} strokeWidth={1.5} aria-hidden="true" />
             </div>
-            <h1 className="premium-gate-unlocked-title">Cursos</h1>
+            <h1 className="premium-gate-unlocked-title">Trading en Directo</h1>
             <p className="premium-gate-unlocked-sub">
-              Los cursos están en preparación. Serás el primero en acceder cuando estén listos.
+              Las sesiones en directo están en preparación. Serás el primero en entrar cuando
+              empiecen.
             </p>
             <span className="premium-gate-coming-soon">Próximamente</span>
           </div>
@@ -48,14 +51,11 @@ export default async function CursosPage() {
             <div className="premium-gate-header">
               <div className="premium-gate-pill">PREMIUM</div>
               <div className="premium-gate-icon">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M8 1L1 5l7 4 7-4-7-4Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-                  <path d="M1 5v6M4 6.5v4.5a6 6 0 0 0 8 0V6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <Radio size={36} strokeWidth={1.5} aria-hidden="true" />
               </div>
-              <h1 className="premium-gate-title">Cursos completos</h1>
+              <h1 className="premium-gate-title">Trading en Directo</h1>
               <p className="premium-gate-sub">
-                Accede a todos nuestros cursos de criptomonedas, trading y blockchain.<br />
+                Futuros sobre Solana en gráficos de 5 minutos, operados en directo.<br />
                 Contenido exclusivo para miembros Premium.
               </p>
               <div className="premium-gate-actions">

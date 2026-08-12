@@ -97,7 +97,7 @@ export default async function DashboardPage() {
       label: "Educación",
       tools: [
         { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
-        { href: "#",         icon: "graduationcap", name: "Cursos",               desc: "Formación paso a paso",          locked: false, soon: true  },
+        { href: "#",         icon: "radio",         name: "Trading en Directo",   desc: "Futuros de Solana en 5 minutos", locked: false, soon: true  },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
       ],
     },

@@ -109,7 +109,8 @@ export default function AvisoLegalPage() {
         <div className="legal-disclaimer-box">
           <p>
             <strong>Importante.</strong> Todo el contenido de {LEGAL.marca} —artículos, análisis, guías,
-            cursos, herramientas, el Diario de Trading y cualquier otro material— tiene carácter
+            sesiones de trading en directo, herramientas, el Diario de Trading y cualquier otro
+            material— tiene carácter
             <strong> exclusivamente educativo e informativo</strong>.
           </p>
           <p>

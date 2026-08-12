@@ -64,6 +64,12 @@ const nextConfig: NextConfig = {
         destination: "/guias",
         permanent: true,
       },
+      // Los cursos se retiraron: su hueco lo ocupa Trading en Directo.
+      {
+        source: "/cursos",
+        destination: "/trading-en-directo",
+        permanent: true,
+      },
     ];
   },
 };

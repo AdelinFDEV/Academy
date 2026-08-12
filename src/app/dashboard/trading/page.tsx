@@ -33,7 +33,8 @@ export default async function TradingPage() {
     .from("trades")
     .select("*")
     .eq("user_id", user.id)
-    .order("date", { ascending: true });
+    .order("date", { ascending: true })
+    .order("created_at", { ascending: true });
 
   const name = profile?.full_name || user.email?.split("@")[0] || "Trader";
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet,
   ListOrdered, MessagesSquare, Network, Unlock, Map,
-  LayoutGrid, X, GraduationCap, Files, Trophy, Target, PieChart, Award, Shield, Radar,
+  LayoutGrid, X, ChevronUp, Radio, Files, Trophy, Target, PieChart, Award, Shield, Radar,
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -13,7 +13,7 @@ const ICON_MAP = {
   notebookpen: NotebookPen, scaneye: ScanEye, wallet: Wallet,
   listordered: ListOrdered, messagessquare: MessagesSquare,
   network: Network, unlock: Unlock, map: Map,
-  graduationcap: GraduationCap, files: Files,
+  radio: Radio, files: Files,
   trophy: Trophy, target: Target, piechart: PieChart, award: Award,
   shield: Shield, radar: Radar,
 } as const;
@@ -97,17 +97,27 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
         ))}
       </aside>
 
-      {/* ── Mobile FAB ── */}
-      <button className="dtb-fab" onClick={() => setOpen(true)} aria-label="Ver herramientas">
-        <LayoutGrid size={17} aria-hidden="true" />
-        <span className="dtb-fab-label">Herramientas</span>
+      {/* ── Barra inferior en móvil: sólida y pegada al borde del dispositivo,
+             no flotante. La flecha indica que despliega hacia arriba. ── */}
+      <button
+        className="dtb-dock"
+        onClick={() => setOpen(true)}
+        aria-label="Ver herramientas"
+        aria-expanded={open}
+      >
+        <span className="dtb-dock-icon" aria-hidden="true">
+          <LayoutGrid size={16} />
+        </span>
+        <span className="dtb-dock-label">Herramientas</span>
+        <span className="dtb-dock-chevron" aria-hidden="true">
+          <ChevronUp size={18} strokeWidth={2.5} />
+        </span>
       </button>
 
-      {/* ── Mobile bottom sheet ── */}
+      {/* ── Panel a pantalla completa ── */}
       {open && (
         <div className={`dtb-overlay${closing ? " dtb-overlay--closing" : ""}`} onClick={close}>
           <div className={`dtb-sheet${closing ? " dtb-sheet--closing" : ""}`} onClick={(e) => e.stopPropagation()}>
-            <button className="dtb-sheet-handle" onClick={close} aria-label="Cerrar" />
             <div className="dtb-sheet-head">
               <span className="dtb-sheet-title">
                 <LayoutGrid size={16} aria-hidden="true" />

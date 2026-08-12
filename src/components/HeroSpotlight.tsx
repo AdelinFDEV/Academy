@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  NotebookPen, Map, GraduationCap, Unlock, Lock, ArrowRight, Crown,
+  NotebookPen, Map, Radio, MessagesSquare, Unlock, Lock, ArrowRight, Crown,
   Trophy, ClipboardCheck, BadgeCheck, Hourglass, Sparkles, BookOpenText,
-  LayoutDashboard, Gem, UserRound, Check, Wallet, LineChart,
+  LayoutDashboard, Gem, UserRound, Check, Wallet, Target, Scale,
 } from "lucide-react";
 import { DefiLlamaGlyph } from "@/components/BrandMarks";
 import { ASESORIA_PLANS } from "@/lib/asesoria";
@@ -45,7 +45,7 @@ const FEATURES = [
   },
   {
     id: "prediccion",
-    icon: LineChart,
+    icon: Target,
     label: "Predicción de Precio",
     tag: "Gratis",
     color: "#22d3ee",
@@ -55,7 +55,7 @@ const FEATURES = [
       { icon: BadgeCheck, label: "Datos en tiempo real" },
     ],
     href: "/calculadora",
-    viz: "target",
+    viz: "readout",
   },
   {
     id: "diario",
@@ -104,18 +104,19 @@ const FEATURES = [
     viz: "vest",
   },
   {
-    id: "cursos",
-    icon: GraduationCap,
-    label: "Cursos",
+    id: "directo",
+    icon: Radio,
+    label: "Trading en Directo",
     tag: "Próximamente",
     color: "#a3a3ff",
-    desc: "Formación estructurada de principio a fin, con módulos y evaluaciones.",
-    note: "Por muchos cursos que lancemos, todos estarán siempre incluidos en tu única suscripción Premium de 19,99€/mes.",
+    desc: "Futuros sobre Solana en gráficos de 5 minutos, operados en directo: verás cada entrada y cada salida en el momento en que se toman.",
+    note: "Estará incluido en tu única suscripción Premium de 19,99€/mes, sin coste extra.",
     chips: [
       { icon: Hourglass, label: "En preparación" },
+      { icon: MessagesSquare, label: "Chat de preguntas" },
     ],
     soon: true,
-    viz: "modules",
+    viz: "live",
   },
 ];
 
@@ -139,14 +140,16 @@ function VizPath() {
 
 // Diario: curva de equity.
 //
-// Los dos micrográficos se estiran a lo ancho de la tarjeta con
+// El micrográfico se estira a lo ancho de la tarjeta con
 // preserveAspectRatio="none", lo que deforma el grosor del trazo según la
 // inclinación de cada tramo. Por eso todos los trazos llevan
 // vector-effect="non-scaling-stroke": el grosor se calcula tras la
 // transformación y queda uniforme sea cual sea el ancho de la tarjeta.
 // Termina en x=200 y no en 220: el punto final necesita aire contra el borde
-// derecho de la tarjeta. Queda a la altura de la diana del gráfico de
-// Predicción (x=192), así las dos tarjetas respiran igual.
+// derecho de la tarjeta.
+//
+// Es el único gráfico del mosaico a propósito: el Diario sí vive de una curva.
+// El resto de tarjetas enseña su herramienta con otro lenguaje visual.
 const SPARK_LINE =
   "M0 50 C11 47 15 44 22 45 C31 46 33 48 40 48 C51 48 53 38 62 36 " +
   "C73 34 75 40 84 40 C95 40 96 29 105 28 C116 27 118 32 127 32 " +
@@ -209,68 +212,33 @@ function VizVest() {
   );
 }
 
-// Predicción: histórico sólido → proyección punteada hasta el precio objetivo.
-const TARGET_HIST =
-  "M0 50 C14 47 18 43 30 43 C42 43 44 46 56 45 C70 44 70 34 84 33 " +
-  "C96 32 100 36 112 34 C118 33 120 31 124 30";
-const TARGET_PROJ = "M124 30 C148 26 168 18 192 11";
-
-function VizTarget() {
+// Predicción: la lectura que devuelve la calculadora, no un gráfico. La
+// herramienta no dibuja una curva — responde a "¿cuánto market cap hace falta
+// para ese precio?", así que la tarjeta enseña justo eso: la pregunta, el
+// número que sale y contra qué se mide. Cifras de ejemplo, deliberadamente
+// redondas: ilustran la lectura, no fingen ser el dato en vivo.
+function VizReadout() {
   return (
-    <svg
-      className="hero-viz-target"
-      viewBox="0 0 220 58"
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="heroTargetFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#22d3ee" stopOpacity="0.3" />
-          <stop offset="0.75" stopColor="#22d3ee" stopOpacity="0.05" />
-          <stop offset="1" stopColor="#22d3ee" stopOpacity="0" />
-        </linearGradient>
-      </defs>
+    <div className="hero-viz-readout" aria-hidden="true">
+      <div className="hero-viz-readout-line">
+        <span className="hero-viz-readout-key">Precio objetivo</span>
+        <span className="hero-viz-readout-num">10,00$</span>
+      </div>
 
-      {/* Area del tramo ya conocido, para que no flote una linea suelta */}
-      <path d={`${TARGET_HIST} L124 58 L0 58 Z`} fill="url(#heroTargetFill)" />
+      <div className="hero-viz-readout-op">
+        <span>necesita</span>
+      </div>
 
-      {/* Nivel del precio objetivo: explica hacia donde apunta la proyeccion */}
-      <line
-        x1="0" y1="11" x2="192" y2="11"
-        stroke="#22d3ee"
-        strokeWidth="1"
-        strokeDasharray="2 6"
-        opacity="0.28"
-        vectorEffect="non-scaling-stroke"
-      />
+      <div className="hero-viz-readout-line">
+        <span className="hero-viz-readout-key">Market cap</span>
+        <span className="hero-viz-readout-num is-result">96,4 B$</span>
+      </div>
 
-      <path
-        className="hero-viz-draw"
-        d={TARGET_HIST}
-        fill="none"
-        stroke="#22d3ee"
-        strokeWidth="2.25"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      <path
-        className="hero-viz-proj"
-        d={TARGET_PROJ}
-        fill="none"
-        stroke="#22d3ee"
-        strokeWidth="2"
-        strokeDasharray="5 5"
-        strokeLinecap="round"
-        opacity="0.8"
-        vectorEffect="non-scaling-stroke"
-      />
-
-      {/* Diana del objetivo */}
-      <circle className="hero-viz-halo" cx="192" cy="11" r="7.5" fill="none" stroke="#22d3ee" strokeWidth="1.5" opacity="0.45" vectorEffect="non-scaling-stroke" />
-      <circle className="hero-viz-tip" cx="192" cy="11" r="3.6" fill="#22d3ee" />
-    </svg>
+      <span className="hero-viz-readout-ref">
+        <Scale size={11} strokeWidth={2.2} aria-hidden="true" />
+        Casi el market cap de SOL hoy
+      </span>
+    </div>
   );
 }
 
@@ -300,14 +268,24 @@ function VizFolio() {
   );
 }
 
-// Cursos: módulos en construcción, uno encendiéndose
-function VizModules() {
+// Trading en Directo: la cabecera de la sala — señal en directo, el par y la
+// temporalidad que se opera, y debajo lo que se ve durante la sesión.
+function VizLive() {
   return (
-    <div className="hero-viz-modules" aria-hidden="true">
-      <span className="is-on" />
-      <span className="is-pulse" />
-      <span />
-      <span />
+    <div className="hero-viz-live" aria-hidden="true">
+      <div className="hero-viz-live-bar">
+        <span className="hero-viz-live-tag">
+          <i className="hero-viz-live-dot" />
+          En directo
+        </span>
+        <span className="hero-viz-live-pair">
+          SOL <em>Futuros</em> <b>5m</b>
+        </span>
+      </div>
+      <div className="hero-viz-live-feed">
+        <span>Operativa comentada</span>
+        <span>Gestión de riesgo en vivo</span>
+      </div>
     </div>
   );
 }
@@ -317,8 +295,8 @@ const VIZ: Record<string, () => React.JSX.Element> = {
   spark: VizSpark,
   vest: VizVest,
   folio: VizFolio,
-  target: VizTarget,
-  modules: VizModules,
+  readout: VizReadout,
+  live: VizLive,
 };
 
 // Foco que sigue al cursor: expone la posición como variables CSS que el

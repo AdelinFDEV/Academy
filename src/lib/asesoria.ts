@@ -66,10 +66,10 @@ export const ASESORIA_PLANS: AsesoriaPlan[] = [
     id: "pack-trader",
     name: "Conviértete en Trader",
     tagline: "El programa completo, de cero a operativa propia",
-    price: "2.499€",
+    price: "1.499€",
     oldPrice: "3.499€",
     oldPriceValue: 3499,
-    priceValue: 2499,
+    priceValue: 1499,
     priceNote: "programa completo · seguimiento 30 días",
     audience:
       "Para quien no quiere resolver una duda suelta, sino construir un método completo y tener a alguien encima mientras lo pone en práctica.",

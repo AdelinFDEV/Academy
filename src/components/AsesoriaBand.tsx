@@ -19,7 +19,7 @@ const COPY: Record<Variant, { eyebrow: string; title: string; sub: string }> = {
   },
   premium: {
     eyebrow: "Un escalón más",
-    title: "Premium te da las herramientas. La asesoría me da a mí.",
+    title: "Premium te da las herramientas. La asesoría, mi tiempo contigo.",
     sub: "Si además de la academia quieres trabajar tu operativa conmigo en directo, esta es la vía.",
   },
   guide: {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
-  NotebookPen, Map, GraduationCap, Lock, Sparkles, Trophy,
+  NotebookPen, Map, Radio, MessagesSquare, ShieldCheck, Lock, Sparkles, Trophy,
   ClipboardCheck, BadgeCheck, Hourglass, ArrowRight,
   Radar, Unlock, Target, Eye, PieChart, Wallet, TrendingUp,
 } from "lucide-react";
@@ -157,9 +157,9 @@ export default function DashboardSpotlight({ isPremium }: Props) {
         </Link>
       </motion.div>
 
-      {/* ── Cursos ── */}
+      {/* ── Trading en Directo ── */}
       <motion.div
-        className="dash-spot-card dash-spot-card--cursos"
+        className="dash-spot-card dash-spot-card--directo"
         custom={2}
         initial="hidden"
         animate="visible"
@@ -167,22 +167,23 @@ export default function DashboardSpotlight({ isPremium }: Props) {
       >
         <div className="dash-spot-glow" />
         <div className="dash-spot-top">
-          <div className="dash-spot-icon dash-spot-icon--cursos">
-            <GraduationCap size={22} strokeWidth={2} />
+          <div className="dash-spot-icon dash-spot-icon--directo">
+            <Radio size={22} strokeWidth={2} />
           </div>
           <span className="dash-spot-badge dash-spot-badge--soon">
             <Hourglass size={11} /> Próximamente
           </span>
         </div>
 
-        <h3 className="dash-spot-title">Cursos</h3>
+        <h3 className="dash-spot-title">Trading en Directo</h3>
         <p className="dash-spot-desc">
-          Formación estructurada de principio a fin, con módulos y evaluaciones.
-          Uno de los pilares que vienen para la academia.
+          <strong>Futuros sobre Solana en gráficos de 5 minutos</strong>, operados en directo:
+          cada entrada y cada salida comentada en el momento en que se toma.
         </p>
 
         <div className="dash-spot-chips">
-          <span className="dash-spot-chip dash-spot-chip--muted"><GraduationCap size={12} /> Formación paso a paso</span>
+          <span className="dash-spot-chip dash-spot-chip--muted"><ShieldCheck size={12} /> Gestión de riesgo en vivo</span>
+          <span className="dash-spot-chip dash-spot-chip--muted"><MessagesSquare size={12} /> Chat de preguntas</span>
         </div>
 
         <span className="dash-spot-cta dash-spot-cta--soon">Muy pronto disponible</span>

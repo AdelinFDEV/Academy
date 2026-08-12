@@ -6,7 +6,7 @@ import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import {
-  FileText, Folder, BookOpen, GraduationCap, LayoutGrid,
+  FileText, Folder, BookOpen, GraduationCap, LayoutGrid, Radio,
   TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar,
 } from "lucide-react";
 
@@ -97,8 +97,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Diccionario Cripto
               </Link>
               <div className="blog-mobile-tool-link blog-mobile-tool-soon">
-                <GraduationCap size={15} aria-hidden="true" />
-                Cursos
+                <Radio size={15} aria-hidden="true" />
+                Trading en Directo
                 <span className="mobile-tool-soon-badge">Pronto</span>
               </div>
               <Link href="/guias" className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/guias")}`} onClick={close}>

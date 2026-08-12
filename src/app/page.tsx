@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { ArrowRight, BookA, MonitorPlay, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
+import { ArrowRight, BookA, Radio, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -138,7 +138,7 @@ export default async function HomePage() {
   const enrichedHero = enrichedPosts.find((p) => p.is_featured) ?? null;
 
   return (
-    <div className="blog-page">
+    <div className="blog-page home-page">
       <div className="bg-ambient" />
 
       {/* ── Nav ── */}
@@ -247,8 +247,8 @@ export default async function HomePage() {
                 <span className="sidebar-tool-label">Diccionario Cripto</span>
               </Link>
               <div className="sidebar-tool-link sidebar-tool-link--soon">
-                <MonitorPlay size={16} className="sidebar-tool-icon" />
-                <span className="sidebar-tool-label">Cursos</span>
+                <Radio size={16} className="sidebar-tool-icon" />
+                <span className="sidebar-tool-label">Trading en Directo</span>
                 <span className="sidebar-tool-badge--soon">Pronto</span>
               </div>
               <Link href="/guias" className="sidebar-tool-link sidebar-tool-link--gold">

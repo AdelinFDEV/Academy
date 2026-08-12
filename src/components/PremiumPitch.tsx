@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, NotebookPen, ShieldCheck, Crown, Gem, Check, Unlock, Wallet, GraduationCap, Radar, PieChart } from "lucide-react";
+import { ArrowRight, NotebookPen, ShieldCheck, Crown, Gem, Check, Unlock, Wallet, Radio, Radar, PieChart } from "lucide-react";
 import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 
 const FEATURES = [
@@ -104,9 +104,9 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
 
   const included = (
     <div className="premium-pitch-included">
-      <GraduationCap size={15} aria-hidden="true" />
+      <Radio size={15} aria-hidden="true" />
       <span>
-        Lancemos los cursos que lancemos, siempre estarán incluidos — sin coste extra,{" "}
+        El trading en directo llega pronto y entrará incluido — sin coste extra,{" "}
         <strong className="premium-pitch-included-em">exclusivamente para los usuarios Premium</strong>.
       </span>
     </div>

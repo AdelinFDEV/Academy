@@ -40,7 +40,8 @@ export default async function EstadisticasPage() {
     .from("trades")
     .select("id, pair, direction, pnl, result, date")
     .eq("user_id", user.id)
-    .order("date", { ascending: true });
+    .order("date", { ascending: true })
+    .order("created_at", { ascending: true });
 
   const all: Trade[] = trades ?? [];
   const total = all.length;

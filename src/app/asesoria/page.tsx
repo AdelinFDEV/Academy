@@ -194,7 +194,7 @@ export default async function AsesoriaPage() {
           <div className="ase-plan-grid">
             {ASESORIA_PLANS.map((plan, idx) => {
               const Glyph = PLAN_GLYPHS[plan.id] ?? UserRound;
-              // "2.499€" → cifra y divisa por separado, para componer la
+              // "1.499€" → cifra y divisa por separado, para componer la
               // divisa como superíndice pequeño junto al número gigante.
               const amount = plan.price.replace("€", "");
               return (
