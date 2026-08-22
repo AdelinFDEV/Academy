@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ArrowRight, BookA, Radio, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import TelegramBanner from "@/components/TelegramBanner";
 import SiteNav from "@/components/SiteNav";
 import GuideSearch from "@/components/GuideSearch";
 import HomeFeed, { HeroPost } from "@/components/HomeFeed";
@@ -333,6 +334,11 @@ export default async function HomePage() {
       </section>
 
       <Footer />
+
+      {/* El username sale del entorno en el servidor: TELEGRAM_BOT_USERNAME no
+          lleva el prefijo NEXT_PUBLIC_, así que no es accesible desde el
+          cliente y hay que pasárselo como prop. */}
+      <TelegramBanner botUsername={process.env.TELEGRAM_BOT_USERNAME || "AdelinBTC_Bot"} />
     </div>
   );
 }

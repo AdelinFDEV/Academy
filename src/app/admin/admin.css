@@ -1949,27 +1949,49 @@
 .admin-guide-table-rate.good { color: #4ade80; }
 
 /* ── Control Premium (/admin/premium) ─────────────────────────────────────── */
+/*
+ * Paleta con más contraste que el resto del panel a propósito: aquí se leen
+ * cifras, no se navega, y las etiquetas en #4a6080 se perdían sobre el fondo.
+ */
+
+.cp-group-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 26px 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #93a9c8;
+}
+
+.cp-group-title svg { color: var(--accent-orange, #f97316); }
 
 .cp-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 12px;
-  margin-bottom: 26px;
 }
 
 .cp-card {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   padding: 16px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.028);
+}
+
+.cp-card--destacada {
+  border-color: rgba(249, 115, 22, 0.32);
+  background: rgba(249, 115, 22, 0.06);
 }
 
 .cp-card--alerta {
-  border-color: rgba(245, 158, 11, 0.45);
-  background: rgba(245, 158, 11, 0.07);
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.09);
 }
 
 .cp-card-label {
@@ -1977,57 +1999,112 @@
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #4a6080;
+  letter-spacing: 0.07em;
+  color: #9db2ce;
 }
 
 .cp-card-value {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
-  color: #dce8f8;
-  line-height: 1.15;
+  color: #f2f7ff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
-.cp-card-foot { font-size: 11px; color: #4a6080; }
+.cp-card--destacada .cp-card-value { color: #ffb27a; }
+
+.cp-card-foot {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #8aa0bd;
+}
+
+/* Mini gráfica de altas por mes */
+.cp-card--grafica { gap: 10px; }
+
+.cp-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 62px;
+}
+
+.cp-barra-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 4px;
+}
+
+.cp-barra {
+  width: 100%;
+  min-height: 3px;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, #f97316, #c2410c);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.cp-barra-num {
+  position: absolute;
+  top: -14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffb27a;
+}
+
+.cp-barra-mes {
+  font-size: 9.5px;
+  color: #8aa0bd;
+  text-transform: capitalize;
+}
 
 .cp-alerta {
-  margin: -12px 0 26px;
+  margin: 14px 0 0;
   padding: 12px 16px;
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  border: 1px solid rgba(245, 158, 11, 0.45);
   border-radius: 10px;
-  background: rgba(245, 158, 11, 0.08);
+  background: rgba(245, 158, 11, 0.09);
   font-size: 13px;
-  line-height: 1.55;
-  color: #e8d5b0;
+  line-height: 1.6;
+  color: #f0dcb8;
 }
 
-.cp-alerta strong { color: #f59e0b; }
+.cp-alerta strong { color: #fbbf24; }
 
 .cp-section-title {
-  margin: 30px 0 6px;
-  font-size: 15px;
+  margin: 34px 0 6px;
+  font-size: 16px;
   font-weight: 700;
-  color: #dce8f8;
+  color: #f2f7ff;
 }
 
 .cp-section-hint {
   margin: 0 0 12px;
-  font-size: 12px;
-  color: #4a6080;
+  font-size: 12.5px;
+  color: #8aa0bd;
 }
 
 .cp-table td { vertical-align: middle; }
 
-.cp-user { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.cp-user span { font-weight: 600; color: #dce8f8; }
-.cp-user small { font-size: 11px; color: #4a6080; }
+/* Cabeceras de tabla más legibles que las del resto del panel. */
+.cp-table th { color: #9db2ce; }
 
-.cp-muted { color: #3d5170; }
+.cp-user { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.cp-user span { font-weight: 600; color: #f2f7ff; }
+.cp-user small { font-size: 11px; color: #8aa0bd; }
+
+.cp-muted { color: #6b82a3; }
 
 .cp-tg {
-  color: var(--accent-orange, #f97316);
+  color: #ff9e5e;
   text-decoration: none;
   font-weight: 600;
   white-space: nowrap;
@@ -2036,31 +2113,31 @@
 
 .cp-tag {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 100px;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 700;
   white-space: nowrap;
 }
 
-.cp-tag--ok     { background: rgba(74, 222, 128, 0.13); color: #4ade80; }
-.cp-tag--warn   { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-.cp-tag--bad    { background: rgba(248, 113, 113, 0.13); color: #f87171; }
-.cp-tag--admin  { background: rgba(230, 180, 85, 0.15);  color: #e6b455; }
-.cp-tag--manual { background: rgba(129, 140, 248, 0.15); color: #818cf8; }
-.cp-tag--muted  { background: rgba(255, 255, 255, 0.05); color: #4a6080; }
+.cp-tag--ok     { background: rgba(74, 222, 128, 0.16); color: #6ee7a0; }
+.cp-tag--warn   { background: rgba(245, 158, 11, 0.18); color: #fbbf24; }
+.cp-tag--bad    { background: rgba(248, 113, 113, 0.16); color: #fca5a5; }
+.cp-tag--admin  { background: rgba(230, 180, 85, 0.18);  color: #f0c674; }
+.cp-tag--manual { background: rgba(129, 140, 248, 0.18); color: #a5b4fc; }
+.cp-tag--muted  { background: rgba(255, 255, 255, 0.07); color: #93a9c8; }
 
 .cp-avisado { margin-left: 6px; font-size: 11px; cursor: help; }
 
-.cp-origen { font-size: 12px; color: #8ca3c0; white-space: nowrap; }
-.cp-origen--manual { color: #818cf8; }
+.cp-origen { font-size: 12px; color: #b8cbe4; white-space: nowrap; }
+.cp-origen--manual { color: #a5b4fc; }
 
-.cp-dias { font-weight: 700; color: #c4d4e8; }
-.cp-dias--pocos { color: #f59e0b; }
+.cp-dias { font-weight: 700; color: #e2ecf9; }
+.cp-dias--pocos { color: #fbbf24; }
 
 .cp-nota {
-  margin-top: 22px;
-  font-size: 11.5px;
-  line-height: 1.6;
-  color: #4a6080;
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #7e94b2;
 }

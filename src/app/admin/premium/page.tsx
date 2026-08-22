@@ -63,6 +63,100 @@ function euros(n: number): string {
   return n.toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 }
 
+function pct(parte: number, total: number): string {
+  if (!total) return "—";
+  return `${Math.round((parte / total) * 100)}%`;
+}
+
+/**
+ * Todo lo que depende de la fecha actual se calcula aquí, en una función de
+ * módulo, y no en el cuerpo del componente: llamar a Date.now() durante el
+ * render es una función impura y ESLint lo marca (regla react-hooks/purity).
+ */
+function calcularMetricas(todos: Fila[]) {
+  const ahora = Date.now();
+  const hace30 = ahora - 30 * DIA;
+
+  const activos = todos.filter((f) => f.role === "premium" || f.role === "admin");
+  const dePago = activos.filter((f) => f.role === "premium");
+  const bajas = todos.filter((f) => f.role === "free" && f.premium_since);
+
+  const altas30 = todos.filter(
+    (f) => f.premium_since && new Date(f.premium_since).getTime() >= hace30
+  ).length;
+
+  const bajas30 = bajas.filter(
+    (f) =>
+      f.subscription_current_period_end &&
+      new Date(f.subscription_current_period_end).getTime() >= hace30
+  ).length;
+
+  // Renovaciones que caen en los próximos 30 días y que NO están canceladas:
+  // es el dinero que razonablemente va a entrar.
+  const previstos30 =
+    dePago.filter(
+      (f) =>
+        !f.subscription_cancel_at_period_end &&
+        f.subscription_current_period_end &&
+        new Date(f.subscription_current_period_end).getTime() <= ahora + 30 * DIA
+    ).length * PREMIUM_PRICE_EUR;
+
+  // Vida media: solo se puede medir sobre quien ya se fue. Con pocas bajas el
+  // dato es ruido, así que se marca como no disponible por debajo de 3.
+  const duraciones = bajas
+    .filter((f) => f.premium_since && f.subscription_current_period_end)
+    .map((f) =>
+      Math.max(
+        1,
+        (new Date(f.subscription_current_period_end as string).getTime() -
+          new Date(f.premium_since as string).getTime()) /
+          (30.44 * DIA)
+      )
+    );
+  const vidaMedia =
+    duraciones.length >= 3
+      ? duraciones.reduce((a, b) => a + b, 0) / duraciones.length
+      : null;
+
+  // Base del churn: quien podía darse de baja este mes (los que siguen + los
+  // que ya se fueron en la ventana).
+  const baseChurn = dePago.length + bajas30;
+
+  return {
+    activos,
+    dePago,
+    bajas,
+    altas30,
+    bajas30,
+    previstos30,
+    vidaMedia,
+    churn: baseChurn > 0 ? bajas30 / baseChurn : null,
+    ltv: vidaMedia !== null ? vidaMedia * PREMIUM_PRICE_EUR : null,
+    ingresosTotales: todos.reduce(
+      (suma, f) => suma + (f.premium_since ? mesesCobrados(f.premium_since) * PREMIUM_PRICE_EUR : 0),
+      0
+    ),
+  };
+}
+
+/** Altas Premium por mes en los últimos 6 meses, para la gráfica de barras. */
+function altasPorMes(todos: Fila[]): { etiqueta: string; total: number }[] {
+  const ahora = new Date();
+  const meses: { etiqueta: string; total: number }[] = [];
+
+  for (let i = 5; i >= 0; i--) {
+    const ref = new Date(ahora.getFullYear(), ahora.getMonth() - i, 1);
+    const fin = new Date(ahora.getFullYear(), ahora.getMonth() - i + 1, 1);
+    const total = todos.filter((f) => {
+      if (!f.premium_since) return false;
+      const t = new Date(f.premium_since).getTime();
+      return t >= ref.getTime() && t < fin.getTime();
+    }).length;
+    meses.push({ etiqueta: ref.toLocaleDateString("es-ES", { month: "short" }), total });
+  }
+  return meses;
+}
+
 function etiquetaEstado(f: Fila): { texto: string; clase: string } {
   if (f.role === "admin") return { texto: "Admin", clase: "cp-tag--admin" };
   if (f.subscription_cancel_at_period_end && f.subscription_status === "active") {
@@ -100,9 +194,10 @@ export default async function AdminPremiumPage() {
   });
 
   const todos = (perfiles ?? []) as Fila[];
-  const activos = todos.filter((f) => f.role === "premium" || f.role === "admin");
-  // Tuvo Premium alguna vez y ya no lo tiene: son las bajas.
-  const bajas = todos.filter((f) => f.role === "free" && f.premium_since);
+  const m = calcularMetricas(todos);
+  const { activos, dePago, bajas } = m;
+  const grafica = altasPorMes(todos);
+  const registrados = todos.length;
 
   // Pertenencia real al canal, solo para los que tienen Telegram vinculado.
   const conTelegram = activos.filter((f) => f.telegram_user_id);
@@ -116,13 +211,9 @@ export default async function AdminPremiumPage() {
     });
   }
 
-  const dePago = activos.filter((f) => f.role === "premium");
   const mrr = dePago.filter((f) => !f.subscription_cancel_at_period_end).length * PREMIUM_PRICE_EUR;
   const cancelan = activos.filter((f) => f.subscription_cancel_at_period_end).length;
-  const ingresosTotales = todos.reduce(
-    (suma, f) => suma + (f.premium_since ? mesesCobrados(f.premium_since) * PREMIUM_PRICE_EUR : 0),
-    0
-  );
+  const dentro = Object.values(enCanal).filter((v) => v === "dentro").length;
 
   // El bot también cuenta como miembro del canal.
   const previsto = conTelegram.length + 1;
@@ -139,38 +230,117 @@ export default async function AdminPremiumPage() {
         </div>
       </div>
 
-      {/* — Resumen — */}
+      {/* — Dinero — */}
+      <h2 className="cp-group-title"><Icon name="trending" size={14} /> Dinero</h2>
       <div className="cp-cards">
-        <div className="cp-card">
-          <span className="cp-card-label"><Icon name="crown" size={14} /> Premium activos</span>
-          <strong className="cp-card-value">{dePago.length}</strong>
-          <span className="cp-card-foot">{cancelan > 0 ? `${cancelan} no renovarán` : "ninguna baja prevista"}</span>
-        </div>
-
-        <div className="cp-card">
-          <span className="cp-card-label"><Icon name="trending" size={14} /> MRR estimado</span>
+        <div className="cp-card cp-card--destacada">
+          <span className="cp-card-label">MRR</span>
           <strong className="cp-card-value">{euros(mrr)}</strong>
-          <span className="cp-card-foot">a {PREMIUM_PRICE_EUR}€/mes</span>
+          <span className="cp-card-foot">ingreso recurrente al mes</span>
         </div>
 
         <div className="cp-card">
-          <span className="cp-card-label"><Icon name="chart" size={14} /> Ingresos acumulados</span>
-          <strong className="cp-card-value">{euros(ingresosTotales)}</strong>
-          <span className="cp-card-foot">estimado desde el alta de cada uno</span>
+          <span className="cp-card-label">Previsto 30 días</span>
+          <strong className="cp-card-value">{euros(m.previstos30)}</strong>
+          <span className="cp-card-foot">renovaciones que tocan y no están canceladas</span>
+        </div>
+
+        <div className="cp-card">
+          <span className="cp-card-label">Ingresos acumulados</span>
+          <strong className="cp-card-value">{euros(m.ingresosTotales)}</strong>
+          <span className="cp-card-foot">desde el alta de cada usuario</span>
+        </div>
+
+        <div className="cp-card">
+          <span className="cp-card-label">LTV medio</span>
+          <strong className="cp-card-value">{m.ltv !== null ? euros(m.ltv) : "—"}</strong>
+          <span className="cp-card-foot">
+            {m.ltv !== null
+              ? `${m.vidaMedia?.toFixed(1)} meses de media`
+              : "hacen falta 3 bajas para calcularlo"}
+          </span>
+        </div>
+      </div>
+
+      {/* — Comunidad — */}
+      <h2 className="cp-group-title"><Icon name="users" size={14} /> Comunidad</h2>
+      <div className="cp-cards">
+        <div className="cp-card cp-card--destacada">
+          <span className="cp-card-label">Premium activos</span>
+          <strong className="cp-card-value">{dePago.length}</strong>
+          <span className="cp-card-foot">
+            {m.altas30 > 0 ? `+${m.altas30} en 30 días` : "sin altas este mes"}
+            {cancelan > 0 ? ` · ${cancelan} se van` : ""}
+          </span>
+        </div>
+
+        <div className="cp-card">
+          <span className="cp-card-label">Conversión</span>
+          <strong className="cp-card-value">{pct(dePago.length, registrados)}</strong>
+          <span className="cp-card-foot">{dePago.length} de {registrados} registrados</span>
+        </div>
+
+        <div className="cp-card">
+          <span className="cp-card-label">Con Telegram</span>
+          <strong className="cp-card-value">{pct(conTelegram.length, activos.length)}</strong>
+          <span className="cp-card-foot">{conTelegram.length} de {activos.length} han vinculado</span>
         </div>
 
         <div className={`cp-card${descuadre !== null && descuadre > 0 ? " cp-card--alerta" : ""}`}>
-          <span className="cp-card-label"><Icon name="users" size={14} /> Miembros del canal</span>
+          <span className="cp-card-label">Dentro del canal</span>
           <strong className="cp-card-value">{miembrosCanal ?? "—"}</strong>
           <span className="cp-card-foot">
             {miembrosCanal === null
               ? "no se pudo consultar"
-              : descuadre === null
-                ? ""
-                : descuadre > 0
-                  ? `⚠ ${descuadre} de más — ¿aprobado a mano?`
-                  : `${conTelegram.length} vinculados + el bot`}
+              : descuadre !== null && descuadre > 0
+                ? `⚠ ${descuadre} de más — ¿aprobado a mano?`
+                : `${dentro} premium usándolo + el bot`}
           </span>
+        </div>
+      </div>
+
+      {/* — Salud — */}
+      <h2 className="cp-group-title"><Icon name="activity" size={14} /> Salud</h2>
+      <div className="cp-cards">
+        <div className={`cp-card${m.churn !== null && m.churn > 0.1 ? " cp-card--alerta" : ""}`}>
+          <span className="cp-card-label">Churn mensual</span>
+          <strong className="cp-card-value">
+            {m.churn !== null ? `${Math.round(m.churn * 100)}%` : "—"}
+          </strong>
+          <span className="cp-card-foot">
+            {m.bajas30} baja{m.bajas30 === 1 ? "" : "s"} en 30 días
+          </span>
+        </div>
+
+        <div className="cp-card">
+          <span className="cp-card-label">Bajas totales</span>
+          <strong className="cp-card-value">{bajas.length}</strong>
+          <span className="cp-card-foot">fueron Premium y ya no</span>
+        </div>
+
+        <div className="cp-card">
+          <span className="cp-card-label">Sin usar el canal</span>
+          <strong className="cp-card-value">{conTelegram.length - dentro}</strong>
+          <span className="cp-card-foot">pagan pero no están dentro</span>
+        </div>
+
+        {/* Altas por mes: con pocos datos una gráfica grande engaña, así que
+            van barras mínimas dentro de una tarjeta más. */}
+        <div className="cp-card cp-card--grafica">
+          <span className="cp-card-label">Altas por mes</span>
+          <div className="cp-barras">
+            {grafica.map((mes, i) => {
+              const max = Math.max(...grafica.map((g) => g.total), 1);
+              return (
+                <div key={i} className="cp-barra-col" title={`${mes.total} altas`}>
+                  <div className="cp-barra" style={{ height: `${(mes.total / max) * 100}%` }}>
+                    {mes.total > 0 && <span className="cp-barra-num">{mes.total}</span>}
+                  </div>
+                  <span className="cp-barra-mes">{mes.etiqueta}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
