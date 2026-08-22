@@ -45,6 +45,24 @@ export function getChannelInviteLink(): string | null {
 }
 
 /**
+ * Canal público gratuito. Se admite el @usuario además del id numérico porque
+ * es público y Telegram lo acepta igual, así que no hace falta buscar el id.
+ *
+ * Devuelve null si no está configurado: sin canal free el anunciador sigue
+ * funcionando, simplemente publica solo en el privado.
+ */
+export function getFreeChannelId(): string | null {
+  return process.env.TELEGRAM_FREE_CHANNEL_ID || "@FreeAdelinBTC";
+}
+
+/** Enlace público al canal gratuito, para invitar desde el bot y la web. */
+export function getFreeChannelUrl(): string {
+  const id = getFreeChannelId();
+  // Un id numérico (-100…) no sirve como URL; solo el @usuario.
+  return id && id.startsWith("@") ? `https://t.me/${id.slice(1)}` : "https://t.me/FreeAdelinBTC";
+}
+
+/**
  * Chat al que llegan los mensajes de soporte. Opcional a propósito: si no se
  * define, quien llama lo resuelve desde la base de datos (el Telegram del
  * admin). Definirlo sirve para apuntar a un grupo y repartir el soporte entre
@@ -279,9 +297,14 @@ export async function getChannelMemberCount(): Promise<number | null> {
  */
 export async function sendChannelPost(
   texto: string,
-  opciones?: { imagen?: string | null; botones?: Boton[] | Boton[][] }
+  opciones?: {
+    imagen?: string | null;
+    botones?: Boton[] | Boton[][];
+    /** Canal de destino. Por defecto el privado de Premium. */
+    chatId?: string;
+  }
 ) {
-  const chatId = getChannelId();
+  const chatId = opciones?.chatId ?? getChannelId();
   const reply_markup = construirTeclado(opciones?.botones);
 
   if (opciones?.imagen) {

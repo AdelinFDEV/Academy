@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getLatestVideos } from "@/lib/youtube";
-import { getSiteUrl, sendChannelPost } from "@/lib/telegram";
+import { getFreeChannelId, getSiteUrl, sendChannelPost } from "@/lib/telegram";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -83,6 +83,70 @@ function plantillaVideo(video: { title: string }) {
   return `🎥 NUEVO VÍDEO EN YOUTUBE\n\n${video.title}`;
 }
 
+/** Versión para el canal gratuito de algo que solo está dentro de Premium.
+ *  No lleva el contenido, lleva el motivo para suscribirse. */
+function plantillaAnzuelo(tipo: "guía" | "entrada", titulo: string) {
+  return (
+    `🔒 NUEVA ${tipo === "guía" ? "GUÍA" : "ENTRADA"} PREMIUM\n\n` +
+    `${titulo}\n\n` +
+    "Está dentro de Premium, junto al canal privado y el resto de herramientas."
+  );
+}
+
+/**
+ * A qué canales va cada cosa.
+ *
+ * La regla nace de una idea simple: un canal de pago lleno de lo mismo que hay
+ * gratis deja de sentirse como algo de pago. Así que el contenido gratuito va
+ * solo al canal free, y lo Premium va completo al canal privado y como reclamo
+ * al gratuito — que es justo donde está quien todavía no ha pagado.
+ *
+ * Duplicar el aviso gratuito en ambos canales tampoco ayudaría: mucha gente
+ * está en los dos y recibiría el mismo mensaje dos veces.
+ */
+async function publicarSegunPlan(opciones: {
+  esPremium: boolean;
+  tipo: "guía" | "entrada";
+  titulo: string;
+  texto: string;
+  imagen?: string | null;
+  url: string;
+  etiquetaBoton: string;
+}) {
+  const canalFree = getFreeChannelId();
+
+  if (!opciones.esPremium) {
+    // Gratuito: solo al canal free. Si no hay canal free configurado, se
+    // publica en el privado para no perder el aviso.
+    await sendChannelPost(opciones.texto, {
+      imagen: opciones.imagen,
+      botones: [{ text: opciones.etiquetaBoton, url: opciones.url }],
+      chatId: canalFree ?? undefined,
+    });
+    return;
+  }
+
+  // Premium: el aviso completo al canal privado…
+  await sendChannelPost(opciones.texto, {
+    imagen: opciones.imagen,
+    botones: [{ text: opciones.etiquetaBoton, url: opciones.url }],
+  });
+
+  // …y el reclamo al gratuito. Que falle este no debe dar el aviso por
+  // perdido: el importante, el de los que pagan, ya salió.
+  if (canalFree) {
+    try {
+      await sendChannelPost(plantillaAnzuelo(opciones.tipo, opciones.titulo), {
+        imagen: opciones.imagen,
+        botones: [{ text: "💎 Ver qué incluye Premium", url: `${getSiteUrl()}/premium` }],
+        chatId: canalFree,
+      });
+    } catch (err) {
+      console.error("[announce] Falló el reclamo en el canal free:", err);
+    }
+  }
+}
+
 // ── Anunciadores ─────────────────────────────────────────────────────────────
 
 async function anunciarGuias(admin: Admin): Promise<string[]> {
@@ -94,8 +158,13 @@ async function anunciarGuias(admin: Admin): Promise<string[]> {
     if (!(await marcar(admin, "guia", guia.slug))) continue;
 
     try {
-      await sendChannelPost(plantillaGuia(guia), {
-        botones: [{ text: "📖 Abrir la guía", url: `${getSiteUrl()}/guias/${guia.slug}` }],
+      await publicarSegunPlan({
+        esPremium: guia.type === "premium",
+        tipo: "guía",
+        titulo: guia.title,
+        texto: plantillaGuia(guia),
+        url: `${getSiteUrl()}/guias/${guia.slug}`,
+        etiquetaBoton: "📖 Abrir la guía",
       });
       anunciadas.push(guia.slug);
     } catch (err) {
@@ -132,9 +201,14 @@ async function anunciarEntradas(admin: Admin, soloSlug?: string): Promise<string
     if (!(await marcar(admin, "entrada", post.slug))) continue;
 
     try {
-      await sendChannelPost(plantillaEntrada(post), {
+      await publicarSegunPlan({
+        esPremium: !!post.is_premium,
+        tipo: "entrada",
+        titulo: post.title,
+        texto: plantillaEntrada(post),
         imagen: post.cover_image,
-        botones: [{ text: "📰 Leer ahora", url: `${getSiteUrl()}/post/${post.slug}` }],
+        url: `${getSiteUrl()}/post/${post.slug}`,
+        etiquetaBoton: "📰 Leer ahora",
       });
       anunciadas.push(post.slug);
     } catch (err) {
@@ -156,9 +230,11 @@ async function anunciarVideos(admin: Admin): Promise<string[]> {
     if (!(await marcar(admin, "video", video.id))) continue;
 
     try {
+      // Los vídeos de YouTube son públicos: su sitio es el canal gratuito.
       await sendChannelPost(plantillaVideo(video), {
         imagen: video.thumbnail,
         botones: [{ text: "▶️ Ver en YouTube", url: video.url }],
+        chatId: getFreeChannelId() ?? undefined,
       });
       anunciados.push(video.id);
     } catch (err) {
