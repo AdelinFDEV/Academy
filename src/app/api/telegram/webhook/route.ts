@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import type { Boton } from "@/lib/telegram";
 import {
   answerCallbackQuery,
@@ -9,6 +10,8 @@ import {
   getAdminChatUrl,
   getChannelId,
   getChannelInviteLink,
+  getChannelMemberCount,
+  getLogChatId,
   getCuentaUrl,
   getPremiumUrl,
   getSiteUrl,
@@ -38,11 +41,20 @@ type CallbackQuery = {
   data?: string;
   message?: { message_id: number; chat: { id: number } };
 };
+/** Alta o baja de alguien en un canal. Telegram NO envía este tipo de update
+ *  salvo que se pida a mano en allowed_updates (ver telegram-doctor.mjs). */
+type ChatMemberUpdated = {
+  chat: { id: number; title?: string };
+  old_chat_member: { status: string };
+  new_chat_member: { status: string; user: TelegramUser };
+};
+
 type TelegramUpdate = {
   update_id?: number;
   message?: TelegramMessage;
   chat_join_request?: ChatJoinRequest;
   callback_query?: CallbackQuery;
+  chat_member?: ChatMemberUpdated;
 };
 
 /** Perfil con lo que necesita el menú y la ficha de estado. */
@@ -408,6 +420,27 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
       telegram_user_id: req.from.id,
       action: "approved",
     });
+
+    // El aviso del Premium se manda aquí y no desde chat_member porque en este
+    // punto sí sabemos quién es en la Academy: su nombre real y su plan.
+    const { data: datos } = await admin
+      .from("profiles")
+      .select("full_name, premium_since")
+      .eq("id", profile.id)
+      .maybeSingle();
+
+    const total = await getChannelMemberCount();
+    const nombre = datos?.full_name || comoSeLlama(req.from);
+    const esAdmin = profile.role === "admin";
+
+    await avisarAlAdmin(
+      admin,
+      `${alAzar(CELEBRACIONES_PREMIUM)}\n\n` +
+        `${nombre}${datos?.full_name && req.from.username ? ` (@${req.from.username})` : ""} ` +
+        `acaba de entrar al canal Premium.\n\n` +
+        (esAdmin ? "👑 Es un admin, así que la caja no suena.\n" : `💶 +${PREMIUM_PRICE_EUR}€/mes\n`) +
+        (total !== null ? `👥 Ya sois ${total} dentro.` : "")
+    );
     return;
   }
 
@@ -451,6 +484,78 @@ async function resolverChatAdmin(admin: Admin): Promise<number | null> {
     .maybeSingle();
 
   return (data?.telegram_user_id as number | null) ?? null;
+}
+
+/** Cómo se refiere el aviso a alguien: su nombre y, si lo tiene, su @. */
+function comoSeLlama(u: TelegramUser): string {
+  const nombre = u.first_name || "Alguien";
+  return u.username ? `${nombre} (@${u.username})` : nombre;
+}
+
+/** Manda un aviso al admin. Va al chat de registro si está configurado y, si
+ *  no, al privado del propio admin. */
+async function avisarAlAdmin(admin: Admin, texto: string) {
+  const destino = getLogChatId() ?? (await resolverChatAdmin(admin));
+  if (!destino) return;
+  try {
+    await sendTelegramMessageOrThrow(
+      typeof destino === "string" ? (destino as unknown as number) : destino,
+      texto
+    );
+  } catch (err) {
+    console.warn("[telegram-webhook] No se pudo avisar al admin:", (err as Error).message);
+  }
+}
+
+// Se rotan para que el aviso no se vuelva un ruido idéntico cada vez.
+const CELEBRACIONES_PREMIUM = [
+  "💰💸🤑 ¡SUENA LA CAJA REGISTRADORA!",
+  "🤑💰💵 ¡OTRO QUE SE SUBE AL BARCO!",
+  "💵💰🎉 ¡NUEVO PREMIUM EN LA CASA!",
+  "🤑🔥💰 ¡MÁS LEÑA A LA HOGUERA!",
+];
+
+const BIENVENIDAS_FREE = [
+  "👋 Alguien nuevo se ha asomado al canal free.",
+  "🙌 Uno más en el canal gratuito.",
+  "👀 Nueva cara por el canal free.",
+  "✨ Se ha unido alguien al canal gratuito.",
+];
+
+function alAzar(opciones: string[]): string {
+  return opciones[Math.floor(Math.random() * opciones.length)];
+}
+
+/**
+ * Alta o baja en un canal.
+ *
+ * Solo se atiende el canal gratuito: en el Premium la entrada pasa antes por
+ * handleJoinRequest, que ya avisa con el contexto del perfil (mucho mejor que
+ * lo poco que trae este update). Sin este filtro, cada alta Premium generaría
+ * dos avisos.
+ */
+async function handleChatMember(admin: Admin, upd: ChatMemberUpdated) {
+  let esPremium = false;
+  try {
+    esPremium = String(upd.chat.id) === String(getChannelId());
+  } catch {
+    // Sin canal configurado no podemos distinguirlos: mejor no avisar.
+    return;
+  }
+  if (esPremium) return;
+
+  const antes = upd.old_chat_member.status;
+  const ahora = upd.new_chat_member.status;
+  const entra = ["left", "kicked"].includes(antes) && ["member", "restricted"].includes(ahora);
+  if (!entra) return;
+
+  const total = await getChannelMemberCount(upd.chat.id);
+  const cuantos = total !== null ? `\n\nYa sois ${total} en el canal.` : "";
+
+  await avisarAlAdmin(
+    admin,
+    `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(upd.new_chat_member.user)}${cuantos}`
+  );
 }
 
 /** Mensaje de un usuario al admin. Reservado a Premium: es una de las ventajas
@@ -665,6 +770,8 @@ export async function POST(request: NextRequest) {
       await sendTelegramMessage(message.chat.id, fichaEstado(perfil), menuPara(perfil));
     } else if (update.chat_join_request) {
       await handleJoinRequest(admin, update.chat_join_request);
+    } else if (update.chat_member) {
+      await handleChatMember(admin, update.chat_member);
     } else if (message?.from && comando) {
       // Comando que no existe. Sin esto acababa en el relé de soporte y te
       // llegaba un "/help" suelto como si fuera una consulta.

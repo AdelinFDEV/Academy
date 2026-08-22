@@ -75,6 +75,15 @@ export function getAdminChatUrl(): string {
   return `https://t.me/${usuario}`;
 }
 
+/**
+ * Dónde caen los avisos de altas. Si se define, van a este chat en vez de al
+ * privado del admin — pensado para el día en que el volumen moleste y prefieras
+ * un canal de registro aparte, sin tocar código.
+ */
+export function getLogChatId(): string | null {
+  return process.env.TELEGRAM_LOG_CHAT_ID || null;
+}
+
 export function getAdminChatId(): number | null {
   const raw = process.env.TELEGRAM_ADMIN_CHAT_ID;
   if (!raw) return null;
@@ -277,9 +286,11 @@ export async function sendTelegramMessageOrThrow(
  * así que comparar este número con los premium vinculados es lo más cerca que
  * se puede estar de detectar a alguien aprobado a mano.
  */
-export async function getChannelMemberCount(): Promise<number | null> {
+export async function getChannelMemberCount(chatId?: string | number): Promise<number | null> {
   try {
-    return await callTelegramApi<number>("getChatMemberCount", { chat_id: getChannelId() });
+    return await callTelegramApi<number>("getChatMemberCount", {
+      chat_id: chatId ?? getChannelId(),
+    });
   } catch (err) {
     console.warn("[telegram] No se pudo contar los miembros:", (err as Error).message);
     return null;

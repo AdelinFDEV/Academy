@@ -125,7 +125,10 @@ if (process.argv.includes("--set-webhook")) {
       secret_token: SECRETO,
       // callback_query es imprescindible: sin él los botones de acción del
       // menú («Ver mi Premium») no llegan nunca y se quedan girando.
-      allowed_updates: ["message", "chat_join_request", "callback_query"],
+      // chat_member es de los que Telegram NO manda por defecto, y sin él no
+      // hay forma de enterarse de quién entra al canal gratuito (es público:
+      // no genera solicitud de entrada, la gente entra directamente).
+      allowed_updates: ["message", "chat_join_request", "callback_query", "chat_member"],
       drop_pending_updates: false,
     });
     ok("Webhook registrado con secreto", urlEsperada);
@@ -184,7 +187,7 @@ try {
     // vale. Pero si alguien lo restringió a mano, chat_join_request puede
     // haberse quedado fuera y las solicitudes de entrada nunca llegarían.
     const permitidos = info.allowed_updates;
-    const faltantes = ["chat_join_request", "callback_query"].filter(
+    const faltantes = ["chat_join_request", "callback_query", "chat_member"].filter(
       (tipo) => permitidos && !permitidos.includes(tipo)
     );
     if (faltantes.length) {
@@ -194,6 +197,9 @@ try {
       }
       if (faltantes.includes("callback_query")) {
         console.log(`  ${GRIS}Los botones del menú no responderían: se quedarían girando.${FIN}`);
+      }
+      if (faltantes.includes("chat_member")) {
+        console.log(`  ${GRIS}No te enterarías de quién entra al canal gratuito.${FIN}`);
       }
       console.log(`  ${GRIS}Ejecuta: node scripts/telegram-doctor.mjs --set-webhook${FIN}`);
     } else {
