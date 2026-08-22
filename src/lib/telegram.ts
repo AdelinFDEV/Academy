@@ -242,6 +242,46 @@ export async function sendTelegramMessageOrThrow(
 }
 
 /**
+ * Publica en el canal privado. Si hay imagen va como foto con pie de texto,
+ * que es lo que hace que el aviso se vea en el feed en lugar de pasar
+ * desapercibido entre mensajes.
+ *
+ * Si el envío con foto falla (URL rota, imagen demasiado grande, formato que
+ * Telegram no traga) se reintenta como texto: mejor un aviso sin imagen que
+ * ningún aviso.
+ */
+export async function sendChannelPost(
+  texto: string,
+  opciones?: { imagen?: string | null; botones?: Boton[] | Boton[][] }
+) {
+  const chatId = getChannelId();
+  const reply_markup = construirTeclado(opciones?.botones);
+
+  if (opciones?.imagen) {
+    try {
+      await callTelegramApi("sendPhoto", {
+        chat_id: chatId,
+        photo: opciones.imagen,
+        // El pie de foto admite 1024 caracteres, frente a los 4096 del texto.
+        caption: texto.slice(0, 1024),
+        reply_markup,
+      });
+      return;
+    } catch (err) {
+      console.warn("[telegram] Aviso con foto falló, se envía como texto:", (err as Error).message);
+    }
+  }
+
+  await callTelegramApi("sendMessage", {
+    chat_id: chatId,
+    text: texto,
+    reply_markup,
+    // El aviso ya lleva su propio botón; la tarjeta de enlace duplicaría todo.
+    link_preview_options: { is_disabled: true },
+  });
+}
+
+/**
  * Responde a la pulsación de un botón de acción. Hay que llamarlo SIEMPRE,
  * aunque sea sin texto: si no, el botón se queda girando en el móvil del
  * usuario hasta que Telegram se cansa de esperar.

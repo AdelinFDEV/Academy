@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCuentaUrl, revokeChannelAccess, sendTelegramMessage } from "@/lib/telegram";
+import { anunciarPendientes } from "@/lib/announce";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -156,6 +157,13 @@ export async function GET(request: NextRequest) {
   const expulsiones = await expulsarCaducados(admin);
   const avisos = await avisarDeCancelacionesProximas(admin);
   const limpieza = await limpiar(admin);
+  // Red de seguridad para los avisos al canal: las entradas ya se anuncian al
+  // publicarlas, pero las guías nuevas (que llegan con un despliegue) y los
+  // vídeos de YouTube no tienen ningún evento que los dispare.
+  const novedades = await anunciarPendientes(admin).catch((err) => {
+    console.error("[telegram-sync] Error anunciando novedades:", err);
+    return null;
+  });
 
-  return NextResponse.json({ expulsiones, avisos, limpieza });
+  return NextResponse.json({ expulsiones, avisos, limpieza, novedades });
 }

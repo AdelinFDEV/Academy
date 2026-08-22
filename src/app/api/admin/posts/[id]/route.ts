@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { anunciarPendientes } from "@/lib/announce";
 
 // Solo estos campos se pueden editar vía la API. Evita la asignación masiva:
 // aunque la ruta sea de admin, no queremos que el body pueda tocar `id`,
@@ -37,7 +39,26 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const { error: dbErr } = await supabase!.from("posts").update(patch).eq("id", id);
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 400 });
-  return NextResponse.json({ ok: true });
+
+  // Publicar una entrada la anuncia en el canal al momento. anunciarPendientes
+  // es idempotente (lleva su propio registro), así que reeditar o volver a
+  // guardar una entrada ya anunciada no repite el aviso.
+  let anunciada = false;
+  if (patch.published === true) {
+    const { data: post } = await supabase!.from("posts").select("slug").eq("id", id).maybeSingle();
+    if (post?.slug) {
+      try {
+        const res = await anunciarPendientes(createAdminClient(), { soloEntrada: post.slug });
+        anunciada = (res.entradas?.length ?? 0) > 0;
+      } catch (err) {
+        // El aviso es un extra: si falla, la entrada ya está publicada y eso
+        // es lo que importa. El cron diario lo reintentará.
+        console.error("[admin-posts] No se pudo anunciar la entrada:", err);
+      }
+    }
+  }
+
+  return NextResponse.json({ ok: true, anunciada });
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
