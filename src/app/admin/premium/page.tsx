@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getChannelMemberCount, isChannelMember } from "@/lib/telegram";
+import { getChannelMemberCount, getChannelMembership } from "@/lib/telegram";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import Icon from "@/components/Icon";
 
@@ -106,13 +106,13 @@ export default async function AdminPremiumPage() {
 
   // Pertenencia real al canal, solo para los que tienen Telegram vinculado.
   const conTelegram = activos.filter((f) => f.telegram_user_id);
-  const dentroDelCanal: Record<string, boolean> = {};
+  const enCanal: Record<string, "dentro" | "fuera" | "desconocido"> = {};
   if (conTelegram.length <= MAX_COMPROBACIONES_CANAL) {
     const resultados = await Promise.all(
-      conTelegram.map((f) => isChannelMember(f.telegram_user_id as number))
+      conTelegram.map((f) => getChannelMembership(f.telegram_user_id as number))
     );
     conTelegram.forEach((f, i) => {
-      dentroDelCanal[f.id] = resultados[i];
+      enCanal[f.id] = resultados[i];
     });
   }
 
@@ -208,7 +208,7 @@ export default async function AdminPremiumPage() {
             {activos.map((f) => {
               const estado = etiquetaEstado(f);
               const dias = diasHasta(f.subscription_current_period_end);
-              const enCanal = dentroDelCanal[f.id];
+              const canal = enCanal[f.id];
               const avisado =
                 f.cancel_warning_period_end &&
                 f.subscription_current_period_end &&
@@ -245,12 +245,15 @@ export default async function AdminPremiumPage() {
                   <td>
                     {!f.telegram_user_id ? (
                       <span className="cp-muted">—</span>
-                    ) : enCanal === undefined ? (
-                      <span className="cp-muted">sin comprobar</span>
-                    ) : enCanal ? (
+                    ) : canal === "dentro" ? (
                       <span className="cp-tag cp-tag--ok">dentro</span>
-                    ) : (
+                    ) : canal === "fuera" ? (
                       <span className="cp-tag cp-tag--muted">fuera</span>
+                    ) : (
+                      // "desconocido" (Telegram no contestó) y "sin comprobar"
+                      // (demasiados usuarios) se pintan igual: en ambos casos
+                      // el dato no existe, y fingir uno sería peor que no darlo.
+                      <span className="cp-muted" title="No se ha podido comprobar">sin datos</span>
                     )}
                   </td>
 

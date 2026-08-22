@@ -665,6 +665,15 @@ export async function POST(request: NextRequest) {
       await sendTelegramMessage(message.chat.id, fichaEstado(perfil), menuPara(perfil));
     } else if (update.chat_join_request) {
       await handleJoinRequest(admin, update.chat_join_request);
+    } else if (message?.from && comando) {
+      // Comando que no existe. Sin esto acababa en el relé de soporte y te
+      // llegaba un "/help" suelto como si fuera una consulta.
+      await enviarMenu(
+        admin,
+        message.chat.id,
+        message.from,
+        "No conozco ese comando 🤔 Esto es lo que sí puedo hacer:"
+      );
     } else if (message) {
       // Texto libre: o es el admin contestando, o alguien escribiéndole.
       const chatAdmin = await resolverChatAdmin(admin);

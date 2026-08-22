@@ -108,20 +108,32 @@ export async function removeChannelMember(userId: number) {
 const ESTADOS_DENTRO = ["creator", "administrator", "member", "restricted"];
 
 /**
- * ¿Está esta persona dentro del canal? Si la consulta falla devolvemos `true`
- * a propósito: ante la duda preferimos intentar la expulsión (fail-safe hacia
- * cerrar el acceso) antes que dar por hecho que ya no está.
+ * Estado real de alguien respecto al canal, con "desconocido" explícito para
+ * cuando Telegram no contesta.
+ *
+ * Los dos consumidores necesitan tratar esa duda al revés: al expulsar hay que
+ * intentarlo igualmente (mejor sobrar que dejar dentro a quien no paga), pero
+ * el panel de control no puede pintar "dentro" a quien no se ha podido
+ * comprobar — sería un dato falso. Por eso el tri-estado se expone tal cual y
+ * cada uno decide.
  */
-export async function isChannelMember(userId: number): Promise<boolean> {
+export async function getChannelMembership(
+  userId: number
+): Promise<"dentro" | "fuera" | "desconocido"> {
   try {
     const res = await callTelegramApi<{ status: string }>("getChatMember", {
       chat_id: getChannelId(),
       user_id: userId,
     });
-    return ESTADOS_DENTRO.includes(res.status);
+    return ESTADOS_DENTRO.includes(res.status) ? "dentro" : "fuera";
   } catch {
-    return true;
+    return "desconocido";
   }
+}
+
+/** ¿Hay que intentar expulsar a esta persona? Ante la duda, sí. */
+export async function isChannelMember(userId: number): Promise<boolean> {
+  return (await getChannelMembership(userId)) !== "fuera";
 }
 
 /**
