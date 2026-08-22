@@ -63,14 +63,27 @@ async function applyToProfile(
     }
   }
 
-  await admin.from("profiles").update(update).eq("id", profile.id);
+  // Este update es lo que concede (o retira) el premium: si falla, no puede
+  // pasar desapercibido. Lanzamos para que el catch del handler borre el
+  // registro de idempotencia y Stripe reintente el evento; si nos limitáramos
+  // a registrarlo, alguien podría pagar y quedarse sin premium para siempre.
+  const { error: updateErr } = await admin.from("profiles").update(update).eq("id", profile.id);
+  if (updateErr) {
+    throw new Error(
+      `No se pudo actualizar el perfil ${profile.id} (${opts.eventType}): ${updateErr.message}`
+    );
+  }
 
-  await admin.from("subscription_log").insert({
+  const { error: logErr } = await admin.from("subscription_log").insert({
     user_id: profile.id,
     event_type: opts.eventType,
     status: opts.status,
     new_role: newRole,
   });
+  // El log es solo traza: si falla, no tiramos abajo un cobro ya aplicado.
+  if (logErr) {
+    console.error("[stripe-webhook] No se pudo registrar en subscription_log:", logErr.message);
+  }
 
   // Downgrade: si tenía Telegram vinculado, lo sacamos del canal Premium.
   const wasDowngraded = !isAdmin && profile.role !== "free" && newRole === "free";
