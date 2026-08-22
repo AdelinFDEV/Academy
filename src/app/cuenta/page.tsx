@@ -240,11 +240,15 @@ export default async function CuentaPage({
             </div>
 
             {/* — Comunidad en Telegram — */}
+            {/* El enlace solo se envía si es Premium. CuentaTelegramCard es un
+                componente de cliente, así que sus props viajan serializadas en
+                el HTML: pasarlo siempre y ocultar el botón al renderizar dejaba
+                el enlace a la vista de cualquiera en el código fuente. */}
             <CuentaTelegramCard
               initialLinked={!!profile?.telegram_linked_at}
               initialUsername={profile?.telegram_username ?? null}
               isPremium={isPremium}
-              inviteLink={process.env.TELEGRAM_CHANNEL_INVITE_LINK ?? null}
+              inviteLink={isPremium ? process.env.TELEGRAM_CHANNEL_INVITE_LINK ?? null : null}
             />
 
             {/* — Seguridad — */}
