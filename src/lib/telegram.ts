@@ -23,7 +23,7 @@ export function getBotUsername(): string {
   return username;
 }
 
-function getSiteUrl(): string {
+export function getSiteUrl(): string {
   return (process.env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com").replace(/\/$/, "");
 }
 
@@ -42,6 +42,19 @@ export function getPremiumUrl(): string {
  *  null en vez de lanzar, para poder omitir el botón sin romper el mensaje. */
 export function getChannelInviteLink(): string | null {
   return process.env.TELEGRAM_CHANNEL_INVITE_LINK || null;
+}
+
+/**
+ * Chat al que llegan los mensajes de soporte. Opcional a propósito: si no se
+ * define, quien llama lo resuelve desde la base de datos (el Telegram del
+ * admin). Definirlo sirve para apuntar a un grupo y repartir el soporte entre
+ * varias personas sin tocar código.
+ */
+export function getAdminChatId(): number | null {
+  const raw = process.env.TELEGRAM_ADMIN_CHAT_ID;
+  if (!raw) return null;
+  const id = Number(raw);
+  return Number.isFinite(id) ? id : null;
 }
 
 type TelegramApiResponse<T> = { ok: true; result: T } | { ok: false; description?: string };
@@ -166,14 +179,32 @@ export async function sendTelegramMessage(
   botones?: BotonEnlace[]
 ) {
   try {
-    await callTelegramApi("sendMessage", {
-      chat_id: userId,
-      text,
-      reply_markup: construirTeclado(botones),
-    });
+    await sendTelegramMessageOrThrow(userId, text, botones);
   } catch (err) {
     console.warn("[telegram] No se pudo enviar mensaje a", userId, (err as Error).message);
   }
+}
+
+/**
+ * Igual que sendTelegramMessage, pero devuelve el message_id y propaga el
+ * error en vez de tragárselo.
+ *
+ * Se usa cuando el envío ES la operación, no un aviso secundario: en el relé
+ * de soporte hay que saber si el mensaje llegó (para poder avisar a quien
+ * escribe de que no se entregó) y con qué id quedó (para saber a quién
+ * pertenece cuando el admin responda citándolo).
+ */
+export async function sendTelegramMessageOrThrow(
+  chatId: number,
+  text: string,
+  botones?: BotonEnlace[]
+): Promise<number> {
+  const res = await callTelegramApi<{ message_id: number }>("sendMessage", {
+    chat_id: chatId,
+    text,
+    reply_markup: construirTeclado(botones),
+  });
+  return res.message_id;
 }
 
 /** Token aleatorio de un solo uso para el deep-link de vinculación. */
