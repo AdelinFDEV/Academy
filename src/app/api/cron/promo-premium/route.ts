@@ -10,14 +10,25 @@ function dominio(): string {
   return getSiteUrl().replace(/^https?:\/\//, "");
 }
 
+/*
+ * Sobre el tono: se habla de trabajo y compromiso, nunca de rentabilidad
+ * asegurada. "Se intenta ganar dinero" no es lo mismo que "vas a ganar
+ * dinero", y en un producto financiero esa diferencia importa — la segunda
+ * versión es una promesa que no se puede sostener.
+ */
 function mensaje(): string {
   return (
     "💎 ¿Todavía no eres Premium?\n\n" +
-    `Por ${PREMIUM_PRICE_EUR}€/mes entras a todo esto:\n\n` +
+    // El precio es un número, y JS lo escribe con punto decimal: en español
+    // "19.99€" canta mucho. Se formatea con coma.
+    `Por ${PREMIUM_PRICE_EUR.toLocaleString("es-ES", { minimumFractionDigits: 2 })}€/mes entras a todo esto:\n\n` +
+    "💬 La sala de chat privada — el corazón de la comunidad. Se habla de mercado " +
+    "todos los días y respondo yo en persona, no un bot.\n" +
     "📈 Mis entradas en spot, en directo y con el precio real de compra\n" +
     `🛠 9 herramientas en ${dominio()} — diario de trading, radar diario, liberaciones de tokens, portfolio…\n` +
-    "📚 Todas las guías interactivas desbloqueadas\n" +
-    "💬 El canal privado, y escribirme a mí cuando lo necesites\n\n" +
+    "📚 Todas las guías interactivas desbloqueadas\n\n" +
+    "🔥 Aquí se trabaja a diario para intentar ganar dinero, con el máximo compromiso " +
+    "por mi parte y por la de cada miembro. Nadie está de adorno.\n\n" +
     "🔴 Y muy pronto: directos de trading de futuros.\n\n" +
     "Sin permanencia. Cancelas cuando quieras."
   );
