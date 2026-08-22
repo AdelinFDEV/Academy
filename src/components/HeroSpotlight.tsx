@@ -367,9 +367,10 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
             </span>
             <span className="hero-duo-eyebrow">Academia Premium</span>
           </div>
-          <h3 className="hero-duo-title">Todas las herramientas de la academia</h3>
+          <h3 className="hero-duo-title">Todas las herramientas y la comunidad</h3>
           <p className="hero-duo-desc">
-            Diario de trading, liberaciones de tokens y cada herramienta nueva — una sola suscripción.
+            Diario de trading, liberaciones de tokens, el canal privado de Telegram y cada
+            herramienta nueva — una sola suscripción.
           </p>
           <div className="hero-duo-foot">
             <span className="hero-duo-price-block">

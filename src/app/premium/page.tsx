@@ -199,6 +199,7 @@ export default async function PremiumPage() {
                     <li><Check size={16} aria-hidden="true" /> Trading en directo, incluido</li>
                     <li><Check size={16} aria-hidden="true" /> Liberaciones de tokens en tiempo real</li>
                     <li><Check size={16} aria-hidden="true" /> Portfolio Spot de AdelinBTC</li>
+                    <li><Check size={16} aria-hidden="true" /> Comunidad privada en Telegram</li>
                     <li><Check size={16} aria-hidden="true" /> Soporte prioritario</li>
                   </ul>
 

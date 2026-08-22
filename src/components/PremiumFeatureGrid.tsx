@@ -6,7 +6,7 @@ import {
 } from "framer-motion";
 import {
   NotebookPen, Gem, Radio, Unlock, Wallet, Sparkles,
-  ClipboardCheck, Trophy, BadgeCheck, Infinity as InfinityIcon,
+  ClipboardCheck, Trophy, BadgeCheck, Infinity as InfinityIcon, Send,
 } from "lucide-react";
 
 const PERKS = [
@@ -49,6 +49,14 @@ const PERKS = [
     title: "Portfolio Spot",
     desc: "Sigue en directo las compras reales de AdelinBTC, con precios de entrada y contexto.",
     chips: ["Compras en directo", "Contexto real"],
+  },
+  {
+    id: "comunidad",
+    icon: Send,
+    color: "#2aabee",
+    title: "Comunidad en Telegram",
+    desc: "Canal privado solo para miembros, y a mí al otro lado: escríbeme por Telegram y te contesto yo en persona.",
+    chips: ["Canal privado", "Hablas conmigo"],
   },
   {
     id: "futuro",

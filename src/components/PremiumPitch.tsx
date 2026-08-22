@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, NotebookPen, ShieldCheck, Crown, Gem, Check, Unlock, Wallet, Radio, Radar, PieChart } from "lucide-react";
+import { ArrowRight, NotebookPen, ShieldCheck, Crown, Gem, Check, Unlock, Wallet, Radio, Radar, PieChart, Send } from "lucide-react";
 import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 
 const FEATURES = [
@@ -38,6 +38,12 @@ const FEATURES = [
     color: "#ffd166", bg: "rgba(255,209,102,0.14)", border: "rgba(255,209,102,0.3)",
     title: "Guías Premium",
     desc: "Desbloquea todas las guías interactivas, no solo las básicas.",
+  },
+  {
+    icon: Send,
+    color: "#2aabee", bg: "rgba(42,171,238,0.14)", border: "rgba(42,171,238,0.3)",
+    title: "Comunidad en Telegram",
+    desc: "Canal privado solo para miembros, y a mí al otro lado: escríbeme y te contesto en persona.",
   },
 ];
 
