@@ -4,7 +4,9 @@ import {
   approveChatJoinRequest,
   declineChatJoinRequest,
   getChannelId,
+  getChannelInviteLink,
   getCuentaUrl,
+  getPremiumUrl,
   revokeChannelAccess,
   sendTelegramMessage,
 } from "@/lib/telegram";
@@ -33,7 +35,10 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (!token) {
     await sendTelegramMessage(
       from.id,
-      `Para vincular tu cuenta, entra en ${getCuentaUrl()} y pulsa «Conectar Telegram».`
+      "Hola 👋 Soy el bot de AdelinBTC Academy.\n\n" +
+        "Vincula tu cuenta y gestiono solo tu acceso al canal Premium: " +
+        "entras al hacerte Premium y sales automáticamente si cancelas.",
+      [{ text: "🔗 Vincular mi cuenta", url: getCuentaUrl() }]
     );
     return;
   }
@@ -47,7 +52,8 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (!linkRow || linkRow.used_at || new Date(linkRow.expires_at) < new Date()) {
     await sendTelegramMessage(
       from.id,
-      `Este enlace ha caducado o ya se usó. Genera uno nuevo desde ${getCuentaUrl()}.`
+      "Este enlace ha caducado o ya se usó. Genera uno nuevo desde tu cuenta.",
+      [{ text: "🔗 Generar enlace nuevo", url: getCuentaUrl() }]
     );
     return;
   }
@@ -61,7 +67,9 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (existing && existing.id !== linkRow.user_id) {
     await sendTelegramMessage(
       from.id,
-      "Esta cuenta de Telegram ya está vinculada a otro usuario de la Academy."
+      "Esta cuenta de Telegram ya está vinculada a otro usuario de la Academy. " +
+        "Desvincúlala primero desde esa cuenta.",
+      [{ text: "Ir a mi cuenta", url: getCuentaUrl() }]
     );
     return;
   }
@@ -113,11 +121,20 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
     .single();
   const isPremium = profile?.role === "premium" || profile?.role === "admin";
 
+  // Al Premium le damos el enlace del canal aquí mismo: antes el mensaje lo
+  // mandaba de vuelta a la web a buscarlo, un salto de más justo en el momento
+  // en que ya lo tenía todo listo para entrar.
   await sendTelegramMessage(
     from.id,
     isPremium
-      ? `✅ Cuenta vinculada. Ya eres Premium: entra en ${getCuentaUrl()} y usa el enlace de invitación del canal para solicitar entrada.`
-      : `✅ Cuenta vinculada. Cuando te hagas Premium podrás solicitar entrada al canal privado desde ${getCuentaUrl()}.`
+      ? "✅ Cuenta vinculada. Ya eres Premium, así que puedes entrar al canal:"
+      : "✅ Cuenta vinculada.\n\nCuando te hagas Premium tendrás acceso al canal privado y te dejaré entrar automáticamente.",
+    isPremium
+      ? [
+          { text: "🚀 Entrar al canal", url: getChannelInviteLink() },
+          { text: "Mi cuenta", url: getCuentaUrl() },
+        ]
+      : [{ text: "💎 Hazte Premium", url: getPremiumUrl() }]
   );
 }
 
@@ -136,7 +153,10 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
 
   if (isPremium) {
     await approveChatJoinRequest(req.from.id);
-    await sendTelegramMessage(req.from.id, "🎉 ¡Bienvenido! Tu solicitud ha sido aceptada.");
+    await sendTelegramMessage(
+      req.from.id,
+      "🎉 ¡Bienvenido al canal Premium! Tu solicitud ha sido aceptada."
+    );
     await admin.from("telegram_access_log").insert({
       user_id: profile.id,
       telegram_user_id: req.from.id,
@@ -149,8 +169,11 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
   await sendTelegramMessage(
     req.from.id,
     profile
-      ? "Tu solicitud ha sido rechazada: necesitas ser Premium. Hazte Premium en la Academy y vuelve a solicitar entrada."
-      : `Tu solicitud ha sido rechazada: primero vincula tu cuenta de Telegram desde ${getCuentaUrl()}.`
+      ? "El canal es solo para miembros Premium. Hazte Premium y vuelve a solicitar entrada: te aceptaré al instante."
+      : "Para entrar al canal necesitas vincular antes tu cuenta de Telegram con la Academy.",
+    profile
+      ? [{ text: "💎 Hazte Premium", url: getPremiumUrl() }]
+      : [{ text: "🔗 Vincular mi cuenta", url: getCuentaUrl() }]
   );
   await admin.from("telegram_access_log").insert({
     user_id: profile?.id ?? null,

@@ -23,12 +23,25 @@ export function getBotUsername(): string {
   return username;
 }
 
+function getSiteUrl(): string {
+  return (process.env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com").replace(/\/$/, "");
+}
+
 /** URL de la página de cuenta, para enlazarla en los mensajes del bot.
  *  Como texto plano ("/cuenta") Telegram lo pinta como comando pulsable
  *  y el bot no tiene handler para él, así que aquí siempre va la URL completa. */
 export function getCuentaUrl(): string {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com";
-  return `${siteUrl}/cuenta`;
+  return `${getSiteUrl()}/cuenta`;
+}
+
+export function getPremiumUrl(): string {
+  return `${getSiteUrl()}/premium`;
+}
+
+/** El enlace de invitación es opcional: si no está configurado devolvemos
+ *  null en vez de lanzar, para poder omitir el botón sin romper el mensaje. */
+export function getChannelInviteLink(): string | null {
+  return process.env.TELEGRAM_CHANNEL_INVITE_LINK || null;
 }
 
 type TelegramApiResponse<T> = { ok: true; result: T } | { ok: false; description?: string };
@@ -127,12 +140,37 @@ export async function revokeChannelAccess(
   return true;
 }
 
-/** Envía un mensaje directo al usuario. Falla en silencio: puede no haber
- *  iniciado conversación con el bot o haberlo bloqueado, y no es un error
- *  crítico del flujo de aprobación/expulsión. */
-export async function sendTelegramMessage(userId: number, text: string) {
+/** Botón que abre una URL. Es el único tipo que usamos: no requiere guardar
+ *  estado ni responder a callbacks, así que no puede quedarse "colgado". */
+export type BotonEnlace = { text: string; url: string | null };
+
+/**
+ * Convierte los botones al formato de Telegram, descartando los que no tengan
+ * URL. Ese filtro importa: la API rechaza el mensaje entero si un botón lleva
+ * una URL vacía, y como sendTelegramMessage traga los errores, el usuario se
+ * quedaría sin recibir nada — peor que quedarse sin el botón.
+ */
+function construirTeclado(botones?: BotonEnlace[]) {
+  const validos = (botones ?? []).filter((b): b is { text: string; url: string } => !!b.url);
+  if (!validos.length) return undefined;
+  // Uno por fila: las etiquetas en español son largas y en móvil se cortan.
+  return { inline_keyboard: validos.map((b) => [{ text: b.text, url: b.url }]) };
+}
+
+/** Envía un mensaje directo al usuario, opcionalmente con botones. Falla en
+ *  silencio: puede no haber iniciado conversación con el bot o haberlo
+ *  bloqueado, y no es un error crítico del flujo de aprobación/expulsión. */
+export async function sendTelegramMessage(
+  userId: number,
+  text: string,
+  botones?: BotonEnlace[]
+) {
   try {
-    await callTelegramApi("sendMessage", { chat_id: userId, text });
+    await callTelegramApi("sendMessage", {
+      chat_id: userId,
+      text,
+      reply_markup: construirTeclado(botones),
+    });
   } catch (err) {
     console.warn("[telegram] No se pudo enviar mensaje a", userId, (err as Error).message);
   }
