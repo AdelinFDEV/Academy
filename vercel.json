@@ -1,5 +1,6 @@
 {
   "crons": [
-    { "path": "/api/cron/telegram-sync", "schedule": "0 4 * * *" }
+    { "path": "/api/cron/telegram-sync", "schedule": "0 4 * * *" },
+    { "path": "/api/cron/promo-premium", "schedule": "0 13 * * 0,3,5" }
   ]
 }
