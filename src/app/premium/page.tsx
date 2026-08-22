@@ -26,6 +26,8 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
   { label: "Liberaciones de tokens en tiempo real", free: false, premium: true },
   { label: "Portfolio Spot en tiempo real", free: false, premium: true },
   { label: "Trading en directo (próximamente)", free: false, premium: true },
+  { label: "Canal privado de Telegram", free: false, premium: true },
+  { label: "Hablar conmigo por Telegram", free: false, premium: true },
   { label: "Soporte prioritario", free: false, premium: true },
 ];
 

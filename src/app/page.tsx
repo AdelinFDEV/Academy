@@ -4,6 +4,8 @@ import { ArrowRight, BookA, Radio, Route, ShieldCheck, Star, Tag, MessageCircle 
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import TelegramBanner from "@/components/TelegramBanner";
+import { TelegramIcon } from "@/components/SocialLinks";
+import { INSTAGRAM_URL, TELEGRAM_ADELIN_URL } from "@/lib/contacto";
 import SiteNav from "@/components/SiteNav";
 import GuideSearch from "@/components/GuideSearch";
 import HomeFeed, { HeroPost } from "@/components/HomeFeed";
@@ -297,7 +299,7 @@ export default async function HomePage() {
 
           <div className="contact-cta-left">
             <div className="contact-cta-avatar">
-              <InstagramIcon />
+              <TelegramIcon size={18} />
             </div>
             <div className="contact-cta-text">
               <span className="contact-cta-eyebrow">
@@ -306,11 +308,11 @@ export default async function HomePage() {
               </span>
               <h2 className="contact-cta-title">¿Dudas, ideas o algo que le falta a la academia?</h2>
               <p className="contact-cta-sub">
-                Cuéntamelo por Instagram — leo cada mensaje personalmente, y varias mejoras
-                de la web han salido de ahí.
+                Escríbeme por donde te resulte más cómodo — leo cada mensaje personalmente,
+                y varias mejoras de la web han salido de ahí.
               </p>
               <div className="contact-cta-footer">
-                <span className="contact-cta-handle">@adelinbtc</span>
+                <span className="contact-cta-handle">@AdelinBTC</span>
                 <span className="contact-cta-footer-sep" aria-hidden="true" />
                 <span className="contact-cta-response">
                   <span className="contact-cta-response-dot" aria-hidden="true" />
@@ -320,16 +322,29 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <a
-            href="https://www.instagram.com/adelinbtc/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="contact-cta-btn"
-          >
-            <InstagramIcon />
-            Escríbeme
-            <ArrowRight size={15} className="contact-cta-btn-arrow" aria-hidden="true" />
-          </a>
+          {/* Telegram primero y en primario: es donde está la comunidad y donde
+              responde antes. Instagram queda como alternativa. */}
+          <div className="contact-cta-botones">
+            <a
+              href={TELEGRAM_ADELIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-cta-btn"
+            >
+              <TelegramIcon />
+              Telegram
+              <ArrowRight size={15} className="contact-cta-btn-arrow" aria-hidden="true" />
+            </a>
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="contact-cta-btn contact-cta-btn--alt"
+            >
+              <InstagramIcon />
+              Instagram
+            </a>
+          </div>
         </div>
       </section>
 

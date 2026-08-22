@@ -5,7 +5,8 @@ import Link from "next/link";
 import { Calendar, ChevronRight, Lock, TrendingDown, Clock, Zap, Filter } from "lucide-react";
 import { TOKENS, FREE_TOKEN_IDS, type LiveUnlock } from "./tokenData";
 import { DefiLlamaGlyph } from "@/components/BrandMarks";
-import { InstagramIcon } from "@/components/SocialLinks";
+import { TelegramIcon } from "@/components/SocialLinks";
+import { TELEGRAM_ADELIN_URL } from "@/lib/contacto";
 
 const TODAY = new Date();
 
@@ -105,11 +106,11 @@ export default function LiberacionesClient({ isPremium }: Props) {
 
         <a
           className="lib-add-token"
-          href="https://www.instagram.com/adelinbtc/"
+          href={TELEGRAM_ADELIN_URL}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <span className="lib-add-token-ig"><InstagramIcon /></span>
+          <span className="lib-add-token-ig"><TelegramIcon /></span>
           <span>¿Quieres que añadamos una nueva criptomoneda? <strong>Escríbeme</strong></span>
         </a>
 

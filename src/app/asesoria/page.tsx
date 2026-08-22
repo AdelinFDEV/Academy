@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ArrowRight, Check, MessageCircle, ShieldCheck, TrendingUp, UserRound, Video } from "lucide-react";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import { InstagramIcon } from "@/components/SocialLinks";
+import { InstagramIcon, TelegramIcon } from "@/components/SocialLinks";
+import { TELEGRAM_ADELIN_URL } from "@/lib/contacto";
 import {
   ASESORIA_PILLARS,
   ASESORIA_PLANS,
@@ -263,16 +264,27 @@ export default async function AsesoriaPage() {
                 </div>
 
                 <a
-                  href={INSTAGRAM_DM_URL}
+                  href={TELEGRAM_ADELIN_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="ase-plan-cta"
                 >
                   <span className="ase-plan-cta-icon" aria-hidden="true">
-                    <InstagramIcon size={15} />
+                    <TelegramIcon size={15} />
                   </span>
-                  <span>Reservar por Instagram</span>
+                  <span>Reservar por Telegram</span>
                   <ArrowRight size={16} strokeWidth={2.5} className="ase-plan-cta-arrow" aria-hidden="true" />
+                </a>
+                {/* Instagram sigue disponible para quien ya escribía por ahí:
+                    cambiar de canal no debería costarle la reserva a nadie. */}
+                <a
+                  href={INSTAGRAM_DM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ase-plan-cta-alt"
+                >
+                  <InstagramIcon size={13} />
+                  <span>o por Instagram</span>
                 </a>
                 <p className="ase-plan-dm">
                   <span className="ase-plan-dm-label">Escríbeme</span>

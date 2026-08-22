@@ -1,3 +1,5 @@
+import { INSTAGRAM_URL, TELEGRAM_ADELIN_URL, YOUTUBE_URL } from "@/lib/contacto";
+
 // lucide-react no exporta iconos de marca, así que el de Instagram es propio.
 // El tamaño es opcional para no tocar los usos ya existentes (15px).
 export const InstagramIcon = ({ size = 15 }: { size?: number }) => (
@@ -5,6 +7,15 @@ export const InstagramIcon = ({ size = 15 }: { size?: number }) => (
     <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
+
+// El de Telegram también es propio, por lo mismo. Lleva al chat de Adelin, no
+// al bot: aquí se viene a hablar con una persona.
+export const TelegramIcon = ({ size = 15 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M21.5 3.5 2.5 10.2l5.4 1.9 2 6 2.9-3.6 4.6 3.4z" />
+    <path d="m7.9 12.1 9.1-5.6-6.1 7" />
   </svg>
 );
 
@@ -22,13 +33,19 @@ interface Props {
 export default function SocialLinks({ variant = "footer" }: Props) {
   const links = [
     {
-      href: "https://www.instagram.com/adelinbtc/",
+      href: TELEGRAM_ADELIN_URL,
+      label: "Telegram",
+      handle: "@AdelinBTC",
+      icon: <TelegramIcon />,
+    },
+    {
+      href: INSTAGRAM_URL,
       label: "Instagram",
       handle: "@adelinbtc",
       icon: <InstagramIcon />,
     },
     {
-      href: "https://www.youtube.com/@AdelinBTC",
+      href: YOUTUBE_URL,
       label: "YouTube",
       handle: "@AdelinBTC",
       icon: <YouTubeIcon />,
@@ -59,7 +76,16 @@ export default function SocialLinks({ variant = "footer" }: Props) {
     return (
       <div className="post-social-row">
         <a
-          href="https://www.instagram.com/adelinbtc/"
+          href={TELEGRAM_ADELIN_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="post-social-link post-social-link--telegram"
+        >
+          <TelegramIcon />
+          Telegram
+        </a>
+        <a
+          href={INSTAGRAM_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="post-social-link post-social-link--instagram"
@@ -68,7 +94,7 @@ export default function SocialLinks({ variant = "footer" }: Props) {
           Instagram
         </a>
         <a
-          href="https://www.youtube.com/@AdelinBTC"
+          href={YOUTUBE_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="post-social-link post-social-link--youtube"

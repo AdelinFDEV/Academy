@@ -13,6 +13,7 @@ import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
 import type { PostCategoryRef } from "@/lib/types";
+import SiguientePasoTelegram from "@/components/SiguientePasoTelegram";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -21,7 +22,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role, current_streak, last_seen, is_featured")
+    .select("full_name, role, current_streak, last_seen, is_featured, telegram_linked_at")
     .eq("id", user.id)
     .single();
 
@@ -120,6 +121,13 @@ export default async function DashboardPage() {
   return (
     <div className="dash-page-wrap">
     <main className="dashboard-main">
+
+      {/* Solo aparece si es Premium y aún no ha vinculado Telegram: es el
+          único paso que le queda y no es evidente por sí solo. */}
+      <SiguientePasoTelegram
+        isPremium={isPremium}
+        telegramVinculado={!!profile?.telegram_linked_at}
+      />
 
       {/* ── Cabecera ── */}
       <div className="dash-header">

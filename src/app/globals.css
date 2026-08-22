@@ -10537,3 +10537,248 @@ select {
 
   .tg-banner-btn svg { display: none; }
 }
+
+/* ── Pasos posteriores al pago (/premium/gracias) ─────────────────────────── */
+
+.gracias-pasos {
+  list-style: none;
+  margin: 26px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.gracias-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 14px 16px;
+  border: 1px solid rgba(240, 244, 255, 0.09);
+  border-radius: 11px;
+  background: rgba(240, 244, 255, 0.028);
+}
+
+.gracias-paso--activo {
+  border-color: rgba(249, 115, 22, 0.4);
+  background: rgba(249, 115, 22, 0.07);
+}
+
+.gracias-paso-num {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(240, 244, 255, 0.09);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.gracias-paso--activo .gracias-paso-num {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+}
+
+.gracias-paso--hecho .gracias-paso-num {
+  background: rgba(74, 222, 128, 0.18);
+  color: #6ee7a0;
+}
+
+.gracias-paso div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.gracias-paso strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary, #f2f7ff);
+}
+
+.gracias-paso span {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.gracias-paso b { color: #ffb27a; font-weight: 600; }
+
+.gracias-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.gracias-acciones .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gracias-btn-secundario {
+  padding: 12px 20px;
+  border-radius: 9px;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.gracias-btn-secundario:hover {
+  border-color: rgba(240, 244, 255, 0.25);
+  color: var(--text-primary, #f2f7ff);
+}
+
+.gracias-ayuda {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 18px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.gracias-ayuda a {
+  color: #ff9e5e;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.gracias-ayuda a:hover { text-decoration: underline; }
+
+/* ── Aviso "te falta vincular Telegram" (dashboard) ───────────────────────── */
+
+.paso-telegram {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding: 14px 18px;
+  border: 1px solid rgba(249, 115, 22, 0.32);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.04));
+}
+
+.paso-telegram-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+}
+
+.paso-telegram-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.paso-telegram-texto strong {
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: var(--text-primary, #f2f7ff);
+}
+
+.paso-telegram-texto span {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.paso-telegram-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 10px 17px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.paso-telegram-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.32);
+}
+
+@media (max-width: 640px) {
+  .paso-telegram {
+    flex-wrap: wrap;
+    gap: 11px;
+  }
+  .paso-telegram-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Contacto de la home: Telegram + Instagram ────────────────────────────── */
+
+.contact-cta-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex-shrink: 0;
+}
+
+.contact-cta-btn--alt {
+  background: rgba(240, 244, 255, 0.06);
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.contact-cta-btn--alt:hover {
+  background: rgba(240, 244, 255, 0.1);
+  color: var(--text-primary, #f2f7ff);
+}
+
+/* Telegram en la fila de redes de las entradas. */
+.post-social-link--telegram:hover {
+  border-color: rgba(42, 171, 238, 0.5);
+  color: #2aabee;
+}
+
+@media (max-width: 720px) {
+  .contact-cta-botones {
+    width: 100%;
+    flex-direction: row;
+  }
+  .contact-cta-botones > a { flex: 1; justify-content: center; }
+}
+
+/* Enlace secundario a Instagram bajo el CTA de reserva (asesoría). */
+.ase-plan-cta-alt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 7px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ase-plan-cta-alt:hover { color: var(--text-secondary); }
