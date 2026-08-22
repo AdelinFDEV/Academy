@@ -52,14 +52,18 @@ export function getChannelInviteLink(): string | null {
  * funcionando, simplemente publica solo en el privado.
  */
 export function getFreeChannelId(): string | null {
-  return process.env.TELEGRAM_FREE_CHANNEL_ID || "@FreeAdelinBTC";
+  return process.env.TELEGRAM_FREE_CHANNEL_ID || "-1003785109253";
 }
 
-/** Enlace público al canal gratuito, para invitar desde el bot y la web. */
+/**
+ * Enlace público al canal gratuito. Va por su propia variable y no se deduce
+ * del id porque el id tiene que ser NUMÉRICO: es lo que Telegram envía en los
+ * updates de altas y bajas, y si aquí se guardara el @usuario, lo registrado
+ * por el webhook y lo consultado por el panel no casarían nunca.
+ */
 export function getFreeChannelUrl(): string {
-  const id = getFreeChannelId();
-  // Un id numérico (-100…) no sirve como URL; solo el @usuario.
-  return id && id.startsWith("@") ? `https://t.me/${id.slice(1)}` : "https://t.me/FreeAdelinBTC";
+  const usuario = (process.env.TELEGRAM_FREE_CHANNEL_USERNAME || "FreeAdelinBTC").replace(/^@/, "");
+  return `https://t.me/${usuario}`;
 }
 
 /**

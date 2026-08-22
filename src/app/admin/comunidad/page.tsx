@@ -110,7 +110,8 @@ export default async function AdminComunidadPage() {
           <p className="admin-page-subtitle">
             {canal ? (
               <a href={getFreeChannelUrl()} target="_blank" rel="noopener noreferrer" className="cp-tg">
-                {canal}
+                {/* El id es numérico; para leerlo se muestra el @ del enlace. */}
+                @{getFreeChannelUrl().split("/").pop()}
               </a>
             ) : (
               "sin canal configurado"
