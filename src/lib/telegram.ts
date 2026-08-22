@@ -50,6 +50,13 @@ export function getChannelInviteLink(): string | null {
  * admin). Definirlo sirve para apuntar a un grupo y repartir el soporte entre
  * varias personas sin tocar código.
  */
+/** Chat privado con Adelin (la persona, no el bot). El bot sirve para el relé
+ *  de soporte; esto es para quien prefiere escribirle directamente. */
+export function getAdminChatUrl(): string {
+  const usuario = (process.env.TELEGRAM_ADMIN_USERNAME || "AdelinBTC").replace(/^@/, "");
+  return `https://t.me/${usuario}`;
+}
+
 export function getAdminChatId(): number | null {
   const raw = process.env.TELEGRAM_ADMIN_CHAT_ID;
   if (!raw) return null;
@@ -153,21 +160,48 @@ export async function revokeChannelAccess(
   return true;
 }
 
-/** Botón que abre una URL. Es el único tipo que usamos: no requiere guardar
- *  estado ni responder a callbacks, así que no puede quedarse "colgado". */
+/** Botón que abre una URL (web, canal, chat con Adelin). */
 export type BotonEnlace = { text: string; url: string | null };
 
+/** Botón que ejecuta algo en el propio chat sin sacar al usuario de Telegram.
+ *  `data` viaja de vuelta en el callback_query y dice qué hay que hacer. */
+export type BotonAccion = { text: string; data: string };
+
+export type Boton = BotonEnlace | BotonAccion;
+
+function esEnlace(boton: Boton): boton is BotonEnlace {
+  return "url" in boton;
+}
+
 /**
- * Convierte los botones al formato de Telegram, descartando los que no tengan
- * URL. Ese filtro importa: la API rechaza el mensaje entero si un botón lleva
- * una URL vacía, y como sendTelegramMessage traga los errores, el usuario se
- * quedaría sin recibir nada — peor que quedarse sin el botón.
+ * Monta el teclado. Acepta una lista plana (un botón por fila) o filas
+ * explícitas, para poder emparejar los botones de etiqueta corta y que el
+ * menú no quede como una columna interminable.
+ *
+ * Descarta los botones de enlace sin URL: la API rechaza el mensaje ENTERO si
+ * uno lleva la URL vacía, y como sendTelegramMessage se traga los errores, el
+ * usuario se quedaría sin recibir nada. Mejor perder un botón que el mensaje.
  */
-function construirTeclado(botones?: BotonEnlace[]) {
-  const validos = (botones ?? []).filter((b): b is { text: string; url: string } => !!b.url);
-  if (!validos.length) return undefined;
-  // Uno por fila: las etiquetas en español son largas y en móvil se cortan.
-  return { inline_keyboard: validos.map((b) => [{ text: b.text, url: b.url }]) };
+function construirTeclado(botones?: Boton[] | Boton[][]) {
+  if (!botones?.length) return undefined;
+
+  const filas: Boton[][] = Array.isArray(botones[0])
+    ? (botones as Boton[][])
+    : (botones as Boton[]).map((boton) => [boton]);
+
+  const inline_keyboard = filas
+    .map((fila) =>
+      fila
+        .filter((boton) => !esEnlace(boton) || !!boton.url)
+        .map((boton) =>
+          esEnlace(boton)
+            ? { text: boton.text, url: boton.url as string }
+            : { text: boton.text, callback_data: boton.data }
+        )
+    )
+    .filter((fila) => fila.length > 0);
+
+  return inline_keyboard.length ? { inline_keyboard } : undefined;
 }
 
 /** Envía un mensaje directo al usuario, opcionalmente con botones. Falla en
@@ -176,7 +210,7 @@ function construirTeclado(botones?: BotonEnlace[]) {
 export async function sendTelegramMessage(
   userId: number,
   text: string,
-  botones?: BotonEnlace[]
+  botones?: Boton[] | Boton[][]
 ) {
   try {
     await sendTelegramMessageOrThrow(userId, text, botones);
@@ -197,7 +231,7 @@ export async function sendTelegramMessage(
 export async function sendTelegramMessageOrThrow(
   chatId: number,
   text: string,
-  botones?: BotonEnlace[]
+  botones?: Boton[] | Boton[][]
 ): Promise<number> {
   const res = await callTelegramApi<{ message_id: number }>("sendMessage", {
     chat_id: chatId,
@@ -205,6 +239,22 @@ export async function sendTelegramMessageOrThrow(
     reply_markup: construirTeclado(botones),
   });
   return res.message_id;
+}
+
+/**
+ * Responde a la pulsación de un botón de acción. Hay que llamarlo SIEMPRE,
+ * aunque sea sin texto: si no, el botón se queda girando en el móvil del
+ * usuario hasta que Telegram se cansa de esperar.
+ */
+export async function answerCallbackQuery(callbackQueryId: string, text?: string) {
+  try {
+    await callTelegramApi("answerCallbackQuery", {
+      callback_query_id: callbackQueryId,
+      text,
+    });
+  } catch (err) {
+    console.warn("[telegram] No se pudo responder al botón:", (err as Error).message);
+  }
 }
 
 /** Token aleatorio de un solo uso para el deep-link de vinculación. */

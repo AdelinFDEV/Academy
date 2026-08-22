@@ -131,6 +131,21 @@ if (process.argv.includes("--set-webhook")) {
     mal("No se pudo registrar el webhook", err.message);
     process.exit(1);
   }
+
+  // Sin esto los comandos existen pero no los ve nadie: son los que Telegram
+  // ofrece en el botón "/" del chat y en el menú del bot.
+  try {
+    await api("setMyCommands", {
+      commands: [
+        { command: "menu", description: "Ver el menú principal" },
+        { command: "estado", description: "Mi Premium y cuánto me queda" },
+        { command: "ayuda", description: "Cómo funciona esto" },
+      ],
+    });
+    ok("Comandos publicados", "/menu · /estado · /ayuda");
+  } catch (err) {
+    mal("No se pudieron publicar los comandos", err.message);
+  }
 }
 
 try {

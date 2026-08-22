@@ -1,9 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { Boton } from "@/lib/telegram";
 import {
+  answerCallbackQuery,
   approveChatJoinRequest,
   declineChatJoinRequest,
   getAdminChatId,
+  getAdminChatUrl,
   getChannelId,
   getChannelInviteLink,
   getCuentaUrl,
@@ -29,11 +32,33 @@ type TelegramMessage = {
   reply_to_message?: { message_id: number };
 };
 type ChatJoinRequest = { chat: { id: number }; from: TelegramUser };
+type CallbackQuery = {
+  id: string;
+  from: TelegramUser;
+  data?: string;
+  message?: { message_id: number; chat: { id: number } };
+};
 type TelegramUpdate = {
   update_id?: number;
   message?: TelegramMessage;
   chat_join_request?: ChatJoinRequest;
+  callback_query?: CallbackQuery;
 };
+
+/** Perfil con lo que necesita el menú y la ficha de estado. */
+type PerfilBot = {
+  role: string | null;
+  full_name: string | null;
+  telegram_username: string | null;
+  subscription_status: string | null;
+  subscription_current_period_end: string | null;
+  subscription_cancel_at_period_end: boolean | null;
+  premium_since: string | null;
+};
+
+const CAMPOS_PERFIL_BOT =
+  "role, full_name, telegram_username, subscription_status, " +
+  "subscription_current_period_end, subscription_cancel_at_period_end, premium_since";
 
 /** Tope de mensajes por hora y usuario, para que nadie pueda inundar el
  *  Telegram del admin desde una cuenta Premium. */
@@ -59,63 +84,176 @@ async function refrescarUsername(
     .eq("telegram_user_id", telegramUserId);
 }
 
-/**
- * Bienvenida de /start sin token: es la primera pantalla que ve alguien que
- * abre el bot, así que se adapta a quién escribe. A un desconocido hay que
- * presentarle el proyecto; a un Premium que ya está dentro, soltarle otra vez
- * el discurso de venta sobraría.
- */
-async function enviarBienvenida(admin: Admin, from: TelegramUser) {
-  const { data: profile } = await admin
+function formatearFecha(iso: string): string {
+  return new Date(iso).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function diasHasta(iso: string): number {
+  return Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / (24 * 60 * 60 * 1000)));
+}
+
+/** Botonera principal. Cambia según el plan para que nadie vea botones que no
+ *  le sirven: al Premium no se le ofrece pagar, al free no se le ofrece el
+ *  canal al que no puede entrar. */
+function menuPara(perfil: PerfilBot | null): Boton[][] {
+  const esPremium = perfil?.role === "premium" || perfil?.role === "admin";
+
+  if (!perfil) {
+    return [
+      [{ text: "🔗 Vincular mi cuenta", url: getCuentaUrl() }],
+      [{ text: "💎 Hazte Premium", url: getPremiumUrl() }],
+      [
+        { text: "💬 Hablar con Adelin", url: getAdminChatUrl() },
+        { text: "🌐 La Academy", url: getSiteUrl() },
+      ],
+    ];
+  }
+
+  if (!esPremium) {
+    return [
+      [{ text: "💎 Hazte Premium", url: getPremiumUrl() }],
+      [{ text: "📊 Ver mi estado", data: "estado" }],
+      [
+        { text: "💬 Hablar con Adelin", url: getAdminChatUrl() },
+        { text: "🌐 La Academy", url: getSiteUrl() },
+      ],
+    ];
+  }
+
+  return [
+    [{ text: "🚀 Entrar al canal", url: getChannelInviteLink() }],
+    [{ text: "📊 Ver mi Premium", data: "estado" }],
+    [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
+    [
+      { text: "⚙️ Mi suscripción", url: getCuentaUrl() },
+      { text: "🌐 La Academy", url: getSiteUrl() },
+    ],
+  ];
+}
+
+/** Ficha de estado: se resuelve dentro de Telegram, sin mandar a nadie a la
+ *  web sólo para ver cuánto le queda. */
+function fichaEstado(perfil: PerfilBot | null): string {
+  if (!perfil) {
+    return (
+      "🔍 Todavía no tienes la cuenta vinculada, así que no puedo contarte nada de tu plan.\n\n" +
+      "Vincúlala y aquí verás tu Premium, lo que te queda y el acceso al canal."
+    );
+  }
+
+  if (perfil.role === "admin") {
+    return "👑 Eres administrador.\n\nAcceso completo y permanente, sin suscripción de por medio.";
+  }
+
+  if (perfil.role !== "premium") {
+    return (
+      "🆓 Ahora mismo estás en el plan gratuito.\n\n" +
+      "Con Premium entras al canal privado, desbloqueas todas las guías y las herramientas de trading."
+    );
+  }
+
+  const fin = perfil.subscription_current_period_end;
+  const cancelada = !!perfil.subscription_cancel_at_period_end;
+  const lineas = ["💎 *Tu Premium*", ""];
+
+  if (cancelada) {
+    lineas.push("⚠️ Cancelada — no se renovará");
+  } else {
+    lineas.push("✅ Activa y al día");
+  }
+
+  if (fin) {
+    const dias = diasHasta(fin);
+    lineas.push(`${cancelada ? "📅 Acceso hasta el" : "🔄 Se renueva el"} ${formatearFecha(fin)}`);
+    lineas.push(`⏳ Te ${dias === 1 ? "queda 1 día" : `quedan ${dias} días`}`);
+  }
+
+  if (perfil.premium_since) {
+    lineas.push(`🗓 Miembro desde el ${formatearFecha(perfil.premium_since)}`);
+  }
+
+  if (cancelada) {
+    lineas.push("", "Cuando termine saldrás del canal automáticamente. Aún estás a tiempo de reactivar 👇");
+  }
+
+  // El asterisco del título es literal: no usamos parse_mode para no tener que
+  // escapar lo que escriben los usuarios, así que se quita.
+  return lineas.join("\n").replace(/\*/g, "");
+}
+
+async function enviarMenu(admin: Admin, chatId: number, from: TelegramUser, encabezado?: string) {
+  const { data } = await admin
     .from("profiles")
-    .select("role, full_name, telegram_username")
+    .select(CAMPOS_PERFIL_BOT)
     .eq("telegram_user_id", from.id)
     .maybeSingle();
 
-  if (profile) {
-    await refrescarUsername(admin, from.id, profile.telegram_username, from.username);
+  const perfil = (data as PerfilBot | null) ?? null;
+  if (perfil) {
+    await refrescarUsername(admin, from.id, perfil.telegram_username, from.username);
   }
 
-  const nombre = profile?.full_name || from.first_name;
-  const saludo = nombre ? `¡Hola, ${nombre}!` : "¡Hola!";
+  const nombre = perfil?.full_name || from.first_name;
+  const esPremium = perfil?.role === "premium" || perfil?.role === "admin";
 
-  if (!profile) {
-    await sendTelegramMessage(
-      from.id,
-      `${saludo} 👋 Bienvenido a AdelinBTC Academy.\n\n` +
-        "Aquí aprendes cripto sin humo: guías interactivas, análisis y herramientas de trading.\n\n" +
-        "Con Premium entras además al canal privado y puedes escribirme directamente por aquí. " +
-        "Vincula tu cuenta y yo me encargo del resto: te doy acceso al canal en cuanto seas Premium.",
-      [
-        { text: "🔗 Vincular mi cuenta", url: getCuentaUrl() },
-        { text: "💎 Hazte Premium", url: getPremiumUrl() },
-        { text: "🌐 Ver la Academy", url: getSiteUrl() },
-      ]
-    );
+  let texto: string;
+  if (encabezado) {
+    texto = encabezado;
+  } else if (!perfil) {
+    texto =
+      `¡Hola${nombre ? `, ${nombre}` : ""}! 👋\n\n` +
+      "Bienvenido a *AdelinBTC Academy* 🚀\n\n" +
+      "Aquí se aprende cripto sin humo: guías interactivas 📚, análisis 📈 y herramientas de trading 🛠\n\n" +
+      "Vincula tu cuenta y me encargo de todo: te abro el canal privado en cuanto seas Premium 🔓\n\n" +
+      "¿Por dónde empezamos?";
+  } else if (esPremium) {
+    texto =
+      `¡Hola${nombre ? `, ${nombre}` : ""}! 👋\n\n` +
+      "Eres Premium 💎 Tienes el canal privado abierto y a mí al otro lado.\n\n" +
+      "Escríbeme por aquí lo que necesites — te leo yo, en persona 👇";
+  } else {
+    texto =
+      `¡Hola${nombre ? `, ${nombre}` : ""}! 👋\n\n` +
+      "Tu cuenta ya está vinculada ✅\n\n" +
+      "Te falta el paso bueno: con Premium 💎 entras al canal privado (te abro yo la puerta, " +
+      "automáticamente) y puedes escribirme cuando quieras.";
+  }
+
+  await sendTelegramMessage(chatId, texto.replace(/\*/g, ""), menuPara(perfil));
+}
+
+/** Bienvenida de /start sin token. Es la primera pantalla que ve alguien al
+ *  abrir el bot, y el menú ya se adapta a quién escribe. */
+async function enviarBienvenida(admin: Admin, from: TelegramUser) {
+  await enviarMenu(admin, from.id, from);
+}
+
+/** Pulsación de un botón de acción. */
+async function handleCallback(admin: Admin, query: CallbackQuery) {
+  // Siempre primero: corta el reloj de carga del botón en el móvil.
+  await answerCallbackQuery(query.id);
+
+  const chatId = query.message?.chat.id ?? query.from.id;
+
+  if (query.data === "estado") {
+    const { data } = await admin
+      .from("profiles")
+      .select(CAMPOS_PERFIL_BOT)
+      .eq("telegram_user_id", query.from.id)
+      .maybeSingle();
+
+    const perfil = (data as PerfilBot | null) ?? null;
+    await sendTelegramMessage(chatId, fichaEstado(perfil), menuPara(perfil));
     return;
   }
 
-  const esPremium = profile.role === "premium" || profile.role === "admin";
-
-  await sendTelegramMessage(
-    from.id,
-    esPremium
-      ? `${saludo} 👋 Tu cuenta está vinculada y eres Premium.\n\n` +
-        "Tienes el canal privado abierto, y si quieres preguntarme algo escríbeme por aquí: " +
-        "te leo yo personalmente."
-      : `${saludo} 👋 Tu cuenta ya está vinculada.\n\n` +
-        "Con Premium entrarías al canal privado (te dejo pasar automáticamente) y podrías " +
-        "escribirme directamente por aquí.",
-    esPremium
-      ? [
-          { text: "🚀 Ir al canal", url: getChannelInviteLink() },
-          { text: "🌐 Ver la Academy", url: getSiteUrl() },
-        ]
-      : [
-          { text: "💎 Hazte Premium", url: getPremiumUrl() },
-          { text: "🌐 Ver la Academy", url: getSiteUrl() },
-        ]
-  );
+  if (query.data === "menu") {
+    await enviarMenu(admin, chatId, query.from);
+  }
 }
 
 /** /start <token>: vincula la cuenta de Telegram que escribe con el usuario
@@ -139,7 +277,8 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (!linkRow || linkRow.used_at || new Date(linkRow.expires_at) < new Date()) {
     await sendTelegramMessage(
       from.id,
-      "Este enlace ha caducado o ya se usó. Genera uno nuevo desde tu cuenta.",
+      "⏰ Este enlace ya ha caducado (duran 15 minutos) o se usó antes.\n\n" +
+        "No pasa nada, genera uno nuevo y lo intentamos otra vez 👇",
       [{ text: "🔗 Generar enlace nuevo", url: getCuentaUrl() }]
     );
     return;
@@ -154,9 +293,9 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (existing && existing.id !== linkRow.user_id) {
     await sendTelegramMessage(
       from.id,
-      "Esta cuenta de Telegram ya está vinculada a otro usuario de la Academy. " +
-        "Desvincúlala primero desde esa cuenta.",
-      [{ text: "Ir a mi cuenta", url: getCuentaUrl() }]
+      "🔒 Este Telegram ya está vinculado a otra cuenta de la Academy.\n\n" +
+        "Entra en esa cuenta y desvincúlalo primero, y luego lo conectamos aquí 👇",
+      [{ text: "⚙️ Ir a mi cuenta", url: getCuentaUrl() }]
     );
     return;
   }
@@ -214,15 +353,24 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   await sendTelegramMessage(
     from.id,
     isPremium
-      ? "✅ Cuenta vinculada. Ya eres Premium, así que puedes entrar al canal.\n\n" +
-        "Y si quieres preguntarme algo, escríbeme por aquí: le llega directamente a Adelin."
-      : "✅ Cuenta vinculada.\n\nCuando te hagas Premium tendrás acceso al canal privado y te dejaré entrar automáticamente.",
+      ? "🎉 ¡Listo! Cuenta vinculada.\n\n" +
+        "Eres Premium 💎, así que el canal privado ya te está esperando 👇\n\n" +
+        "Y cualquier duda, escríbeme por aquí: me llega a mí directamente."
+      : "✅ ¡Cuenta vinculada!\n\n" +
+        "Ya está todo listo por mi parte. En cuanto te hagas Premium 💎 te abro " +
+        "el canal privado automáticamente — no tendrás que hacer nada más.",
     isPremium
       ? [
-          { text: "🚀 Entrar al canal", url: getChannelInviteLink() },
-          { text: "Mi cuenta", url: getCuentaUrl() },
+          [{ text: "🚀 Entrar al canal", url: getChannelInviteLink() }],
+          [
+            { text: "📊 Mi Premium", data: "estado" },
+            { text: "💬 Hablar con Adelin", url: getAdminChatUrl() },
+          ],
         ]
-      : [{ text: "💎 Hazte Premium", url: getPremiumUrl() }]
+      : [
+          [{ text: "💎 Hazte Premium", url: getPremiumUrl() }],
+          [{ text: "📊 Ver mi estado", data: "estado" }],
+        ]
   );
 }
 
@@ -247,7 +395,13 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
     await approveChatJoinRequest(req.from.id);
     await sendTelegramMessage(
       req.from.id,
-      "🎉 ¡Bienvenido al canal Premium! Tu solicitud ha sido aceptada."
+      "🎉 ¡Dentro! Bienvenido al canal Premium.\n\n" +
+        "Aquí van los análisis, avisos y todo lo que no publico fuera. " +
+        "Ponte cómodo 🚀",
+      [
+        { text: "📊 Mi Premium", data: "estado" },
+        { text: "💬 Hablar con Adelin", url: getAdminChatUrl() },
+      ]
     );
     await admin.from("telegram_access_log").insert({
       user_id: profile.id,
@@ -261,8 +415,10 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
   await sendTelegramMessage(
     req.from.id,
     profile
-      ? "El canal es solo para miembros Premium. Hazte Premium y vuelve a solicitar entrada: te aceptaré al instante."
-      : "Para entrar al canal necesitas vincular antes tu cuenta de Telegram con la Academy.",
+      ? "🔒 El canal es solo para miembros Premium.\n\n" +
+        "Hazte Premium 💎 y vuelve a pedir entrada: te acepto al instante, automáticamente."
+      : "🔗 Antes de entrar al canal necesito que vincules tu cuenta de la Academy con este Telegram.\n\n" +
+        "Es un minuto y solo se hace una vez 👇",
     profile
       ? [{ text: "💎 Hazte Premium", url: getPremiumUrl() }]
       : [{ text: "🔗 Vincular mi cuenta", url: getCuentaUrl() }]
@@ -316,8 +472,12 @@ async function handleSupportMessage(
   if (!profile) {
     await sendTelegramMessage(
       from.id,
-      "Para escribirme necesitas vincular antes tu cuenta de la Academy.",
-      [{ text: "🔗 Vincular mi cuenta", url: getCuentaUrl() }]
+      "👋 ¡Hola! Para poder atenderte necesito saber quién eres.\n\n" +
+        "Vincula tu cuenta de la Academy y hablamos 👇",
+      [
+        [{ text: "🔗 Vincular mi cuenta", url: getCuentaUrl() }],
+        [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
+      ]
     );
     return;
   }
@@ -328,9 +488,12 @@ async function handleSupportMessage(
   if (!esPremium) {
     await sendTelegramMessage(
       from.id,
-      "Hablar conmigo por aquí es una de las ventajas Premium. " +
-        "Hazte Premium y te leo personalmente.",
-      [{ text: "💎 Hazte Premium", url: getPremiumUrl() }]
+      "💬 Escribirme por aquí es una de las ventajas Premium.\n\n" +
+        "Hazte Premium 💎 y te leo yo, en persona — sin bots ni respuestas automáticas.",
+      [
+        [{ text: "💎 Hazte Premium", url: getPremiumUrl() }],
+        [{ text: "📊 Ver mi estado", data: "estado" }],
+      ]
     );
     return;
   }
@@ -398,7 +561,10 @@ async function handleSupportMessage(
       );
     }
 
-    await sendTelegramMessage(from.id, "✅ Mensaje enviado. Te respondo por aquí en cuanto pueda.");
+    await sendTelegramMessage(
+      from.id,
+      "✅ Mensaje enviado a Adelin. Te responde por aquí en cuanto pueda 👌"
+    );
   } catch (err) {
     console.error("[telegram-webhook] No se pudo reenviar el mensaje de soporte:", err);
     await sendTelegramMessage(
@@ -478,9 +644,25 @@ export async function POST(request: NextRequest) {
 
   try {
     const message = update.message;
+    // Telegram añade el @bot a los comandos en grupos: /menu@MiBot.
+    const comando = message?.text?.startsWith("/")
+      ? message.text.split(/[\s@]/)[0].toLowerCase()
+      : null;
 
-    if (message?.text?.startsWith("/start")) {
-      await handleStart(admin, message);
+    if (update.callback_query) {
+      await handleCallback(admin, update.callback_query);
+    } else if (comando === "/start") {
+      await handleStart(admin, message as TelegramMessage);
+    } else if (message?.from && (comando === "/menu" || comando === "/ayuda")) {
+      await enviarMenu(admin, message.chat.id, message.from);
+    } else if (message?.from && comando === "/estado") {
+      const { data } = await admin
+        .from("profiles")
+        .select(CAMPOS_PERFIL_BOT)
+        .eq("telegram_user_id", message.from.id)
+        .maybeSingle();
+      const perfil = (data as PerfilBot | null) ?? null;
+      await sendTelegramMessage(message.chat.id, fichaEstado(perfil), menuPara(perfil));
     } else if (update.chat_join_request) {
       await handleJoinRequest(admin, update.chat_join_request);
     } else if (message) {
