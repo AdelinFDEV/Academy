@@ -204,5 +204,46 @@ try {
   mal("No se pudo consultar el webhook", err.message);
 }
 
+// — 5. Auditoría del canal —
+//
+// La API de bots NO permite listar los miembros de un canal, así que no se
+// puede reconciliar uno a uno. Lo único auditable es el total: si en el canal
+// hay más gente que premium vinculados, alguien entró por fuera del bot
+// (normalmente, aprobado a mano) y el cron nunca lo va a expulsar, porque
+// reconcilia desde la base de datos y a esa persona no la ve.
+try {
+  const total = await api("getChatMemberCount", { chat_id: CANAL });
+
+  const url = env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    aviso(`El canal tiene ${total} miembros`, "sin credenciales de Supabase para comparar");
+  } else {
+    const res = await fetch(
+      `${url}/rest/v1/profiles?select=id&role=in.(premium,admin)&telegram_user_id=not.is.null`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}`, Prefer: "count=exact" } }
+    );
+    // El total exacto viene en la cabecera Content-Range: "0-8/9".
+    const esperados = Number(res.headers.get("content-range")?.split("/")[1] ?? NaN);
+
+    if (!Number.isFinite(esperados)) {
+      aviso(`El canal tiene ${total} miembros`, "no se pudo contar los premium vinculados");
+    } else {
+      // +1 por el propio bot, que también cuenta como miembro del canal.
+      const previsto = esperados + 1;
+      if (total <= previsto) {
+        ok(`Miembros del canal: ${total}`, `${esperados} premium vinculados + el bot`);
+      } else {
+        mal(`Hay ${total - previsto} miembro(s) de más en el canal`,
+          `${total} dentro · ${esperados} premium vinculados + el bot`);
+        console.log(`  ${GRIS}Alguien entró sin pasar por el bot (¿aprobado a mano?).${FIN}`);
+        console.log(`  ${GRIS}El cron NO lo expulsará: reconcilia desde la BD y a esa persona no la ve.${FIN}`);
+      }
+    }
+  }
+} catch (err) {
+  mal("No se pudo auditar el canal", err.message);
+}
+
 console.log(`\n${GRIS}Nota: que el enlace de invitación exija aprobación no se puede consultar por API.${FIN}`);
 console.log(`${GRIS}Compruébalo en Telegram: ajustes del canal → enlace → «Approve new subscribers».${FIN}\n`);

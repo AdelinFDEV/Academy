@@ -242,6 +242,21 @@ export async function sendTelegramMessageOrThrow(
 }
 
 /**
+ * Cuántos miembros tiene el canal. Es la única forma de auditar el canal
+ * "desde fuera": la API de bots no permite listar los miembros de un canal,
+ * así que comparar este número con los premium vinculados es lo más cerca que
+ * se puede estar de detectar a alguien aprobado a mano.
+ */
+export async function getChannelMemberCount(): Promise<number | null> {
+  try {
+    return await callTelegramApi<number>("getChatMemberCount", { chat_id: getChannelId() });
+  } catch (err) {
+    console.warn("[telegram] No se pudo contar los miembros:", (err as Error).message);
+    return null;
+  }
+}
+
+/**
  * Publica en el canal privado. Si hay imagen va como foto con pie de texto,
  * que es lo que hace que el aviso se vea en el feed en lugar de pasar
  * desapercibido entre mensajes.

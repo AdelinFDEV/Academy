@@ -9,6 +9,13 @@ export const PAYMENT_LINK =
   "https://buy.stripe.com/00w3cvgC86CGbKReVTaZi02";
 
 /**
+ * Precio mensual del Premium, en euros. Se usa para estimar ingresos en el
+ * panel de control. Ojo: es el precio ACTUAL — quien entró con otra tarifa
+ * conserva la suya en Stripe, así que las cifras del panel son aproximadas.
+ */
+export const PREMIUM_PRICE_EUR = 19.99;
+
+/**
  * Construye la URL del checkout enlazando el pago con el usuario de Supabase.
  * - client_reference_id: id del usuario → lo recibimos en el webhook para saber
  *   a quién activar Premium, sin depender del email.
