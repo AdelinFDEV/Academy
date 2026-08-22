@@ -29,7 +29,15 @@ export async function GET(request: Request) {
     }
   } else if (code) {
     // Flujo PKCE (OAuth de Google) — ocurre en el mismo navegador por naturaleza.
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      // Aquí es donde aterriza quien entra con una cuenta de Google que no es
+      // Gmail (Workspace con dominio propio): el trigger de auth.users impide
+      // crear el usuario y el intercambio falla. Antes se ignoraba el error y
+      // acababa en /dashboard sin sesión, rebotado a login y sin saber por qué.
+      console.error("[auth/callback] No se pudo canjear el código:", error.message);
+      return NextResponse.redirect(`${origin}/login?error=dominio`);
+    }
   }
 
   if (type === "recovery") {

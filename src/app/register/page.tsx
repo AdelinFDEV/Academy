@@ -7,6 +7,7 @@ import Link from "next/link";
 import Turnstile from "@/components/Turnstile";
 import { Check } from "lucide-react";
 import { passwordChecks } from "@/lib/passwordRules";
+import { MENSAJE_DOMINIO_NO_PERMITIDO, emailPermitido } from "@/lib/emailPolicy";
 
 export default function RegisterPage() {
   return (
@@ -50,6 +51,16 @@ function RegisterForm() {
     setLoading(true);
     setError("");
 
+    // Antes que nada: si el dominio no vale, no gastamos ni el captcha ni una
+    // llamada a Supabase. El bloqueo real lo hace el trigger de auth.users;
+    // esto es para que el usuario entienda qué pasa en vez de ver un error
+    // técnico de base de datos.
+    if (!emailPermitido(email)) {
+      setError(MENSAJE_DOMINIO_NO_PERMITIDO);
+      setLoading(false);
+      return;
+    }
+
     if (!passwordChecks(password).every((c) => c.ok)) {
       setError("La contraseña no cumple todos los requisitos indicados abajo.");
       setLoading(false);
@@ -86,6 +97,28 @@ function RegisterForm() {
         return;
       }
       const rawMsg = error.message || "";
+
+      // El trigger rechaza los alias del mismo buzón (los puntos y el "+tag"
+      // de Gmail llegan todos al mismo sitio). Se trata igual que un email ya
+      // registrado — misma pantalla de éxito — para no revelar qué cuentas
+      // existen, que es la protección contra enumeración que ya había aquí.
+      if (/alias/i.test(rawMsg)) {
+        setSuccess(true);
+        setLoading(false);
+        return;
+      }
+
+      if (/gmail|proton/i.test(rawMsg)) {
+        setError(MENSAJE_DOMINIO_NO_PERMITIDO);
+        setLoading(false);
+        return;
+      }
+
+      // Supabase envuelve los errores de trigger en un genérico "Database error
+      // saving new user", así que aquí ya no se puede saber la causa exacta. Se
+      // orienta hacia lo más probable sin dar por hecho nada.
+      const isDbGeneric = /database error/i.test(rawMsg);
+
       const isPwPolicy =
         /password/i.test(rawMsg) && /(should contain|at least|character)/i.test(rawMsg);
       // Fallo opaco ("{}", vacío) o de envío de email (SMTP) → mensaje claro en
@@ -96,9 +129,11 @@ function RegisterForm() {
       setError(
         isPwPolicy
           ? "La contraseña no cumple todos los requisitos indicados abajo."
-          : isEmailSend
-            ? "No pudimos enviarte el correo de confirmación ahora mismo. Inténtalo de nuevo en unos minutos."
-            : rawMsg
+          : isDbGeneric
+            ? "No hemos podido crear la cuenta con ese correo. Prueba con otra dirección de Gmail o Proton."
+            : isEmailSend
+              ? "No pudimos enviarte el correo de confirmación ahora mismo. Inténtalo de nuevo en unos minutos."
+              : rawMsg
       );
       setLoading(false);
       return;
@@ -169,9 +204,10 @@ function RegisterForm() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="tu@email.com"
+              placeholder="tu@gmail.com"
               required
             />
+            <small className="field-hint">Solo aceptamos Gmail y Proton Mail.</small>
           </div>
 
           <div className="field">

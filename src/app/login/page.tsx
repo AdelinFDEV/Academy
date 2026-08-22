@@ -1,15 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import Turnstile from "@/components/Turnstile";
+import { MENSAJE_DOMINIO_NO_PERMITIDO } from "@/lib/emailPolicy";
 
+/** Avisos que llegan por ?error= desde /auth/callback. */
+const AVISOS: Record<string, string> = {
+  dominio: MENSAJE_DOMINIO_NO_PERMITIDO,
+  confirm: "El enlace de confirmación ya no es válido. Pide uno nuevo registrándote otra vez.",
+};
+
+// useSearchParams obliga a un límite de Suspense, igual que en /register.
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const supabase = createClient();
+  const searchParams = useSearchParams();
+  const aviso = AVISOS[searchParams.get("error") ?? ""] ?? "";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,6 +101,11 @@ export default function LoginPage() {
           adelin<span>btc</span>
         </Link>
         <p className="auth-subtitle">Accede a tu academia</p>
+
+        {/* Sale de /auth/callback: cuenta de Google fuera de política o enlace
+            de confirmación caducado. Antes se redirigía con ?error= y no se
+            mostraba en ninguna parte. */}
+        {aviso && !error && <p className="auth-error">{aviso}</p>}
 
         <form onSubmit={handleLogin} className="auth-form">
           <div className="field">

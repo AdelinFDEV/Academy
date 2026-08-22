@@ -239,6 +239,13 @@ html {
   letter-spacing: 0.05em;
 }
 
+/* Aclaración bajo un campo (p.ej. qué correos se aceptan al registrarse). */
+.field-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 .field input {
   background: rgba(240, 244, 255, 0.04);
   border: 1px solid rgba(240, 244, 255, 0.08);
