@@ -55,6 +55,7 @@ export default function CuentaTelegramCard({ initialLinked, initialUsername, isP
             stopPolling();
           } else if (attempts >= 40) {
             stopPolling();
+            setError("No hemos detectado la conexión. Si ya confirmaste en Telegram, recarga esta página.");
           }
         } catch {
           // Reintenta en el siguiente tick; si sigue fallando, el límite de
