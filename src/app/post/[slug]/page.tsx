@@ -8,6 +8,7 @@ import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import SiteNav from "@/components/SiteNav";
 import SocialLinks from "@/components/SocialLinks";
+import PostCtaFinal from "@/components/PostCtaFinal";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents from "@/components/TableOfContents";
 import CommentForm from "@/components/CommentForm";
@@ -279,29 +280,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
-            {/* Prompt suave de registro tras leer un artículo gratis */}
-            {!user && (
-              <div className="article-cta">
-                <strong>¿Te ha resultado útil?</strong>
-                <p>Regístrate gratis y no te pierdas los próximos análisis. Sin tarjeta, en 30 segundos.</p>
-                <div className="article-cta-actions">
-                  <Link href="/register" className="cta-btn-primary">Crear cuenta gratis →</Link>
-                  <Link href="/login" className="cta-btn-secondary">Ya tengo cuenta</Link>
-                </div>
-              </div>
-            )}
-
-            {/* Upgrade CTA para usuarios free tras leer un artículo gratuito */}
-            {user && !isPremium && (
-              <div className="post-upgrade-cta">
-                <span className="post-upgrade-cta-tag">PREMIUM</span>
-                <h3>¿Quieres más contenido como este?</h3>
-                <p>Hazte Premium por 19,99€/mes y accede a todos los análisis avanzados, el diario de trading y mucho más.</p>
-                <Link href="/premium" className="btn-primary" style={{ textDecoration: "none" }}>
-                  Ver planes Premium →
-                </Link>
-              </div>
-            )}
+            {/* Cierre fijo: siempre hay un siguiente paso, sea quien sea el
+                que lee. Antes los Premium terminaban el artículo sin nada. */}
+            <PostCtaFinal logueado={!!user} esPremium={isPremium} />
           </>
         ) : !user ? (
           <div className="post-paywall">
