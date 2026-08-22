@@ -45,7 +45,10 @@ const env = leerEnv();
 const TOKEN = env.TELEGRAM_BOT_TOKEN;
 const CANAL = env.TELEGRAM_CHANNEL_ID;
 const SECRETO = env.TELEGRAM_WEBHOOK_SECRET;
-const SITIO = env.NEXT_PUBLIC_SITE_URL;
+// Mismo valor por defecto que getCuentaUrl() en src/lib/telegram.ts: en local
+// NEXT_PUBLIC_SITE_URL no suele estar definida, y el webhook siempre apunta a
+// producción de todas formas (Telegram no puede llamar a localhost).
+const SITIO = env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com";
 
 async function api(metodo, params = {}) {
   const res = await fetch(`https://api.telegram.org/bot${TOKEN}/${metodo}`, {
@@ -113,13 +116,9 @@ try {
 }
 
 // — 4. Webhook —
-const urlEsperada = SITIO ? `${SITIO.replace(/\/$/, "")}/api/telegram/webhook` : null;
+const urlEsperada = `${SITIO.replace(/\/$/, "")}/api/telegram/webhook`;
 
 if (process.argv.includes("--set-webhook")) {
-  if (!urlEsperada) {
-    mal("No hay NEXT_PUBLIC_SITE_URL: no sé a qué URL registrar el webhook");
-    process.exit(1);
-  }
   try {
     await api("setWebhook", {
       url: urlEsperada,
@@ -140,7 +139,7 @@ try {
     mal("No hay webhook registrado");
     console.log(`  ${GRIS}Ejecuta: node scripts/telegram-doctor.mjs --set-webhook${FIN}`);
   } else {
-    if (urlEsperada && info.url !== urlEsperada) {
+    if (info.url !== urlEsperada) {
       aviso("El webhook apunta a otra URL", `registrado: ${info.url} · esperado: ${urlEsperada}`);
     } else {
       ok("Webhook registrado", info.url);
