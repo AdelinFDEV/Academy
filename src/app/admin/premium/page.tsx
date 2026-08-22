@@ -139,6 +139,26 @@ function calcularMetricas(todos: Fila[]) {
   };
 }
 
+/**
+ * Quién renueva en los próximos 30 días, del más cercano al más lejano.
+ * Se excluyen las canceladas: ese dinero no va a entrar.
+ */
+function ordenarPorVencimiento(dePago: Fila[]): Fila[] {
+  const limite = Date.now() + 30 * DIA;
+  return dePago
+    .filter(
+      (f) =>
+        !f.subscription_cancel_at_period_end &&
+        f.subscription_current_period_end &&
+        new Date(f.subscription_current_period_end).getTime() <= limite
+    )
+    .sort(
+      (a, b) =>
+        new Date(a.subscription_current_period_end as string).getTime() -
+        new Date(b.subscription_current_period_end as string).getTime()
+    );
+}
+
 /** Altas Premium por mes en los últimos 6 meses, para la gráfica de barras. */
 function altasPorMes(todos: Fila[]): { etiqueta: string; total: number }[] {
   const ahora = new Date();
@@ -214,6 +234,12 @@ export default async function AdminPremiumPage() {
   const mrr = dePago.filter((f) => !f.subscription_cancel_at_period_end).length * PREMIUM_PRICE_EUR;
   const cancelan = activos.filter((f) => f.subscription_cancel_at_period_end).length;
   const dentro = Object.values(enCanal).filter((v) => v === "dentro").length;
+
+  // El detalle de las dos métricas que piden acción, no solo lectura: saber
+  // que hay "3 sin usar el canal" no sirve de nada si no sabes quiénes son.
+  const fueraDelCanal = conTelegram.filter((f) => enCanal[f.id] === "fuera");
+  const sinVincular = activos.filter((f) => !f.telegram_user_id);
+  const renuevanPronto = ordenarPorVencimiento(dePago);
 
   // El bot también cuenta como miembro del canal.
   const previsto = conTelegram.length + 1;
@@ -318,10 +344,19 @@ export default async function AdminPremiumPage() {
           <span className="cp-card-foot">fueron Premium y ya no</span>
         </div>
 
-        <div className="cp-card">
-          <span className="cp-card-label">Sin usar el canal</span>
-          <strong className="cp-card-value">{conTelegram.length - dentro}</strong>
-          <span className="cp-card-foot">pagan pero no están dentro</span>
+        {/* Se cuentan los dos casos: vinculados pero fuera, y los que ni
+            siquiera vincularon. Ambos pagan sin usar la comunidad. Los
+            "desconocido" quedan fuera del recuento a propósito: no se sabe. */}
+        <div
+          className={`cp-card${fueraDelCanal.length + sinVincular.length > 0 ? " cp-card--alerta" : ""}`}
+        >
+          <span className="cp-card-label">Pagan sin usarlo</span>
+          <strong className="cp-card-value">{fueraDelCanal.length + sinVincular.length}</strong>
+          <span className="cp-card-foot">
+            {fueraDelCanal.length + sinVincular.length === 0
+              ? "todos están en la comunidad"
+              : "riesgo de baja — detalle abajo"}
+          </span>
         </div>
 
         {/* Altas por mes: con pocos datos una gráfica grande engaña, así que
@@ -352,6 +387,78 @@ export default async function AdminPremiumPage() {
           Telegram no permite listar los miembros de un canal, así que hay que localizarlo a mano
           desde la lista de suscriptores del canal.
         </p>
+      )}
+
+      {/* — Detalle accionable — */}
+      {(renuevanPronto.length > 0 || fueraDelCanal.length > 0 || sinVincular.length > 0) && (
+        <div className="cp-detalles">
+          {renuevanPronto.length > 0 && (
+            <div className="cp-detalle">
+              <h3 className="cp-detalle-titulo">
+                💶 Cobros en los próximos 30 días
+                <span className="cp-detalle-total">
+                  {euros(renuevanPronto.length * PREMIUM_PRICE_EUR)}
+                </span>
+              </h3>
+              <ul className="cp-lista">
+                {renuevanPronto.map((f) => {
+                  const dias = diasHasta(f.subscription_current_period_end);
+                  return (
+                    <li key={f.id}>
+                      <span className="cp-lista-nombre">{f.full_name ?? "Sin nombre"}</span>
+                      <span className="cp-lista-dato">
+                        {fecha(f.subscription_current_period_end)}
+                        {dias !== null && <em> · en {dias} d</em>}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
+          {(fueraDelCanal.length > 0 || sinVincular.length > 0) && (
+            <div className="cp-detalle cp-detalle--riesgo">
+              <h3 className="cp-detalle-titulo">
+                ⚠️ Pagan y no usan la comunidad
+                <span className="cp-detalle-total">
+                  {fueraDelCanal.length + sinVincular.length}
+                </span>
+              </h3>
+              <p className="cp-detalle-hint">
+                Los candidatos más claros a darse de baja: pagan por algo que no están usando.
+                Un recordatorio a tiempo suele bastar.
+              </p>
+              <ul className="cp-lista">
+                {fueraDelCanal.map((f) => (
+                  <li key={f.id}>
+                    <span className="cp-lista-nombre">{f.full_name ?? "Sin nombre"}</span>
+                    <span className="cp-lista-dato">
+                      {f.telegram_username ? (
+                        <a
+                          className="cp-tg"
+                          href={`https://t.me/${f.telegram_username}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          escribirle
+                        </a>
+                      ) : (
+                        <em>vinculado, fuera del canal</em>
+                      )}
+                    </span>
+                  </li>
+                ))}
+                {sinVincular.map((f) => (
+                  <li key={f.id}>
+                    <span className="cp-lista-nombre">{f.full_name ?? "Sin nombre"}</span>
+                    <span className="cp-lista-dato"><em>sin vincular Telegram</em></span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       )}
 
       {/* — Con acceso — */}
