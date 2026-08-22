@@ -1,6 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCuentaUrl, revokeChannelAccess, sendTelegramMessage } from "@/lib/telegram";
+import {
+  getChannelId,
+  getChannelMemberCount,
+  getCuentaUrl,
+  getFreeChannelId,
+  revokeChannelAccess,
+  sendTelegramMessage,
+} from "@/lib/telegram";
 import { anunciarPendientes } from "@/lib/announce";
 
 export const runtime = "nodejs";
@@ -116,6 +123,36 @@ async function avisarDeCancelacionesProximas(admin: Admin) {
   return { candidatos: candidatos?.length ?? 0, avisados };
 }
 
+/**
+ * Foto diaria del tamaño de cada canal.
+ *
+ * Los eventos de alta y baja por sí solos no bastan para dibujar la curva: si
+ * el bot está caído un rato, o alguien entró antes de que existiera todo esto,
+ * el recuento acumulado se desvía y ya no se recupera. Este total pedido a
+ * Telegram es la fuente de verdad; los eventos solo explican el porqué.
+ */
+async function fotografiarCanales(admin: Admin) {
+  const hoy = new Date().toISOString().slice(0, 10);
+  const canales = [getFreeChannelId(), (() => { try { return getChannelId(); } catch { return null; } })()];
+
+  const guardados: string[] = [];
+  for (const canal of canales) {
+    if (!canal) continue;
+    const miembros = await getChannelMemberCount(canal);
+    if (miembros === null) continue;
+
+    // upsert: si el cron se ejecuta dos veces el mismo día, se actualiza en
+    // vez de duplicar la fila.
+    const { error } = await admin
+      .from("telegram_channel_stats")
+      .upsert({ chat_id: String(canal), fecha: hoy, miembros }, { onConflict: "chat_id,fecha" });
+
+    if (error) console.error("[telegram-sync] Error guardando la foto del canal:", error.message);
+    else guardados.push(String(canal));
+  }
+  return guardados;
+}
+
 /** Poda de tablas que sólo crecen. Sin esto acaban engordando la base de datos
  *  con filas que ya no sirven para nada. */
 async function limpiar(admin: Admin) {
@@ -157,6 +194,10 @@ export async function GET(request: NextRequest) {
   const expulsiones = await expulsarCaducados(admin);
   const avisos = await avisarDeCancelacionesProximas(admin);
   const limpieza = await limpiar(admin);
+  const fotos = await fotografiarCanales(admin).catch((err) => {
+    console.error("[telegram-sync] Error fotografiando canales:", err);
+    return null;
+  });
   // Red de seguridad para los avisos al canal: las entradas ya se anuncian al
   // publicarlas, pero las guías nuevas (que llegan con un despliegue) y los
   // vídeos de YouTube no tienen ningún evento que los dispare.
@@ -165,5 +206,5 @@ export async function GET(request: NextRequest) {
     return null;
   });
 
-  return NextResponse.json({ expulsiones, avisos, limpieza, novedades });
+  return NextResponse.json({ expulsiones, avisos, limpieza, novedades, fotos });
 }

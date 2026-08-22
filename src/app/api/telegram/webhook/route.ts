@@ -546,16 +546,33 @@ async function handleChatMember(admin: Admin, upd: ChatMemberUpdated) {
 
   const antes = upd.old_chat_member.status;
   const ahora = upd.new_chat_member.status;
-  const entra = ["left", "kicked"].includes(antes) && ["member", "restricted"].includes(ahora);
+  const dentro = ["member", "restricted", "administrator", "creator"];
+  const fuera = ["left", "kicked"];
+
+  const entra = fuera.includes(antes) && dentro.includes(ahora);
+  const sale = dentro.includes(antes) && fuera.includes(ahora);
+  if (!entra && !sale) return;
+
+  const quien = upd.new_chat_member.user;
+
+  // Se registra SIEMPRE, altas y bajas: la API de bots no guarda histórico
+  // ninguno, así que lo que no se apunte aquí no se puede recuperar después.
+  await admin.from("telegram_channel_events").insert({
+    chat_id: String(upd.chat.id),
+    telegram_user_id: quien.id,
+    username: quien.username ?? null,
+    nombre: quien.first_name ?? null,
+    action: entra ? "join" : "leave",
+  });
+
+  // Del aviso solo interesan las altas: notificar cada baja sería deprimente
+  // y no accionable.
   if (!entra) return;
 
   const total = await getChannelMemberCount(upd.chat.id);
   const cuantos = total !== null ? `\n\nYa sois ${total} en el canal.` : "";
 
-  await avisarAlAdmin(
-    admin,
-    `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(upd.new_chat_member.user)}${cuantos}`
-  );
+  await avisarAlAdmin(admin, `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(quien)}${cuantos}`);
 }
 
 /** Mensaje de un usuario al admin. Reservado a Premium: es una de las ventajas
