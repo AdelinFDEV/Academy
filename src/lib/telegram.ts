@@ -20,6 +20,14 @@ export function getBotUsername(): string {
   return username;
 }
 
+/** URL de la página de cuenta, para enlazarla en los mensajes del bot.
+ *  Como texto plano ("/cuenta") Telegram lo pinta como comando pulsable
+ *  y el bot no tiene handler para él, así que aquí siempre va la URL completa. */
+export function getCuentaUrl(): string {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com";
+  return `${siteUrl}/cuenta`;
+}
+
 type TelegramApiResponse<T> = { ok: true; result: T } | { ok: false; description?: string };
 
 async function callTelegramApi<T = unknown>(

@@ -4,6 +4,7 @@ import {
   approveChatJoinRequest,
   declineChatJoinRequest,
   getChannelId,
+  getCuentaUrl,
   sendTelegramMessage,
 } from "@/lib/telegram";
 
@@ -31,7 +32,7 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (!token) {
     await sendTelegramMessage(
       from.id,
-      "Para vincular tu cuenta, entra a tu Academy en /cuenta y pulsa «Conectar Telegram»."
+      `Para vincular tu cuenta, entra en ${getCuentaUrl()} y pulsa «Conectar Telegram».`
     );
     return;
   }
@@ -45,7 +46,7 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   if (!linkRow || linkRow.used_at || new Date(linkRow.expires_at) < new Date()) {
     await sendTelegramMessage(
       from.id,
-      "Este enlace ha caducado o ya se usó. Genera uno nuevo desde /cuenta en la Academy."
+      `Este enlace ha caducado o ya se usó. Genera uno nuevo desde ${getCuentaUrl()}.`
     );
     return;
   }
@@ -94,8 +95,8 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   await sendTelegramMessage(
     from.id,
     isPremium
-      ? "✅ Cuenta vinculada. Ya eres Premium: usa el enlace de invitación del canal desde /cuenta para solicitar entrada."
-      : "✅ Cuenta vinculada. Cuando te hagas Premium podrás solicitar entrada al canal privado desde /cuenta."
+      ? `✅ Cuenta vinculada. Ya eres Premium: entra en ${getCuentaUrl()} y usa el enlace de invitación del canal para solicitar entrada.`
+      : `✅ Cuenta vinculada. Cuando te hagas Premium podrás solicitar entrada al canal privado desde ${getCuentaUrl()}.`
   );
 }
 
@@ -128,7 +129,7 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
     req.from.id,
     profile
       ? "Tu solicitud ha sido rechazada: necesitas ser Premium. Hazte Premium en la Academy y vuelve a solicitar entrada."
-      : "Tu solicitud ha sido rechazada: primero vincula tu cuenta de Telegram desde /cuenta en la Academy."
+      : `Tu solicitud ha sido rechazada: primero vincula tu cuenta de Telegram desde ${getCuentaUrl()}.`
   );
   await admin.from("telegram_access_log").insert({
     user_id: profile?.id ?? null,
