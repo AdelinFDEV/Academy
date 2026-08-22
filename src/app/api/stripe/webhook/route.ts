@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type Stripe from "stripe";
 import { getStripe, statusGrantsPremium } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { removeChannelMember } from "@/lib/telegram";
 
 // El webhook necesita el cuerpo SIN procesar para validar la firma y debe
 // ejecutarse siempre en el runtime de Node y en cada petición.
@@ -12,6 +13,7 @@ type ProfileRow = {
   id: string;
   role: string | null;
   premium_since: string | null;
+  telegram_user_id: number | null;
 };
 
 /** Stripe ha movido el periodo a nivel de item en versiones recientes; lo
@@ -69,6 +71,22 @@ async function applyToProfile(
     status: opts.status,
     new_role: newRole,
   });
+
+  // Downgrade: si tenía Telegram vinculado, lo sacamos del canal Premium.
+  const wasDowngraded = !isAdmin && profile.role !== "free" && newRole === "free";
+  if (wasDowngraded && profile.telegram_user_id) {
+    try {
+      await removeChannelMember(profile.telegram_user_id);
+      await admin.from("telegram_access_log").insert({
+        user_id: profile.id,
+        telegram_user_id: profile.telegram_user_id,
+        action: "kicked",
+        reason: `Downgrade Stripe (${opts.eventType})`,
+      });
+    } catch (err) {
+      console.warn("[stripe-webhook] No se pudo expulsar de Telegram:", (err as Error).message);
+    }
+  }
 }
 
 /** Busca el perfil por id de cliente o de suscripción de Stripe. */
@@ -79,7 +97,7 @@ async function findProfile(
   if (customerId) {
     const { data } = await admin
       .from("profiles")
-      .select("id, role, premium_since")
+      .select("id, role, premium_since, telegram_user_id")
       .eq("stripe_customer_id", customerId)
       .maybeSingle();
     if (data) return data as ProfileRow;
@@ -87,7 +105,7 @@ async function findProfile(
   if (subscriptionId) {
     const { data } = await admin
       .from("profiles")
-      .select("id, role, premium_since")
+      .select("id, role, premium_since, telegram_user_id")
       .eq("stripe_subscription_id", subscriptionId)
       .maybeSingle();
     if (data) return data as ProfileRow;
@@ -155,7 +173,7 @@ export async function POST(request: NextRequest) {
 
         const { data: profile } = await admin
           .from("profiles")
-          .select("id, role, premium_since")
+          .select("id, role, premium_since, telegram_user_id")
           .eq("id", userId)
           .maybeSingle();
 

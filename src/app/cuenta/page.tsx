@@ -8,6 +8,7 @@ import SiteNav from "@/components/SiteNav";
 import CuentaPasswordBtn from "@/components/CuentaPasswordBtn";
 import CuentaDeleteAccountBtn from "@/components/CuentaDeleteAccountBtn";
 import TwoFactorSettings from "@/components/TwoFactorSettings";
+import CuentaTelegramCard from "@/components/CuentaTelegramCard";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User, Lock } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -58,7 +59,7 @@ export default async function CuentaPage({
   const admin = createAdminClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, role, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, premium_since, stripe_customer_id")
+    .select("full_name, role, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, premium_since, stripe_customer_id, telegram_username, telegram_linked_at")
     .eq("id", user.id)
     .single();
 
@@ -237,6 +238,14 @@ export default async function CuentaPage({
                 </>
               )}
             </div>
+
+            {/* — Comunidad en Telegram — */}
+            <CuentaTelegramCard
+              initialLinked={!!profile?.telegram_linked_at}
+              initialUsername={profile?.telegram_username ?? null}
+              isPremium={isPremium}
+              inviteLink={process.env.TELEGRAM_CHANNEL_INVITE_LINK ?? null}
+            />
 
             {/* — Seguridad — */}
             <div className="cuenta-card cuenta-card--full" id="seguridad">
