@@ -123,7 +123,9 @@ if (process.argv.includes("--set-webhook")) {
     await api("setWebhook", {
       url: urlEsperada,
       secret_token: SECRETO,
-      allowed_updates: ["message", "chat_join_request"],
+      // callback_query es imprescindible: sin él los botones de acción del
+      // menú («Ver mi Premium») no llegan nunca y se quedan girando.
+      allowed_updates: ["message", "chat_join_request", "callback_query"],
       drop_pending_updates: false,
     });
     ok("Webhook registrado con secreto", urlEsperada);
@@ -181,12 +183,21 @@ try {
     // allowed_updates vacío = todos menos chat_member y reacciones, que ya nos
     // vale. Pero si alguien lo restringió a mano, chat_join_request puede
     // haberse quedado fuera y las solicitudes de entrada nunca llegarían.
-    if (info.allowed_updates && !info.allowed_updates.includes("chat_join_request")) {
-      mal("chat_join_request NO está en allowed_updates", info.allowed_updates.join(", "));
-      console.log(`  ${GRIS}Las solicitudes de entrada al canal nunca llegarían al bot.${FIN}`);
+    const permitidos = info.allowed_updates;
+    const faltantes = ["chat_join_request", "callback_query"].filter(
+      (tipo) => permitidos && !permitidos.includes(tipo)
+    );
+    if (faltantes.length) {
+      mal(`Faltan tipos en allowed_updates: ${faltantes.join(", ")}`, (permitidos ?? []).join(", "));
+      if (faltantes.includes("chat_join_request")) {
+        console.log(`  ${GRIS}Las solicitudes de entrada al canal nunca llegarían al bot.${FIN}`);
+      }
+      if (faltantes.includes("callback_query")) {
+        console.log(`  ${GRIS}Los botones del menú no responderían: se quedarían girando.${FIN}`);
+      }
       console.log(`  ${GRIS}Ejecuta: node scripts/telegram-doctor.mjs --set-webhook${FIN}`);
     } else {
-      ok("El bot recibe las solicitudes de entrada al canal");
+      ok("El bot recibe solicitudes de entrada y pulsaciones de botón");
     }
   }
 } catch (err) {
