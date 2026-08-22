@@ -45,6 +45,9 @@ next-env.d.ts
 
 .vercel
 .env*
+# La plantilla sí va al repo: no lleva credenciales reales y sin ella un clon
+# nuevo no sabe qué variables hacen falta.
+!.env.local.example
 
 # Auditoría de seguridad interna — no publicar (repo público)
 INFORME-SEGURIDAD.md

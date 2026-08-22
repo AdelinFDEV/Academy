@@ -1,28 +1,27 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { revokeChannelAccess } from "@/lib/telegram";
+import { getCuentaUrl, revokeChannelAccess, sendTelegramMessage } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+type Admin = ReturnType<typeof createAdminClient>;
+
+const DIA = 24 * 60 * 60 * 1000;
+
+/** Días de antelación con los que se avisa de que se acaba el Premium. */
+const DIAS_DE_AVISO = 3;
+
+/** Cuánto se conservan los updates de Telegram ya procesados. Los reintentos
+ *  de Telegram se agotan en minutos, así que una semana sobra de largo. */
+const DIAS_RETENCION_EVENTOS = 7;
 
 /**
  * Red de seguridad además del webhook de Stripe: expulsa del canal a
  * cualquier usuario vinculado cuyo rol ya no sea premium/admin. Cubre el caso
  * de que el webhook de Stripe fallara o se perdiera un evento.
  */
-export async function GET(request: NextRequest) {
-  // Obligatorio, no opcional: sin secreto este endpoint queda expuesto a
-  // cualquiera que acierte la ruta y pueda dispararlo a voluntad.
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    console.error("[telegram-sync] Falta CRON_SECRET");
-    return NextResponse.json({ error: "Cron no configurado" }, { status: 500 });
-  }
-  if (request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-  }
-
-  const admin = createAdminClient();
+async function expulsarCaducados(admin: Admin) {
   const { data: stale, error } = await admin
     .from("profiles")
     .select("id, telegram_user_id")
@@ -31,7 +30,7 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error("[telegram-sync] Error consultando perfiles:", error.message);
-    return NextResponse.json({ error: "DB error" }, { status: 500 });
+    return null;
   }
 
   // revokeChannelAccess comprueba antes si la persona está realmente dentro,
@@ -49,5 +48,114 @@ export async function GET(request: NextRequest) {
     if (expulsado) kicked++;
   }
 
-  return NextResponse.json({ checked: stale?.length ?? 0, kicked });
+  return { revisados: stale?.length ?? 0, expulsados: kicked };
+}
+
+/**
+ * Avisa por Telegram a quien tiene la suscripción cancelada y está a punto de
+ * quedarse fuera. Quien cancela por despiste (o por un problema con la tarjeta)
+ * se entera cuando ya está fuera del canal; esto le da una última oportunidad
+ * de reactivar sin perder nada.
+ */
+async function avisarDeCancelacionesProximas(admin: Admin) {
+  const ahora = new Date();
+  const limite = new Date(ahora.getTime() + DIAS_DE_AVISO * DIA);
+
+  const { data: candidatos, error } = await admin
+    .from("profiles")
+    .select("id, full_name, telegram_user_id, subscription_current_period_end, cancel_warning_period_end")
+    .eq("subscription_cancel_at_period_end", true)
+    .eq("subscription_status", "active")
+    .not("telegram_user_id", "is", null)
+    .gt("subscription_current_period_end", ahora.toISOString())
+    .lte("subscription_current_period_end", limite.toISOString());
+
+  if (error) {
+    console.error("[telegram-sync] Error buscando cancelaciones próximas:", error.message);
+    return null;
+  }
+
+  let avisados = 0;
+  for (const perfil of candidatos ?? []) {
+    const fin = perfil.subscription_current_period_end as string | null;
+    if (!fin || !perfil.telegram_user_id) continue;
+
+    // Comparar el periodo (y no un booleano "ya avisado") es lo que hace que
+    // el cron diario no repita el mensaje, y que a la vez vuelva a avisar si
+    // la persona reactiva y más adelante cancela de nuevo: ese periodo ya es
+    // otro y no coincide con el guardado.
+    const yaAvisado = perfil.cancel_warning_period_end as string | null;
+    if (yaAvisado && new Date(yaAvisado).getTime() === new Date(fin).getTime()) continue;
+
+    const dias = Math.max(1, Math.ceil((new Date(fin).getTime() - ahora.getTime()) / DIA));
+    const nombre = (perfil.full_name as string | null) ?? "";
+    const saludo = nombre ? `${nombre}, ` : "";
+
+    await sendTelegramMessage(
+      perfil.telegram_user_id,
+      `${saludo}tu suscripción Premium no se va a renovar: te ${dias === 1 ? "queda 1 día" : `quedan ${dias} días`} de acceso.\n\n` +
+        "Cuando termine saldrás del canal privado automáticamente. Si quieres seguir, " +
+        "puedes reactivar la renovación en un par de clics.",
+      [{ text: "🔄 Reactivar mi Premium", url: getCuentaUrl() }]
+    );
+
+    const { error: marcaErr } = await admin
+      .from("profiles")
+      .update({ cancel_warning_period_end: fin })
+      .eq("id", perfil.id);
+
+    // Si no se puede marcar, mañana volvería a avisar a la misma persona. Se
+    // registra para poder detectarlo antes de que se vuelva pesado.
+    if (marcaErr) {
+      console.error("[telegram-sync] No se pudo marcar el aviso enviado:", marcaErr.message);
+    }
+    avisados++;
+  }
+
+  return { candidatos: candidatos?.length ?? 0, avisados };
+}
+
+/** Poda de tablas que sólo crecen. Sin esto acaban engordando la base de datos
+ *  con filas que ya no sirven para nada. */
+async function limpiar(admin: Admin) {
+  const corteEventos = new Date(Date.now() - DIAS_RETENCION_EVENTOS * DIA).toISOString();
+  const { error: evErr } = await admin
+    .from("telegram_events")
+    .delete()
+    .lt("created_at", corteEventos);
+  if (evErr) console.error("[telegram-sync] Error limpiando telegram_events:", evErr.message);
+
+  // Los tokens de vinculación caducan a los 15 minutos; pasado un día no le
+  // sirven a nadie, ni siquiera para depurar.
+  const corteTokens = new Date(Date.now() - DIA).toISOString();
+  const { error: tkErr } = await admin
+    .from("telegram_link_tokens")
+    .delete()
+    .lt("expires_at", corteTokens);
+  if (tkErr) console.error("[telegram-sync] Error limpiando telegram_link_tokens:", tkErr.message);
+
+  return { eventos: !evErr, tokens: !tkErr };
+}
+
+export async function GET(request: NextRequest) {
+  // Obligatorio, no opcional: sin secreto este endpoint queda expuesto a
+  // cualquiera que acierte la ruta y pueda dispararlo a voluntad.
+  const cronSecret = process.env.CRON_SECRET;
+  if (!cronSecret) {
+    console.error("[telegram-sync] Falta CRON_SECRET");
+    return NextResponse.json({ error: "Cron no configurado" }, { status: 500 });
+  }
+  if (request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
+  const admin = createAdminClient();
+
+  // Cada tarea es independiente: que una falle no debe impedir las otras, así
+  // que ninguna corta la ejecución — devuelven null y se refleja en la salida.
+  const expulsiones = await expulsarCaducados(admin);
+  const avisos = await avisarDeCancelacionesProximas(admin);
+  const limpieza = await limpiar(admin);
+
+  return NextResponse.json({ expulsiones, avisos, limpieza });
 }

@@ -40,6 +40,26 @@ type TelegramUpdate = {
 const LIMITE_MENSAJES_HORA = 10;
 
 /**
+ * Telegram deja cambiar el @ cuando uno quiera, así que el que guardamos al
+ * vincular se queda obsoleto sin que nos enteremos — y es justo el dato con el
+ * que identificas a alguien cuando te escribe. Se refresca al vuelo en cada
+ * interacción, que es cuando sale gratis: el perfil ya está cargado.
+ */
+async function refrescarUsername(
+  admin: Admin,
+  telegramUserId: number,
+  guardado: string | null,
+  actual: string | undefined
+) {
+  const nuevo = actual ?? null;
+  if (nuevo === guardado) return;
+  await admin
+    .from("profiles")
+    .update({ telegram_username: nuevo })
+    .eq("telegram_user_id", telegramUserId);
+}
+
+/**
  * Bienvenida de /start sin token: es la primera pantalla que ve alguien que
  * abre el bot, así que se adapta a quién escribe. A un desconocido hay que
  * presentarle el proyecto; a un Premium que ya está dentro, soltarle otra vez
@@ -48,9 +68,13 @@ const LIMITE_MENSAJES_HORA = 10;
 async function enviarBienvenida(admin: Admin, from: TelegramUser) {
   const { data: profile } = await admin
     .from("profiles")
-    .select("role, full_name")
+    .select("role, full_name, telegram_username")
     .eq("telegram_user_id", from.id)
     .maybeSingle();
+
+  if (profile) {
+    await refrescarUsername(admin, from.id, profile.telegram_username, from.username);
+  }
 
   const nombre = profile?.full_name || from.first_name;
   const saludo = nombre ? `¡Hola, ${nombre}!` : "¡Hola!";
@@ -209,9 +233,13 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
 
   const { data: profile } = await admin
     .from("profiles")
-    .select("id, role")
+    .select("id, role, telegram_username")
     .eq("telegram_user_id", req.from.id)
     .maybeSingle();
+
+  if (profile) {
+    await refrescarUsername(admin, req.from.id, profile.telegram_username, req.from.username);
+  }
 
   const isPremium = !!profile && (profile.role === "premium" || profile.role === "admin");
 
@@ -281,7 +309,7 @@ async function handleSupportMessage(
 
   const { data: profile } = await admin
     .from("profiles")
-    .select("id, role, full_name")
+    .select("id, role, full_name, telegram_username")
     .eq("telegram_user_id", from.id)
     .maybeSingle();
 
@@ -293,6 +321,8 @@ async function handleSupportMessage(
     );
     return;
   }
+
+  await refrescarUsername(admin, from.id, profile.telegram_username, from.username);
 
   const esPremium = profile.role === "premium" || profile.role === "admin";
   if (!esPremium) {
