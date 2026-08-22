@@ -1,6 +1,9 @@
 import crypto from "crypto";
+import type { createAdminClient } from "@/lib/supabase/admin";
 
 const API_BASE = "https://api.telegram.org/bot";
+
+type SupabaseAdmin = ReturnType<typeof createAdminClient>;
 
 function getBotToken(): string {
   const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -66,6 +69,62 @@ export async function removeChannelMember(userId: number) {
   const chatId = getChannelId();
   await callTelegramApi("banChatMember", { chat_id: chatId, user_id: userId });
   await callTelegramApi("unbanChatMember", { chat_id: chatId, user_id: userId, only_if_banned: true });
+}
+
+/** Estados de getChatMember que significan "está dentro del canal". */
+const ESTADOS_DENTRO = ["creator", "administrator", "member", "restricted"];
+
+/**
+ * ¿Está esta persona dentro del canal? Si la consulta falla devolvemos `true`
+ * a propósito: ante la duda preferimos intentar la expulsión (fail-safe hacia
+ * cerrar el acceso) antes que dar por hecho que ya no está.
+ */
+export async function isChannelMember(userId: number): Promise<boolean> {
+  try {
+    const res = await callTelegramApi<{ status: string }>("getChatMember", {
+      chat_id: getChannelId(),
+      user_id: userId,
+    });
+    return ESTADOS_DENTRO.includes(res.status);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Único camino para retirar el acceso al canal: comprueba, expulsa y registra.
+ *
+ * Está centralizado porque hay cinco sitios que dan de baja a alguien (webhook
+ * de Stripe, desvinculación, cron, borrado de cuenta y cambio de rol desde el
+ * panel) y cada uno que lo hiciera por su cuenta era un sitio más donde olvidar
+ * la expulsión o el registro. Si no está en el canal no hace nada: así el cron
+ * diario deja de gastar llamadas y de escribir un "kicked" falso cada día por
+ * cada usuario gratuito que un día vinculó Telegram.
+ */
+export async function revokeChannelAccess(
+  admin: SupabaseAdmin,
+  opts: { userId: string | null; telegramUserId: number; reason: string }
+): Promise<boolean> {
+  if (!(await isChannelMember(opts.telegramUserId))) return false;
+
+  try {
+    await removeChannelMember(opts.telegramUserId);
+  } catch (err) {
+    console.warn(
+      "[telegram] No se pudo expulsar a",
+      opts.telegramUserId,
+      (err as Error).message
+    );
+    return false;
+  }
+
+  await admin.from("telegram_access_log").insert({
+    user_id: opts.userId,
+    telegram_user_id: opts.telegramUserId,
+    action: "kicked",
+    reason: opts.reason,
+  });
+  return true;
 }
 
 /** Envía un mensaje directo al usuario. Falla en silencio: puede no haber

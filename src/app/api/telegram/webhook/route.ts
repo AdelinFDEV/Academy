@@ -5,6 +5,7 @@ import {
   declineChatJoinRequest,
   getChannelId,
   getCuentaUrl,
+  revokeChannelAccess,
   sendTelegramMessage,
 } from "@/lib/telegram";
 
@@ -63,6 +64,26 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
       "Esta cuenta de Telegram ya está vinculada a otro usuario de la Academy."
     );
     return;
+  }
+
+  // Si este perfil ya tenía OTRA cuenta de Telegram vinculada, hay que sacarla
+  // del canal antes de sustituirla: en cuanto se sobrescribe el
+  // telegram_user_id, esa cuenta antigua queda dentro del canal y sin rastro
+  // en la base de datos, así que ni el cron ni una baja de Stripe podrían
+  // llegar nunca a expulsarla.
+  const { data: perfilActual } = await admin
+    .from("profiles")
+    .select("telegram_user_id")
+    .eq("id", linkRow.user_id)
+    .maybeSingle();
+
+  const anterior = perfilActual?.telegram_user_id as number | null | undefined;
+  if (anterior && anterior !== from.id) {
+    await revokeChannelAccess(admin, {
+      userId: linkRow.user_id,
+      telegramUserId: anterior,
+      reason: "Reemplazada por otra cuenta de Telegram",
+    });
   }
 
   await admin
@@ -140,12 +161,17 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // El secreto es obligatorio, no opcional: sin él este endpoint acepta
+  // cualquier update falsificado, y un /start inventado permitiría vincular
+  // una cuenta de Telegram cualquiera a un usuario cualquiera. Si falta la
+  // variable, se cierra la puerta en vez de dejarla abierta.
   const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
-  if (secret) {
-    const header = request.headers.get("x-telegram-bot-api-secret-token");
-    if (header !== secret) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-    }
+  if (!secret) {
+    console.error("[telegram-webhook] Falta TELEGRAM_WEBHOOK_SECRET");
+    return NextResponse.json({ error: "Webhook no configurado" }, { status: 500 });
+  }
+  if (request.headers.get("x-telegram-bot-api-secret-token") !== secret) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
   const update = (await request.json()) as TelegramUpdate;

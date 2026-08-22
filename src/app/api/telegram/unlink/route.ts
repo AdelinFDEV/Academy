@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { removeChannelMember } from "@/lib/telegram";
+import { revokeChannelAccess } from "@/lib/telegram";
 
 export const dynamic = "force-dynamic";
 
@@ -32,11 +32,11 @@ export async function POST() {
   }
 
   if (telegramUserId) {
-    try {
-      await removeChannelMember(telegramUserId);
-    } catch (err) {
-      console.warn("[telegram-unlink] No se pudo expulsar del canal:", (err as Error).message);
-    }
+    await revokeChannelAccess(admin, {
+      userId: user.id,
+      telegramUserId,
+      reason: "Desvinculación desde /cuenta",
+    });
     await admin.from("telegram_access_log").insert({
       user_id: user.id,
       telegram_user_id: telegramUserId,

@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type Stripe from "stripe";
 import { getStripe, statusGrantsPremium } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { removeChannelMember } from "@/lib/telegram";
+import { revokeChannelAccess } from "@/lib/telegram";
 
 // El webhook necesita el cuerpo SIN procesar para validar la firma y debe
 // ejecutarse siempre en el runtime de Node y en cada petición.
@@ -86,19 +86,15 @@ async function applyToProfile(
   }
 
   // Downgrade: si tenía Telegram vinculado, lo sacamos del canal Premium.
-  const wasDowngraded = !isAdmin && profile.role !== "free" && newRole === "free";
-  if (wasDowngraded && profile.telegram_user_id) {
-    try {
-      await removeChannelMember(profile.telegram_user_id);
-      await admin.from("telegram_access_log").insert({
-        user_id: profile.id,
-        telegram_user_id: profile.telegram_user_id,
-        action: "kicked",
-        reason: `Downgrade Stripe (${opts.eventType})`,
-      });
-    } catch (err) {
-      console.warn("[stripe-webhook] No se pudo expulsar de Telegram:", (err as Error).message);
-    }
+  // La condición mira el rol nuevo, no el anterior, para cubrir también el caso
+  // de que un intento previo de expulsión fallara y el usuario siguiera dentro.
+  const perdioPremium = !isAdmin && newRole === "free" && !!profile.telegram_user_id;
+  if (perdioPremium && profile.telegram_user_id) {
+    await revokeChannelAccess(admin, {
+      userId: profile.id,
+      telegramUserId: profile.telegram_user_id,
+      reason: `Downgrade Stripe (${opts.eventType})`,
+    });
   }
 }
 

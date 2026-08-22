@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getStripe } from "@/lib/stripe";
+import { revokeChannelAccess } from "@/lib/telegram";
 
 // Tablas con datos propios del usuario que se borran por completo. Se borran
 // explícitamente en vez de fiarse solo del "on delete cascade" de la FK,
@@ -47,7 +48,7 @@ export async function POST() {
   const admin = createAdminClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("role, stripe_subscription_id, subscription_status")
+    .select("role, stripe_subscription_id, subscription_status, telegram_user_id")
     .eq("id", user.id)
     .single();
 
@@ -86,6 +87,20 @@ export async function POST() {
         );
       }
     }
+  }
+
+  // Fuera del canal ANTES de borrar nada: al eliminar la cuenta se pierde el
+  // `telegram_user_id`, y con él la única forma de saber a quién expulsar. Si
+  // se dejara para después, quien borrase su cuenta se quedaría dentro del
+  // canal Premium para siempre y ni el cron podría detectarlo (ya no hay
+  // perfil que revisar). Va antes del borrado también porque el registro en
+  // telegram_access_log necesita que el user_id aún exista.
+  if (profile?.telegram_user_id) {
+    await revokeChannelAccess(admin, {
+      userId: user.id,
+      telegramUserId: profile.telegram_user_id,
+      reason: "Cuenta eliminada",
+    });
   }
 
   for (const table of OWNED_TABLES) {

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { removeChannelMember } from "@/lib/telegram";
+import { revokeChannelAccess } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,12 +11,15 @@ export const dynamic = "force-dynamic";
  * de que el webhook de Stripe fallara o se perdiera un evento.
  */
 export async function GET(request: NextRequest) {
+  // Obligatorio, no opcional: sin secreto este endpoint queda expuesto a
+  // cualquiera que acierte la ruta y pueda dispararlo a voluntad.
   const cronSecret = process.env.CRON_SECRET;
-  if (cronSecret) {
-    const auth = request.headers.get("authorization");
-    if (auth !== `Bearer ${cronSecret}`) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-    }
+  if (!cronSecret) {
+    console.error("[telegram-sync] Falta CRON_SECRET");
+    return NextResponse.json({ error: "Cron no configurado" }, { status: 500 });
+  }
+  if (request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
   const admin = createAdminClient();
@@ -31,21 +34,19 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "DB error" }, { status: 500 });
   }
 
+  // revokeChannelAccess comprueba antes si la persona está realmente dentro,
+  // así que los usuarios gratuitos que vincularon Telegram pero nunca entraron
+  // al canal no generan ni llamada de expulsión ni registro: sin eso, cada
+  // ejecución diaria repetía un "kicked" falso por cada uno de ellos.
   let kicked = 0;
   for (const profile of stale ?? []) {
     if (!profile.telegram_user_id) continue;
-    try {
-      await removeChannelMember(profile.telegram_user_id);
-      kicked++;
-      await admin.from("telegram_access_log").insert({
-        user_id: profile.id,
-        telegram_user_id: profile.telegram_user_id,
-        action: "kicked",
-        reason: "Reconciliación periódica: rol no premium",
-      });
-    } catch (err) {
-      console.warn("[telegram-sync] No se pudo expulsar a", profile.telegram_user_id, (err as Error).message);
-    }
+    const expulsado = await revokeChannelAccess(admin, {
+      userId: profile.id,
+      telegramUserId: profile.telegram_user_id,
+      reason: "Reconciliación periódica: rol no premium",
+    });
+    if (expulsado) kicked++;
   }
 
   return NextResponse.json({ checked: stale?.length ?? 0, kicked });
