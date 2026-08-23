@@ -311,10 +311,59 @@ export async function resolverChatAdmin(admin: SupabaseAdmin): Promise<number | 
 }
 
 /** Manda un aviso al admin. Si no hay a quién, no hace nada. */
-export async function avisarAlAdmin(admin: SupabaseAdmin, texto: string) {
+export async function avisarAlAdmin(
+  admin: SupabaseAdmin,
+  texto: string,
+  opciones?: { ignorarPausa?: boolean }
+) {
+  if (!opciones?.ignorarPausa && (await avisosPausados(admin))) return;
   const destino = await resolverChatAdmin(admin);
   if (!destino) return;
   await sendTelegramMessage(destino, texto);
+}
+
+/** Clave del interruptor de avisos en la tabla bot_ajustes. */
+const CLAVE_PAUSA = "avisos_pausados";
+
+/**
+ * ¿Están los avisos automáticos en pausa?
+ *
+ * Solo afecta a lo que el bot manda por su cuenta —altas en los canales,
+ * propuestas de noticias, la rutina diaria—. NUNCA silencia los mensajes que
+ * escribe una persona: el relé de soporte no pasa por aquí a propósito, porque
+ * perder el mensaje de un cliente es mucho peor que recibir un aviso de más.
+ *
+ * Ante un error de base de datos se responde "no pausados": es preferible un
+ * aviso que no querías a quedarte sin enterarte de nada sin saber por qué.
+ */
+export async function avisosPausados(admin: SupabaseAdmin): Promise<boolean> {
+  const { data, error } = await admin
+    .from("bot_ajustes")
+    .select("valor")
+    .eq("clave", CLAVE_PAUSA)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("[telegram] No se pudo leer el interruptor de avisos:", error.message);
+    return false;
+  }
+  return data?.valor === "1";
+}
+
+/** Enciende o apaga los avisos automáticos. Devuelve si se pudo guardar. */
+export async function pausarAvisos(admin: SupabaseAdmin, pausar: boolean): Promise<boolean> {
+  const { error } = await admin
+    .from("bot_ajustes")
+    .upsert(
+      { clave: CLAVE_PAUSA, valor: pausar ? "1" : "0", actualizado_en: new Date().toISOString() },
+      { onConflict: "clave" }
+    );
+
+  if (error) {
+    console.error("[telegram] No se pudo cambiar el interruptor de avisos:", error.message);
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -495,17 +544,32 @@ export async function sendChannelPost(
  * «Publicar / Descartar» puestos para siempre y no habría forma de saber, al
  * repasar el chat, cuáles ya se atendieron.
  */
-export async function editarMensaje(chatId: number, messageId: number, texto: string) {
+export async function editarMensaje(
+  chatId: number,
+  messageId: number,
+  texto: string,
+  botones?: Boton[] | Boton[][]
+): Promise<boolean> {
   try {
     await callTelegramApi("editMessageText", {
       chat_id: chatId,
       message_id: messageId,
       text: texto,
-      // Sin reply_markup, Telegram elimina el teclado del mensaje.
+      // Sin botones no se manda reply_markup, y Telegram elimina el teclado
+      // del mensaje: es justo lo que quieren los avisos de noticias, que se
+      // reescriben para dejar constancia de lo ya decidido.
+      reply_markup: construirTeclado(botones),
       link_preview_options: { is_disabled: true },
     });
+    return true;
   } catch (err) {
-    console.warn("[telegram] No se pudo reescribir el mensaje:", (err as Error).message);
+    const motivo = (err as Error).message;
+    // Pulsar dos veces el mismo botón deja el mensaje idéntico y Telegram lo
+    // trata como error. No lo es: la pantalla que se pedía ya está puesta, así
+    // que se cuenta como éxito para no reenviarla duplicada.
+    if (motivo.includes("message is not modified")) return true;
+    console.warn("[telegram] No se pudo reescribir el mensaje:", motivo);
+    return false;
   }
 }
 

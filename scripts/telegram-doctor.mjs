@@ -141,13 +141,24 @@ if (process.argv.includes("--set-webhook")) {
   // ofrece en el botón "/" del chat y en el menú del bot.
   try {
     await api("setMyCommands", {
+      // Esta lista tiene que ir a la par de COMANDOS_PUBLICOS en
+      // src/lib/bot-menu.ts: allí se decide qué pantalla abre cada uno. Aquí
+      // solo se declaran para que Telegram los ofrezca en el botón "/".
+      // (Los de admin, como /noticias, NO se publican a propósito.)
       commands: [
-        { command: "menu", description: "Ver el menú principal" },
-        { command: "estado", description: "Mi Premium y cuánto me queda" },
-        { command: "ayuda", description: "Cómo funciona esto" },
+        { command: "menu", description: "Menú principal" },
+        { command: "premium", description: "Qué incluye Premium, ventaja a ventaja" },
+        { command: "precio", description: "Precio y formas de pago" },
+        { command: "cancelar", description: "Cómo cancelar la suscripción" },
+        { command: "estado", description: "Mi plan y cuánto me queda" },
+        { command: "gratis", description: "Lo que ya tienes sin pagar" },
+        { command: "faq", description: "Dudas frecuentes" },
+        { command: "canal", description: "El canal privado de Telegram" },
+        { command: "web", description: "La Academy por dentro" },
+        { command: "ayuda", description: "Cómo funciona este bot" },
       ],
     });
-    ok("Comandos publicados", "/menu · /estado · /ayuda");
+    ok("Comandos publicados", "10 comandos · /menu /premium /precio /cancelar /estado …");
   } catch (err) {
     mal("No se pudieron publicar los comandos", err.message);
   }
@@ -249,6 +260,48 @@ try {
   }
 } catch (err) {
   mal("No se pudo auditar el canal", err.message);
+}
+
+// — 6. La rutina diaria y el interruptor de avisos —
+//
+// Merece una comprobación propia porque su fallo es SILENCIOSO: si el
+// interruptor está en pausa (se pulsó /stop y se olvidó), el bot deja de
+// avisar de todo y no hay nada que lo delate.
+try {
+  const url = env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    aviso("No se pudo comprobar la rutina diaria", "sin credenciales de Supabase");
+  } else {
+    const cab = { apikey: key, Authorization: `Bearer ${key}` };
+
+    const resAjustes = await fetch(
+      `${url}/rest/v1/bot_ajustes?select=valor&clave=eq.avisos_pausados`,
+      { headers: cab }
+    );
+    if (!resAjustes.ok) {
+      mal("Falta la tabla bot_ajustes", "ejecuta scripts/create-rutina-diaria.sql");
+    } else {
+      const filas = await resAjustes.json();
+      if (filas[0]?.valor === "1") {
+        aviso("Los avisos están EN PAUSA", "el bot no manda nada por su cuenta — /arrancar para volver");
+      } else {
+        ok("Los avisos automáticos están activos");
+      }
+    }
+
+    const resRutina = await fetch(`${url}/rest/v1/rutina_diaria?select=fecha&order=fecha.desc&limit=1`, {
+      headers: cab,
+    });
+    if (!resRutina.ok) {
+      mal("Falta la tabla rutina_diaria", "ejecuta scripts/create-rutina-diaria.sql");
+    } else {
+      const filas = await resRutina.json();
+      ok("Rutina diaria lista", filas[0]?.fecha ? `última: ${filas[0].fecha}` : "todavía sin enviar ninguna");
+    }
+  }
+} catch (err) {
+  mal("No se pudo comprobar la rutina diaria", err.message);
 }
 
 console.log(`\n${GRIS}Nota: que el enlace de invitación exija aprobación no se puede consultar por API.${FIN}`);

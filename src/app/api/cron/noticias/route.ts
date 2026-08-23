@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { guardarNuevas, proponerNoticia } from "@/lib/noticias";
-import { getAdminChatId, getLogChatId } from "@/lib/telegram";
+import { avisosPausados, getAdminChatId, getLogChatId } from "@/lib/telegram";
 
 
 export const runtime = "nodejs";
@@ -29,6 +29,13 @@ export async function GET(request: NextRequest) {
   }
 
   const admin = createAdminClient();
+
+  // El interruptor de STOP también para esto: son propuestas que manda el bot
+  // por su cuenta, justo lo que uno quiere callar cuando pulsa "parar avisos".
+  // El comando /noticias sigue funcionando igual: eso lo pide el admin.
+  if (await avisosPausados(admin)) {
+    return NextResponse.json({ ok: true, omitida: "avisos pausados" });
+  }
 
   // Mismo destino que los avisos de altas: el chat de registro si existe y,
   // si no, el privado del admin.
