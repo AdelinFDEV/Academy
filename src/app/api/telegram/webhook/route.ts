@@ -2,8 +2,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import type { Boton } from "@/lib/telegram";
+import { FUENTE, guardarNuevas, proponerNoticia } from "@/lib/noticias";
 import {
   answerCallbackQuery,
+  editarMensaje,
+  sendChannelPost,
   approveChatJoinRequest,
   declineChatJoinRequest,
   getAdminChatId,
@@ -11,6 +14,7 @@ import {
   getChannelId,
   getChannelInviteLink,
   getChannelMemberCount,
+  getFreeChannelId,
   getLogChatId,
   getCuentaUrl,
   getPremiumUrl,
@@ -75,6 +79,27 @@ const CAMPOS_PERFIL_BOT =
 /** Tope de mensajes por hora y usuario, para que nadie pueda inundar el
  *  Telegram del admin desde una cuenta Premium. */
 const LIMITE_MENSAJES_HORA = 10;
+
+/** Comandos reservados al admin. Al añadir uno nuevo, basta con listarlo aquí
+ *  para que quede protegido. */
+const COMANDOS_DE_ADMIN = ["/noticias"];
+
+/**
+ * ¿Es admin quien escribe?
+ *
+ * Se comprueba contra el ROL en la base de datos, no contra el id del chat.
+ * La diferencia importa: comparar el chat sólo funciona en el privado, y si
+ * mañana el soporte se mueve a un grupo, cualquiera de ese grupo heredaría los
+ * permisos. El rol es de la persona y va con ella.
+ */
+async function esAdmin(admin: Admin, telegramUserId: number): Promise<boolean> {
+  const { data } = await admin
+    .from("profiles")
+    .select("role")
+    .eq("telegram_user_id", telegramUserId)
+    .maybeSingle();
+  return data?.role === "admin";
+}
 
 /**
  * Telegram deja cambiar el @ cuando uno quiera, así que el que guardamos al
@@ -260,6 +285,12 @@ async function handleCallback(admin: Admin, query: CallbackQuery) {
 
     const perfil = (data as PerfilBot | null) ?? null;
     await sendTelegramMessage(chatId, fichaEstado(perfil), menuPara(perfil));
+    return;
+  }
+
+  const noticia = query.data?.match(/^n:(ok|no):(\d+)$/);
+  if (noticia) {
+    await decidirNoticia(admin, query, noticia[1] === "ok", Number(noticia[2]));
     return;
   }
 
@@ -484,6 +515,80 @@ async function resolverChatAdmin(admin: Admin): Promise<number | null> {
     .maybeSingle();
 
   return (data?.telegram_user_id as number | null) ?? null;
+}
+
+/** El admin ha decidido sobre una noticia. */
+async function decidirNoticia(
+  admin: Admin,
+  query: CallbackQuery,
+  aceptada: boolean,
+  id: number
+) {
+  const chatId = query.message?.chat.id ?? query.from.id;
+
+  const { data: noticia } = await admin
+    .from("noticias")
+    .select("titulo, resumen, enlace, estado, imagen")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!noticia) {
+    await sendTelegramMessage(chatId, "No encuentro esa noticia.");
+    return;
+  }
+
+  // Doble pulsación (o el mensaje viejo de otra tanda): no se vuelve a publicar.
+  if (noticia.estado !== "pendiente") {
+    if (query.message) {
+      await editarMensaje(
+        chatId,
+        query.message.message_id,
+        `📰 ${FUENTE.toUpperCase()} · ya estaba ${noticia.estado}\n\n${noticia.titulo}`
+      );
+    }
+    return;
+  }
+
+  let resultado = "❌ Descartada";
+
+  if (aceptada) {
+    const canal = getFreeChannelId();
+    try {
+      if (!canal) throw new Error("Sin canal free configurado");
+      await sendChannelPost(
+        `📰 ${noticia.titulo}` + (noticia.resumen ? `\n\n${noticia.resumen}` : ""),
+        { chatId: canal, imagen: noticia.imagen, botones: [{ text: `📖 Leer en ${FUENTE}`, url: noticia.enlace }] }
+      );
+      resultado = "✅ Publicada en el canal";
+    } catch (err) {
+      console.error("[telegram-webhook] No se pudo publicar la noticia:", err);
+      // No se marca como publicada si no salió: así se puede reintentar.
+      if (query.message) {
+        await editarMensaje(
+          chatId,
+          query.message.message_id,
+          `📰 ${FUENTE.toUpperCase()} · ⚠️ no se pudo publicar\n\n${noticia.titulo}`
+        );
+      }
+      return;
+    }
+  }
+
+  await admin
+    .from("noticias")
+    .update({
+      estado: aceptada ? "publicada" : "descartada",
+      decidida_en: new Date().toISOString(),
+    })
+    .eq("id", id);
+
+  if (query.message) {
+    await editarMensaje(
+      chatId,
+      query.message.message_id,
+      `📰 ${FUENTE.toUpperCase()} · ${resultado}\n\n${noticia.titulo}`
+    );
+  }
 }
 
 /** Cómo se refiere el aviso a alguien: su nombre y, si lo tiene, su @. */
@@ -777,6 +882,20 @@ export async function POST(request: NextRequest) {
       await handleStart(admin, message as TelegramMessage);
     } else if (message?.from && (comando === "/menu" || comando === "/ayuda")) {
       await enviarMenu(admin, message.chat.id, message.from);
+    } else if (message?.from && COMANDOS_DE_ADMIN.includes(comando ?? "")) {
+      // Herramientas de trabajo, no funciones del bot para los usuarios: a
+      // quien no sea admin se le responde con el menú normal, sin dar pistas
+      // de que existen.
+      if (!(await esAdmin(admin, message.from.id))) {
+        await enviarMenu(admin, message.chat.id, message.from);
+      } else if (comando === "/noticias") {
+        const nuevas = await guardarNuevas(admin);
+        if (nuevas.length === 0) {
+          await sendTelegramMessage(message.chat.id, "📰 Sin noticias nuevas por ahora.");
+        } else {
+          for (const n of nuevas) await proponerNoticia(admin, message.chat.id, n);
+        }
+      }
     } else if (message?.from && comando === "/estado") {
       const { data } = await admin
         .from("profiles")

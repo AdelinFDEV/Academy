@@ -347,6 +347,27 @@ export async function sendChannelPost(
 }
 
 /**
+ * Reescribe un mensaje ya enviado y le quita los botones.
+ *
+ * Se usa al decidir sobre una noticia: sin esto, el mensaje se quedaría con
+ * «Publicar / Descartar» puestos para siempre y no habría forma de saber, al
+ * repasar el chat, cuáles ya se atendieron.
+ */
+export async function editarMensaje(chatId: number, messageId: number, texto: string) {
+  try {
+    await callTelegramApi("editMessageText", {
+      chat_id: chatId,
+      message_id: messageId,
+      text: texto,
+      // Sin reply_markup, Telegram elimina el teclado del mensaje.
+      link_preview_options: { is_disabled: true },
+    });
+  } catch (err) {
+    console.warn("[telegram] No se pudo reescribir el mensaje:", (err as Error).message);
+  }
+}
+
+/**
  * Responde a la pulsación de un botón de acción. Hay que llamarlo SIEMPRE,
  * aunque sea sin texto: si no, el botón se queda girando en el móvil del
  * usuario hasta que Telegram se cansa de esperar.
