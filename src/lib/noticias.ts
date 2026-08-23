@@ -1,5 +1,16 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendTelegramMessageOrThrow } from "@/lib/telegram";
+import {
+  editarBotones,
+  sendChannelPost,
+  sendTelegramMessageOrThrow,
+  type Boton,
+} from "@/lib/telegram";
+import {
+  LIMITE_PIE_DE_FOTO,
+  mensajeDeNoticia,
+  resumirNoticia,
+  type ResumenNoticia,
+} from "@/lib/resumir";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -118,6 +129,52 @@ async function buscarPortada(enlace: string): Promise<Portada> {
     imagen: porLector.imagen ?? directa.imagen,
     resumen: porLector.resumen ?? directa.resumen,
   };
+}
+
+/**
+ * Cuerpo del artículo, limpio.
+ *
+ * Va por r.jina.ai porque el artículo vive tras el mismo Cloudflare que el
+ * feed y desde Vercel la petición directa se rechaza. La clave está en el
+ * selector: sin él el lector devuelve la página entera —menús, noticias
+ * relacionadas, pie— y el resumen acabaría hablando de los enlaces del menú.
+ * Con `div.content-inner` llega solo la nota, unos 2-3 KB.
+ *
+ * Devuelve null si no se puede leer: quien llama se queda sin resumen largo,
+ * no sin noticia.
+ */
+export async function leerCuerpo(enlace: string): Promise<string | null> {
+  try {
+    const res = await fetch(`https://r.jina.ai/${enlace}`, {
+      headers: { "X-Target-Selector": "div.content-inner" },
+      signal: AbortSignal.timeout(25_000),
+    });
+    if (!res.ok) return null;
+
+    const texto = await res.text();
+
+    // El lector antepone una cabecera propia (Title:, URL Source:, Published
+    // Time:) antes del contenido. Lo que interesa empieza tras la marca.
+    const marca = texto.indexOf("Markdown Content:");
+    const cuerpo = marca >= 0 ? texto.slice(marca + "Markdown Content:".length) : texto;
+
+    return (
+      cuerpo
+        // Imágenes fuera y, de los enlaces, solo el texto: las URL en el
+        // resumen no aportan nada y gastan tokens.
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+        .replace(/\*\*/g, "")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim()
+        // Tope de seguridad: una nota ronda los 3 KB. Si llega mucho más, o el
+        // selector ha fallado o es un especial larguísimo.
+        .slice(0, 12_000)
+    );
+  } catch (err) {
+    console.warn("[noticias] No se pudo leer el cuerpo:", err instanceof Error ? err.message : err);
+    return null;
+  }
 }
 
 function decodificar(texto: string): string {
@@ -303,11 +360,22 @@ export async function guardarNuevas(admin: Admin): Promise<
 export async function proponerNoticia(
   admin: Admin,
   chatId: number,
-  noticia: { id: number; titulo: string; resumen: string | null }
+  noticia: { id: number; titulo: string; resumen: string | null; enlace: string }
 ) {
-  const texto =
-    `📰 ${FUENTE.toUpperCase()}\n\n${noticia.titulo}` +
-    (noticia.resumen ? `\n\n${noticia.resumen}` : "");
+  // Se redacta ANTES de proponerla: lo que el admin lee es, palabra por
+  // palabra, lo que va a salir en el canal si pulsa publicar. Proponer una
+  // cosa y publicar otra sería aprobar a ciegas.
+  const resumen = await redactarResumen(admin, noticia);
+
+  const texto = resumen
+    ? `📰 ${FUENTE.toUpperCase()} · así saldría publicada\n\n` +
+      "─────────────\n" +
+      `${mensajeDeNoticia(resumen)}\n` +
+      "─────────────\n\n" +
+      `Original: ${noticia.titulo}`
+    : `📰 ${FUENTE.toUpperCase()} · sin resumen propio\n\n${noticia.titulo}` +
+      (noticia.resumen ? `\n\n${noticia.resumen}` : "") +
+      `\n\n⚠️ No he podido redactarla, así que saldría con enlace a ${FUENTE}.`;
 
   const messageId = await sendTelegramMessageOrThrow(chatId, texto, [
     [
@@ -317,4 +385,203 @@ export async function proponerNoticia(
   ]);
 
   await admin.from("noticias").update({ mensaje_admin_id: messageId }).eq("id", noticia.id);
+}
+
+// ── Votación toro / oso ─────────────────────────────────────────────────────
+
+/**
+ * Por qué botones y no reacciones de Telegram.
+ *
+ * Un bot solo puede poner UNA reacción por mensaje (las dos requieren cuenta
+ * premium), y encima el catálogo de reacciones de Telegram es cerrado: 🐂 y 🐻
+ * no están en él. Con botones se consiguen las dos cosas que se buscaban —el
+ * lector opina de un toque y el marcador se ve en el propio mensaje— y además
+ * el voto queda en nuestra base de datos, así que se puede mirar qué noticias
+ * mueven a la gente y hacia qué lado.
+ */
+export type Voto = "toro" | "oso";
+
+export function esVoto(valor: string): valor is Voto {
+  return valor === "toro" || valor === "oso";
+}
+
+export type Marcador = { toro: number; oso: number };
+
+/** Los dos botones con su marcador. Se recalculan enteros en cada voto: son
+ *  dos números, y así nunca se desincronizan de la tabla. */
+export function botonesVoto(id: number, marcador: Marcador): Boton[][] {
+  return [
+    [
+      { text: `🐂 Alcista · ${marcador.toro}`, data: `nv:${id}:toro` },
+      { text: `🐻 Bajista · ${marcador.oso}`, data: `nv:${id}:oso` },
+    ],
+  ];
+}
+
+export async function contarVotos(admin: Admin, id: number): Promise<Marcador> {
+  const { data } = await admin.from("noticia_votos").select("voto").eq("noticia_id", id);
+  const votos = (data ?? []) as { voto: string }[];
+  return {
+    toro: votos.filter((v) => v.voto === "toro").length,
+    oso: votos.filter((v) => v.voto === "oso").length,
+  };
+}
+
+/**
+ * Registra (o cambia) el voto de alguien y repinta el marcador.
+ *
+ * Votar dos veces lo mismo retira el voto: es lo que espera cualquiera que
+ * haya pulsado un "me gusta" alguna vez, y evita que un dedo suelto deje un
+ * voto que no se quería.
+ */
+export async function votarNoticia(
+  admin: Admin,
+  id: number,
+  telegramUserId: number,
+  voto: Voto
+): Promise<{ marcador: Marcador; aviso: string } | null> {
+  const { data: noticia } = await admin
+    .from("noticias")
+    .select("id, mensaje_canal_id, canal_chat_id")
+    .eq("id", id)
+    .maybeSingle();
+  if (!noticia) return null;
+
+  const { data: previo } = await admin
+    .from("noticia_votos")
+    .select("voto")
+    .eq("noticia_id", id)
+    .eq("telegram_user_id", telegramUserId)
+    .maybeSingle();
+
+  let aviso: string;
+  if (previo?.voto === voto) {
+    await admin
+      .from("noticia_votos")
+      .delete()
+      .eq("noticia_id", id)
+      .eq("telegram_user_id", telegramUserId);
+    aviso = "Voto retirado";
+  } else {
+    await admin
+      .from("noticia_votos")
+      .upsert(
+        { noticia_id: id, telegram_user_id: telegramUserId, voto },
+        { onConflict: "noticia_id,telegram_user_id" }
+      );
+    aviso = voto === "toro" ? "🐂 Alcista, anotado" : "🐻 Bajista, anotado";
+  }
+
+  const marcador = await contarVotos(admin, id);
+
+  if (noticia.mensaje_canal_id && noticia.canal_chat_id) {
+    await editarBotones(
+      noticia.canal_chat_id as string,
+      Number(noticia.mensaje_canal_id),
+      botonesVoto(id, marcador)
+    );
+  }
+
+  return { marcador, aviso };
+}
+
+// ── Redacción y publicación ─────────────────────────────────────────────────
+
+/**
+ * Genera el resumen propio de una noticia y lo guarda.
+ *
+ * Se hace al proponerla, no al publicarla, por dos razones: el admin lee
+ * exactamente el texto que va a salir antes de decir que sí, y la pulsación
+ * de "Publicar" responde al instante en vez de quedarse pensando.
+ */
+export async function redactarResumen(
+  admin: Admin,
+  noticia: { id: number; titulo: string; enlace: string }
+): Promise<ResumenNoticia | null> {
+  const cuerpo = await leerCuerpo(noticia.enlace);
+  if (!cuerpo) return null;
+
+  const resumen = await resumirNoticia(noticia.titulo, cuerpo);
+  if (!resumen) return null;
+
+  await admin
+    .from("noticias")
+    .update({ resumen_ia: JSON.stringify(resumen) })
+    .eq("id", noticia.id);
+
+  return resumen;
+}
+
+/** Lee el resumen guardado. Devuelve null si no hay o si está corrupto. */
+export function leerResumenGuardado(crudo: unknown): ResumenNoticia | null {
+  if (typeof crudo !== "string" || !crudo) return null;
+  try {
+    const objeto = JSON.parse(crudo) as ResumenNoticia;
+    return objeto?.titular && objeto?.entradilla ? objeto : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Publica la noticia en el canal gratuito.
+ *
+ * Con resumen propio va el texto completo y NINGÚN enlace a la fuente: la
+ * noticia entera se lee dentro de Telegram, que es de lo que se trataba. Sin
+ * resumen se cae al comportamiento de siempre —titular, entradilla corta y
+ * botón para leerla en el medio—, porque publicar cuatro líneas sueltas sin
+ * forma de ampliar sería peor que enlazar.
+ */
+export async function publicarNoticia(
+  admin: Admin,
+  noticia: {
+    id: number;
+    titulo: string;
+    resumen: string | null;
+    enlace: string;
+    imagen: string | null;
+    resumen_ia?: unknown;
+  },
+  chatId: string
+): Promise<{ conResumen: boolean }> {
+  const resumen = leerResumenGuardado(noticia.resumen_ia);
+
+  if (!resumen) {
+    await sendChannelPost(
+      `📰 ${noticia.titulo}` + (noticia.resumen ? `\n\n${noticia.resumen}` : ""),
+      {
+        chatId,
+        imagen: noticia.imagen,
+        botones: [{ text: `📖 Leer en ${FUENTE}`, url: noticia.enlace }],
+      }
+    );
+    return { conResumen: false };
+  }
+
+  const texto = mensajeDeNoticia(resumen);
+
+  // El pie de foto se queda en 1024 caracteres y Telegram recorta sin avisar.
+  // Antes que publicar un resumen cortado a media frase, se va sin imagen: el
+  // texto tiene 4096 de margen y es lo que de verdad importa aquí.
+  const cabeEnLaFoto = texto.length <= LIMITE_PIE_DE_FOTO;
+  if (!cabeEnLaFoto && noticia.imagen) {
+    console.warn(`[noticias] Resumen de ${texto.length} caracteres: se publica sin imagen`);
+  }
+
+  const messageId = await sendChannelPost(texto, {
+    chatId,
+    imagen: cabeEnLaFoto ? noticia.imagen : null,
+    botones: botonesVoto(noticia.id, { toro: 0, oso: 0 }),
+  });
+
+  // Sin estos dos datos los botones funcionan pero el marcador no se puede
+  // repintar, así que se quedaría clavado en 0 para siempre.
+  if (messageId) {
+    await admin
+      .from("noticias")
+      .update({ mensaje_canal_id: messageId, canal_chat_id: chatId })
+      .eq("id", noticia.id);
+  }
+
+  return { conResumen: true };
 }

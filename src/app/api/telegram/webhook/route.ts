@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
-import { FUENTE, guardarNuevas, proponerNoticia } from "@/lib/noticias";
+import {
+  FUENTE,
+  guardarNuevas,
+  proponerNoticia,
+  publicarNoticia,
+  votarNoticia,
+  type Voto,
+} from "@/lib/noticias";
 import {
   CAMPOS_PERFIL_BOT,
   bienvenidaCanalFree,
@@ -39,6 +46,9 @@ import {
 // El webhook lo llama Telegram directamente: siempre en Node y sin caché.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// El comando /noticias redacta cada noticia antes de proponerla, y eso son
+// decenas de segundos. El resto de updates responden en milisegundos.
+export const maxDuration = 60;
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -192,13 +202,32 @@ async function enviarBienvenida(admin: Admin, from: TelegramUser) {
   await enviarMenu(admin, from.id, from);
 }
 
-/** Pulsación de un botón de acción. */
+/**
+ * Pulsación de un botón de acción.
+ *
+ * OJO con answerCallbackQuery: solo admite UNA respuesta por pulsación, y la
+ * segunda falla. Por eso el voto se atiende antes de la respuesta genérica —
+ * necesita contestar con texto propio, y si ya se hubiera contestado en vacío
+ * el aviso emergente no llegaría nunca.
+ */
 async function handleCallback(admin: Admin, query: CallbackQuery) {
-  // Siempre primero: corta el reloj de carga del botón en el móvil.
+  const data = query.data ?? "";
+
+  // Voto toro/oso en una noticia del canal. Abierto a cualquiera: es el canal
+  // gratuito y de eso se trata. Lo único que hace es contar.
+  const voto = data.match(/^nv:(\d+):(toro|oso)$/);
+  if (voto) {
+    const resultado = await votarNoticia(admin, Number(voto[1]), query.from.id, voto[2] as Voto);
+    // El aviso emergente es toda la confirmación que recibe quien vota desde
+    // un canal, donde el marcador tarda un instante en repintarse.
+    await answerCallbackQuery(query.id, resultado?.aviso ?? "Esa noticia ya no está");
+    return;
+  }
+
+  // Corta el reloj de carga del botón en el móvil.
   await answerCallbackQuery(query.id);
 
   const chatId = query.message?.chat.id ?? query.from.id;
-  const data = query.data ?? "";
 
   // Decisiones sobre noticias: son del admin y no pintan menú.
   const noticia = data.match(/^n:(ok|no):(\d+)$/);
@@ -522,7 +551,7 @@ async function decidirNoticia(
 
   const { data: noticia } = await admin
     .from("noticias")
-    .select("titulo, resumen, enlace, estado, imagen")
+    .select("id, titulo, resumen, enlace, estado, imagen, resumen_ia")
     .eq("id", id)
     .maybeSingle();
 
@@ -549,11 +578,12 @@ async function decidirNoticia(
     const canal = getFreeChannelId();
     try {
       if (!canal) throw new Error("Sin canal free configurado");
-      await sendChannelPost(
-        `📰 ${noticia.titulo}` + (noticia.resumen ? `\n\n${noticia.resumen}` : ""),
-        { chatId: canal, imagen: noticia.imagen, botones: [{ text: `📖 Leer en ${FUENTE}`, url: noticia.enlace }] }
-      );
-      resultado = "✅ Publicada en el canal";
+      // publicarNoticia decide sola: con resumen propio va el texto completo y
+      // los botones de voto; sin él, el formato de siempre con enlace al medio.
+      const { conResumen } = await publicarNoticia(admin, noticia, canal);
+      resultado = conResumen
+        ? "✅ Publicada con resumen propio"
+        : "✅ Publicada (sin resumen, con enlace)";
     } catch (err) {
       console.error("[telegram-webhook] No se pudo publicar la noticia:", err);
       // No se marca como publicada si no salió: así se puede reintentar.

@@ -67,3 +67,29 @@ create table if not exists public.telegram_bienvenidas_pendientes (
 );
 
 alter table public.telegram_bienvenidas_pendientes enable row level security;
+
+-- ── 4. Noticias: resumen propio y votación toro/oso ─────────────────────────
+--
+-- resumen_ia guarda el texto que redacta Claude a partir del artículo. Se
+-- genera al PROPONER la noticia, no al publicarla, para que el admin lea
+-- exactamente lo que va a salir antes de decidir.
+--
+-- mensaje_canal_id y canal_chat_id hacen falta para repintar el marcador de
+-- votos sobre el mensaje ya publicado.
+alter table public.noticias add column if not exists resumen_ia text;
+alter table public.noticias add column if not exists mensaje_canal_id bigint;
+alter table public.noticias add column if not exists canal_chat_id text;
+
+-- Un voto por persona y noticia: la clave primaria compuesta lo garantiza, y
+-- permite cambiar de opinión (un upsert sobre la misma fila).
+create table if not exists public.noticia_votos (
+  noticia_id       bigint not null references public.noticias(id) on delete cascade,
+  telegram_user_id bigint not null,
+  voto             text not null check (voto in ('toro', 'oso')),
+  created_at       timestamptz not null default now(),
+  primary key (noticia_id, telegram_user_id)
+);
+
+alter table public.noticia_votos enable row level security;
+
+create index if not exists noticia_votos_noticia_idx on public.noticia_votos (noticia_id);

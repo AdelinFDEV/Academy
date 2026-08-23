@@ -6,6 +6,9 @@ import { avisosPausados, getAdminChatId, getLogChatId } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Redactar las noticias lleva su tiempo: leer cada articulo y pasarlo por
+// Claude son unos 30 segundos. Con el limite por defecto la tanda se cortaba.
+export const maxDuration = 60;
 
 /**
  * Lee el feed de noticias y propone al admin las que sean nuevas, con los
@@ -60,9 +63,15 @@ export async function GET(request: NextRequest) {
   let propuestas = 0;
   try {
     const nuevas = await guardarNuevas(admin);
-    for (const noticia of nuevas) {
-      await proponerNoticia(admin, destino, noticia);
-      propuestas++;
+    // En paralelo, no en serie: cada propuesta descarga el artículo y lo manda
+    // a redactar, que son unos 30 segundos. Cinco seguidas se comerían el
+    // límite de ejecución de Vercel y la tanda se cortaría a la mitad.
+    const resultados = await Promise.allSettled(
+      nuevas.map((noticia) => proponerNoticia(admin, destino, noticia))
+    );
+    propuestas = resultados.filter((r) => r.status === "fulfilled").length;
+    for (const r of resultados) {
+      if (r.status === "rejected") console.error("[cron-noticias] Propuesta fallida:", r.reason);
     }
   } catch (err) {
     console.error("[cron-noticias] Error:", err);

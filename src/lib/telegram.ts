@@ -441,8 +441,13 @@ async function enviarFotoSubida(
     method: "POST",
     body: cuerpo,
   });
-  const json = (await envio.json()) as { ok: boolean; description?: string };
+  const json = (await envio.json()) as {
+    ok: boolean;
+    description?: string;
+    result?: { message_id: number };
+  };
   if (!json.ok) throw new Error(json.description ?? `HTTP ${envio.status}`);
+  return json.result?.message_id ?? null;
 }
 
 /**
@@ -487,6 +492,34 @@ export function mencionar(texto: string, nombre: string, userId: number) {
   return [{ type: "text_mention", offset, length: nombre.length, user: { id: userId } }];
 }
 
+/**
+ * Cambia solo los botones de un mensaje ya publicado, sin tocar el texto.
+ *
+ * Es lo que hace falta para los votos de las noticias: al pulsar "alcista" hay
+ * que repintar el marcador, y reescribir el mensaje entero volvería a mandar
+ * el pie de foto (que Telegram rechaza si el mensaje es una foto).
+ */
+export async function editarBotones(
+  chatId: string | number,
+  messageId: number,
+  botones: Boton[] | Boton[][]
+): Promise<boolean> {
+  try {
+    await callTelegramApi("editMessageReplyMarkup", {
+      chat_id: chatId,
+      message_id: messageId,
+      reply_markup: construirTeclado(botones),
+    });
+    return true;
+  } catch (err) {
+    const motivo = (err as Error).message;
+    // Dos personas votando a la vez pueden dejar el teclado idéntico.
+    if (motivo.includes("message is not modified")) return true;
+    console.warn("[telegram] No se pudieron cambiar los botones:", motivo);
+    return false;
+  }
+}
+
 export async function sendChannelPost(
   texto: string,
   opciones?: {
@@ -504,14 +537,14 @@ export async function sendChannelPost(
   if (opciones?.imagen) {
     // 1) Que la descargue Telegram: es lo barato, y funciona con la mayoría.
     try {
-      await callTelegramApi("sendPhoto", {
+      const res = await callTelegramApi<{ message_id: number }>("sendPhoto", {
         chat_id: chatId,
         photo: opciones.imagen,
         // El pie de foto admite 1024 caracteres, frente a los 4096 del texto.
         caption: texto.slice(0, 1024),
         reply_markup,
       });
-      return;
+      return res.message_id;
     } catch (err) {
       console.warn("[telegram] Telegram no pudo descargar la imagen:", (err as Error).message);
     }
@@ -520,14 +553,13 @@ export async function sendChannelPost(
     //    con Cloudflare delante: bloquean a los servidores de Telegram, que no
     //    mandan cabeceras de navegador, pero no a quien sí las manda.
     try {
-      await enviarFotoSubida(chatId, opciones.imagen, texto.slice(0, 1024), reply_markup);
-      return;
+      return await enviarFotoSubida(chatId, opciones.imagen, texto.slice(0, 1024), reply_markup);
     } catch (err) {
       console.warn("[telegram] Tampoco se pudo subir la imagen:", (err as Error).message);
     }
   }
 
-  await callTelegramApi("sendMessage", {
+  const res = await callTelegramApi<{ message_id: number }>("sendMessage", {
     chat_id: chatId,
     text: texto,
     entities: opciones?.entidades,
@@ -535,6 +567,7 @@ export async function sendChannelPost(
     // El aviso ya lleva su propio botón; la tarjeta de enlace duplicaría todo.
     link_preview_options: { is_disabled: true },
   });
+  return res.message_id;
 }
 
 /**
