@@ -258,16 +258,26 @@ function bloqueComunidad(r: ResumenComunidad): string {
 
 // ── Racha ───────────────────────────────────────────────────────────────────
 
+export type Racha = {
+  /** Días seguidos completados justo ANTES de hoy. */
+  actual: number;
+  /** La racha más larga que se ha llegado a encadenar nunca. */
+  mejor: number;
+};
+
 /**
- * Días seguidos completados ANTES de la fecha dada.
+ * La racha actual y el récord.
  *
- * Se miran los últimos 60 días y se cuenta hacia atrás hasta el primer hueco.
- * No se usa un contador guardado a propósito: recalcularlo es barato y no se
- * puede desincronizar, que es lo que siempre acaba pasando con los contadores.
+ * Se recalculan del historial en vez de guardarse en un contador, a propósito:
+ * un contador se desincroniza en cuanto se marca una tarea de un día pasado, y
+ * entonces enseña un número que no es verdad — que es lo peor que puede hacer
+ * algo cuya única función es motivar.
+ *
+ * Se miran los últimos 365 días: de sobra para el récord y barato de leer.
  */
-export async function calcularRacha(admin: Admin, fecha: string): Promise<number> {
+export async function calcularRacha(admin: Admin, fecha: string): Promise<Racha> {
   const desde = new Date(`${fecha}T12:00:00Z`);
-  desde.setUTCDate(desde.getUTCDate() - 60);
+  desde.setUTCDate(desde.getUTCDate() - 365);
 
   const { data } = await admin
     .from("rutina_diaria")
@@ -276,17 +286,41 @@ export async function calcularRacha(admin: Admin, fecha: string): Promise<number
     .lt("fecha", fecha)
     .order("fecha", { ascending: false });
 
-  const filas = (data ?? []) as Pick<Rutina, "fecha" | TareaId>[];
+  return resumirRacha((data ?? []) as DiaDeRutina[], fecha);
+}
 
-  let racha = 0;
+export type DiaDeRutina = Pick<Rutina, "fecha" | TareaId>;
+
+/**
+ * El cálculo en sí, separado de la consulta para poder probarlo sin base de
+ * datos. `filas` llega ordenada de más reciente a más antigua y sin incluir
+ * `fecha`, que es el día de hoy.
+ */
+export function resumirRacha(filas: DiaDeRutina[], fecha: string): Racha {
+  const completo = (f: DiaDeRutina) => f.youtube && f.entreno && f.trading;
+
+  // Racha actual: hacia atrás desde ayer, hasta el primer hueco o fallo.
+  let actual = 0;
   let esperado = diaAnterior(fecha);
   for (const fila of filas) {
-    if (fila.fecha !== esperado) break;
-    if (!fila.youtube || !fila.entreno || !fila.trading) break;
-    racha++;
+    if (fila.fecha !== esperado || !completo(fila)) break;
+    actual++;
     esperado = diaAnterior(esperado);
   }
-  return racha;
+
+  // Récord: la tirada más larga de días consecutivos y completos del
+  // historial. Un día incompleto y un hueco en el calendario cortan igual.
+  let mejor = 0;
+  let tirada = 0;
+  let anterior: string | null = null;
+  for (const fila of filas) {
+    const sigue = anterior !== null && fila.fecha === diaAnterior(anterior);
+    tirada = completo(fila) ? (sigue ? tirada + 1 : 1) : 0;
+    if (tirada > mejor) mejor = tirada;
+    anterior = fila.fecha;
+  }
+
+  return { actual, mejor: Math.max(mejor, actual) };
 }
 
 // ── El mensaje ──────────────────────────────────────────────────────────────
@@ -303,10 +337,49 @@ function alAzar(opciones: string[]): string {
   return opciones[Math.floor(Math.random() * opciones.length)];
 }
 
+function dias(n: number): string {
+  return n === 1 ? "1 día" : `${n} días`;
+}
+
+/**
+ * La línea de la racha. Sale SIEMPRE, también cuando vale cero.
+ *
+ * Esconderla el primer día era justo lo contrario de lo que hace falta: el día
+ * que menos racha tienes es el día que más necesitas verla.
+ */
+function lineasRacha(racha: Racha, completoHoy: boolean): string[] {
+  const hoy = completoHoy ? racha.actual + 1 : racha.actual;
+  const lineas: string[] = [];
+
+  if (completoHoy) {
+    lineas.push(`🔥 Racha: ${dias(hoy)} seguidos`);
+    if (hoy > racha.mejor) lineas.push("🏅 Récord nuevo. Nunca habías llegado tan lejos.");
+    else if (hoy === racha.mejor) lineas.push("🏅 Igualas tu récord. Mañana lo rompes.");
+    else lineas.push(`🎯 Tu récord son ${dias(racha.mejor)}. Te faltan ${dias(racha.mejor - hoy + 1)}.`);
+    return lineas;
+  }
+
+  if (racha.actual === 0) {
+    lineas.push("🔥 Racha: 0 días");
+    lineas.push(
+      racha.mejor > 0
+        ? `🎯 Tu récord son ${dias(racha.mejor)}. Hoy vuelve a empezar la cuenta.`
+        : "🎯 Completa hoy las tres y empieza a contar."
+    );
+    return lineas;
+  }
+
+  lineas.push(`🔥 Racha: ${dias(racha.actual)} seguidos. No la rompas hoy.`);
+  if (racha.mejor > racha.actual) {
+    lineas.push(`🎯 Tu récord son ${dias(racha.mejor)}.`);
+  }
+  return lineas;
+}
+
 export function textoRutina(
   rutina: Rutina,
   resumen: ResumenComunidad,
-  racha: number,
+  racha: Racha,
   animo: string
 ): string {
   const total = hechas(rutina);
@@ -332,15 +405,12 @@ export function textoRutina(
   }
 
   lineas.push("");
+  lineas.push(...lineasRacha(racha, completo));
+  lineas.push("");
+
   if (completo) {
-    lineas.push(`🏆 Día completo. Racha: ${racha + 1} ${racha + 1 === 1 ? "día" : "días"} 🔥`);
-    lineas.push("");
-    lineas.push("Mañana otra vez. Descansa, que te lo has ganado 😴");
+    lineas.push("🏆 Día completo. Mañana otra vez — descansa, que te lo has ganado 😴");
   } else {
-    if (racha > 0) {
-      lineas.push(`🔥 Racha: ${racha} ${racha === 1 ? "día" : "días"} seguidos. No la rompas hoy.`);
-      lineas.push("");
-    }
     lineas.push(animo);
     lineas.push("");
     lineas.push("Pulsa cada una según la vayas haciendo 👇");

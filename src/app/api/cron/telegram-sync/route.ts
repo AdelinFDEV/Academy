@@ -24,6 +24,10 @@ const DIAS_DE_AVISO = 3;
  *  de Telegram se agotan en minutos, así que una semana sobra de largo. */
 const DIAS_RETENCION_EVENTOS = 7;
 
+/** Cuánto se guarda una bienvenida sin entregar antes de darla por perdida.
+ *  Mismo valor que en el webhook, que es quien decide si aún la manda. */
+const DIAS_BIENVENIDA_PENDIENTE = 14;
+
 /**
  * Red de seguridad además del webhook de Stripe: expulsa del canal a
  * cualquier usuario vinculado cuyo rol ya no sea premium/admin. Cubre el caso
@@ -176,7 +180,17 @@ async function limpiar(admin: Admin) {
     .lt("expires_at", corteTokens);
   if (tkErr) console.error("[telegram-sync] Error limpiando telegram_link_tokens:", tkErr.message);
 
-  return { eventos: !evErr, tokens: !tkErr };
+  // Bienvenidas que nunca se pudieron entregar. Se guardan para soltarlas en
+  // cuanto la persona hable con el bot, pero pasadas dos semanas ya no tiene
+  // sentido darle la bienvenida a algo que hizo hace tanto: se tiran.
+  const corteBienvenidas = new Date(Date.now() - DIAS_BIENVENIDA_PENDIENTE * DIA).toISOString();
+  const { error: bvErr } = await admin
+    .from("telegram_bienvenidas_pendientes")
+    .delete()
+    .lt("creada_en", corteBienvenidas);
+  if (bvErr) console.error("[telegram-sync] Error limpiando bienvenidas pendientes:", bvErr.message);
+
+  return { eventos: !evErr, tokens: !tkErr, bienvenidas: !bvErr };
 }
 
 export async function GET(request: NextRequest) {
