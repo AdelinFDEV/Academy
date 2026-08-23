@@ -284,6 +284,56 @@ export async function sendTelegramMessageOrThrow(
   return res.message_id;
 }
 
+/** Límite de Telegram para una foto por URL o subida: 10 MB. */
+const MAXIMO_FOTO = 10 * 1024 * 1024;
+
+/**
+ * Descarga la imagen y se la sube a Telegram como archivo.
+ *
+ * Se manda el juego de cabeceras de un navegador, incluido el Referer del
+ * propio medio: los sitios con Cloudflare delante sirven la imagen a quien
+ * parece un lector normal y la niegan a los servidores de Telegram, que piden
+ * la URL a pelo.
+ */
+async function enviarFotoSubida(
+  chatId: string | number,
+  url: string,
+  caption: string,
+  reply_markup: unknown
+) {
+  const origen = new URL(url).origin;
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Accept: "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+      Referer: `${origen}/`,
+    },
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!res.ok) throw new Error(`la imagen respondió ${res.status}`);
+
+  const datos = await res.arrayBuffer();
+  if (datos.byteLength === 0) throw new Error("la imagen vino vacía");
+  if (datos.byteLength > MAXIMO_FOTO) throw new Error("la imagen supera los 10 MB");
+
+  const tipo = res.headers.get("content-type") ?? "image/jpeg";
+  const cuerpo = new FormData();
+  cuerpo.append("chat_id", String(chatId));
+  cuerpo.append("caption", caption);
+  if (reply_markup) cuerpo.append("reply_markup", JSON.stringify(reply_markup));
+  cuerpo.append("photo", new Blob([datos], { type: tipo }), "portada");
+
+  // No pasa por callTelegramApi: ese envía JSON, y una subida es multipart.
+  const envio = await fetch(`${API_BASE}${getBotToken()}/sendPhoto`, {
+    method: "POST",
+    body: cuerpo,
+  });
+  const json = (await envio.json()) as { ok: boolean; description?: string };
+  if (!json.ok) throw new Error(json.description ?? `HTTP ${envio.status}`);
+}
+
 /**
  * Cuántos miembros tiene el canal. Es la única forma de auditar el canal
  * "desde fuera": la API de bots no permite listar los miembros de un canal,
@@ -323,6 +373,7 @@ export async function sendChannelPost(
   const reply_markup = construirTeclado(opciones?.botones);
 
   if (opciones?.imagen) {
+    // 1) Que la descargue Telegram: es lo barato, y funciona con la mayoría.
     try {
       await callTelegramApi("sendPhoto", {
         chat_id: chatId,
@@ -333,7 +384,17 @@ export async function sendChannelPost(
       });
       return;
     } catch (err) {
-      console.warn("[telegram] Aviso con foto falló, se envía como texto:", (err as Error).message);
+      console.warn("[telegram] Telegram no pudo descargar la imagen:", (err as Error).message);
+    }
+
+    // 2) Descargarla nosotros y subir los bytes. Hace falta para los medios
+    //    con Cloudflare delante: bloquean a los servidores de Telegram, que no
+    //    mandan cabeceras de navegador, pero no a quien sí las manda.
+    try {
+      await enviarFotoSubida(chatId, opciones.imagen, texto.slice(0, 1024), reply_markup);
+      return;
+    } catch (err) {
+      console.warn("[telegram] Tampoco se pudo subir la imagen:", (err as Error).message);
     }
   }
 

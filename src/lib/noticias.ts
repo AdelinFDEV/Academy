@@ -43,15 +43,24 @@ export type NoticiaCruda = {
  * lee por trozos y se corta en cuanto aparece: la etiqueta está en la cabecera
  * del documento, así que bastan unos pocos KB de los ~440 que pesa la página.
  */
-async function buscarPortada(
-  enlace: string
-): Promise<{ imagen: string | null; resumen: string | null }> {
-  const vacio = { imagen: null, resumen: null };
+type Portada = { imagen: string | null; resumen: string | null };
+
+/**
+ * Lee las etiquetas Open Graph de un artículo.
+ *
+ * @param viaLector pide la página a través de r.jina.ai en vez de directamente.
+ *   Hace falta porque el artículo vive en el mismo dominio que el feed, así que
+ *   el mismo Cloudflare lo bloquea desde el servidor. El lector admite
+ *   `X-Return-Format: html`, que devuelve el documento tal cual — con sus
+ *   etiquetas og:, que es justo lo que aquí se busca.
+ */
+async function leerOpenGraph(enlace: string, viaLector: boolean): Promise<Portada> {
+  const vacio: Portada = { imagen: null, resumen: null };
   try {
-    const res = await fetch(enlace, {
-      headers: CABECERAS,
+    const res = await fetch(viaLector ? `https://r.jina.ai/${enlace}` : enlace, {
+      headers: viaLector ? { "X-Return-Format": "html" } : CABECERAS,
       next: { revalidate: 86400 },
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(viaLector ? 20_000 : 8000),
     });
     if (!res.ok || !res.body) return vacio;
 
@@ -77,6 +86,8 @@ async function buscarPortada(
           return { imagen: imagen[1], resumen: decodificar(resumen[1]) };
         }
 
+        // Las etiquetas og: viven en el <head>: si a los 150 KB no han
+        // aparecido, no van a aparecer, y el documento entero pesa 400 KB.
         if (acumulado.length > 150_000) {
           return {
             imagen: imagen?.[1] ?? null,
@@ -91,6 +102,22 @@ async function buscarPortada(
   } catch {
     return vacio;
   }
+}
+
+/**
+ * Portada de una noticia: primero por la vía directa y, si no da nada, a
+ * través del lector. El orden importa — la directa es más rápida y no depende
+ * de terceros, pero en producción casi siempre acabará usándose el lector.
+ */
+async function buscarPortada(enlace: string): Promise<Portada> {
+  const directa = await leerOpenGraph(enlace, false);
+  if (directa.imagen) return directa;
+
+  const porLector = await leerOpenGraph(enlace, true);
+  return {
+    imagen: porLector.imagen ?? directa.imagen,
+    resumen: porLector.resumen ?? directa.resumen,
+  };
 }
 
 function decodificar(texto: string): string {
