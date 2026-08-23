@@ -308,16 +308,25 @@ try {
 // expulsar de ahí a quien deja de pagar, y esa persona sigue leyéndolo todo.
 try {
   const canal = await api("getChat", { chat_id: CANAL });
-  const grupo = canal.linked_chat_id;
+  // Un TELEGRAM_COMMUNITY_CHAT_ID puesto a mano manda siempre: las
+  // "Comunidades" de Telegram pueden dejar el linked_chat_id apuntando a un
+  // grupo de discusión fantasma, distinto del chat real. Se descubre el chat
+  // real con /chatid escrito dentro de él (solo el dueño puede usarlo).
+  const grupo = env.TELEGRAM_COMMUNITY_CHAT_ID || canal.linked_chat_id;
+  const fuente = env.TELEGRAM_COMMUNITY_CHAT_ID ? "TELEGRAM_COMMUNITY_CHAT_ID" : "linked_chat_id del canal";
 
   if (!grupo) {
-    ok("El canal Premium no tiene chat enlazado", "no hay nada más que vigilar");
+    ok("El canal Premium no tiene chat de comunidad", "no hay nada más que vigilar");
   } else {
     let info;
     try {
       info = await api("getChat", { chat_id: grupo });
     } catch (err) {
-      mal("El bot NO está en el chat de la comunidad", err.message);
+      mal(`El bot NO está en el chat de la comunidad (${fuente}: ${grupo})`, err.message);
+      if (!env.TELEGRAM_COMMUNITY_CHAT_ID) {
+        console.log(`  ${GRIS}Esto puede ser un grupo de discusión fantasma y no el chat real de la comunidad.${FIN}`);
+        console.log(`  ${GRIS}Escribe /chatid DENTRO del chat de verdad y pon el id en TELEGRAM_COMMUNITY_CHAT_ID.${FIN}`);
+      }
       console.log(`  ${GRIS}Quien deje de pagar se queda dentro del chat y sigue leyendo el Premium.${FIN}`);
       console.log(`  ${GRIS}Añade @${bot.username} al chat como ADMIN con «Añadir miembros» y «Banear usuarios».${FIN}`);
       throw new Error("saltar el resto");

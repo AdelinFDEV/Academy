@@ -154,6 +154,15 @@ async function callTelegramApi<T = unknown>(
 let cacheGrupo: { valor: string | null; hasta: number } | null = null;
 
 export async function getGrupoDebateId(): Promise<string | null> {
+  // Un valor explícito manda siempre. Hace falta para las "Comunidades" de
+  // Telegram (distinto de la "discusión enlazada" clásica): al convertir un
+  // canal en comunidad puede quedar un linked_chat_id fantasma —de un grupo de
+  // discusión que Telegram creó y abandonó en algún momento anterior— con el
+  // chat real de la comunidad sin representarse en ningún campo consultable.
+  // Se descubre una vez con /chatid dentro del chat real y se fija aquí.
+  const explicito = process.env.TELEGRAM_COMMUNITY_CHAT_ID;
+  if (explicito) return explicito;
+
   if (cacheGrupo && cacheGrupo.hasta > Date.now()) return cacheGrupo.valor;
 
   let valor: string | null = null;

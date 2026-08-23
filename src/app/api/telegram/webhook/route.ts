@@ -65,7 +65,7 @@ type Admin = ReturnType<typeof createAdminClient>;
 type TelegramUser = { id: number; username?: string; first_name?: string };
 type TelegramMessage = {
   message_id: number;
-  chat: { id: number };
+  chat: { id: number; type?: string };
   from?: TelegramUser;
   text?: string;
   /** El formato que le dio quien escribe (negritas, cursivas, enlaces). Se
@@ -1332,6 +1332,19 @@ export async function POST(request: NextRequest) {
 
     if (update.callback_query) {
       await handleCallback(admin, update.callback_query);
+    } else if (comando === "/chatid") {
+      // Herramienta de diagnóstico: la API de bots no tiene ningún método para
+      // listar en qué chats está metido el bot, así que cuando hace falta
+      // saber el id de un chat concreto (el chat de una comunidad, un grupo
+      // nuevo) no queda otra que preguntárselo al propio chat. Solo el dueño,
+      // igual que /gombos: no es información sensible, pero tampoco hace
+      // falta ofrecérsela a nadie más.
+      if (message?.from?.id === getOwnerTelegramId()) {
+        await sendTelegramMessage(
+          message.chat.id,
+          `🆔 Este chat\n\nid: ${message.chat.id}\ntipo: ${message.chat.type ?? "?"}`
+        );
+      }
     } else if (comando === "/gombos") {
       // Fuera de COMANDOS_DE_ADMIN y de esAdmin() a propósito: esto no sigue
       // al ROL, sigue a la PERSONA. Ver getOwnerTelegramId().
