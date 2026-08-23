@@ -561,11 +561,10 @@ export async function votarNoticia(
 // ── Redacción y publicación ─────────────────────────────────────────────────
 
 /**
- * Genera el resumen propio de una noticia y lo guarda.
+ * De dónde sale el texto de una noticia.
  *
- * Se hace al proponerla, no al publicarla, por dos razones: el admin lee
- * exactamente el texto que va a salir antes de decir que sí, y la pulsación
- * de "Publicar" responde al instante en vez de quedarse pensando.
+ * `ia` solo lo devuelve redactarResumen() —es decir, solo al publicar—; la
+ * vista previa de la propuesta nunca llega a él porque no llama a Gemini.
  */
 export type ViaResumen = "ia" | "recorte" | "titular";
 

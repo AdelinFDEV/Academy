@@ -444,7 +444,6 @@ try {
       }
     }
 
-
     const resRutina = await fetch(`${url}/rest/v1/rutina_diaria?select=fecha&order=fecha.desc&limit=1`, {
       headers: cab,
     });

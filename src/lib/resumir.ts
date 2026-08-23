@@ -148,10 +148,6 @@ function obtenerCliente(): GoogleGenAI | null {
   return cliente;
 }
 
-export function hayResumidor(): boolean {
-  return !!process.env.GEMINI_API_KEY;
-}
-
 /** Números de tres o más cifras, porcentajes y años. Son los datos que más
  *  daño hacen si se inventan, y los más fáciles de comprobar. */
 function cifrasDe(texto: string): string[] {

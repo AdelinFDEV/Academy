@@ -55,7 +55,7 @@ import {
 // El webhook lo llama Telegram directamente: siempre en Node y sin caché.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// El comando /noticias redacta cada noticia antes de proponerla, y eso son
+// Publicar una noticia lee el artículo entero y lo pasa por Gemini, y eso son
 // decenas de segundos. El resto de updates responden en milisegundos.
 export const maxDuration = 60;
 

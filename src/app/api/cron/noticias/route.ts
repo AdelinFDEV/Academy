@@ -6,8 +6,8 @@ import { avisosPausados, getAdminChatId, getLogChatId } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// Redactar las noticias lleva su tiempo: leer cada articulo y pasarlo por
-// Claude son unos 30 segundos. Con el limite por defecto la tanda se cortaba.
+// Cada propuesta descarga el articulo entero para la vista previa, y el lector
+// tarda lo suyo. Con el limite por defecto la tanda se cortaba.
 export const maxDuration = 60;
 
 /**
@@ -69,9 +69,9 @@ export async function GET(request: NextRequest) {
     // el tope. Sin esto, un día con ocho noticias perdía tres para siempre.
     const nuevas = await pendientesSinProponer(admin, MAXIMO_POR_TANDA);
 
-    // En paralelo, no en serie: cada propuesta descarga el artículo y lo manda
-    // a redactar, que son unos 30 segundos. Cinco seguidas se comerían el
-    // límite de ejecución de Vercel y la tanda se cortaría a la mitad.
+    // En paralelo, no en serie: cada propuesta descarga el artículo para la
+    // vista previa, y cinco descargas seguidas se comerían el límite de
+    // ejecución de Vercel y la tanda se cortaría a la mitad.
     const resultados = await Promise.allSettled(
       nuevas.map((noticia, i) =>
         proponerNoticia(admin, destino, noticia, { n: i + 1, total: nuevas.length })
