@@ -262,7 +262,43 @@ try {
   mal("No se pudo auditar el canal", err.message);
 }
 
-// — 6. La rutina diaria y el interruptor de avisos —
+// — 6. Reacciones de los canales —
+//
+// Las noticias se publican con 🔥 y 💩 para que la gente opine. El bot NO
+// puede activarlas (setChatAvailableReactions no existe en la API de bots):
+// se hace a mano en Telegram, ajustes del canal → Reacciones. Si no están, el
+// bot lo detecta y publica con botones, pero conviene saber en qué modo va.
+const REACCIONES = ["🔥", "💩"];
+for (const [nombre, id] of [["free", env.TELEGRAM_FREE_CHANNEL_ID || "-1003785109253"],
+                            ["Premium", CANAL]]) {
+  try {
+    const chat = await api("getChat", { chat_id: id });
+    const permitidas = chat.available_reactions;
+
+    if (permitidas === undefined) {
+      ok(`Canal ${nombre}: reacciones abiertas`, "valen todas las de Telegram");
+      continue;
+    }
+    const emojis = permitidas.filter((r) => r.type === "emoji").map((r) => r.emoji);
+    const faltan = REACCIONES.filter((e) => !emojis.includes(e));
+
+    if (emojis.length === 0) {
+      const soloPago = permitidas.some((r) => r.type === "paid");
+      aviso(`Canal ${nombre}: sin reacciones de emoji`,
+        soloPago ? "solo está la de pago (estrellas), que no sirve para votar" : "desactivadas");
+      console.log(`  ${GRIS}Actívalas en Telegram: ajustes del canal → Reacciones → ${REACCIONES.join(" ")}${FIN}`);
+      console.log(`  ${GRIS}Mientras tanto las noticias salen con botones de voto.${FIN}`);
+    } else if (faltan.length) {
+      aviso(`Canal ${nombre}: faltan reacciones`, `permitidas: ${emojis.join(" ")} · faltan: ${faltan.join(" ")}`);
+    } else {
+      ok(`Canal ${nombre}: ${REACCIONES.join(" ")} activas`, "las noticias saldrán sin botones");
+    }
+  } catch (err) {
+    mal(`No se pudieron consultar las reacciones del canal ${nombre}`, err.message);
+  }
+}
+
+// — 7. La rutina diaria y el interruptor de avisos —
 //
 // Merece una comprobación propia porque su fallo es SILENCIOSO: si el
 // interruptor está en pausa (se pulsó /stop y se olvidó), el bot deja de

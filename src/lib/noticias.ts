@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
+  admiteReacciones,
   editarBotones,
   sendChannelPost,
   sendTelegramMessageOrThrow,
@@ -415,6 +416,15 @@ export async function proponerNoticia(
  * el voto queda en nuestra base de datos, así que se puede mirar qué noticias
  * mueven a la gente y hacia qué lado.
  */
+/**
+ * Las reacciones que se buscan en el canal para votar una noticia.
+ *
+ * 🔥 y 💩 y no 🐂 y 🐻 porque el catálogo de reacciones de Telegram es cerrado
+ * y el toro y el oso no están en él (`REACTION_INVALID`). Tampoco ✅ ni ❌.
+ * Estas dos sí existen y en cripto se entienden solas.
+ */
+export const REACCIONES_NOTICIA = ["🔥", "💩"];
+
 export type Voto = "toro" | "oso";
 
 export function esVoto(valor: string): valor is Voto {
@@ -586,10 +596,17 @@ export async function publicarNoticia(
     console.warn(`[noticias] Texto de ${texto.length} caracteres: se publica sin imagen`);
   }
 
+  // Si el canal tiene 🔥 y 💩 como reacciones, la gente vota con ellas y los
+  // botones sobran: dos formas de opinar sobre lo mismo reparten los votos y
+  // ensucian el mensaje. Si no las tiene, van los botones, que funcionan
+  // siempre. Se comprueba en cada publicación, así que el día que se activen
+  // en Telegram el cambio es automático y no hay que tocar nada aquí.
+  const conReacciones = await admiteReacciones(chatId, REACCIONES_NOTICIA);
+
   const messageId = await sendChannelPost(texto, {
     chatId,
     imagen: cabeEnLaFoto ? noticia.imagen : null,
-    botones: botonesVoto(noticia.id, { toro: 0, oso: 0 }),
+    botones: conReacciones ? undefined : botonesVoto(noticia.id, { toro: 0, oso: 0 }),
   });
 
   // Sin estos dos datos los botones funcionan pero el marcador no se puede

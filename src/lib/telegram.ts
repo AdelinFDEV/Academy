@@ -493,6 +493,40 @@ export function mencionar(texto: string, nombre: string, userId: number) {
 }
 
 /**
+ * ¿Admite este chat estas reacciones de emoji?
+ *
+ * Hace falta porque las reacciones NO se pueden configurar desde la API de
+ * bots —`setChatAvailableReactions` no existe— así que el bot no puede darlas
+ * por hechas: tiene que mirar cómo está el canal y adaptarse.
+ *
+ * Los tres estados que devuelve Telegram en `available_reactions`:
+ *   · undefined            → están todas las de por defecto, así que sí.
+ *   · []                   → reacciones desactivadas.
+ *   · [{type:"paid"}, …]   → solo la de estrellas, que no sirve para votar.
+ *   · [{type:"emoji", …}]  → la lista concreta que el dueño ha permitido.
+ */
+export async function admiteReacciones(
+  chatId: string | number,
+  emojis: string[]
+): Promise<boolean> {
+  try {
+    const chat = await callTelegramApi<{
+      available_reactions?: { type: string; emoji?: string }[];
+    }>("getChat", { chat_id: chatId });
+
+    const permitidas = chat.available_reactions;
+    if (permitidas === undefined) return true; // todas las de por defecto
+
+    const deEmoji = permitidas.filter((r) => r.type === "emoji").map((r) => r.emoji);
+    return emojis.every((e) => deEmoji.includes(e));
+  } catch (err) {
+    // Ante la duda, no: se publica con los botones, que funcionan siempre.
+    console.warn("[telegram] No se pudieron consultar las reacciones:", (err as Error).message);
+    return false;
+  }
+}
+
+/**
  * Cambia solo los botones de un mensaje ya publicado, sin tocar el texto.
  *
  * Es lo que hace falta para los votos de las noticias: al pulsar "alcista" hay
