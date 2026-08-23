@@ -39,13 +39,13 @@ const EsquemaResumen = z.object({
     .string()
     .describe(
       "Titular propio, reescrito con tus palabras. Máximo 90 caracteres. " +
-        "Sin comillas, sin punto final, sin mayúsculas sostenidas."
+        "Sin comillas, sin punto final, sin mayúsculas sostenidas. Sin negrita ni emoji: ya lleva el 📰 delante."
     ),
   entradilla: z
     .string()
     .describe(
-      "Qué ha pasado, en 1 o 2 frases. Máximo 220 caracteres. " +
-        "Lo esencial: quién, qué y cuándo."
+      "Qué ha pasado, en 1 o 2 frases. Máximo 220 caracteres (contando los ** si usas negrita). " +
+        "Lo esencial: quién, qué y cuándo. El dato más importante en **negrita**, como mucho uno."
     ),
   puntos: z
     .array(z.string())
@@ -53,13 +53,15 @@ const EsquemaResumen = z.object({
     .max(4)
     .describe(
       "Los datos concretos de la noticia: cifras, fechas, nombres, decisiones. " +
-        "Cada punto una frase de máximo 110 caracteres, sin viñeta ni guion delante."
+        "Cada punto una frase de máximo 110 caracteres (contando los ** si usas negrita), sin viñeta ni guion delante. " +
+        "Pon en **negrita** el dato clave de cada punto (una cifra, un nombre): así se lee de un vistazo. " +
+        "Puedes abrir el punto con un emoji si encaja de forma natural (uno solo, nunca varios seguidos)."
     ),
   porqueImporta: z
     .string()
     .describe(
       "Por qué le importa a alguien que invierte en cripto, en una frase de máximo " +
-        "160 caracteres. Solo consecuencias que se deduzcan del propio artículo. " +
+        "160 caracteres (contando los ** si usas negrita). Solo consecuencias que se deduzcan del propio artículo. " +
         "Nunca una recomendación de comprar o vender."
     ),
 });
@@ -79,13 +81,13 @@ const ESQUEMA_GEMINI = {
       type: Type.STRING,
       description:
         "Titular propio, reescrito con tus palabras. Máximo 90 caracteres. " +
-        "Sin comillas, sin punto final, sin mayúsculas sostenidas.",
+        "Sin comillas, sin punto final, sin mayúsculas sostenidas. Sin negrita ni emoji: ya lleva el 📰 delante.",
     },
     entradilla: {
       type: Type.STRING,
       description:
-        "Qué ha pasado, en 1 o 2 frases. Máximo 220 caracteres. " +
-        "Lo esencial: quién, qué y cuándo.",
+        "Qué ha pasado, en 1 o 2 frases. Máximo 220 caracteres (contando los ** si usas negrita). " +
+        "Lo esencial: quién, qué y cuándo. El dato más importante en **negrita**, como mucho uno.",
     },
     puntos: {
       type: Type.ARRAY,
@@ -94,13 +96,15 @@ const ESQUEMA_GEMINI = {
       maxItems: "4",
       description:
         "Los datos concretos de la noticia: cifras, fechas, nombres, decisiones. " +
-        "Cada punto una frase de máximo 110 caracteres, sin viñeta ni guion delante.",
+        "Cada punto una frase de máximo 110 caracteres (contando los ** si usas negrita), sin viñeta ni guion delante. " +
+        "Pon en **negrita** el dato clave de cada punto (una cifra, un nombre): así se lee de un vistazo. " +
+        "Puedes abrir el punto con un emoji si encaja de forma natural (uno solo, nunca varios seguidos).",
     },
     porqueImporta: {
       type: Type.STRING,
       description:
         "Por qué le importa a alguien que invierte en cripto, en una frase de máximo " +
-        "160 caracteres. Solo consecuencias que se deduzcan del propio artículo. " +
+        "160 caracteres (contando los ** si usas negrita). Solo consecuencias que se deduzcan del propio artículo. " +
         "Nunca una recomendación de comprar o vender.",
     },
   },
@@ -124,8 +128,13 @@ CÓMO ESCRIBIR:
 - Con tus propias palabras: reformula, no copies frases del original.
 - Cita textualmente solo cuando sea una declaración de alguien, y entrecomillada.
 - Nada de "según el medio", "el artículo señala" ni referencias a la fuente.
-- Sin emojis: los pone la plantilla del mensaje.
-- Nada de consejos de inversión, predicciones de precio ni "esto podría subir".`;
+- Nada de consejos de inversión, predicciones de precio ni "esto podría subir".
+
+FORMATO — negrita y emojis, con moderación:
+- Negrita: envuelve el texto entre DOS asteriscos, así **como esto**. Es lo único que se procesa como formato — cualquier otro asterisco (uno solo, o tres) sale tal cual en el mensaje, así que nunca los uses salvo para negrita real.
+- Un dato en negrita por frase como mucho. Nunca la frase entera, ni dos datos seguidos: la negrita destaca precisamente porque es la excepción.
+- Emojis: uno por punto como mucho, solo si encaja de forma natural con el contenido (💰 para dinero, 📈 para subidas, 🏛️ para reguladores...), nunca decorativos ni repetidos. El titular y la entradilla van sin emoji: ya los lleva la plantilla del mensaje.
+- Los ** y los emojis cuentan dentro del límite de caracteres de cada campo — si un campo no cabe con negrita, prescinde de ella antes que cortar la frase.`;
 
 /**
  * Cliente perezoso: el módulo lo importa el webhook, que se carga en cada

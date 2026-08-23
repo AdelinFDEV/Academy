@@ -505,7 +505,8 @@ async function enviarFotoSubida(
   chatId: string | number,
   url: string,
   caption: string,
-  reply_markup: unknown
+  reply_markup: unknown,
+  entidades?: unknown[]
 ) {
   const origen = new URL(url).origin;
   const res = await fetch(url, {
@@ -529,6 +530,7 @@ async function enviarFotoSubida(
   cuerpo.append("chat_id", String(chatId));
   cuerpo.append("caption", caption);
   if (reply_markup) cuerpo.append("reply_markup", JSON.stringify(reply_markup));
+  if (entidades?.length) cuerpo.append("caption_entities", JSON.stringify(entidades));
   cuerpo.append("photo", new Blob([datos], { type: tipo }), "portada");
 
   // No pasa por callTelegramApi: ese envía JSON, y una subida es multipart.
@@ -585,6 +587,40 @@ export function mencionar(texto: string, nombre: string, userId: number) {
   const offset = texto.indexOf(nombre);
   if (offset < 0) return undefined;
   return [{ type: "text_mention", offset, length: nombre.length, user: { id: userId } }];
+}
+
+/**
+ * Convierte **negrita** en estilo Markdown a entidades de Telegram y quita
+ * los asteriscos del texto.
+ *
+ * Mismo motivo que mencionar(): entidades en vez de parse_mode. El texto en
+ * negrita aquí lo escribe Gemini a partir de un artículo de fuera, y no hay
+ * forma de garantizar que venga bien escapado para MarkdownV2 — un paréntesis
+ * o un guion sueltos (normalísimos en una noticia) bastarían para que
+ * Telegram rechace el mensaje entero. Con entidades no hay nada que escapar:
+ * se calcula el hueco exacto y se manda como dato estructurado, no como texto
+ * que Telegram tenga que interpretar.
+ */
+export function entidadesDeMarkdown(
+  texto: string
+): { texto: string; entidades: Array<{ type: string; offset: number; length: number }> } {
+  const entidades: Array<{ type: string; offset: number; length: number }> = [];
+  const regex = /\*\*([\s\S]+?)\*\*/g;
+  let limpio = "";
+  let ultimoIndice = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(texto)) !== null) {
+    limpio += texto.slice(ultimoIndice, match.index);
+    // El offset se mide sobre el texto YA limpio (sin asteriscos): es el que
+    // Telegram va a recibir y sobre el que tienen que calzar las entidades.
+    entidades.push({ type: "bold", offset: limpio.length, length: match[1].length });
+    limpio += match[1];
+    ultimoIndice = match.index + match[0].length;
+  }
+  limpio += texto.slice(ultimoIndice);
+
+  return { texto: limpio, entidades };
 }
 
 /**
@@ -671,6 +707,7 @@ export async function sendChannelPost(
         photo: opciones.imagen,
         // El pie de foto admite 1024 caracteres, frente a los 4096 del texto.
         caption: texto.slice(0, 1024),
+        caption_entities: opciones?.entidades,
         reply_markup,
       });
       return res.message_id;
@@ -682,7 +719,13 @@ export async function sendChannelPost(
     //    con Cloudflare delante: bloquean a los servidores de Telegram, que no
     //    mandan cabeceras de navegador, pero no a quien sí las manda.
     try {
-      return await enviarFotoSubida(chatId, opciones.imagen, texto.slice(0, 1024), reply_markup);
+      return await enviarFotoSubida(
+        chatId,
+        opciones.imagen,
+        texto.slice(0, 1024),
+        reply_markup,
+        opciones?.entidades
+      );
     } catch (err) {
       console.warn("[telegram] Tampoco se pudo subir la imagen:", (err as Error).message);
     }

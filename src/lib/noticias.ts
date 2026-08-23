@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import {
   admiteReacciones,
   editarBotones,
+  entidadesDeMarkdown,
   getSiteUrl,
   sendChannelPost,
   sendTelegramMessageOrThrow,
@@ -670,9 +671,15 @@ export async function publicarNoticia(
 ): Promise<void> {
   // El texto se montó al proponerla y quedó guardado: publicar es mandar
   // exactamente lo que el admin leyó y aprobó, sin recalcular nada.
-  const texto =
+  const bruto =
     (typeof noticia.texto_canal === "string" && noticia.texto_canal) ||
     [`📰 ${noticia.titulo}`, noticia.resumen, FIRMA].filter(Boolean).join("\n\n");
+
+  // Gemini marca la negrita con **así**; se convierte a entidades de Telegram
+  // (nunca a parse_mode, ver entidadesDeMarkdown) y se quitan los asteriscos
+  // del texto visible. En el recorte o el titular no hay ningún ** que
+  // convertir, así que esto no cambia nada para esos dos casos.
+  const { texto, entidades } = entidadesDeMarkdown(bruto);
 
   // El pie de foto se queda en 1024 caracteres y Telegram recorta sin avisar.
   // Antes que publicar un resumen cortado a media frase, se va sin imagen: el
@@ -692,6 +699,7 @@ export async function publicarNoticia(
   const messageId = await sendChannelPost(texto, {
     chatId,
     imagen: cabeEnLaFoto ? imagenDeNoticia(noticia.imagen) : null,
+    entidades: entidades.length ? entidades : undefined,
     botones: conReacciones ? undefined : botonesVoto(noticia.id, { toro: 0, oso: 0 }),
   });
 
