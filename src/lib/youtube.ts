@@ -68,21 +68,117 @@ async function resolveChannelId(): Promise<string | null> {
   }
 }
 
-// La duración de un vídeo publicado no cambia — cache larga (1 día) para que
-// los misses solo cuesten una vez por vídeo nuevo.
-async function getDurationSeconds(id: string): Promise<number | null> {
+/** Convierte la duración ISO 8601 de la API oficial (PT11M54S) a segundos. */
+function iso8601ASegundos(duracion: string): number | null {
+  const m = duracion.match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/);
+  if (!m) return null;
+  return (+(m[1] ?? 0)) * 3600 + (+(m[2] ?? 0)) * 60 + (+(m[3] ?? 0));
+}
+
+/**
+ * Duraciones de varios vídeos con la API oficial: UNA sola petición para
+ * todos, y la respuesta son unos cientos de bytes.
+ *
+ * Solo se usa si hay YOUTUBE_API_KEY. Merece mucho la pena ponerla: la cuota
+ * gratuita (10.000 unidades al día) sobra de largo para esto, porque cada
+ * consulta cuesta 1 unidad independientemente de cuántos vídeos lleve.
+ */
+async function duracionesPorApi(ids: string[]): Promise<Map<string, number> | null> {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key) return null;
+
   try {
-    const res = await fetch(`https://www.youtube.com/watch?v=${id}`, {
+    const url =
+      `https://www.googleapis.com/youtube/v3/videos?part=contentDetails` +
+      `&id=${ids.join(",")}&key=${key}`;
+    const res = await fetch(url, {
       next: { revalidate: 86400 },
-      headers: { "Accept-Language": "es" },
-      signal: AbortSignal.timeout(WATCH_FETCH_TIMEOUT_MS),
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
-    const html = await res.text();
-    const m = html.match(/"lengthSeconds":"(\d+)"/);
-    return m ? parseInt(m[1], 10) : null;
+    if (!res.ok) return null;
+
+    const json = (await res.json()) as {
+      items?: { id: string; contentDetails?: { duration?: string } }[];
+    };
+
+    const mapa = new Map<string, number>();
+    for (const item of json.items ?? []) {
+      const segundos = iso8601ASegundos(item.contentDetails?.duration ?? "");
+      if (segundos !== null) mapa.set(item.id, segundos);
+    }
+    return mapa;
   } catch {
     return null;
   }
+}
+
+/**
+ * Duración leyendo la página del vídeo, cuando no hay clave de API.
+ *
+ * Se lee el cuerpo por trozos y se corta en cuanto aparece el dato, en vez de
+ * descargar el documento entero: la página pesa 1,2 MB y "lengthSeconds" está
+ * pasada la mitad, así que esperar al final significaba descargar casi el
+ * doble de lo necesario — y con varias en paralelo era la vía rápida a agotar
+ * el tiempo límite en un servidor sin ancho de banda de sobra.
+ */
+async function duracionRaspando(id: string): Promise<number | null> {
+  try {
+    const res = await fetch(`https://www.youtube.com/watch?v=${id}`, {
+      next: { revalidate: 86400 },
+      headers: {
+        "Accept-Language": "es",
+        // Sin cabecera de navegador, YouTube trata la petición de forma
+        // distinta y a veces devuelve una página sin los datos del reproductor.
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      },
+      signal: AbortSignal.timeout(WATCH_FETCH_TIMEOUT_MS),
+    });
+
+    if (!res.body) return null;
+
+    const lector = res.body.getReader();
+    const decodificador = new TextDecoder();
+    let acumulado = "";
+
+    try {
+      while (true) {
+        const { done, value } = await lector.read();
+        if (done) break;
+        acumulado += decodificador.decode(value, { stream: true });
+
+        const m = acumulado.match(/"lengthSeconds":"(\d+)"/);
+        if (m) return parseInt(m[1], 10);
+
+        // No hace falta guardar todo lo leído: basta con conservar el final
+        // por si el dato quedó partido entre dos trozos.
+        if (acumulado.length > 200_000) acumulado = acumulado.slice(-1000);
+      }
+    } finally {
+      await lector.cancel().catch(() => {});
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/** Duraciones de un lote de vídeos, por la vía que esté disponible. */
+async function getDuraciones(ids: string[]): Promise<Map<string, number>> {
+  const porApi = await duracionesPorApi(ids);
+  if (porApi) return porApi;
+
+  const mapa = new Map<string, number>();
+  for (let i = 0; i < ids.length; i += WATCH_CONCURRENCY) {
+    const lote = ids.slice(i, i + WATCH_CONCURRENCY);
+    const resultados = await Promise.all(lote.map((id) => duracionRaspando(id)));
+    lote.forEach((id, j) => {
+      const d = resultados[j];
+      if (d !== null) mapa.set(id, d);
+    });
+  }
+  return mapa;
 }
 
 /**
@@ -127,20 +223,25 @@ export async function getLatestVideos(limit = 3, sinCache = false): Promise<YouT
       };
     }).filter((v) => v.id);
 
-    // Keep only videos of MIN_DURATION_SECONDS or more, newest first.
-    // Tandas pequeñas con corte anticipado: en cuanto hay `limit` vídeos
-    // largos se deja de pedir a youtube.com. El orden (más nuevo primero)
-    // se conserva porque las tandas recorren `parsed` en orden.
-    const result: YouTubeVideo[] = [];
-    for (let i = 0; i < parsed.length && result.length < limit; i += WATCH_CONCURRENCY) {
-      const chunk = parsed.slice(i, i + WATCH_CONCURRENCY);
-      const durations = await Promise.all(chunk.map((v) => getDurationSeconds(v.id)));
-      for (let j = 0; j < chunk.length && result.length < limit; j++) {
-        const d = durations[j];
-        if (d != null && d >= MIN_DURATION_SECONDS) result.push(chunk[j]);
-      }
+    // Solo los vídeos de MIN_DURATION_SECONDS o más, del más nuevo al más
+    // antiguo. Se miran los primeros candidatos y no el feed entero: con
+    // pedir el doble del límite sobra para descartar algún Short.
+    const candidatos = parsed.slice(0, Math.max(limit * 2, 6));
+    const duraciones = await getDuraciones(candidatos.map((v) => v.id));
+
+    if (duraciones.size === 0 && candidatos.length > 0) {
+      // Que no se pueda leer NINGUNA duración no es que no haya vídeos: es que
+      // algo falla al consultarlas. Sin este aviso el fallo era invisible —
+      // la home simplemente aparecía sin vídeos y nadie sabía por qué.
+      console.error(
+        "[youtube] No se pudo leer la duración de ningún vídeo. " +
+          "Define YOUTUBE_API_KEY para dejar de depender del raspado."
+      );
     }
-    return result;
+
+    return candidatos
+      .filter((v) => (duraciones.get(v.id) ?? 0) >= MIN_DURATION_SECONDS)
+      .slice(0, limit);
   } catch {
     return [];
   }
