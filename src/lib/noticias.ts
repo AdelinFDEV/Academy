@@ -43,14 +43,17 @@ export type NoticiaCruda = {
  * lee por trozos y se corta en cuanto aparece: la etiqueta está en la cabecera
  * del documento, así que bastan unos pocos KB de los ~440 que pesa la página.
  */
-async function buscarImagen(enlace: string): Promise<string | null> {
+async function buscarPortada(
+  enlace: string
+): Promise<{ imagen: string | null; resumen: string | null }> {
+  const vacio = { imagen: null, resumen: null };
   try {
     const res = await fetch(enlace, {
       headers: CABECERAS,
       next: { revalidate: 86400 },
       signal: AbortSignal.timeout(8000),
     });
-    if (!res.ok || !res.body) return null;
+    if (!res.ok || !res.body) return vacio;
 
     const lector = res.body.getReader();
     const dec = new TextDecoder();
@@ -62,19 +65,31 @@ async function buscarImagen(enlace: string): Promise<string | null> {
         if (done) break;
         acumulado += dec.decode(value, { stream: true });
 
-        const m = acumulado.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)/i);
-        if (m) return m[1];
+        const imagen = acumulado.match(
+          /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)/i
+        );
+        const resumen = acumulado.match(
+          /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)/i
+        );
+        // Las dos etiquetas están juntas en la cabecera: en cuanto se tienen
+        // ambas no hace falta seguir descargando el artículo entero.
+        if (imagen && resumen) {
+          return { imagen: imagen[1], resumen: decodificar(resumen[1]) };
+        }
 
-        // Pasada la cabecera ya no va a aparecer: no merece la pena seguir
-        // descargando el artículo entero.
-        if (acumulado.length > 120_000) break;
+        if (acumulado.length > 150_000) {
+          return {
+            imagen: imagen?.[1] ?? null,
+            resumen: resumen ? decodificar(resumen[1]) : null,
+          };
+        }
       }
     } finally {
       await lector.cancel().catch(() => {});
     }
-    return null;
+    return vacio;
   } catch {
-    return null;
+    return vacio;
   }
 }
 
@@ -106,18 +121,8 @@ function extraerResumen(descripcion: string): string | null {
   return texto.length > 280 ? `${texto.slice(0, 279)}…` : texto;
 }
 
-/** Lee el feed y devuelve lo publicado dentro de la ventana, más nuevo primero. */
-export async function leerFeed(): Promise<NoticiaCruda[]> {
-  const res = await fetch(FEED, {
-    headers: CABECERAS,
-    cache: "no-store",
-    signal: AbortSignal.timeout(10_000),
-  });
-  if (!res.ok) throw new Error(`El feed respondió ${res.status}`);
-
-  const xml = await res.text();
-  const corte = Date.now() - HORAS_DE_VENTANA * 60 * 60 * 1000;
-
+/** Parsea el RSS original (XML). */
+function parsearXml(xml: string): NoticiaCruda[] {
   return xml
     .split("<item>")
     .slice(1)
@@ -135,8 +140,82 @@ export async function leerFeed(): Promise<NoticiaCruda[]> {
         publicada_en: publicada && !isNaN(publicada.getTime()) ? publicada.toISOString() : null,
         imagen: null as string | null,
       };
-    })
-    .filter((n) => n.titulo && n.enlace)
+    });
+}
+
+/**
+ * Parsea la versión en texto que devuelve el lector de r.jina.ai.
+ *
+ * Cada noticia llega como un título enlazado en markdown y, dos líneas más
+ * abajo, su fecha:
+ *   ### [Titular](https://www.criptonoticias.com/...)
+ *   [https://...](https://...)
+ *   Sun, 23 Aug 2026 14:37:53 +0000
+ *
+ * No trae resumen, pero da igual: se saca del og:description del artículo, que
+ * ya se descarga igualmente para la imagen.
+ */
+function parsearMarkdown(texto: string): NoticiaCruda[] {
+  const bloques = texto.split(/^### /m).slice(1);
+
+  return bloques.map((bloque) => {
+    const cabecera = bloque.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)/);
+    const fecha = bloque.match(/^([A-Z][a-z]{2}, \d{1,2} [A-Z][a-z]{2} \d{4}[^\n]*)$/m)?.[1];
+    const publicada = fecha ? new Date(fecha) : null;
+
+    return {
+      titulo: cabecera ? decodificar(cabecera[1]) : "",
+      enlace: cabecera ? cabecera[2] : "",
+      resumen: null,
+      publicada_en: publicada && !isNaN(publicada.getTime()) ? publicada.toISOString() : null,
+      imagen: null as string | null,
+    };
+  });
+}
+
+/**
+ * Lee el feed y devuelve lo publicado dentro de la ventana, más nuevo primero.
+ *
+ * Se intenta primero la vía directa. CriptoNoticias tiene un Cloudflare
+ * delante que responde 403 a las peticiones que salen de un centro de datos
+ * —da igual las cabeceras que se manden—, así que en producción casi siempre
+ * hará falta el respaldo: r.jina.ai, un lector público que sí puede leerla y
+ * devuelve el contenido en texto.
+ *
+ * Se conserva la vía directa como primera opción a propósito: es la única que
+ * no depende de un tercero, y el día que Cloudflare afloje volverá a usarse
+ * sola sin tocar nada.
+ */
+export async function leerFeed(): Promise<NoticiaCruda[]> {
+  const corte = Date.now() - HORAS_DE_VENTANA * 60 * 60 * 1000;
+  let noticias: NoticiaCruda[] = [];
+  let motivoDirecto = "";
+
+  try {
+    const res = await fetch(FEED, {
+      headers: CABECERAS,
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (res.ok) noticias = parsearXml(await res.text());
+    else motivoDirecto = `directo respondió ${res.status}`;
+  } catch (err) {
+    motivoDirecto = `directo falló: ${err instanceof Error ? err.message : "error"}`;
+  }
+
+  if (noticias.length === 0) {
+    const res = await fetch(`https://r.jina.ai/${FEED}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!res.ok) {
+      throw new Error(`${motivoDirecto}; el lector de respaldo respondió ${res.status}`);
+    }
+    noticias = parsearMarkdown(await res.text());
+  }
+
+  return noticias
+    .filter((n) => n.titulo && n.enlace.includes("criptonoticias.com"))
     .filter((n) => !n.publicada_en || new Date(n.publicada_en).getTime() >= corte);
 }
 
@@ -174,10 +253,14 @@ export async function guardarNuevas(admin: Admin): Promise<
   // lectura, aunque ya las conociéramos todas.
   await Promise.all(
     nuevas.map(async (n) => {
-      const imagen = await buscarImagen(n.enlace);
-      if (!imagen) return;
-      n.imagen = imagen;
-      await admin.from("noticias").update({ imagen }).eq("id", n.id);
+      const { imagen, resumen } = await buscarPortada(n.enlace);
+      // El resumen solo se rellena si falta: cuando el feed llega por la vía
+      // directa ya lo trae, y el del propio medio es mejor que el og:description.
+      const parche: Record<string, string> = {};
+      if (imagen) { n.imagen = imagen; parche.imagen = imagen; }
+      if (resumen && !n.resumen) { n.resumen = resumen; parche.resumen = resumen; }
+      if (Object.keys(parche).length === 0) return;
+      await admin.from("noticias").update(parche).eq("id", n.id);
     })
   );
 
