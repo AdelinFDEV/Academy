@@ -4,8 +4,11 @@ import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import {
   FUENTE,
   guardarNuevas,
+  noticiaEsperandoTexto,
+  pedirTextoAlAdmin,
   proponerNoticia,
   publicarNoticia,
+  publicarTextoPropio,
   votarNoticia,
   type Voto,
 } from "@/lib/noticias";
@@ -60,6 +63,9 @@ type TelegramMessage = {
   chat: { id: number };
   from?: TelegramUser;
   text?: string;
+  /** El formato que le dio quien escribe (negritas, cursivas, enlaces). Se
+   *  reenvía tal cual al publicar lo que redacta el admin. */
+  entities?: unknown[];
   reply_to_message?: { message_id: number };
 };
 type ChatJoinRequest = { chat: { id: number }; from: TelegramUser };
@@ -235,6 +241,13 @@ async function handleCallback(admin: Admin, query: CallbackQuery) {
   const noticia = data.match(/^n:(ok|no):(\d+)$/);
   if (noticia) {
     await decidirNoticia(admin, query, noticia[1] === "ok", Number(noticia[2]));
+    return;
+  }
+
+  // "La escribo yo": el bot le pasa el enlace y se queda esperando su texto.
+  const aMano = data.match(/^n:mio:(\d+)$/);
+  if (aMano) {
+    await handleEscribirloYo(admin, query, Number(aMano[1]));
     return;
   }
 
@@ -629,6 +642,84 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
   });
 }
 
+
+/**
+ * El admin quiere escribir él la noticia.
+ *
+ * Solo para admins, como el resto de lo que toca noticias: quien pulse esto
+ * sin serlo no recibe nada, ni siquiera un error.
+ */
+async function handleEscribirloYo(admin: Admin, query: CallbackQuery, id: number) {
+  if (!(await esAdmin(admin, query.from.id))) return;
+
+  const chatId = query.message?.chat.id ?? query.from.id;
+
+  const { data: noticia } = await admin
+    .from("noticias")
+    .select("id, titulo, enlace, estado")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!noticia) {
+    await sendTelegramMessage(chatId, "No encuentro esa noticia.");
+    return;
+  }
+  if (noticia.estado !== "pendiente") {
+    await sendTelegramMessage(chatId, `Esa noticia ya estaba ${noticia.estado}.`);
+    return;
+  }
+
+  await pedirTextoAlAdmin(admin, chatId, noticia);
+}
+
+/**
+ * El admin responde con el texto de una noticia que pidió escribir él.
+ *
+ * Devuelve true si la respuesta era eso, para que quien llama no siga tratando
+ * el mensaje como una contestación de soporte.
+ */
+async function handleTextoDeNoticia(admin: Admin, message: TelegramMessage): Promise<boolean> {
+  const citado = message.reply_to_message?.message_id;
+  if (!citado || !message.text) return false;
+
+  const noticia = await noticiaEsperandoTexto(admin, citado);
+  if (!noticia) return false;
+
+  const chatId = message.chat.id;
+
+  if (noticia.estado !== "pendiente") {
+    await sendTelegramMessage(chatId, `Esa noticia ya estaba ${noticia.estado}, no la he tocado.`);
+    return true;
+  }
+
+  const canal = getFreeChannelId();
+  if (!canal) {
+    await sendTelegramMessage(chatId, "⚠️ No hay canal gratuito configurado, no puedo publicar.");
+    return true;
+  }
+
+  try {
+    const { conImagen } = await publicarTextoPropio(
+      admin,
+      noticia,
+      message.text,
+      message.entities,
+      canal
+    );
+    await sendTelegramMessage(
+      chatId,
+      `✅ Publicada con tu texto${conImagen ? " y la imagen del artículo" : " (sin imagen: no cabía en el pie de foto)"}.`
+    );
+  } catch (err) {
+    console.error("[telegram-webhook] No se pudo publicar el texto propio:", err);
+    await sendTelegramMessage(
+      chatId,
+      `⚠️ No he podido publicarla.\n\n${err instanceof Error ? err.message : "Error desconocido"}\n\n` +
+        "Tu texto sigue ahí arriba: vuelve a responder al mismo mensaje y lo reintento."
+    );
+  }
+  return true;
+}
 
 /** El admin ha decidido sobre una noticia. */
 async function decidirNoticia(
@@ -1049,6 +1140,11 @@ async function handleSupportMessage(
 async function handleAdminReply(admin: Admin, message: TelegramMessage) {
   const citado = message.reply_to_message?.message_id;
   if (!citado || !message.text) return;
+
+  // Antes que nada: ¿es el texto de una noticia que pidió escribir él? Va
+  // primero porque si no, ese texto acabaría en el relé de soporte intentando
+  // enviarse a un usuario que no existe.
+  if (await handleTextoDeNoticia(admin, message)) return;
 
   const { data: hilo } = await admin
     .from("telegram_support_threads")

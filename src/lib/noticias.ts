@@ -395,6 +395,7 @@ export async function proponerNoticia(
     "Esto es literalmente lo que se publicará.";
 
   const messageId = await sendTelegramMessageOrThrow(chatId, texto, [
+    [{ text: "✍️ La escribo yo", data: `n:mio:${noticia.id}` }],
     [
       { text: "✅ Publicar", data: `n:ok:${noticia.id}` },
       { text: "❌ Descartar", data: `n:no:${noticia.id}` },
@@ -617,4 +618,98 @@ export async function publicarNoticia(
       .update({ mensaje_canal_id: messageId, canal_chat_id: chatId })
       .eq("id", noticia.id);
   }
+}
+
+// ── Escribirla a mano ───────────────────────────────────────────────────────
+
+/**
+ * El admin pide escribir él la noticia.
+ *
+ * Sin clave de API esta es la mejor vía y no un apaño: el texto lo escribe una
+ * persona, así que ni hay que recortar el trabajo de otro medio ni hay nada
+ * que pueda inventarse un modelo. El bot solo maqueta y publica.
+ *
+ * El enlace al original va SOLO aquí, en el privado del admin, para poder
+ * leerlo antes de escribir. Al canal no llega nunca.
+ */
+export async function pedirTextoAlAdmin(
+  admin: Admin,
+  chatId: number,
+  noticia: { id: number; titulo: string; enlace: string }
+) {
+  const messageId = await sendTelegramMessageOrThrow(
+    chatId,
+    `✍️ Escríbela tú\n\n` +
+      `${noticia.titulo}\n\n` +
+      `📖 Léela aquí:\n${noticia.enlace}\n\n` +
+      "Cuando la tengas, **responde a este mensaje** con tu texto y la publico tal cual.\n\n" +
+      "• Los saltos de línea se respetan, así que separa los párrafos como quieras\n" +
+      "• Negritas y cursivas también se mantienen\n" +
+      "• La firma y la imagen las pongo yo\n" +
+      "• Si te arrepientes, ignóralo y descártala"
+  );
+
+  await admin
+    .from("noticias")
+    .update({ mensaje_peticion_id: messageId })
+    .eq("id", noticia.id);
+}
+
+/**
+ * ¿Es esta respuesta el texto de una noticia que el admin pidió escribir?
+ *
+ * Se busca por el id del mensaje citado, que es lo que ata sin ambigüedad la
+ * respuesta con la noticia. Devuelve null si no lo es, y entonces quien llama
+ * sigue con lo suyo (el relé de soporte).
+ */
+export async function noticiaEsperandoTexto(admin: Admin, mensajeCitado: number) {
+  const { data } = await admin
+    .from("noticias")
+    .select("id, titulo, resumen, enlace, imagen, estado")
+    .eq("mensaje_peticion_id", mensajeCitado)
+    .maybeSingle();
+  return data ?? null;
+}
+
+/**
+ * Publica el texto que ha escrito el admin.
+ *
+ * `entidades` son el formato de SU mensaje (negritas, cursivas, enlaces) tal
+ * como lo manda Telegram. Se reenvían intactas y por eso la firma va DETRÁS y
+ * nunca delante: las entidades traen posiciones absolutas dentro del texto, y
+ * anteponer una sola letra las descolocaría todas.
+ */
+export async function publicarTextoPropio(
+  admin: Admin,
+  noticia: { id: number; imagen: string | null },
+  texto: string,
+  entidades: unknown[] | undefined,
+  chatId: string
+): Promise<{ ok: boolean; conImagen: boolean }> {
+  const completo = `${texto.trimEnd()}\n\n${FIRMA}`;
+  const cabeEnLaFoto = completo.length <= LIMITE_PIE_DE_FOTO;
+  const conReacciones = await admiteReacciones(chatId, REACCIONES_NOTICIA);
+
+  const messageId = await sendChannelPost(completo, {
+    chatId,
+    imagen: cabeEnLaFoto ? noticia.imagen : null,
+    entidades,
+    botones: conReacciones ? undefined : botonesVoto(noticia.id, { toro: 0, oso: 0 }),
+  });
+
+  await admin
+    .from("noticias")
+    .update({
+      estado: "publicada",
+      decidida_en: new Date().toISOString(),
+      texto_canal: completo,
+      mensaje_canal_id: messageId,
+      canal_chat_id: chatId,
+      // Se limpia para que una respuesta posterior al mismo mensaje no vuelva
+      // a publicarla: sin esto, citar dos veces publicaría dos veces.
+      mensaje_peticion_id: null,
+    })
+    .eq("id", noticia.id);
+
+  return { ok: true, conImagen: cabeEnLaFoto && !!noticia.imagen };
 }
