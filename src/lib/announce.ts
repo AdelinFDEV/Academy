@@ -219,6 +219,44 @@ async function anunciarEntradas(admin: Admin, soloSlug?: string): Promise<string
   return anunciadas;
 }
 
+/** Si un vídeo concreto ya se anunció alguna vez, por cualquier vía. */
+export function videoYaAnunciado(admin: Admin, id: string): Promise<boolean> {
+  return yaAnunciado(admin, "video", id);
+}
+
+/**
+ * Publica UN vídeo concreto a mano, saltándose la ventana de "reciente" que sí
+ * aplica al barrido automático — si el admin lo pide explícitamente, es
+ * porque quiere ese vídeo publicado ahora, tenga la fecha que tenga.
+ *
+ * Comparte marca con el barrido automático (`content_announcements`), así que
+ * lo uno y lo otro no se pisan: publicar a mano un vídeo hace que el cron
+ * diario ya no lo vuelva a anunciar por su cuenta, y viceversa.
+ */
+export async function publicarVideoConcreto(
+  admin: Admin,
+  video: { id: string; title: string; thumbnail: string; url: string }
+): Promise<{ ok: boolean; motivo?: string }> {
+  if (await yaAnunciado(admin, "video", video.id)) {
+    return { ok: false, motivo: "Ya estaba publicado" };
+  }
+  if (!(await marcar(admin, "video", video.id))) {
+    return { ok: false, motivo: "Alguien se te ha adelantado por segundos" };
+  }
+
+  try {
+    await sendChannelPost(plantillaVideo(video), {
+      imagen: video.thumbnail,
+      botones: [{ text: "▶️ Ver en YouTube", url: video.url }],
+      chatId: getFreeChannelId() ?? undefined,
+    });
+    return { ok: true };
+  } catch (err) {
+    console.error(`[announce] Falló la publicación manual del vídeo ${video.id}:`, err);
+    return { ok: false, motivo: err instanceof Error ? err.message : "Error desconocido" };
+  }
+}
+
 async function anunciarVideos(admin: Admin, sinCache: boolean): Promise<string[]> {
   // Sin caché cuando lo lanza el botón del panel: si no, un vídeo recién
   // publicado podría no aparecer hasta media hora después.

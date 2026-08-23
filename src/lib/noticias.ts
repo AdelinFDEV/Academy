@@ -338,15 +338,20 @@ export async function guardarNuevas(admin: Admin): Promise<
       crudas.map((n) => ({ ...n, fuente: FUENTE })),
       { onConflict: "enlace", ignoreDuplicates: true }
     )
-    .select("id, titulo, resumen, enlace, imagen");
+    .select("id, titulo, resumen, enlace, imagen, publicada_en");
 
   if (error) {
     console.error("[noticias] Error guardando:", error.message);
     return [];
   }
 
-  // upsert con ignoreDuplicates devuelve solo las filas realmente insertadas.
-  const nuevas = (data ?? []).slice(0, MAXIMO_POR_TANDA);
+  // upsert con ignoreDuplicates devuelve solo las filas realmente insertadas,
+  // pero Postgres no garantiza en qué orden. Sin ordenar antes de recortar, un
+  // día con ocho noticias nuevas se quedaba con cinco AL AZAR — podía tirar
+  // justo las tres más recientes. Primero las de hoy.
+  const nuevas = (data ?? [])
+    .sort((a, b) => String(b.publicada_en ?? "").localeCompare(String(a.publicada_en ?? "")))
+    .slice(0, MAXIMO_POR_TANDA);
 
   // La imagen se busca solo para las que de verdad son nuevas: hacerlo en el
   // parseo del feed significaría descargar un artículo por noticia en cada
@@ -368,6 +373,37 @@ export async function guardarNuevas(admin: Admin): Promise<
 }
 
 /**
+ * Noticias guardadas que nunca llegaron a proponerse.
+ *
+ * `guardarNuevas` mete en la tabla TODAS las del feed pero solo devuelve las
+ * cinco primeras, para no soltarle al admin quince mensajes de golpe. Las
+ * demás se quedaban con estado pendiente y sin proponer, y como la siguiente
+ * lectura solo devuelve las recién insertadas, ya no las veía nadie: se
+ * perdían sin que nada lo dijera.
+ *
+ * Esto las recupera en la tanda siguiente. `mensaje_admin_id` es la marca de
+ * "ya se propuso": si está a null, esa noticia no se ha enseñado nunca.
+ */
+export async function pendientesSinProponer(admin: Admin, limite: number) {
+  const corte = new Date(Date.now() - HORAS_DE_VENTANA * 60 * 60 * 1000).toISOString();
+
+  const { data, error } = await admin
+    .from("noticias")
+    .select("id, titulo, resumen, enlace, imagen")
+    .eq("estado", "pendiente")
+    .is("mensaje_admin_id", null)
+    .gte("created_at", corte)
+    .order("publicada_en", { ascending: false, nullsFirst: false })
+    .limit(limite);
+
+  if (error) {
+    console.error("[noticias] Error buscando pendientes:", error.message);
+    return [];
+  }
+  return data ?? [];
+}
+
+/**
  * Propone una noticia al admin con los dos botones de decisión.
  *
  * El callback_data de Telegram no admite más de 64 bytes, así que no cabe el
@@ -376,7 +412,9 @@ export async function guardarNuevas(admin: Admin): Promise<
 export async function proponerNoticia(
   admin: Admin,
   chatId: number,
-  noticia: { id: number; titulo: string; resumen: string | null; enlace: string }
+  noticia: { id: number; titulo: string; resumen: string | null; enlace: string },
+  /** "2 de 3", para saber de un vistazo cuántas vienen en esta tanda. */
+  posicion?: { n: number; total: number }
 ) {
   // Se redacta ANTES de proponerla: lo que el admin lee es, palabra por
   // palabra, lo que va a salir en el canal si pulsa publicar. Proponer una
@@ -391,8 +429,11 @@ export async function proponerNoticia(
     titular: "⚠️ solo el titular — no he podido leer el artículo",
   };
 
+  const cuantas =
+    posicion && posicion.total > 1 ? ` · ${posicion.n} de ${posicion.total}` : "";
+
   const texto =
-    `📰 ${FUENTE.toUpperCase()} · ${etiqueta[via]}\n\n` +
+    `📰 ${FUENTE.toUpperCase()}${cuantas} · ${etiqueta[via]}\n\n` +
     "──────────────\n" +
     `${publicable}\n` +
     "──────────────\n\n" +

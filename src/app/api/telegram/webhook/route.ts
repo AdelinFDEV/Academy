@@ -3,9 +3,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import {
   FUENTE,
+  MAXIMO_POR_TANDA,
   guardarNuevas,
   noticiaEsperandoTexto,
   pedirTextoAlAdmin,
+  pendientesSinProponer,
   proponerNoticia,
   publicarNoticia,
   publicarTextoPropio,
@@ -22,6 +24,8 @@ import {
   type PerfilBot,
 } from "@/lib/bot-menu";
 import { alternarTarea, enviarRutina, esTarea } from "@/lib/rutina";
+import { publicarVideoConcreto, videoYaAnunciado } from "@/lib/announce";
+import { getLatestVideos } from "@/lib/youtube";
 import {
   answerCallbackQuery,
   avisarAlAdmin,
@@ -38,6 +42,7 @@ import {
   getChannelMemberCount,
   getFreeChannelId,
   getFreeChannelUrl,
+  getOwnerTelegramId,
   mencionar,
   pausarAvisos,
   getCuentaUrl,
@@ -98,7 +103,7 @@ const LIMITE_MENSAJES_HORA = 10;
 /** Comandos reservados al admin. Al añadir uno nuevo, basta con listarlo aquí
  *  para que quede protegido: a quien no sea admin se le responde con el menú
  *  normal, sin darle ninguna pista de que el comando existe. */
-const COMANDOS_DE_ADMIN = ["/noticias", "/rutina", "/stop", "/arrancar"];
+const COMANDOS_DE_ADMIN = ["/noticias", "/rutina", "/stop", "/arrancar", "/video"];
 
 /**
  * ¿Es admin quien escribe?
@@ -248,6 +253,13 @@ async function handleCallback(admin: Admin, query: CallbackQuery) {
   const aMano = data.match(/^n:mio:(\d+)$/);
   if (aMano) {
     await handleEscribirloYo(admin, query, Number(aMano[1]));
+    return;
+  }
+
+  // Botón de "Publicar en el canal" de /video: solo del admin.
+  const video = data.match(/^v:pub:([\w-]{11})$/);
+  if (video) {
+    await handleVideoPublicar(admin, query, video[1]);
     return;
   }
 
@@ -719,6 +731,101 @@ async function handleTextoDeNoticia(admin: Admin, message: TelegramMessage): Pro
     );
   }
   return true;
+}
+
+/**
+ * /gombos — lista los comandos de admin que existen ahora mismo.
+ *
+ * Lee COMANDOS_DE_ADMIN en vez de traer la lista escrita a mano: así nunca se
+ * desincroniza cuando se añade uno nuevo — es lo mismo que ya le pasó al
+ * texto de /ayuda antes de que se generase de COMANDOS_PUBLICOS.
+ */
+async function handleGombos(chatId: number) {
+  const descripciones: Record<string, string> = {
+    "/noticias": "Buscar noticias nuevas y proponerlas",
+    "/video": "Ver el último vídeo de YouTube y publicarlo",
+    "/rutina": "Tu rutina de hoy, fuera de las 6:00",
+    "/stop": "Parar todos los avisos automáticos",
+    "/arrancar": "Reanudarlos",
+  };
+
+  const lineas = COMANDOS_DE_ADMIN.map(
+    (c) => `${c} — ${descripciones[c] ?? "(sin descripción)"}`
+  );
+
+  await sendTelegramMessage(
+    chatId,
+    "🔐 Comandos de admin\n\n" +
+      `${lineas.join("\n")}\n\n` +
+      "Ninguno de estos aparece en el botón «/» de nadie: se responden solo si el rol " +
+      "es admin, y este mensaje solo se responde a ti."
+  );
+}
+
+/**
+ * /video — enseña el último subido al canal de YouTube y ofrece publicarlo.
+ *
+ * No hace falta ninguna clave de API: getLatestVideos() lee el feed RSS
+ * público del canal, que YouTube ofrece sin autenticación. Se pide sin caché
+ * (el segundo argumento) para que un vídeo recién subido aparezca al momento,
+ * no hasta que expiren los 30 minutos de la home.
+ */
+async function handleVideoUltimo(admin: Admin, chatId: number) {
+  const [video] = await getLatestVideos(1, true);
+  if (!video) {
+    await sendTelegramMessage(
+      chatId,
+      "🎥 No he encontrado ningún vídeo.\n\n" +
+        "Puede que YouTube esté tardando en responder — inténtalo de nuevo en un momento."
+    );
+    return;
+  }
+
+  const publicado = await videoYaAnunciado(admin, video.id);
+  const fecha = new Date(video.publishedAt).toLocaleDateString("es-ES", {
+    day: "numeric",
+    month: "long",
+  });
+
+  await sendTelegramMessage(
+    chatId,
+    `🎥 Tu último vídeo\n\n${video.title}\n\n📅 Subido el ${fecha}` +
+      (publicado
+        ? "\n\n✅ Ya está publicado en el canal free."
+        : "\n\n¿Lo publico en el canal free, con miniatura y enlace?"),
+    publicado
+      ? [{ text: "▶️ Ver en YouTube", url: video.url }]
+      : [
+          [{ text: "📣 Publicar en el canal", data: `v:pub:${video.id}` }],
+          [{ text: "▶️ Ver en YouTube", url: video.url }],
+        ]
+  );
+}
+
+/** Botón "Publicar en el canal" de /video. Se relee el feed en vez de fiarse
+ *  de lo que viajó en el callback: así siempre se publica lo que YouTube dice
+ *  ahora mismo, no una copia de hace un rato. */
+async function handleVideoPublicar(admin: Admin, query: CallbackQuery, id: string) {
+  if (!(await esAdmin(admin, query.from.id))) return;
+
+  const chatId = query.message?.chat.id ?? query.from.id;
+  const [video] = await getLatestVideos(1, true);
+
+  if (!video || video.id !== id) {
+    await sendTelegramMessage(
+      chatId,
+      "⚠️ Ese ya no es el último vídeo del canal — pide /video otra vez para ver el actual."
+    );
+    return;
+  }
+
+  const resultado = await publicarVideoConcreto(admin, video);
+  await sendTelegramMessage(
+    chatId,
+    resultado.ok
+      ? `✅ Publicado en el canal free.\n\n${video.title}`
+      : `⚠️ No se ha publicado.\n\n${resultado.motivo}`
+  );
 }
 
 /** El admin ha decidido sobre una noticia. */
@@ -1225,6 +1332,21 @@ export async function POST(request: NextRequest) {
 
     if (update.callback_query) {
       await handleCallback(admin, update.callback_query);
+    } else if (comando === "/gombos") {
+      // Fuera de COMANDOS_DE_ADMIN y de esAdmin() a propósito: esto no sigue
+      // al ROL, sigue a la PERSONA. Ver getOwnerTelegramId().
+      if (message?.from && message.from.id === getOwnerTelegramId()) {
+        await handleGombos(message.chat.id);
+      } else if (message?.from) {
+        // Ni una pista de que el comando existe: se responde igual que a
+        // cualquier comando desconocido.
+        await enviarMenu(
+          admin,
+          message.chat.id,
+          message.from,
+          "No conozco ese comando 🤔 Esto es lo que sí puedo hacer:"
+        );
+      }
     } else if (comando === "/start") {
       await handleStart(admin, message as TelegramMessage);
     } else if (
@@ -1247,11 +1369,16 @@ export async function POST(request: NextRequest) {
         // que un fallo aquí dejaba el comando sin responder absolutamente
         // nada y no había forma de saber por qué desde Telegram.
         try {
-          const nuevas = await guardarNuevas(admin);
+          await guardarNuevas(admin);
+          // Se leen de la tabla, no del retorno de guardarNuevas: así entran
+          // también las que se quedaron sin proponer en una tanda anterior.
+          const nuevas = await pendientesSinProponer(admin, MAXIMO_POR_TANDA);
           if (nuevas.length === 0) {
             await sendTelegramMessage(message.chat.id, "📰 Sin noticias nuevas por ahora.");
           } else {
-            for (const n of nuevas) await proponerNoticia(admin, message.chat.id, n);
+            for (let i = 0; i < nuevas.length; i++) {
+              await proponerNoticia(admin, message.chat.id, nuevas[i], { n: i + 1, total: nuevas.length });
+            }
           }
         } catch (err) {
           console.error("[telegram-webhook] /noticias falló:", err);
@@ -1260,6 +1387,8 @@ export async function POST(request: NextRequest) {
             `⚠️ No he podido traer las noticias.\n\n${err instanceof Error ? err.message : "Error desconocido"}`
           );
         }
+      } else if (comando === "/video") {
+        await handleVideoUltimo(admin, message.chat.id);
       } else if (comando === "/rutina") {
         const resultado = await enviarRutina(admin, { forzar: true });
         if (!resultado.enviada) {

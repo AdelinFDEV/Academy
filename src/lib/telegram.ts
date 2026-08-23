@@ -88,6 +88,26 @@ export function getLogChatId(): string | null {
   return process.env.TELEGRAM_LOG_CHAT_ID || null;
 }
 
+/**
+ * El id de Telegram del ÚNICO dueño del bot, para comandos que no deben
+ * seguir al rol de admin.
+ *
+ * Es distinto de "ser admin" a propósito: el rol se puede dar a más gente el
+ * día de mañana (soporte, un socio), y eso son privilegios de gestión —
+ * publicar noticias, ver la rutina. Esto es otra cosa: comandos que solo
+ * tienen sentido para quien mantiene el código, y que no deberían aparecer ni
+ * insinuarse a nadie más, admin o no.
+ *
+ * Falla CERRADO: si la variable no está puesta, nadie pasa la comprobación —
+ * nunca se cae a "el primer admin que haya" ni a ningún otro supuesto.
+ */
+export function getOwnerTelegramId(): number | null {
+  const raw = process.env.TELEGRAM_OWNER_ID;
+  if (!raw) return null;
+  const id = Number(raw);
+  return Number.isFinite(id) ? id : null;
+}
+
 export function getAdminChatId(): number | null {
   const raw = process.env.TELEGRAM_ADMIN_CHAT_ID;
   if (!raw) return null;

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { guardarNuevas, proponerNoticia } from "@/lib/noticias";
+import { MAXIMO_POR_TANDA, guardarNuevas, pendientesSinProponer, proponerNoticia } from "@/lib/noticias";
 import { avisosPausados, getAdminChatId, getLogChatId } from "@/lib/telegram";
 
 
@@ -62,12 +62,20 @@ export async function GET(request: NextRequest) {
 
   let propuestas = 0;
   try {
-    const nuevas = await guardarNuevas(admin);
+    await guardarNuevas(admin);
+
+    // Se leen de la tabla y no del retorno de guardarNuevas: así entran también
+    // las que se guardaron en tandas anteriores y se quedaron sin proponer por
+    // el tope. Sin esto, un día con ocho noticias perdía tres para siempre.
+    const nuevas = await pendientesSinProponer(admin, MAXIMO_POR_TANDA);
+
     // En paralelo, no en serie: cada propuesta descarga el artículo y lo manda
     // a redactar, que son unos 30 segundos. Cinco seguidas se comerían el
     // límite de ejecución de Vercel y la tanda se cortaría a la mitad.
     const resultados = await Promise.allSettled(
-      nuevas.map((noticia) => proponerNoticia(admin, destino, noticia))
+      nuevas.map((noticia, i) =>
+        proponerNoticia(admin, destino, noticia, { n: i + 1, total: nuevas.length })
+      )
     );
     propuestas = resultados.filter((r) => r.status === "fulfilled").length;
     for (const r of resultados) {

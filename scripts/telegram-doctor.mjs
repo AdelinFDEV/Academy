@@ -162,6 +162,44 @@ if (process.argv.includes("--set-webhook")) {
   } catch (err) {
     mal("No se pudieron publicar los comandos", err.message);
   }
+
+  // Los de admin van SOLO en tu chat privado, con scope "chat": si se
+  // publicaran con el scope por defecto, cualquiera vería /noticias o /video
+  // en su propio botón "/" — precisamente lo que el código evita a propósito
+  // (mira COMANDOS_DE_ADMIN en el webhook: a quien no es admin ni se le
+  // insinúa que existen).
+  try {
+    const url = env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) {
+      aviso("No se pudieron publicar tus comandos de admin", "sin credenciales de Supabase");
+    } else {
+      const res = await fetch(
+        `${url}/rest/v1/profiles?select=telegram_user_id&role=eq.admin&telegram_user_id=not.is.null&order=telegram_linked_at.asc&limit=1`,
+        { headers: { apikey: key, Authorization: `Bearer ${key}` } }
+      );
+      const filas = await res.json();
+      const chatId = filas[0]?.telegram_user_id;
+
+      if (!chatId) {
+        aviso("No se pudieron publicar tus comandos de admin", "ningún admin tiene Telegram vinculado todavía");
+      } else {
+        await api("setMyCommands", {
+          scope: { type: "chat", chat_id: chatId },
+          commands: [
+            { command: "noticias", description: "Buscar noticias nuevas" },
+            { command: "video", description: "Último vídeo de YouTube" },
+            { command: "rutina", description: "Mi rutina de hoy" },
+            { command: "stop", description: "Parar los avisos" },
+            { command: "arrancar", description: "Reanudar los avisos" },
+          ],
+        });
+        ok("Comandos de admin publicados en tu chat", "5 comandos · nadie más los ve");
+      }
+    }
+  } catch (err) {
+    mal("No se pudieron publicar tus comandos de admin", err.message);
+  }
 }
 
 try {
