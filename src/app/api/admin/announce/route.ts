@@ -19,7 +19,9 @@ export async function POST() {
   const { error } = await requireAdmin();
   if (error) return error;
 
-  const resultado = await anunciarPendientes(createAdminClient());
+  // sinCache: quien pulsa el botón acaba de publicar algo y espera verlo salir
+  // ya. El cron diario sí usa la caché, que para él no supone ninguna prisa.
+  const resultado = await anunciarPendientes(createAdminClient(), { sinCache: true });
 
   const total =
     (resultado.guias?.length ?? 0) +

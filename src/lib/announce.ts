@@ -219,8 +219,10 @@ async function anunciarEntradas(admin: Admin, soloSlug?: string): Promise<string
   return anunciadas;
 }
 
-async function anunciarVideos(admin: Admin): Promise<string[]> {
-  const videos = await getLatestVideos(3);
+async function anunciarVideos(admin: Admin, sinCache: boolean): Promise<string[]> {
+  // Sin caché cuando lo lanza el botón del panel: si no, un vídeo recién
+  // publicado podría no aparecer hasta media hora después.
+  const videos = await getLatestVideos(3, sinCache);
   const anunciados: string[] = [];
 
   for (const video of videos) {
@@ -255,7 +257,7 @@ async function anunciarVideos(admin: Admin): Promise<string[]> {
  */
 export async function anunciarPendientes(
   admin: Admin,
-  opciones?: { soloEntrada?: string }
+  opciones?: { soloEntrada?: string; sinCache?: boolean }
 ) {
   if (opciones?.soloEntrada) {
     return { entradas: await anunciarEntradas(admin, opciones.soloEntrada) };
@@ -270,7 +272,7 @@ export async function anunciarPendientes(
       console.error("[announce] Entradas:", err);
       return [] as string[];
     }),
-    anunciarVideos(admin).catch((err) => {
+    anunciarVideos(admin, !!opciones?.sinCache).catch((err) => {
       console.error("[announce] Vídeos:", err);
       return [] as string[];
     }),

@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getChannelMemberCount, getFreeChannelId, getFreeChannelUrl } from "@/lib/telegram";
 import Icon from "@/components/Icon";
+import AnunciarNovedadesBtn from "@/components/admin/AnunciarNovedadesBtn";
 
 export const dynamic = "force-dynamic";
 
@@ -120,6 +121,9 @@ export default async function AdminComunidadPage() {
             {miembros !== null ? `${miembros} miembros ahora` : "no se pudo consultar"}
           </p>
         </div>
+        {/* YouTube no avisa de nada: sin este botón, un vídeo nuevo espera al
+            cron de las 04:00 para llegar al canal. */}
+        <AnunciarNovedadesBtn />
       </div>
 
       {sinDatos && (

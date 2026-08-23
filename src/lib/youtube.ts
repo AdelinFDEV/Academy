@@ -68,14 +68,26 @@ async function getDurationSeconds(id: string): Promise<number | null> {
   }
 }
 
-export async function getLatestVideos(limit = 3): Promise<YouTubeVideo[]> {
+/**
+ * @param sinCache salta la caché de 30 minutos del feed. Lo usa el botón de
+ *   "Anunciar novedades": ahí se acaba de publicar el vídeo y servir una copia
+ *   de hace media hora haría que el botón no encontrara nada, que es justo lo
+ *   contrario de para lo que existe. La home sí usa la caché: no necesita ver
+ *   un vídeo al segundo de subirlo y así no castiga a youtube.com.
+ */
+export async function getLatestVideos(limit = 3, sinCache = false): Promise<YouTubeVideo[]> {
   const channelId = await resolveChannelId();
   if (!channelId) return [];
 
   try {
     const res = await fetch(
       `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`,
-      { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
+      {
+        ...(sinCache
+          ? { cache: "no-store" as const }
+          : { next: { revalidate: REVALIDATE_SECONDS } }),
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      }
     );
     const xml = await res.text();
 

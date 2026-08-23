@@ -2227,3 +2227,45 @@
   font-style: normal;
   color: #7e94b2;
 }
+
+/* Botón de anunciar novedades a mano (/admin/comunidad) */
+.anunciar-caja {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.anunciar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 17px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.anunciar-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.32);
+}
+
+.anunciar-btn:disabled { opacity: 0.6; cursor: default; }
+
+.anunciar-aviso {
+  font-size: 11.5px;
+  color: #9db2ce;
+  text-align: right;
+  max-width: 280px;
+  line-height: 1.4;
+}
+
+.anunciar-aviso--ok { color: #6ee7a0; }
+.anunciar-aviso--error { color: #fca5a5; }
