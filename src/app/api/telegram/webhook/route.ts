@@ -16,7 +16,6 @@ import {
 } from "@/lib/noticias";
 import {
   CAMPOS_PERFIL_BOT,
-  bienvenidaCanalFree,
   COMANDOS_PUBLICOS,
   menuPara,
   pantalla,
@@ -29,7 +28,6 @@ import { getLatestVideos } from "@/lib/youtube";
 import {
   answerCallbackQuery,
   avisarAlAdmin,
-  escribirYAvisar,
   resolverChatAdmin,
   editarMensaje,
   sendChannelPost,
@@ -581,19 +579,6 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
 
   if (isPremium) {
     await approveChatJoinRequest(req.from.id, chatId);
-    await sendTelegramMessage(
-      req.from.id,
-      esElGrupo
-        ? "🎉 ¡Dentro del chat de la comunidad!\n\n" +
-          "Aquí se habla: dudas, ideas y lo que surja. Preséntate cuando quieras 🚀"
-        : "🎉 ¡Dentro! Bienvenido al canal Premium.\n\n" +
-          "Aquí van los análisis, avisos y todo lo que no publico fuera. " +
-          "Ponte cómodo 🚀",
-      [
-        { text: "📊 Mi Premium", data: "m:estado" },
-        { text: "💬 Hablar con Adelin", url: getAdminChatUrl() },
-      ]
-    );
     await admin.from("telegram_access_log").insert({
       user_id: profile.id,
       telegram_user_id: req.from.id,
@@ -720,7 +705,7 @@ async function handleTextoDeNoticia(admin: Admin, message: TelegramMessage): Pro
     );
     await sendTelegramMessage(
       chatId,
-      `✅ Publicada con tu texto${conImagen ? " y la imagen del artículo" : " (sin imagen: no cabía en el pie de foto)"}.`
+      `✅ Publicada con tu texto${conImagen ? " y una imagen" : " (sin imagen: no cabía en el pie de foto)"}.`
     );
   } catch (err) {
     console.error("[telegram-webhook] No se pudo publicar el texto propio:", err);
@@ -902,120 +887,6 @@ async function decidirNoticia(
 }
 
 /**
- * Bienvenida por privado a quien entra al canal GRATUITO.
- *
- * Va por privado y no al canal a propósito: en un canal no existen los avisos
- * de "se unió fulano", así que cada bienvenida sería una publicación más que
- * ven todos y queda en el historial. Con unas pocas altas al día el canal se
- * convertiría en un tablón de bienvenidas.
- *
- * OJO: Telegram prohíbe a los bots escribir a quien no haya iniciado
- * conversación con ellos. A quien entra por el enlace público sin haber
- * hablado nunca con el bot, esto NO le llega en el momento — y no hay forma de
- * evitarlo. Lo que sí se puede es no perderlo: si falla, se apunta como
- * pendiente y se entrega en cuanto esa persona hable con el bot, aunque sean
- * días después (ver entregarBienvenidaPendiente).
- */
-async function bienvenidaPrivadaFree(admin: Admin, quien: TelegramUser) {
-  const vista = bienvenidaCanalFree(quien);
-  return escribirYAvisar(admin, { id: quien.id, nombre: comoSeLlama(quien) }, vista.texto, {
-    botones: vista.botones,
-    motivo: "bienvenida al canal gratuito",
-  });
-}
-
-/** Cuánto se guarda una bienvenida sin entregar. Pasado ese plazo deja de
- *  tener sentido darle la bienvenida a algo que hizo hace tres semanas. */
-const DIAS_BIENVENIDA_PENDIENTE = 14;
-
-/**
- * Apunta una bienvenida que no se pudo entregar.
- *
- * Upsert por telegram_user_id: si alguien se va y vuelve a entrar, se refresca
- * la fila que ya había en vez de acumular duplicados.
- */
-async function apuntarBienvenidaPendiente(admin: Admin, quien: TelegramUser, chatId: number) {
-  const { error } = await admin.from("telegram_bienvenidas_pendientes").upsert(
-    {
-      telegram_user_id: quien.id,
-      nombre: quien.first_name ?? null,
-      username: quien.username ?? null,
-      chat_id: String(chatId),
-      creada_en: new Date().toISOString(),
-      intentos: 1,
-      ultimo_error: "No había hablado nunca con el bot",
-    },
-    { onConflict: "telegram_user_id" }
-  );
-  if (error) console.error("[telegram-webhook] No se pudo apuntar la bienvenida:", error.message);
-}
-
-/**
- * Entrega la bienvenida que se quedó pendiente, si la hay.
- *
- * Se llama en CADA interacción de un usuario con el bot, porque ese es
- * justamente el momento en que Telegram empieza a permitir escribirle: hasta
- * que no habla él, cualquier reintento programado fallaría igual. Por eso no
- * hay un cron que lo reintente — no serviría de nada.
- *
- * El aviso al admin se manda solo cuando SE CONSIGUE. Un reintento fallido no
- * dice nada nuevo (ya avisó el del día del alta) y llenaría el chat.
- */
-async function entregarBienvenidaPendiente(admin: Admin, quien: TelegramUser) {
-  const { data } = await admin
-    .from("telegram_bienvenidas_pendientes")
-    .select("telegram_user_id, nombre, username, creada_en, intentos")
-    .eq("telegram_user_id", quien.id)
-    .maybeSingle();
-
-  if (!data) return;
-
-  const borrar = () =>
-    admin.from("telegram_bienvenidas_pendientes").delete().eq("telegram_user_id", quien.id);
-
-  const dias = (Date.now() - new Date(data.creada_en as string).getTime()) / (24 * 60 * 60 * 1000);
-  if (dias > DIAS_BIENVENIDA_PENDIENTE) {
-    await borrar();
-    return;
-  }
-
-  // El texto cambia según lo que haya tardado: a los cuatro días, un "te
-  // acabas de unir" delata que el mensaje está enlatado.
-  const vista = bienvenidaCanalFree(quien, dias);
-
-  try {
-    await sendTelegramMessageOrThrow(quien.id, vista.texto, vista.botones);
-  } catch (err) {
-    // Sigue sin poder escribirle: se deja apuntada y se reintenta la próxima
-    // vez. No se avisa al admin — no hay nada nuevo que contarle.
-    await admin
-      .from("telegram_bienvenidas_pendientes")
-      .update({
-        intentos: (data.intentos as number) + 1,
-        ultimo_error: err instanceof Error ? err.message : "error desconocido",
-      })
-      .eq("telegram_user_id", quien.id);
-    return;
-  }
-
-  await borrar();
-
-  const cuando =
-    dias < 1
-      ? "hoy mismo"
-      : dias < 2
-        ? "ayer"
-        : `hace ${Math.floor(dias)} días`;
-
-  await avisarAlAdmin(
-    admin,
-    `✅ Por fin le ha llegado la bienvenida a ${comoSeLlama(quien)}\n\n` +
-      `Se unió al canal free ${cuando} y hasta ahora no había hablado conmigo, ` +
-      `así que Telegram no me dejaba escribirle. Acaba de hacerlo y se la he entregado.`
-  );
-}
-
-/**
  * Bienvenida pública en el canal PREMIUM, mencionando a quien entra.
  *
  * Aquí sí va al canal: son pocos, pagan, y ver que entra gente nueva es parte
@@ -1111,12 +982,6 @@ async function handleChatMember(admin: Admin, upd: ChatMemberUpdated) {
   const cuantos = total !== null ? `\n\nYa sois ${total} en el canal.` : "";
 
   await avisarAlAdmin(admin, `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(quien)}${cuantos}`);
-
-  // El resultado del privado lo cuenta escribirYAvisar en su propio mensaje,
-  // así que aquí ya no hace falta repetirlo. Lo que sí hace falta es no
-  // rendirse: si no se pudo entregar, queda apuntada para el día que hable.
-  const entregada = await bienvenidaPrivadaFree(admin, quien);
-  if (!entregada) await apuntarBienvenidaPendiente(admin, quien, upd.chat.id);
 }
 
 /** Mensaje de un usuario al admin. Reservado a Premium: es una de las ventajas
@@ -1322,13 +1187,6 @@ export async function POST(request: NextRequest) {
     const comando = message?.text?.startsWith("/")
       ? message.text.split(/[\s@]/)[0].toLowerCase()
       : null;
-
-    // Que alguien nos hable es la ÚNICA señal de que Telegram ya nos deja
-    // escribirle. Es el momento exacto de soltar la bienvenida que se quedó
-    // sin entregar el día que entró al canal — normalmente no hay ninguna, así
-    // que esto es una consulta por clave primaria y se acabó.
-    const quienHabla = update.callback_query?.from ?? message?.from;
-    if (quienHabla) await entregarBienvenidaPendiente(admin, quienHabla);
 
     if (update.callback_query) {
       await handleCallback(admin, update.callback_query);

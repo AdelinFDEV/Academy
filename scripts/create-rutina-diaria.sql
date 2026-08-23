@@ -47,27 +47,6 @@ insert into public.bot_ajustes (clave, valor)
 values ('avisos_pausados', '0')
 on conflict (clave) do nothing;
 
--- ── 3. Bienvenidas pendientes de entregar ───────────────────────────────────
---
--- Telegram prohíbe a los bots escribir a quien nunca les ha hablado, así que
--- la bienvenida a quien entra al canal free por el enlace público NO le llega.
--- Antes eso se perdía para siempre. Ahora se apunta aquí y se entrega en
--- cuanto esa persona interactúa con el bot por primera vez, aunque sea días
--- después.
---
--- Una fila por persona: si se va del canal y vuelve, se actualiza la que hay.
-create table if not exists public.telegram_bienvenidas_pendientes (
-  telegram_user_id bigint primary key,
-  nombre           text,
-  username         text,
-  chat_id          text not null,
-  creada_en        timestamptz not null default now(),
-  intentos         integer not null default 1,
-  ultimo_error     text
-);
-
-alter table public.telegram_bienvenidas_pendientes enable row level security;
-
 -- ── 4. Noticias: resumen propio y votación toro/oso ─────────────────────────
 --
 -- resumen_ia guarda el texto que redacta Claude a partir del artículo. Se

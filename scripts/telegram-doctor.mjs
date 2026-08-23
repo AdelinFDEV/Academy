@@ -444,23 +444,6 @@ try {
       }
     }
 
-    // Bienvenidas que no se pudieron entregar. No es un error: es gente que
-    // entró al canal sin haber hablado nunca con el bot. Se entregan solas en
-    // cuanto lo hagan, pero saber cuántas hay dice a cuánta gente no alcanzas.
-    const resPend = await fetch(
-      `${url}/rest/v1/telegram_bienvenidas_pendientes?select=telegram_user_id`,
-      { headers: { ...cab, Prefer: "count=exact" } }
-    );
-    if (!resPend.ok) {
-      mal("Falta la tabla telegram_bienvenidas_pendientes", "ejecuta scripts/create-rutina-diaria.sql");
-    } else {
-      const pendientes = Number(resPend.headers.get("content-range")?.split("/")[1] ?? 0);
-      if (pendientes > 0) {
-        aviso(`${pendientes} bienvenida(s) sin entregar`, "esperan a que esa gente le hable al bot");
-      } else {
-        ok("Ninguna bienvenida pendiente de entregar");
-      }
-    }
 
     const resRutina = await fetch(`${url}/rest/v1/rutina_diaria?select=fecha&order=fecha.desc&limit=1`, {
       headers: cab,

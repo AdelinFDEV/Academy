@@ -1,5 +1,5 @@
 /**
- * Reescritura de noticias con Claude, para publicarlas completas en Telegram.
+ * Reescritura de noticias con Gemini, para publicarlas completas en Telegram.
  *
  * El canal publicaba título + og:description + un botón a CriptoNoticias. El
  * lector tenía que salir de Telegram para enterarse de algo. Ahora el bot lee
@@ -13,7 +13,9 @@
  *
  *   1. El prompt prohíbe explícitamente añadir nada que no esté en el artículo,
  *      y le dice qué hacer cuando un dato falta (omitirlo, no estimarlo).
- *   2. La salida es estructurada (Zod): campos fijos, sin sitio para florituras.
+ *   2. La salida es estructurada (JSON Schema + Zod): campos fijos, sin sitio
+ *      para florituras, y validados otra vez al recibirlos por si el modelo no
+ *      respeta el esquema al pie de la letra.
  *   3. Se comprueba después: si el modelo devuelve cifras que no aparecen en el
  *      original, el resumen se descarta (ver `cifrasInventadas`).
  *
@@ -21,12 +23,11 @@
  * que se publique nada.
  */
 
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI, Type } from "@google/genai";
 import { z } from "zod";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 
 /** Modelo por defecto. Se puede cambiar por entorno sin tocar código. */
-const MODELO = process.env.ANTHROPIC_MODEL || "claude-opus-5";
+const MODELO = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 /**
  * Forma del resumen. Los límites de longitud van en la descripción de cada
@@ -65,6 +66,47 @@ const EsquemaResumen = z.object({
 
 export type ResumenNoticia = z.infer<typeof EsquemaResumen>;
 
+/**
+ * Mismo esquema que `EsquemaResumen`, pero en el formato que entiende la API
+ * de Gemini (subconjunto de OpenAPI, no JSON Schema). Duplicado a mano porque
+ * son dos lenguajes de esquema distintos; lo que de verdad manda para el tipo
+ * y la validación final sigue siendo el Zod de arriba.
+ */
+const ESQUEMA_GEMINI = {
+  type: Type.OBJECT,
+  properties: {
+    titular: {
+      type: Type.STRING,
+      description:
+        "Titular propio, reescrito con tus palabras. Máximo 90 caracteres. " +
+        "Sin comillas, sin punto final, sin mayúsculas sostenidas.",
+    },
+    entradilla: {
+      type: Type.STRING,
+      description:
+        "Qué ha pasado, en 1 o 2 frases. Máximo 220 caracteres. " +
+        "Lo esencial: quién, qué y cuándo.",
+    },
+    puntos: {
+      type: Type.ARRAY,
+      items: { type: Type.STRING },
+      minItems: "2",
+      maxItems: "4",
+      description:
+        "Los datos concretos de la noticia: cifras, fechas, nombres, decisiones. " +
+        "Cada punto una frase de máximo 110 caracteres, sin viñeta ni guion delante.",
+    },
+    porqueImporta: {
+      type: Type.STRING,
+      description:
+        "Por qué le importa a alguien que invierte en cripto, en una frase de máximo " +
+        "160 caracteres. Solo consecuencias que se deduzcan del propio artículo. " +
+        "Nunca una recomendación de comprar o vender.",
+    },
+  },
+  required: ["titular", "entradilla", "puntos", "porqueImporta"],
+};
+
 const INSTRUCCIONES = `Eres el redactor de AdelinBTC Academy, un medio de criptomonedas en español.
 
 Recibes un artículo de otro medio y escribes un resumen PROPIO para publicarlo en un canal de Telegram. El lector no va a poder abrir el artículo original: lo que escribas es todo lo que va a saber de esa noticia.
@@ -89,15 +131,15 @@ CÓMO ESCRIBIR:
  * update aunque no haya ninguna noticia que resumir. Sin clave no se construye
  * y no se rompe nada — simplemente no hay resumen.
  */
-let cliente: Anthropic | null = null;
-function obtenerCliente(): Anthropic | null {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
-  if (!cliente) cliente = new Anthropic();
+let cliente: GoogleGenAI | null = null;
+function obtenerCliente(): GoogleGenAI | null {
+  if (!process.env.GEMINI_API_KEY) return null;
+  if (!cliente) cliente = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
   return cliente;
 }
 
 export function hayResumidor(): boolean {
-  return !!process.env.ANTHROPIC_API_KEY;
+  return !!process.env.GEMINI_API_KEY;
 }
 
 /** Números de tres o más cifras, porcentajes y años. Son los datos que más
@@ -135,8 +177,8 @@ export async function resumirNoticia(
   titulo: string,
   cuerpo: string
 ): Promise<ResumenNoticia | null> {
-  const anthropic = obtenerCliente();
-  if (!anthropic) return null;
+  const gemini = obtenerCliente();
+  if (!gemini) return null;
 
   // Un artículo de dos líneas no da para un resumen: casi siempre significa
   // que la extracción falló y lo que hay es un menú de navegación.
@@ -146,35 +188,36 @@ export async function resumirNoticia(
   }
 
   try {
-    const respuesta = await anthropic.messages.parse({
+    const respuesta = await gemini.models.generateContent({
       model: MODELO,
-      max_tokens: 4000,
-      system: INSTRUCCIONES,
-      // Tarea acotada y con la fuente delante: no hace falta pensar mucho, y
-      // menos divagación es menos margen para adornar.
-      thinking: { type: "adaptive" },
-      output_config: {
-        effort: "medium",
-        format: zodOutputFormat(EsquemaResumen),
+      contents: `TITULAR ORIGINAL: ${titulo}\n\nARTÍCULO:\n${cuerpo}`,
+      config: {
+        systemInstruction: INSTRUCCIONES,
+        responseMimeType: "application/json",
+        responseSchema: ESQUEMA_GEMINI,
       },
-      messages: [
-        {
-          role: "user",
-          content: `TITULAR ORIGINAL: ${titulo}\n\nARTÍCULO:\n${cuerpo}`,
-        },
-      ],
     });
 
-    if (respuesta.stop_reason === "refusal") {
-      console.warn("[resumir] El modelo declinó:", respuesta.stop_details);
+    const texto = respuesta.text;
+    if (!texto) {
+      console.warn("[resumir] Gemini no devolvió texto (posible bloqueo de seguridad)");
       return null;
     }
 
-    const resumen = respuesta.parsed_output;
-    if (!resumen) {
-      console.warn("[resumir] La respuesta no encajó en el esquema");
+    let bruto: unknown;
+    try {
+      bruto = JSON.parse(texto);
+    } catch {
+      console.warn("[resumir] La respuesta no es JSON válido");
       return null;
     }
+
+    const analizado = EsquemaResumen.safeParse(bruto);
+    if (!analizado.success) {
+      console.warn("[resumir] La respuesta no encajó en el esquema:", analizado.error.message);
+      return null;
+    }
+    const resumen = analizado.data;
 
     const inventadas = cifrasInventadas(resumen, `${titulo}\n${cuerpo}`);
     if (inventadas.length > 0) {

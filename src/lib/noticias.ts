@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import {
   admiteReacciones,
   editarBotones,
+  getSiteUrl,
   sendChannelPost,
   sendTelegramMessageOrThrow,
   type Boton,
@@ -608,6 +609,20 @@ function guardarTexto(admin: Admin, id: number, campos: Record<string, string>) 
 }
 
 /**
+ * La imagen de portada, o la de la Academy si esta noticia no tiene.
+ *
+ * `buscarPortada` puede volver con las manos vacías (el medio no trae
+ * og:image, o el propio Cloudflare bloquea también al lector) y antes eso
+ * significaba publicar sin foto. Un mensaje de solo texto en un canal que
+ * normalmente lleva imagen destaca por lo mal que queda, así que mejor una
+ * imagen de marca que ninguna: se usa el opengraph-image ya generado para la
+ * home, no hace falta mantener un archivo aparte.
+ */
+function imagenDeNoticia(imagen: string | null): string {
+  return imagen ?? `${getSiteUrl()}/opengraph-image`;
+}
+
+/**
  * Publica la noticia en el canal gratuito.
  *
  * Con resumen propio va el texto completo y NINGÚN enlace a la fuente: la
@@ -651,7 +666,7 @@ export async function publicarNoticia(
 
   const messageId = await sendChannelPost(texto, {
     chatId,
-    imagen: cabeEnLaFoto ? noticia.imagen : null,
+    imagen: cabeEnLaFoto ? imagenDeNoticia(noticia.imagen) : null,
     botones: conReacciones ? undefined : botonesVoto(noticia.id, { toro: 0, oso: 0 }),
   });
 
@@ -737,7 +752,7 @@ export async function publicarTextoPropio(
 
   const messageId = await sendChannelPost(completo, {
     chatId,
-    imagen: cabeEnLaFoto ? noticia.imagen : null,
+    imagen: cabeEnLaFoto ? imagenDeNoticia(noticia.imagen) : null,
     entidades,
     botones: conReacciones ? undefined : botonesVoto(noticia.id, { toro: 0, oso: 0 }),
   });
@@ -756,5 +771,8 @@ export async function publicarTextoPropio(
     })
     .eq("id", noticia.id);
 
-  return { ok: true, conImagen: cabeEnLaFoto && !!noticia.imagen };
+  // Con el respaldo de imagenDeNoticia() ya siempre hay foto cuando cabe en
+  // el pie: lo único que decide si se publica CON imagen es el tamaño del
+  // texto, no si el artículo tenía o no una portada propia.
+  return { ok: true, conImagen: cabeEnLaFoto };
 }
