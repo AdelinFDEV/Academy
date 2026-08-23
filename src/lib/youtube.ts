@@ -33,6 +33,21 @@ export interface YouTubeVideo {
   url: string;
 }
 
+/**
+ * ID del canal de AdelinBTC.
+ *
+ * Está escrito aquí a propósito. Antes se deducía raspando
+ * youtube.com/@AdelinBTC, pero YouTube responde a esa página con un 302 vacío
+ * cuando la petición sale de un centro de datos como los de Vercel: en
+ * producción no se resolvía nunca, getLatestVideos se rendía antes de llegar
+ * al RSS y ni la home mostraba vídeos ni el bot los anunciaba — todo ello sin
+ * un solo error en los registros.
+ *
+ * El RSS, en cambio, sí responde con normalidad. Sólo hacía falta no depender
+ * del raspado para llegar hasta él. Un id de canal no cambia nunca.
+ */
+const CHANNEL_ID_POR_DEFECTO = "UCdaEzt5YZUfBcOedOonfniw";
+
 async function resolveChannelId(): Promise<string | null> {
   if (process.env.YOUTUBE_CHANNEL_ID) return process.env.YOUTUBE_CHANNEL_ID;
   try {
@@ -45,9 +60,11 @@ async function resolveChannelId(): Promise<string | null> {
     const m =
       html.match(/"channelId":"(UC[0-9A-Za-z_-]{20,})"/) ||
       html.match(/channel\/(UC[0-9A-Za-z_-]{20,})/);
-    return m ? m[1] : null;
+    // Si el raspado falla (lo habitual en producción), se sigue adelante con
+    // el id conocido en vez de devolver null y quedarse sin vídeos.
+    return m ? m[1] : CHANNEL_ID_POR_DEFECTO;
   } catch {
-    return null;
+    return CHANNEL_ID_POR_DEFECTO;
   }
 }
 
