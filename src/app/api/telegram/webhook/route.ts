@@ -16,6 +16,7 @@ import {
   getChannelMemberCount,
   getFreeChannelId,
   getLogChatId,
+  mencionar,
   getCuentaUrl,
   getPremiumUrl,
   getSiteUrl,
@@ -460,6 +461,11 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
       .eq("id", profile.id)
       .maybeSingle();
 
+    // Bienvenida pública en el canal, mencionándole. Aquí sí va al canal y no
+    // por privado: son pocos, pagan, y ver entrar gente nueva es parte de lo
+    // que hace que una comunidad de pago se sienta viva.
+    await bienvenidaPremiumEnCanal(req.from, (datos?.full_name as string | null) ?? null);
+
     const total = await getChannelMemberCount();
     const nombre = datos?.full_name || comoSeLlama(req.from);
     const esAdmin = profile.role === "admin";
@@ -591,6 +597,71 @@ async function decidirNoticia(
   }
 }
 
+/**
+ * Bienvenida por privado a quien entra al canal GRATUITO.
+ *
+ * Va por privado y no al canal a propósito: en un canal no existen los avisos
+ * de "se unió fulano", así que cada bienvenida sería una publicación más que
+ * ven todos y queda en el historial. Con unas pocas altas al día el canal se
+ * convertiría en un tablón de bienvenidas.
+ *
+ * OJO: Telegram prohíbe a los bots escribir a quien no haya iniciado
+ * conversación con ellos. A quien entra por el enlace público sin haber
+ * hablado nunca con el bot, esto NO le llega — y no hay forma de evitarlo.
+ * Se registra para poder medir a cuántos alcanza de verdad.
+ */
+async function bienvenidaPrivadaFree(quien: TelegramUser) {
+  const nombre = quien.first_name || "¡Hola!";
+  const texto =
+    `🎉 ¡Bienvenido, ${nombre}!\n\n` +
+    "Te acabas de unir a la comunidad de AdelinBTC 🚀\n\n" +
+    "Aquí vas a encontrar:\n\n" +
+    "📰 Las noticias que de verdad mueven el mercado\n" +
+    "🎥 Mis vídeos nada más salir\n" +
+    "📚 Guías interactivas y herramientas gratuitas\n" +
+    "💡 Análisis sin humo, en cristiano\n\n" +
+    "Ponte cómodo, que esto acaba de empezar 🔥\n\n" +
+    "¿Alguna duda? Pulsa abajo y hablamos 👇";
+
+  try {
+    await sendTelegramMessageOrThrow(quien.id, texto, [
+      [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
+      [
+        { text: "💎 Hazte Premium", url: getPremiumUrl() },
+        { text: "🌐 La Academy", url: getSiteUrl() },
+      ],
+    ]);
+    return true;
+  } catch {
+    // Lo normal si nunca ha hablado con el bot. No es un fallo que arreglar.
+    return false;
+  }
+}
+
+/**
+ * Bienvenida pública en el canal PREMIUM, mencionando a quien entra.
+ *
+ * Aquí sí va al canal: son pocos, pagan, y ver que entra gente nueva es parte
+ * de lo que hace que una comunidad de pago se sienta viva.
+ */
+async function bienvenidaPremiumEnCanal(quien: TelegramUser, nombreReal: string | null) {
+  const nombre = nombreReal || quien.first_name || "un nuevo miembro";
+  const texto =
+    `🎉 ¡Dentro, ${nombre}! 🎉\n\n` +
+    "Bienvenido al canal Premium de AdelinBTC 💎\n\n" +
+    "Aquí van los análisis, mis entradas en spot y todo lo que no publico fuera.\n\n" +
+    "Ponte cómodo — y si tienes cualquier duda, escríbeme cuando quieras 🔥";
+
+  try {
+    await sendChannelPost(texto, {
+      entidades: mencionar(texto, nombre, quien.id),
+      botones: [{ text: "🌐 La Academy", url: getSiteUrl() }],
+    });
+  } catch (err) {
+    console.warn("[telegram-webhook] No se pudo dar la bienvenida en el canal:", err);
+  }
+}
+
 /** Cómo se refiere el aviso a alguien: su nombre y, si lo tiene, su @. */
 function comoSeLlama(u: TelegramUser): string {
   const nombre = u.first_name || "Alguien";
@@ -674,10 +745,18 @@ async function handleChatMember(admin: Admin, upd: ChatMemberUpdated) {
   // y no accionable.
   if (!entra) return;
 
+  const entregada = await bienvenidaPrivadaFree(quien);
+
   const total = await getChannelMemberCount(upd.chat.id);
   const cuantos = total !== null ? `\n\nYa sois ${total} en el canal.` : "";
+  // Se indica si la bienvenida llegó: si no, es que nunca ha hablado con el
+  // bot, y Telegram no permite escribirle primero.
+  const aviso = entregada ? "\n✅ Bienvenida enviada por privado." : "\n📭 No he podido escribirle (no ha abierto el bot).";
 
-  await avisarAlAdmin(admin, `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(quien)}${cuantos}`);
+  await avisarAlAdmin(
+    admin,
+    `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(quien)}${cuantos}${aviso}`
+  );
 }
 
 /** Mensaje de un usuario al admin. Reservado a Premium: es una de las ventajas
@@ -715,11 +794,14 @@ async function handleSupportMessage(
   if (!esPremium) {
     await sendTelegramMessage(
       from.id,
-      "💬 Escribirme por aquí es una de las ventajas Premium.\n\n" +
-        "Hazte Premium 💎 y te leo yo, en persona — sin bots ni respuestas automáticas.",
+      "💬 Que te lea por aquí es una de las ventajas Premium.\n\n" +
+        "Aun así no te quedas colgado: pulsa el botón y me escribes directamente 👇",
       [
+        // Sin esto, un usuario free que escribía al bot recibía solo un
+        // argumentario de venta y ninguna forma de contactar. Ahora tiene la
+        // puerta abierta, y el relé sigue siendo la ventaja de quien paga.
+        [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
         [{ text: "💎 Hazte Premium", url: getPremiumUrl() }],
-        [{ text: "📊 Ver mi estado", data: "estado" }],
       ]
     );
     return;

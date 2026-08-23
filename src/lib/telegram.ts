@@ -360,6 +360,22 @@ export async function getChannelMemberCount(chatId?: string | number): Promise<n
  * Telegram no traga) se reintenta como texto: mejor un aviso sin imagen que
  * ningún aviso.
  */
+/**
+ * Menciona a alguien enlazando su nombre a su perfil.
+ *
+ * Se usa una entidad `text_mention` en vez de parse_mode a propósito: el
+ * nombre lo elige el usuario y puede llevar `<`, `&` o guiones bajos, que en
+ * HTML o Markdown romperían el mensaje entero. Con entidades no hay nada que
+ * escapar. Y funciona aunque no tenga @usuario.
+ */
+export function mencionar(texto: string, nombre: string, userId: number) {
+  // String.length ya cuenta en unidades UTF-16, que es justo lo que pide
+  // Telegram para los desplazamientos.
+  const offset = texto.indexOf(nombre);
+  if (offset < 0) return undefined;
+  return [{ type: "text_mention", offset, length: nombre.length, user: { id: userId } }];
+}
+
 export async function sendChannelPost(
   texto: string,
   opciones?: {
@@ -367,6 +383,8 @@ export async function sendChannelPost(
     botones?: Boton[] | Boton[][];
     /** Canal de destino. Por defecto el privado de Premium. */
     chatId?: string;
+    /** Entidades del mensaje, p. ej. una mención construida con mencionar(). */
+    entidades?: unknown[];
   }
 ) {
   const chatId = opciones?.chatId ?? getChannelId();
@@ -401,6 +419,7 @@ export async function sendChannelPost(
   await callTelegramApi("sendMessage", {
     chat_id: chatId,
     text: texto,
+    entities: opciones?.entidades,
     reply_markup,
     // El aviso ya lleva su propio botón; la tarjeta de enlace duplicaría todo.
     link_preview_options: { is_disabled: true },
