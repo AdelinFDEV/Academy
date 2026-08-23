@@ -262,6 +262,64 @@ try {
   mal("No se pudo auditar el canal", err.message);
 }
 
+// — 5b. El chat de la comunidad (grupo enlazado al canal Premium) —
+//
+// Al convertir el Premium en comunidad, Telegram engancha un grupo aparte al
+// canal. Ese grupo recibe copia de TODO lo que se publica, y tiene su propia
+// lista de miembros: si el bot no está dentro como administrador, no puede
+// expulsar de ahí a quien deja de pagar, y esa persona sigue leyéndolo todo.
+try {
+  const canal = await api("getChat", { chat_id: CANAL });
+  const grupo = canal.linked_chat_id;
+
+  if (!grupo) {
+    ok("El canal Premium no tiene chat enlazado", "no hay nada más que vigilar");
+  } else {
+    let info;
+    try {
+      info = await api("getChat", { chat_id: grupo });
+    } catch (err) {
+      mal("El bot NO está en el chat de la comunidad", err.message);
+      console.log(`  ${GRIS}Quien deje de pagar se queda dentro del chat y sigue leyendo el Premium.${FIN}`);
+      console.log(`  ${GRIS}Añade @${bot.username} al chat como ADMIN con «Añadir miembros» y «Banear usuarios».${FIN}`);
+      throw new Error("saltar el resto");
+    }
+
+    ok("El bot está en el chat de la comunidad", info.title);
+
+    if (info.username) {
+      mal(`El chat de la comunidad es PÚBLICO (@${info.username})`);
+      console.log(`  ${GRIS}Cualquiera puede entrar y leer todo lo que se publica en el Premium.${FIN}`);
+      console.log(`  ${GRIS}Ponlo privado en los ajustes del grupo.${FIN}`);
+    } else {
+      ok("El chat de la comunidad es privado");
+    }
+
+    const m = await api("getChatMember", { chat_id: grupo, user_id: bot.id });
+    if (m.status !== "administrator") {
+      mal("El bot no es administrador del chat", `estado: ${m.status}`);
+      console.log(`  ${GRIS}Sin ser admin no puede aprobar entradas ni expulsar de ahí.${FIN}`);
+    } else {
+      if (!m.can_invite_users) mal("En el chat le falta «Añadir miembros»", "no podrá aprobar solicitudes");
+      else ok("Puede aprobar entradas al chat");
+      if (!m.can_restrict_members) mal("En el chat le falta «Banear usuarios»", "no podrá expulsar de ahí");
+      else ok("Puede expulsar del chat");
+    }
+
+    const totalGrupo = await api("getChatMemberCount", { chat_id: grupo });
+    const totalCanal = await api("getChatMemberCount", { chat_id: CANAL });
+    if (totalGrupo > totalCanal) {
+      aviso(`En el chat hay ${totalGrupo} y en el canal ${totalCanal}`,
+        "hay gente en el chat que no está en el canal");
+      console.log(`  ${GRIS}Comprueba que el chat exija aprobación para entrar.${FIN}`);
+    } else {
+      ok(`Chat de la comunidad: ${totalGrupo} miembros`, `canal: ${totalCanal}`);
+    }
+  }
+} catch (err) {
+  if (err.message !== "saltar el resto") mal("No se pudo auditar el chat de la comunidad", err.message);
+}
+
 // — 6. Enlaces de captación —
 //
 // Telegram no deja a un bot escribir a quien no le ha hablado antes, así que a

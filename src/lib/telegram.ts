@@ -114,14 +114,65 @@ async function callTelegramApi<T = unknown>(
   return json.result;
 }
 
-/** Acepta una solicitud de entrada al canal (chat_join_request). */
-export async function approveChatJoinRequest(userId: number) {
-  await callTelegramApi("approveChatJoinRequest", { chat_id: getChannelId(), user_id: userId });
+/**
+ * El grupo de debate enlazado al canal Premium, si lo hay.
+ *
+ * ── Por qué esto existe ─────────────────────────────────────────────────────
+ * Al convertir el Premium en comunidad, Telegram engancha al canal un grupo
+ * aparte. Y ese grupo es OTRO chat, con SUS PROPIOS miembros: todo lo que se
+ * publica en el canal se reenvía allí automáticamente, así que quien esté en
+ * el grupo lee el Premium entero aunque no esté en el canal.
+ *
+ * O sea que expulsar del canal a quien deja de pagar ya no basta: si se queda
+ * en el grupo, sigue leyéndolo todo. Por eso todo lo que da o quita acceso
+ * tiene que hacerlo en los dos sitios.
+ *
+ * Se descubre solo desde el propio canal (`linked_chat_id`) en vez de por una
+ * variable de entorno: así, el día que se enlace o se desenlace un grupo, el
+ * bot se entera sin que nadie tenga que acordarse de tocar la configuración.
+ */
+let cacheGrupo: { valor: string | null; hasta: number } | null = null;
+
+export async function getGrupoDebateId(): Promise<string | null> {
+  if (cacheGrupo && cacheGrupo.hasta > Date.now()) return cacheGrupo.valor;
+
+  let valor: string | null = null;
+  try {
+    const chat = await callTelegramApi<{ linked_chat_id?: number }>("getChat", {
+      chat_id: getChannelId(),
+    });
+    valor = chat.linked_chat_id ? String(chat.linked_chat_id) : null;
+  } catch (err) {
+    console.warn("[telegram] No se pudo consultar el grupo enlazado:", (err as Error).message);
+    // Sin cachear el fallo: se reintenta a la siguiente.
+    return cacheGrupo?.valor ?? null;
+  }
+
+  cacheGrupo = { valor, hasta: Date.now() + 5 * 60 * 1000 };
+  return valor;
 }
 
-/** Rechaza una solicitud de entrada al canal. */
-export async function declineChatJoinRequest(userId: number) {
-  await callTelegramApi("declineChatJoinRequest", { chat_id: getChannelId(), user_id: userId });
+/** Los dos chats que forman el Premium: el canal y, si existe, su grupo. */
+export async function chatsPremium(): Promise<string[]> {
+  const grupo = await getGrupoDebateId();
+  return grupo ? [getChannelId(), grupo] : [getChannelId()];
+}
+
+/** Acepta una solicitud de entrada (chat_join_request). Por defecto al canal;
+ *  `chatId` sirve para aceptarla también en el grupo de debate. */
+export async function approveChatJoinRequest(userId: number, chatId?: string | number) {
+  await callTelegramApi("approveChatJoinRequest", {
+    chat_id: chatId ?? getChannelId(),
+    user_id: userId,
+  });
+}
+
+/** Rechaza una solicitud de entrada. */
+export async function declineChatJoinRequest(userId: number, chatId?: string | number) {
+  await callTelegramApi("declineChatJoinRequest", {
+    chat_id: chatId ?? getChannelId(),
+    user_id: userId,
+  });
 }
 
 /**
@@ -129,10 +180,10 @@ export async function declineChatJoinRequest(userId: number) {
  * levanta el baneo al instante. Así, si vuelve a ser Premium, puede solicitar
  * entrada de nuevo con el mismo enlace de invitación.
  */
-export async function removeChannelMember(userId: number) {
-  const chatId = getChannelId();
-  await callTelegramApi("banChatMember", { chat_id: chatId, user_id: userId });
-  await callTelegramApi("unbanChatMember", { chat_id: chatId, user_id: userId, only_if_banned: true });
+export async function removeChannelMember(userId: number, chatId?: string | number) {
+  const chat = chatId ?? getChannelId();
+  await callTelegramApi("banChatMember", { chat_id: chat, user_id: userId });
+  await callTelegramApi("unbanChatMember", { chat_id: chat, user_id: userId, only_if_banned: true });
 }
 
 /** Estados de getChatMember que significan "está dentro del canal". */
@@ -149,11 +200,12 @@ const ESTADOS_DENTRO = ["creator", "administrator", "member", "restricted"];
  * cada uno decide.
  */
 export async function getChannelMembership(
-  userId: number
+  userId: number,
+  chatId?: string | number
 ): Promise<"dentro" | "fuera" | "desconocido"> {
   try {
     const res = await callTelegramApi<{ status: string }>("getChatMember", {
-      chat_id: getChannelId(),
+      chat_id: chatId ?? getChannelId(),
       user_id: userId,
     });
     return ESTADOS_DENTRO.includes(res.status) ? "dentro" : "fuera";
@@ -163,8 +215,8 @@ export async function getChannelMembership(
 }
 
 /** ¿Hay que intentar expulsar a esta persona? Ante la duda, sí. */
-export async function isChannelMember(userId: number): Promise<boolean> {
-  return (await getChannelMembership(userId)) !== "fuera";
+export async function isChannelMember(userId: number, chatId?: string | number): Promise<boolean> {
+  return (await getChannelMembership(userId, chatId)) !== "fuera";
 }
 
 /**
@@ -181,18 +233,32 @@ export async function revokeChannelAccess(
   admin: SupabaseAdmin,
   opts: { userId: string | null; telegramUserId: number; reason: string }
 ): Promise<boolean> {
-  if (!(await isChannelMember(opts.telegramUserId))) return false;
+  // Los DOS chats del Premium, no solo el canal. Desde que hay comunidad, el
+  // grupo de debate recibe una copia de todo lo que se publica: dejar a
+  // alguien dentro del grupo es dejarle el Premium entero abierto.
+  const chats = await chatsPremium();
 
-  try {
-    await removeChannelMember(opts.telegramUserId);
-  } catch (err) {
-    console.warn(
-      "[telegram] No se pudo expulsar a",
-      opts.telegramUserId,
-      (err as Error).message
-    );
-    return false;
+  let expulsadoDeAlguno = false;
+  for (const chat of chats) {
+    if (!(await isChannelMember(opts.telegramUserId, chat))) continue;
+
+    try {
+      await removeChannelMember(opts.telegramUserId, chat);
+      expulsadoDeAlguno = true;
+    } catch (err) {
+      // Se sigue con el otro chat aunque este falle: sacarle de uno de los dos
+      // es mejor que de ninguno, y el cron lo reintentará mañana.
+      console.warn(
+        "[telegram] No se pudo expulsar a",
+        opts.telegramUserId,
+        "de",
+        chat,
+        (err as Error).message
+      );
+    }
   }
+
+  if (!expulsadoDeAlguno) return false;
 
   await admin.from("telegram_access_log").insert({
     user_id: opts.userId,

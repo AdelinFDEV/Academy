@@ -5,6 +5,7 @@ import {
   getChannelMemberCount,
   getCuentaUrl,
   getFreeChannelId,
+  getGrupoDebateId,
   escribirYAvisar,
   revokeChannelAccess,
 } from "@/lib/telegram";
@@ -141,7 +142,19 @@ async function avisarDeCancelacionesProximas(admin: Admin) {
  */
 async function fotografiarCanales(admin: Admin) {
   const hoy = new Date().toISOString().slice(0, 10);
-  const canales = [getFreeChannelId(), (() => { try { return getChannelId(); } catch { return null; } })()];
+  const canales = [
+    getFreeChannelId(),
+    (() => {
+      try {
+        return getChannelId();
+      } catch {
+        return null;
+      }
+    })(),
+    // El chat de la comunidad cuenta aparte: tiene sus propios miembros y su
+    // propia curva, y comparar las dos dice cuánta gente del canal participa.
+    await getGrupoDebateId().catch(() => null),
+  ];
 
   const guardados: string[] = [];
   for (const canal of canales) {

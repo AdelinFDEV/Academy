@@ -31,6 +31,7 @@ import {
   getAdminChatUrl,
   getChannelId,
   getChannelInviteLink,
+  chatsPremium,
   getChannelMemberCount,
   getFreeChannelId,
   getFreeChannelUrl,
@@ -526,10 +527,20 @@ async function handleStart(admin: Admin, message: TelegramMessage) {
   );
 }
 
-/** chat_join_request: alguien ha pedido entrar al canal. Se aprueba solo si
- *  su Telegram está vinculado a un usuario Premium/admin de la Academy. */
+/**
+ * chat_join_request: alguien ha pedido entrar. Se aprueba solo si su Telegram
+ * está vinculado a un usuario Premium/admin de la Academy.
+ *
+ * Vale tanto para el canal como para el grupo de debate de la comunidad: son
+ * dos chats distintos, con dos listas de miembros distintas, y en el grupo se
+ * lee lo mismo que en el canal. Cualquier solicitud de otro chat se ignora.
+ */
 async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
-  if (String(req.chat.id) !== String(getChannelId())) return; // otro chat: ignorar
+  const premium = await chatsPremium();
+  const chatId = String(req.chat.id);
+  if (!premium.includes(chatId)) return; // otro chat: ignorar
+
+  const esElGrupo = chatId !== String(getChannelId());
 
   const { data: profile } = await admin
     .from("profiles")
@@ -544,12 +555,15 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
   const isPremium = !!profile && tienePremium(profile);
 
   if (isPremium) {
-    await approveChatJoinRequest(req.from.id);
+    await approveChatJoinRequest(req.from.id, chatId);
     await sendTelegramMessage(
       req.from.id,
-      "🎉 ¡Dentro! Bienvenido al canal Premium.\n\n" +
-        "Aquí van los análisis, avisos y todo lo que no publico fuera. " +
-        "Ponte cómodo 🚀",
+      esElGrupo
+        ? "🎉 ¡Dentro del chat de la comunidad!\n\n" +
+          "Aquí se habla: dudas, ideas y lo que surja. Preséntate cuando quieras 🚀"
+        : "🎉 ¡Dentro! Bienvenido al canal Premium.\n\n" +
+          "Aquí van los análisis, avisos y todo lo que no publico fuera. " +
+          "Ponte cómodo 🚀",
       [
         { text: "📊 Mi Premium", data: "m:estado" },
         { text: "💬 Hablar con Adelin", url: getAdminChatUrl() },
@@ -559,7 +573,13 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
       user_id: profile.id,
       telegram_user_id: req.from.id,
       action: "approved",
+      reason: esElGrupo ? "Chat de la comunidad" : null,
     });
+
+    // La fiesta —bienvenida pública y aviso de caja— es solo la primera vez,
+    // al entrar al canal. Repetirla al entrar al chat sería anunciar dos veces
+    // a la misma persona por el mismo pago.
+    if (esElGrupo) return;
 
     // El aviso del Premium se manda aquí y no desde chat_member porque en este
     // punto sí sabemos quién es en la Academy: su nombre real y su plan.
@@ -589,13 +609,13 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
     return;
   }
 
-  await declineChatJoinRequest(req.from.id);
+  await declineChatJoinRequest(req.from.id, chatId);
   await sendTelegramMessage(
     req.from.id,
     profile
-      ? "🔒 El canal es solo para miembros Premium.\n\n" +
+      ? `🔒 ${esElGrupo ? "El chat de la comunidad es" : "El canal es"} solo para miembros Premium.\n\n` +
         "Hazte Premium 💎 y vuelve a pedir entrada: te acepto al instante, automáticamente."
-      : "🔗 Antes de entrar al canal necesito que vincules tu cuenta de la Academy con este Telegram.\n\n" +
+      : "🔗 Antes de entrar necesito que vincules tu cuenta de la Academy con este Telegram.\n\n" +
         "Es un minuto y solo se hace una vez 👇",
     profile
       ? [{ text: "💎 Hazte Premium", url: getPremiumUrl() }]
@@ -856,14 +876,13 @@ function alAzar(opciones: string[]): string {
  * dos avisos.
  */
 async function handleChatMember(admin: Admin, upd: ChatMemberUpdated) {
-  let esPremium = false;
-  try {
-    esPremium = String(upd.chat.id) === String(getChannelId());
-  } catch {
-    // Sin canal configurado no podemos distinguirlos: mejor no avisar.
-    return;
-  }
-  if (esPremium) return;
+  // Solo se atiende el canal GRATUITO, y se comprueba por lo que es y no por
+  // lo que no es. Antes se daba por free todo lo que no fuera el canal
+  // Premium, y al aparecer el grupo de debate de la comunidad sus altas se
+  // habrían contado como altas del canal gratuito: estadísticas falsas y una
+  // bienvenida equivocada a gente que acaba de entrar al chat de pago.
+  const free = getFreeChannelId();
+  if (!free || String(upd.chat.id) !== String(free)) return;
 
   const antes = upd.old_chat_member.status;
   const ahora = upd.new_chat_member.status;
