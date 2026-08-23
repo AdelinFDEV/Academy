@@ -284,6 +284,68 @@ export async function sendTelegramMessageOrThrow(
   return res.message_id;
 }
 
+/**
+ * Chat del admin: el de registro si está configurado y, si no, el Telegram del
+ * primer admin que lo tenga vinculado.
+ *
+ * Vive aquí y no en el webhook porque lo necesitan también los procesos
+ * programados, que no pasan por él.
+ */
+export async function resolverChatAdmin(admin: SupabaseAdmin): Promise<number | null> {
+  const porEntorno = getLogChatId() ?? process.env.TELEGRAM_ADMIN_CHAT_ID;
+  if (porEntorno) {
+    const id = Number(porEntorno);
+    if (Number.isFinite(id)) return id;
+  }
+
+  const { data } = await admin
+    .from("profiles")
+    .select("telegram_user_id")
+    .eq("role", "admin")
+    .not("telegram_user_id", "is", null)
+    .order("telegram_linked_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  return (data?.telegram_user_id as number | null) ?? null;
+}
+
+/** Manda un aviso al admin. Si no hay a quién, no hace nada. */
+export async function avisarAlAdmin(admin: SupabaseAdmin, texto: string) {
+  const destino = await resolverChatAdmin(admin);
+  if (!destino) return;
+  await sendTelegramMessage(destino, texto);
+}
+
+/**
+ * Escribe por privado a alguien y avisa al admin de si se pudo o no.
+ *
+ * Telegram prohíbe a los bots escribir a quien nunca haya iniciado
+ * conversación con ellos, así que estos envíos fallan a menudo y en silencio.
+ * Centralizarlo aquí es lo que hace que el admin se entere de a quién alcanza
+ * de verdad, en vez de dar por hecho que todos reciben sus mensajes.
+ */
+export async function escribirYAvisar(
+  admin: SupabaseAdmin,
+  destinatario: { id: number; nombre: string },
+  texto: string,
+  opciones?: { botones?: Boton[] | Boton[][]; motivo?: string }
+): Promise<boolean> {
+  const coletilla = opciones?.motivo ? ` — ${opciones.motivo}` : "";
+  try {
+    await sendTelegramMessageOrThrow(destinatario.id, texto, opciones?.botones);
+    await avisarAlAdmin(admin, `✅ Pude mandarle un privado a ${destinatario.nombre}${coletilla}`);
+    return true;
+  } catch (err) {
+    await avisarAlAdmin(
+      admin,
+      `📭 No pude mandarle un privado a ${destinatario.nombre}${coletilla}\n\n` +
+        `Motivo: ${err instanceof Error ? err.message : "desconocido"}`
+    );
+    return false;
+  }
+}
+
 /** Límite de Telegram para una foto por URL o subida: 10 MB. */
 const MAXIMO_FOTO = 10 * 1024 * 1024;
 

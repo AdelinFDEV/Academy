@@ -5,17 +5,18 @@ import type { Boton } from "@/lib/telegram";
 import { FUENTE, guardarNuevas, proponerNoticia } from "@/lib/noticias";
 import {
   answerCallbackQuery,
+  avisarAlAdmin,
+  escribirYAvisar,
+  resolverChatAdmin,
   editarMensaje,
   sendChannelPost,
   approveChatJoinRequest,
   declineChatJoinRequest,
-  getAdminChatId,
   getAdminChatUrl,
   getChannelId,
   getChannelInviteLink,
   getChannelMemberCount,
   getFreeChannelId,
-  getLogChatId,
   mencionar,
   getCuentaUrl,
   getPremiumUrl,
@@ -501,27 +502,6 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
   });
 }
 
-/**
- * Chat del admin al que van los mensajes de soporte. Preferimos la variable de
- * entorno (permite usar un grupo con varios moderadores) y, si no está, se
- * busca el Telegram del admin: como ya lo tiene vinculado para su propio
- * acceso al canal, el relé funciona sin configurar nada extra.
- */
-async function resolverChatAdmin(admin: Admin): Promise<number | null> {
-  const porEntorno = getAdminChatId();
-  if (porEntorno) return porEntorno;
-
-  const { data } = await admin
-    .from("profiles")
-    .select("telegram_user_id")
-    .eq("role", "admin")
-    .not("telegram_user_id", "is", null)
-    .order("telegram_linked_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
-
-  return (data?.telegram_user_id as number | null) ?? null;
-}
 
 /** El admin ha decidido sobre una noticia. */
 async function decidirNoticia(
@@ -610,7 +590,7 @@ async function decidirNoticia(
  * hablado nunca con el bot, esto NO le llega — y no hay forma de evitarlo.
  * Se registra para poder medir a cuántos alcanza de verdad.
  */
-async function bienvenidaPrivadaFree(quien: TelegramUser) {
+async function bienvenidaPrivadaFree(admin: Admin, quien: TelegramUser) {
   const nombre = quien.first_name || "¡Hola!";
   const texto =
     `🎉 ¡Bienvenido, ${nombre}!\n\n` +
@@ -623,19 +603,21 @@ async function bienvenidaPrivadaFree(quien: TelegramUser) {
     "Ponte cómodo, que esto acaba de empezar 🔥\n\n" +
     "¿Alguna duda? Pulsa abajo y hablamos 👇";
 
-  try {
-    await sendTelegramMessageOrThrow(quien.id, texto, [
-      [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
-      [
-        { text: "💎 Hazte Premium", url: getPremiumUrl() },
-        { text: "🌐 La Academy", url: getSiteUrl() },
+  return escribirYAvisar(
+    admin,
+    { id: quien.id, nombre: comoSeLlama(quien) },
+    texto,
+    {
+      botones: [
+        [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
+        [
+          { text: "💎 Hazte Premium", url: getPremiumUrl() },
+          { text: "🌐 La Academy", url: getSiteUrl() },
+        ],
       ],
-    ]);
-    return true;
-  } catch {
-    // Lo normal si nunca ha hablado con el bot. No es un fallo que arreglar.
-    return false;
-  }
+      motivo: "bienvenida al canal gratuito",
+    }
+  );
 }
 
 /**
@@ -668,20 +650,6 @@ function comoSeLlama(u: TelegramUser): string {
   return u.username ? `${nombre} (@${u.username})` : nombre;
 }
 
-/** Manda un aviso al admin. Va al chat de registro si está configurado y, si
- *  no, al privado del propio admin. */
-async function avisarAlAdmin(admin: Admin, texto: string) {
-  const destino = getLogChatId() ?? (await resolverChatAdmin(admin));
-  if (!destino) return;
-  try {
-    await sendTelegramMessageOrThrow(
-      typeof destino === "string" ? (destino as unknown as number) : destino,
-      texto
-    );
-  } catch (err) {
-    console.warn("[telegram-webhook] No se pudo avisar al admin:", (err as Error).message);
-  }
-}
 
 // Se rotan para que el aviso no se vuelva un ruido idéntico cada vez.
 const CELEBRACIONES_PREMIUM = [
@@ -745,18 +713,14 @@ async function handleChatMember(admin: Admin, upd: ChatMemberUpdated) {
   // y no accionable.
   if (!entra) return;
 
-  const entregada = await bienvenidaPrivadaFree(quien);
-
   const total = await getChannelMemberCount(upd.chat.id);
   const cuantos = total !== null ? `\n\nYa sois ${total} en el canal.` : "";
-  // Se indica si la bienvenida llegó: si no, es que nunca ha hablado con el
-  // bot, y Telegram no permite escribirle primero.
-  const aviso = entregada ? "\n✅ Bienvenida enviada por privado." : "\n📭 No he podido escribirle (no ha abierto el bot).";
 
-  await avisarAlAdmin(
-    admin,
-    `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(quien)}${cuantos}${aviso}`
-  );
+  await avisarAlAdmin(admin, `${alAzar(BIENVENIDAS_FREE)}\n\n${comoSeLlama(quien)}${cuantos}`);
+
+  // El resultado del privado lo cuenta escribirYAvisar en su propio mensaje,
+  // así que aquí ya no hace falta repetirlo.
+  await bienvenidaPrivadaFree(admin, quien);
 }
 
 /** Mensaje de un usuario al admin. Reservado a Premium: es una de las ventajas

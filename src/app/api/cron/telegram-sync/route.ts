@@ -5,8 +5,8 @@ import {
   getChannelMemberCount,
   getCuentaUrl,
   getFreeChannelId,
+  escribirYAvisar,
   revokeChannelAccess,
-  sendTelegramMessage,
 } from "@/lib/telegram";
 import { anunciarPendientes } from "@/lib/announce";
 
@@ -99,12 +99,16 @@ async function avisarDeCancelacionesProximas(admin: Admin) {
     const nombre = (perfil.full_name as string | null) ?? "";
     const saludo = nombre ? `${nombre}, ` : "";
 
-    await sendTelegramMessage(
-      perfil.telegram_user_id,
+    await escribirYAvisar(
+      admin,
+      { id: perfil.telegram_user_id, nombre: nombre || `usuario ${perfil.telegram_user_id}` },
       `${saludo}tu suscripción Premium no se va a renovar: te ${dias === 1 ? "queda 1 día" : `quedan ${dias} días`} de acceso.\n\n` +
         "Cuando termine saldrás del canal privado automáticamente. Si quieres seguir, " +
         "puedes reactivar la renovación en un par de clics.",
-      [{ text: "🔄 Reactivar mi Premium", url: getCuentaUrl() }]
+      {
+        botones: [{ text: "🔄 Reactivar mi Premium", url: getCuentaUrl() }],
+        motivo: `le quedan ${dias} días de Premium`,
+      }
     );
 
     const { error: marcaErr } = await admin
