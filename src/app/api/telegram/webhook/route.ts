@@ -33,6 +33,7 @@ import {
   getChannelInviteLink,
   getChannelMemberCount,
   getFreeChannelId,
+  getFreeChannelUrl,
   mencionar,
   pausarAvisos,
   getCuentaUrl,
@@ -338,18 +339,87 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
   );
 }
 
+/**
+ * Alguien llega por un enlace del tipo t.me/AdelinBTC_Bot?start=ig
+ *
+ * ── Por qué esto importa más de lo que parece ───────────────────────────────
+ * Telegram no deja a un bot escribir a quien no le ha hablado antes. Por eso
+ * la bienvenida de quien entra al canal por su cuenta no le llega, y hay que
+ * dejarla apuntada esperando a que algún día interactúe.
+ *
+ * Este enlace le da la vuelta al embudo: primero se abre el BOT, se pulsa
+ * INICIAR —y esa pulsación ya es la conversación que Telegram exige— y desde
+ * ahí se entra al canal. Todo el que llegue así queda localizable para
+ * siempre: bienvenidas, avisos de Premium, respuestas... todo funciona.
+ *
+ * De paso, la etiqueta del enlace dice de dónde viene cada uno, que es lo más
+ * cerca que se puede estar de saber qué canal de captación funciona.
+ */
+async function bienvenidaDesdeEnlace(admin: Admin, from: TelegramUser, origen: string) {
+  // Lo que llega en un /start lo escribe quien quiera: se normaliza a una
+  // etiqueta corta y sin sorpresas antes de guardarla.
+  const etiqueta = origen.toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 32) || "desconocido";
+
+  await admin.from("telegram_access_log").insert({
+    telegram_user_id: from.id,
+    action: "start",
+    reason: etiqueta,
+  });
+
+  const perfil = await cargarPerfil(admin, from.id);
+  const nombre = perfil?.full_name || from.first_name || null;
+
+  // A quien ya es Premium no se le manda al canal gratuito: se le enseña su
+  // menú, que ya lleva el canal que le toca.
+  if (tienePremium(perfil)) {
+    await mostrarPantalla(admin, from.id, from, "m:inicio");
+    return;
+  }
+
+  await sendTelegramMessage(
+    from.id,
+    `¡Hola${nombre ? `, ${nombre}` : ""}! 👋\n\n` +
+      "Bienvenido a AdelinBTC Academy 🚀\n\n" +
+      "Aquí se aprende cripto sin humo:\n" +
+      "📰 Las noticias que de verdad mueven el mercado\n" +
+      "🎥 Mis vídeos nada más salir\n" +
+      "📚 Guías interactivas y herramientas gratuitas\n\n" +
+      "Empieza por el canal gratuito — se entra en un toque y no cuesta nada 👇",
+    [
+      [{ text: "📣 Entrar al canal gratuito", url: getFreeChannelUrl() }],
+      [{ text: "💎 Qué incluye Premium", data: "m:premium" }],
+      [
+        { text: "🎁 Lo que ya tienes gratis", data: "m:gratis" },
+        { text: "🌐 La Academy", url: getSiteUrl() },
+      ],
+      [{ text: "💬 Hablar con Adelin", url: getAdminChatUrl() }],
+    ]
+  );
+}
+
 /** /start <token>: vincula la cuenta de Telegram que escribe con el usuario
  *  de la Academy dueño de ese token (generado en /cuenta). */
 async function handleStart(admin: Admin, message: TelegramMessage) {
   const from = message.from;
   if (!from) return;
 
-  const token = (message.text ?? "").replace("/start", "").trim();
-  if (!token) {
+  const carga = (message.text ?? "").replace("/start", "").trim();
+  if (!carga) {
     await enviarBienvenida(admin, from);
     return;
   }
 
+  // Los tokens de vinculación son 48 caracteres hex (generateLinkToken). Todo
+  // lo demás que venga en un /start es una etiqueta de origen: los enlaces
+  // t.me/AdelinBTC_Bot?start=ig, ?start=yt, ?start=canal… que se reparten por
+  // fuera. Sin esta distinción, un ?start=ig contestaba "este enlace ha
+  // caducado", que no hay nada más desconcertante como primer mensaje.
+  if (!/^[0-9a-f]{48}$/.test(carga)) {
+    await bienvenidaDesdeEnlace(admin, from, carga);
+    return;
+  }
+
+  const token = carga;
   const { data: linkRow } = await admin
     .from("telegram_link_tokens")
     .select("token, user_id, expires_at, used_at")

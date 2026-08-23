@@ -262,7 +262,20 @@ try {
   mal("No se pudo auditar el canal", err.message);
 }
 
-// — 6. Reacciones de los canales —
+// — 6. Enlaces de captación —
+//
+// Telegram no deja a un bot escribir a quien no le ha hablado antes, así que a
+// quien entra al canal por su cuenta la bienvenida NO le llega en el momento.
+// Estos enlaces abren el bot primero: al pulsar INICIAR ya hay conversación, y
+// desde ese momento esa persona es localizable para siempre.
+console.log(`\n${GRIS}Enlaces que abren el bot antes del canal (reparte estos, no el del canal):${FIN}`);
+for (const [donde, etiqueta] of [["la web", "web"], ["Instagram", "ig"], ["YouTube", "yt"],
+                                 ["cualquier sitio", "canal"]]) {
+  console.log(`  ${donde.padEnd(16)} https://t.me/${bot.username}?start=${etiqueta}`);
+}
+console.log(`  ${GRIS}La etiqueta final es libre: queda registrada y dice de dónde viene cada uno.${FIN}`);
+
+// — 7. Reacciones de los canales —
 //
 // Las noticias se publican con 🔥 y 💩 para que la gente opine. El bot NO
 // puede activarlas (setChatAvailableReactions no existe en la API de bots):
@@ -298,7 +311,7 @@ for (const [nombre, id] of [["free", env.TELEGRAM_FREE_CHANNEL_ID || "-100378510
   }
 }
 
-// — 7. La rutina diaria y el interruptor de avisos —
+// — 8. La rutina diaria y el interruptor de avisos —
 //
 // Merece una comprobación propia porque su fallo es SILENCIOSO: si el
 // interruptor está en pausa (se pulsó /stop y se olvidó), el bot deja de
