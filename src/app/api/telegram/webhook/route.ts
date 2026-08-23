@@ -11,6 +11,7 @@ import {
   proponerNoticia,
   publicarNoticia,
   publicarTextoPropio,
+  redactarResumen,
   votarNoticia,
   type Voto,
 } from "@/lib/noticias";
@@ -851,9 +852,11 @@ async function decidirNoticia(
     const canal = getFreeChannelId();
     try {
       if (!canal) throw new Error("Sin canal free configurado");
-      // Manda el texto que ya se guardó al proponerla: lo que se publica es,
-      // palabra por palabra, lo que se acaba de aprobar.
-      await publicarNoticia(admin, noticia, canal);
+      // Aquí, y solo aquí, se llama a Gemini: la vista previa de proponerla
+      // fue gratis (recorte extractivo), así que solo la noticia que de
+      // verdad se aprueba gasta una petición.
+      const { texto } = await redactarResumen(admin, noticia);
+      await publicarNoticia(admin, { ...noticia, texto_canal: texto }, canal);
       resultado = "✅ Publicada en el canal";
     } catch (err) {
       console.error("[telegram-webhook] No se pudo publicar la noticia:", err);

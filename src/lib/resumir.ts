@@ -27,7 +27,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { z } from "zod";
 
 /** Modelo por defecto. Se puede cambiar por entorno sin tocar código. */
-const MODELO = process.env.GEMINI_MODEL || "gemini-3.7-flash";
+const MODELO = process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
 
 /**
  * Forma del resumen. Los límites de longitud van en la descripción de cada
@@ -120,6 +120,7 @@ REGLA ABSOLUTA — no inventes nada:
 
 CÓMO ESCRIBIR:
 - En español de España, directo y sin humo. Frases cortas.
+- Mayúsculas normales de una frase: la primera letra de cada campo y todos los nombres propios (personas, empresas, países, criptomonedas como Bitcoin o Ethereum) van en mayúscula. Nunca todo en minúsculas.
 - Con tus propias palabras: reformula, no copies frases del original.
 - Cita textualmente solo cuando sea una declaración de alguien, y entrecomillada.
 - Nada de "según el medio", "el artículo señala" ni referencias a la fuente.

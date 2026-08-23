@@ -417,16 +417,15 @@ export async function proponerNoticia(
   /** "2 de 3", para saber de un vistazo cuántas vienen en esta tanda. */
   posicion?: { n: number; total: number }
 ) {
-  // Se redacta ANTES de proponerla: lo que el admin lee es, palabra por
-  // palabra, lo que va a salir en el canal si pulsa publicar. Proponer una
-  // cosa y publicar otra sería aprobar a ciegas.
-  const { texto: publicable, via } = await redactarResumen(admin, noticia);
+  // Vista previa gratuita, SIN Gemini: solo la que se apruebe pasa por IA, al
+  // pulsar Publicar (ver decidirNoticia en el webhook). Proponer las 5 de una
+  // tanda para acabar publicando una o dos no debe costar 5 peticiones.
+  const { texto: publicable, via } = await previsualizarNoticia(noticia);
 
-  // Cada vía se etiqueta para que el admin sepa de qué se fía al aprobar: un
-  // texto redactado y uno recortado del original no merecen la misma lectura.
+  // Cada vía se etiqueta para que el admin sepa qué está leyendo.
   const etiqueta: Record<ViaResumen, string> = {
     ia: "✍️ redactada",
-    recorte: "✂️ recortada del original",
+    recorte: "✂️ vista previa recortada del original",
     titular: "⚠️ solo el titular — no he podido leer el artículo",
   };
 
@@ -438,7 +437,7 @@ export async function proponerNoticia(
     "──────────────\n" +
     `${publicable}\n` +
     "──────────────\n\n" +
-    "Esto es literalmente lo que se publicará.";
+    "Al pulsar Publicar la redacto con IA antes de mandarla al canal.";
 
   const messageId = await sendTelegramMessageOrThrow(chatId, texto, [
     [{ text: "✍️ La escribo yo", data: `n:mio:${noticia.id}` }],
@@ -569,6 +568,32 @@ export async function votarNoticia(
  */
 export type ViaResumen = "ia" | "recorte" | "titular";
 
+/**
+ * Vista previa SIN Gemini, para cuando se PROPONE la noticia.
+ *
+ * Gemini se reserva para el momento en que de verdad se aprueba (ver
+ * `decidirNoticia` en el webhook): de las 5 que se proponen en una tanda,
+ * normalmente se descartan varias, y pagar una petición por cada una —se
+ * publique o no— es tirar cuota a la basura. Esta vista previa usa el mismo
+ * recorte extractivo gratuito de siempre, así que no cuesta nada mostrarla.
+ */
+async function previsualizarNoticia(
+  noticia: { titulo: string; resumen: string | null; enlace: string }
+): Promise<{ texto: string; via: ViaResumen }> {
+  const cuerpo = await leerCuerpo(noticia.enlace);
+  if (cuerpo) {
+    const recorte = resumenExtractivo(noticia.titulo, cuerpo);
+    if (recorte) return { texto: recorte, via: "recorte" };
+  }
+
+  const texto = [`📰 ${noticia.titulo}`, noticia.resumen, FIRMA].filter(Boolean).join("\n\n");
+  return { texto, via: "titular" };
+}
+
+/**
+ * Redacta el texto FINAL, con Gemini si hay clave. Se llama solo una vez por
+ * noticia, justo al aprobarla — nunca al proponerla.
+ */
 export async function redactarResumen(
   admin: Admin,
   noticia: { id: number; titulo: string; resumen: string | null; enlace: string }
