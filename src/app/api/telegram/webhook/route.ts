@@ -551,7 +551,7 @@ async function decidirNoticia(
 
   const { data: noticia } = await admin
     .from("noticias")
-    .select("id, titulo, resumen, enlace, estado, imagen, resumen_ia")
+    .select("id, titulo, resumen, enlace, estado, imagen, texto_canal")
     .eq("id", id)
     .maybeSingle();
 
@@ -578,12 +578,10 @@ async function decidirNoticia(
     const canal = getFreeChannelId();
     try {
       if (!canal) throw new Error("Sin canal free configurado");
-      // publicarNoticia decide sola: con resumen propio va el texto completo y
-      // los botones de voto; sin él, el formato de siempre con enlace al medio.
-      const { conResumen } = await publicarNoticia(admin, noticia, canal);
-      resultado = conResumen
-        ? "✅ Publicada con resumen propio"
-        : "✅ Publicada (sin resumen, con enlace)";
+      // Manda el texto que ya se guardó al proponerla: lo que se publica es,
+      // palabra por palabra, lo que se acaba de aprobar.
+      await publicarNoticia(admin, noticia, canal);
+      resultado = "✅ Publicada en el canal";
     } catch (err) {
       console.error("[telegram-webhook] No se pudo publicar la noticia:", err);
       // No se marca como publicada si no salió: así se puede reintentar.

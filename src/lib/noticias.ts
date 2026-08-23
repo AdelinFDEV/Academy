@@ -6,10 +6,11 @@ import {
   type Boton,
 } from "@/lib/telegram";
 import {
+  FIRMA,
   LIMITE_PIE_DE_FOTO,
   mensajeDeNoticia,
+  resumenExtractivo,
   resumirNoticia,
-  type ResumenNoticia,
 } from "@/lib/resumir";
 
 type Admin = ReturnType<typeof createAdminClient>;
@@ -163,8 +164,18 @@ export async function leerCuerpo(enlace: string): Promise<string | null> {
         // Imágenes fuera y, de los enlaces, solo el texto: las URL en el
         // resumen no aportan nada y gastan tokens.
         .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
-        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
-        .replace(/\*\*/g, "")
+        // El marcado se sustituye por un ESPACIO, no por nada. El HTML de
+        // origen trae cosas como "respecto al<strong>supuesto", y quitando la
+        // marca a secas salía "alsupuesto" — palabras pegadas por todo el
+        // texto. Los espacios de más se limpian justo después.
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, " $1 ")
+        .replace(/\*\*/g, " ")
+        .replace(/[ \t]{2,}/g, " ")
+        // Y el espacio que ese arreglo mete antes de un signo de puntuación
+        // se vuelve a quitar: "falsas ." no lo escribe nadie.
+        .replace(/ +([.,;:!?%)\]»])/g, "$1")
+        .replace(/([(\[«]) +/g, "$1")
+        .replace(/ +\n/g, "\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim()
         // Tope de seguridad: una nota ronda los 3 KB. Si llega mucho más, o el
@@ -365,17 +376,22 @@ export async function proponerNoticia(
   // Se redacta ANTES de proponerla: lo que el admin lee es, palabra por
   // palabra, lo que va a salir en el canal si pulsa publicar. Proponer una
   // cosa y publicar otra sería aprobar a ciegas.
-  const resumen = await redactarResumen(admin, noticia);
+  const { texto: publicable, via } = await redactarResumen(admin, noticia);
 
-  const texto = resumen
-    ? `📰 ${FUENTE.toUpperCase()} · así saldría publicada\n\n` +
-      "─────────────\n" +
-      `${mensajeDeNoticia(resumen)}\n` +
-      "─────────────\n\n" +
-      `Original: ${noticia.titulo}`
-    : `📰 ${FUENTE.toUpperCase()} · sin resumen propio\n\n${noticia.titulo}` +
-      (noticia.resumen ? `\n\n${noticia.resumen}` : "") +
-      `\n\n⚠️ No he podido redactarla, así que saldría con enlace a ${FUENTE}.`;
+  // Cada vía se etiqueta para que el admin sepa de qué se fía al aprobar: un
+  // texto redactado y uno recortado del original no merecen la misma lectura.
+  const etiqueta: Record<ViaResumen, string> = {
+    ia: "✍️ redactada",
+    recorte: "✂️ recortada del original",
+    titular: "⚠️ solo el titular — no he podido leer el artículo",
+  };
+
+  const texto =
+    `📰 ${FUENTE.toUpperCase()} · ${etiqueta[via]}\n\n` +
+    "──────────────\n" +
+    `${publicable}\n` +
+    "──────────────\n\n" +
+    "Esto es literalmente lo que se publicará.";
 
   const messageId = await sendTelegramMessageOrThrow(chatId, texto, [
     [
@@ -494,33 +510,45 @@ export async function votarNoticia(
  * exactamente el texto que va a salir antes de decir que sí, y la pulsación
  * de "Publicar" responde al instante en vez de quedarse pensando.
  */
+export type ViaResumen = "ia" | "recorte" | "titular";
+
 export async function redactarResumen(
   admin: Admin,
-  noticia: { id: number; titulo: string; enlace: string }
-): Promise<ResumenNoticia | null> {
+  noticia: { id: number; titulo: string; resumen: string | null; enlace: string }
+): Promise<{ texto: string; via: ViaResumen }> {
   const cuerpo = await leerCuerpo(noticia.enlace);
-  if (!cuerpo) return null;
 
-  const resumen = await resumirNoticia(noticia.titulo, cuerpo);
-  if (!resumen) return null;
+  if (cuerpo) {
+    // 1. Con clave de API: se redacta un texto nuevo. Es la buena.
+    const resumen = await resumirNoticia(noticia.titulo, cuerpo);
+    if (resumen) {
+      const texto = mensajeDeNoticia(resumen);
+      await guardarTexto(admin, noticia.id, {
+        resumen_ia: JSON.stringify(resumen),
+        texto_canal: texto,
+      });
+      return { texto, via: "ia" };
+    }
 
-  await admin
-    .from("noticias")
-    .update({ resumen_ia: JSON.stringify(resumen) })
-    .eq("id", noticia.id);
+    // 2. Sin clave: se recorta el propio artículo. No reescribe nada, elige.
+    const recorte = resumenExtractivo(noticia.titulo, cuerpo);
+    if (recorte) {
+      await guardarTexto(admin, noticia.id, { texto_canal: recorte });
+      return { texto: recorte, via: "recorte" };
+    }
+  }
 
-  return resumen;
+  // 3. Si no se ha podido ni leer el artículo, queda el titular y la
+  //    entradilla del feed. Es un mensaje pobre, y por eso la propuesta avisa.
+  const texto = [`📰 ${noticia.titulo}`, noticia.resumen, FIRMA]
+    .filter(Boolean)
+    .join("\n\n");
+  await guardarTexto(admin, noticia.id, { texto_canal: texto });
+  return { texto, via: "titular" };
 }
 
-/** Lee el resumen guardado. Devuelve null si no hay o si está corrupto. */
-export function leerResumenGuardado(crudo: unknown): ResumenNoticia | null {
-  if (typeof crudo !== "string" || !crudo) return null;
-  try {
-    const objeto = JSON.parse(crudo) as ResumenNoticia;
-    return objeto?.titular && objeto?.entradilla ? objeto : null;
-  } catch {
-    return null;
-  }
+function guardarTexto(admin: Admin, id: number, campos: Record<string, string>) {
+  return admin.from("noticias").update(campos).eq("id", id);
 }
 
 /**
@@ -540,32 +568,22 @@ export async function publicarNoticia(
     resumen: string | null;
     enlace: string;
     imagen: string | null;
-    resumen_ia?: unknown;
+    texto_canal?: unknown;
   },
   chatId: string
-): Promise<{ conResumen: boolean }> {
-  const resumen = leerResumenGuardado(noticia.resumen_ia);
-
-  if (!resumen) {
-    await sendChannelPost(
-      `📰 ${noticia.titulo}` + (noticia.resumen ? `\n\n${noticia.resumen}` : ""),
-      {
-        chatId,
-        imagen: noticia.imagen,
-        botones: [{ text: `📖 Leer en ${FUENTE}`, url: noticia.enlace }],
-      }
-    );
-    return { conResumen: false };
-  }
-
-  const texto = mensajeDeNoticia(resumen);
+): Promise<void> {
+  // El texto se montó al proponerla y quedó guardado: publicar es mandar
+  // exactamente lo que el admin leyó y aprobó, sin recalcular nada.
+  const texto =
+    (typeof noticia.texto_canal === "string" && noticia.texto_canal) ||
+    [`📰 ${noticia.titulo}`, noticia.resumen, FIRMA].filter(Boolean).join("\n\n");
 
   // El pie de foto se queda en 1024 caracteres y Telegram recorta sin avisar.
   // Antes que publicar un resumen cortado a media frase, se va sin imagen: el
   // texto tiene 4096 de margen y es lo que de verdad importa aquí.
   const cabeEnLaFoto = texto.length <= LIMITE_PIE_DE_FOTO;
   if (!cabeEnLaFoto && noticia.imagen) {
-    console.warn(`[noticias] Resumen de ${texto.length} caracteres: se publica sin imagen`);
+    console.warn(`[noticias] Texto de ${texto.length} caracteres: se publica sin imagen`);
   }
 
   const messageId = await sendChannelPost(texto, {
@@ -582,6 +600,4 @@ export async function publicarNoticia(
       .update({ mensaje_canal_id: messageId, canal_chat_id: chatId })
       .eq("id", noticia.id);
   }
-
-  return { conResumen: true };
 }

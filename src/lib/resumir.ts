@@ -209,3 +209,101 @@ export function mensajeDeNoticia(resumen: ResumenNoticia): string {
     FIRMA
   );
 }
+
+// ── Resumen sin IA ──────────────────────────────────────────────────────────
+
+/**
+ * Resume recortando, sin modelo de por medio.
+ *
+ * Es lo único que se puede hacer sin una clave de API: resumir de verdad —
+ * decidir qué sobra y reescribirlo— es precisamente lo que hace un modelo de
+ * lenguaje, y no hay forma de programarlo. Así que aquí no se reescribe nada:
+ * se eligen las mejores piezas del artículo y se recorta a lo que cabe.
+ *
+ * Lo que se aprovecha, por este orden:
+ *   1. Los "hechos clave" que CriptoNoticias pone en viñetas al principio de
+ *      sus notas. Son el resumen que ya han hecho ellos, y es bueno.
+ *   2. Los primeros párrafos, que en cualquier noticia llevan lo esencial —
+ *      la pirámide invertida: lo importante arriba.
+ *
+ * El corte respeta el final de una frase: un mensaje que acaba a media
+ * palabra parece roto, y ya no hay enlace donde seguir leyendo.
+ */
+export function resumenExtractivo(titulo: string, cuerpo: string): string | null {
+  const lineas = cuerpo
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean)
+    // Restos del maquetado del medio que no son noticia.
+    .filter((l) => !/^(publicidad|te puede interesar|lee también|síguenos)/i.test(l));
+
+  const vinetas: string[] = [];
+  const parrafos: string[] = [];
+
+  for (const linea of lineas) {
+    const esVineta = /^[*\-•]\s+/.test(linea);
+    const limpia = linea.replace(/^[*\-•]\s+/, "").trim();
+    if (!limpia) continue;
+
+    if (esVineta) {
+      // Las viñetas de "hechos clave" van al principio del artículo. Una
+      // viñeta que aparece después de varios párrafos es otra cosa (una lista
+      // dentro del texto) y no sirve como resumen.
+      if (parrafos.length === 0 && limpia.length > 20) vinetas.push(limpia);
+      continue;
+    }
+    // Los titulillos y las líneas sueltas no son párrafos.
+    if (limpia.length >= 80) parrafos.push(limpia);
+  }
+
+  if (parrafos.length === 0 && vinetas.length === 0) return null;
+
+  const cabecera = `📰 ${titulo}\n\n`;
+  const pie = `\n\n${FIRMA}`;
+  // Lo que queda para el cuerpo del mensaje, contando ya cabecera y firma.
+  let espacio = LIMITE_PIE_DE_FOTO - cabecera.length - pie.length;
+
+  const bloques: string[] = [];
+
+  // Los hechos clave primero: son lo que el lector quiere de un vistazo.
+  const puntos = vinetas.slice(0, 3).map((v) => `▫️ ${v}`);
+  if (puntos.length > 0) {
+    const bloque = puntos.join("\n");
+    if (bloque.length + 2 <= espacio) {
+      bloques.push(bloque);
+      espacio -= bloque.length + 2;
+    }
+  }
+
+  // Y después los párrafos que quepan enteros. Nunca medio párrafo: se para
+  // en el último que entre completo.
+  for (const parrafo of parrafos.slice(0, 3)) {
+    if (parrafo.length + 2 > espacio) break;
+    bloques.push(parrafo);
+    espacio -= parrafo.length + 2;
+  }
+
+  // Si no ha entrado ni un párrafo, se mete el primero cortado por la última
+  // frase que quepa: mejor eso que publicar solo el titular.
+  if (bloques.length === 0 || (puntos.length > 0 && bloques.length === 1)) {
+    const recortado = cortarPorFrase(parrafos[0] ?? "", espacio - 2);
+    if (recortado) bloques.push(recortado);
+  }
+
+  if (bloques.length === 0) return null;
+  return cabecera + bloques.join("\n\n") + pie;
+}
+
+/** Recorta un texto sin partir una frase. Devuelve null si no cabe ni la
+ *  primera. */
+function cortarPorFrase(texto: string, maximo: number): string | null {
+  if (maximo <= 0 || !texto) return null;
+  if (texto.length <= maximo) return texto;
+
+  const trozo = texto.slice(0, maximo);
+  const corte = Math.max(trozo.lastIndexOf(". "), trozo.lastIndexOf(".\n"));
+  // Si el punto más cercano deja el texto en menos de la mitad, no merece la
+  // pena: sale una sola frase suelta y descolgada.
+  if (corte < maximo / 2) return null;
+  return trozo.slice(0, corte + 1);
+}
