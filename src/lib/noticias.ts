@@ -171,6 +171,10 @@ export async function leerCuerpo(enlace: string): Promise<string | null> {
         // texto. Los espacios de más se limpian justo después.
         .replace(/\[([^\]]*)\]\([^)]*\)/g, " $1 ")
         .replace(/\*\*/g, " ")
+        // Cursivas: _mainnet_ salía tal cual con los guiones puestos. Solo se
+        // quitan los que envuelven texto y NO tocan una letra ni un número por
+        // fuera, para no destrozar nombres tipo BTC_USD o api_key.
+        .replace(/(^|[^\w])_([^_\n]{1,80})_(?![\w])/g, "$1$2")
         .replace(/[ \t]{2,}/g, " ")
         // Y el espacio que ese arreglo mete antes de un signo de puntuación
         // se vuelve a quitar: "falsas ." no lo escribe nadie.
