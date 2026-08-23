@@ -27,7 +27,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { z } from "zod";
 
 /** Modelo por defecto. Se puede cambiar por entorno sin tocar código. */
-const MODELO = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODELO = process.env.GEMINI_MODEL || "gemini-3.7-flash";
 
 /**
  * Forma del resumen. Los límites de longitud van en la descripción de cada
