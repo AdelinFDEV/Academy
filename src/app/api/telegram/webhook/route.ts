@@ -889,11 +889,22 @@ export async function POST(request: NextRequest) {
       if (!(await esAdmin(admin, message.from.id))) {
         await enviarMenu(admin, message.chat.id, message.from);
       } else if (comando === "/noticias") {
-        const nuevas = await guardarNuevas(admin);
-        if (nuevas.length === 0) {
-          await sendTelegramMessage(message.chat.id, "📰 Sin noticias nuevas por ahora.");
-        } else {
-          for (const n of nuevas) await proponerNoticia(admin, message.chat.id, n);
+        // Con su propio catch: el de más abajo registra y devuelve 200, así
+        // que un fallo aquí dejaba el comando sin responder absolutamente
+        // nada y no había forma de saber por qué desde Telegram.
+        try {
+          const nuevas = await guardarNuevas(admin);
+          if (nuevas.length === 0) {
+            await sendTelegramMessage(message.chat.id, "📰 Sin noticias nuevas por ahora.");
+          } else {
+            for (const n of nuevas) await proponerNoticia(admin, message.chat.id, n);
+          }
+        } catch (err) {
+          console.error("[telegram-webhook] /noticias falló:", err);
+          await sendTelegramMessage(
+            message.chat.id,
+            `⚠️ No he podido traer las noticias.\n\n${err instanceof Error ? err.message : "Error desconocido"}`
+          );
         }
       }
     } else if (message?.from && comando === "/estado") {

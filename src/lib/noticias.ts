@@ -6,12 +6,19 @@ type Admin = ReturnType<typeof createAdminClient>;
 export const FUENTE = "CriptoNoticias";
 const FEED = "https://www.criptonoticias.com/feed";
 
-/** Sin cabeceras de navegador el feed responde 403. */
+/**
+ * Sin cabeceras de navegador el feed responde 403: hay un Cloudflare delante.
+ * Se manda el juego completo que enviaría un navegador de verdad, porque desde
+ * un centro de datos la comprobación es más estricta que desde una conexión
+ * doméstica y con solo el User-Agent puede no bastar.
+ */
 const CABECERAS = {
   "User-Agent":
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-  Accept: "application/rss+xml,application/xml,text/xml,*/*",
+  Accept: "application/rss+xml,application/xml,text/xml,application/xhtml+xml,text/html;q=0.9,*/*;q=0.8",
+  "Accept-Language": "es-ES,es;q=0.9,en;q=0.8",
+  "Cache-Control": "no-cache",
 };
 
 /** No se propone nada más viejo que esto: una noticia de cripto de hace dos
