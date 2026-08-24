@@ -7,11 +7,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * La rutina diaria del admin, a las 6:00 de la mañana hora de Rumanía.
+ * La rutina diaria del admin, a las 21:00 hora de Rumanía.
  *
- * ── Por qué el cron corre a las 3 Y a las 4 UTC ─────────────────────────────
+ * ── Por qué el cron corre a las 18 Y a las 19 UTC ───────────────────────────
  * Los crons de Vercel se programan en UTC, y Rumanía cambia de hora dos veces
- * al año: 6:00 de allí son las 3:00 UTC en verano y las 4:00 UTC en invierno.
+ * al año: 21:00 de allí son las 18:00 UTC en verano y las 19:00 UTC en invierno.
  * Programar una sola hora significaría llegar una hora tarde (o pronto) medio
  * año. Así que se dispara en las dos y aquí dentro se comprueba qué hora es
  * DE VERDAD en Rumanía: la ejecución que no toca se va sin hacer nada.

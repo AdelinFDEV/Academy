@@ -1,10 +1,10 @@
 /**
  * La rutina diaria del admin.
  *
- * Cada mañana a las 6:00 (hora de Rumanía) el bot manda UN mensaje privado al
+ * Cada noche a las 21:00 (hora de Rumanía) el bot manda UN mensaje privado al
  * admin con dos cosas: cómo van los canales y una checklist de tres tareas que
  * se marcan pulsando botones. El mismo mensaje se reescribe al marcarlas, así
- * que la mañana entera cabe en un único mensaje del chat.
+ * que el día entero cabe en un único mensaje del chat.
  *
  * ── Quién puede ver esto ────────────────────────────────────────────────────
  * NADIE más que el admin. Y no depende de que los botones estén escondidos:
@@ -38,7 +38,7 @@ type Admin = ReturnType<typeof createAdminClient>;
 export const ZONA = "Europe/Bucharest";
 
 /** Hora a la que sale la rutina, en hora de Rumanía. */
-export const HORA_RUTINA = 6;
+export const HORA_RUTINA = 21;
 
 // ── Las tres tareas ─────────────────────────────────────────────────────────
 
@@ -79,10 +79,10 @@ function hechas(rutina: Rutina): number {
 /**
  * La fecha de HOY en Rumanía, como YYYY-MM-DD.
  *
- * No se puede usar toISOString(): el servidor corre en UTC y a las 6:00 de
- * Rumanía allí siguen siendo las 3 o las 4 de la madrugada — del mismo día por
- * los pelos, pero es el tipo de detalle que un día de cambio de hora rompe la
- * clave primaria. El locale sueco se usa porque formatea justo YYYY-MM-DD.
+ * No se puede usar toISOString(): el servidor corre en UTC, y convertir a mano
+ * la hora de Rumanía es justo el tipo de detalle que un día de cambio de hora
+ * rompe la clave primaria. El locale sueco se usa porque formatea justo
+ * YYYY-MM-DD.
  */
 export function hoyEnRumania(fecha = new Date()): string {
   return new Intl.DateTimeFormat("sv-SE", { timeZone: ZONA }).format(fecha);

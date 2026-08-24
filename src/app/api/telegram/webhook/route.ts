@@ -335,7 +335,7 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
         "A partir de ahora no te mando nada por mi cuenta:\n\n" +
         "🔇 Altas y bajas en los canales\n" +
         "🔇 Propuestas de noticias\n" +
-        "🔇 La rutina diaria de las 6:00\n\n" +
+        "🔇 La rutina diaria de las 21:00\n\n" +
         "Lo que SÍ te sigue llegando:\n\n" +
         "💬 Los mensajes de los usuarios Premium — eso no lo paro nunca, no quiero " +
         "que pierdas a nadie por un interruptor.\n\n" +
@@ -353,7 +353,7 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
       "Ya te vuelvo a contar todo:\n\n" +
       "🔊 Altas y bajas en los canales\n" +
       "🔊 Propuestas de noticias\n" +
-      "🔊 La rutina diaria de las 6:00\n\n" +
+      "🔊 La rutina diaria de las 21:00\n\n" +
       "Lo que pasó mientras estabas en silencio no se recupera — no te lo voy a " +
       "amontonar de golpe. Empezamos desde ahora.\n\n" +
       "Para volver a pararlos, /stop 👇",
@@ -730,7 +730,7 @@ async function handleGombos(chatId: number) {
   const descripciones: Record<string, string> = {
     "/noticias": "Buscar noticias nuevas y proponerlas",
     "/video": "Ver el último vídeo de YouTube y publicarlo",
-    "/rutina": "Tu rutina de hoy, fuera de las 6:00",
+    "/rutina": "Tu rutina de hoy, fuera de las 21:00",
     "/stop": "Parar todos los avisos automáticos",
     "/arrancar": "Reanudarlos",
   };
