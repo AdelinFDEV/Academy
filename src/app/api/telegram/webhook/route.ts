@@ -739,12 +739,21 @@ async function handleGombos(chatId: number) {
     (c) => `${c} — ${descripciones[c] ?? "(sin descripción)"}`
   );
 
+  // Comandos que no siguen al rol admin sino a getOwnerTelegramId(): no viven
+  // en COMANDOS_DE_ADMIN porque ni siquiera se le ofrecen a otro admin.
+  const lineasDueno = [
+    "/chatid — id y tipo del chat actual",
+    "/usuarios — cuántos registrados hay ahora mismo, en vivo",
+  ];
+
   await sendTelegramMessage(
     chatId,
     "🔐 Comandos de admin\n\n" +
       `${lineas.join("\n")}\n\n` +
       "Ninguno de estos aparece en el botón «/» de nadie: se responden solo si el rol " +
-      "es admin, y este mensaje solo se responde a ti."
+      "es admin, y este mensaje solo se responde a ti.\n\n" +
+      "👤 Solo para ti (ni el rol admin los ve)\n\n" +
+      `${lineasDueno.join("\n")}`
   );
 }
 
