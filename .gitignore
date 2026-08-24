@@ -51,3 +51,9 @@ next-env.d.ts
 
 # Auditoría de seguridad interna — no publicar (repo público)
 INFORME-SEGURIDAD.md
+
+# scripts/anuncio-manual.mjs: caché del aviso pendiente de aprobar y los
+# textos sueltos que se le pasan por --texto. Contenido de un envío puntual,
+# no algo que viva en el repo.
+scripts/.anuncio-manual-cache.json
+scripts/anuncio-manual.mensaje*.txt
