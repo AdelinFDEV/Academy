@@ -749,6 +749,45 @@ async function handleGombos(chatId: number) {
 }
 
 /**
+ * /usuarios — cuántas cuentas hay registradas en la web, ahora mismo.
+ *
+ * Consulta directa a `profiles` en cada llamada (COUNT exacto, sin caché ni
+ * tabla de métricas de por medio) porque el propósito es justo ese: un número
+ * real en el momento de pedirlo, no una foto de hace un rato.
+ *
+ * Fuera de COMANDOS_DE_ADMIN y de esAdmin() a propósito, igual que /gombos:
+ * esto no sigue al ROL —que mañana podría tener más gente con permisos de
+ * soporte— sino a la PERSONA. Ver getOwnerTelegramId().
+ */
+async function handleUsuarios(admin: Admin, chatId: number) {
+  const [total, premium, adminCount] = await Promise.all([
+    admin.from("profiles").select("id", { count: "exact", head: true }),
+    admin.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
+    admin.from("profiles").select("id", { count: "exact", head: true }).eq("role", "admin"),
+  ]);
+
+  if (total.error || premium.error || adminCount.error) {
+    const motivo = (total.error ?? premium.error ?? adminCount.error)?.message ?? "Error desconocido";
+    await sendTelegramMessage(chatId, `⚠️ No he podido contar los usuarios.\n\n${motivo}`);
+    return;
+  }
+
+  const totalN = total.count ?? 0;
+  const premiumN = premium.count ?? 0;
+  const adminN = adminCount.count ?? 0;
+  const gratis = totalN - premiumN - adminN;
+
+  await sendTelegramMessage(
+    chatId,
+    "👥 Usuarios registrados (en vivo)\n\n" +
+      `Total: ${totalN}\n` +
+      `· Gratis: ${gratis}\n` +
+      `· Premium: ${premiumN}\n` +
+      `· Admin: ${adminN}`
+  );
+}
+
+/**
  * /video — enseña el último subido al canal de YouTube y ofrece publicarlo.
  *
  * No hace falta ninguna clave de API: getLatestVideos() lee el feed RSS
@@ -1211,6 +1250,21 @@ export async function POST(request: NextRequest) {
       // al ROL, sigue a la PERSONA. Ver getOwnerTelegramId().
       if (message?.from && message.from.id === getOwnerTelegramId()) {
         await handleGombos(message.chat.id);
+      } else if (message?.from) {
+        // Ni una pista de que el comando existe: se responde igual que a
+        // cualquier comando desconocido.
+        await enviarMenu(
+          admin,
+          message.chat.id,
+          message.from,
+          "No conozco ese comando 🤔 Esto es lo que sí puedo hacer:"
+        );
+      }
+    } else if (comando === "/usuarios") {
+      // Fuera de COMANDOS_DE_ADMIN y de esAdmin() a propósito: esto no sigue
+      // al ROL, sigue a la PERSONA. Ver getOwnerTelegramId().
+      if (message?.from && message.from.id === getOwnerTelegramId()) {
+        await handleUsuarios(admin, message.chat.id);
       } else if (message?.from) {
         // Ni una pista de que el comando existe: se responde igual que a
         // cualquier comando desconocido.
