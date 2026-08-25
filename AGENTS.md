@@ -28,6 +28,7 @@ No exige que el proyecto esté sin ningún aviso de ESLint — hay 26 errores de
 | **`no-explicit-any` = 0** | Un `any` apaga el chequeo justo donde más falta hace. Al quitar los 38 que había aparecieron dos fallos reales que llevaban tiempo escondidos: un tipo mal en `/api/trades` y un mensaje de error que se mostraba vacío en el diario de trading |
 | **`no-unused-vars` = 0** | Imports y variables muertas que despistan al leer |
 | **`metadata.title` sin sufijo** | El layout raíz ya añade `\| AdelinBTC Academy` con `template`. Repetirlo lo duplica en la pestaña y en Google |
+| **`new Date(x.toLocaleString(…))` = 0** | Escribe la fecha como texto y deja que `new Date` la relea, y al releerla la interpreta **en la zona de la máquina**, no en el `timeZone` pedido. En un componente de cliente eso es la zona del visitante, así que la hora sale desplazada su offset. Traicionero porque **en UTC da bien** — que es donde corre el servidor. Pasó en el Radar: el PCE de las 08:30 ET salía a las 17:30 en Rumanía en vez de a las 14:30. Lo correcto es `Intl.DateTimeFormat(…).formatToParts()` y montar la fecha con `Date.UTC` desde los números (ver `etTimeToMadrid` en `RadarClient.tsx`) |
 
 Además avisa (sin fallar) si una guía no tiene su `[slug].css` propio.
 

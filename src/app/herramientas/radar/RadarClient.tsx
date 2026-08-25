@@ -50,6 +50,29 @@ function countdownLabel(days: number): string {
   return `En ${days} días`;
 }
 
+/**
+ * Qué hora "de pared" marca `timeZone` en ese instante, devuelta como si esa
+ * hora fuera UTC. Sirve para despejar el offset de la zona restándole el
+ * instante original.
+ *
+ * Va con formatToParts y NO con `new Date(fecha.toLocaleString(...))`: esa
+ * segunda forma escribe la hora como texto y deja que `new Date` la vuelva a
+ * leer, y al leerla la interpreta en la zona de QUIEN MIRA LA PÁGINA. Como
+ * esto es un componente de cliente, el resultado salía desplazado tantas horas
+ * como el offset del visitante: en Rumanía (UTC+3) el PCE de las 08:30 ET
+ * aparecía a las 17:30 en vez de a las 14:30. Solo cuadraba en UTC, que es
+ * justo donde corre el servidor — por eso no se veía venir.
+ */
+function horaDePared(instante: number, timeZone: string): number {
+  const partes = new Intl.DateTimeFormat("en-US", {
+    timeZone, year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false,
+  }).formatToParts(instante);
+  const v = (tipo: string) => Number(partes.find((p) => p.type === tipo)?.value ?? 0);
+  // en-US con hour12:false devuelve 24 a medianoche, no 0.
+  return Date.UTC(v("year"), v("month") - 1, v("day"), v("hour") % 24, v("minute"), v("second"));
+}
+
 // Convierte la hora oficial en horario del Este de EE. UU. ("14:00 ET") a la
 // hora de España (Europe/Madrid) para la fecha del evento. Usa Intl, así que
 // respeta el cambio de hora de ambas zonas — sin tablas fijas ni librerías.
@@ -57,13 +80,19 @@ function etTimeToMadrid(dateStr: string, timeET: string): string {
   const t = timeET.match(/(\d{1,2}):(\d{2})/);
   const [yy, mo, dd] = dateStr.split("-").map(Number);
   if (!t || !yy) return timeET.replace(" ET", "");
-  const wallUTC = Date.UTC(yy, mo - 1, dd, Number(t[1]), Number(t[2]));
-  // Qué hora "de pared" muestra Nueva York para ese instante → despeja su offset
-  const nyWall = new Date(new Date(wallUTC).toLocaleString("en-US", { timeZone: "America/New_York" })).getTime();
-  const instant = new Date(wallUTC - (nyWall - wallUTC));
+
+  // La hora de pared en Nueva York, tomada de momento como si fuera UTC.
+  const pared = Date.UTC(yy, mo - 1, dd, Number(t[1]), Number(t[2]));
+  // Restarle el offset de Nueva York da el instante real. Se repite una
+  // segunda vez con el instante ya corregido porque el offset se mide EN un
+  // instante: en un fin de semana de cambio de hora, el de la aproximación
+  // puede no ser el mismo que el del instante bueno.
+  let instante = pared - (horaDePared(pared, "America/New_York") - pared);
+  instante = pared - (horaDePared(instante, "America/New_York") - instante);
+
   return new Intl.DateTimeFormat("es-ES", {
     timeZone: "Europe/Madrid", hour: "2-digit", minute: "2-digit", hour12: false,
-  }).format(instant);
+  }).format(instante);
 }
 
 // Índice de Miedo y Codicia → etiqueta en español + color

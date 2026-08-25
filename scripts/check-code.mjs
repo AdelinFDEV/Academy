@@ -98,7 +98,60 @@ function checkTitles() {
   }
 }
 
-// ── 3) CSS de guías fuera de su sitio ─────────────────────────────────────
+// ── 3) Fechas releídas desde texto ────────────────────────────────────────
+// `new Date(algo.toLocaleString(...))` escribe una fecha como texto y deja que
+// `new Date` la vuelva a leer — y al leerla la interpreta en la zona horaria
+// DE LA MÁQUINA, no en la del `timeZone` que se pidió. El resultado sale
+// desplazado tantas horas como el offset de quien mira, y en un componente de
+// cliente eso es la zona del visitante.
+//
+// Es traicionero porque en UTC da el resultado correcto: el servidor va en
+// UTC, así que en desarrollo y en el render del servidor parece que funciona.
+// Pasó en el Radar: el PCE de las 08:30 ET salía a las 17:30 en Rumanía.
+//
+// La forma correcta es `Intl.DateTimeFormat(...).formatToParts()`, que
+// devuelve números y nunca pasa por texto (ver etTimeToMadrid en RadarClient).
+function checkDateReparse() {
+  // Los comentarios se vacían antes de mirar: si no, el comentario que CITA el
+  // antipatrón para explicar por qué no usarlo se marca a sí mismo. Se
+  // sustituyen por espacios en vez de borrarse para no mover los números de
+  // línea que se enseñan al fallar.
+  const sinComentarios = (src) =>
+    src
+      .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
+      .replace(/\/\/[^\n]*/g, (m) => " ".repeat(m.length));
+
+  const offenders = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir)) {
+      const p = join(dir, entry);
+      if (statSync(p).isDirectory()) { walk(p); continue; }
+      if (!/\.tsx?$/.test(entry)) continue;
+      const src = sinComentarios(readFileSync(p, "utf8"));
+      src.split("\n").forEach((line, i) => {
+        if (/new Date\s*\([^)]*\.toLocaleString\s*\(/.test(line)) {
+          offenders.push(`${p.split(/src[\\/]/)[1]}:${i + 1}`);
+        }
+      });
+    }
+  };
+  walk("src");
+
+  if (offenders.length === 0) {
+    console.log(`${GREEN}✓${OFF} fechas sin releer desde texto ${DIM}— 0 casos${OFF}`);
+  } else {
+    console.log(`${RED}✗${OFF} new Date(...toLocaleString(...)) ${RED}— ${offenders.length} caso(s)${OFF}`);
+    offenders.forEach((f) => console.log(`    src/${f}`));
+    problems.push([
+      "Fecha releída desde texto",
+      "new Date(x.toLocaleString({timeZone})) se interpreta en la zona de la máquina, " +
+        "no en la pedida. Usa Intl.DateTimeFormat(...).formatToParts() y monta la fecha " +
+        "con Date.UTC a partir de los números.",
+    ]);
+  }
+}
+
+// ── 4) CSS de guías fuera de su sitio ─────────────────────────────────────
 // AGENTS.md: cada guía lleva su propio [slug].css. Si aparece una guía nueva
 // sin él, su CSS ha acabado en guias.css o en globals.css.
 function checkGuideCss() {
@@ -124,6 +177,7 @@ function checkGuideCss() {
 console.log("\nComprobaciones de código\n");
 checkEslint();
 checkTitles();
+checkDateReparse();
 checkGuideCss();
 
 if (problems.length) {
