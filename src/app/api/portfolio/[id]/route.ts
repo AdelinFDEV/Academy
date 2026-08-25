@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { coingeckoIdExiste, errorIdDesconocido } from "@/lib/coingecko";
 import { NextResponse } from "next/server";
 
 async function getAdminUser() {
@@ -23,6 +24,16 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const { id } = await params;
   const body = await req.json();
   const { coin_symbol, coin_name, coingecko_id, buy_price, quantity, buy_date, notes } = body;
+
+  // Editar es también por donde se ARREGLA un id malo, así que se comprueba
+  // igual que al crear: si no, se cambia un id muerto por otro y la fila
+  // sigue sin precios. Ver src/lib/coingecko.ts.
+  if (coingecko_id) {
+    const cgId = coingecko_id.toLowerCase().trim();
+    if (!(await coingeckoIdExiste(cgId))) {
+      return NextResponse.json({ error: errorIdDesconocido(cgId) }, { status: 400 });
+    }
+  }
 
   const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if (coin_symbol) updates.coin_symbol = coin_symbol.toUpperCase().trim();

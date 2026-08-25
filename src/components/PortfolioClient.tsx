@@ -115,6 +115,13 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
     return () => clearInterval(interval);
   }, [positions, isPremium, isAdmin, fetchPrices]);
 
+  // La posición que el POST va a fusionar con lo que se está escribiendo, si
+  // la hay. Sirve solo para avisar en el formulario — quien decide de verdad
+  // es el servidor, con el mismo criterio (mismo coingecko_id).
+  const yaEnCartera = positions.find(
+    (p) => p.coingecko_id === form.coingecko_id.trim().toLowerCase()
+  );
+
   // ── summary ─────────────────────────────────────────────────────
   const totalInvested = positions.reduce((s, p) => s + p.buy_price * p.quantity, 0);
   const totalCurrent = positions.reduce((s, p) => {
@@ -174,16 +181,18 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
       const json = await res.json();
       if (!res.ok) { setFormError(json.error ?? "Error al guardar"); return; }
 
-      if (editingId) {
-        setPositions((prev) => prev.map((p) => (p.id === editingId ? json : p)));
-      } else {
-        setPositions((prev) => [...prev, json]);
-      }
+      // Al crear, el servidor puede haber FUSIONADO la compra con una posición
+      // que ya existía de esa misma moneda (ver POST en /api/portfolio): en ese
+      // caso devuelve esa fila ya actualizada, no una nueva. Por eso se decide
+      // por el id de lo que vuelve y no por si había `editingId`: dar por hecho
+      // que un alta siempre añade una fila duplicaría la moneda en la tabla.
+      const siguientes = positions.some((p) => p.id === json.id)
+        ? positions.map((p) => (p.id === json.id ? json : p))
+        : [...positions, json];
+
+      setPositions(siguientes);
       cancelForm();
-      fetchPrices(editingId
-        ? positions.map((p) => (p.id === editingId ? json : p))
-        : [...positions, json]
-      );
+      fetchPrices(siguientes);
     } catch {
       setFormError("Error de red. Inténtalo de nuevo.");
     } finally {
@@ -325,6 +334,7 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
                 <th>Coin</th>
                 <th className="pf-th-right">Cantidad</th>
                 <th className="pf-th-right">Precio compra</th>
+                <th className="pf-th-right">Invertido</th>
                 <th className="pf-th-right">Precio actual</th>
                 <th className="pf-th-right">Valor actual</th>
                 <th className="pf-th-right">P&amp;L</th>
@@ -362,6 +372,9 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
                     </td>
                     <td className="pf-td-right pf-cell-muted">
                       {fmtCurrency(pos.buy_price)}
+                    </td>
+                    <td className="pf-td-right pf-cell-muted">
+                      {fmtCurrency(invested)}
                     </td>
                     <td className="pf-td-right">
                       {pricesLoading ? <span className="pf-loading-dot" /> : (
@@ -425,6 +438,15 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
               <div className="pf-form-title">
                 {editingId ? "Editar posición" : "Nueva posición"}
               </div>
+              {/* La fusión pasa en el servidor y no se ve venir desde el
+                  formulario: se avisa en cuanto el id escrito coincide con una
+                  moneda que ya está en cartera. */}
+              {!editingId && yaEnCartera && (
+                <div className="pf-form-hint">
+                  Ya tienes {yaEnCartera.coin_symbol} en cartera: esta compra se sumará a esa
+                  posición y el precio de compra pasará a ser la media ponderada de ambas.
+                </div>
+              )}
               <div className="pf-form-grid">
                 <label className="pf-form-field">
                   <span>Símbolo *</span>

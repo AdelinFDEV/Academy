@@ -10307,6 +10307,8 @@ select {
 .pf-form { background: var(--bg-card); border: 1px solid rgba(230,180,85,0.15); border-radius: 18px; padding: 28px; }
 
 .pf-form-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; }
+/* Aviso de que la compra se va a fusionar con una posición que ya existe. */
+.pf-form-hint { font-size: 13px; color: #7dd3fc; background: rgba(125,211,252,0.08); border: 1px solid rgba(125,211,252,0.18); border-radius: 8px; padding: 10px 14px; margin: -8px 0 16px; }
 
 .pf-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
 
