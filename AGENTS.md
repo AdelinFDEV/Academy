@@ -1,3 +1,39 @@
+# PARA — antes de crear contenido, lee esto
+
+El panel de admin tiene las **instrucciones completas y autoritativas** de cada tipo de contenido. Son la fuente de verdad; lo de aquí abajo es solo el resumen para no arrancar a ciegas.
+
+| Vas a crear… | Lee **antes** de escribir una línea |
+|---|---|
+| Una **entrada** del blog | `src/app/admin/posts-instrucciones/page.tsx` (`/admin/posts-instrucciones`) |
+| Una **guía** interactiva | `src/app/admin/guias-instrucciones/page.tsx` (`/admin/guias-instrucciones`) |
+| Una **liberación** de tokens | `src/app/admin/liberaciones-instrucciones/page.tsx` |
+
+**Esto ya falló una vez** (agosto 2026, entradas de Bitcoin Core v32 y Zcash Ironwood): se redactaron las dos entradas enteras sin abrir `/admin/posts-instrucciones`, y hubo que rehacerlas porque les faltaba el gráfico obligatorio y doblaban la longitud máxima. Leer la página cuesta 30 segundos; rehacer una entrada, mucho más.
+
+## Resumen operativo de una entrada nueva
+
+**Las 3 preguntas obligatorias, ANTES de redactar** — nunca se asumen:
+
+1. **¿Qué categoría?** (si no existe, crear la fila en `categories` — todo es dinámico, no se toca código)
+2. **¿Free o Premium?** → `is_premium`
+3. **¿Imagen de portada?** → la da el admin
+
+Y después:
+
+- **Longitud: 500–800 palabras** (3–5 min). Las guías son las piezas largas; **las entradas no**. Como calibración, una entrada publicada ronda los **6.000–8.500 caracteres de HTML**.
+- **Mínimo un `.prose-chart`** por entrada. Es obligatorio, no opcional.
+- `content` es **HTML final** escrito a mano (no hay Markdown ni parser). Etiquetas permitidas: `h1`–`h4`, `p`, `strong`, `em`, `a`, `ul`/`ol`/`li`, `blockquote`, `pre`/`code`, `hr`, `table.prose-table`, `img.prose-img`, `.prose-callout`, `.prose-chart`. **Nada fuera de esa lista.**
+- Callouts: `--info` (💡), `--tip` (✅), `--warning` (⚠️), `--danger` (🚨).
+- En `.prose-chart-fill`, el `width` se calcula a mano: `(valor / valor_más_alto) × 100`.
+- **Nunca** enlaces externos, menciones promocionales ni CTAs del artículo original.
+- SEO (`seo_title`, `meta_description`, `focus_keyword`) lo rellena siempre Claude, pensando en un lector principiante.
+- **Portada:** subirla a Supabase Storage (bucket `media`, nombre `${Date.now()}-${slug}.${ext}`) y guardar la **URL pública** en `cover_image` — nunca enlazar una imagen externa. Límites del panel: JPG/PNG/WebP/GIF y 5 MB (ver `src/app/api/admin/upload/route.ts`).
+- **Mostrar el borrador y esperar aprobación explícita antes de publicar.**
+
+## Publicar dispara un aviso en Telegram
+
+`published = true` no es solo un flag de visibilidad: `anunciarPendientes()` (`src/lib/announce.ts`) recoge las entradas publicadas y **las anuncia solas** en el grupo, desde el cron diario o al publicar desde el panel. Por eso, si el admin no ha aprobado todavía, **insertar con `published = false`** y decírselo — publicar por tu cuenta manda un mensaje a su comunidad.
+
 # Comprobación antes de dar algo por terminado
 
 ```bash
