@@ -18,7 +18,7 @@ export default function PostsInstruccionesPage() {
           Filosofía y propósito
         </h2>
         <div className="agi-card">
-          <p>Las entradas son <strong>artículos de lectura rápida</strong> (3–5 minutos), muy distintas de las guías: nada de minijuegos, quiz ni progreso — solo texto bien estructurado, cercano y fácil de seguir, con al menos un gráfico para hacer la lectura más amena.</p>
+          <p>Las entradas son <strong>artículos de lectura ágil</strong> (3–8 minutos), muy distintas de las guías: nada de minijuegos, quiz ni progreso — solo texto bien estructurado, cercano y fácil de seguir, con al menos un gráfico para hacer la lectura más amena. Pueden extenderse lo que el tema pida: lo que las separa de una guía no es la longitud, sino que <strong>se leen, no se recorren</strong>.</p>
           <ul className="agi-list">
             <li>El admin pasa un artículo o noticia (texto o link) como base — <strong>nunca se traduce ni se copia</strong>, siempre se reescribe entero con voz propia</li>
             <li>Cada entrada debe ser <strong>única e independiente</strong>: sin enlaces externos ni promociones del artículo original</li>
@@ -147,7 +147,7 @@ export default function PostsInstruccionesPage() {
         </h2>
         <div className="agi-card">
           <ul className="agi-list">
-            <li><strong>Longitud:</strong> lectura rápida, 3–5 minutos (aprox. 500–800 palabras). Las guías son las únicas piezas largas — las entradas no</li>
+            <li><strong>Longitud: 500–1500 palabras</strong> (3–8 min). El rango es amplio a propósito: <strong>manda el tema, no la cifra</strong>. Una noticia concreta se despacha en 500; un tema que necesita contexto, matices o desmontar una confusión extendida puede irse a 1500 sin recortar nada de valor. <strong>Nunca rellenar para llegar, ni podar algo que aporta para no pasarse</strong></li>
             <li><strong>Mínimo un gráfico</strong> por entrada (ver HTML en bloque 08) — hace la lectura más entretenida y visual</li>
             <li>Subtítulos (<code>&lt;h2&gt;</code>) para separar bloques temáticos — nunca un muro de texto sin cortes</li>
             <li>Párrafos cortos (<code>&lt;p&gt;</code>), variar su longitud para dar ritmo — no todos del mismo tamaño</li>
@@ -275,7 +275,7 @@ export default function PostsInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido 100% reescrito, tono cercano, sin enlaces externos ni promociones</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Estructurar en subtítulos y párrafos cortos, con negrita en lo importante</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Incluir mínimo un <code>.prose-chart</code> (bloque 08)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Longitud 3–5 minutos de lectura (~500–800 palabras)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Longitud entre <strong>500 y 1500 palabras</strong>, la que pida el tema</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar <code>excerpt</code>, <code>seo_title</code>, <code>meta_description</code> y <code>focus_keyword</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Si la categoría no existe, crearla en Supabase antes de asignarla</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Subir la imagen a Supabase Storage (bucket <code>media</code>) y usar la URL pública en <code>cover_image</code></span></label>

@@ -20,7 +20,7 @@ El panel de admin tiene las **instrucciones completas y autoritativas** de cada 
 
 Y después:
 
-- **Longitud: 500–800 palabras** (3–5 min). Las guías son las piezas largas; **las entradas no**. Como calibración, una entrada publicada ronda los **6.000–8.500 caracteres de HTML**.
+- **Longitud: 500–1500 palabras** (3–8 min). Rango amplio a propósito: **manda el tema, no la cifra**. Una noticia concreta se despacha en 500; un tema que necesita contexto, matices o desmontar una confusión extendida puede irse a 1500. **Nunca rellenar para llegar, ni podar algo que aporta para no pasarse.** Lo que separa una entrada de una guía no es la longitud, sino que la entrada se lee y la guía se recorre (minijuegos, quiz, progreso).
 - **Mínimo un `.prose-chart`** por entrada. Es obligatorio, no opcional.
 - `content` es **HTML final** escrito a mano (no hay Markdown ni parser). Etiquetas permitidas: `h1`–`h4`, `p`, `strong`, `em`, `a`, `ul`/`ol`/`li`, `blockquote`, `pre`/`code`, `hr`, `table.prose-table`, `img.prose-img`, `.prose-callout`, `.prose-chart`. **Nada fuera de esa lista.**
 - Callouts: `--info` (💡), `--tip` (✅), `--warning` (⚠️), `--danger` (🚨).
