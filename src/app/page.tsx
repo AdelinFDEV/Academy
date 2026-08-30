@@ -142,6 +142,7 @@ export default async function HomePage() {
 
   return (
     <div className="blog-page home-page">
+      <link rel="preload" as="image" href="/hero-poster.webp" fetchPriority="high" />
       <div className="bg-ambient" />
 
       {/* ── Nav ── */}
