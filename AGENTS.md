@@ -28,6 +28,14 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 - **`/robots.txt`** (`src/app/robots.ts`) declara el sitemap y bloquea el rastreo de lo privado.
 - **Las categorías** entran solas, con la fecha de su entrada más reciente. Una categoría **sin ninguna entrada publicada no entra**, a propósito: su página saldría vacía.
 
+## Search Console está activo desde el 30 de agosto de 2026
+
+- Propiedad de tipo **Dominio**, verificada con un registro **TXT en la raíz**, en el DNS de **Vercel**. **Ese TXT no se borra nunca**: Google revalida cada cierto tiempo y se perdería la propiedad.
+- Sitemap enviado y aceptado: **30 páginas descubiertas**.
+- **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
+- **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
+- Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Y ver  y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
+
 ## Lo que SÍ hay que hacer al crear algo nuevo
 
 | Creas… | Qué hace falta para que entre en el sitemap |

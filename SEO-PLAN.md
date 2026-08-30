@@ -17,7 +17,7 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 - [x] **1. Sitemap** — crear `src/app/sitemap.ts` leyendo entradas y guías de Supabase con su `lastModified`.
 - [x] **2. Robots** — crear `src/app/robots.ts` con referencia al sitemap y bloqueo de `/admin`, `/dashboard`, `/api` y rutas de auth.
-- [ ] **3. Search Console** — verificar el dominio y enviar el sitemap. **Lo hace el admin**, Claude no tiene acceso. Hacerlo justo después de los puntos 1 y 2.
+- [x] **3. Search Console** — verificar el dominio y enviar el sitemap. **Lo hace el admin**, Claude no tiene acceso. Hacerlo justo después de los puntos 1 y 2.
 - [ ] **4. Canónicas** — `alternates.canonical` en el `generateMetadata` de cada ruta pública. Ya existe `metadataBase`, así que basta la ruta relativa.
 - [ ] **5. Títulos y descripciones** — el sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos y hace que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y fijar los límites en `/admin/posts-instrucciones`.
 - [ ] **6. Datos estructurados** — `Article` en entradas, `BreadcrumbList` en entradas y guías, `Organization` y `WebSite` en el layout raíz.
@@ -62,8 +62,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-30 | — | `11d19d4` | Auditoría hecha y plan acordado. Nada implementado todavía. |
 | 2026-08-30 | 1 | `6510dbf` | `src/app/sitemap.ts` + `src/lib/site.ts`. 32 URLs: 11 estáticas, 7 guías, 8 entradas, 6 categorías. `lastModified` real en entradas y categorías; estáticas y guías van sin él a propósito (no hay fecha fiable). Revalida cada hora y no lee cookies, así que la ruta queda estática. |
 | 2026-08-30 | 2 | `dc4c506` | `src/app/robots.ts`. Declara el sitemap y bloquea /admin, /dashboard, /cuenta, /api, las rutas de auth, las que redirigen a login o premium (/calculadora, /portfolio, /herramientas), /trading-en-directo y /premium/gracias. Reutiliza `SITE_URL`. |
-
-**Siguiente:** punto 3 — Search Console. **Lo hace el admin**, no Claude. Requiere que 1 y 2 estén desplegados en producción.
 | 2026-08-30 | 1 y 2 | `1c530a3` | Corrección tras comprobar las 32 URLs en producción: `/logros` y `/terminos` daban 307 y salen del sitemap. `/logros` está en `protectedRoutes` de `src/proxy.ts` (el middleware, no su `page.tsx`) y pasa a `robots.txt`; `/terminos` es un stub que redirige a `/aviso-legal`. Quedan **30 URLs**, todas 200. |
+| 2026-08-30 | 3 | — | Search Console verificado por el admin como **propiedad de Dominio** (TXT en el DNS de Vercel, en la raíz — **no borrar nunca**, Google revalida). Sitemap enviado: **Correcto, 30 páginas descubiertas**. Los datos de Rendimiento arrancan hoy; no hay histórico anterior. |
 
-**Siguiente:** punto 3 — Search Console. **Lo hace el admin**, no Claude. Ya se puede: 1 y 2 están desplegados y verificados en producción.
+**Siguiente:** punto 4 — canónicas. Es todo código, lo hace Claude.
