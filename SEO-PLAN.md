@@ -2,7 +2,9 @@
 
 > **Este archivo es la fuente de verdad del progreso SEO.** Vive en el repo a propósito: la memoria local de Claude (`~/.claude/`) no viaja entre ordenadores, y este plan sí tiene que hacerlo.
 >
-> **Al retomar el trabajo:** mira el primer punto sin marcar y sigue por ahí, en orden. **Al completar un punto:** marca la casilla, anota la fecha y el commit, y súbelo. Si no se actualiza aquí, en el siguiente PC no consta.
+> **Al retomar el trabajo:** mira el primer punto sin marcar y sigue por ahí, en orden.
+>
+> **Al completar un punto**, tres cosas: (1) marcar la casilla y anotar fecha y commit abajo; (2) **llevar lo que cambie el día a día a la sección «Cómo funciona el SEO de este sitio» de [`AGENTS.md`](./AGENTS.md)** — este archivo cuenta el progreso, aquel cuenta cómo funciona el sitio hoy, y es el que se lee al abrir sesión; (3) verificar en producción tras desplegar. Si no se actualiza, en el siguiente PC no consta.
 
 Informe completo con los 17 hallazgos, las palabras clave y las estimaciones de impacto:
 https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49

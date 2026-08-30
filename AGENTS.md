@@ -2,7 +2,59 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo; al completar un punto, marca la casilla y anota el commit en su tabla de avance.
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo.
+
+**Al completar un punto, tres cosas, siempre:**
+
+1. Marcar la casilla en `SEO-PLAN.md` y anotar el commit en su tabla de avance.
+2. **Añadir aquí abajo lo que cambie el día a día** — lo que hay que saber al crear una entrada, una guía o una página nueva. `SEO-PLAN.md` cuenta el progreso; esta sección cuenta **cómo funciona el SEO del sitio ahora mismo**, para no tener que leer 12 puntos de plan antes de escribir un artículo.
+3. Verificar en producción después de desplegar, no solo en local.
+
+# Cómo funciona el SEO de este sitio (estado actual)
+
+> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1 y 2**.
+
+## Lo que ya es automático — no hay que hacer nada
+
+- **`/sitemap.xml`** (`src/app/sitemap.ts`) se genera solo y **revalida cada hora**. Lee las entradas de Supabase, así que **una entrada nueva aparece sola en menos de 1 h desde que se publica**. No hay lista que mantener a mano.
+- **`/robots.txt`** (`src/app/robots.ts`) declara el sitemap y bloquea el rastreo de lo privado.
+- **Las categorías** entran solas, con la fecha de su entrada más reciente. Una categoría **sin ninguna entrada publicada no entra**, a propósito: su página saldría vacía.
+
+## Lo que SÍ hay que hacer al crear algo nuevo
+
+| Creas… | Qué hace falta para que entre en el sitemap |
+|---|---|
+| **Entrada** | Nada. Basta con `published = true`. Con `published = false` no entra — que es lo correcto. |
+| **Guía** | **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** El sitemap recorre ese array, no la carpeta `src/app/guias/`. Una guía con su `page.tsx` pero sin su entrada en `GUIDES` **es invisible para Google**. |
+| **Página pública nueva** | Añadirla a mano a `STATIC_ROUTES` en `src/app/sitemap.ts`, con su `priority` y su `changeFrequency`. |
+| **Categoría** | Nada, en cuanto tenga una entrada publicada. |
+
+## Tres reglas que ya se rompieron una vez
+
+1. **Antes de meter una ruta en el sitemap, comprueba que devuelve 200 sin sesión.** No basta con mirar su `page.tsx`: **la protección de rutas vive en el middleware `src/proxy.ts`** (array `protectedRoutes`), y desde el `page.tsx` no se ve. Así se coló `/logros`, que redirige a login. Lo que está protegido va a `robots.txt`, no al sitemap.
+2. **Nunca metas en el sitemap una ruta que redirige.** Va el destino, jamás el salto. Así se coló `/terminos`, que es un stub hacia `/aviso-legal`. Un sitemap con 307 dentro es señal negativa para Google.
+3. **Nunca inventes un `lastModified`.** Solo se pone donde hay fecha real (`updated_at` de la entrada; en categorías, la de su entrada más reciente). Las páginas estáticas y las guías van **sin** él: es opcional en el estándar, y una fecha de build que miente hace más daño que una ausente.
+
+## Detalles de implementación que evitan romper cosas
+
+- **El dominio se escribe en un solo sitio: `SITE_URL` en `src/lib/site.ts`.** No lo repitas. El fallback apunta a producción y no a `localhost` a propósito: si falta `NEXT_PUBLIC_SITE_URL`, es mucho menos malo publicar URLs correctas que llenar el sitemap de `localhost`. En local verás URLs de `adelinacademy.com` aunque sirvas en `localhost:3000` — **es lo correcto, no es un fallo**.
+- **`sitemap.ts` no usa `@/lib/supabase/server`.** Ese cliente lee cookies, lo que volvería la ruta dinámica. Usa un cliente anónimo sin cookies, y por eso Next la sirve estática. Si alguien lo cambia a `createClient()` de `server.ts`, el sitemap deja de cachearse y pega a Supabase en cada rastreo.
+- **`disallow` en `robots.txt` impide rastrear, no indexar.** Una URL bloqueada puede seguir saliendo en Google si alguien la enlaza, solo que sin descripción. La barrera real de lo privado es el login del servidor. Esto es higiene de presupuesto de rastreo, no seguridad.
+- El bloqueo es **por prefijo**: `Disallow: /premium/gracias` no afecta a `/premium`, que sí está en el sitemap.
+
+## Cómo verificar en producción
+
+```bash
+curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
+```
+
+Y, tras tocar el sitemap, comprobar que **ninguna** de sus URLs redirige:
+
+```bash
+curl -s https://adelinacademy.com/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's|</\?loc>||g' | while read u; do c=$(curl -s -o /dev/null -w "%{http_code}" "$u"); [ "$c" != "200" ] && echo "$c $u"; done
+```
+
+Silencio = todo correcto. El despliegue tarda ~1 minuto, así que el primer intento puede dar el contenido viejo.
 
 # PARA — antes de crear contenido, lee esto
 
@@ -13,6 +65,8 @@ El panel de admin tiene las **instrucciones completas y autoritativas** de cada 
 | Una **entrada** del blog | `src/app/admin/posts-instrucciones/page.tsx` (`/admin/posts-instrucciones`) |
 | Una **guía** interactiva | `src/app/admin/guias-instrucciones/page.tsx` (`/admin/guias-instrucciones`) |
 | Una **liberación** de tokens | `src/app/admin/liberaciones-instrucciones/page.tsx` |
+
+Y sea cual sea el tipo, **[«Cómo funciona el SEO de este sitio»](#cómo-funciona-el-seo-de-este-sitio-estado-actual), más arriba, aplica siempre**: dice qué entra solo en el sitemap y qué hay que registrar a mano.
 
 **Esto ya falló una vez** (agosto 2026, entradas de Bitcoin Core v32 y Zcash Ironwood): se redactaron las dos entradas enteras sin abrir `/admin/posts-instrucciones`, y hubo que rehacerlas porque les faltaba el gráfico obligatorio y doblaban la longitud máxima. Leer la página cuesta 30 segundos; rehacer una entrada, mucho más.
 
@@ -101,6 +155,7 @@ Regla al añadir estilos nuevos: si una clase solo la usa un componente/página 
 Cada guía es un componente React independiente (ver `/admin/guias-instrucciones`), no una plantilla genérica reutilizada — por eso su CSS **no** va en `guias.css` ni en `globals.css`. Al crear una guía nueva:
 
 - Crear `src/app/guias/[slug]/[slug].css` (o `.module.css`) exclusivo para esa guía, e importarlo solo en `src/app/guias/[slug]/page.tsx`.
+- **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** No es solo para el listado: **el sitemap recorre ese array**, así que una guía que no esté ahí no la ve Google nunca.
 - `guias.css` se reserva para lo que de verdad comparten **todas** las guías: el listado `/guias`, la estructura visual replicada en cada una (hero, cards, paleta oro/naranja) y componentes reutilizables entre guías.
 - Nunca dumpear el CSS de una guía concreta en `guias.css` "porque ya está importado ahí" — es exactamente lo que hace que ese archivo crezca sin control (ya pasó una vez: `guias.css` mezcla las 3 guías actuales en un único archivo de 1200+ líneas — pendiente de separar si se decide abordarlo).
 
