@@ -13,6 +13,61 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 ---
 
+# 🔻 RETOMAR AQUÍ — estado a 30 de agosto de 2026
+
+**Bloque 1 cerrado en sus tres primeros puntos, todos verificados en producción, no solo en local.**
+
+| Hecho | Comprobado |
+|---|---|
+| 1. Sitemap | `/sitemap.xml` sirve **30 URLs**, las 30 responden 200 |
+| 2. Robots | `/robots.txt` en producción, declara el sitemap |
+| 3. Search Console | Propiedad de **Dominio** verificada; sitemap **Correcto, 30 páginas** |
+| Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
+
+## Lo siguiente es el punto 4 — canónicas. Lo hace Claude, entero
+
+No requiere ninguna acción del admin. Consiste en añadir `alternates.canonical` al `generateMetadata` de cada ruta pública: portada, `/articulos`, `/guias` y las 7 guías, `/post/[slug]`, `/categoria/[slug]`, `/glosario`, `/premium`, `/asesoria` y las legales. `metadataBase` ya existe en `src/app/layout.tsx`, así que basta la ruta relativa.
+
+**Por qué es urgente y no un adorno:** Search Console ya está diciendo, sobre la portada:
+
+> «La página no está indexada — **Duplicada: el usuario no ha indicado ninguna versión canónica**», con `https://www.adelinacademy.com/` como página de referencia.
+
+El 308 quitó la mitad del problema. La otra mitad es literalmente lo que Google pide: **una canónica en el HTML**. Todo lo demás de esa pantalla salía bien (rastreo permitido, obtención correcta, indexación permitida).
+
+## ⛔ Pendiente del admin, pero SOLO DESPUÉS del punto 4
+
+Solicitar indexación en Search Console → «Inspección de URLs» → «Solicitar indexación», para estas tres:
+
+```
+https://adelinacademy.com/
+https://adelinacademy.com/articulos
+https://adelinacademy.com/guias
+```
+
+**No hacerlo antes de que las canónicas estén desplegadas.** Google volvería, encontraría el mismo empate sin resolver y no indexaría igual — y la cuota es de unas 10 peticiones al día.
+
+## No tocar nunca
+
+- **El registro TXT `google-site-verification=...`** en la raíz del DNS de Vercel. Google revalida cada cierto tiempo; si desaparece, se pierde la propiedad de Search Console.
+- **La fila de `adelinacademy.com`** en Vercel → Project → Settings → Domains. Debe seguir en «Connect to an environment → Production». Solo la de `www` redirige.
+- **La casilla de Vercel «Redirect apex domains to www» / «Include apex and www variants»**: viene marcada por defecto y hay que dejarla **desmarcada**. Invertiría el sitio y convertiría en redirección las 30 URLs que ya tiene Google.
+
+## Comprobar en 30 segundos que todo sigue en pie
+
+```bash
+curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
+```
+
+Debe decir **30**. Y que ninguna URL del sitemap redirija:
+
+```bash
+curl -s https://adelinacademy.com/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's|</\?loc>||g' | while read u; do c=$(curl -s -o /dev/null -w "%{http_code}" "$u"); [ "$c" != "200" ] && echo "$c $u"; done
+```
+
+Silencio = correcto.
+
+---
+
 ## Bloque 1 — Críticos (~1 día, desbloquean todo lo demás)
 
 - [x] **1. Sitemap** — crear `src/app/sitemap.ts` leyendo entradas y guías de Supabase con su `lastModified`.
@@ -64,7 +119,6 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-30 | 2 | `dc4c506` | `src/app/robots.ts`. Declara el sitemap y bloquea /admin, /dashboard, /cuenta, /api, las rutas de auth, las que redirigen a login o premium (/calculadora, /portfolio, /herramientas), /trading-en-directo y /premium/gracias. Reutiliza `SITE_URL`. |
 | 2026-08-30 | 1 y 2 | `1c530a3` | Corrección tras comprobar las 32 URLs en producción: `/logros` y `/terminos` daban 307 y salen del sitemap. `/logros` está en `protectedRoutes` de `src/proxy.ts` (el middleware, no su `page.tsx`) y pasa a `robots.txt`; `/terminos` es un stub que redirige a `/aviso-legal`. Quedan **30 URLs**, todas 200. |
 | 2026-08-30 | 3 | — | Search Console verificado por el admin como **propiedad de Dominio** (TXT en el DNS de Vercel, en la raíz — **no borrar nunca**, Google revalida). Sitemap enviado: **Correcto, 30 páginas descubiertas**. Los datos de Rendimiento arrancan hoy; no hay histórico anterior. |
-
 | 2026-08-30 | previo al 4 | — | `www` dado de alta en Vercel como redirección **308 permanente** (antes 307 temporal) hacia el dominio sin `www`, conservando la ruta. Lo pedía el diagnóstico de Search Console: *«Duplicada: el usuario no ha indicado ninguna versión canónica»*. Revalidadas las 30 URLs tras el cambio: todas 200. |
 
 **Siguiente:** punto 4 — canónicas. Es todo código, lo hace Claude.
