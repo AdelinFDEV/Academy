@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { coingeckoIdExiste, errorIdDesconocido } from "@/lib/coingecko";
+import { coingeckoIdExiste, errorIdDesconocido, sugerirCoingeckoId } from "@/lib/coingecko";
 import { NextResponse } from "next/server";
 
 async function getAuthenticatedUser() {
@@ -66,7 +66,8 @@ export async function POST(req: Request) {
 
   const cgId = coingecko_id.toLowerCase().trim();
   if (!(await coingeckoIdExiste(cgId))) {
-    return NextResponse.json({ error: errorIdDesconocido(cgId) }, { status: 400 });
+    const sugerencia = await sugerirCoingeckoId(coin_symbol || cgId);
+    return NextResponse.json({ error: errorIdDesconocido(cgId, sugerencia) }, { status: 400 });
   }
 
   const supabase = createAdminClient();
