@@ -31,6 +31,16 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 - [ ] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
 - [ ] **12. RSS** y ritmo de publicación sostenido.
 
+## Bloque 3 — Comprometido: posicionar las herramientas
+
+> **Acordado el 30 de agosto de 2026. No se abandona hasta terminarlo.** Se ataca **cuando estén cerrados los 12 puntos del SEO general**, no antes.
+
+El admin nombra tres pilares del sitio: **entradas, guías y herramientas**. Hoy los dos primeros están en el sitemap y **el tercero no tiene ni una sola URL indexable**: `/herramientas/radar` y `/herramientas/liberaciones` exigen premium (`herramientas/radar/page.tsx:31`, `herramientas/liberaciones/page.tsx:30`), así que Google solo ve la redirección y se va.
+
+Duele porque «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas reales, de intención muy concreta y competencia baja — el perfil de mejor retorno de toda la auditoría.
+
+- [ ] **13. Páginas públicas de herramientas** — landing indexable por herramienta que explique qué hace y muestre una parte real (p. ej. los próximos unlocks de las 3-4 monedas más buscadas), con el resto tras el muro. **No es abrir las herramientas**: es el mismo patrón del punto 11 — contenido gratis que capta la búsqueda y lleva al premium. Requiere sacar `/herramientas/` del `Disallow` de `robots.txt` y darlas de alta en `STATIC_ROUTES`.
+
 ## Arreglos menores pendientes
 
 - [ ] `/articulos` no tiene `<h1>`, y su título es solo «Artículos».

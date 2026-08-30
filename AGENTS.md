@@ -10,6 +10,14 @@ Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.clau
 2. **Añadir aquí abajo lo que cambie el día a día** — lo que hay que saber al crear una entrada, una guía o una página nueva. `SEO-PLAN.md` cuenta el progreso; esta sección cuenta **cómo funciona el SEO del sitio ahora mismo**, para no tener que leer 12 puntos de plan antes de escribir un artículo.
 3. Verificar en producción después de desplegar, no solo en local.
 
+## Compromiso abierto: las herramientas tienen que posicionar
+
+**Recordárselo al admin en cada sesión hasta que esté hecho.** Lo pidió expresamente el 30 de agosto de 2026.
+
+Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos primeras están en el sitemap; **las herramientas no tienen ni una URL indexable** — `/herramientas/radar` y `/herramientas/liberaciones` exigen premium, así que Google solo ve la redirección.
+
+**Se ataca cuando estén cerrados los 12 puntos del SEO general, no antes** — es el punto 13 de [`SEO-PLAN.md`](./SEO-PLAN.md). No es abrir las herramientas: es darles una landing pública que muestre una parte y deje el resto tras el muro.
+
 # Cómo funciona el SEO de este sitio (estado actual)
 
 > Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1 y 2**.
