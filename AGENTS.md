@@ -1,3 +1,9 @@
+# Trabajo en curso — SEO
+
+Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
+
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo; al completar un punto, marca la casilla y anota el commit en su tabla de avance.
+
 # PARA — antes de crear contenido, lee esto
 
 El panel de admin tiene las **instrucciones completas y autoritativas** de cada tipo de contenido. Son la fuente de verdad; lo de aquí abajo es solo el resumen para no arrancar a ciegas.
