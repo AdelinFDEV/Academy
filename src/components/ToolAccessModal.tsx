@@ -76,7 +76,7 @@ export default function ToolAccessModal({ open, reason, toolName, onClose }: Too
             ) : (
               <>
                 <li><Sparkles size={14} /> Todas las herramientas desbloqueadas</li>
-                <li><Sparkles size={14} /> Diario de trading + Portfolio Spot</li>
+                <li><Sparkles size={14} /> Diario de trading + Portfolio Adelin</li>
                 <li><Sparkles size={14} /> Guías premium y análisis avanzados</li>
                 <li><Sparkles size={14} /> Comunidad privada en Telegram</li>
               </>

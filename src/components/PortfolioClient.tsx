@@ -231,7 +231,7 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
               <Lock size={40} strokeWidth={1.5} />
             </div>
             <div className="pf-popup-badge">PREMIUM</div>
-            <h1 className="pf-popup-title">Portfolio Spot</h1>
+            <h1 className="pf-popup-title">Portfolio Adelin</h1>
             <p className="pf-popup-desc">
               Sigo en tiempo real todas mis posiciones en crypto: precio de compra,
               rentabilidad actual y cuánto vale hoy cada coin que tengo.
@@ -272,7 +272,7 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
         <div className="pf-header-left">
           <div className="pf-header-icon"><Wallet size={22} /></div>
           <div>
-            <h1 className="pf-title">Portfolio Spot</h1>
+            <h1 className="pf-title">Portfolio Adelin</h1>
             <p className="pf-subtitle">Posiciones reales · precios en tiempo real</p>
           </div>
         </div>

@@ -10179,7 +10179,7 @@ select {
   }
 }
 
-/* Portfolio Spot (/portfolio) — usado fuera de dashboard/guias/admin, por eso vive aquí */
+/* Portfolio Adelin (/portfolio) — usado fuera de dashboard/guias/admin, por eso vive aquí */
 .pf-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
 
 .pf-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }

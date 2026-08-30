@@ -344,8 +344,8 @@ const VENTAJAS: Ventaja[] = [
   },
   {
     id: "portfolio",
-    boton: "💼 Portfolio Spot",
-    titulo: "💼 Mi Portfolio Spot, en tiempo real",
+    boton: "💼 Portfolio Adelin",
+    titulo: "💼 Mi Portfolio Adelin, en tiempo real",
     texto:
       "Mi cartera de spot, actualizada al momento y a la vista.\n\n" +
       "• Qué llevo y en qué peso\n" +

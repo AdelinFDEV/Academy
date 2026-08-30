@@ -141,7 +141,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
               <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/portfolio"} className={`blog-mobile-tool-link${a("/portfolio")}`} onClick={close}>
                 <PieChart size={15} aria-hidden="true" />
-                Portfolio Spot
+                Portfolio Adelin
                 {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 

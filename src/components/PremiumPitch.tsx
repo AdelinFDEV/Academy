@@ -18,7 +18,7 @@ const FEATURES = [
   {
     icon: Wallet,
     color: "#fb923c", bg: "rgba(251,146,60,0.14)", border: "rgba(251,146,60,0.3)",
-    title: "Portfolio Spot",
+    title: "Portfolio Adelin",
     desc: "Sigue en directo las compras reales de AdelinBTC, con precios de entrada y contexto.",
   },
   {

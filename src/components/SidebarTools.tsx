@@ -36,7 +36,7 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
     { label: "Predicción de Precio", href: "/calculadora", Icon: Crosshair, requiresLogin: true, requiresPremium: false },
     { label: "Mi Watchlist", href: "/dashboard/watchlist", Icon: ScanEye, requiresLogin: true, requiresPremium: false },
     { label: "Logros y XP", href: "/logros", Icon: Medal, requiresLogin: true, requiresPremium: false },
-    { label: "Portfolio Spot", href: "/portfolio", Icon: Wallet, requiresLogin: true, requiresPremium: true },
+    { label: "Portfolio Adelin", href: "/portfolio", Icon: Wallet, requiresLogin: true, requiresPremium: true },
     { label: "Liberaciones de Tokens", href: "/herramientas/liberaciones", Icon: Unlock, requiresLogin: true, requiresPremium: true },
     { label: "Radar Diario", href: "/herramientas/radar", Icon: Radar, requiresLogin: true, requiresPremium: true },
     { label: "Mi Portfolio", href: "/dashboard/mi-portfolio", Icon: PieChart, requiresLogin: true, requiresPremium: true },

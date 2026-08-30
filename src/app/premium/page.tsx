@@ -24,7 +24,7 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
   { label: "Calculadora de Riesgo", free: true, premium: true },
   { label: "Diario de Trading con retos y niveles", free: false, premium: true },
   { label: "Liberaciones de tokens en tiempo real", free: false, premium: true },
-  { label: "Portfolio Spot en tiempo real", free: false, premium: true },
+  { label: "Portfolio Adelin en tiempo real", free: false, premium: true },
   { label: "Trading en directo (próximamente)", free: false, premium: true },
   { label: "Canal privado de Telegram", free: false, premium: true },
   { label: "Hablar conmigo por Telegram", free: false, premium: true },
@@ -198,7 +198,7 @@ export default async function PremiumPage() {
                     <li><Check size={16} aria-hidden="true" /> Guías premium desbloqueadas</li>
                     <li><Check size={16} aria-hidden="true" /> Trading en directo, incluido</li>
                     <li><Check size={16} aria-hidden="true" /> Liberaciones de tokens en tiempo real</li>
-                    <li><Check size={16} aria-hidden="true" /> Portfolio Spot de AdelinBTC</li>
+                    <li><Check size={16} aria-hidden="true" /> Portfolio Adelin</li>
                     <li><Check size={16} aria-hidden="true" /> Comunidad privada en Telegram</li>
                     <li><Check size={16} aria-hidden="true" /> Soporte prioritario</li>
                   </ul>

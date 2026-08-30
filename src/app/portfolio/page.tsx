@@ -6,7 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import PortfolioClient from "@/components/PortfolioClient";
 
 export const metadata: Metadata = {
-  title: "Portfolio Spot",
+  title: "Portfolio Adelin",
   description:
     "Sigue en tiempo real el portfolio de AdelinBTC. Precio de compra, rentabilidad actual y evolución de cada posición.",
 };

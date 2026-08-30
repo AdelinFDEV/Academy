@@ -46,7 +46,7 @@ const PERKS = [
     id: "portfolio",
     icon: Wallet,
     color: "#fb923c",
-    title: "Portfolio Spot",
+    title: "Portfolio Adelin",
     desc: "Sigue en directo las compras reales de AdelinBTC, con precios de entrada y contexto.",
     chips: ["Compras en directo", "Contexto real"],
   },
