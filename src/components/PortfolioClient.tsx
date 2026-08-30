@@ -74,7 +74,7 @@ const EMPTY_FORM = {
   coin_name: "",
   coingecko_id: "",
   buy_price: "",
-  quantity: "",
+  invested: "",
   buy_date: new Date().toISOString().split("T")[0],
   notes: "",
 };
@@ -147,7 +147,7 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
       coin_name: pos.coin_name,
       coingecko_id: pos.coingecko_id,
       buy_price: String(pos.buy_price),
-      quantity: String(pos.quantity),
+      invested: String(pos.buy_price * pos.quantity),
       buy_date: pos.buy_date,
       notes: pos.notes ?? "",
     });
@@ -165,10 +165,19 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
 
   async function savePosition() {
     setFormError("");
-    if (!form.coin_symbol || !form.coin_name || !form.coingecko_id || !form.buy_price || !form.quantity || !form.buy_date) {
+    if (!form.coin_symbol || !form.coin_name || !form.coingecko_id || !form.buy_price || !form.invested || !form.buy_date) {
       setFormError("Completa todos los campos obligatorios.");
       return;
     }
+    const buyPrice = parseFloat(form.buy_price);
+    const invested = parseFloat(form.invested);
+    if (isNaN(buyPrice) || buyPrice <= 0 || isNaN(invested) || invested <= 0) {
+      setFormError("Precio y dinero invertido deben ser positivos.");
+      return;
+    }
+    // La API sigue guardando cantidad de cripto, no dinero invertido: aquí se
+    // calcula la cantidad a partir de lo que el admin sí conoce (cuánto metió).
+    const quantity = invested / buyPrice;
     setSaving(true);
     try {
       const url = editingId ? `/api/portfolio/${editingId}` : "/api/portfolio";
@@ -176,7 +185,7 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, quantity }),
       });
       const json = await res.json();
       if (!res.ok) { setFormError(json.error ?? "Error al guardar"); return; }
@@ -487,14 +496,14 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
                   />
                 </label>
                 <label className="pf-form-field">
-                  <span>Cantidad *</span>
+                  <span>Dinero invertido (USD) *</span>
                   <input
                     className="pf-input"
                     type="number"
                     step="any"
-                    placeholder="0.5"
-                    value={form.quantity}
-                    onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
+                    placeholder="1000"
+                    value={form.invested}
+                    onChange={(e) => setForm((f) => ({ ...f, invested: e.target.value }))}
                   />
                 </label>
                 <label className="pf-form-field">
