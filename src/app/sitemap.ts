@@ -25,6 +25,11 @@ export const revalidate = 3600;
  *   - `/login`, `/register`, `/forgot-password`, `/auth/**`, `/mfa-challenge`,
  *     `/premium/gracias` — sin valor de búsqueda.
  *   - `/trading-en-directo` — solo admin.
+ *   - `/logros` — está en `protectedRoutes` de `src/proxy.ts`, así que el
+ *     middleware manda a login a quien no ha entrado. Ojo: la comprobación no
+ *     se ve en su `page.tsx`, hay que mirar el middleware.
+ *   - `/terminos` — es un stub que redirige a `/aviso-legal`. En el sitemap solo
+ *     va el destino, nunca la redirección.
  */
 const STATIC_ROUTES: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
   { path: "", priority: 1.0, changeFrequency: "daily" },
@@ -33,11 +38,9 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/glosario", priority: 0.8, changeFrequency: "monthly" },
   { path: "/premium", priority: 0.7, changeFrequency: "monthly" },
   { path: "/asesoria", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/logros", priority: 0.5, changeFrequency: "monthly" },
   { path: "/aviso-legal", priority: 0.2, changeFrequency: "yearly" },
   { path: "/privacidad", priority: 0.2, changeFrequency: "yearly" },
   { path: "/cookies", priority: 0.2, changeFrequency: "yearly" },
-  { path: "/terminos", priority: 0.2, changeFrequency: "yearly" },
 ];
 
 type SitemapPost = {

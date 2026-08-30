@@ -39,6 +39,7 @@ export default function robots(): MetadataRoute.Robots {
           "/portfolio",
           "/herramientas/",
           "/trading-en-directo",
+          "/logros",
 
           // Página de confirmación de pago: se llega tras el checkout, nunca
           // desde una búsqueda.
