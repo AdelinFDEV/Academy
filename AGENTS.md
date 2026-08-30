@@ -28,6 +28,14 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 - **`/robots.txt`** (`src/app/robots.ts`) declara el sitemap y bloquea el rastreo de lo privado.
 - **Las categorías** entran solas, con la fecha de su entrada más reciente. Una categoría **sin ninguna entrada publicada no entra**, a propósito: su página saldría vacía.
 
+## El sitio vive SIN `www` — no lo inviertas nunca
+
+La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta ahí: las 30 URLs del sitemap, el `robots.txt`, el `Host` y el `SITE_URL` del código.
+
+`www.adelinacademy.com` está dado de alta en Vercel **solo para redirigir**, con un **308 Permanent Redirect** que **conserva la ruta** (`www/guias` acaba en `/guias`, no en la portada). Antes era un 307 temporal, y eso hizo que Google marcara la portada como *«Duplicada: el usuario no ha indicado ninguna versión canónica»*.
+
+**Trampa de Vercel:** al añadir un dominio ofrece marcada una casilla del tipo *«Redirect apex domains to www (recommended)»* / *«Include apex and www variants»*. **Hay que desmarcarla siempre.** Haría lo contrario — mandar el dominio bueno hacia `www` — y convertiría en redirección cada una de las URLs que ya le hemos dado a Google.
+
 ## Search Console está activo desde el 30 de agosto de 2026
 
 - Propiedad de tipo **Dominio**, verificada con un registro **TXT en la raíz**, en el DNS de **Vercel**. **Ese TXT no se borra nunca**: Google revalida cada cierto tiempo y se perdería la propiedad.
