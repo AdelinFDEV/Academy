@@ -1,0 +1,123 @@
+import type { MetadataRoute } from "next";
+import { createClient } from "@supabase/supabase-js";
+import { GUIDES } from "@/lib/guides";
+import { SITE_URL } from "@/lib/site";
+import type { PostCategoryRef } from "@/lib/types";
+
+/**
+ * Sitemap del sitio — punto 1 del plan SEO (ver SEO-PLAN.md).
+ *
+ * Next.js sirve este archivo como `/sitemap.xml`. Se regenera cada hora, que es
+ * de sobra para un ritmo de una entrada cada 1-3 días y evita pegarle a Supabase
+ * en cada rastreo de Google.
+ *
+ * Deliberadamente NO usa `@/lib/supabase/server`: ese cliente lee cookies, lo
+ * que volvería la ruta dinámica y la ataría a una petición concreta. Aquí no hay
+ * sesión que respetar — el sitemap es el mismo para todo el mundo.
+ */
+export const revalidate = 3600;
+
+/**
+ * Solo rutas públicas y indexables. Quedan fuera a propósito:
+ *   - `/admin`, `/dashboard`, `/cuenta` — privadas.
+ *   - `/calculadora`, `/portfolio`, `/herramientas/**` — redirigen a login o a
+ *     premium, así que Google solo vería la redirección.
+ *   - `/login`, `/register`, `/forgot-password`, `/auth/**`, `/mfa-challenge`,
+ *     `/premium/gracias` — sin valor de búsqueda.
+ *   - `/trading-en-directo` — solo admin.
+ */
+const STATIC_ROUTES: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
+  { path: "", priority: 1.0, changeFrequency: "daily" },
+  { path: "/articulos", priority: 0.9, changeFrequency: "daily" },
+  { path: "/guias", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/glosario", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/premium", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/asesoria", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/logros", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/aviso-legal", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/privacidad", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/cookies", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/terminos", priority: 0.2, changeFrequency: "yearly" },
+];
+
+type SitemapPost = {
+  slug: string;
+  created_at: string | null;
+  updated_at: string | null;
+  categories: PostCategoryRef | PostCategoryRef[] | null;
+};
+
+/** El join `categories(slug)` llega como objeto o como array según la consulta. */
+function categorySlug(categories: SitemapPost["categories"]): string | null {
+  const ref = Array.isArray(categories) ? categories[0] : categories;
+  return ref?.slug ?? null;
+}
+
+async function fetchPosts(): Promise<SitemapPost[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Sin credenciales no se cae el build: se sirve el sitemap con las rutas
+  // estáticas y las guías, que es mejor que devolver un 500.
+  if (!url || !anonKey) return [];
+
+  const supabase = createClient(url, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  const { data, error } = await supabase
+    .from("posts")
+    .select("slug, created_at, updated_at, categories(slug)")
+    .eq("published", true)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) return [];
+  return data as SitemapPost[];
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const posts = await fetchPosts();
+
+  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
+    ({ path, priority, changeFrequency }) => ({
+      url: `${SITE_URL}${path}`,
+      changeFrequency,
+      priority,
+    })
+  );
+
+  const guideEntries: MetadataRoute.Sitemap = GUIDES.map((guide) => ({
+    url: `${SITE_URL}/guias/${guide.slug}`,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
+    url: `${SITE_URL}/post/${post.slug}`,
+    lastModified: new Date(post.updated_at ?? post.created_at ?? Date.now()),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  // Una categoría se "actualiza" cuando publica una entrada nueva, así que su
+  // lastModified es la fecha de su entrada más reciente. Las categorías sin
+  // ninguna entrada publicada no entran: su página saldría vacía.
+  const categoryDates = new Map<string, number>();
+  for (const post of posts) {
+    const slug = categorySlug(post.categories);
+    if (!slug) continue;
+    const fecha = new Date(post.updated_at ?? post.created_at ?? Date.now()).getTime();
+    categoryDates.set(slug, Math.max(categoryDates.get(slug) ?? 0, fecha));
+  }
+
+  const categoryEntries: MetadataRoute.Sitemap = [...categoryDates].map(
+    ([slug, fecha]) => ({
+      url: `${SITE_URL}/categoria/${slug}`,
+      lastModified: new Date(fecha),
+      changeFrequency: "weekly",
+      priority: 0.6,
+    })
+  );
+
+  return [...staticEntries, ...guideEntries, ...postEntries, ...categoryEntries];
+}
