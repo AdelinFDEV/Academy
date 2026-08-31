@@ -5,6 +5,7 @@ import ArticulosClient, { type Post as ArticulosPost } from "./ArticulosClient";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/articulos" },
   title: "Artículos",
   description: "Todos los análisis, guías y publicaciones de AdelinBTC Academy.",
 };

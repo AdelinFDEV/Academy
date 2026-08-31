@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 30-08-2026 van hechos los puntos 1, 2 y 3, y el siguiente es el 4 (canónicas).**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1, 2, 3 y 4, y el siguiente es el 5 (títulos y descripciones).**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -20,7 +20,7 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
-> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1 y 2**.
+> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2 y 4**.
 
 ## Lo que ya es automático — no hay que hacer nada
 
@@ -43,6 +43,27 @@ La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta
 - **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
 - **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
 - Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Y ver `/login` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
+
+## Cada ruta pública declara su canónica — y hay que mantenerlo
+
+Desde el 31-08-2026 las **15 rutas públicas** emiten `<link rel="canonical">`. Se declara con `alternates.canonical` y **siempre en ruta relativa** (`"/guias"`, no la URL entera): la resuelve el `metadataBase` del layout raíz, que ya sale de `SITE_URL`.
+
+**Nunca pongas la canónica en un `layout.tsx`, y menos en el raíz.** En Next.js los metadatos del layout **los heredan todas las rutas hijas**, así que una canónica ahí le pondría la misma URL a media web — que es justo el problema que veníamos a arreglar. Por eso la de la portada vive en `src/app/page.tsx`, que antes no tenía `metadata` propia y ahora la tiene solo para esto.
+
+| Creas… | Qué hace falta |
+|---|---|
+| **Entrada** | Nada. `/post/[slug]` la genera sola en su `generateMetadata`. |
+| **Categoría** | Nada. `/categoria/[slug]` la genera sola. |
+| **Guía** | **Añadir `alternates: { canonical: "/guias/<slug>" }` a su `metadata`**, además de darla de alta en `GUIDES`. No hay plantilla que lo haga por ti: cada guía es un componente propio. |
+| **Página pública nueva** | Añadir su `alternates.canonical` a mano, además de meterla en `STATIC_ROUTES`. |
+
+Comprobar una ruta cuesta un `curl`:
+
+```bash
+curl -s https://adelinacademy.com/guias/xrp | grep -o "<link rel=\"canonical\"[^>]*>"
+```
+
+Y al revés: **una ruta privada no debe emitir ninguna**. Si `/dashboard` o `/login` empiezan a devolver una canónica, es que alguien la ha metido en un layout.
 
 ## Lo que SÍ hay que hacer al crear algo nuevo
 

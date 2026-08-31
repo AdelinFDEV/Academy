@@ -3,6 +3,7 @@ import LegalShell from "@/components/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacidad" },
   title: "Política de Privacidad",
   description:
     "Política de privacidad de AdelinBTC Academy conforme al RGPD (UE) 2016/679 y la LOPDGDD 3/2018.",

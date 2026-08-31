@@ -11,6 +11,7 @@ import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 import "./premium.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/premium" },
   title: "Hazte Premium",
   description:
     "Desbloquea el diario de trading con retos, guías premium, trading en directo y el calendario de liberaciones de tokens por 19,99€/mes. Sin permanencia.",

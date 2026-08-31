@@ -19,6 +19,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/guias/que-es-la-blockchain" },
   title: "¿Qué es la Blockchain? Guía Completa 2026",
   description:
     "De Satoshi al presente: entiende qué es la blockchain, cómo funciona, por qué es imposible de falsificar y cuál es su futuro ante la computación cuántica. Guía con datos reales 2026.",

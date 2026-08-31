@@ -3,6 +3,7 @@ import LegalShell from "@/components/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/aviso-legal" },
   title: "Aviso Legal",
   description: "Aviso legal, condiciones de uso y advertencia de riesgo de AdelinBTC Academy.",
 };

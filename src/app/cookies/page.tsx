@@ -3,6 +3,7 @@ import LegalShell from "@/components/LegalShell";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cookies" },
   title: "Política de Cookies",
   description: "Información sobre las cookies y el almacenamiento local utilizados en AdelinBTC Academy.",
 };

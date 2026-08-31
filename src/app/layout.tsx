@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Poppins, DM_Sans, Kalam } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
@@ -28,9 +29,7 @@ const kalam = Kalam({
   display: "swap",
 });
 
-// Fallback al dominio de producción (no a localhost): si NEXT_PUBLIC_SITE_URL
-// no estuviera disponible en build, los metadatos/OpenGraph siguen correctos.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://adelinacademy.com";
+const siteUrl = SITE_URL;
 const description =
   "Academia de criptomonedas: análisis de mercado, educación blockchain y herramientas para operar con criterio. Publicaciones semanales para inversores que van en serio.";
 

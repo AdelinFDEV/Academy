@@ -14,6 +14,7 @@ import {
 import "./asesoria.css";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/asesoria" },
   // Sin sufijo: el template del layout raíz ya añade "| AdelinBTC Academy".
   title: "Asesorías 1:1",
   description:

@@ -27,8 +27,13 @@ export async function generateMetadata(
     .eq("slug", slug)
     .single();
 
+  // Sin categoría no hay canónica que declarar: la ruta acabará en notFound().
   if (!category) return { title: "Categoría no encontrada" };
-  return { title: category.name };
+
+  return {
+    title: category.name,
+    alternates: { canonical: `/categoria/${slug}` },
+  };
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {

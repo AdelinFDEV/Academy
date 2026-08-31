@@ -13,30 +13,35 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 ---
 
-# 🔻 RETOMAR AQUÍ — estado a 30 de agosto de 2026
+# 🔻 RETOMAR AQUÍ — estado a 31 de agosto de 2026
 
-**Bloque 1 cerrado en sus tres primeros puntos, todos verificados en producción, no solo en local.**
+**Bloque 1 cerrado en sus cuatro primeros puntos.** Los tres primeros, verificados en producción. El cuarto, verificado en local sobre el build de producción — **falta comprobarlo en producción tras desplegar**.
 
 | Hecho | Comprobado |
 |---|---|
 | 1. Sitemap | `/sitemap.xml` sirve **30 URLs**, las 30 responden 200 |
 | 2. Robots | `/robots.txt` en producción, declara el sitemap |
 | 3. Search Console | Propiedad de **Dominio** verificada; sitemap **Correcto, 30 páginas** |
+| 4. Canónicas | Las 15 rutas públicas emiten `<link rel="canonical">`; ninguna privada la hereda. **Pendiente de verificar en producción** |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-## Lo siguiente es el punto 4 — canónicas. Lo hace Claude, entero
+## Lo siguiente es el punto 5 — títulos y descripciones
 
-No requiere ninguna acción del admin. Consiste en añadir `alternates.canonical` al `generateMetadata` de cada ruta pública: portada, `/articulos`, `/guias` y las 7 guías, `/post/[slug]`, `/categoria/[slug]`, `/glosario`, `/premium`, `/asesoria` y las legales. `metadataBase` ya existe en `src/app/layout.tsx`, así que basta la ruta relativa.
+Casi todo es código, salvo fijar los límites en `/admin/posts-instrucciones`. El sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos que hacen que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Hay que acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y dejar los límites escritos en las instrucciones de entradas.
 
-**Por qué es urgente y no un adorno:** Search Console ya está diciendo, sobre la portada:
+## ⛔ Pendiente del admin — ahora sí, en cuanto esté desplegado el punto 4
 
-> «La página no está indexada — **Duplicada: el usuario no ha indicado ninguna versión canónica**», con `https://www.adelinacademy.com/` como página de referencia.
+Las canónicas ya están en el código. **En cuanto Vercel despliegue**, tocan las dos cosas de esta sección, en este orden.
 
-El 308 quitó la mitad del problema. La otra mitad es literalmente lo que Google pide: **una canónica en el HTML**. Todo lo demás de esa pantalla salía bien (rastreo permitido, obtención correcta, indexación permitida).
+**Primero, comprobar que la canónica llega a producción:**
 
-## ⛔ Pendiente del admin, pero SOLO DESPUÉS del punto 4
+```bash
+curl -s https://adelinacademy.com/ | grep -o "<link rel=\"canonical\"[^>]*>"
+```
 
-Solicitar indexación en Search Console → «Inspección de URLs» → «Solicitar indexación», para estas tres:
+Debe devolver `<link rel="canonical" href="https://adelinacademy.com"/>`.
+
+**Después, solicitar indexación** en Search Console → «Inspección de URLs» → «Solicitar indexación», para estas tres:
 
 ```
 https://adelinacademy.com/
@@ -44,7 +49,9 @@ https://adelinacademy.com/articulos
 https://adelinacademy.com/guias
 ```
 
-**No hacerlo antes de que las canónicas estén desplegadas.** Google volvería, encontraría el mismo empate sin resolver y no indexaría igual — y la cuota es de unas 10 peticiones al día.
+**No hacerlo antes de que el `curl` de arriba devuelva la canónica.** Si Google vuelve y encuentra el mismo empate sin resolver, no indexa igual — y la cuota es de unas 10 peticiones al día.
+
+Era exactamente lo que pedía el diagnóstico de la portada: *«La página no está indexada — **Duplicada: el usuario no ha indicado ninguna versión canónica**»*, con `https://www.adelinacademy.com/` como página de referencia. El 308 quitó una mitad del problema; la canónica en el HTML es la otra.
 
 ## No tocar nunca
 
@@ -73,7 +80,7 @@ Silencio = correcto.
 - [x] **1. Sitemap** — crear `src/app/sitemap.ts` leyendo entradas y guías de Supabase con su `lastModified`.
 - [x] **2. Robots** — crear `src/app/robots.ts` con referencia al sitemap y bloqueo de `/admin`, `/dashboard`, `/api` y rutas de auth.
 - [x] **3. Search Console** — verificar el dominio y enviar el sitemap. **Lo hace el admin**, Claude no tiene acceso. Hacerlo justo después de los puntos 1 y 2.
-- [ ] **4. Canónicas** — `alternates.canonical` en el `generateMetadata` de cada ruta pública. Ya existe `metadataBase`, así que basta la ruta relativa.
+- [x] **4. Canónicas** — `alternates.canonical` en el `generateMetadata` de cada ruta pública. Ya existe `metadataBase`, así que basta la ruta relativa.
 - [ ] **5. Títulos y descripciones** — el sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos y hace que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y fijar los límites en `/admin/posts-instrucciones`.
 - [ ] **6. Datos estructurados** — `Article` en entradas, `BreadcrumbList` en entradas y guías, `Organization` y `WebSite` en el layout raíz.
 
@@ -120,5 +127,6 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-30 | 1 y 2 | `1c530a3` | Corrección tras comprobar las 32 URLs en producción: `/logros` y `/terminos` daban 307 y salen del sitemap. `/logros` está en `protectedRoutes` de `src/proxy.ts` (el middleware, no su `page.tsx`) y pasa a `robots.txt`; `/terminos` es un stub que redirige a `/aviso-legal`. Quedan **30 URLs**, todas 200. |
 | 2026-08-30 | 3 | — | Search Console verificado por el admin como **propiedad de Dominio** (TXT en el DNS de Vercel, en la raíz — **no borrar nunca**, Google revalida). Sitemap enviado: **Correcto, 30 páginas descubiertas**. Los datos de Rendimiento arrancan hoy; no hay histórico anterior. |
 | 2026-08-30 | previo al 4 | — | `www` dado de alta en Vercel como redirección **308 permanente** (antes 307 temporal) hacia el dominio sin `www`, conservando la ruta. Lo pedía el diagnóstico de Search Console: *«Duplicada: el usuario no ha indicado ninguna versión canónica»*. Revalidadas las 30 URLs tras el cambio: todas 200. |
+| 2026-08-31 | 4 | `PENDIENTE` | Canónicas en las **15 rutas públicas**: portada, `/articulos`, `/guias`, `/glosario`, `/premium`, `/asesoria`, las 3 legales, las 7 guías, `/post/[slug]` y `/categoria/[slug]`. Todas relativas — las resuelve el `metadataBase` del layout raíz. La de la portada va en `src/app/page.tsx` y **no** en el layout: los metadatos del layout los heredan todas las rutas hijas, y una canónica ahí le pondría `/` a media web. Comprobado sobre el build de producción servido en local: las 15 emiten la etiqueta y `/login`, `/register`, `/dashboard`, `/cuenta`, `/premium/gracias` y `/herramientas/radar` no heredan ninguna. De paso, `layout.tsx` deja de repetir el dominio y usa `SITE_URL`. |
 
-**Siguiente:** punto 4 — canónicas. Es todo código, lo hace Claude.
+**Siguiente:** punto 5 — títulos y descripciones. Es todo código salvo la parte de `/admin/posts-instrucciones`.

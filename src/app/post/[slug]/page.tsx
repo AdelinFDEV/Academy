@@ -27,6 +27,7 @@ export async function generateMetadata(
     .eq("published", true)
     .single();
 
+  // Sin entrada no hay canónica que declarar: la ruta acabará en notFound().
   if (!post) return { title: "Artículo no encontrado" };
 
   const seoTitle = post.seo_title || post.title;
@@ -36,6 +37,7 @@ export async function generateMetadata(
     title: seoTitle,
     description,
     keywords: post.focus_keyword ?? undefined,
+    alternates: { canonical: `/post/${slug}` },
     openGraph: {
       type: "article",
       title: seoTitle,

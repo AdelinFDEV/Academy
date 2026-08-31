@@ -6,6 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import GlosarioClient from "./GlosarioClient";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/glosario" },
   title: "Diccionario Cripto",
   description: "Términos clave de criptomonedas y trading explicados de forma clara. Desde Bitcoin hasta DeFi.",
 };
