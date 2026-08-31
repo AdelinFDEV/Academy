@@ -37,6 +37,20 @@ const R = {
   PORTADA_MAX_KB: 500,
 };
 
+/**
+ * Deuda conocida: entradas anteriores a que la regla existiera, que el admin ha
+ * decidido dejar como están (31-08-2026).
+ *
+ * Salen como aviso en vez de como fallo. **Esto no es una puerta de atrás para
+ * saltarse una regla**: una entrada nueva que no cumpla tiene que arreglarse, no
+ * añadirse aquí. Existe porque un validador que siempre sale en rojo acaba
+ * ignorándose, y entonces no sirve para nada.
+ */
+const DEUDA_CONOCIDA = {
+  "solana-alpenglow-2026": ["palabras"],
+  "ethereum-glamsterdam-2026": ["palabras"],
+};
+
 /** Vocabulario permitido en `content` (ver bloque 06 de las instrucciones). */
 const ETIQUETAS = new Set([
   "h1", "h2", "h3", "h4", "p", "strong", "em", "a", "ul", "ol", "li",
@@ -84,7 +98,19 @@ const problemas = [];
 async function revisar(post, validos) {
   const fallos = [];
   const avisos = [];
-  const mal = (m) => fallos.push(m);
+  const perdonadas = DEUDA_CONOCIDA[post.slug] ?? [];
+
+  /**
+   * `regla` es la etiqueta con la que se puede perdonar el fallo desde
+   * DEUDA_CONOCIDA. Sin ella, el fallo no se puede perdonar nunca.
+   */
+  const mal = (m, regla) => {
+    if (regla && perdonadas.includes(regla)) {
+      avisos.push(`${m} ${DIM}— deuda conocida, aceptada por el admin${OFF}`);
+      return;
+    }
+    fallos.push(m);
+  };
 
   const contenido = post.content ?? "";
   const texto = contenido.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -92,7 +118,7 @@ async function revisar(post, validos) {
 
   // ── Longitud ──────────────────────────────────────────────────────────────
   if (palabras < R.PALABRAS_MIN || palabras > R.PALABRAS_MAX) {
-    mal(`${palabras} palabras, fuera del rango ${R.PALABRAS_MIN}-${R.PALABRAS_MAX}`);
+    mal(`${palabras} palabras, fuera del rango ${R.PALABRAS_MIN}-${R.PALABRAS_MAX}`, "palabras");
   }
 
   // ── SEO ───────────────────────────────────────────────────────────────────

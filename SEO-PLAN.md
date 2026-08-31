@@ -202,6 +202,16 @@ Duele porque «calendario de liberaciones de tokens» o «unlocks de <token>» s
 
 - [ ] **13. Páginas públicas de herramientas** — landing indexable por herramienta que explique qué hace y muestre una parte real (p. ej. los próximos unlocks de las 3-4 monedas más buscadas), con el resto tras el muro. **No es abrir las herramientas**: es el mismo patrón del punto 11 — contenido gratis que capta la búsqueda y lleva al premium. Requiere sacar `/herramientas/` del `Disallow` de `robots.txt` y darlas de alta en `STATIC_ROUTES`.
 
+## Deuda aceptada — decisión del admin, 31-08-2026
+
+Dos entradas publicadas están **por debajo del mínimo de 500 palabras**: `solana-alpenglow-2026` (390) y `ethereum-glamsterdam-2026` (418). Son anteriores a que la regla se fijara y **el admin ha decidido dejarlas como están**.
+
+Constan en el mapa `DEUDA_CONOCIDA` de `scripts/check-contenido.mjs`, así que salen como aviso y no como fallo. Si algún día se amplían, basta con quitarlas de ahí.
+
+**Lo que no se hace es añadir entradas nuevas a ese mapa.** Está para registrar lo que ya estaba, no para saltarse la regla.
+
+---
+
 ## Arreglos menores — todos hechos y verificados en producción el 31-08-2026
 
 - [x] `/articulos` no tiene `<h1>`, y su título es solo «Artículos». → `h1` + entradilla + título con tema.

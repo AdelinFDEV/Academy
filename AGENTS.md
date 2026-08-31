@@ -262,6 +262,10 @@ Los dos **salen con código 1 si algo falla**, y dicen exactamente qué y dónde
 
 **No está en el hook de `pre-push` a propósito:** necesita credenciales de Supabase y salir a la red. En CI no hay secretos, así que el hook se rompería en cualquier clon sin `.env.local`.
 
+**Deuda conocida.** `check-contenido.mjs` tiene un mapa `DEUDA_CONOCIDA` con las entradas anteriores a que una regla existiera y que el admin ha decidido dejar como están — hoy, `solana-alpenglow-2026` (390 palabras) y `ethereum-glamsterdam-2026` (418), las dos por debajo del mínimo de 500. Salen como **aviso** en vez de como fallo.
+
+Existe por una razón concreta: **un validador que siempre sale en rojo acaba ignorándose**, y entonces no sirve para nada. Pero **no es una puerta de atrás**: una entrada nueva que no cumpla se arregla, no se añade al mapa. Y solo perdona la regla concreta que se le indique, no la entrada entera — esas dos siguen comprobándose para todo lo demás.
+
 ## Se ejecuta solo — dos capas
 
 No hace falta acordarse: hay dos redes, y **la primera bloquea antes de que nada salga de la máquina**.
