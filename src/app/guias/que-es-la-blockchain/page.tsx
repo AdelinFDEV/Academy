@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/guias/que-es-la-blockchain" },
   title: "¿Qué es la Blockchain? Guía Completa 2026",
   description:
-    "De Satoshi al presente: entiende qué es la blockchain, cómo funciona, por qué es imposible de falsificar y cuál es su futuro ante la computación cuántica. Guía con datos reales 2026.",
+    "De Satoshi al presente: qué es la blockchain, cómo funciona, por qué es imposible de falsificar y cuál es su futuro ante la computación cuántica. Datos de 2026.",
   openGraph: {
     title: "¿Qué es la Blockchain? Guía Completa 2026",
     description: "Historia, funcionamiento, estado actual ($2.17T market cap) y amenaza cuántica. Con quiz, flashcards y badge.",

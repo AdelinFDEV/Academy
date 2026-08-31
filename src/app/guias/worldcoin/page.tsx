@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/guias/worldcoin" },
   title: "¿Qué es Worldcoin? La Cripto que Escanea tu Iris",
   description:
-    "Worldcoin explicado a fondo: el Orb, World ID, World Chain, el token WLD y por qué el proyecto de Sam Altman ha sido prohibido en varios países. Guía completa con quiz y badge.",
+    "Worldcoin a fondo: el Orb, World ID, World Chain, el token WLD y por qué el proyecto de Sam Altman ha sido prohibido en varios países. Con quiz y badge.",
   openGraph: {
     title: "¿Qué es Worldcoin? La Criptomoneda que Escanea tu Iris",
     description: "Cómo funciona el Orb, qué es la prueba de personalidad (Proof of Personhood), tokenomics de WLD y las controversias regulatorias. Con simulador, quiz y badge.",

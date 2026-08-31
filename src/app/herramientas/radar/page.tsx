@@ -8,7 +8,7 @@ import "./radar.css";
 
 export const metadata: Metadata = {
   title: "Radar Diario",
-  description: "Tu resumen diario del mercado: precio de Bitcoin en 24h con máximo y mínimo, índice de miedo y codicia, eventos macro de EE. UU. (inflación y tipos de interés) y los mayores movimientos del día.",
+  description: "Tu resumen diario del mercado: Bitcoin en 24h con máximo y mínimo, índice de miedo y codicia, eventos macro de EE. UU. y los mayores movimientos del día.",
 };
 
 export default async function RadarPage() {

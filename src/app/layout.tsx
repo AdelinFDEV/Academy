@@ -31,7 +31,7 @@ const kalam = Kalam({
 
 const siteUrl = SITE_URL;
 const description =
-  "Academia de criptomonedas: análisis de mercado, educación blockchain y herramientas para operar con criterio. Publicaciones semanales para inversores que van en serio.";
+  "Academia de criptomonedas: análisis de mercado, educación blockchain y herramientas para operar con criterio. Publicaciones semanales para quien va en serio.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

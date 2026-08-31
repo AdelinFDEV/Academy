@@ -48,11 +48,12 @@ La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta
 
 El layout raíz añade **` | AdelinBTC`** (12 caracteres) a cada título con `template`. Google corta el resultado sobre los **60**, así que al título propio le quedan **48**. La descripción, **160**.
 
-**`npm run check` falla si un `title` de metadata pasa de 48**, así que esto no depende de que nadie se acuerde. Ojo a lo que mide y lo que no:
+**`npm run check` falla si un `title` pasa de 48 o una `description` pasa de 160**, así que esto no depende de que nadie se acuerde. Ojo a lo que mide y lo que no:
 
-- Mira el `title:` de la metadata, con su indentación de **2 espacios**.
-- **No** mira el de `openGraph`, que va a 4. Ese no lleva sufijo y puede ser más largo — las redes no cortan tan pronto como Google. Es intencionado, no un descuido.
-- **No** puede mirar las entradas: su título vive en Supabase (`seo_title`), no en el código. Ahí el límite lo aplica quien escribe, y está documentado en `/admin/posts-instrucciones` (bloque 09).
+- Mira el `title:` y la `description:` de la metadata, con su indentación de **2 espacios**.
+- **No** mira los de `openGraph`, que van a 4. Esos no llevan sufijo y pueden ser más largos — las redes no cortan tan pronto como Google. Es intencionado, no un descuido.
+- **Sí** mira el layout raíz para la descripción (es la de la portada), pero no para el título: ahí es donde se define el `template`, así que su título no lleva sufijo.
+- **No** puede mirar las entradas: su título y su descripción viven en Supabase (`seo_title`, `meta_description`), no en el código. Ahí el límite lo aplica quien escribe, y está documentado en `/admin/posts-instrucciones` (bloque 09).
 
 **El sufijo se escribe en dos sitios y tienen que coincidir:** `template` en `src/app/layout.tsx` y la constante `SUFIJO` de `scripts/check-code.mjs`. Si cambias uno, cambia el otro o el límite deja de cuadrar.
 

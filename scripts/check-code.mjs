@@ -65,63 +65,91 @@ function checkEslint() {
   }
 }
 
-// ── 2) Título de metadata: ni repite el sufijo ni se pasa de largo ────────
-// El layout raíz añade SUFIJO con `template`. Dos cosas pueden ir mal:
+// ── 2) Metadata: títulos y descripciones que Google no corte ──────────────
+// El layout raíz añade SUFIJO a cada título con `template`. Tres cosas pueden
+// ir mal, y las tres pasaron de verdad en agosto de 2026:
 //
-//   · Repetirlo en la página lo duplica en la pestaña y en Google. Se busca
-//     también el sufijo antiguo (" | AdelinBTC Academy"), por si alguien copia
+//   · Repetir el sufijo en la página lo duplica en la pestaña y en Google. Se
+//     busca también el antiguo (" | AdelinBTC Academy"), por si alguien copia
 //     el title de una página vieja o de un commit anterior.
-//   · Pasarse de largo. Google corta el resultado sobre los 60 caracteres,
-//     sufijo incluido, así que al title propio le quedan TITULO_MAX. Esto no es
-//     teórico: las 7 guías se cortaban, y la de fiscalidad llegaba a 101.
+//   · Título largo. Google corta el resultado sobre los 60 caracteres, sufijo
+//     incluido, así que al title propio le quedan TITULO_MAX. Las 7 guías se
+//     cortaban, y la de fiscalidad llegaba a 101.
+//   · Descripción larga. Se corta sobre los 160. La de fiscalidad tenía 341.
+//
+// Solo se miran los campos de `metadata`, indentados a 2 (el valor de una
+// description suele caer en la línea siguiente, a 4). Los de `openGraph` van a
+// 4 y 6 y quedan fuera a propósito: no llevan sufijo, los leen las redes y
+// nadie los corta tan pronto como Google.
 const SUFIJO = " | AdelinBTC";
 const TITULO_MAX = 60 - SUFIJO.length;
+const DESC_MAX = 160;
 
-function checkTitles() {
+function checkMetadata() {
   const duplicados = [];
-  const largos = [];
+  const titulosLargos = [];
+  const descLargas = [];
+
   const walk = (dir) => {
     for (const entry of readdirSync(dir)) {
       const p = join(dir, entry);
       if (statSync(p).isDirectory()) { walk(p); continue; }
       if (!/\.tsx?$/.test(entry)) continue;
-      if (p.endsWith(join("src", "app", "layout.tsx"))) continue; // define el template
-      const src = readFileSync(p, "utf8");
-      src.split("\n").forEach((line, i) => {
-        // Solo el `title:` de la metadata, con su indentación de 2 espacios. El
-        // de `openGraph` va a 4 y queda fuera a propósito: no lleva sufijo, y
-        // las redes no cortan tan pronto como Google.
-        const m = line.match(/^  title: "(.*)",?\s*$/);
-        if (!m) return;
+
+      // El layout raíz define el `template`, así que su title no lleva sufijo y
+      // no se le aplican esas dos reglas. Su description sí cuenta: es la de la
+      // portada.
+      const esLayoutRaiz = p.endsWith(join("src", "app", "layout.tsx"));
+      // Se parte con /\r?\n/ y no con "\n": buena parte de los archivos del
+      // repo son CRLF, y ese \r superviviente al final de cada línea rompe
+      // cualquier ancla `$` que no venga precedida de \s*.
+      const lineas = readFileSync(p, "utf8").split(/\r?\n/);
+
+      lineas.forEach((line, i) => {
         const ref = `${p.split(/src[\\/]/)[1]}:${i + 1}`;
-        if (/\| AdelinBTC( Academy)?$/.test(m[1])) duplicados.push(ref);
-        else if (m[1].length > TITULO_MAX) largos.push([ref, m[1].length]);
+
+        const t = !esLayoutRaiz && line.match(/^  title: "(.*)",?\s*$/);
+        if (t) {
+          if (/\| AdelinBTC( Academy)?$/.test(t[1])) duplicados.push(ref);
+          else if (t[1].length > TITULO_MAX) titulosLargos.push([ref, t[1].length]);
+        }
+
+        // En el layout raíz la descripción es una constante suelta que luego se
+        // reutiliza en metadata, openGraph y twitter.
+        const d = esLayoutRaiz
+          ? line.match(/^const description =$/) && lineas[i + 1]?.match(/^  "(.*)";\s*$/)
+          : line.match(/^  description: "(.*)",?\s*$/) ||
+            (/^  description:\s*$/.test(line) && lineas[i + 1]?.match(/^    "(.*)",?\s*$/));
+        if (d && d[1].length > DESC_MAX) descLargas.push([ref, d[1].length]);
       });
     }
   };
   walk(join("src", "app"));
 
-  if (duplicados.length === 0) {
-    console.log(`${GREEN}✓${OFF} metadata.title sin sufijo duplicado ${DIM}— 0 casos${OFF}`);
-  } else {
-    console.log(`${RED}✗${OFF} metadata.title con sufijo duplicado ${RED}— ${duplicados.length} caso(s)${OFF}`);
-    duplicados.forEach((f) => console.log(`    src/${f}`));
-    problems.push([
-      "metadata.title",
-      `Quita "${SUFIJO}" del title: el layout raíz ya lo añade con \`template\`.`,
-    ]);
-  }
+  const informar = (lista, campo, okMsg, koMsg, pista) => {
+    if (lista.length === 0) {
+      console.log(`${GREEN}✓${OFF} ${okMsg} ${DIM}— 0 casos${OFF}`);
+      return;
+    }
+    console.log(`${RED}✗${OFF} ${koMsg} ${RED}— ${lista.length} caso(s)${OFF}`);
+    lista.forEach((x) => {
+      const [f, n] = Array.isArray(x) ? x : [x, null];
+      console.log(`    src/${f}${n === null ? "" : ` ${DIM}— ${n} caracteres${OFF}`}`);
+    });
+    problems.push([campo, pista]);
+  };
 
-  if (largos.length === 0) {
-    console.log(`${GREEN}✓${OFF} metadata.title dentro de ${TITULO_MAX} caracteres ${DIM}— 0 casos${OFF}`);
-  } else {
-    console.log(`${RED}✗${OFF} metadata.title demasiado largo ${RED}— ${largos.length} caso(s)${OFF}`);
-    largos.forEach(([f, n]) => console.log(`    src/${f} ${DIM}— ${n} caracteres${OFF}`));
-    problems.push([
-      "metadata.title",
-      `Recorta el title a ${TITULO_MAX} caracteres: con el sufijo "${SUFIJO}" Google lo corta pasados los 60.`,
-    ]);
-  }
+  informar(duplicados, "metadata.title",
+    "metadata.title sin sufijo duplicado", "metadata.title con sufijo duplicado",
+    `Quita "${SUFIJO}" del title: el layout raíz ya lo añade con \`template\`.`);
+
+  informar(titulosLargos, "metadata.title",
+    `metadata.title dentro de ${TITULO_MAX} caracteres`, "metadata.title demasiado largo",
+    `Recorta el title a ${TITULO_MAX} caracteres: con el sufijo "${SUFIJO}" Google lo corta pasados los 60.`);
+
+  informar(descLargas, "metadata.description",
+    `metadata.description dentro de ${DESC_MAX} caracteres`, "metadata.description demasiado larga",
+    `Recorta la description a ${DESC_MAX} caracteres: Google corta ahí el fragmento del resultado.`);
 }
 
 // ── 3) Fechas releídas desde texto ────────────────────────────────────────
@@ -202,7 +230,7 @@ function checkGuideCss() {
 // ── Ejecución ─────────────────────────────────────────────────────────────
 console.log("\nComprobaciones de código\n");
 checkEslint();
-checkTitles();
+checkMetadata();
 checkDateReparse();
 checkGuideCss();
 

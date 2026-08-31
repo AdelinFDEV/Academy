@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/guias/xrp" },
   title: "¿Qué es XRP y Ripple? El Activo Puente de Pagos",
   description:
-    "XRP, Ripple y el XRP Ledger explicados a fondo: la diferencia entre la empresa y el activo, el consenso sin minería del XRPL (RPCA y la UNL), XRP como moneda puente en pagos internacionales, el juicio con la SEC, el escrow y los riesgos de centralización. Con simulador de consenso, quiz y badge.",
+    "XRP, Ripple y el XRP Ledger a fondo: empresa contra activo, el consenso sin minería del XRPL, XRP como moneda puente, el juicio con la SEC y el escrow.",
   openGraph: {
     title: "¿Qué es XRP y Ripple? El Activo Puente para Pagos Globales",
     description:
