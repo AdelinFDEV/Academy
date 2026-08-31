@@ -15,73 +15,104 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 # 🔻 RETOMAR AQUÍ — estado a 31 de agosto de 2026
 
-**Bloque 1 CERRADO ENTERO: sus seis puntos hechos y verificados en producción, no solo en local.**
+**Van hechos los puntos 1 a 8 de 12. Los ocho verificados en producción, no solo en local.** Cada uno tiene su commit en la tabla de avance del final de este archivo.
 
-| Hecho | Comprobado |
-|---|---|
-| 1. Sitemap | `/sitemap.xml` sirve **30 URLs**, las 30 responden 200 |
-| 2. Robots | `/robots.txt` en producción, declara el sitemap |
-| 3. Search Console | Propiedad de **Dominio** verificada; sitemap **Correcto, 30 páginas** |
-| 4. Canónicas | Las **30 URLs del sitemap** responden 200 y su canónica se apunta a sí misma; ninguna ruta privada la hereda |
-| 5. Títulos y descripciones | Verificado en **producción**: los **24 títulos por debajo de 60** y las **24 descripciones por debajo de 160**, contando caracteres y no bytes |
-| 8. Enlazado interno | Verificado en **producción**: los 24 enlaces están vivos en las 8 entradas y sus 14 destinos distintos responden 200 |
-| 6. Datos estructurados | Verificado en **producción**: las 18 rutas públicas con contenido llevan exactamente los tipos que les tocan, todos parsean y ninguna lleva de más |
-| Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
+| # | Punto | Comprobado en producción |
+|---|---|---|
+| 1 | Sitemap | `/sitemap.xml` sirve **73 URLs**, todas responden 200 |
+| 2 | Robots | `/robots.txt` declara el sitemap y bloquea lo privado |
+| 3 | Search Console | Propiedad de **Dominio** verificada; sitemap aceptado |
+| 4 | Canónicas | Cada URL del sitemap se apunta a sí misma; ninguna ruta privada hereda canónica |
+| 5 | Títulos y descripciones | Sufijo de 20 → 12 caracteres; **ningún título pasa de 60 ni ninguna descripción de 160** |
+| 6 | Datos estructurados | `Organization` + `WebSite` en todas las rutas, `Article` + `BreadcrumbList` en entradas, `BreadcrumbList` en guías. Todos parsean |
+| 7 | Glosario con URL por término | **43 páginas nuevas** con `DefinedTerm`, canónica y ~200 palabras cada una |
+| 8 | Enlazado interno | Las 8 entradas pasan de 1 enlace en total a **24**; los 14 destinos responden 200 |
+| — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
+
+El resultado medible de todo esto: **el sitio ha pasado de 30 URLs indexables a 73**.
 
 ## Lo siguiente es el punto 9 — página pilar de formación gratuita
 
-Una página que agrupe las 7 guías y compita por «aprender criptomonedas gratis» y parecidas. Hoy `/guias` es un listado; la idea es convertirlo —o crear junto a él— algo con texto propio que explique el itinerario, por dónde empezar según nivel y qué se aprende en cada una. Es todo código y contenido, sin acción del admin más allá de aprobar el texto.
+Todo código y contenido. La única acción del admin es **aprobar el texto antes de publicar**, como en las tandas del glosario.
 
-### El punto 7, cerrado — cómo quedó
+La idea: hoy `/guias` es un listado de tarjetas sin texto propio, así que no compite por nada. El punto 9 es darle —o crear junto a él— contenido real que explique **el itinerario**: por dónde empezar según el nivel, qué se aprende en cada guía y en qué orden tienen sentido. Las búsquedas objetivo son del tipo «aprender criptomonedas gratis» o «curso de criptomonedas para principiantes».
 
-| Tanda | Términos | Estado |
-|---|---|---|
-| Básicos | 12 | **Publicada** el 31-08-2026 |
-| Trading | 19 | **Publicada** el 31-08-2026 |
-| DeFi | 6 | **Publicada** el 31-08-2026 |
-| Seguridad | 6 | **Publicada** el 31-08-2026 |
+Antes de escribir una línea, dos comprobaciones que ya salieron caras una vez:
 
-**Verificado en producción el 31-08-2026:** las 43 páginas responden 200 con `DefinedTerm`, `BreadcrumbList`, canónica propia, el texto largo dentro del HTML y título por debajo de 60. El sitemap pasa de 30 a **73 URLs** y las 73 responden 200 sin una sola redirección. Los slugs inventados siguen dando 404.
+- **Si acaba siendo una página nueva y no `/guias`**, hay que darla de alta a mano en `STATIC_ROUTES` de `src/app/sitemap.ts` y añadirle su `alternates.canonical`. Ninguna de las dos cosas es automática.
+- **El título propio no puede pasar de 48 caracteres** ni la descripción de 160. `npm run check` falla si te pasas, así que lo sabrás antes de subir.
 
-**La regla que no se salta:** un término solo tiene URL si tiene `extended` en `src/lib/glosario.ts`. Sin él da 404 y no entra en el sitemap. Es lo que impide que lleguen a Google 31 páginas de 25 palabras, que es contenido escaso y penaliza al dominio entero.
+Detrás vienen el **10** (generación estática con revalidación), el **11** (contenido gratuito de fiscalidad — son entradas nuevas, con las 3 preguntas obligatorias de `/admin/posts-instrucciones`) y el **12** (RSS).
 
-Para ampliar uno basta con añadirle `extended` (~150-250 palabras) y `seeAlso`; el sitemap y el listado se enteran solos.
+## Cómo se trabaja esto — el ciclo, punto por punto
 
-## ⛔ Pendiente del admin — desbloqueado, se puede hacer ya
+Se implementa **en orden y de uno en uno**. Para cada punto:
 
-Las canónicas están **desplegadas y verificadas en producción el 31-08-2026**, así que ya no hay nada que esperar.
+1. Medir el estado real antes de tocar nada. Las cifras de este plan se han equivocado ya dos veces (eran 43 términos y no 45; las guías también tenían los títulos cortados y no solo las entradas).
+2. Implementar, y pasar `npm run check` y `npx tsc --noEmit`.
+3. **Enseñar al admin lo que sea contenido suyo y esperar aprobación** antes de escribir en Supabase o publicar.
+4. Commit y push. El hook de `pre-push` corre las comprobaciones y cancela el push si fallan.
+5. **Verificar en producción tras el despliegue** (~1 minuto), no solo en local. Aquí han aparecido fallos reales que en local no se veían.
+6. Marcar la casilla, anotar el commit en la tabla de avance, y **llevar a `AGENTS.md` lo que cambie el día a día**. Este archivo cuenta el progreso; aquel cuenta cómo funciona el SEO hoy, y es el que se lee al abrir sesión.
 
-**Solicitar indexación** en Search Console → «Inspección de URLs» → «Solicitar indexación», para estas tres:
+## ⛔ Pendiente del admin
 
-```
-https://adelinacademy.com/
-https://adelinacademy.com/articulos
-https://adelinacademy.com/guias
-```
+Del plan SEO, **nada**. Las tres peticiones de indexación en Search Console (portada, `/articulos`, `/guias`) se hicieron el 31-08-2026, y no hay que pedir indexación de las 43 páginas nuevas del glosario: el sitemap las recoge solo en menos de una hora y la cuota es de unas 10 al día.
 
-Es lo único que queda del punto 4, y **solo lo puede hacer el admin**: Claude no tiene acceso a Search Console. La cuota es de unas 10 peticiones al día.
-
-Era exactamente lo que pedía el diagnóstico de la portada: *«La página no está indexada — **Duplicada: el usuario no ha indicado ninguna versión canónica**»*, con `https://www.adelinacademy.com/` como página de referencia. El 308 quitó una mitad del problema; la canónica en el HTML es la otra.
+Fuera del plan SEO sí queda una cosa, y es legal, no de posicionamiento: **`LEGAL.titularNombre` en `src/lib/legal.ts` sigue con el texto de relleno `[Nombre y apellidos del titular]`**, y se ve así en producción en `/aviso-legal` y `/privacidad`. La LSSI obliga a identificar al titular con su nombre real. Hay que pedírselo al admin y sustituirlo; no se inventa.
 
 ## No tocar nunca
 
 - **El registro TXT `google-site-verification=...`** en la raíz del DNS de Vercel. Google revalida cada cierto tiempo; si desaparece, se pierde la propiedad de Search Console.
 - **La fila de `adelinacademy.com`** en Vercel → Project → Settings → Domains. Debe seguir en «Connect to an environment → Production». Solo la de `www` redirige.
-- **La casilla de Vercel «Redirect apex domains to www» / «Include apex and www variants»**: viene marcada por defecto y hay que dejarla **desmarcada**. Invertiría el sitio y convertiría en redirección las 30 URLs que ya tiene Google.
+- **La casilla de Vercel «Redirect apex domains to www» / «Include apex and www variants»**: viene marcada por defecto y hay que dejarla **desmarcada**. Invertiría el sitio y convertiría en redirección las 73 URLs que ya tiene Google.
+- **El campo `term` de `src/lib/glosario.ts`**: es la clave con la que los usuarios guardan sus términos favoritos (tabla `saved_terms`). Cambiar ese texto deja huérfanos los guardados de todo el mundo.
 
-## Comprobar en 30 segundos que todo sigue en pie
+## Comprobar en dos minutos que todo sigue en pie
+
+Cuántas URLs sirve el sitemap — debe decir **73**:
 
 ```bash
 curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
 ```
 
-Debe decir **30**. Y que ninguna URL del sitemap redirija:
+Que ninguna de ellas redirija ni falle (silencio = correcto):
 
 ```bash
 curl -s https://adelinacademy.com/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's|</\?loc>||g' | while read u; do c=$(curl -s -o /dev/null -w "%{http_code}" "$u"); [ "$c" != "200" ] && echo "$c $u"; done
 ```
 
-Silencio = correcto.
+Que la portada declara su canónica:
+
+```bash
+curl -s https://adelinacademy.com/ | grep -o '<link rel="canonical"[^>]*>'
+```
+
+Que un término del glosario existe y lleva sus datos estructurados:
+
+```bash
+curl -s https://adelinacademy.com/glosario/staking | grep -o 'DefinedTerm'
+```
+
+Que un término **sin** ampliar sigue devolviendo 404 — la salvaguarda contra el contenido escaso:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/glosario/no-existe
+```
+
+## Dónde está cada cosa
+
+| Archivo | Qué gobierna |
+|---|---|
+| `src/app/sitemap.ts` | Las 73 URLs. Revalida cada hora |
+| `src/app/robots.ts` | Qué se rastrea y qué no |
+| `src/lib/site.ts` | `SITE_URL` — el dominio, escrito **una sola vez** |
+| `src/lib/schema.ts` | Los constructores de JSON-LD |
+| `src/lib/glosario.ts` | Los 43 términos. Sin `extended` no hay URL |
+| `src/lib/guides.ts` | El array `GUIDES`. Una guía que no esté aquí es invisible para Google |
+| `scripts/check-code.mjs` | Los límites de 48 y 160 caracteres, entre otras reglas |
+| `AGENTS.md` | **Cómo funciona el SEO del sitio hoy.** Lo que hay que leer antes de escribir nada |
+| `/admin/posts-instrucciones` | Las reglas de una entrada nueva, incluido el enlazado interno (bloque 10) |
 
 ---
 
