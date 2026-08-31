@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 6, y el 7 (glosario) está EN CURSO: 12 de 43 términos ampliados y publicados; faltan Trading, DeFi y Seguridad.**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 6, y el 7 (glosario) está EN CURSO: 31 de 43 términos ampliados y publicados; faltan DeFi y Seguridad.**
 
 **Al completar un punto, tres cosas, siempre:**
 
