@@ -1269,3 +1269,126 @@
 @keyframes gbcScoreIn {
   from { stroke-dashoffset: 276.46; }
 }
+
+/* ── Contenido pilar de /guias (punto 9 del plan SEO) ──────────────────────
+   El texto que hace que esta página compita por «aprender criptomonedas
+   gratis». Va aquí y no en globals.css porque solo lo usa /guias. */
+
+.guias-pilar {
+  max-width: 68ch;
+  margin: 0 auto 3.5rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.guias-pilar p {
+  margin: 0 0 1.1rem;
+}
+
+.guias-pilar p:last-child {
+  margin-bottom: 0;
+}
+
+.guias-pilar strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.guias-pilar-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
+  margin: 0 0 1.1rem;
+  text-wrap: balance;
+}
+
+/* Itinerario por nivel. Tres pasos, en columna: el orden ES la información. */
+.guias-ruta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.guias-ruta-paso {
+  padding-left: 1.15rem;
+  border-left: 2px solid var(--gold-border);
+}
+
+.guias-ruta-nivel {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+}
+
+.guias-ruta-paso p {
+  margin: 0 0 0.9rem;
+}
+
+.guias-ruta-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.guias-ruta-lista li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.guias-ruta-lista a {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-border);
+}
+
+.guias-ruta-lista a:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.guias-ruta-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Preguntas frecuentes. Sin datos estructurados a propósito: Google dejó de
+   mostrar los resultados enriquecidos de FAQ salvo a sitios oficiales, así que
+   declararlos no aporta nada y sí añade ruido al HTML. */
+.guias-faq {
+  margin: 0;
+}
+
+.guias-faq dt {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 1.35rem;
+}
+
+.guias-faq dt:first-child {
+  margin-top: 0;
+}
+
+.guias-faq dd {
+  margin: 0.4rem 0 0;
+}
+
+.guias-faq a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--gold-border);
+}
+
+.guias-faq a:hover {
+  border-bottom-color: var(--gold);
+}

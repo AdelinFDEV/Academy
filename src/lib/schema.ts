@@ -112,6 +112,30 @@ export function articleSchema(post: ArticleInput): JsonLdNode {
 }
 
 /**
+ * Una lista ordenada de páginas del sitio — hoy, las guías en `/guias`.
+ *
+ * Se declara solo si esa misma lista está a la vista y en ese mismo orden: es
+ * un resumen de lo que el visitante ve, no un catálogo paralelo.
+ */
+export function itemListSchema(
+  nombre: string,
+  items: { name: string; path: string }[]
+): JsonLdNode {
+  return {
+    "@type": "ItemList",
+    name: nombre,
+    numberOfItems: items.length,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      url: `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+/**
  * Un término del diccionario.
  *
  * `DefinedTerm` va dentro de un `DefinedTermSet` —el diccionario completo—

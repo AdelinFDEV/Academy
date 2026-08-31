@@ -27,22 +27,20 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 6 | Datos estructurados | `Organization` + `WebSite` en todas las rutas, `Article` + `BreadcrumbList` en entradas, `BreadcrumbList` en guías. Todos parsean |
 | 7 | Glosario con URL por término | **43 páginas nuevas** con `DefinedTerm`, canónica y ~200 palabras cada una |
 | 8 | Enlazado interno | Las 8 entradas pasan de 1 enlace en total a **24**; los 14 destinos responden 200 |
+| 9 | Página pilar | `/guias` pasa de **80 a 932 palabras** indexables, con itinerario, FAQ e `ItemList` |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
 El resultado medible de todo esto: **el sitio ha pasado de 30 URLs indexables a 73**.
 
-## Lo siguiente es el punto 9 — página pilar de formación gratuita
+## Lo siguiente es el punto 10 — generación estática con revalidación
 
-Todo código y contenido. La única acción del admin es **aprobar el texto antes de publicar**, como en las tandas del glosario.
+**Es el único punto que no es de contenido sino de velocidad**, y por eso conviene medir antes de tocar: la home tardaba 2,44 s el 30-08-2026.
 
-La idea: hoy `/guias` es un listado de tarjetas sin texto propio, así que no compite por nada. El punto 9 es darle —o crear junto a él— contenido real que explique **el itinerario**: por dónde empezar según el nivel, qué se aprende en cada guía y en qué orden tienen sentido. Las búsquedas objetivo son del tipo «aprender criptomonedas gratis» o «curso de criptomonedas para principiantes».
+La causa está diagnosticada: **casi todas las páginas públicas son dinámicas porque leen cookies de Supabase en servidor** para pintar la barra de navegación con el nombre del usuario. Eso obliga a renderizar en cada visita, incluso para quien no ha entrado nunca. En el `build` se ve claro: casi todo sale marcado con `ƒ` (dinámico) en vez de `○`.
 
-Antes de escribir una línea, dos comprobaciones que ya salieron caras una vez:
+La idea es separar lo público de lo personalizado, de modo que el contenido se genere estático con revalidación y solo la parte que depende del usuario se resuelva en cliente. Es el punto de más riesgo de romper algo de los que quedan: afecta a todas las páginas, no a una.
 
-- **Si acaba siendo una página nueva y no `/guias`**, hay que darla de alta a mano en `STATIC_ROUTES` de `src/app/sitemap.ts` y añadirle su `alternates.canonical`. Ninguna de las dos cosas es automática.
-- **El título propio no puede pasar de 48 caracteres** ni la descripción de 160. `npm run check` falla si te pasas, así que lo sabrás antes de subir.
-
-Detrás vienen el **10** (generación estática con revalidación), el **11** (contenido gratuito de fiscalidad — son entradas nuevas, con las 3 preguntas obligatorias de `/admin/posts-instrucciones`) y el **12** (RSS).
+Detrás vienen el **11** (contenido gratuito de fiscalidad — son entradas nuevas, con las 3 preguntas obligatorias de `/admin/posts-instrucciones`) y el **12** (RSS).
 
 ## Cómo se trabaja esto — el ciclo, punto por punto
 
@@ -129,7 +127,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/glosario/no-e
 
 - [x] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. **Los 43 términos publicados** (son 43, no 45: el plan traía mal la cifra), en cuatro tandas aprobadas una a una por el admin.
 - [x] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
-- [ ] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis».
+- [x] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis». Se montó **sobre `/guias`**, no en una URL nueva, para no partir la fuerza entre dos páginas que compiten por lo mismo.
 - [ ] **10. Generación estática con revalidación** — hoy todo es dinámico porque las páginas leen cookies de Supabase en servidor. La home tardaba 2,44 s el 30-08-2026. Separar lo público de lo personalizado.
 - [ ] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
 - [ ] **12. RSS** y ritmo de publicación sostenido.
@@ -177,6 +175,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 7 (2/4) | `3cb0000` | Tanda **Trading**: 19 términos a 197 palabras de media. Tono deliberadamente cauto, porque todos rozan decisiones con dinero: DCA aclara que reduce el riesgo de elegir mal el momento y no el activo; FUD explica que la etiqueta se usa más para silenciar críticas legítimas que para señalar manipulación; HODL no se presenta como virtud; pump-and-dump desmonta que se pueda salir a tiempo. Verificados los 57 slugs de `seeAlso` contra la lista real. El glosario pasa a 31 de 43 términos publicados y el sitemap a 61 URLs. |
 | 2026-08-31 | 7 (3-4/4) | `8e05edc` | Tandas **DeFi** (6) y **Seguridad** (6), a 213 palabras de media. En Seguridad el criterio cambia a propósito: son los términos donde el malentendido cuesta el dinero entero y sin vuelta atrás, así que cada uno dice explícitamente qué NO hacer — nadie legítimo pide la seed phrase, el 2FA por SMS es vulnerable a SIM swapping, el phishing moderno solo necesita una firma, la cold wallet se compra al fabricante. Cierra el punto 7: **43 de 43**, 8.734 palabras, 129 referencias cruzadas todas válidas y ningún término sin enlaces entrantes. |
 | 2026-08-31 | 8 | `5c45875` | Enlazado interno. Las 8 entradas pasan de **1 enlace en total** a **24**, entre 2 y 4 cada una, repartidos entre el diccionario, las guías y otras entradas. Todas las anclas son palabras que **ya estaban en el texto**: no se ha reescrito ni una frase, y el script lo verifica comparando el texto sin etiquetas antes y después. Enlaces recíprocos entre Alpenglow y Agave, y entre Glamsterdam y Pasteur, que son las parejas de entradas que ya se citaban. La regla queda en `/admin/posts-instrucciones` (bloque 10 nuevo) y en la checklist, para que las entradas nuevas nazcan enlazadas. |
+| 2026-08-31 | 9 | `PENDIENTE` | Página pilar montada **sobre `/guias`**, no en una URL nueva: dos páginas compitiendo por las mismas búsquedas se quitan fuerza entre sí. La página pasa de **80 a 932 palabras** indexables. Se añaden un texto de entrada, un itinerario por nivel y cinco preguntas frecuentes. El `h1` de marca («Aprende crypto como nunca antes») **se conserva** por decisión del admin, y la keyword entra por el `title`, la `description` y los `h2`. Los nombres y tiempos del itinerario salen de `GUIDES`, no escritos a mano. Esquema `ItemList` con las 7 guías, en el mismo orden en que se ven. **Sin datos estructurados de FAQ a propósito**: Google dejó de mostrar ese resultado enriquecido salvo a sitios oficiales. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 
