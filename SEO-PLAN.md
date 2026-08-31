@@ -15,11 +15,13 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 # 🔻 RETOMAR AQUÍ — estado a 31 de agosto de 2026
 
-**Van hechos los puntos 1 a 8 de 12. Los ocho verificados en producción, no solo en local.** Cada uno tiene su commit en la tabla de avance del final de este archivo.
+**LOS DOCE PUNTOS ESTÁN HECHOS y verificados en producción, no solo en local.** Cada uno tiene su commit en la tabla de avance del final de este archivo.
+
+El resultado en cifras, del 30 al 31 de agosto de 2026: **de 30 URLs indexables a 77**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos, y las portadas de 22 MB a 3,7 MB.
 
 | # | Punto | Comprobado en producción |
 |---|---|---|
-| 1 | Sitemap | `/sitemap.xml` sirve **73 URLs**, todas responden 200 |
+| 1 | Sitemap | `/sitemap.xml` sirve **77 URLs**, todas responden 200 |
 | 2 | Robots | `/robots.txt` declara el sitemap y bloquea lo privado |
 | 3 | Search Console | Propiedad de **Dominio** verificada; sitemap aceptado |
 | 4 | Canónicas | Cada URL del sitemap se apunta a sí misma; ninguna ruta privada hereda canónica |
@@ -30,19 +32,23 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 9 | Página pilar | Verificado en **producción**: `/guias` pasa de **80 a 932 palabras** indexables, un solo `h1`, 10 enlaces internos que responden 200 e `ItemList` con las 7 guías |
 | 10 | Rendimiento | Acotado: `/post/[slug]` pasa de 6 consultas en cadena a 2 rondas. Verificado en **producción**: de **1.156 ms a 736 ms** de media, un 36 % menos, con las 8 entradas intactas |
 | 11 | Fiscalidad gratis | **3 entradas nuevas** publicadas y categoría `Fiscalidad` creada |
-| 12 | RSS | `/rss.xml` con las entradas publicadas, estático con revalidación de 1 h. Las 10 rutas comprobadas lo anuncian |
+| 12 | RSS | Verificado en **producción**: `/rss.xml` sirve las 11 entradas, XML válido, fechas RFC 822, y las 10 rutas comprobadas lo anuncian sin perder su canónica |
 | — | Peso de las portadas | **Las 11 portadas del sitio convertidas a WebP: de 22 MB a 3,7 MB**, un 83 % menos. Verificado en producción |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-El resultado medible de todo esto: **el sitio ha pasado de 30 URLs indexables a 73**.
+Lo que queda por delante es el **punto 13**, las landings públicas de las herramientas, que es el compromiso que el admin pidió expresamente y que se ataca justo ahora que los doce están cerrados.
 
-## Lo siguiente es el punto 12 — RSS, y con él se cierran los doce
+## Lo siguiente es el punto 13 — las landings públicas de las herramientas
 
-Un feed en `/rss.xml` con las entradas publicadas, enlazado desde el `<head>` para que los lectores lo descubran solos. Next lo sirve con un `route.ts` que lee de Supabase, igual que el sitemap — y con el mismo cuidado: **cliente anónimo sin cookies**, o la ruta se vuelve dinámica y pega a la base en cada petición.
+**Es el compromiso que el admin pidió expresamente el 30 de agosto de 2026**, y el momento de atacarlo es ahora: se acordó hacerlo al cerrar los doce puntos.
 
-La segunda mitad del punto, el **ritmo de publicación sostenido**, no es código: es del admin. Un feed sin entradas nuevas no sirve de nada.
+El problema, en una frase: el admin nombra tres pilares —entradas, guías y herramientas— y **el tercero no tiene ni una sola URL indexable**. `/herramientas/radar` y `/herramientas/liberaciones` exigen premium, así que Google solo ve la redirección y se va.
 
-Después de esto quedan el **punto 13** (las herramientas, el compromiso abierto) y los cinco arreglos menores de más abajo.
+**No es abrir las herramientas.** Es el mismo patrón que acaba de funcionar en el punto 11: una landing pública por herramienta que explique qué hace y muestre **una parte real** —por ejemplo, los próximos unlocks de las 3-4 monedas más buscadas— y deje el resto tras el muro. Requiere sacar `/herramientas/` del `Disallow` de `robots.txt` y darlas de alta en `STATIC_ROUTES`.
+
+Duele especialmente porque «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas reales, de intención muy concreta y competencia baja — el perfil de mejor retorno de toda la auditoría.
+
+Y quedan también los **cinco arreglos menores** de más abajo, que entre todos son un rato.
 ## El punto 10, por qué se recortó — decisión del 31-08-2026
 
 **Léelo antes de «terminarlo».** El punto 10 está marcado como hecho aunque el refactor que describía —volver estáticas las páginas públicas— **no se hizo, y fue deliberado**. Si en una sesión futura aparece la tentación de completarlo, esto es lo que se sabía al decidir.
@@ -232,8 +238,8 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 9 | `e3ca28f` | Página pilar montada **sobre `/guias`**, no en una URL nueva: dos páginas compitiendo por las mismas búsquedas se quitan fuerza entre sí. La página pasa de **80 a 932 palabras** indexables. Se añaden un texto de entrada, un itinerario por nivel y cinco preguntas frecuentes. El `h1` de marca («Aprende crypto como nunca antes») **se conserva** por decisión del admin, y la keyword entra por el `title`, la `description` y los `h2`. Los nombres y tiempos del itinerario salen de `GUIDES`, no escritos a mano. Esquema `ItemList` con las 7 guías, en el mismo orden en que se ven. **Sin datos estructurados de FAQ a propósito**: Google dejó de mostrar ese resultado enriquecido salvo a sitios oficiales. |
 | 2026-08-31 | 10 | `517aaff` | **Acotado a propósito.** Medido en producción, el servidor respondía bien en todo salvo `/post/[slug]` (1.156 ms de TTFB, cuatro veces el resto); los 2,44 s del plan eran carga de navegador, no tiempo de servidor. El refactor estático global se descarta: volver estáticas páginas que pintan el nombre del usuario arriesga servir los datos de uno a otro, y a cambio la velocidad es un factor secundario que Google evalúa con tráfico real que este sitio aún no tiene. Sí se optimiza la página de entrada: de **6 consultas en cadena a 2 rondas paralelas**, un **19 % más rápida** con ambas versiones compiladas en la misma máquina. Render comprobado idéntico contra producción en las 8 entradas. |
 | 2026-08-31 | 11 | `812b5ec` | Categoría **Fiscalidad** creada y **tres entradas gratuitas** publicadas: modelo 721, método FIFO, y staking + airdrops. 2.096 palabras, 12 enlaces internos, un gráfico cada una y el mismo aviso en cabecera: contenido informativo, **no es asesoramiento fiscal**, datos hasta mayo de 2026. Todo lo que afirman está contrastado contra la guía premium, que ya cita sus fuentes (Orden HFP/886/2023, consulta V1766-22, Ley 7/2024, art. 33.5.e LIRPF): **ni un porcentaje inventado**. Las portadas llegaron en PNG pesando 8 MB entre las tres y se convirtieron a **WebP: 904 KB, un 89 % menos**; a partir de ahora es regla para toda portada, documentada en `/admin/posts-instrucciones` y `AGENTS.md`. |
-| 2026-08-31 | — | `PENDIENTE` | **Todas las portadas del sitio a WebP**, no solo las nuevas: las 8 anteriores pesaban entre 694 KB y 3,5 MB. Se descargaron del bucket, se convirtieron a 1600 px y calidad 82, se actualizó `cover_image` y se borraron las pesadas ya sin referencias. **De 22.190 KB a 3.789 KB, un 83 % menos.** El borrado va después de actualizar todas las filas: si fallara a mitad, ninguna entrada se queda sin imagen. |
-| 2026-08-31 | 12 | `PENDIENTE` | Feed en `/rss.xml`, con las 30 entradas más recientes. Mismo patrón que el sitemap y por el mismo motivo: **cliente anónimo sin cookies**, revalidación de 1 h y feed vacío pero válido si faltan credenciales — un 500 hace que los lectores den de baja el feed. Va el resumen y no el artículo entero: el feed lleva a la web, no la sustituye. **El enlace de descubrimiento va a mano en el `<head>` del layout, NO en `alternates.types`**: comprobado que el `alternates: { canonical }` de cada página reemplaza entero el del layout, así que por metadata el feed desaparecía de las 10 rutas. Solo entradas: las guías y el diccionario no son novedades periódicas. |
+| 2026-08-31 | — | `efbfc99` | **Todas las portadas del sitio a WebP**, no solo las nuevas: las 8 anteriores pesaban entre 694 KB y 3,5 MB. Se descargaron del bucket, se convirtieron a 1600 px y calidad 82, se actualizó `cover_image` y se borraron las pesadas ya sin referencias. **De 22.190 KB a 3.789 KB, un 83 % menos.** El borrado va después de actualizar todas las filas: si fallara a mitad, ninguna entrada se queda sin imagen. |
+| 2026-08-31 | 12 | `28f3c20` | Feed en `/rss.xml`, con las 30 entradas más recientes. Mismo patrón que el sitemap y por el mismo motivo: **cliente anónimo sin cookies**, revalidación de 1 h y feed vacío pero válido si faltan credenciales — un 500 hace que los lectores den de baja el feed. Va el resumen y no el artículo entero: el feed lleva a la web, no la sustituye. **El enlace de descubrimiento va a mano en el `<head>` del layout, NO en `alternates.types`**: comprobado que el `alternates: { canonical }` de cada página reemplaza entero el del layout, así que por metadata el feed desaparecía de las 10 rutas. Solo entradas: las guías y el diccionario no son novedades periódicas. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 
