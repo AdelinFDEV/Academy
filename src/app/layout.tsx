@@ -73,6 +73,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${kalam.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
+      <head>
+        {/* El feed va aquí a mano y NO en `alternates.types` de la metadata.
+            Motivo comprobado: en Next los metadatos se fusionan por campo, así
+            que el `alternates: { canonical }` de cada página **reemplaza entero**
+            el `alternates` del layout — y como todas las rutas públicas declaran
+            su canónica desde el punto 4, el enlace al feed desaparecía de todas.
+            Aquí se emite siempre, independientemente de la metadata. */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="AdelinBTC Academy"
+          href="/rss.xml"
+        />
+      </head>
       <body suppressHydrationWarning>
         {/* La organización y el sitio se declaran aquí y SOLO aquí: el resto de
             esquemas apuntan a su `@id`. Al ir en el layout raíz salen en todas

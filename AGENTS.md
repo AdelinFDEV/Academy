@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 11, y el siguiente es el 12 (RSS), con el que se cierran los doce. El 10 se acotó a propósito: no se hizo el refactor estático global, solo se optimizó `/post/[slug]` — el porqué está en `SEO-PLAN.md`.**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 están hechos LOS DOCE PUNTOS del plan. Lo siguiente es el punto 13: las landings públicas de las herramientas, que es el compromiso que el admin pidió expresamente. El 10 se acotó a propósito: no se hizo el refactor estático global, solo se optimizó `/post/[slug]` — el porqué está en `SEO-PLAN.md`.**
 
 **Al completar un punto, tres cosas, siempre:**
 

@@ -30,6 +30,7 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 9 | Página pilar | Verificado en **producción**: `/guias` pasa de **80 a 932 palabras** indexables, un solo `h1`, 10 enlaces internos que responden 200 e `ItemList` con las 7 guías |
 | 10 | Rendimiento | Acotado: `/post/[slug]` pasa de 6 consultas en cadena a 2 rondas. Verificado en **producción**: de **1.156 ms a 736 ms** de media, un 36 % menos, con las 8 entradas intactas |
 | 11 | Fiscalidad gratis | **3 entradas nuevas** publicadas y categoría `Fiscalidad` creada |
+| 12 | RSS | `/rss.xml` con las entradas publicadas, estático con revalidación de 1 h. Las 10 rutas comprobadas lo anuncian |
 | — | Peso de las portadas | **Las 11 portadas del sitio convertidas a WebP: de 22 MB a 3,7 MB**, un 83 % menos. Verificado en producción |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
@@ -183,7 +184,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/glosario/no-e
 - [x] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis». Se montó **sobre `/guias`**, no en una URL nueva, para no partir la fuerza entre dos páginas que compiten por lo mismo.
 - [x] **10. Generación estática con revalidación** — **ACOTADO A PROPÓSITO, no se hizo el refactor global.** Ver «El punto 10, por qué se recortó» más abajo. Se optimizó solo `/post/[slug]`, que era el único cuello real.
 - [x] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
-- [ ] **12. RSS** y ritmo de publicación sostenido.
+- [x] **12. RSS** y ritmo de publicación sostenido. El feed está en `/rss.xml`; **el ritmo es del admin**, y un feed sin entradas nuevas no sirve de nada.
 
 ## Bloque 3 — Comprometido: posicionar las herramientas
 
@@ -232,6 +233,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 10 | `517aaff` | **Acotado a propósito.** Medido en producción, el servidor respondía bien en todo salvo `/post/[slug]` (1.156 ms de TTFB, cuatro veces el resto); los 2,44 s del plan eran carga de navegador, no tiempo de servidor. El refactor estático global se descarta: volver estáticas páginas que pintan el nombre del usuario arriesga servir los datos de uno a otro, y a cambio la velocidad es un factor secundario que Google evalúa con tráfico real que este sitio aún no tiene. Sí se optimiza la página de entrada: de **6 consultas en cadena a 2 rondas paralelas**, un **19 % más rápida** con ambas versiones compiladas en la misma máquina. Render comprobado idéntico contra producción en las 8 entradas. |
 | 2026-08-31 | 11 | `812b5ec` | Categoría **Fiscalidad** creada y **tres entradas gratuitas** publicadas: modelo 721, método FIFO, y staking + airdrops. 2.096 palabras, 12 enlaces internos, un gráfico cada una y el mismo aviso en cabecera: contenido informativo, **no es asesoramiento fiscal**, datos hasta mayo de 2026. Todo lo que afirman está contrastado contra la guía premium, que ya cita sus fuentes (Orden HFP/886/2023, consulta V1766-22, Ley 7/2024, art. 33.5.e LIRPF): **ni un porcentaje inventado**. Las portadas llegaron en PNG pesando 8 MB entre las tres y se convirtieron a **WebP: 904 KB, un 89 % menos**; a partir de ahora es regla para toda portada, documentada en `/admin/posts-instrucciones` y `AGENTS.md`. |
 | 2026-08-31 | — | `PENDIENTE` | **Todas las portadas del sitio a WebP**, no solo las nuevas: las 8 anteriores pesaban entre 694 KB y 3,5 MB. Se descargaron del bucket, se convirtieron a 1600 px y calidad 82, se actualizó `cover_image` y se borraron las pesadas ya sin referencias. **De 22.190 KB a 3.789 KB, un 83 % menos.** El borrado va después de actualizar todas las filas: si fallara a mitad, ninguna entrada se queda sin imagen. |
+| 2026-08-31 | 12 | `PENDIENTE` | Feed en `/rss.xml`, con las 30 entradas más recientes. Mismo patrón que el sitemap y por el mismo motivo: **cliente anónimo sin cookies**, revalidación de 1 h y feed vacío pero válido si faltan credenciales — un 500 hace que los lectores den de baja el feed. Va el resumen y no el artículo entero: el feed lleva a la web, no la sustituye. **El enlace de descubrimiento va a mano en el `<head>` del layout, NO en `alternates.types`**: comprobado que el `alternates: { canonical }` de cada página reemplaza entero el del layout, así que por metadata el feed desaparecía de las 10 rutas. Solo entradas: las guías y el diccionario no son novedades periódicas. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 
