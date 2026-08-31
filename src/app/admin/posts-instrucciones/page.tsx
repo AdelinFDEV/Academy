@@ -60,8 +60,26 @@ export default function PostsInstruccionesPage() {
             <div>
               <strong>¿Imagen de portada?</strong>
               <p>El admin la da. Claude la sube a Supabase Storage (bucket <code>media</code>, mismo sistema que ya usa el panel) y guarda la URL pública resultante en <code>cover_image</code> — nunca se enlaza una imagen externa directamente.</p>
+              <p className="agi-note">
+                <strong>Regla desde el 31-08-2026: toda portada se convierte a WebP antes de subirla.</strong> Sin excepciones y sin preguntar — el admin da la imagen, Claude la optimiza. Ancho máximo <strong>1600 px</strong> y calidad <strong>82</strong>.
+              </p>
+              <p className="agi-note">
+                <strong>Por qué.</strong> Las tres portadas de las entradas de fiscalidad llegaron en PNG pesando <strong>8 MB entre las tres</strong>; en WebP quedaron en <strong>904 KB</strong>, un 89 % menos y sin diferencia visible. Un PNG de 2,7 MB en la portada arruina la carga de la página mucho más de lo que la mejora cualquier optimización de servidor — y eso es justo lo que Google mide como experiencia real del visitante. El límite de 5 MB del panel deja pasar esos archivos: <strong>que entre no significa que valga</strong>.
+              </p>
             </div>
           </div>
+        </div>
+        <div className="agi-card agi-card--mono" style={{ marginTop: "1rem" }}>
+          <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+{`// La conversión, con sharp (ya viene con Next, no hay que instalar nada):
+const webp = await sharp(original)
+  .resize({ width: 1600, withoutEnlargement: true })
+  .webp({ quality: 82 })
+  .toBuffer();
+
+// Y se sube con el nombre de siempre, cambiando la extensión:
+//   \${Date.now()}-\${slug}.webp     ·     contentType: "image/webp"`}
+          </pre>
         </div>
       </section>
 
@@ -315,7 +333,7 @@ export default function PostsInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Longitud entre <strong>500 y 1500 palabras</strong>, la que pida el tema</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar <code>excerpt</code>, <code>seo_title</code>, <code>meta_description</code> y <code>focus_keyword</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Si la categoría no existe, crearla en Supabase antes de asignarla</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Subir la imagen a Supabase Storage (bucket <code>media</code>) y usar la URL pública en <code>cover_image</code></span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Convertir la portada a WebP</strong> (1600 px, calidad 82) antes de subirla a Supabase Storage (bucket <code>media</code>) y usar la URL pública en <code>cover_image</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar el borrador completo al admin y esperar aprobación antes de publicar</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Insertar en la tabla <code>posts</code> tras la aprobación (<code>published = true</code> salvo que se pida borrador)</span></label>
         </div>

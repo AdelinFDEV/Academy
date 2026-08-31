@@ -29,18 +29,18 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 8 | Enlazado interno | Las 8 entradas pasan de 1 enlace en total a **24**; los 14 destinos responden 200 |
 | 9 | Página pilar | Verificado en **producción**: `/guias` pasa de **80 a 932 palabras** indexables, un solo `h1`, 10 enlaces internos que responden 200 e `ItemList` con las 7 guías |
 | 10 | Rendimiento | Acotado: `/post/[slug]` pasa de 6 consultas en cadena a 2 rondas. Verificado en **producción**: de **1.156 ms a 736 ms** de media, un 36 % menos, con las 8 entradas intactas |
+| 11 | Fiscalidad gratis | **3 entradas nuevas** publicadas y categoría `Fiscalidad` creada. Portadas convertidas a WebP: 8 MB → 904 KB |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
 El resultado medible de todo esto: **el sitio ha pasado de 30 URLs indexables a 73**.
 
-## Lo siguiente es el punto 11 — contenido gratuito de fiscalidad
+## Lo siguiente es el punto 12 — RSS, y con él se cierran los doce
 
-La guía de fiscalidad es la única premium del sitio, así que hoy nadie llega a ella desde Google. La idea es publicar **entradas gratuitas** sobre las dudas concretas que la gente busca —modelo 721, método FIFO, cómo se declaran el staking y los airdrops— que capten esa búsqueda y lleven a la guía.
+Un feed en `/rss.xml` con las entradas publicadas, enlazado desde el `<head>` para que los lectores lo descubran solos. Next lo sirve con un `route.ts` que lee de Supabase, igual que el sitemap — y con el mismo cuidado: **cliente anónimo sin cookies**, o la ruta se vuelve dinámica y pega a la base en cada petición.
 
-Son entradas del blog, así que aplican **las tres preguntas obligatorias antes de redactar** (categoría, free o premium, imagen de portada) y todo lo demás de [`/admin/posts-instrucciones`](https://adelinacademy.com/admin/posts-instrucciones): mínimo un gráfico, 500-1500 palabras, 2-4 enlaces internos y aprobación del admin antes de publicar.
+La segunda mitad del punto, el **ritmo de publicación sostenido**, no es código: es del admin. Un feed sin entradas nuevas no sirve de nada.
 
-Detrás queda el **12** (RSS y ritmo de publicación), y con él se cierran los doce.
-
+Después de esto quedan el **punto 13** (las herramientas, el compromiso abierto) y los cinco arreglos menores de más abajo.
 ## El punto 10, por qué se recortó — decisión del 31-08-2026
 
 **Léelo antes de «terminarlo».** El punto 10 está marcado como hecho aunque el refactor que describía —volver estáticas las páginas públicas— **no se hizo, y fue deliberado**. Si en una sesión futura aparece la tentación de completarlo, esto es lo que se sabía al decidir.
@@ -181,7 +181,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/glosario/no-e
 - [x] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
 - [x] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis». Se montó **sobre `/guias`**, no en una URL nueva, para no partir la fuerza entre dos páginas que compiten por lo mismo.
 - [x] **10. Generación estática con revalidación** — **ACOTADO A PROPÓSITO, no se hizo el refactor global.** Ver «El punto 10, por qué se recortó» más abajo. Se optimizó solo `/post/[slug]`, que era el único cuello real.
-- [ ] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
+- [x] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
 - [ ] **12. RSS** y ritmo de publicación sostenido.
 
 ## Bloque 3 — Comprometido: posicionar las herramientas
@@ -229,6 +229,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 8 | `5c45875` | Enlazado interno. Las 8 entradas pasan de **1 enlace en total** a **24**, entre 2 y 4 cada una, repartidos entre el diccionario, las guías y otras entradas. Todas las anclas son palabras que **ya estaban en el texto**: no se ha reescrito ni una frase, y el script lo verifica comparando el texto sin etiquetas antes y después. Enlaces recíprocos entre Alpenglow y Agave, y entre Glamsterdam y Pasteur, que son las parejas de entradas que ya se citaban. La regla queda en `/admin/posts-instrucciones` (bloque 10 nuevo) y en la checklist, para que las entradas nuevas nazcan enlazadas. |
 | 2026-08-31 | 9 | `e3ca28f` | Página pilar montada **sobre `/guias`**, no en una URL nueva: dos páginas compitiendo por las mismas búsquedas se quitan fuerza entre sí. La página pasa de **80 a 932 palabras** indexables. Se añaden un texto de entrada, un itinerario por nivel y cinco preguntas frecuentes. El `h1` de marca («Aprende crypto como nunca antes») **se conserva** por decisión del admin, y la keyword entra por el `title`, la `description` y los `h2`. Los nombres y tiempos del itinerario salen de `GUIDES`, no escritos a mano. Esquema `ItemList` con las 7 guías, en el mismo orden en que se ven. **Sin datos estructurados de FAQ a propósito**: Google dejó de mostrar ese resultado enriquecido salvo a sitios oficiales. |
 | 2026-08-31 | 10 | `517aaff` | **Acotado a propósito.** Medido en producción, el servidor respondía bien en todo salvo `/post/[slug]` (1.156 ms de TTFB, cuatro veces el resto); los 2,44 s del plan eran carga de navegador, no tiempo de servidor. El refactor estático global se descarta: volver estáticas páginas que pintan el nombre del usuario arriesga servir los datos de uno a otro, y a cambio la velocidad es un factor secundario que Google evalúa con tráfico real que este sitio aún no tiene. Sí se optimiza la página de entrada: de **6 consultas en cadena a 2 rondas paralelas**, un **19 % más rápida** con ambas versiones compiladas en la misma máquina. Render comprobado idéntico contra producción en las 8 entradas. |
+| 2026-08-31 | 11 | `PENDIENTE` | Categoría **Fiscalidad** creada y **tres entradas gratuitas** publicadas: modelo 721, método FIFO, y staking + airdrops. 2.096 palabras, 12 enlaces internos, un gráfico cada una y el mismo aviso en cabecera: contenido informativo, **no es asesoramiento fiscal**, datos hasta mayo de 2026. Todo lo que afirman está contrastado contra la guía premium, que ya cita sus fuentes (Orden HFP/886/2023, consulta V1766-22, Ley 7/2024, art. 33.5.e LIRPF): **ni un porcentaje inventado**. Las portadas llegaron en PNG pesando 8 MB entre las tres y se convirtieron a **WebP: 904 KB, un 89 % menos**; a partir de ahora es regla para toda portada, documentada en `/admin/posts-instrucciones` y `AGENTS.md`. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 

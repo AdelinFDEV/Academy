@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 10, y el siguiente es el 11 (contenido gratuito de fiscalidad). El 10 se acotó a propósito: no se hizo el refactor estático global, solo se optimizó `/post/[slug]` — el porqué está en `SEO-PLAN.md`.**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 11, y el siguiente es el 12 (RSS), con el que se cierran los doce. El 10 se acotó a propósito: no se hizo el refactor estático global, solo se optimizó `/post/[slug]` — el porqué está en `SEO-PLAN.md`.**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -193,7 +193,7 @@ Y después:
 - En `.prose-chart-fill`, el `width` se calcula a mano: `(valor / valor_más_alto) × 100`.
 - **Nunca** enlaces externos, menciones promocionales ni CTAs del artículo original.
 - SEO (`seo_title`, `meta_description`, `focus_keyword`) lo rellena siempre Claude, pensando en un lector principiante.
-- **Portada:** subirla a Supabase Storage (bucket `media`, nombre `${Date.now()}-${slug}.${ext}`) y guardar la **URL pública** en `cover_image` — nunca enlazar una imagen externa. Límites del panel: JPG/PNG/WebP/GIF y 5 MB (ver `src/app/api/admin/upload/route.ts`).
+- **Portada: SIEMPRE se convierte a WebP antes de subirla** — ancho máximo 1600 px, calidad 82, con `sharp` (ya viene con Next). Regla desde el 31-08-2026, sin excepciones: el admin da la imagen y Claude la optimiza sin preguntar. Las tres portadas de fiscalidad pesaban **8 MB en PNG** y quedaron en **904 KB**, un 89 % menos sin diferencia visible. Después se sube a Supabase Storage (bucket `media`, nombre `${Date.now()}-${slug}.webp`) y se guarda la **URL pública** en `cover_image` — nunca enlazar una imagen externa. El panel admite hasta 5 MB, pero **que entre no significa que valga**: un PNG de 2,7 MB destroza la carga de la página, que es lo que Google mide de verdad.
 - **Mostrar el borrador y esperar aprobación explícita antes de publicar.**
 
 ## Publicar dispara un aviso en Telegram
