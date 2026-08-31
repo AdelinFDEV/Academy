@@ -114,12 +114,21 @@ const webp = await sharp(original)
           <div className="agi-step">
             <div className="agi-step-num">4</div>
             <div>
+              <strong>Claude pasa el validador</strong>
+              <p>
+                <code>npm run check:contenido -- &lt;slug&gt;</code> comprueba contra Supabase todas las reglas de esta página: longitud, <code>seo_title</code> y <code>meta_description</code>, gráfico obligatorio, enlaces internos que existan de verdad, etiquetas permitidas y portada en WebP. <strong>Tiene que salir en verde.</strong> Es lo que evita depender de que alguien se acuerde de cada regla.
+              </p>
+            </div>
+          </div>
+          <div className="agi-step">
+            <div className="agi-step-num">5</div>
+            <div>
               <strong>Admin revisa</strong>
               <p>Claude muestra el borrador completo (título, extracto, contenido, categoría, free/premium). El admin aprueba o pide cambios. Sin aprobación explícita, no se publica nada.</p>
             </div>
           </div>
           <div className="agi-step">
-            <div className="agi-step-num">5</div>
+            <div className="agi-step-num">6</div>
             <div>
               <strong>Claude publica</strong>
               <p>Inserta la fila en la tabla <code>posts</code> de Supabase directamente (Claude tiene acceso de servidor vía service role key — no hace falta editor en el panel ni SQL manual del admin). Por defecto <code>published = true</code>, salvo que el admin pida dejarlo en borrador.</p>
@@ -334,6 +343,7 @@ const webp = await sharp(original)
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar <code>excerpt</code>, <code>seo_title</code>, <code>meta_description</code> y <code>focus_keyword</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Si la categoría no existe, crearla en Supabase antes de asignarla</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Convertir la portada a WebP</strong> (1600 px, calidad 82) antes de subirla a Supabase Storage (bucket <code>media</code>) y usar la URL pública en <code>cover_image</code></span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npm run check:contenido -- &lt;slug&gt;</code> y que salga en verde</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar el borrador completo al admin y esperar aprobación antes de publicar</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Insertar en la tabla <code>posts</code> tras la aprobación (<code>published = true</code> salvo que se pida borrador)</span></label>
         </div>

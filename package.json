@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "check": "node scripts/check-code.mjs",
+    "check:contenido": "node scripts/check-contenido.mjs",
     "prepare": "git config core.hooksPath .githooks || exit 0"
   },
   "dependencies": {

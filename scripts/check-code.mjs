@@ -227,12 +227,70 @@ function checkGuideCss() {
   }
 }
 
+// ── 5) Cada guía trae lo que el plan SEO le exige ─────────────────────────
+// Una guía es un componente propio, no una plantilla, así que estas tres cosas
+// hay que ponerlas a mano en cada una y nada las cazaba:
+//
+//   · su `alternates.canonical` (punto 4 del plan),
+//   · su `<GuideBreadcrumbJsonLd>` (punto 6),
+//   · y su alta en el array `GUIDES`, sin la cual **es invisible para Google**
+//     porque el sitemap recorre ese array y no la carpeta.
+//
+// Olvidar cualquiera de las tres no rompe nada visible: la guía se ve
+// perfectamente en el navegador y el fallo solo se nota semanas después, al
+// mirar por qué no aparece en las búsquedas.
+function checkGuiasSeo() {
+  const guiasDir = join("src", "app", "guias");
+  const registradas = new Set(
+    [...readFileSync(join("src", "lib", "guides.ts"), "utf8").matchAll(/slug: "([^"]*)"/g)].map((m) => m[1])
+  );
+
+  const faltas = [];
+  for (const entry of readdirSync(guiasDir)) {
+    const dir = join(guiasDir, entry);
+    if (!statSync(dir).isDirectory()) continue;
+    const page = join(dir, "page.tsx");
+    if (!readdirSync(dir).includes("page.tsx")) continue;
+
+    const src = readFileSync(page, "utf8");
+    const problemas = [];
+
+    if (!src.includes(`canonical: "/guias/${entry}"`)) {
+      problemas.push(`falta alternates: { canonical: "/guias/${entry}" }`);
+    }
+    if (!src.includes("<GuideBreadcrumbJsonLd")) {
+      problemas.push("falta <GuideBreadcrumbJsonLd slug={SLUG} />");
+    }
+    if (!registradas.has(entry)) {
+      problemas.push("no está en el array GUIDES de src/lib/guides.ts, así que no entra en el sitemap");
+    }
+
+    if (problemas.length) faltas.push([entry, problemas]);
+  }
+
+  if (faltas.length === 0) {
+    console.log(`${GREEN}✓${OFF} guías con canónica, migas y alta en GUIDES ${DIM}— 0 casos${OFF}`);
+    return;
+  }
+
+  console.log(`${RED}✗${OFF} guías a las que les falta algo de SEO ${RED}— ${faltas.length} caso(s)${OFF}`);
+  for (const [guia, problemas] of faltas) {
+    console.log(`    src/app/guias/${guia}/page.tsx`);
+    problemas.forEach((p) => console.log(`      ${DIM}· ${p}${OFF}`));
+  }
+  problems.push([
+    "guías",
+    "Cada guía necesita su canónica, su <GuideBreadcrumbJsonLd> y su entrada en GUIDES. Detalle en /admin/guias-instrucciones.",
+  ]);
+}
+
 // ── Ejecución ─────────────────────────────────────────────────────────────
 console.log("\nComprobaciones de código\n");
 checkEslint();
 checkMetadata();
 checkDateReparse();
 checkGuideCss();
+checkGuiasSeo();
 
 if (problems.length) {
   console.log(`\n${RED}Falla la comprobación.${OFF} Qué hacer:\n`);

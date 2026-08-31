@@ -1,22 +1,63 @@
-# Trabajo en curso — SEO
+# LO PRIMERO — el contrato de contenido
 
-Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
+Este sitio tiene un SEO trabajado punto por punto entre el 30 y el 31 de agosto de 2026: pasó de **30 URLs indexables a 77**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos y de portadas de 22 MB a 3,7 MB. Todo eso **se mantiene solo si cada contenido nuevo respeta las mismas reglas**.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 están hechos LOS DOCE PUNTOS del plan. Lo siguiente es el punto 13: las landings públicas de las herramientas, que es el compromiso que el admin pidió expresamente. El 10 se acotó a propósito: no se hizo el refactor estático global, solo se optimizó `/post/[slug]` — el porqué está en `SEO-PLAN.md`.**
+No hace falta recordárselo a nadie ni leerse los 12 puntos del plan. Basta con esto:
 
-**Al completar un punto, tres cosas, siempre:**
+```bash
+npm run check:contenido
+```
 
-1. Marcar la casilla en `SEO-PLAN.md` y anotar el commit en su tabla de avance.
-2. **Añadir aquí abajo lo que cambie el día a día** — lo que hay que saber al crear una entrada, una guía o una página nueva. `SEO-PLAN.md` cuenta el progreso; esta sección cuenta **cómo funciona el SEO del sitio ahora mismo**, para no tener que leer 12 puntos de plan antes de escribir un artículo.
-3. Verificar en producción después de desplegar, no solo en local.
+**Tiene que salir en verde antes de publicar una entrada.** Comprueba, contra Supabase, cada regla que sale de aquí abajo: longitud, límites de título y descripción, gráfico obligatorio, enlaces internos que existan de verdad, etiquetas permitidas, y que la portada sea WebP y no pese de más. Para revisar una sola entrada, incluida en borrador:
+
+```bash
+npm run check:contenido -- mi-slug
+```
+
+Y para el código, lo de siempre:
+
+```bash
+npm run check && npx tsc --noEmit
+```
+
+> **Por qué `check:contenido` no está en el hook de `pre-push`:** necesita credenciales de Supabase y salir a la red. En CI no hay secretos y el hook se rompería en cualquier clon sin `.env.local`. Se ejecuta a mano, y es obligatorio antes de publicar.
+
+## Lo obligatorio, según lo que vayas a crear
+
+| Vas a crear… | Lo que NO se negocia |
+|---|---|
+| **Entrada** | Las [3 preguntas](#resumen-operativo-de-una-entrada-nueva) antes de escribir · 500-1500 palabras · mínimo 1 `.prose-chart` · 2-4 enlaces internos · `seo_title` ≤48 y `meta_description` ≤160 · portada en **WebP** · aprobación del admin antes de publicar |
+| **Guía** | Alta en `GUIDES` (`src/lib/guides.ts`) · `alternates.canonical` propia · `<GuideBreadcrumbJsonLd>` · su propio `[slug].css` · cierre fijo con `GuideInteractions`, `AsesoriaBand` y `Footer` |
+| **Término del diccionario** | Campo `extended` (~150-250 palabras) o **no existe como URL** · `seeAlso` con tres slugs que existan · no tocar `term`, que es la clave de los guardados |
+| **Página pública nueva** | Alta en `STATIC_ROUTES` (`src/app/sitemap.ts`) · `alternates.canonical` a mano · título ≤48 y descripción ≤160 |
+| **Portada de cualquier cosa** | **WebP siempre**, 1600 px de ancho y calidad 82, antes de subirla |
+
+Cada fila está desarrollada, con su porqué, en [«Cómo funciona el SEO de este sitio»](#cómo-funciona-el-seo-de-este-sitio-estado-actual). Lo de arriba es lo que hay que cumplir; lo de abajo es por qué.
+
+## Las cinco que más caro salen
+
+Son las que ya se rompieron alguna vez, y ninguna la caza el compilador:
+
+1. **Publicar sin aprobación del admin.** `published = true` **manda un aviso a su grupo de Telegram** desde `anunciarPendientes()`. Si no ha dicho que sí, se inserta con `published = false`.
+2. **Enlazar a un destino que no existe.** Un término del diccionario sin `extended` devuelve **404**, y una guía que no esté en `GUIDES` tampoco existe. Comprobar antes de escribir el enlace.
+3. **Subir una portada sin convertirla.** El panel admite hasta 5 MB: **que entre no significa que valga**. Un PNG de 2,7 MB hace más daño a la carga que todo lo que se gane optimizando el servidor.
+4. **Poner una canónica en un `layout.tsx`.** En Next los metadatos del layout los heredan **todas** las rutas hijas, así que una canónica ahí le pone la misma URL a media web.
+5. **Meter en el sitemap una ruta que redirige o exige sesión.** La protección vive en el middleware `src/proxy.ts`, no en el `page.tsx`, así que mirar la página no basta.
+
+## El estado del plan
+
+Los **12 puntos están cerrados y verificados en producción**. El seguimiento completo, con su tabla de commits, vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)** — está en el repo y no en la memoria de Claude a propósito, porque la memoria local (`~/.claude/`) no viaja entre ordenadores.
+
+Lo que queda por hacer está en su bloque **«🔻 RETOMAR AQUÍ»**: el **punto 13** (landings públicas de las herramientas, el compromiso que el admin pidió expresamente) y el nombre real del titular en `src/lib/legal.ts`, que sigue con un texto de relleno y lo exige la LSSI.
+
+**Si se cierra algún punto más**, tres cosas siempre: marcar la casilla y anotar el commit en `SEO-PLAN.md`, traer aquí lo que cambie el día a día, y verificar en producción tras desplegar.
 
 ## Compromiso abierto: las herramientas tienen que posicionar
 
 **Recordárselo al admin en cada sesión hasta que esté hecho.** Lo pidió expresamente el 30 de agosto de 2026.
 
-Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos primeras están en el sitemap; **las herramientas no tienen ni una URL indexable** — `/herramientas/radar` y `/herramientas/liberaciones` exigen premium, así que Google solo ve la redirección.
+Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos primeras están en el sitemap; **las herramientas no tienen ni una URL indexable** — `/herramientas/radar` y `/herramientas/liberaciones` exigen premium, así que Google solo ve la redirección. Es el punto 13 de [`SEO-PLAN.md`](./SEO-PLAN.md), y ahora que los doce están cerrados es lo siguiente. No es abrir las herramientas: es darles una landing pública que muestre una parte y deje el resto tras el muro.
 
-**Se ataca cuando estén cerrados los 12 puntos del SEO general, no antes** — es el punto 13 de [`SEO-PLAN.md`](./SEO-PLAN.md). No es abrir las herramientas: es darles una landing pública que muestre una parte y deje el resto tras el muro.
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
@@ -202,11 +243,24 @@ Y después:
 
 # Comprobación antes de dar algo por terminado
 
+Hay **dos** guardarraíles, y comprueban cosas distintas porque el contenido de este sitio no vive en el código.
+
+| Comando | Qué revisa | Cuándo |
+|---|---|---|
+| `npm run check` | El **código**: `src/**`. Reglas de ESLint a cero, límites de `title` y `description` en la metadata, fechas releídas desde texto | Antes de cerrar cualquier tarea. Lo corre solo el hook de `pre-push` |
+| `npm run check:contenido` | El **contenido**: las entradas en Supabase. Longitud, SEO, gráfico, enlaces internos, etiquetas, portada | **Antes de publicar una entrada.** A mano |
+
 ```bash
-npm run check
+npm run check && npx tsc --noEmit     # el código
+npm run check:contenido               # las entradas publicadas
+npm run check:contenido -- mi-slug    # una sola, aunque esté en borrador
 ```
 
-Ejecuta `scripts/check-code.mjs`. **Sale con código 1 si algo falla, y dice archivo y línea.** Pásalo siempre antes de cerrar una tarea, junto con `npx tsc --noEmit`.
+Los dos **salen con código 1 si algo falla**, y dicen exactamente qué y dónde.
+
+`check:contenido` existe porque una entrada es una fila en Supabase, no un archivo: hasta el 31-08-2026 **no la comprobaba nadie**, y todas las reglas del plan SEO dependían de que quien escribiera se acordase. Al estrenarlo encontró dos entradas por debajo del mínimo de palabras que llevaban meses publicadas.
+
+**No está en el hook de `pre-push` a propósito:** necesita credenciales de Supabase y salir a la red. En CI no hay secretos, así que el hook se rompería en cualquier clon sin `.env.local`.
 
 ## Se ejecuta solo — dos capas
 
@@ -214,7 +268,7 @@ No hace falta acordarse: hay dos redes, y **la primera bloquea antes de que nada
 
 | Cuándo | Qué | Dónde |
 |---|---|---|
-| **Antes de cada `git push`** | `npm run check` + `tsc --noEmit`. Si falla, **cancela el push** | `.githooks/pre-push` |
+| **Antes de cada `git push`** | `npm run check` + `tsc --noEmit`. Si falla, **cancela el push**. No incluye `check:contenido`, que necesita credenciales | `.githooks/pre-push` |
 | **Al llegar a GitHub** | lo mismo, y esto no se puede saltar | `.github/workflows/check.yml` |
 
 El hook está **versionado** en `.githooks/` — git lo encuentra por `core.hooksPath`, que configura sola la primera `npm install` gracias al script `prepare` de `package.json`. **No hay dependencia de husky ni de nada.** En un clon nuevo basta con `npm install`.

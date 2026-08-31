@@ -429,10 +429,81 @@ export default function GuiasInstruccionesPage() {
         </div>
       </section>
 
-      {/* ── BLOQUE 8: INSTRUCCIONES PARA CLAUDE ── */}
+      {/* ── BLOQUE 8: SEO DE UNA GUÍA ── */}
       <section className="agi-section">
         <h2 className="agi-section-title">
           <span className="agi-section-num">08</span>
+          SEO — las cuatro cosas que hay que poner a mano
+        </h2>
+        <div className="agi-card">
+          <p>Una guía es un <strong>componente propio</strong>, no una plantilla rellenada. Eso significa que nada de lo que hace el sitio por ti con una entrada ocurre aquí solo: <strong>cada guía tiene que traer su SEO puesto a mano</strong>.</p>
+          <p className="agi-note">
+            <strong>Olvidarlo no rompe nada visible.</strong> La guía se ve perfecta en el navegador y el fallo solo se nota semanas después, al mirar por qué no aparece en Google. Por eso <code>npm run check</code> comprueba las tres primeras y <strong>cancela el push</strong> si falta alguna.
+          </p>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">1 · La canónica, en su <code>metadata</code></h3>
+          <div className="agi-card agi-card--mono">
+            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+{`export const metadata: Metadata = {
+  alternates: { canonical: "/guias/tu-slug" },
+  title: "…",
+  description: "…",
+};`}
+            </pre>
+          </div>
+          <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <p><strong>Siempre en ruta relativa</strong>, nunca la URL entera: la resuelve el <code>metadataBase</code> del layout raíz. Y <strong>jamás en un <code>layout.tsx</code></strong> — en Next los metadatos del layout los heredan todas las rutas hijas, así que una canónica ahí le pondría la misma URL a media web.</p>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">2 · Las migas de pan en JSON-LD</h3>
+          <div className="agi-card agi-card--mono">
+            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+{`import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+
+// Dentro del return, junto al <GuideVisitTracker>:
+<GuideBreadcrumbJsonLd slug={SLUG} />`}
+            </pre>
+          </div>
+          <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <p>El nombre que sale en las migas lo saca de <code>GUIDES</code>, no del <code>title</code> de la metadata — que es más corto a propósito. Es intencionado: el de <code>GUIDES</code> es el que se ve en <code>/guias</code>, y el dato estructurado <strong>tiene que coincidir con lo visible</strong> o Google lo trata como spam.</p>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">3 · El alta en <code>GUIDES</code></h3>
+          <div className="agi-card">
+            <p>Añadir la guía al array <code>GUIDES</code> de <code>src/lib/guides.ts</code>. <strong>El sitemap recorre ese array, no la carpeta <code>src/app/guias/</code></strong>: una guía con su <code>page.tsx</code> pero sin su entrada ahí <strong>es invisible para Google</strong>, y además no aparece en el listado.</p>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">4 · Los límites de título y descripción</h3>
+          <div className="agi-card">
+            <p>El layout raíz añade <code> | AdelinBTC</code> (12 caracteres) a cada título. Google corta sobre los 60, así que al título propio le quedan <strong>48</strong>. La descripción, <strong>160</strong>.</p>
+            <p style={{ marginTop: "0.6rem" }}>Los del <code>openGraph</code> quedan fuera de ese límite a propósito: no llevan sufijo y las redes no cortan tan pronto. Pueden ser más largos y descriptivos.</p>
+            <p className="agi-note">
+              <strong>La palabra clave, delante.</strong> Lo que Google recorta es el final, así que una keyword al final desaparece justo cuando más falta hace. En agosto de 2026 hubo que reescribir los títulos de las 7 guías: el de fiscalidad llegaba a <strong>101 caracteres</strong>.
+            </p>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Enlaces dentro de la guía</h3>
+          <div className="agi-card">
+            <p>Enlaza al <strong>diccionario</strong> (<code>/glosario/&lt;slug&gt;</code>) la jerga que un principiante no domina, y a otras guías o entradas cuando el texto ya las menciona. <strong>El ancla tiene que ser una palabra que ya estaba escrita</strong> — nunca se añade una frase para colocar un enlace, ni se escribe «pincha aquí».</p>
+            <p style={{ marginTop: "0.6rem" }}>Comprueba el destino antes: un término del diccionario <strong>sin <code>extended</code> devuelve 404</strong>, y una guía que no esté en <code>GUIDES</code> tampoco existe. Y nunca enlaces externos.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 9: INSTRUCCIONES PARA CLAUDE ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">09</span>
           Checklist para Claude al crear una guía nueva
         </h2>
         <div className="agi-checklist">
@@ -450,17 +521,20 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear el badge de logro: nombre + descripción + emoji</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Cerrar la guía con el bloque obligatorio</strong>: interacciones → <code>&lt;AsesoriaBand variant=&quot;guide&quot; /&gt;</code> → <code>&lt;Footer /&gt;</code> (ver bloque 04)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar preview al admin y esperar aprobación antes de implementar</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir <code>alternates: {"{"} canonical: &quot;/guias/[slug]&quot; {"}"}</code></strong> a su <code>metadata</code> (bloque 08)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir <code>&lt;GuideBreadcrumbJsonLd slug={"{"}SLUG{"}"} /&gt;</code></strong> dentro del <code>return</code> (bloque 08)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><code>title</code> de <strong>48 caracteres o menos</strong> y <code>description</code> de 160 o menos, con la keyword delante (bloque 08)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir la entrada de la guía al final del array <code>GUIDES</code> en <code>src/lib/guides.ts</code></strong> — es lo único que hace falta para publicarla. <strong>Supabase no se toca</strong></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Comprobar que <code>badgeId</code> sigue la convención <code>guide-[tema]</code> y que el <code>badge</code> tiene nombre</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar que el paywall funciona para usuarios sin sesión, free y premium</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npx tsc --noEmit</code> y comprobar la guía en el navegador antes de dar por cerrada</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npm run check &amp;&amp; npx tsc --noEmit</code> — el <code>check</code> verifica la canónica, las migas y el alta en <code>GUIDES</code> — y comprobar la guía en el navegador antes de dar por cerrada</span></label>
         </div>
       </section>
 
-      {/* ── BLOQUE 9: GESTIÓN POST-PUBLICACIÓN ── */}
+      {/* ── BLOQUE 10: GESTIÓN POST-PUBLICACIÓN ── */}
       <section className="agi-section">
         <h2 className="agi-section-title">
-          <span className="agi-section-num">09</span>
+          <span className="agi-section-num">10</span>
           Gestión post-publicación
         </h2>
         <div className="agi-card">
