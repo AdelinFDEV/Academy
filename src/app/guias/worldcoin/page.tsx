@@ -11,6 +11,7 @@ import GuideSpotlightCards from "@/components/GuideSpotlightCards";
 import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
+import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuideVideoEmbed from "@/components/GuideVideoEmbed";
 import GuideOrbScanner from "./GuideOrbScanner";
 import GuideWorldTokenomics from "./GuideWorldTokenomics";
@@ -157,6 +158,7 @@ export default async function WorldcoinPage() {
 
   return (
     <div className="gbc-wrap">
+      <GuideBreadcrumbJsonLd slug={SLUG} />
       <GuideVisitTracker guideSlug={SLUG} />
       <GuideProgressBar />
 

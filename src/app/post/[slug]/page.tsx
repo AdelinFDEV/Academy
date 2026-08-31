@@ -12,6 +12,8 @@ import PostCtaFinal from "@/components/PostCtaFinal";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents from "@/components/TableOfContents";
 import CommentForm from "@/components/CommentForm";
+import JsonLd from "@/components/JsonLd";
+import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import type { PostCategoryRef, CommentProfileRef } from "@/lib/types";
 
 export async function generateMetadata(
@@ -201,6 +203,34 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       <ReadingProgress />
+
+      {/* Los mismos escalones que las migas de pan de abajo, y en el mismo
+          orden: Google exige que el dato estructurado se corresponda con lo que
+          ve el visitante. Si algún día cambia una, cambia la otra. */}
+      <JsonLd
+        data={[
+          articleSchema({
+            slug,
+            title: post.title,
+            description: post.meta_description || post.excerpt,
+            coverImage: post.cover_image,
+            createdAt: post.created_at,
+            updatedAt: post.updated_at,
+            isPremium: post.is_premium,
+          }),
+          breadcrumbSchema([
+            { name: "Inicio", path: "/" },
+            { name: "Artículos", path: "/articulos" },
+            ...((post.categories as PostCategoryRef | null)?.name
+              ? [{
+                  name: (post.categories as PostCategoryRef).name,
+                  path: `/categoria/${(post.categories as PostCategoryRef).slug}`,
+                }]
+              : []),
+            { name: post.title, path: `/post/${slug}` },
+          ]),
+        ]}
+      />
 
       <main className="post-page">
 

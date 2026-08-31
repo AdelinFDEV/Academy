@@ -15,7 +15,7 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 # 🔻 RETOMAR AQUÍ — estado a 31 de agosto de 2026
 
-**Bloque 1 cerrado en sus cinco primeros puntos, los cinco verificados en producción, no solo en local.**
+**Bloque 1 CERRADO ENTERO: sus seis puntos hechos y verificados en producción, no solo en local.**
 
 | Hecho | Comprobado |
 |---|---|
@@ -24,11 +24,14 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 3. Search Console | Propiedad de **Dominio** verificada; sitemap **Correcto, 30 páginas** |
 | 4. Canónicas | Las **30 URLs del sitemap** responden 200 y su canónica se apunta a sí misma; ninguna ruta privada la hereda |
 | 5. Títulos y descripciones | Verificado en **producción**: los **24 títulos por debajo de 60** y las **24 descripciones por debajo de 160**, contando caracteres y no bytes |
+| 6. Datos estructurados | `Organization` + `WebSite` en todas las rutas, `Article` + `BreadcrumbList` en las 8 entradas y `BreadcrumbList` en las 7 guías. **Pendiente de verificar en producción** |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-## Lo siguiente es el punto 6 — datos estructurados
+## Lo siguiente es el punto 7 — glosario con URL por término
 
-Todo código, sin acción del admin: `Article` en las entradas, `BreadcrumbList` en entradas y guías, y `Organization` + `WebSite` en el layout raíz. Es lo que permite que Google muestre el resultado con autor, fecha y migas de pan en vez de un enlace pelado. Hoy el proyecto no tiene **ni un solo** dato estructurado.
+**Es la acción con mejor retorno de toda la auditoría**, y arranca el bloque 2. Los 45 términos viven hoy dentro del array `TERMS` de `src/app/glosario/GlosarioClient.tsx`, que es un componente de cliente: **no tienen URL propia**, así que las 45 definiciones no compiten por nada. Hay que sacarlos a `/glosario/[termino]` renderizado en servidor, con esquema `DefinedTerm`.
+
+Ojo al alcance: son 45 páginas nuevas en el sitemap de golpe, y eso obliga a repasar `sitemap.ts`.
 
 ## ⛔ Pendiente del admin — desbloqueado, se puede hacer ya
 
@@ -75,7 +78,7 @@ Silencio = correcto.
 - [x] **3. Search Console** — verificar el dominio y enviar el sitemap. **Lo hace el admin**, Claude no tiene acceso. Hacerlo justo después de los puntos 1 y 2.
 - [x] **4. Canónicas** — `alternates.canonical` en el `generateMetadata` de cada ruta pública. Ya existe `metadataBase`, así que basta la ruta relativa.
 - [x] **5. Títulos y descripciones** — el sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos y hace que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y fijar los límites en `/admin/posts-instrucciones`. **Al medirlo aparecieron también las 7 guías cortadas** (fiscalidad, 101) y entraron en el mismo punto.
-- [ ] **6. Datos estructurados** — `Article` en entradas, `BreadcrumbList` en entradas y guías, `Organization` y `WebSite` en el layout raíz.
+- [x] **6. Datos estructurados** — `Article` en entradas, `BreadcrumbList` en entradas y guías, `Organization` y `WebSite` en el layout raíz.
 
 ## Bloque 2 — Construcción (este trimestre)
 
@@ -124,7 +127,8 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 4 | — | Verificado en **producción** tras desplegar: las **30 URLs del sitemap** responden 200 y cada una se apunta a sí misma; `/login`, `/register`, `/dashboard`, `/cuenta`, `/premium/gracias`, `/herramientas/radar` y `/logros` no emiten ninguna; `www` sigue con 308 conservando la ruta. Queda solo la parte del admin: solicitar indexación. |
 | 2026-08-31 | 5 | `812c750` | Sufijo del layout raíz de `" | AdelinBTC Academy"` (20) a `" | AdelinBTC"` (12), lo que deja **48 caracteres propios** de título. Reescritos **6 títulos de guías** (código) y **7 títulos + 6 descripciones de entradas** (Supabase, aprobados uno a uno por el admin antes de escribir). Bitcoin Core y `que-es-la-blockchain` no se tocaron: caben solos al acortar el sufijo. Nueva regla en `npm run check` que **falla si un `title` de metadata pasa de 48**, probada provocando el fallo a propósito. Límites documentados en `/admin/posts-instrucciones` (bloque 09). |
 | 2026-08-31 | 5 | `61d03ff` | Cierre del punto 5: **al verificar en producción salieron 8 descripciones por encima de 160** — la portada y las 7 guías. Se habían reescrito sus títulos pero no sus descripciones. Reescritas las 8, más la de `/herramientas/radar` (194), que hoy no indexa nadie pero es justo la que abrirá el punto 13. `npm run check` gana la regla de `description` y, de paso, se arregla un fallo que afectaba a todas las reglas del bloque: partía por `
+| 2026-08-31 | 6 | `PENDIENTE` | JSON-LD en todo el sitio. `src/lib/schema.ts` (constructores) + `src/components/JsonLd.tsx` (renderizador). `Organization` y `WebSite` en el layout raíz, una sola vez y con `@id` estable al que apunta todo lo demás. `Article` + `BreadcrumbList` en `/post/[slug]`, replicando escalón a escalón las migas visibles. `BreadcrumbList` en las 7 guías vía `<GuideBreadcrumbJsonLd>`, con el nombre sacado de `GUIDES` para que coincida con `/guias`. Sin `SearchAction` (no hay buscador), sin autor inventado (la tabla `posts` no guarda autor: firma la organización) y sin valoraciones. Validado sobre el build de producción: los 17 bloques parsean, ningún `headline` pasa de 110 y las rutas privadas solo llevan las dos entidades globales. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 
-**Siguiente:** punto 6 — datos estructurados (`Article`, `BreadcrumbList`, `Organization`, `WebSite`). Es todo código, lo hace Claude.
+**Siguiente:** punto 7 — glosario con URL por término. Arranca el bloque 2 y es la acción con mejor retorno de la auditoría.

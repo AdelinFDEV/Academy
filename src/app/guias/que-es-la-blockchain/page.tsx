@@ -17,6 +17,7 @@ import GuideSpotlightCards from "@/components/GuideSpotlightCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
+import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/que-es-la-blockchain" },
@@ -135,6 +136,7 @@ export default async function QueEsLaBlockchainPage() {
 
   return (
     <div className="gbc-wrap">
+      <GuideBreadcrumbJsonLd slug={SLUG} />
       <GuideVisitTracker guideSlug={SLUG} />
       <GuideProgressBar />
 

@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 5, y el siguiente es el 6 (datos estructurados).**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 6, y el siguiente es el 7 (glosario con URL por término).**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -20,7 +20,7 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
-> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4 y 5**.
+> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5 y 6**.
 
 ## Lo que ya es automático — no hay que hacer nada
 
@@ -82,6 +82,28 @@ curl -s https://adelinacademy.com/guias/xrp | grep -o "<link rel=\"canonical\"[^
 ```
 
 Y al revés: **una ruta privada no debe emitir ninguna**. Si `/dashboard` o `/login` empiezan a devolver una canónica, es que alguien la ha metido en un layout.
+
+## Datos estructurados: qué sale solo y qué hay que añadir
+
+Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constructores de **`src/lib/schema.ts`** y el componente **`<JsonLd>`**, que es quien lo mete en el HTML. No escribas un `<script type="application/ld+json">` a mano en una página.
+
+| Dónde | Qué emite | ¿Hay que hacer algo? |
+|---|---|---|
+| **Todas las rutas** | `Organization` + `WebSite` | No. Van en el layout raíz, una sola vez |
+| **Entrada** | `Article` + `BreadcrumbList` | No. `/post/[slug]` los genera solos |
+| **Guía** | `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>` |
+| **Página pública nueva** | Nada por defecto | Solo si el tipo aporta algo real. Una página sin tipo propio no necesita ninguno |
+
+**La organización y el sitio se declaran SOLO en el layout raíz**, con un `@id` fijo (`.../#organization` y `.../#website`), y los demás esquemas apuntan a ese `@id` en vez de repetir el objeto. Si copias el bloque entero en otra página tendrás dos definiciones que se pueden desincronizar.
+
+**La regla que no se puede romper: no declares nada que el visitante no pueda ver.** Google llama a eso spam de datos estructurados y lo penaliza. Por eso aquí no hay valoraciones inventadas, ni autor con nombre falso, ni `SearchAction` (el sitio no tiene buscador con URL de resultados).
+
+Dos consecuencias prácticas al tocar contenido:
+
+- **Las migas de pan del JSON-LD replican las visibles.** En una entrada son Inicio › Artículos › Categoría › Título, y están escritas dos veces en `/post/[slug]`: en el `<nav className="post-breadcrumb">` y en el `breadcrumbSchema`. Si cambias una, cambia la otra.
+- **El nombre de la guía en las migas sale de `GUIDES`**, no del `title` de su metadata — que es más corto a propósito por el límite de 48. Es intencionado: el de `GUIDES` es el que se ve en `/guias`, y es con lo visible con lo que tiene que coincidir.
+
+`isAccessibleForFree` sale de `is_premium` de la entrada. Es lo que evita que Google interprete el muro de pago como *cloaking* — enseñarle a él una cosa y al visitante otra.
 
 ## Lo que SÍ hay que hacer al crear algo nuevo
 

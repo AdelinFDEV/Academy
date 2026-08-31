@@ -3,6 +3,8 @@ import { Poppins, DM_Sans, Kalam } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
+import { organizationSchema, websiteSchema } from "@/lib/schema";
+import JsonLd from "@/components/JsonLd";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
@@ -72,6 +74,11 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${kalam.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
       <body suppressHydrationWarning>
+        {/* La organización y el sitio se declaran aquí y SOLO aquí: el resto de
+            esquemas apuntan a su `@id`. Al ir en el layout raíz salen en todas
+            las rutas, que es justo lo que se quiere para estas dos — al revés
+            que la canónica, que por eso vive en cada página. */}
+        <JsonLd data={[organizationSchema(), websiteSchema(description)]} />
         {children}
         <BadgeNotifier />
         <CookieBanner />
