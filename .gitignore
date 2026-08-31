@@ -57,3 +57,8 @@ INFORME-SEGURIDAD.md
 # no algo que viva en el repo.
 scripts/.anuncio-manual-cache.json
 scripts/anuncio-manual.mensaje*.txt
+
+# scripts sueltos de una sola vez: se crean en la raiz para que resuelvan
+# node_modules y se borran al terminar. Si alguno sobrevive, que no acabe
+# en un commit (ya paso una vez con .rss.mjs).
+.*.mjs
