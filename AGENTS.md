@@ -46,7 +46,7 @@ La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta
 
 ## Cada ruta pública declara su canónica — y hay que mantenerlo
 
-Desde el 31-08-2026 las **15 rutas públicas** emiten `<link rel="canonical">`. Se declara con `alternates.canonical` y **siempre en ruta relativa** (`"/guias"`, no la URL entera): la resuelve el `metadataBase` del layout raíz, que ya sale de `SITE_URL`.
+Desde el 31-08-2026 las **15 rutas públicas** emiten `<link rel="canonical">` — comprobado en producción: las 30 URLs del sitemap se apuntan a sí mismas. Se declara con `alternates.canonical` y **siempre en ruta relativa** (`"/guias"`, no la URL entera): la resuelve el `metadataBase` del layout raíz, que ya sale de `SITE_URL`.
 
 **Nunca pongas la canónica en un `layout.tsx`, y menos en el raíz.** En Next.js los metadatos del layout **los heredan todas las rutas hijas**, así que una canónica ahí le pondría la misma URL a media web — que es justo el problema que veníamos a arreglar. Por eso la de la portada vive en `src/app/page.tsx`, que antes no tenía `metadata` propia y ahora la tiene solo para esto.
 
