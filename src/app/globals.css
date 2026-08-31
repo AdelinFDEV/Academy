@@ -2867,6 +2867,35 @@ html {
   padding: 4rem 1.5rem 5rem;
 }
 
+/* Cabecera de /articulos. La pagina no tenia h1: para Google era un listado
+   sin tema declarado. Va en globals.css porque /articulos queda fuera de los
+   tres modulos con hoja propia (guias, dashboard y admin). */
+.articulos-header {
+  max-width: 68ch;
+  margin: 0 0 2.5rem;
+}
+
+.articulos-title {
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.8rem, 4.5vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin: 0 0 0.85rem;
+  text-wrap: balance;
+}
+
+.articulos-intro {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .articulos-header { margin-bottom: 1.75rem; }
+}
+
 .articulos-inner {
   display: grid;
   grid-template-columns: 240px 1fr;

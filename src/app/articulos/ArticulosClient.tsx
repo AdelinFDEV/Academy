@@ -1,18 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { fechaCorta } from "@/lib/fechas";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import type { PostCategoryRef } from "@/lib/types";
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 export interface Post {
   id: string;
@@ -133,7 +126,7 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
                         {(post.categories as PostCategoryRef | null)?.name && (
                           <span className="post-category">{(post.categories as PostCategoryRef).name}</span>
                         )}
-                        <span className="post-date">{formatDate(post.created_at)}</span>
+                        <span className="post-date">{fechaCorta(post.created_at)}</span>
                       </div>
                       <div className="post-author-row">
                         <span className="post-author">AdelinBTC</span>

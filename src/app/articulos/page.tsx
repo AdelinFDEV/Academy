@@ -6,8 +6,9 @@ import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/articulos" },
-  title: "Artículos",
-  description: "Todos los análisis, guías y publicaciones de AdelinBTC Academy.",
+  title: "Artículos y análisis de criptomonedas",
+  description:
+    "Actualizaciones de red, movimientos de mercado y fiscalidad cripto en España, explicados en lenguaje llano. Todo lo que se publica en AdelinBTC Academy.",
 };
 
 export default async function ArticulosPage() {
@@ -53,6 +54,17 @@ export default async function ArticulosPage() {
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
       <main className="articulos-page">
+        {/* Esta página no tenía `h1`: para Google era un listado sin tema
+            declarado. Va aquí, en el componente de servidor, para que esté en
+            el HTML inicial y no dependa de que hidrate el cliente. */}
+        <header className="articulos-header">
+          <h1 className="articulos-title">Artículos y análisis de criptomonedas</h1>
+          <p className="articulos-intro">
+            Todo lo que se publica en la academia: actualizaciones de red, movimientos de mercado
+            y fiscalidad cripto en España, explicado en lenguaje llano y sin dar por sabido nada.
+          </p>
+        </header>
+
         <div className="articulos-layout">
           <ArticulosClient
             posts={(posts ?? []) as unknown as ArticulosPost[]}

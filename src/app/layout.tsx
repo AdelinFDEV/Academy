@@ -58,12 +58,15 @@ export const metadata: Metadata = {
   },
 };
 
+// Sin `maximumScale` ni `userScalable: false`: impedir el zoom deja fuera a
+// quien necesita ampliar para leer, incumple las pautas de accesibilidad y
+// Google lo cuenta como señal negativa de usabilidad móvil. Se quitó el
+// 31-08-2026; si alguien vuelve a añadirlo para "que no se descuadre", el
+// arreglo correcto es el CSS, no bloquear el zoom del visitante.
 export const viewport: Viewport = {
   themeColor: "#0a1628",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({

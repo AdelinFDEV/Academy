@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { fechaCorta } from "@/lib/fechas";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,14 +8,6 @@ import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import SiteNav from "@/components/SiteNav";
 import type { PostCategoryRef } from "@/lib/types";
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -30,9 +23,18 @@ export async function generateMetadata(
   // Sin categoría no hay canónica que declarar: la ruta acabará en notFound().
   if (!category) return { title: "Categoría no encontrada" };
 
+  // La descripción se construye con el nombre de la categoría en vez de dejarla
+  // vacía: sin ella, Google se inventa el fragmento del resultado recortando lo
+  // primero que pilla de la página, que en un listado suele ser un menú.
   return {
     title: category.name,
+    description: `Todos los artículos de ${category.name} en AdelinBTC Academy: análisis y explicaciones en lenguaje llano, sin dar por sabido nada.`,
     alternates: { canonical: `/categoria/${slug}` },
+    openGraph: {
+      type: "website",
+      title: `${category.name} · AdelinBTC Academy`,
+      description: `Todos los artículos de ${category.name}, explicados en lenguaje llano.`,
+    },
   };
 }
 
@@ -113,7 +115,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                       {(post.categories as PostCategoryRef | null)?.name && (
                         <span className="post-category">{(post.categories as PostCategoryRef).name}</span>
                       )}
-                      <span className="post-date">{formatDate(post.created_at)}</span>
+                      <span className="post-date">{fechaCorta(post.created_at)}</span>
                     </div>
                     <div className="post-author-row">
                       <span className="post-author">AdelinBTC</span>

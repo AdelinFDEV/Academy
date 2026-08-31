@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { fechaLarga } from "@/lib/fechas";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
@@ -24,7 +25,7 @@ export async function generateMetadata(
 
   const { data: post } = await supabase
     .from("posts")
-    .select("title, excerpt, cover_image, seo_title, meta_description, focus_keyword")
+    .select("title, excerpt, cover_image, seo_title, meta_description, focus_keyword, created_at, updated_at")
     .eq("slug", slug)
     .eq("published", true)
     .single();
@@ -44,6 +45,13 @@ export async function generateMetadata(
       type: "article",
       title: seoTitle,
       description,
+      // Un OpenGraph de tipo `article` sin fechas ni autor deja a las redes
+      // y a los agregadores sin saber si el texto es de hoy o de hace dos
+      // años. El autor es la marca porque la tabla `posts` no guarda autor:
+      // firmar con un nombre inventado sería peor que no firmar.
+      publishedTime: post.created_at,
+      modifiedTime: post.updated_at ?? post.created_at,
+      authors: ["AdelinBTC Academy"],
       ...(post.cover_image ? { images: [{ url: post.cover_image }] } : {}),
     },
     twitter: {
@@ -75,14 +83,6 @@ function extractHeadings(html: string) {
     const text = m[3].replace(/<[^>]+>/g, "").trim();
     const id = m[2] || slugify(text);
     return { id, text, level };
-  });
-}
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
   });
 }
 
@@ -292,7 +292,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             <div className="post-author-row">
               <span className="post-author">AdelinBTC</span>
               <span className="post-author-sep">·</span>
-              <span className="post-date-full">{formatDate(post.created_at)}</span>
+              <span className="post-date-full">{fechaLarga(post.created_at)}</span>
               <span className="post-author-sep">·</span>
               <span className="post-date-full">{readingMinutes} min de lectura</span>
             </div>
@@ -423,7 +423,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
                       <span className="featured-star" title="Usuario destacado — 30 días de racha">★</span>
                     )}
                   </span>
-                  <span className="comment-item-date">{formatDate(c.created_at)}</span>
+                  <span className="comment-item-date">{fechaLarga(c.created_at)}</span>
                 </div>
                 <p className="comment-item-content">{c.content}</p>
               </div>
