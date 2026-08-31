@@ -28,19 +28,71 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 7 | Glosario con URL por término | **43 páginas nuevas** con `DefinedTerm`, canónica y ~200 palabras cada una |
 | 8 | Enlazado interno | Las 8 entradas pasan de 1 enlace en total a **24**; los 14 destinos responden 200 |
 | 9 | Página pilar | Verificado en **producción**: `/guias` pasa de **80 a 932 palabras** indexables, un solo `h1`, 10 enlaces internos que responden 200 e `ItemList` con las 7 guías |
+| 10 | Rendimiento | Acotado: `/post/[slug]` pasa de 6 consultas en cadena a 2 rondas. **19 % más rápida**, medido con ambas versiones compiladas en la misma máquina |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
 El resultado medible de todo esto: **el sitio ha pasado de 30 URLs indexables a 73**.
 
-## Lo siguiente es el punto 10 — generación estática con revalidación
+## Lo siguiente es el punto 11 — contenido gratuito de fiscalidad
 
-**Es el único punto que no es de contenido sino de velocidad**, y por eso conviene medir antes de tocar: la home tardaba 2,44 s el 30-08-2026.
+La guía de fiscalidad es la única premium del sitio, así que hoy nadie llega a ella desde Google. La idea es publicar **entradas gratuitas** sobre las dudas concretas que la gente busca —modelo 721, método FIFO, cómo se declaran el staking y los airdrops— que capten esa búsqueda y lleven a la guía.
 
-La causa está diagnosticada: **casi todas las páginas públicas son dinámicas porque leen cookies de Supabase en servidor** para pintar la barra de navegación con el nombre del usuario. Eso obliga a renderizar en cada visita, incluso para quien no ha entrado nunca. En el `build` se ve claro: casi todo sale marcado con `ƒ` (dinámico) en vez de `○`.
+Son entradas del blog, así que aplican **las tres preguntas obligatorias antes de redactar** (categoría, free o premium, imagen de portada) y todo lo demás de [`/admin/posts-instrucciones`](https://adelinacademy.com/admin/posts-instrucciones): mínimo un gráfico, 500-1500 palabras, 2-4 enlaces internos y aprobación del admin antes de publicar.
 
-La idea es separar lo público de lo personalizado, de modo que el contenido se genere estático con revalidación y solo la parte que depende del usuario se resuelva en cliente. Es el punto de más riesgo de romper algo de los que quedan: afecta a todas las páginas, no a una.
+Detrás queda el **12** (RSS y ritmo de publicación), y con él se cierran los doce.
 
-Detrás vienen el **11** (contenido gratuito de fiscalidad — son entradas nuevas, con las 3 preguntas obligatorias de `/admin/posts-instrucciones`) y el **12** (RSS).
+## El punto 10, por qué se recortó — decisión del 31-08-2026
+
+**Léelo antes de «terminarlo».** El punto 10 está marcado como hecho aunque el refactor que describía —volver estáticas las páginas públicas— **no se hizo, y fue deliberado**. Si en una sesión futura aparece la tentación de completarlo, esto es lo que se sabía al decidir.
+
+### Lo que decía el plan estaba mal medido
+
+La auditoría anotó «la home tardaba 2,44 s». Ese número era **carga completa en navegador**, con JavaScript incluido, no tiempo de servidor. Medido en producción el 31-08-2026:
+
+| Ruta | TTFB |
+|---|---|
+| Portada | 658 ms |
+| `/articulos` | 530 ms |
+| `/glosario/staking` | 266 ms |
+| `/guias` | 232 ms |
+| `/glosario` | 206 ms |
+| `/sitemap.xml` | 65 ms |
+| **`/post/[slug]`** | **1.156 ms** |
+
+O sea: el servidor respondía bien en todo **menos en una ruta**, que además es la que más tráfico de búsqueda va a recibir.
+
+### Por qué no se hizo el refactor global
+
+Volver estáticas las páginas que hoy pintan el nombre del usuario en la barra de navegación tiene un modo de fallo concreto y grave: **que se cachee una página con los datos de un usuario y se le sirva a otro**. No es un fallo visual, es una fuga entre visitantes, y afecta a todas las rutas a la vez.
+
+A cambio, el beneficio es un factor de posicionamiento **secundario**: la velocidad desempata entre páginas parecidas, no sube una página desde cero. Y Google lo evalúa con datos de usuarios reales, que un sitio recién indexado todavía no tiene.
+
+Riesgo alto y transversal, beneficio bajo y a futuro. Se descartó.
+
+### Lo que sí se hizo
+
+`/post/[slug]` encadenaba **seis consultas a Supabase**, cada una esperando a la anterior: sesión → entrada → perfil → comentarios → comentario pendiente → relacionadas. Pero casi ninguna dependía de la anterior: la entrada se busca por su slug y no necesita saber quién mira.
+
+Reorganizado en **dos rondas paralelas**. Resultado, con ambas versiones compiladas en la misma máquina para que la comparación valga:
+
+| Entrada | Antes | Ahora |
+|---|---|---|
+| `bitcoin-core-v32-2026` | 374 ms | 310 ms |
+| `zcash-ironwood-etf-zcsh-2026` | 265 ms | 200 ms |
+| `cardano-van-rossem-actualizacion` | 263 ms | 222 ms |
+| **Media** | **301 ms** | **244 ms (−19 %)** |
+
+Toca un solo archivo, no cambia nada de la sesión ni del cacheado, y el peor caso si algo falla es que esa página falle de forma evidente. El render se comprobó idéntico comparando el HTML de las 8 entradas contra producción.
+
+### Si algún día se retoma
+
+Que sea **con datos de usuarios reales de Search Console**, no con mediciones de laboratorio, y **ruta por ruta**, no de golpe. La regla que no se puede romper: ninguna página que contenga datos de un usuario concreto puede quedar cacheada.
+
+### Un fallo que apareció por el camino, y que sigue ahí
+
+Al comparar el HTML local contra producción salieron fechas distintas: «26 de julio» aquí y «25 de julio» en el servidor. La causa es que `formatDate` en `/post/[slug]` usa `toLocaleDateString("es-ES", …)` **sin `timeZone`**, así que la fecha depende de la zona horaria de la máquina que renderiza.
+
+En producción no se nota porque el servidor va en UTC y es coherente consigo mismo, pero **una entrada publicada de madrugada hora española puede mostrar el día anterior**. Es primo hermano del fallo del Radar que ya está documentado en `AGENTS.md`. No se arregló aquí para no mezclarlo con el rendimiento; se arregla añadiendo `timeZone: "Europe/Madrid"` a esa llamada.
 
 ## Cómo se trabaja esto — el ciclo, punto por punto
 
@@ -128,7 +180,7 @@ curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/glosario/no-e
 - [x] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. **Los 43 términos publicados** (son 43, no 45: el plan traía mal la cifra), en cuatro tandas aprobadas una a una por el admin.
 - [x] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
 - [x] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis». Se montó **sobre `/guias`**, no en una URL nueva, para no partir la fuerza entre dos páginas que compiten por lo mismo.
-- [ ] **10. Generación estática con revalidación** — hoy todo es dinámico porque las páginas leen cookies de Supabase en servidor. La home tardaba 2,44 s el 30-08-2026. Separar lo público de lo personalizado.
+- [x] **10. Generación estática con revalidación** — **ACOTADO A PROPÓSITO, no se hizo el refactor global.** Ver «El punto 10, por qué se recortó» más abajo. Se optimizó solo `/post/[slug]`, que era el único cuello real.
 - [ ] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
 - [ ] **12. RSS** y ritmo de publicación sostenido.
 
@@ -176,6 +228,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 7 (3-4/4) | `8e05edc` | Tandas **DeFi** (6) y **Seguridad** (6), a 213 palabras de media. En Seguridad el criterio cambia a propósito: son los términos donde el malentendido cuesta el dinero entero y sin vuelta atrás, así que cada uno dice explícitamente qué NO hacer — nadie legítimo pide la seed phrase, el 2FA por SMS es vulnerable a SIM swapping, el phishing moderno solo necesita una firma, la cold wallet se compra al fabricante. Cierra el punto 7: **43 de 43**, 8.734 palabras, 129 referencias cruzadas todas válidas y ningún término sin enlaces entrantes. |
 | 2026-08-31 | 8 | `5c45875` | Enlazado interno. Las 8 entradas pasan de **1 enlace en total** a **24**, entre 2 y 4 cada una, repartidos entre el diccionario, las guías y otras entradas. Todas las anclas son palabras que **ya estaban en el texto**: no se ha reescrito ni una frase, y el script lo verifica comparando el texto sin etiquetas antes y después. Enlaces recíprocos entre Alpenglow y Agave, y entre Glamsterdam y Pasteur, que son las parejas de entradas que ya se citaban. La regla queda en `/admin/posts-instrucciones` (bloque 10 nuevo) y en la checklist, para que las entradas nuevas nazcan enlazadas. |
 | 2026-08-31 | 9 | `e3ca28f` | Página pilar montada **sobre `/guias`**, no en una URL nueva: dos páginas compitiendo por las mismas búsquedas se quitan fuerza entre sí. La página pasa de **80 a 932 palabras** indexables. Se añaden un texto de entrada, un itinerario por nivel y cinco preguntas frecuentes. El `h1` de marca («Aprende crypto como nunca antes») **se conserva** por decisión del admin, y la keyword entra por el `title`, la `description` y los `h2`. Los nombres y tiempos del itinerario salen de `GUIDES`, no escritos a mano. Esquema `ItemList` con las 7 guías, en el mismo orden en que se ven. **Sin datos estructurados de FAQ a propósito**: Google dejó de mostrar ese resultado enriquecido salvo a sitios oficiales. |
+| 2026-08-31 | 10 | `PENDIENTE` | **Acotado a propósito.** Medido en producción, el servidor respondía bien en todo salvo `/post/[slug]` (1.156 ms de TTFB, cuatro veces el resto); los 2,44 s del plan eran carga de navegador, no tiempo de servidor. El refactor estático global se descarta: volver estáticas páginas que pintan el nombre del usuario arriesga servir los datos de uno a otro, y a cambio la velocidad es un factor secundario que Google evalúa con tráfico real que este sitio aún no tiene. Sí se optimiza la página de entrada: de **6 consultas en cadena a 2 rondas paralelas**, un **19 % más rápida** con ambas versiones compiladas en la misma máquina. Render comprobado idéntico contra producción en las 8 entradas. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 

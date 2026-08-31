@@ -95,27 +95,60 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const supabase = await createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  const { data: post } = await supabase
-    .from("posts")
-    .select("*, categories(name, slug)")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
+  // ── Dos rondas de consultas, no seis ──────────────────────────────────────
+  //
+  // Antes esto era una cadena: sesión → entrada → perfil → comentarios →
+  // comentario pendiente → relacionadas, cada una esperando a la anterior. Seis
+  // viajes al servidor puestos en fila, y esta es la página que más tráfico de
+  // búsqueda va a recibir (medido el 31-08-2026: 1.156 ms de TTFB en
+  // producción, cuatro veces más que cualquier otra ruta).
+  //
+  // La clave es que casi nada depende de casi nada: la entrada se busca por su
+  // slug y no necesita saber quién mira, y todo lo demás solo necesita el
+  // usuario y el id de la entrada. Así que van en dos tandas paralelas.
+  const [{ data: { user } }, { data: post }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from("posts")
+      .select("*, categories(name, slug)")
+      .eq("slug", slug)
+      .eq("published", true)
+      .single(),
+  ]);
 
   if (!post) notFound();
 
-  const profileData = user ? (await supabase.from("profiles").select("full_name, role").eq("id", user.id).single()).data : null;
-  const role = profileData?.role ?? "free";
-  const isPremium = role === "premium" || role === "admin";
-  const isAdmin = role === "admin";
-  const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
+  // Anti-spam: ¿el usuario ya tiene un comentario pendiente (en cualquier
+  // entrada)? Se lee con el cliente admin porque la policy pública de
+  // `comments` solo expone los aprobados. Si faltara la service key no se rompe
+  // la página, que es pública; el trigger de la BD sigue bloqueando el doble
+  // comentario de todas formas.
+  const admin =
+    user && process.env.SUPABASE_SERVICE_ROLE_KEY ? createAdminClient() : null;
 
-  const hasAccess = !post.is_premium || isPremium;
+  // Artículos relacionados: misma categoría, con reserva a los más recientes.
+  let relatedQuery = supabase
+    .from("posts")
+    .select("id, title, slug, cover_image, is_premium, created_at, categories(name)")
+    .eq("published", true)
+    .neq("id", post.id)
+    .order("created_at", { ascending: false })
+    .limit(3);
 
-  // Fetch comments, user post state, and like data in parallel
-  const [commentsRes, userPostRes, likeCountRes, userLikedRes] = await Promise.all([
+  if (post.category_id) relatedQuery = relatedQuery.eq("category_id", post.category_id);
+
+  const [
+    profileRes,
+    commentsRes,
+    userPostRes,
+    likeCountRes,
+    userLikedRes,
+    pendingRes,
+    relatedRes,
+  ] = await Promise.all([
+    user
+      ? supabase.from("profiles").select("full_name, role").eq("id", user.id).single()
+      : Promise.resolve({ data: null }),
     supabase
       .from("comments")
       .select("id, content, created_at, profiles(full_name, is_featured)")
@@ -142,27 +175,28 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           .eq("user_id", user.id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
+    admin && user
+      ? admin
+          .from("comments")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("approved", false)
+      : Promise.resolve({ count: 0 }),
+    relatedQuery,
   ]);
+
+  const profileData = profileRes.data;
+  const role = profileData?.role ?? "free";
+  const isPremium = role === "premium" || role === "admin";
+  const isAdmin = role === "admin";
+  const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
+
+  const hasAccess = !post.is_premium || isPremium;
 
   const comments = commentsRes.data;
   const userPost = userPostRes.data as { saved: boolean; read_at: string | null } | null;
+  const hasPendingComment = (pendingRes.count ?? 0) > 0;
 
-  // Anti-spam: ¿el usuario ya tiene un comentario pendiente (en cualquier post)?
-  // Se lee con el cliente admin porque la policy pública de `comments` solo
-  // expone los aprobados. Si lo tiene, el formulario aparece deshabilitado.
-  let hasPendingComment = false;
-  if (user && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    // Guardado igual que en /admin/users: si faltara la service key no
-    // rompemos la página (pública); el trigger de la BD sigue bloqueando el
-    // doble comentario de todas formas.
-    const admin = createAdminClient();
-    const { count } = await admin
-      .from("comments")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("approved", false);
-    hasPendingComment = (count ?? 0) > 0;
-  }
   const initialLikes = (post.base_likes ?? 0) + (likeCountRes.count ?? 0);
   const initialLiked = !!userLikedRes.data;
   const initialShares = post.shares_count ?? 0;
@@ -172,18 +206,11 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const readingMinutes = Math.max(1, Math.round(wordCount / 200));
   const headings = post.content ? extractHeadings(post.content) : [];
 
-  // Artículos relacionados: misma categoría, con fallback a los más recientes
-  let relatedQuery = supabase
-    .from("posts")
-    .select("id, title, slug, cover_image, is_premium, created_at, categories(name)")
-    .eq("published", true)
-    .neq("id", post.id)
-    .order("created_at", { ascending: false })
-    .limit(3);
-
-  if (post.category_id) relatedQuery = relatedQuery.eq("category_id", post.category_id);
-
-  let { data: related } = await relatedQuery;
+  // La reserva sigue siendo secuencial a propósito: solo salta cuando la
+  // categoría no tiene ninguna otra entrada publicada, que es raro. Lanzarla
+  // siempre en paralelo costaría una consulta de más en todas las visitas para
+  // ahorrar un viaje en unas pocas.
+  let related = relatedRes.data;
 
   if ((!related || related.length === 0) && post.category_id) {
     const fb = await supabase
