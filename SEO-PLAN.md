@@ -27,9 +27,9 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 6. Datos estructurados | Verificado en **producción**: las 18 rutas públicas con contenido llevan exactamente los tipos que les tocan, todos parsean y ninguna lleva de más |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-## Lo siguiente es el punto 8 — enlazado interno en las entradas
+## Lo siguiente es el punto 9 — página pilar de formación gratuita
 
-El glosario ya lo adelanta en parte: sus 43 páginas se enlazan entre sí con 129 referencias, y ninguna queda sin enlaces entrantes. Lo que falta son las **entradas del blog**: 7 de 8 no tienen ni un enlace interno. Hay que añadir 2-4 enlaces contextuales por entrada y, sobre todo, **convertirlo en regla de `/admin/posts-instrucciones`** para que las nuevas nazcan enlazadas. Ahora que el diccionario tiene URL por término, hay a dónde enlazar desde cualquier artículo.
+Una página que agrupe las 7 guías y compita por «aprender criptomonedas gratis» y parecidas. Hoy `/guias` es un listado; la idea es convertirlo —o crear junto a él— algo con texto propio que explique el itinerario, por dónde empezar según nivel y qué se aprende en cada una. Es todo código y contenido, sin acción del admin más allá de aprobar el texto.
 
 ### El punto 7, cerrado — cómo quedó
 
@@ -96,7 +96,7 @@ Silencio = correcto.
 ## Bloque 2 — Construcción (este trimestre)
 
 - [x] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. **Los 43 términos publicados** (son 43, no 45: el plan traía mal la cifra), en cuatro tandas aprobadas una a una por el admin.
-- [ ] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
+- [x] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
 - [ ] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis».
 - [ ] **10. Generación estática con revalidación** — hoy todo es dinámico porque las páginas leen cookies de Supabase en servidor. La home tardaba 2,44 s el 30-08-2026. Separar lo público de lo personalizado.
 - [ ] **11. Contenido gratuito de fiscalidad** — la guía es premium; entradas gratis (modelo 721, FIFO, staking/airdrops) captan búsquedas de baja competencia y llevan a ella.
@@ -144,6 +144,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 7 (1/4) | `d9a123e` | Infraestructura del glosario + tanda **Básicos** (12 términos). Los 43 términos salen de `GlosarioClient.tsx` a `src/lib/glosario.ts`, que ya sí pueden leer el sitemap y las páginas de servidor. Ruta `/glosario/[termino]` con `DefinedTerm` + `BreadcrumbList`, canónica y migas visibles. **Un término sin `extended` no existe como URL**: `dynamicParams = false` lo convierte en 404 y no entra en el sitemap, para no publicar 31 páginas escasas de golpe. Los `term` no se tocan — son la clave de `saved_terms`. Sitemap de 30 a 42 URLs. |
 | 2026-08-31 | 7 (2/4) | `3cb0000` | Tanda **Trading**: 19 términos a 197 palabras de media. Tono deliberadamente cauto, porque todos rozan decisiones con dinero: DCA aclara que reduce el riesgo de elegir mal el momento y no el activo; FUD explica que la etiqueta se usa más para silenciar críticas legítimas que para señalar manipulación; HODL no se presenta como virtud; pump-and-dump desmonta que se pueda salir a tiempo. Verificados los 57 slugs de `seeAlso` contra la lista real. El glosario pasa a 31 de 43 términos publicados y el sitemap a 61 URLs. |
 | 2026-08-31 | 7 (3-4/4) | `8e05edc` | Tandas **DeFi** (6) y **Seguridad** (6), a 213 palabras de media. En Seguridad el criterio cambia a propósito: son los términos donde el malentendido cuesta el dinero entero y sin vuelta atrás, así que cada uno dice explícitamente qué NO hacer — nadie legítimo pide la seed phrase, el 2FA por SMS es vulnerable a SIM swapping, el phishing moderno solo necesita una firma, la cold wallet se compra al fabricante. Cierra el punto 7: **43 de 43**, 8.734 palabras, 129 referencias cruzadas todas válidas y ningún término sin enlaces entrantes. |
+| 2026-08-31 | 8 | `PENDIENTE` | Enlazado interno. Las 8 entradas pasan de **1 enlace en total** a **24**, entre 2 y 4 cada una, repartidos entre el diccionario, las guías y otras entradas. Todas las anclas son palabras que **ya estaban en el texto**: no se ha reescrito ni una frase, y el script lo verifica comparando el texto sin etiquetas antes y después. Enlaces recíprocos entre Alpenglow y Agave, y entre Glamsterdam y Pasteur, que son las parejas de entradas que ya se citaban. La regla queda en `/admin/posts-instrucciones` (bloque 10 nuevo) y en la checklist, para que las entradas nuevas nazcan enlazadas. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 

@@ -272,10 +272,37 @@ export default function PostsInstruccionesPage() {
         </div>
       </section>
 
-      {/* ── BLOQUE 10: CHECKLIST ── */}
+      {/* ── BLOQUE 10: ENLAZADO INTERNO ── */}
       <section className="agi-section">
         <h2 className="agi-section-title">
           <span className="agi-section-num">10</span>
+          Enlazado interno — obligatorio, 2 a 4 por entrada
+        </h2>
+        <div className="agi-card">
+          <p><strong>Toda entrada nueva sale con entre 2 y 4 enlaces internos.</strong> No es opcional ni se deja para después: en agosto de 2026 hubo que repasar las 8 entradas publicadas porque 7 no tenían ni uno solo.</p>
+          <p>A dónde enlazar, por orden de preferencia:</p>
+          <ul className="agi-list">
+            <li><strong>Al diccionario</strong>, <code>/glosario/&lt;slug&gt;</code> — los 43 términos tienen página propia. Es el destino natural para la jerga que un principiante no domina: <em>staking</em>, <em>gas</em>, <em>monedero</em>, <em>exchange</em>, <em>clave privada</em>…</li>
+            <li><strong>A una guía</strong>, <code>/guias/&lt;slug&gt;</code> — cuando el concepto da para mucho más que una definición</li>
+            <li><strong>A otra entrada</strong>, <code>/post/&lt;slug&gt;</code> — cuando el texto ya la menciona de forma natural. Si esa otra entrada habla de esta, mejor: los enlaces en los dos sentidos valen más que uno suelto</li>
+          </ul>
+          <p className="agi-note">
+            <strong>La regla que decide si un enlace vale:</strong> el ancla tiene que ser una palabra que <strong>ya estaba</strong> en el texto. Nunca añadas una frase para poder colocar un enlace, ni escribas «pincha aquí»
+            {" "}— el texto del enlace le dice a Google de qué va el destino, así que <code>&lt;a href=&quot;/glosario/staking&quot;&gt;validadores&lt;/a&gt;</code> sirve y <em>«más información aquí»</em> no sirve de nada.
+          </p>
+          <p className="agi-note">
+            <strong>Comprueba el destino antes de escribirlo.</strong> Un término del diccionario solo tiene URL si tiene desarrollo largo en <code>src/lib/glosario.ts</code>; si no lo tiene, la ruta devuelve <strong>404</strong>. Y una guía solo existe si está en el array <code>GUIDES</code> de <code>src/lib/guides.ts</code>.
+          </p>
+          <p className="agi-note">
+            <strong>Nunca enlaces externos.</strong> Esto no lo cambia: la regla de siempre sigue en pie, y el enlazado interno no es una excusa para colar un enlace fuera del sitio.
+          </p>
+        </div>
+      </section>
+
+      {/* ── BLOQUE 11: CHECKLIST ── */}
+      <section className="agi-section">
+        <h2 className="agi-section-title">
+          <span className="agi-section-num">11</span>
           Checklist para Claude al crear una entrada nueva
         </h2>
         <div className="agi-checklist">
@@ -284,6 +311,7 @@ export default function PostsInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido 100% reescrito, tono cercano, sin enlaces externos ni promociones</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Estructurar en subtítulos y párrafos cortos, con negrita en lo importante</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Incluir mínimo un <code>.prose-chart</code> (bloque 08)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Colocar <strong>2–4 enlaces internos</strong> sobre palabras que ya estén en el texto (bloque 10)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Longitud entre <strong>500 y 1500 palabras</strong>, la que pida el tema</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar <code>excerpt</code>, <code>seo_title</code>, <code>meta_description</code> y <code>focus_keyword</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Si la categoría no existe, crearla en Supabase antes de asignarla</span></label>

@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 7 — los 43 términos del diccionario ya tienen URL propia — y el siguiente es el 8 (enlazado interno en las entradas).**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 8, y el siguiente es el 9 (página pilar de formación gratuita).**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -20,7 +20,7 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
-> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5, 6 y 7**.
+> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5, 6, 7 y 8**.
 
 ## Lo que ya es automático — no hay que hacer nada
 
@@ -116,6 +116,14 @@ Los 43 términos viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `Gl
 Para ampliar un término: añadirle `extended` (HTML ya escrito, ~150-250 palabras, con la estructura qué es / por qué importa / error típico) y `seeAlso` con tres slugs relacionados. Con eso queda publicado — no hay que tocar el sitemap ni el listado, se enteran solos.
 
 **`term` es la clave de los guardados de los usuarios** (tabla `saved_terms`, vía `/api/terms`). Cambiar ese texto deja huérfanos los favoritos de todo el mundo. El `slug` sí se puede tocar mientras el término no esté publicado; una vez indexado, cambiarlo exige una redirección.
+
+## Toda entrada nueva sale con 2-4 enlaces internos
+
+Es **obligatorio**, y la regla completa vive en `/admin/posts-instrucciones` (bloque 10). El resumen: enlazar al diccionario (`/glosario/<slug>`) para la jerga, a una guía cuando el concepto da para más, y a otra entrada cuando el texto ya la menciona.
+
+**El ancla tiene que ser una palabra que ya estaba en el texto.** Nunca se añade una frase para poder colocar un enlace, y nunca se escribe «pincha aquí»: el texto del enlace es lo que le dice a Google de qué va el destino.
+
+Y comprueba el destino antes de escribirlo: un término sin `extended` da 404, y una guía que no esté en `GUIDES` tampoco existe.
 
 ## Lo que SÍ hay que hacer al crear algo nuevo
 
