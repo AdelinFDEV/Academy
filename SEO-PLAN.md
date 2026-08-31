@@ -15,7 +15,7 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 # 🔻 RETOMAR AQUÍ — estado a 31 de agosto de 2026
 
-**Bloque 1 cerrado en sus cuatro primeros puntos, los cuatro verificados en producción, no solo en local.**
+**Bloque 1 cerrado en sus cinco primeros puntos, los cinco verificados en producción, no solo en local.**
 
 | Hecho | Comprobado |
 |---|---|
@@ -23,7 +23,7 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 2. Robots | `/robots.txt` en producción, declara el sitemap |
 | 3. Search Console | Propiedad de **Dominio** verificada; sitemap **Correcto, 30 páginas** |
 | 4. Canónicas | Las **30 URLs del sitemap** responden 200 y su canónica se apunta a sí misma; ninguna ruta privada la hereda |
-| 5. Títulos y descripciones | Sufijo de 20 → **12** caracteres. **24 títulos por debajo de 60** y **todas las descripciones por debajo de 160**. **Pendiente de verificar en producción el segundo commit** |
+| 5. Títulos y descripciones | Verificado en **producción**: los **24 títulos por debajo de 60** y las **24 descripciones por debajo de 160**, contando caracteres y no bytes |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
 ## Lo siguiente es el punto 6 — datos estructurados
@@ -123,7 +123,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 4 | `dc24d2f` | Canónicas en las **15 rutas públicas**: portada, `/articulos`, `/guias`, `/glosario`, `/premium`, `/asesoria`, las 3 legales, las 7 guías, `/post/[slug]` y `/categoria/[slug]`. Todas relativas — las resuelve el `metadataBase` del layout raíz. La de la portada va en `src/app/page.tsx` y **no** en el layout: los metadatos del layout los heredan todas las rutas hijas, y una canónica ahí le pondría `/` a media web. Comprobado sobre el build de producción servido en local: las 15 emiten la etiqueta y `/login`, `/register`, `/dashboard`, `/cuenta`, `/premium/gracias` y `/herramientas/radar` no heredan ninguna. De paso, `layout.tsx` deja de repetir el dominio y usa `SITE_URL`. |
 | 2026-08-31 | 4 | — | Verificado en **producción** tras desplegar: las **30 URLs del sitemap** responden 200 y cada una se apunta a sí misma; `/login`, `/register`, `/dashboard`, `/cuenta`, `/premium/gracias`, `/herramientas/radar` y `/logros` no emiten ninguna; `www` sigue con 308 conservando la ruta. Queda solo la parte del admin: solicitar indexación. |
 | 2026-08-31 | 5 | `812c750` | Sufijo del layout raíz de `" | AdelinBTC Academy"` (20) a `" | AdelinBTC"` (12), lo que deja **48 caracteres propios** de título. Reescritos **6 títulos de guías** (código) y **7 títulos + 6 descripciones de entradas** (Supabase, aprobados uno a uno por el admin antes de escribir). Bitcoin Core y `que-es-la-blockchain` no se tocaron: caben solos al acortar el sufijo. Nueva regla en `npm run check` que **falla si un `title` de metadata pasa de 48**, probada provocando el fallo a propósito. Límites documentados en `/admin/posts-instrucciones` (bloque 09). |
-| 2026-08-31 | 5 | `PENDIENTE` | Cierre del punto 5: **al verificar en producción salieron 8 descripciones por encima de 160** — la portada y las 7 guías. Se habían reescrito sus títulos pero no sus descripciones. Reescritas las 8, más la de `/herramientas/radar` (194), que hoy no indexa nadie pero es justo la que abrirá el punto 13. `npm run check` gana la regla de `description` y, de paso, se arregla un fallo que afectaba a todas las reglas del bloque: partía por `
+| 2026-08-31 | 5 | `61d03ff` | Cierre del punto 5: **al verificar en producción salieron 8 descripciones por encima de 160** — la portada y las 7 guías. Se habían reescrito sus títulos pero no sus descripciones. Reescritas las 8, más la de `/herramientas/radar` (194), que hoy no indexa nadie pero es justo la que abrirá el punto 13. `npm run check` gana la regla de `description` y, de paso, se arregla un fallo que afectaba a todas las reglas del bloque: partía por `
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 
