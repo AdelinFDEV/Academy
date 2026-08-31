@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 6, y el 7 (glosario) está EN CURSO: 31 de 43 términos ampliados y publicados; faltan DeFi y Seguridad.**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 7 — los 43 términos del diccionario ya tienen URL propia — y el siguiente es el 8 (enlazado interno en las entradas).**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -109,7 +109,9 @@ Dos consecuencias prácticas al tocar contenido:
 
 Los 43 términos viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `GlosarioClient.tsx`, que es un componente de cliente, así que ni el sitemap ni ninguna página de servidor podían leerlos.
 
-**La regla que gobierna todo esto: un término tiene página propia solo si tiene el campo `extended`.** Sin él no aparece en `/glosario/[termino]` (la ruta usa `dynamicParams = false`, así que devuelve **404**), no entra en el sitemap y el listado no lo enlaza. No es una limitación técnica: **una URL con 25 palabras es contenido escaso**, y publicar 43 de golpe arrastra al dominio entero. Se abren por tandas conforme se escriben.
+**La regla que gobierna todo esto: un término tiene página propia solo si tiene el campo `extended`.** Sin él no aparece en `/glosario/[termino]` (la ruta usa `dynamicParams = false`, así que devuelve **404**), no entra en el sitemap y el listado no lo enlaza. No es una limitación técnica: **una URL con 25 palabras es contenido escaso**, y publicar 43 de golpe arrastra al dominio entero. Hoy los 43 están ampliados; la regla sigue viva para los que se añadan.
+
+**Al añadir un término nuevo:** `term` (visible y clave de guardados), `slug`, `category`, `definition` corta, `extended` (~150-250 palabras) y `seeAlso` con tres slugs que existan — si apuntas a uno sin `extended`, el enlace no se pinta.
 
 Para ampliar un término: añadirle `extended` (HTML ya escrito, ~150-250 palabras, con la estructura qué es / por qué importa / error típico) y `seeAlso` con tres slugs relacionados. Con eso queda publicado — no hay que tocar el sitemap ni el listado, se enteran solos.
 

@@ -27,16 +27,18 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 6. Datos estructurados | Verificado en **producción**: las 18 rutas públicas con contenido llevan exactamente los tipos que les tocan, todos parsean y ninguna lleva de más |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-## En curso: punto 7 — glosario con URL por término
+## Lo siguiente es el punto 8 — enlazado interno en las entradas
 
-La infraestructura está terminada y publicada. Lo que queda es **escribir texto**, por tandas de categoría, con aprobación del admin antes de publicar cada una.
+El glosario ya lo adelanta en parte: sus 43 páginas se enlazan entre sí con 129 referencias, y ninguna queda sin enlaces entrantes. Lo que falta son las **entradas del blog**: 7 de 8 no tienen ni un enlace interno. Hay que añadir 2-4 enlaces contextuales por entrada y, sobre todo, **convertirlo en regla de `/admin/posts-instrucciones`** para que las nuevas nazcan enlazadas. Ahora que el diccionario tiene URL por término, hay a dónde enlazar desde cualquier artículo.
+
+### El punto 7, cerrado — cómo quedó
 
 | Tanda | Términos | Estado |
 |---|---|---|
 | Básicos | 12 | **Publicada** el 31-08-2026 |
 | Trading | 19 | **Publicada** el 31-08-2026 |
-| DeFi | 6 | Pendiente |
-| Seguridad | 6 | Pendiente |
+| DeFi | 6 | **Publicada** el 31-08-2026 |
+| Seguridad | 6 | **Publicada** el 31-08-2026 |
 
 **La regla que no se salta:** un término solo tiene URL si tiene `extended` en `src/lib/glosario.ts`. Sin él da 404 y no entra en el sitemap. Es lo que impide que lleguen a Google 31 páginas de 25 palabras, que es contenido escaso y penaliza al dominio entero.
 
@@ -91,7 +93,7 @@ Silencio = correcto.
 
 ## Bloque 2 — Construcción (este trimestre)
 
-- [ ] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. **EN CURSO: 12 de 43 términos publicados** (son 43, no 45: el plan traía mal la cifra). Infraestructura terminada; faltan las tandas de Trading (19), DeFi (6) y Seguridad (6).
+- [x] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. **Los 43 términos publicados** (son 43, no 45: el plan traía mal la cifra), en cuatro tandas aprobadas una a una por el admin.
 - [ ] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
 - [ ] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis».
 - [ ] **10. Generación estática con revalidación** — hoy todo es dinámico porque las páginas leen cookies de Supabase en servidor. La home tardaba 2,44 s el 30-08-2026. Separar lo público de lo personalizado.
@@ -138,7 +140,8 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 5 | `61d03ff` | Cierre del punto 5: **al verificar en producción salieron 8 descripciones por encima de 160** — la portada y las 7 guías. Se habían reescrito sus títulos pero no sus descripciones. Reescritas las 8, más la de `/herramientas/radar` (194), que hoy no indexa nadie pero es justo la que abrirá el punto 13. `npm run check` gana la regla de `description` y, de paso, se arregla un fallo que afectaba a todas las reglas del bloque: partía por `
 | 2026-08-31 | 6 | `8b6306f` | JSON-LD en todo el sitio. `src/lib/schema.ts` (constructores) + `src/components/JsonLd.tsx` (renderizador). `Organization` y `WebSite` en el layout raíz, una sola vez y con `@id` estable al que apunta todo lo demás. `Article` + `BreadcrumbList` en `/post/[slug]`, replicando escalón a escalón las migas visibles. `BreadcrumbList` en las 7 guías vía `<GuideBreadcrumbJsonLd>`, con el nombre sacado de `GUIDES` para que coincida con `/guias`. Sin `SearchAction` (no hay buscador), sin autor inventado (la tabla `posts` no guarda autor: firma la organización) y sin valoraciones. Validado sobre el build de producción: los 17 bloques parsean, ningún `headline` pasa de 110 y las rutas privadas solo llevan las dos entidades globales. |
 | 2026-08-31 | 7 (1/4) | `d9a123e` | Infraestructura del glosario + tanda **Básicos** (12 términos). Los 43 términos salen de `GlosarioClient.tsx` a `src/lib/glosario.ts`, que ya sí pueden leer el sitemap y las páginas de servidor. Ruta `/glosario/[termino]` con `DefinedTerm` + `BreadcrumbList`, canónica y migas visibles. **Un término sin `extended` no existe como URL**: `dynamicParams = false` lo convierte en 404 y no entra en el sitemap, para no publicar 31 páginas escasas de golpe. Los `term` no se tocan — son la clave de `saved_terms`. Sitemap de 30 a 42 URLs. |
-| 2026-08-31 | 7 (2/4) | `PENDIENTE` | Tanda **Trading**: 19 términos a 197 palabras de media. Tono deliberadamente cauto, porque todos rozan decisiones con dinero: DCA aclara que reduce el riesgo de elegir mal el momento y no el activo; FUD explica que la etiqueta se usa más para silenciar críticas legítimas que para señalar manipulación; HODL no se presenta como virtud; pump-and-dump desmonta que se pueda salir a tiempo. Verificados los 57 slugs de `seeAlso` contra la lista real. El glosario pasa a 31 de 43 términos publicados y el sitemap a 61 URLs. |
+| 2026-08-31 | 7 (2/4) | `3cb0000` | Tanda **Trading**: 19 términos a 197 palabras de media. Tono deliberadamente cauto, porque todos rozan decisiones con dinero: DCA aclara que reduce el riesgo de elegir mal el momento y no el activo; FUD explica que la etiqueta se usa más para silenciar críticas legítimas que para señalar manipulación; HODL no se presenta como virtud; pump-and-dump desmonta que se pueda salir a tiempo. Verificados los 57 slugs de `seeAlso` contra la lista real. El glosario pasa a 31 de 43 términos publicados y el sitemap a 61 URLs. |
+| 2026-08-31 | 7 (3-4/4) | `PENDIENTE` | Tandas **DeFi** (6) y **Seguridad** (6), a 213 palabras de media. En Seguridad el criterio cambia a propósito: son los términos donde el malentendido cuesta el dinero entero y sin vuelta atrás, así que cada uno dice explícitamente qué NO hacer — nadie legítimo pide la seed phrase, el 2FA por SMS es vulnerable a SIM swapping, el phishing moderno solo necesita una firma, la cold wallet se compra al fabricante. Cierra el punto 7: **43 de 43**, 8.734 palabras, 129 referencias cruzadas todas válidas y ningún término sin enlaces entrantes. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 
