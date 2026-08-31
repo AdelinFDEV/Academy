@@ -24,7 +24,7 @@ const HERO_STATS = [
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/ciclos-de-bitcoin" },
-  title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin? Ciclos de Mercado",
+  title: "Ciclos de Bitcoin: ¿es el momento de comprar?",
   description:
     "El ciclo de 4 años del halving explicado en lenguaje simple: por qué la fase bajista está terminando, qué esperar de las altcoins antes del próximo halving y los rangos de precio de este ciclo.",
   openGraph: {

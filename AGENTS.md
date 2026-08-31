@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1, 2, 3 y 4, y el siguiente es el 5 (títulos y descripciones).**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 5, y el siguiente es el 6 (datos estructurados).**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -20,7 +20,7 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
-> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2 y 4**.
+> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4 y 5**.
 
 ## Lo que ya es automático — no hay que hacer nada
 
@@ -43,6 +43,23 @@ La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta
 - **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
 - **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
 - Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Y ver `/login` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
+
+## El título tiene un techo de 48 caracteres, y lo vigila `npm run check`
+
+El layout raíz añade **` | AdelinBTC`** (12 caracteres) a cada título con `template`. Google corta el resultado sobre los **60**, así que al título propio le quedan **48**. La descripción, **160**.
+
+**`npm run check` falla si un `title` de metadata pasa de 48**, así que esto no depende de que nadie se acuerde. Ojo a lo que mide y lo que no:
+
+- Mira el `title:` de la metadata, con su indentación de **2 espacios**.
+- **No** mira el de `openGraph`, que va a 4. Ese no lleva sufijo y puede ser más largo — las redes no cortan tan pronto como Google. Es intencionado, no un descuido.
+- **No** puede mirar las entradas: su título vive en Supabase (`seo_title`), no en el código. Ahí el límite lo aplica quien escribe, y está documentado en `/admin/posts-instrucciones` (bloque 09).
+
+**El sufijo se escribe en dos sitios y tienen que coincidir:** `template` en `src/app/layout.tsx` y la constante `SUFIJO` de `scripts/check-code.mjs`. Si cambias uno, cambia el otro o el límite deja de cuadrar.
+
+Dos reglas de redacción que salieron de reescribir los 13 títulos el 31-08-2026 (6 guías y 7 entradas):
+
+1. **La palabra clave, delante.** Lo que Google recorta es el final, así que una keyword al final desaparece justo cuando más falta hace.
+2. **Fuera coletillas.** `"y por qué importa"` se repetía en cuatro entradas, ocupaba 18 caracteres y no aportaba ninguna búsqueda.
 
 ## Cada ruta pública declara su canónica — y hay que mantenerlo
 

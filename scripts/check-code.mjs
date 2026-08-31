@@ -65,11 +65,21 @@ function checkEslint() {
   }
 }
 
-// ── 2) Título duplicado en la metadata ────────────────────────────────────
-// El layout raíz ya añade "| AdelinBTC Academy" con `template`, así que
-// repetirlo en una página lo duplica en la pestaña y en Google.
+// ── 2) Título de metadata: ni repite el sufijo ni se pasa de largo ────────
+// El layout raíz añade SUFIJO con `template`. Dos cosas pueden ir mal:
+//
+//   · Repetirlo en la página lo duplica en la pestaña y en Google. Se busca
+//     también el sufijo antiguo (" | AdelinBTC Academy"), por si alguien copia
+//     el title de una página vieja o de un commit anterior.
+//   · Pasarse de largo. Google corta el resultado sobre los 60 caracteres,
+//     sufijo incluido, así que al title propio le quedan TITULO_MAX. Esto no es
+//     teórico: las 7 guías se cortaban, y la de fiscalidad llegaba a 101.
+const SUFIJO = " | AdelinBTC";
+const TITULO_MAX = 60 - SUFIJO.length;
+
 function checkTitles() {
-  const offenders = [];
+  const duplicados = [];
+  const largos = [];
   const walk = (dir) => {
     for (const entry of readdirSync(dir)) {
       const p = join(dir, entry);
@@ -78,22 +88,38 @@ function checkTitles() {
       if (p.endsWith(join("src", "app", "layout.tsx"))) continue; // define el template
       const src = readFileSync(p, "utf8");
       src.split("\n").forEach((line, i) => {
-        if (/^\s*title: ".*\| AdelinBTC Academy",?\s*$/.test(line)) {
-          offenders.push(`${p.split(/src[\\/]/)[1]}:${i + 1}`);
-        }
+        // Solo el `title:` de la metadata, con su indentación de 2 espacios. El
+        // de `openGraph` va a 4 y queda fuera a propósito: no lleva sufijo, y
+        // las redes no cortan tan pronto como Google.
+        const m = line.match(/^  title: "(.*)",?\s*$/);
+        if (!m) return;
+        const ref = `${p.split(/src[\\/]/)[1]}:${i + 1}`;
+        if (/\| AdelinBTC( Academy)?$/.test(m[1])) duplicados.push(ref);
+        else if (m[1].length > TITULO_MAX) largos.push([ref, m[1].length]);
       });
     }
   };
   walk(join("src", "app"));
 
-  if (offenders.length === 0) {
+  if (duplicados.length === 0) {
     console.log(`${GREEN}✓${OFF} metadata.title sin sufijo duplicado ${DIM}— 0 casos${OFF}`);
   } else {
-    console.log(`${RED}✗${OFF} metadata.title con sufijo duplicado ${RED}— ${offenders.length} caso(s)${OFF}`);
-    offenders.forEach((f) => console.log(`    src/${f}`));
+    console.log(`${RED}✗${OFF} metadata.title con sufijo duplicado ${RED}— ${duplicados.length} caso(s)${OFF}`);
+    duplicados.forEach((f) => console.log(`    src/${f}`));
     problems.push([
       "metadata.title",
-      'Quita " | AdelinBTC Academy" del title: el layout raíz ya lo añade con `template`.',
+      `Quita "${SUFIJO}" del title: el layout raíz ya lo añade con \`template\`.`,
+    ]);
+  }
+
+  if (largos.length === 0) {
+    console.log(`${GREEN}✓${OFF} metadata.title dentro de ${TITULO_MAX} caracteres ${DIM}— 0 casos${OFF}`);
+  } else {
+    console.log(`${RED}✗${OFF} metadata.title demasiado largo ${RED}— ${largos.length} caso(s)${OFF}`);
+    largos.forEach(([f, n]) => console.log(`    src/${f} ${DIM}— ${n} caracteres${OFF}`));
+    problems.push([
+      "metadata.title",
+      `Recorta el title a ${TITULO_MAX} caracteres: con el sufijo "${SUFIJO}" Google lo corta pasados los 60.`,
     ]);
   }
 }

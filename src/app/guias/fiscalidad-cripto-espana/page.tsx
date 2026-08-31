@@ -18,7 +18,7 @@ import "./fiscalidad-cripto-espana.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/fiscalidad-cripto-espana" },
-  title: "Fiscalidad Cripto en España: Modelo 721, Staking, FIFO y Declaración de Ganancias",
+  title: "Fiscalidad Cripto en España: FIFO y Modelo 721",
   description:
     "Guía premium de fiscalidad de criptomonedas en España: qué tributa y qué no, el método FIFO obligatorio, la escala del ahorro 19–30%, cómo declarar staking, airdrops y minería, el modelo 721 de criptomonedas en el extranjero, el Impuesto sobre el Patrimonio y la compensación de pérdidas. Con simulador FIFO, calculadora de impuestos y quiz.",
   openGraph: {

@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: "AdelinBTC Academy | Formación en Criptomonedas",
-    template: "%s | AdelinBTC Academy",
+    template: "%s | AdelinBTC",
   },
   description,
   keywords: ["bitcoin", "criptomonedas", "blockchain", "trading", "DeFi", "análisis crypto"],

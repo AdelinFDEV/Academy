@@ -1667,6 +1667,17 @@
   font-size: 0.88rem !important;
 }
 
+/* Nota al pie de un bloque de instrucciones: explica el porqué de una regla,
+   sin la carga de aviso de .agi-warning — que se reserva para lo que rompe. */
+.agi-note {
+  margin: 0.85rem 0 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.84rem !important;
+  color: var(--text-muted, var(--text-secondary));
+  line-height: 1.65;
+}
+
 .agi-list {
   padding-left: 1.25rem;
   margin: 0.5rem 0 0;

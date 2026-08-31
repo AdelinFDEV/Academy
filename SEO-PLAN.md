@@ -23,11 +23,12 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 2. Robots | `/robots.txt` en producción, declara el sitemap |
 | 3. Search Console | Propiedad de **Dominio** verificada; sitemap **Correcto, 30 páginas** |
 | 4. Canónicas | Las **30 URLs del sitemap** responden 200 y su canónica se apunta a sí misma; ninguna ruta privada la hereda |
+| 5. Títulos | Sufijo de 20 → **12** caracteres; **24 títulos por debajo de 60** y las 8 descripciones por debajo de 160. **Pendiente de verificar en producción** |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-## Lo siguiente es el punto 5 — títulos y descripciones
+## Lo siguiente es el punto 6 — datos estructurados
 
-Casi todo es código, salvo fijar los límites en `/admin/posts-instrucciones`. El sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos que hacen que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Hay que acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y dejar los límites escritos en las instrucciones de entradas.
+Todo código, sin acción del admin: `Article` en las entradas, `BreadcrumbList` en entradas y guías, y `Organization` + `WebSite` en el layout raíz. Es lo que permite que Google muestre el resultado con autor, fecha y migas de pan en vez de un enlace pelado. Hoy el proyecto no tiene **ni un solo** dato estructurado.
 
 ## ⛔ Pendiente del admin — desbloqueado, se puede hacer ya
 
@@ -73,7 +74,7 @@ Silencio = correcto.
 - [x] **2. Robots** — crear `src/app/robots.ts` con referencia al sitemap y bloqueo de `/admin`, `/dashboard`, `/api` y rutas de auth.
 - [x] **3. Search Console** — verificar el dominio y enviar el sitemap. **Lo hace el admin**, Claude no tiene acceso. Hacerlo justo después de los puntos 1 y 2.
 - [x] **4. Canónicas** — `alternates.canonical` en el `generateMetadata` de cada ruta pública. Ya existe `metadataBase`, así que basta la ruta relativa.
-- [ ] **5. Títulos y descripciones** — el sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos y hace que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y fijar los límites en `/admin/posts-instrucciones`.
+- [x] **5. Títulos y descripciones** — el sufijo `" | AdelinBTC Academy"` del layout raíz son 20 caracteres fijos y hace que **las 8 entradas se corten en Google** (la peor, 92 caracteres). Acortar el sufijo, reescribir los 8 títulos y las 6 descripciones que pasan de 160, y fijar los límites en `/admin/posts-instrucciones`. **Al medirlo aparecieron también las 7 guías cortadas** (fiscalidad, 101) y entraron en el mismo punto.
 - [ ] **6. Datos estructurados** — `Article` en entradas, `BreadcrumbList` en entradas y guías, `Organization` y `WebSite` en el layout raíz.
 
 ## Bloque 2 — Construcción (este trimestre)
@@ -121,5 +122,6 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-30 | previo al 4 | — | `www` dado de alta en Vercel como redirección **308 permanente** (antes 307 temporal) hacia el dominio sin `www`, conservando la ruta. Lo pedía el diagnóstico de Search Console: *«Duplicada: el usuario no ha indicado ninguna versión canónica»*. Revalidadas las 30 URLs tras el cambio: todas 200. |
 | 2026-08-31 | 4 | `dc24d2f` | Canónicas en las **15 rutas públicas**: portada, `/articulos`, `/guias`, `/glosario`, `/premium`, `/asesoria`, las 3 legales, las 7 guías, `/post/[slug]` y `/categoria/[slug]`. Todas relativas — las resuelve el `metadataBase` del layout raíz. La de la portada va en `src/app/page.tsx` y **no** en el layout: los metadatos del layout los heredan todas las rutas hijas, y una canónica ahí le pondría `/` a media web. Comprobado sobre el build de producción servido en local: las 15 emiten la etiqueta y `/login`, `/register`, `/dashboard`, `/cuenta`, `/premium/gracias` y `/herramientas/radar` no heredan ninguna. De paso, `layout.tsx` deja de repetir el dominio y usa `SITE_URL`. |
 | 2026-08-31 | 4 | — | Verificado en **producción** tras desplegar: las **30 URLs del sitemap** responden 200 y cada una se apunta a sí misma; `/login`, `/register`, `/dashboard`, `/cuenta`, `/premium/gracias`, `/herramientas/radar` y `/logros` no emiten ninguna; `www` sigue con 308 conservando la ruta. Queda solo la parte del admin: solicitar indexación. |
+| 2026-08-31 | 5 | `PENDIENTE` | Sufijo del layout raíz de `" | AdelinBTC Academy"` (20) a `" | AdelinBTC"` (12), lo que deja **48 caracteres propios** de título. Reescritos **6 títulos de guías** (código) y **7 títulos + 6 descripciones de entradas** (Supabase, aprobados uno a uno por el admin antes de escribir). Bitcoin Core y `que-es-la-blockchain` no se tocaron: caben solos al acortar el sufijo. Nueva regla en `npm run check` que **falla si un `title` de metadata pasa de 48**, probada provocando el fallo a propósito. Límites documentados en `/admin/posts-instrucciones` (bloque 09). |
 
-**Siguiente:** punto 5 — títulos y descripciones. Es todo código salvo la parte de `/admin/posts-instrucciones`.
+**Siguiente:** punto 6 — datos estructurados (`Article`, `BreadcrumbList`, `Organization`, `WebSite`). Es todo código, lo hace Claude.

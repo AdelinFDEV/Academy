@@ -17,7 +17,7 @@ import "./hyperliquid.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/hyperliquid" },
-  title: "¿Qué es Hyperliquid? El Exchange de Perpetuos que Vive On-Chain",
+  title: "¿Qué es Hyperliquid? El Exchange de Perpetuos",
   description:
     "Hyperliquid explicado a fondo: cómo funciona un libro de órdenes 100% on-chain, su blockchain propia con consenso HyperBFT, la capa HyperEVM, el vault HLP, el token HYPE del airdrop sin fondos de inversores y los riesgos reales del proyecto. Con simulador, quiz y badge.",
   openGraph: {

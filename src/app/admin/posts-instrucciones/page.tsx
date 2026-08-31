@@ -256,10 +256,19 @@ export default function PostsInstruccionesPage() {
         <div className="agi-card">
           <p>El admin no interviene en SEO salvo que quiera dar una keyword concreta. Por defecto, Claude rellena los tres campos pensando siempre en el público objetivo (principiante/intermedio):</p>
           <ul className="agi-list">
-            <li><code>seo_title</code>: claro, con la keyword principal, sin clickbait vacío</li>
-            <li><code>meta_description</code>: 1–2 frases, responde «qué me llevo si leo esto» en lenguaje simple</li>
+            <li><code>seo_title</code>: <strong>máximo 48 caracteres</strong>, claro, con la keyword principal <strong>al principio</strong> y sin clickbait vacío</li>
+            <li><code>meta_description</code>: <strong>máximo 160 caracteres</strong>, 1–2 frases, responde «qué me llevo si leo esto» en lenguaje simple</li>
             <li><code>focus_keyword</code>: término de búsqueda realista para alguien que no es experto (evitar jerga que un principiante no buscaría en Google)</li>
           </ul>
+          <p className="agi-note">
+            <strong>De dónde salen esos dos números.</strong> Google corta el título del resultado sobre los <strong>60 caracteres</strong>, y a cada título el sitio le añade solo
+            {" "}<code> | AdelinBTC</code> (12 caracteres). 60 − 12 = <strong>48 propios</strong>. La descripción se corta sobre los <strong>160</strong>.
+            No es teórico: en agosto de 2026 <strong>las 8 entradas publicadas salían cortadas en Google</strong> — la peor, 92 caracteres — y hubo que reescribirlas todas.
+          </p>
+          <p className="agi-note">
+            <strong>Pasarse no es un pecadillo estético:</strong> lo que Google recorta es siempre el final, así que si la keyword va al final desaparece justo lo que hace
+            que alguien haga clic. Por eso la regla es keyword delante y coletillas fuera — «y por qué importa» se repetía en cuatro entradas y no aportaba ninguna búsqueda.
+          </p>
         </div>
       </section>
 

@@ -19,7 +19,7 @@ import "./render.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/render" },
-  title: "¿Qué es Render (RENDER)? La Red que Alquila la Potencia de tu GPU",
+  title: "¿Qué es Render (RENDER)? La Red que Alquila GPUs",
   description:
     "Render explicado a fondo: cómo funciona el renderizado descentralizado, quién está detrás (OTOY y OctaneRender), su tokenomics Burn-and-Mint, la migración a Solana y por qué es la estrella del sector DePIN. Guía completa con simuladores, quiz y badge.",
   openGraph: {
