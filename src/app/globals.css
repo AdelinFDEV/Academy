@@ -10887,3 +10887,110 @@ select {
   .post-cierre-acciones { flex-direction: column; }
   .post-cierre-btn { justify-content: center; }
 }
+
+
+/* ── Página de un término del diccionario (/glosario/[termino]) ─────────── */
+/* Va aquí y no en un .css de módulo porque /glosario queda fuera de guías,
+   dashboard y admin, que son los tres únicos con hoja propia. */
+
+.termino-page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.termino-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, var(--text-secondary));
+  margin-bottom: 1.5rem;
+}
+
+.termino-breadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.termino-breadcrumb a:hover { color: var(--accent-gold, var(--accent-orange)); }
+.termino-breadcrumb-sep { opacity: 0.45; }
+.termino-breadcrumb-current { color: var(--text-primary); font-weight: 600; }
+
+.termino-header { margin-bottom: 2rem; }
+
+.termino-cat {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  margin-bottom: 0.9rem;
+}
+
+/* Mismos colores por categoría que las tarjetas del listado. */
+.termino-cat--básicos { color: #60a5fa; background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.2); }
+.termino-cat--trading { color: var(--accent-orange); background: rgba(255, 107, 43, 0.1); border: 1px solid rgba(255, 107, 43, 0.2); }
+.termino-cat--defi { color: #a78bfa; background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.2); }
+.termino-cat--seguridad { color: #34d399; background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.2); }
+
+.termino-title {
+  font-family: var(--font-poppins, sans-serif);
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin: 0 0 0.85rem;
+}
+
+/* La definición corta hace de entradilla: es la respuesta en una línea. */
+.termino-lead {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--accent-gold, var(--accent-orange));
+}
+
+.termino-body { margin-bottom: 2.5rem; }
+
+.termino-relacionados { margin-bottom: 2rem; }
+
+.termino-relacionados h2 {
+  font-family: var(--font-poppins, sans-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.85rem;
+}
+
+.termino-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.termino-chip {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: var(--card-border);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.termino-chip:hover {
+  color: var(--text-primary);
+  border-color: var(--accent-gold, var(--accent-orange));
+}
+
+.termino-volver { font-size: 0.9rem; margin: 0; }
+.termino-volver a { color: var(--text-secondary); text-decoration: none; }
+.termino-volver a:hover { color: var(--accent-gold, var(--accent-orange)); }
+
+/* En el listado, el término enlazado se distingue del que aún no tiene página. */
+.glosario-term-link { text-decoration: none; }
+.glosario-term-link:hover { color: var(--accent-gold, var(--accent-orange)); }

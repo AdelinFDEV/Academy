@@ -27,11 +27,20 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 | 6. Datos estructurados | Verificado en **producción**: las 18 rutas públicas con contenido llevan exactamente los tipos que les tocan, todos parsean y ninguna lleva de más |
 | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-## Lo siguiente es el punto 7 — glosario con URL por término
+## En curso: punto 7 — glosario con URL por término
 
-**Es la acción con mejor retorno de toda la auditoría**, y arranca el bloque 2. Los 45 términos viven hoy dentro del array `TERMS` de `src/app/glosario/GlosarioClient.tsx`, que es un componente de cliente: **no tienen URL propia**, así que las 45 definiciones no compiten por nada. Hay que sacarlos a `/glosario/[termino]` renderizado en servidor, con esquema `DefinedTerm`.
+La infraestructura está terminada y publicada. Lo que queda es **escribir texto**, por tandas de categoría, con aprobación del admin antes de publicar cada una.
 
-Ojo al alcance: son 45 páginas nuevas en el sitemap de golpe, y eso obliga a repasar `sitemap.ts`.
+| Tanda | Términos | Estado |
+|---|---|---|
+| Básicos | 12 | **Publicada** el 31-08-2026 |
+| Trading | 19 | Pendiente |
+| DeFi | 6 | Pendiente |
+| Seguridad | 6 | Pendiente |
+
+**La regla que no se salta:** un término solo tiene URL si tiene `extended` en `src/lib/glosario.ts`. Sin él da 404 y no entra en el sitemap. Es lo que impide que lleguen a Google 31 páginas de 25 palabras, que es contenido escaso y penaliza al dominio entero.
+
+Para ampliar uno basta con añadirle `extended` (~150-250 palabras) y `seeAlso`; el sitemap y el listado se enteran solos.
 
 ## ⛔ Pendiente del admin — desbloqueado, se puede hacer ya
 
@@ -82,7 +91,7 @@ Silencio = correcto.
 
 ## Bloque 2 — Construcción (este trimestre)
 
-- [ ] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. Los 45 términos viven hoy en el array `TERMS` dentro de `src/app/glosario/GlosarioClient.tsx`, que es un componente de cliente, **sin URL propia**. Es la acción con mejor retorno de toda la auditoría.
+- [ ] **7. Glosario con URL por término** — `/glosario/[termino]` renderizado en servidor con esquema `DefinedTerm`. **EN CURSO: 12 de 43 términos publicados** (son 43, no 45: el plan traía mal la cifra). Infraestructura terminada; faltan las tandas de Trading (19), DeFi (6) y Seguridad (6).
 - [ ] **8. Enlazado interno** — 2-4 enlaces contextuales por entrada, y convertirlo en regla de `/admin/posts-instrucciones` para que las nuevas nazcan enlazadas.
 - [ ] **9. Página pilar de formación gratuita** — agrupa las 7 guías y compite por «aprender criptomonedas gratis».
 - [ ] **10. Generación estática con revalidación** — hoy todo es dinámico porque las páginas leen cookies de Supabase en servidor. La home tardaba 2,44 s el 30-08-2026. Separar lo público de lo personalizado.
@@ -128,6 +137,7 @@ No se prometen posiciones en Google. Los plazos realistas son **indexación en 1
 | 2026-08-31 | 5 | `812c750` | Sufijo del layout raíz de `" | AdelinBTC Academy"` (20) a `" | AdelinBTC"` (12), lo que deja **48 caracteres propios** de título. Reescritos **6 títulos de guías** (código) y **7 títulos + 6 descripciones de entradas** (Supabase, aprobados uno a uno por el admin antes de escribir). Bitcoin Core y `que-es-la-blockchain` no se tocaron: caben solos al acortar el sufijo. Nueva regla en `npm run check` que **falla si un `title` de metadata pasa de 48**, probada provocando el fallo a propósito. Límites documentados en `/admin/posts-instrucciones` (bloque 09). |
 | 2026-08-31 | 5 | `61d03ff` | Cierre del punto 5: **al verificar en producción salieron 8 descripciones por encima de 160** — la portada y las 7 guías. Se habían reescrito sus títulos pero no sus descripciones. Reescritas las 8, más la de `/herramientas/radar` (194), que hoy no indexa nadie pero es justo la que abrirá el punto 13. `npm run check` gana la regla de `description` y, de paso, se arregla un fallo que afectaba a todas las reglas del bloque: partía por `
 | 2026-08-31 | 6 | `8b6306f` | JSON-LD en todo el sitio. `src/lib/schema.ts` (constructores) + `src/components/JsonLd.tsx` (renderizador). `Organization` y `WebSite` en el layout raíz, una sola vez y con `@id` estable al que apunta todo lo demás. `Article` + `BreadcrumbList` en `/post/[slug]`, replicando escalón a escalón las migas visibles. `BreadcrumbList` en las 7 guías vía `<GuideBreadcrumbJsonLd>`, con el nombre sacado de `GUIDES` para que coincida con `/guias`. Sin `SearchAction` (no hay buscador), sin autor inventado (la tabla `posts` no guarda autor: firma la organización) y sin valoraciones. Validado sobre el build de producción: los 17 bloques parsean, ningún `headline` pasa de 110 y las rutas privadas solo llevan las dos entidades globales. |
+| 2026-08-31 | 7 (1/4) | `PENDIENTE` | Infraestructura del glosario + tanda **Básicos** (12 términos). Los 43 términos salen de `GlosarioClient.tsx` a `src/lib/glosario.ts`, que ya sí pueden leer el sitemap y las páginas de servidor. Ruta `/glosario/[termino]` con `DefinedTerm` + `BreadcrumbList`, canónica y migas visibles. **Un término sin `extended` no existe como URL**: `dynamicParams = false` lo convierte en 404 y no entra en el sitemap, para no publicar 31 páginas escasas de golpe. Los `term` no se tocan — son la clave de `saved_terms`. Sitemap de 30 a 42 URLs. |
 ` en vez de `/?
 /`, y el `` de los archivos CRLF rompía cualquier ancla `$`. |
 

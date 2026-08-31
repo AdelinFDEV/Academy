@@ -112,6 +112,35 @@ export function articleSchema(post: ArticleInput): JsonLdNode {
 }
 
 /**
+ * Un término del diccionario.
+ *
+ * `DefinedTerm` va dentro de un `DefinedTermSet` —el diccionario completo—
+ * porque un término suelto, sin decir de qué glosario forma parte, le dice muy
+ * poco a Google. La `description` es la definición corta y no el desarrollo
+ * entero: es la que responde «qué es esto» en una línea.
+ */
+export function definedTermSchema(t: {
+  term: string;
+  slug: string;
+  definition: string;
+}): JsonLdNode {
+  return {
+    "@type": "DefinedTerm",
+    "@id": `${SITE_URL}/glosario/${t.slug}#term`,
+    name: t.term,
+    description: t.definition,
+    url: `${SITE_URL}/glosario/${t.slug}`,
+    inDefinedTermSet: {
+      "@type": "DefinedTermSet",
+      "@id": `${SITE_URL}/glosario#set`,
+      name: "Diccionario Cripto",
+      url: `${SITE_URL}/glosario`,
+    },
+    inLanguage: "es-ES",
+  };
+}
+
+/**
  * Migas de pan. `items` va de la raíz a la página actual, ambas incluidas.
  *
  * La ruta se pasa relativa y se resuelve aquí contra SITE_URL, por lo mismo

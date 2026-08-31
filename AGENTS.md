@@ -2,7 +2,7 @@
 
 Hay un plan SEO de 12 puntos en marcha, acordado el 30 de agosto de 2026, que se implementa **punto por punto y en orden**. El estado vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)**, en la raíz del repo.
 
-Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 6, y el siguiente es el 7 (glosario con URL por término).**
+Está ahí y no en la memoria de Claude a propósito: la memoria local (`~/.claude/`) **no viaja entre ordenadores**, y este seguimiento tiene que funcionar en cualquier máquina. Antes de tocar nada de SEO, mira ese archivo y **empieza por su bloque «🔻 RETOMAR AQUÍ»**, que resume en qué punto exacto se quedó todo, qué toca ahora y qué no hay que tocar. **A 31-08-2026 van hechos los puntos 1 a 6, y el 7 (glosario) está EN CURSO: 12 de 43 términos ampliados y publicados; faltan Trading, DeFi y Seguridad.**
 
 **Al completar un punto, tres cosas, siempre:**
 
@@ -20,7 +20,7 @@ Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos prim
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
-> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5 y 6**.
+> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5, 6 y 7**.
 
 ## Lo que ya es automático — no hay que hacer nada
 
@@ -105,6 +105,16 @@ Dos consecuencias prácticas al tocar contenido:
 
 `isAccessibleForFree` sale de `is_premium` de la entrada. Es lo que evita que Google interprete el muro de pago como *cloaking* — enseñarle a él una cosa y al visitante otra.
 
+## El diccionario: un término solo tiene URL si tiene texto largo
+
+Los 43 términos viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `GlosarioClient.tsx`, que es un componente de cliente, así que ni el sitemap ni ninguna página de servidor podían leerlos.
+
+**La regla que gobierna todo esto: un término tiene página propia solo si tiene el campo `extended`.** Sin él no aparece en `/glosario/[termino]` (la ruta usa `dynamicParams = false`, así que devuelve **404**), no entra en el sitemap y el listado no lo enlaza. No es una limitación técnica: **una URL con 25 palabras es contenido escaso**, y publicar 43 de golpe arrastra al dominio entero. Se abren por tandas conforme se escriben.
+
+Para ampliar un término: añadirle `extended` (HTML ya escrito, ~150-250 palabras, con la estructura qué es / por qué importa / error típico) y `seeAlso` con tres slugs relacionados. Con eso queda publicado — no hay que tocar el sitemap ni el listado, se enteran solos.
+
+**`term` es la clave de los guardados de los usuarios** (tabla `saved_terms`, vía `/api/terms`). Cambiar ese texto deja huérfanos los favoritos de todo el mundo. El `slug` sí se puede tocar mientras el término no esté publicado; una vez indexado, cambiarlo exige una redirección.
+
 ## Lo que SÍ hay que hacer al crear algo nuevo
 
 | Creas… | Qué hace falta para que entre en el sitemap |
@@ -112,6 +122,7 @@ Dos consecuencias prácticas al tocar contenido:
 | **Entrada** | Nada. Basta con `published = true`. Con `published = false` no entra — que es lo correcto. |
 | **Guía** | **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** El sitemap recorre ese array, no la carpeta `src/app/guias/`. Una guía con su `page.tsx` pero sin su entrada en `GUIDES` **es invisible para Google**. |
 | **Página pública nueva** | Añadirla a mano a `STATIC_ROUTES` en `src/app/sitemap.ts`, con su `priority` y su `changeFrequency`. |
+| **Término del diccionario** | Nada, en cuanto tenga `extended` en `src/lib/glosario.ts`. Sin ese campo no existe como URL. |
 | **Categoría** | Nada, en cuanto tenga una entrada publicada. |
 
 ## Tres reglas que ya se rompieron una vez

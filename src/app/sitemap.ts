@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { GUIDES } from "@/lib/guides";
+import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 import { SITE_URL } from "@/lib/site";
 import type { PostCategoryRef } from "@/lib/types";
 
@@ -95,6 +96,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // Solo los términos con desarrollo largo: son los únicos que tienen página.
+  // Un término sin `extended` ni siquiera existe como URL — ver
+  // `src/app/glosario/[termino]/page.tsx`, que usa `dynamicParams = false`.
+  const glosarioEntries: MetadataRoute.Sitemap = GLOSARIO_CON_PAGINA.map((t) => ({
+    url: `${SITE_URL}/glosario/${t.slug}`,
+    changeFrequency: "yearly",
+    priority: 0.5,
+  }));
+
   const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${SITE_URL}/post/${post.slug}`,
     lastModified: new Date(post.updated_at ?? post.created_at ?? Date.now()),
@@ -122,5 +132,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  return [...staticEntries, ...guideEntries, ...postEntries, ...categoryEntries];
+  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...postEntries, ...categoryEntries];
 }
