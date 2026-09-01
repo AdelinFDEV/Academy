@@ -57,11 +57,40 @@ function byChronology(a: Trade, b: Trade): number {
   return a.date.localeCompare(b.date) || a.created_at.localeCompare(b.created_at);
 }
 
+/**
+ * Instante real -> texto para el <input type="datetime-local">.
+ *
+ * El input no entiende de zonas: quiere la hora de pared ("2026-09-01T22:07").
+ * Por eso hay que desplazar el instante por el desfase local ANTES de
+ * serializar; es el unico modo de que salga la hora del reloj del visitante.
+ */
+function toInputValue(d: Date): string {
+  const copia = new Date(d);
+  copia.setSeconds(0, 0);
+  copia.setMinutes(copia.getMinutes() - copia.getTimezoneOffset());
+  return copia.toISOString().slice(0, 16);
+}
+
+/**
+ * Texto del <input type="datetime-local"> -> instante real, en ISO con zona.
+ *
+ * Esta es la pieza que faltaba y la que descuadraba el diario. Lo que sale
+ * del input es hora de pared SIN zona, y la columna "date" de Supabase es
+ * timestamptz: al recibir un texto sin desfase, lo da por UTC. Quien apuntaba
+ * una operacion a las 22:07 la guardaba como 22:07 UTC, y al repintarla en su
+ * zona (+3 en verano) le salian las 01:07 del dia siguiente: tres horas por
+ * delante, y encima en la casilla equivocada del calendario.
+ *
+ * new Date("2026-09-01T22:07") interpreta el texto como hora LOCAL, que es lo
+ * que quiso escribir el usuario, y toISOString() lo lleva al instante bueno.
+ */
+function inputValueToIso(valor: string): string {
+  const d = new Date(valor);
+  return isNaN(d.getTime()) ? valor : d.toISOString();
+}
+
 function nowForInput(): string {
-  const d = new Date();
-  d.setSeconds(0, 0);
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().slice(0, 16);
+  return toInputValue(new Date());
 }
 
 const EMPTY_FORM: FormState = {
@@ -528,7 +557,7 @@ export default function TradingJournal({
   function startEdit(trade: Trade) {
     setEditingId(trade.id);
     setForm({
-      date: trade.date.slice(0, 16),
+      date: toInputValue(new Date(trade.date)),
       pair: trade.pair,
       direction: trade.direction,
       risk_amount: String(trade.risk_amount),
@@ -556,7 +585,11 @@ export default function TradingJournal({
       const res = await fetch("/api/trades", {
         method: editingId ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editingId ? { ...form, id: editingId } : form),
+        body: JSON.stringify({
+          ...form,
+          date: inputValueToIso(form.date),
+          ...(editingId ? { id: editingId } : {}),
+        }),
       });
       if (!res.ok) {
         const d = await res.json();
