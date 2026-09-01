@@ -1893,6 +1893,16 @@ a.dash-spot-cta:hover {
   color: #ff5555;
 }
 
+/*
+ * Las dos tarjetas de racha cierran la rejilla: con 10 tarjetas en 4 columnas
+ * la ultima fila se quedaria a medias, asi que cada una ocupa dos columnas y
+ * la fila queda completa. En la rejilla de 2 columnas del movil las 10 ya
+ * cuadran solas, y ahi vuelven a ocupar una.
+ */
+.tj-stat-card.tj-stat-streak {
+  grid-column: span 2;
+}
+
 .tj-stat-value {
   font-size: 1.5rem;
   font-weight: 700;
@@ -3021,6 +3031,10 @@ a.dash-spot-cta:hover {
     grid-template-columns: repeat(3, 1fr);
   }
 
+  .tj-stat-card.tj-stat-streak {
+    grid-column: span 1;
+  }
+
   .tj-charts {
     grid-template-columns: 1fr;
   }
@@ -4031,6 +4045,10 @@ a.dash-spot-cta:hover {
 
   .tj-stats {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tj-stat-card.tj-stat-streak {
+    grid-column: span 1;
   }
 
   .tj-form-grid {

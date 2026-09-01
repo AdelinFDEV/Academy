@@ -465,10 +465,40 @@ export default function TradingJournal({
     const avgPnl = trades.length ? totalPnl / trades.length : 0;
     const avgWin = wins ? winTrades.reduce((s, t) => s + t.pnl, 0) / wins : 0;
     const avgLoss = losses ? lossTrades.reduce((s, t) => s + t.pnl, 0) / losses : 0;
-    const best = trades.length ? Math.max(...trades.map(t => t.pnl)) : 0;
-    const worst = trades.length ? Math.min(...trades.map(t => t.pnl)) : 0;
+    // La mejor operacion solo puede salir de las que ganan, y la peor solo de las
+    // que pierden. Con un Math.min sobre todas, un diario sin ninguna perdida
+    // mostraba una ganancia como "peor operacion". Sin candidatas no hay cifra:
+    // la tarjeta muestra un guion en vez de mentir con un 0.
+    const gains = trades.filter(t => t.pnl > 0).map(t => t.pnl);
+    const drops = trades.filter(t => t.pnl < 0).map(t => t.pnl);
+    const best = gains.length ? Math.max(...gains) : null;
+    const worst = drops.length ? Math.min(...drops) : null;
     const winRate = trades.length ? (wins / trades.length) * 100 : 0;
-    return { wins, losses, bes, totalPnl, avgPnl, avgWin, avgLoss, best, worst, winRate };
+
+    // Rachas maximas consecutivas. `trades` ya viene ordenado por byChronology,
+    // asi que basta recorrerlo una vez. El breakeven ni suma ni rompe: no es
+    // victoria ni derrota, se salta y la racha sigue contando a ambos lados.
+    let bestWinStreak = 0;
+    let bestLossStreak = 0;
+    let runWin = 0;
+    let runLoss = 0;
+    for (const t of trades) {
+      if (t.result === "breakeven") continue;
+      if (t.result === "win") {
+        runLoss = 0;
+        runWin += 1;
+        if (runWin > bestWinStreak) bestWinStreak = runWin;
+      } else {
+        runWin = 0;
+        runLoss += 1;
+        if (runLoss > bestLossStreak) bestLossStreak = runLoss;
+      }
+    }
+
+    return {
+      wins, losses, bes, totalPnl, avgPnl, avgWin, avgLoss, best, worst, winRate,
+      bestWinStreak, bestLossStreak,
+    };
   }, [trades]);
 
   function handleChange(
@@ -877,13 +907,25 @@ export default function TradingJournal({
           <span className="tj-stat-value">{pnlStr(stats.avgLoss)}</span>
           <span className="tj-stat-label">Pérdida media</span>
         </div>
-        <div className="tj-stat-card tj-positive">
-          <span className="tj-stat-value">{pnlStr(stats.best)}</span>
+        <div className={`tj-stat-card ${stats.best != null ? "tj-positive" : ""}`}>
+          <span className="tj-stat-value">
+            {stats.best != null ? pnlStr(stats.best) : "—"}
+          </span>
           <span className="tj-stat-label">Mejor op.</span>
         </div>
-        <div className="tj-stat-card tj-negative">
-          <span className="tj-stat-value">{pnlStr(stats.worst)}</span>
+        <div className={`tj-stat-card ${stats.worst != null ? "tj-negative" : ""}`}>
+          <span className="tj-stat-value">
+            {stats.worst != null ? pnlStr(stats.worst) : "—"}
+          </span>
           <span className="tj-stat-label">Peor op.</span>
+        </div>
+        <div className={`tj-stat-card tj-stat-streak ${stats.bestWinStreak ? "tj-positive" : ""}`}>
+          <span className="tj-stat-value">{stats.bestWinStreak}</span>
+          <span className="tj-stat-label">Mayor racha ganando</span>
+        </div>
+        <div className={`tj-stat-card tj-stat-streak ${stats.bestLossStreak ? "tj-negative" : ""}`}>
+          <span className="tj-stat-value">{stats.bestLossStreak}</span>
+          <span className="tj-stat-label">Mayor racha perdiendo</span>
         </div>
       </div>
 
