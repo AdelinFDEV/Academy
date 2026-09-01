@@ -3,6 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import type { AdminComment } from "@/lib/types";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 
 // ── Helpers ──────────────────────────────────────────────
 function buildDayBuckets(n: number) {
@@ -341,7 +342,7 @@ export default async function AdminPage() {
   const userMonthTrend = trend(newUsersThisMonth, newUsersLastMonth);
 
   // ── Objetivo de MRR ──
-  const PREMIUM_PRICE   = 19.99;
+  const PREMIUM_PRICE   = PREMIUM_PRICE_EUR;
   const MRR_GOAL        = 1000;
   const currentMRR      = (premiumCount ?? 0) * PREMIUM_PRICE;
   const goalPct         = Math.min((currentMRR / MRR_GOAL) * 100, 100);
@@ -375,7 +376,7 @@ export default async function AdminPage() {
             <div>
               <span className="admin-revenue-hero-label">MRR estimado</span>
               <span className="admin-revenue-hero-value">{currentMRR.toFixed(0)}€<small>/mes</small></span>
-              <span className="admin-revenue-hero-sub">{premiumCount ?? 0} suscripción{premiumCount === 1 ? "" : "es"} premium × 19,99€</span>
+              <span className="admin-revenue-hero-sub">{premiumCount ?? 0} suscripción{premiumCount === 1 ? "" : "es"} premium × {precioEur(PREMIUM_PRICE_EUR)}</span>
             </div>
           </div>
 

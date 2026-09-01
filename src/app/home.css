@@ -410,25 +410,11 @@
   text-align: center;
 }
 
-.hero-premium-band-limited {
-  font-size: 0.64rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(245, 214, 138, 0.75);
-}
-
 .hero-premium-band-price {
   display: flex;
   align-items: baseline;
   gap: 0.3rem;
   line-height: 1;
-}
-
-.hero-premium-band-old {
-  font-size: 0.9rem;
-  color: rgba(226, 232, 240, 0.4);
-  text-decoration: line-through;
 }
 
 .hero-premium-band-amount {
@@ -1563,16 +1549,6 @@
 
 /* Precio anterior tachado — el tachón va con el color de la tarjeta para
    que se lea como oferta y no como una errata. */
-.hero-duo-old {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: color-mix(in srgb, var(--text-muted) 75%, transparent);
-  text-decoration: line-through;
-  text-decoration-color: color-mix(in srgb, var(--duo-color) 70%, transparent);
-  text-decoration-thickness: 1.5px;
-}
-
 /* Letra pequeña honesta: duración de la sesión / condiciones */
 .hero-duo-note {
   font-size: 0.7rem;

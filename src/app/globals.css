@@ -8017,32 +8017,11 @@ select {
   margin-bottom: 1.25rem;
 }
 
-.premium-pitch-limited {
-  align-self: flex-start;
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.25rem 0.5rem;
-  background: rgba(255, 107, 43, 0.15);
-  color: var(--accent-orange);
-  border-radius: 6px;
-}
-
 .premium-pitch-price {
   position: relative;
   display: flex;
   align-items: baseline;
   gap: 0.4rem;
-}
-
-.premium-pitch-old-price {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-decoration: line-through;
-  text-decoration-color: rgba(255, 255, 255, 0.4);
-  margin-right: 0.25rem;
 }
 
 .premium-pitch-amount {

@@ -10,6 +10,7 @@ import CuentaDeleteAccountBtn from "@/components/CuentaDeleteAccountBtn";
 import TwoFactorSettings from "@/components/TwoFactorSettings";
 import CuentaTelegramCard from "@/components/CuentaTelegramCard";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User, Lock } from "lucide-react";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 
 export const metadata: Metadata = {
   title: "Mi cuenta",
@@ -192,7 +193,7 @@ export default async function CuentaPage({
                     )}
                     <div className="cuenta-info-row">
                       <span className="cuenta-info-label">Importe</span>
-                      <span className="cuenta-info-value">19,99€ / mes</span>
+                      <span className="cuenta-info-value">{precioEur(PREMIUM_PRICE_EUR)} / mes</span>
                     </div>
                   </div>
 

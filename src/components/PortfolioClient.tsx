@@ -247,7 +247,7 @@ export default function PortfolioClient({ initialPositions, isPremium, isAdmin, 
             </ul>
 
             <Link href="/api/checkout" prefetch={false} className="pf-popup-cta">
-              {isLoggedIn ? "Hazte Premium" : "Empezar ahora"} — 19,99€/mes
+              {isLoggedIn ? "Hazte Premium" : "Empezar ahora"} — 49,99€/mes
               <ArrowRight size={18} strokeWidth={2.5} />
             </Link>
 

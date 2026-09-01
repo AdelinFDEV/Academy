@@ -252,7 +252,7 @@ export default async function DashboardPage() {
 
           <div className="dash-upsell-right">
             <div className="dash-upsell-price">
-              <span className="dash-upsell-price-main">19,99€</span>
+              <span className="dash-upsell-price-main">49,99€</span>
               <span className="dash-upsell-price-per">/mes</span>
             </div>
             <Link href="/premium" className="dash-upsell-cta">

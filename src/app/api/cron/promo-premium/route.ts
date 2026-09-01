@@ -20,7 +20,7 @@ function mensaje(): string {
   return (
     "💎 ¿Todavía no eres Premium?\n\n" +
     // El precio es un número, y JS lo escribe con punto decimal: en español
-    // "19.99€" canta mucho. Se formatea con coma.
+    // "49.99€" canta mucho. Se formatea con coma.
     `Por ${PREMIUM_PRICE_EUR.toLocaleString("es-ES", { minimumFractionDigits: 2 })}€/mes entras a todo esto:\n\n` +
     "💬 La sala de chat privada — el corazón de la comunidad. Se habla de mercado " +
     "todos los días y respondo yo en persona, no un bot.\n" +

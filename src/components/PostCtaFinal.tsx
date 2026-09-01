@@ -56,7 +56,7 @@ export default function PostCtaFinal({
         <h3>¿Quieres más contenido como este?</h3>
         <p>
           Con Premium desbloqueas todos los análisis avanzados, el diario de trading y el
-          canal privado de Telegram, donde puedes escribirme directamente. 19,99€/mes,
+          canal privado de Telegram, donde puedes escribirme directamente. 49,99€/mes,
           sin permanencia.
         </p>
         <div className="post-cierre-acciones">

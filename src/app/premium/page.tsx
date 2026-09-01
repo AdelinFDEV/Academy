@@ -6,7 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import PremiumFeatureGrid from "@/components/PremiumFeatureGrid";
 import PremiumStickyBar from "@/components/PremiumStickyBar";
 import AsesoriaBand from "@/components/AsesoriaBand";
-import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Timer, Star, Lock, Sparkles } from "lucide-react";
+import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Star, Lock, Sparkles } from "lucide-react";
 import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 import "./premium.css";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/premium" },
   title: "Hazte Premium",
   description:
-    "Desbloquea el diario de trading con retos, guías premium, trading en directo y el calendario de liberaciones de tokens por 19,99€/mes. Sin permanencia.",
+    "Desbloquea el diario de trading con retos, guías premium, trading en directo y el calendario de liberaciones de tokens por 49,99€/mes. Sin permanencia.",
 };
 
 const COMPARE: { label: string; free: boolean | string; premium: boolean | string }[] = [
@@ -40,7 +40,7 @@ const TESTIMONIALS = [
 
 const FAQS = [
   { q: "¿Puedo cancelar cuando quiera?", a: "Sí. Cancelas en 1 clic desde tu cuenta, sin permanencia ni preguntas. Mantienes el acceso hasta el final del periodo que ya has pagado." },
-  { q: "¿El precio me subirá más adelante?", a: "No. Los 19,99€/mes son una oferta de lanzamiento: mientras mantengas tu suscripción activa, conservas ese precio para siempre, aunque suba para nuevos miembros." },
+  { q: "¿El precio me subirá más adelante?", a: "A ti no. El precio al que te suscribes queda fijado: mientras mantengas la suscripción activa lo conservas, aunque suba para quien entre después. Si cancelas y vuelves más adelante, entrarías con la tarifa que haya entonces." },
   { q: "¿Cómo se realiza el pago?", a: "Con tarjeta a través de Stripe, la misma plataforma que usan Amazon o Shopify. El pago está encriptado y nosotros nunca vemos los datos de tu tarjeta." },
   { q: "¿Esto es asesoramiento financiero?", a: "No. Es formación y herramientas para que tomes tus propias decisiones con criterio. Nadie puede garantizarte rentabilidad — quien lo haga, te está mintiendo." },
 ];
@@ -84,7 +84,7 @@ export default async function PremiumPage() {
               <span className="prem-hero-glow" aria-hidden="true" />
 
               <span className="prem-hero-badge">
-                <span className="prem-pulse-dot" aria-hidden="true" /> Oferta de lanzamiento · −60%
+                <span className="prem-pulse-dot" aria-hidden="true" /> Acceso completo · Sin permanencia
               </span>
 
               <h1 className="prem-hero-title">
@@ -102,7 +102,7 @@ export default async function PremiumPage() {
                   {user ? "Desbloquear todo ahora" : "Empezar ahora"} <ArrowRight size={18} strokeWidth={2.6} aria-hidden="true" />
                 </Link>
                 <span className="prem-hero-cta-price">
-                  <s>49,99€</s> 19,99€<span>/mes</span>
+                  49,99€<span>/mes</span>
                 </span>
               </div>
 
@@ -116,8 +116,8 @@ export default async function PremiumPage() {
             {/* ── Anclas de valor ── */}
             <section className="prem-anchor">
               <div className="prem-anchor-item">
-                <span className="prem-anchor-figure">0,70€</span>
-                <span className="prem-anchor-label">al día — menos que un café</span>
+                <span className="prem-anchor-figure">1,67€</span>
+                <span className="prem-anchor-label">al día — lo que un café</span>
               </div>
               <span className="prem-anchor-divider" aria-hidden="true" />
               <div className="prem-anchor-item">
@@ -177,21 +177,17 @@ export default async function PremiumPage() {
                 <div className="prem-pricing-card">
                   <span className="prem-pricing-glow" aria-hidden="true" />
                   <span className="prem-pricing-shine" aria-hidden="true" />
-                  <span className="prem-pricing-ribbon"><Sparkles size={12} aria-hidden="true" /> Ahorras un 60%</span>
+                  <span className="prem-pricing-ribbon"><Sparkles size={12} aria-hidden="true" /> Cancela en 1 clic</span>
 
                   <div className="prem-pricing-header">
                     <h3>Acceso Total</h3>
-                    <div className="prem-pricing-timer">
-                      <Timer size={14} aria-hidden="true" /> Por tiempo limitado
-                    </div>
                   </div>
 
                   <div className="prem-pricing-amount-wrapper">
-                    <span className="prem-pricing-old">49,99€</span>
                     <div className="prem-pricing-amount">
-                      19<span>,99€</span><small>/mes</small>
+                      49<span>,99€</span><small>/mes</small>
                     </div>
-                    <span className="prem-pricing-perday">Menos de 0,70€ al día — un café a la semana</span>
+                    <span className="prem-pricing-perday">1,67€ al día — lo que un café</span>
                   </div>
 
                   <ul className="prem-pricing-list">
@@ -293,7 +289,7 @@ export default async function PremiumPage() {
                 Tu yo de dentro de un año<br />te agradecerá haber empezado hoy.
               </h2>
               <p className="pv2-final-sub">
-                <s className="pv2-final-old">49,99€</s> <strong>19,99€/mes</strong> · Sin permanencia · Acceso inmediato
+                <strong>49,99€/mes</strong> · Sin permanencia · Acceso inmediato
               </p>
               <Link href="/api/checkout" prefetch={false} className="prem-pricing-cta pv2-shine pv2-final-btn">
                 <span>{user ? "Desbloquear todo ahora" : "Hazte Premium ahora"}</span>

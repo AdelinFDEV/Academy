@@ -40,7 +40,7 @@ export default function PremiumStickyBar({ isLoggedIn }: { isLoggedIn: boolean }
                 <Crown size={16} className="prem-sticky-icon" aria-hidden="true" />
                 <span className="prem-sticky-text">
                   <strong>Premium</strong>
-                  <span className="prem-sticky-price"><s>49,99€</s> 19,99€/mes</span>
+                  <span className="prem-sticky-price">49,99€/mes</span>
                 </span>
               </div>
               <Link href="/api/checkout" prefetch={false} className="prem-sticky-cta">

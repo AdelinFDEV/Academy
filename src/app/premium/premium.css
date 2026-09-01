@@ -494,31 +494,10 @@
   color: var(--text-primary);
 }
 
-.prem-pricing-timer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(230, 180, 85, 0.15);
-  color: var(--premium-gold);
-  padding: 4px 10px;
-  border-radius: 100px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
 .prem-pricing-amount-wrapper {
   margin-bottom: 2rem;
   position: relative;
   z-index: 1;
-}
-
-.prem-pricing-old {
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  text-decoration: line-through;
-  font-weight: 600;
-  display: block;
-  margin-bottom: 0.25rem;
 }
 
 .prem-pricing-amount {
@@ -662,7 +641,6 @@
   .prem-pricing-amount span { font-size: 1.5rem; }
   .prem-pricing-amount small { font-size: 0.9rem; }
   .prem-pricing-amount-wrapper { text-align: center; margin-bottom: 1.5rem; }
-  .prem-pricing-old { text-align: center; font-size: 1.1rem; }
 
   .prem-pricing-list li { font-size: 0.9rem; gap: 10px; }
   .prem-pricing-cta { font-size: 1rem; padding: 0.9rem 1rem; }
@@ -983,10 +961,6 @@
 .pv2-final-sub strong {
   color: var(--premium-gold);
   font-weight: 800;
-}
-
-.pv2-final-old {
-  color: rgba(226, 232, 240, 0.4);
 }
 
 .pv2-final-btn {

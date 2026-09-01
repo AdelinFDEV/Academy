@@ -110,7 +110,7 @@ const FEATURES = [
     tag: "Próximamente",
     color: "#a3a3ff",
     desc: "Futuros sobre Solana en gráficos de 5 minutos, operados en directo: verás cada entrada y cada salida en el momento en que se toman.",
-    note: "Estará incluido en tu única suscripción Premium de 19,99€/mes, sin coste extra.",
+    note: "Estará incluido en tu única suscripción Premium de 49,99€/mes, sin coste extra.",
     chips: [
       { icon: Hourglass, label: "En preparación" },
       { icon: MessagesSquare, label: "Chat de preguntas" },
@@ -375,8 +375,7 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
           <div className="hero-duo-foot">
             <span className="hero-duo-price-block">
               <span className="hero-duo-price">
-                <s className="hero-duo-old">49,99€</s>
-                <strong>19,99€</strong>
+                <strong>49,99€</strong>
                 <em>/mes</em>
               </span>
               <span className="hero-duo-note">Cancela cuando quieras · Sin permanencia</span>
@@ -530,10 +529,8 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
                 </p>
               </div>
               <div className="hero-premium-band-right">
-                <span className="hero-premium-band-limited">Por tiempo limitado</span>
                 <div className="hero-premium-band-price">
-                  <span className="hero-premium-band-old">49,99€</span>
-                  <span className="hero-premium-band-amount">19,99€</span>
+                  <span className="hero-premium-band-amount">49,99€</span>
                   <span className="hero-premium-band-period">/mes</span>
                 </div>
                 <span className="hero-premium-band-cta">

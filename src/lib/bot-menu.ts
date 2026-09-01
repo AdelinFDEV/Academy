@@ -18,7 +18,7 @@
  * cuenta en el servidor. El bot no puede abrir nada que la web no abra.
  */
 
-import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import { ASESORIA_PLANS } from "@/lib/asesoria";
 import {
   getAdminChatUrl,
@@ -60,13 +60,14 @@ export function tienePremium(perfil: { role: string | null } | null | undefined)
 
 // ── Utilidades de formato ───────────────────────────────────────────────────
 
-/** 19.99 → "19,99€". El precio sale de Stripe, nunca escrito a mano. */
+/** El precio sale de la constante comun, nunca escrito a mano. */
 function precioMes(): string {
-  return `${PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")}€`;
+  return precioEur(PREMIUM_PRICE_EUR);
 }
 
 /** Lo que cuesta al día, para que el precio se compare con un café y no con
- *  una factura. */
+ *  una factura. Ojo al cambiar PREMIUM_PRICE_EUR: hay textos que comparan esta
+ *  cifra con algo, y a 49,99€ es un café al día, no uno a la semana. */
 function precioDia(): string {
   return `${(PREMIUM_PRICE_EUR / 30).toFixed(2).replace(".", ",")}€`;
 }
@@ -537,7 +538,7 @@ function pantallaPrecio(perfil: PerfilBot | null): Pantalla {
   const texto =
     "💳 Precio y formas de pago\n\n" +
     `💎 Premium: ${precioMes()} al mes\n` +
-    `☕ Menos de ${precioDia()} al día — un café a la semana\n\n` +
+    `☕ ${precioDia()} al día — lo que un café\n\n` +
     "Cómo se paga:\n" +
     "• Con tarjeta, a través de Stripe (la misma pasarela que usan Amazon o Shopify)\n" +
     "• El pago va encriptado y los datos de tu tarjeta no los vemos nunca\n" +
@@ -545,7 +546,7 @@ function pantallaPrecio(perfil: PerfilBot | null): Pantalla {
     "Condiciones:\n" +
     "• Sin permanencia — cancelas en un clic, cuando quieras\n" +
     "• Al cancelar conservas el acceso hasta el final del mes que ya pagaste\n" +
-    `• Los ${precioMes()} son precio de lanzamiento: mientras no canceles, es tuyo aunque suba`;
+    "• El precio al que entras queda fijado: mientras no canceles, es tuyo aunque suba";
 
   const botones: Boton[][] = [];
   if (esPremium) {
@@ -652,8 +653,8 @@ const DUDAS: { id: string; boton: string; titulo: string; texto: string; botones
     titulo: "📈 ¿El precio me subirá más adelante?",
     texto:
       `No.\n\n` +
-      `Los ${precioMes()}/mes son una oferta de lanzamiento: mientras mantengas tu ` +
-      "suscripción activa, conservas ese precio para siempre, aunque suba para los que entren después.\n\n" +
+      `El precio al que te suscribes queda fijado: mientras mantengas tu ` +
+      "suscripción activa lo conservas, aunque suba para los que entren después.\n\n" +
       "La única forma de perderlo es cancelar y volver más adelante: entonces entrarías con la " +
       "tarifa que haya en ese momento.",
   },
