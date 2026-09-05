@@ -4389,10 +4389,14 @@
 
 .dtb-sidebar {
   position: fixed;
-  /* Arranca justo donde acaba la barra, leyendo SU altura. Aquí hubo un 60px
-     copiado a mano: la barra crece al añadirle un botón y aparecía una franja
-     vacía sobre el rail al hacer scroll. */
-  top: var(--nav-h);
+  /* El rail ocupa la pantalla ENTERA, de 0 a 0, y pasa por detrás de la barra
+     superior (que tiene z-index 400 y va por encima). Los enlaces siguen
+     empezando donde empezaban gracias al `padding-top`.
+     Antes arrancaba en la altura de la barra, y cualquier desajuste entre esa
+     altura y la real dejaba una franja vacía justo encima — que es lo que
+     pasaba. Así el hueco es imposible: no hay nada que cuadrar. */
+  top: 0;
+  padding-top: var(--nav-h);
   left: 0;
   bottom: 0;
   width: var(--dtb-ancho);
