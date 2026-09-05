@@ -1303,37 +1303,54 @@ html {
 .nav-saludo {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  height: 38px;
-  padding: 0 0.4rem 0 0.28rem;
-  border: 1px solid transparent;
+  gap: 0.55rem;
+  height: 40px;
+  padding: 0 0.6rem 0 0.32rem;
+  /* Con cuerpo desde el principio, no solo al pasar por encima: es un control
+     que se pulsa, y un texto suelto en una barra no lo parece. */
+  border: 1px solid rgba(240, 244, 255, 0.09);
   border-radius: 999px;
-  background: transparent;
+  background: linear-gradient(180deg, rgba(240, 244, 255, 0.055) 0%, rgba(240, 244, 255, 0.02) 100%);
   cursor: pointer;
-  transition: background-color 0.18s ease, border-color 0.18s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-saludo:hover,
 .nav-saludo.is-abierto {
-  background: rgba(240, 244, 255, 0.06);
-  border-color: rgba(240, 244, 255, 0.12);
+  border-color: color-mix(in srgb, var(--accent-orange) 34%, transparent);
+  background: linear-gradient(180deg, rgba(255, 107, 43, 0.1) 0%, rgba(255, 107, 43, 0.03) 100%);
+  box-shadow: 0 2px 14px rgba(255, 107, 43, 0.1);
 }
 
 /* La inicial, en una moneda naranja. Es lo que hace que se lea como «tu sitio»
    y no como un texto suelto en una barra. */
 .nav-saludo-avatar {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 29px;
-  height: 29px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
   border-radius: 50%;
   background: linear-gradient(140deg, var(--accent-orange-soft) 0%, var(--accent-orange) 100%);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 800;
   color: #10203a;
-  box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.28), 0 3px 10px var(--accent-orange-glow);
+  /* Anillo separador + halo. El anillo del color de la barra evita que la
+     moneda se funda con el borde del botón. */
+  box-shadow:
+    0 0 0 2px rgba(10, 22, 40, 0.9),
+    0 0 0 3px rgba(255, 107, 43, 0.3),
+    0 3px 12px var(--accent-orange-glow);
+  transition: box-shadow 0.2s ease;
+}
+
+.nav-saludo:hover .nav-saludo-avatar {
+  box-shadow:
+    0 0 0 2px rgba(10, 22, 40, 0.9),
+    0 0 0 3px rgba(255, 107, 43, 0.55),
+    0 3px 16px rgba(255, 107, 43, 0.3);
 }
 
 .nav-saludo-texto {
@@ -1343,12 +1360,21 @@ html {
   text-align: left;
 }
 
+/* La frase en naranja apagado: la distingue del nombre sin gritar, y hace que
+   el conjunto se lea como una unidad y no como dos textos apilados. */
 .nav-saludo-hola {
-  font-size: 0.63rem;
-  font-weight: 600;
-  letter-spacing: 0.055em;
+  font-size: 0.635rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.4);
+  color: color-mix(in srgb, var(--accent-orange-soft) 72%, transparent);
+  /* 26ch y no 20: la unidad `ch` mide el ancho del cero, y en mayúsculas cada
+     letra ocupa bastante más. Con 20 se comía la cola de «EL MERCADO NO
+     DUERME». Las frases están escogidas cortas, así que no llega a recortar. */
+  max-width: 26ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .nav-saludo-nombre {
@@ -1422,6 +1448,35 @@ html {
 }
 
 .nav-saludo-item:hover svg { color: var(--accent-orange-soft); }
+
+/* Cerrar sesión, con cuerpo naranja: es la única acción del menú que no lleva
+   a ninguna parte sino que deshace algo, así que se separa del resto con una
+   línea y se distingue a simple vista. */
+.nav-saludo-salir {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.62rem 0.7rem;
+  border: 0;
+  border-radius: 9px;
+  background: var(--accent-orange);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 650;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.nav-saludo-salir:hover {
+  background: var(--accent-orange-soft);
+  box-shadow: 0 4px 14px var(--accent-orange-glow);
+}
+
+.nav-saludo-salir svg { color: currentColor; }
 
 @media (prefers-reduced-motion: reduce) {
   .nav-saludo-menu { animation: none; }
