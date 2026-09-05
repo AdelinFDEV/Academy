@@ -8,7 +8,6 @@ import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardSpotlight from "@/components/DashboardSpotlight";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
-import AsesoriaBand from "@/components/AsesoriaBand";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
@@ -203,7 +202,6 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Asesoría 1:1 ── */}
-      <AsesoriaBand variant="dashboard" />
 
       {/* ── Upgrade card (free users only) ── */}
       {!isPremium && (
