@@ -75,6 +75,58 @@ function cargarEnv() {
   }
 }
 
+/**
+ * Términos del diccionario que tienen página propia, con su texto visible.
+ *
+ * Se usa para la regla del diccionario (ver AGENTS.md): todo tecnicismo que
+ * aparezca en una entrada debe estar enlazado a su definición.
+ */
+function terminosDelGlosario() {
+  const glosario = readFileSync("src/lib/glosario.ts", "utf8");
+  const terminos = [];
+  for (const bloque of glosario.split("  {").slice(1)) {
+    const slug = bloque.match(/slug: "([^"]*)"/)?.[1];
+    const term = bloque.match(/term: "([^"]*)"/)?.[1];
+    if (slug && term && bloque.includes("extended:")) terminos.push({ slug, term });
+  }
+  return terminos;
+}
+
+/** Quita acentos y baja a minúsculas, para comparar «Liquidación» con «liquidacion». */
+function normalizar(s) {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+/**
+ * Términos que la entrada menciona SIN enlazar a su definición.
+ *
+ * Solo mira el texto que queda fuera de los enlaces: si el término ya está
+ * enlazado en algún sitio, la regla se da por cumplida —pide enlazar la primera
+ * aparición, no todas—. Devuelve avisos y no fallos a propósito, porque hay
+ * menciones legítimas sin enlace (dentro de una cita, o una palabra corriente
+ * que coincide con un término, como «futuros movimientos»).
+ */
+function terminosSinEnlazar(contenido, terminos) {
+  const yaEnlazados = new Set(
+    [...contenido.matchAll(/href="\/glosario\/([^"#]*)"/g)].map((m) => m[1])
+  );
+
+  // Fuera el contenido de los <a>: lo que ya está enlazado no cuenta.
+  const sueltoNorm = normalizar(contenido.replace(/<a\s[^>]*>.*?<\/a>/gis, " "));
+
+  const encontrados = [];
+  for (const { slug, term } of terminos) {
+    if (yaEnlazados.has(slug)) continue;
+    const t = normalizar(term).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    // \b no funciona bien con acentos ya normalizados fuera; basta con exigir
+    // que no haya letra pegada a ninguno de los dos lados.
+    if (new RegExp(`(^|[^a-z0-9])${t}([^a-z0-9]|$)`).test(sueltoNorm)) {
+      encontrados.push({ term, slug });
+    }
+  }
+  return encontrados;
+}
+
 /** Destinos internos válidos: términos con página, guías dadas de alta y entradas. */
 function destinosValidos(slugsEntradas) {
   const validos = new Set(RUTAS_FIJAS);
@@ -154,6 +206,15 @@ async function revisar(post, validos) {
   for (const h of internos) {
     if (!validos.has(h.split("#")[0])) mal(`enlace a "${h}", que no existe (un término sin \`extended\` da 404, y una guía fuera de GUIDES tampoco existe)`);
   }
+
+  // ── Regla del diccionario (AGENTS.md) ─────────────────────────────────────
+  // Todo tecnicismo que aparezca debe estar enlazado a su definición. Si el
+  // término no existe todavía en el diccionario, se crea y luego se enlaza.
+  const sinEnlazar = terminosSinEnlazar(contenido, GLOSARIO_TERMINOS);
+  if (sinEnlazar.length) {
+    const lista = sinEnlazar.map((t) => `${t.term} → /glosario/${t.slug}`).join(", ");
+    avisos.push(`términos del diccionario mencionados sin enlazar: ${lista}`);
+  }
   if (/pincha aquí|haz clic aquí|clic aquí|más información aquí/i.test(contenido)) {
     mal('ancla genérica tipo "pincha aquí": el texto del enlace tiene que decir de qué va el destino');
   }
@@ -221,6 +282,7 @@ if (!posts.length) {
   process.exit(1);
 }
 
+const GLOSARIO_TERMINOS = terminosDelGlosario();
 const validos = destinosValidos(posts.map((p) => p.slug));
 // Los destinos se calculan con las entradas devueltas; al revisar una sola,
 // hacen falta también las demás para validar enlaces entre entradas.
