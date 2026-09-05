@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fechaCorta } from "@/lib/fechas";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClientOpcional } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
@@ -57,7 +58,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   if (!category) notFound();
 
-  const { data: posts } = await supabase
+  // Las entradas premium las esconde la policy de `posts`. Sin este lector
+  // desaparecerian del listado en vez de salir con su candado, y nadie sabria
+  // que existen. Aqui no se pide `content`: solo lo que ya se enseña.
+  const lector = createAdminClientOpcional() ?? supabase;
+
+  const { data: posts } = await lector
     .from("posts")
     .select("id, title, slug, excerpt, cover_image, is_premium, created_at, categories(name, slug)")
     .eq("published", true)

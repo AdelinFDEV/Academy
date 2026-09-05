@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClientOpcional } from "@/lib/supabase/admin";
 import Footer from "@/components/Footer";
 import ArticulosClient, { type Post as ArticulosPost } from "./ArticulosClient";
 import SiteNav from "@/components/SiteNav";
@@ -22,8 +23,13 @@ export default async function ArticulosPage() {
   const isAdmin = role === "admin";
   const userName = profile?.full_name || user?.email?.split("@")[0] || "Usuario";
 
+  // Las entradas premium las esconde la policy de `posts`. Sin este lector
+  // desaparecerían del listado en vez de salir con su candado, y nadie sabría
+  // que existen. Aquí no se pide `content`: solo lo que ya se enseña.
+  const lector = createAdminClientOpcional() ?? supabase;
+
   const [{ data: posts }, { data: categories }] = await Promise.all([
-    supabase
+    lector
       .from("posts")
       .select("id, title, slug, excerpt, cover_image, is_premium, created_at, categories(name, slug)")
       .eq("published", true)

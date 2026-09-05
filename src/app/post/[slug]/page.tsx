@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { fechaLarga } from "@/lib/fechas";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createAdminClient, createAdminClientOpcional } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
@@ -23,7 +23,11 @@ export async function generateMetadata(
   const { slug } = await params;
   const supabase = await createClient();
 
-  const { data: post } = await supabase
+  // Las entradas premium las oculta la policy de `posts`, asi que sin este
+  // lector la etiqueta de la pagina saldria vacia y Google veria un 404.
+  const lector = createAdminClientOpcional() ?? supabase;
+
+  const { data: post } = await lector
     .from("posts")
     .select("title, excerpt, cover_image, seo_title, meta_description, focus_keyword, created_at, updated_at")
     .eq("slug", slug)
@@ -106,9 +110,17 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   // La clave es que casi nada depende de casi nada: la entrada se busca por su
   // slug y no necesita saber quién mira, y todo lo demás solo necesita el
   // usuario y el id de la entrada. Así que van en dos tandas paralelas.
+  // La entrada se lee saltando RLS a propósito. La policy de `posts` esconde la
+  // fila entera de una entrada premium a quien no lo es, y eso dejaba el muro
+  // de pago inalcanzable: 404 para Google y para cualquier usuario free que
+  // recibiera el enlace. El filtro de `published` se mantiene, así que los
+  // borradores siguen sin verse, y el `content` se retira más abajo cuando no
+  // hay acceso — antes de que nada llegue al navegador.
+  const lector = createAdminClientOpcional() ?? supabase;
+
   const [{ data: { user } }, { data: post }] = await Promise.all([
     supabase.auth.getUser(),
-    supabase
+    lector
       .from("posts")
       .select("*, categories(name, slug)")
       .eq("slug", slug)
@@ -127,7 +139,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
     user && process.env.SUPABASE_SERVICE_ROLE_KEY ? createAdminClient() : null;
 
   // Artículos relacionados: misma categoría, con reserva a los más recientes.
-  let relatedQuery = supabase
+  // Con `lector`, para que una entrada premium también salga aquí con su
+  // candado en vez de desaparecer del bloque.
+  let relatedQuery = lector
     .from("posts")
     .select("id, title, slug, cover_image, is_premium, created_at, categories(name)")
     .eq("published", true)
@@ -192,6 +206,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
 
   const hasAccess = !post.is_premium || isPremium;
+
+  // Y aquí se cae el texto de pago, en cuanto se sabe que no toca. La página ya
+  // solo pinta `post.content` si `hasAccess`, así que esto es un cinturón sobre
+  // los tirantes: si algún día alguien añade otro sitio donde se use el
+  // contenido, aquí ya no hay nada que filtrar.
+  if (!hasAccess) post.content = null;
 
   const comments = commentsRes.data;
   const userPost = userPostRes.data as { saved: boolean; read_at: string | null } | null;

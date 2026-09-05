@@ -123,6 +123,30 @@ Al escribir sobre una herramienta, **abre su código y comprueba que hace lo que
 
 Ninguno se buscó: salieron al ir a documentar cada herramienta. Es el tipo de cosa que acaba en una reclamación.
 
+# El muro de pago de las entradas: dónde está de verdad
+
+Comprobado el 06-09-2026 creando una entrada premium real y consultándola con cada rol, no leyendo el código.
+
+**La policy de `posts` en Supabase esconde la fila entera** de una entrada premium a quien no lo sea. Eso suena a lo correcto, y protege de verdad: con la clave anónima —la que va en el navegador de cualquiera— no se puede sacar el texto de pago. Pero tenía un efecto que nadie había visto porque **todavía no hay ninguna entrada premium publicada**: la entrada era un **404** para Google y para cualquier usuario free que recibiera el enlace, no entraba en el sitemap, ni en el RSS, ni en los listados. El muro de pago de `/post/[slug]` y el badge «Premium» de los listados eran **código inalcanzable**.
+
+Contenido de pago perfectamente protegido y perfectamente invisible.
+
+**La solución: las páginas públicas leen las entradas con `createAdminClientOpcional()`**, que devuelve el cliente de servicio si hay clave y `null` si no. El patrón, en las cinco:
+
+```ts
+const lector = createAdminClientOpcional() ?? supabase;
+```
+
+Está en `/post/[slug]` (metadata y página), `/articulos`, la portada, `/categoria/[slug]`, `sitemap.ts` y `rss.xml`.
+
+Tres reglas al tocar esto:
+
+1. **`.eq("published", true)` no se quita nunca.** Es lo único que separa un borrador de una publicación, y saltando RLS ya no hay red debajo.
+2. **En los listados no se pide `content`.** Solo título, extracto, portada y categoría — lo que ya se enseña. El RSS tampoco lleva cuerpo, por eso anunciar una entrada premium ahí no abre nada.
+3. **En `/post/[slug]` el contenido se retira en cuanto se sabe que no toca** (`if (!hasAccess) post.content = null`), antes de renderizar. Al ser un componente de servidor, lo que no se pinta no llega al navegador.
+
+**Cómo comprobar que sigue bien.** Crear una entrada con `is_premium: true, published: true`, pedir su URL sin sesión y verificar: **200**, con título y extracto, **sin** el cuerpo; y que aparece en `/articulos`, la portada, el sitemap y el RSS. Borrarla después.
+
 # El marco legal es RUMANO — no vuelvas a escribir normativa española
 
 Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa española porque apunta a público español, pero **el titular reside y opera desde Rumanía**, así que las leyes nacionales aplicables son las rumanas:

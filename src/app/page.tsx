@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClientOpcional } from "@/lib/supabase/admin";
 import { ArrowRight, BookA, Radio, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
@@ -52,8 +53,13 @@ export default async function HomePage() {
   // deliberately NOT here: it hits youtube.com directly (slow/unreliable),
   // so it's fetched separately inside a <Suspense> boundary below to avoid
   // blocking the rest of the page on it.
+  // Las entradas premium las esconde la policy de `posts`. Sin este lector
+  // desaparecerian del listado en vez de salir con su candado, y nadie sabria
+  // que existen. Aqui no se pide `content`: solo lo que ya se enseña.
+  const lector = createAdminClientOpcional() ?? supabase;
+
   const publicDataPromise = Promise.all([
-    supabase
+    lector
       .from("posts")
       .select("id, title, slug, excerpt, cover_image, youtube_url, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
       .eq("published", true)

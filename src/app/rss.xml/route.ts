@@ -56,7 +56,11 @@ async function fetchPosts(): Promise<FeedPost[]> {
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !anonKey) return [];
 
-  const supabase = createClient(url, anonKey, {
+  // Con la clave de servicio si la hay, para que las entradas premium también
+  // se anuncien en el feed. El RSS **nunca lleva el cuerpo del artículo**: solo
+  // título, extracto y enlace, así que anunciarlas no abre el muro — quien
+  // pinche acabará en la página con el muro puesto.
+  const supabase = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 

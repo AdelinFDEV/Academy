@@ -80,7 +80,13 @@ async function fetchPosts(): Promise<SitemapPost[]> {
   // estáticas y las guías, que es mejor que devolver un 500.
   if (!url || !anonKey) return [];
 
-  const supabase = createClient(url, anonKey, {
+  // Se prefiere la clave de servicio, y no por comodidad: la policy de `posts`
+  // esconde las entradas premium a cualquiera que no lo sea, así que con la
+  // clave anónima **el contenido de pago no entraría nunca en el sitemap** y
+  // Google no llegaría a saber que existe. Aquí solo se piden slug y fechas
+  // —nada de `content`—, y esto sigue sin leer cookies, que es lo que permite
+  // a Next servir el sitemap estático.
+  const supabase = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
