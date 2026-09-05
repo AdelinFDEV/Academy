@@ -91,27 +91,8 @@
   flex-shrink: 0;
 }
 
-.dash-account-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(240, 244, 255, 0.12);
-  background: rgba(240, 244, 255, 0.03);
-  white-space: nowrap;
-  transition: color 0.2s, border-color 0.2s, background 0.2s;
-}
-
-.dash-account-btn:hover {
-  color: var(--text-primary);
-  border-color: rgba(240, 244, 255, 0.25);
-  background: rgba(240, 244, 255, 0.06);
-}
+/* `.dash-account-btn` vivio aqui hasta el 06-09-2026. "Mi cuenta" se movio
+   al menu del nombre en la barra, donde sale en todas las paginas. */
 
 .dash-upgrade-btn {
   flex-shrink: 0;
@@ -4047,7 +4028,6 @@
     align-self: stretch;
   }
 
-  .dash-account-btn,
   .dash-upgrade-btn {
     flex: 1;
     justify-content: center;

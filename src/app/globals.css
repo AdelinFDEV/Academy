@@ -1368,10 +1368,12 @@ html {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--accent-orange-soft) 72%, transparent);
-  /* 26ch y no 20: la unidad `ch` mide el ancho del cero, y en mayúsculas cada
-     letra ocupa bastante más. Con 20 se comía la cola de «EL MERCADO NO
-     DUERME». Las frases están escogidas cortas, así que no llega a recortar. */
-  max-width: 26ch;
+  /* Tope amplio a propósito: es una red, no el recorte de diseño. Las frases
+     son de dos palabras (ver `NavSaludo.tsx`) y no deberían llegar aquí nunca;
+     esto solo evita que una frase larga añadida sin pensar rompa la barra.
+     Ojo: `ch` mide el ancho del cero y las MAYÚSCULAS ocupan bastante más, así
+     que el número engaña — con 26ch aún se cortaban frases de 20 letras. */
+  max-width: 34ch;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1382,7 +1384,8 @@ html {
   font-weight: 650;
   letter-spacing: -0.01em;
   color: rgba(240, 244, 255, 0.95);
-  max-width: 11ch;
+  /* 14ch y no 11: un nombre de pila como "Maximiliano" se cortaba. */
+  max-width: 14ch;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -24,18 +24,22 @@ import LogoutButton from "@/components/LogoutButton";
  * Se elige uno al azar en cada carga: la barra es lo que más veces ve alguien
  * que entra a diario, y un texto fijo deja de leerse a la tercera visita.
  *
- * Regla al añadir frases: **nada que pueda ser falso**. Se habla de la hora, no
- * del estado del mercado — «Wall Street abierto» a las 13:00 de España sería
- * mentira la mitad de los días, y una barra que miente en algo pequeño resta
- * credibilidad a lo que dice en lo grande. Y cortas: la línea es diminuta y por
- * encima de unos 20 caracteres se recorta.
+ * Dos reglas al añadir frases:
+ *
+ * 1. **DOS PALABRAS.** El hueco es una línea diminuta en mayúsculas, y las
+ *    mayúsculas ocupan mucho más de lo que parece. «El mercado no duerme» y
+ *    «Cierra el portátil» se cortaban a media palabra, que queda peor que no
+ *    poner nada.
+ * 2. **Nada que pueda ser falso.** Se habla de la hora, no del estado del
+ *    mercado: «Wall Street abierto» a las 13:00 de España sería mentira la
+ *    mitad de los días, y una barra que miente en algo pequeño resta
+ *    credibilidad a lo que dice en lo grande.
  */
 const SALUDOS: Record<string, string[]> = {
-  // «El mercado no duerme» decía lo mismo y se recortaba en la barra.
-  madrugada: ["Cripto no duerme", "Velas de madrugada", "Turno de Asia", "Modo insomnio"],
-  manana: ["Buenos días", "Café y velas", "Arranca el día", "A por el día"],
-  tarde: ["Buenas tardes", "Sesión en marcha", "Al lío", "Sigue el gráfico"],
-  noche: ["Buenas noches", "HODL y a dormir", "Cierra el portátil", "Hasta mañana"],
+  madrugada: ["Modo insomnio", "Velas nocturnas", "Cripto 24/7", "Aún despierto"],
+  manana: ["Buenos días", "Día nuevo", "Modo trader", "Vela verde"],
+  tarde: ["Buenas tardes", "Al lío", "Sesión activa", "Modo gráfico"],
+  noche: ["Buenas noches", "Modo HODL", "Hasta mañana", "Cierra gráficos"],
 };
 
 function franjaDe(hora: number): string {

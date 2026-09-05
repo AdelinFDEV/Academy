@@ -3,7 +3,7 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, User, Lock } from "lucide-react";
+import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, Lock } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardAtajos from "@/components/DashboardAtajos";
@@ -149,9 +149,10 @@ export default async function DashboardPage() {
           </div>
         </div>
         <div className="dash-header-actions">
-          <Link href="/cuenta" className="dash-account-btn">
-            <User size={15} /> Mi cuenta
-          </Link>
+          {/* «Mi cuenta» estuvo aquí hasta el 06-09-2026. Se quitó al meterlo en
+              el menú del nombre, en la barra: ahí está en TODAS las páginas, y
+              tenerlo dos veces en la misma pantalla solo le restaba peso a
+              «Hazte Premium», que es lo único que queda y lo que interesa. */}
           {!isPremium && (
             <Link href="/premium" className="dash-upgrade-btn">Hazte Premium →</Link>
           )}
