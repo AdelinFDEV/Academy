@@ -38,9 +38,9 @@ export default function SiteNav({ user, isPremium, userName, isAdmin }: Props) {
             vista. En pantallas estrechas se queda solo el icono, para no
             empujar al menú fuera de la barra. */}
         {user && (
-          <Link href="/dashboard" className="blog-nav-panel" title="Ir a mi panel">
+          <Link href="/dashboard" className="blog-nav-panel" title="Ir a mi dashboard">
             <LayoutDashboard size={15} strokeWidth={2.1} aria-hidden="true" />
-            <span>Mi panel</span>
+            <span>Mi dashboard</span>
           </Link>
         )}
         <BlogMobileMenu user={user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
