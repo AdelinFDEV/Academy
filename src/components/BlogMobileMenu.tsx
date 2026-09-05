@@ -108,11 +108,19 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <BookOpen size={15} aria-hidden="true" />
                 Diccionario Cripto
               </Link>
-              <div className="blog-mobile-tool-link blog-mobile-tool-soon">
+              {/* Estuvo como «Pronto» y en un <div> sin enlace hasta el
+                  06-09-2026, cuando ya llevaba semanas emitiendo tres sesiones
+                  por semana. `destino` manda a la sala a los premium y a la
+                  ficha pública al resto, que explica qué es y cuándo se emite. */}
+              <Link
+                href={destino("/trading-en-directo")}
+                className={`blog-mobile-tool-link${a("/trading-en-directo")}`}
+                onClick={close}
+              >
                 <Radio size={15} aria-hidden="true" />
                 Trading en Directo
-                <span className="mobile-tool-soon-badge">Pronto</span>
-              </div>
+                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
+              </Link>
               <Link href="/guias" className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/guias")}`} onClick={close}>
                 <LayoutGrid size={15} aria-hidden="true" />
                 Guías Interactivas

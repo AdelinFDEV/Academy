@@ -166,7 +166,11 @@ export default function RadarWidgetsHome() {
           </span>
           <h2 className="rdh-title">El mercado, ahora mismo</h2>
         </div>
-        <Link href="/herramientas/radar" className="rdh-cta">
+        {/* A la ficha, no a la herramienta. Estos widgets salen en la portada,
+            que ve sobre todo gente sin cuenta: `/herramientas/radar` les habría
+            rebotado a login justo después de enseñarles datos en vivo. La ficha
+            explica qué es y, si ya eres premium, su botón abre el radar. */}
+        <Link href="/radar-diario" className="rdh-cta">
           Ver el Radar Diario
           <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
         </Link>

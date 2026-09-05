@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 // Los iconos ya no se eligen aquí: cada herramienta trae el suyo del catálogo.
 import ToolAccessModal, { type ToolModalReason } from "@/components/ToolAccessModal";
-import { HERRAMIENTAS } from "@/lib/herramientas";
+import { HERRAMIENTAS, destinoPorRuta, sinSalida } from "@/lib/herramientas";
 
 interface Props {
   isLoggedIn: boolean;
@@ -18,6 +18,8 @@ interface ToolDef {
   requiresLogin: boolean;
   requiresPremium: boolean;
   soon?: boolean;
+  /** No hay ficha pública ni acceso: pulsar no lleva a ninguna parte. */
+  bloqueada: boolean;
 }
 
 export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
@@ -41,18 +43,28 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
    * esta lista siguió pidiendo registro con su copia propia y nadie podía
    * llegar a la página, que sí estaba liberada.
    */
-  const tools: ToolDef[] = HERRAMIENTAS.map((h) => ({
-    label: h.label,
-    // Los atajos llevan a la herramienta en sí; el destino público lo decide
-    // `destinoPorRuta` al pulsar, según quién esté mirando.
-    href: h.premiumHref ?? h.href ?? "/herramientas",
-    Icon: h.icon,
-    requiresLogin: h.acceso === "cuenta" || h.acceso === "premium",
-    requiresPremium: h.acceso === "premium",
-    soon: h.acceso === "proximamente",
-  }));
+  const tools: ToolDef[] = HERRAMIENTAS.map((h) => {
+    const ruta = h.premiumHref ?? h.href ?? "/herramientas";
+    return {
+      label: h.label,
+      // El destino ya viene resuelto para quien mira: la herramienta si tiene
+      // acceso, y si no su ficha pública. Antes el enlace apuntaba siempre a la
+      // herramienta y el clic se interceptaba con un modal, así que a las
+      // fichas no llegaba nadie desde aquí.
+      href: destinoPorRuta(ruta, { logueado: isLoggedIn, premium: isPremium }),
+      Icon: h.icon,
+      requiresLogin: h.acceso === "cuenta" || h.acceso === "premium",
+      requiresPremium: h.acceso === "premium",
+      soon: h.acceso === "proximamente",
+      // Con ficha pública no hay callejón sin salida que avisar.
+      bloqueada: sinSalida(h, { logueado: isLoggedIn, premium: isPremium }),
+    };
+  });
 
   function handleToolClick(tool: ToolDef, e: React.MouseEvent) {
+    // El modal solo tiene sentido cuando de verdad no hay a dónde ir. Si la
+    // herramienta tiene ficha, el enlace ya lleva allí y cortarlo sería peor.
+    if (!tool.bloqueada) return;
     if (!isLoggedIn && tool.requiresLogin) {
       e.preventDefault();
       setModal({ open: true, reason: "login", toolName: tool.label });
@@ -70,11 +82,9 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
     return null;
   }
 
-  function isLocked(tool: ToolDef) {
-    if (!isLoggedIn && tool.requiresLogin) return true;
-    if (isLoggedIn && tool.requiresPremium && !isPremium) return true;
-    return false;
-  }
+  // Apagar el enlace dice "no puedes pasar". Con ficha pública sí se puede,
+  // así que solo se apaga lo que de verdad no lleva a ningún sitio.
+  const isLocked = (tool: ToolDef) => tool.bloqueada;
 
   return (
     <>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClientOpcional } from "@/lib/supabase/admin";
+import { destinoPorRuta } from "@/lib/herramientas";
 import { ArrowRight, BookA, Radio, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
@@ -291,11 +292,17 @@ export default async function HomePage() {
                 <BookA size={16} className="sidebar-tool-icon" />
                 <span className="sidebar-tool-label">Diccionario Cripto</span>
               </Link>
-              <div className="sidebar-tool-link sidebar-tool-link--soon">
+              {/* Decía «Pronto» y no era un enlace, con las sesiones ya en
+                  marcha desde hacía semanas. Los premium van a la sala; el
+                  resto, a la ficha que explica qué es y cuándo se emite. */}
+              <Link
+                href={destinoPorRuta("/trading-en-directo", { logueado: !!user, premium: isPremium })}
+                className="sidebar-tool-link sidebar-tool-link--premium"
+              >
                 <Radio size={16} className="sidebar-tool-icon" />
                 <span className="sidebar-tool-label">Trading en Directo</span>
-                <span className="sidebar-tool-badge--soon">Pronto</span>
-              </div>
+                {!isPremium && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
+              </Link>
               <Link href="/guias" className="sidebar-tool-link sidebar-tool-link--gold">
                 <Route size={16} className="sidebar-tool-icon" />
                 <span className="sidebar-tool-label">Guías Interactivas</span>

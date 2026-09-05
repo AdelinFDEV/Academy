@@ -5,7 +5,7 @@ import { ArrowRight, Lock } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { HERRAMIENTAS, ETIQUETA_ACCESO, detalleDe, type Herramienta } from "@/lib/herramientas";
+import { HERRAMIENTAS, ETIQUETA_ACCESO, detalleDe, sinSalida, type Herramienta } from "@/lib/herramientas";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import "./detalle.css";
 import "./herramientas.css";
@@ -72,7 +72,7 @@ const GRUPOS: { num: string; titulo: string; sub: string; ids: string[] }[] = [
 const FAQ = [
   {
     q: "¿Cuáles puedo usar sin pagar?",
-    a: "La calculadora de predicción de precio se usa sin registrarse siquiera. Con una cuenta gratuita entran además la calculadora de riesgo, la watchlist y el calendario de liberaciones con dos tokens completos. El resto va en Premium.",
+    a: "La calculadora de predicción de precio se usa sin registrarse siquiera. Con una cuenta gratuita entran además la calculadora de riesgo y la watchlist. El resto va en Premium, y de todas ellas puedes leer antes qué hacen en su propia página de detalles.",
   },
   {
     q: "¿Hay que comprar cada herramienta por separado?",
@@ -136,6 +136,12 @@ export default async function HerramientasPage() {
    *
    * Nunca a una ruta que vaya a rebotarle: eso es justo lo que hacía que
    * Google no indexara nada de aquí.
+   */
+  /*
+   * Aquí el botón principal NO usa `destinoPorRuta`, y es a propósito: en esta
+   * página el botón fantasma «Ver detalles» ya lleva a la ficha, así que mandar
+   * los dos al mismo sitio dejaría la tarjeta sin acción de compra. En los
+   * menús, donde no hay segundo botón, sí manda la ficha.
    */
   function destino(h: Herramienta): string {
     if (h.acceso === "gratis") return h.href ?? "/herramientas";
@@ -246,9 +252,11 @@ export default async function HerramientasPage() {
                 const h = HERRAMIENTAS.find((x) => x.id === id);
                 if (!h) return null;
                 const Icon = h.icon;
-                const bloqueada =
-                  (h.acceso === "premium" && !isPremium) ||
-                  (h.acceso === "cuenta" && !user);
+                // El candado solo donde de verdad no se puede pasar. Una
+                // herramienta con ficha pública siempre tiene a dónde llevarte,
+                // aunque sea de pago: ponerle candado la hace parecer un muro
+                // cerrado cuando es una puerta con folleto.
+                const bloqueada = sinSalida(h, { logueado: !!user, premium: isPremium });
 
                 return (
                   <li

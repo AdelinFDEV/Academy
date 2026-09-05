@@ -25,7 +25,7 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
   { label: "Diario de Trading con 10 estadísticas", free: false, premium: true },
   { label: "Liberaciones de tokens en tiempo real", free: false, premium: true },
   { label: "Portfolio Adelin en tiempo real", free: false, premium: true },
-  { label: "Trading en directo (próximamente)", free: false, premium: true },
+  { label: "Trading en directo, 3 sesiones por semana", free: false, premium: true },
   { label: "Canal privado de Telegram", free: false, premium: true },
   { label: "Hablar conmigo por Telegram", free: false, premium: true },
   { label: "Soporte prioritario", free: false, premium: true },

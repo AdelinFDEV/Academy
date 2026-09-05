@@ -97,7 +97,10 @@ export default async function DashboardPage() {
       label: "Educación",
       tools: [
         { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
-        { href: "#",         icon: "radio",         name: "Trading en Directo",   desc: "Futuros de Solana en 5 minutos", locked: false, soon: true  },
+        // Estaba como "soon" y con href "#", ademas de decir solo Solana. Las
+        // sesiones llevan semanas: lunes, miercoles y viernes, y lo que mas se
+        // opera ahora es NASDAQ.
+        { href: "/trading-en-directo", icon: "radio", name: "Trading en Directo",   desc: "NASDAQ, BTC, SOL y XRP · 3 sesiones/semana", locked: false, soon: false },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
       ],
     },

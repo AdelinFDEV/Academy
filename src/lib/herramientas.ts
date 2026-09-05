@@ -288,13 +288,48 @@ export function destinoPorRuta(
   ruta: string,
   { logueado, premium }: { logueado: boolean; premium: boolean },
 ): string {
-  const acceso = accesoPorRuta(ruta);
-  if (!acceso) return ruta;
+  const h = HERRAMIENTAS.find((x) => x.href === ruta || x.premiumHref === ruta);
+  if (!h) return ruta;
 
-  if (acceso === "gratis") return ruta;
-  if (acceso === "cuenta") return logueado ? ruta : "/register";
-  if (acceso === "premium") return premium ? ruta : logueado ? "/premium" : "/register";
+  if (h.acceso === "gratis") return ruta;
+
+  const tieneAcceso =
+    h.acceso === "cuenta" ? logueado : h.acceso === "premium" ? premium : false;
+  if (tieneAcceso) return ruta;
+
+  /*
+   * Sin acceso, y aquí está el cambio del 06-09-2026: si la herramienta tiene
+   * ficha pública, se va a la ficha.
+   *
+   * Antes se iba directo a `/premium` o a `/register`, que es pedir la cartera
+   * a alguien que todavía no sabe qué le estás vendiendo. Y dejaba las cinco
+   * fichas que existen —portfolio, diario, directo, radar y liberaciones—
+   * inalcanzables desde los menús, que es justo donde la gente pulsa.
+   *
+   * La ficha explica la herramienta y ya lleva sus propios botones de «Ver qué
+   * incluye Premium» y «Ya tengo cuenta», así que no se pierde la conversión:
+   * se retrasa un paso y se gana el argumento.
+   */
+  if (h.paginaPublica) return h.paginaPublica;
+
+  if (h.acceso === "cuenta") return "/register";
+  if (h.acceso === "premium") return logueado ? "/premium" : "/register";
   return ruta; // "proximamente": no debería enlazarse, pero no rompemos nada
+}
+
+/**
+ * ¿Es un callejón sin salida para quien mira?
+ *
+ * Una herramienta con ficha pública **nunca lo es**, aunque sea de pago: se
+ * puede entrar a leer qué hace. Por eso los menús no le ponen candado ni la
+ * apagan — el candado dice «no puedes pasar», y sí se puede.
+ */
+export function sinSalida(h: Herramienta, { logueado, premium }: { logueado: boolean; premium: boolean }): boolean {
+  if (h.paginaPublica) return false;
+  if (h.acceso === "gratis") return false;
+  if (h.acceso === "cuenta") return !logueado;
+  if (h.acceso === "premium") return !premium;
+  return true;
 }
 
 /** Texto que se le enseña a quien todavía no tiene acceso. */
