@@ -1,3 +1,9 @@
+-- ⚠️  OBSOLETO EN PARTE (06-09-2026): la rutina diaria del admin se retiró de
+--     la web y del bot, así que la tabla `rutina_diaria` que se crea aquí ya no
+--     la usa nadie. El archivo se conserva porque también crea `bot_ajustes`
+--     (el interruptor de /stop y /arrancar) y `noticia_votos`, que siguen vivas.
+--     Para retirar la tabla vieja: scripts/drop-rutina-diaria.sql
+
 -- Rutina diaria del admin + interruptor de avisos del bot.
 --
 -- Ejecutar en Supabase → SQL Editor. Es idempotente: se puede lanzar dos

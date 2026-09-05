@@ -94,7 +94,7 @@ export function getLogChatId(): string | null {
  *
  * Es distinto de "ser admin" a propósito: el rol se puede dar a más gente el
  * día de mañana (soporte, un socio), y eso son privilegios de gestión —
- * publicar noticias, ver la rutina. Esto es otra cosa: comandos que solo
+ * publicar noticias, publicar un vídeo. Esto es otra cosa: comandos que solo
  * tienen sentido para quien mantiene el código, y que no deberían aparecer ni
  * insinuarse a nadie más, admin o no.
  *
@@ -424,7 +424,7 @@ const CLAVE_PAUSA = "avisos_pausados";
  * ¿Están los avisos automáticos en pausa?
  *
  * Solo afecta a lo que el bot manda por su cuenta —altas en los canales,
- * propuestas de noticias, la rutina diaria—. NUNCA silencia los mensajes que
+ * propuestas de noticias, entradas y vídeos nuevos—. NUNCA silencia los que
  * escribe una persona: el relé de soporte no pasa por aquí a propósito, porque
  * perder el mensaje de un cliente es mucho peor que recibir un aviso de más.
  *

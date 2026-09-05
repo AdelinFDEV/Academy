@@ -23,7 +23,6 @@ import {
   tienePremium,
   type PerfilBot,
 } from "@/lib/bot-menu";
-import { alternarTarea, enviarRutina, esTarea } from "@/lib/rutina";
 import { publicarVideoConcreto, videoYaAnunciado } from "@/lib/announce";
 import { getLatestVideos } from "@/lib/youtube";
 import {
@@ -102,7 +101,7 @@ const LIMITE_MENSAJES_HORA = 10;
 /** Comandos reservados al admin. Al añadir uno nuevo, basta con listarlo aquí
  *  para que quede protegido: a quien no sea admin se le responde con el menú
  *  normal, sin darle ninguna pista de que el comando existe. */
-const COMANDOS_DE_ADMIN = ["/noticias", "/rutina", "/stop", "/arrancar", "/video"];
+const COMANDOS_DE_ADMIN = ["/noticias", "/stop", "/arrancar", "/video"];
 
 /**
  * ¿Es admin quien escribe?
@@ -262,9 +261,11 @@ async function handleCallback(admin: Admin, query: CallbackQuery) {
     return;
   }
 
-  // Botones de la rutina diaria: solo del admin.
+  // Botones del interruptor de avisos: solo del admin. El prefijo sigue siendo
+  // `r:` porque los botones ya enviados viven en los chats de quien los
+  // recibió; cambiarlo los dejaría mudos.
   if (data.startsWith("r:")) {
-    await handleRutinaCallback(admin, query, data);
+    await handleAvisosCallback(admin, query, data);
     return;
   }
 
@@ -277,7 +278,13 @@ async function handleCallback(admin: Admin, query: CallbackQuery) {
 }
 
 /**
- * Botones de la rutina diaria (marcar tareas, parar y arrancar los avisos).
+ * Botones del interruptor de avisos: pararlos y volver a arrancarlos.
+ *
+ * Antes esto atendía también a la rutina diaria de las 21:00 —marcar tareas y
+ * pedir el resumen del día—, retirada el 06-09-2026 a petición del admin.
+ * Quedan los botones `r:stop` y `r:go`, que son de otra cosa: el volumen del
+ * bot. Los `r:hoy` y `r:t:…` que sigan vivos en chats antiguos ya no hacen
+ * nada, que es lo que se busca.
  *
  * PRIMERA LÍNEA DE SEGURIDAD: el rol se comprueba en la base de datos contra
  * el id de quien pulsa, que lo pone Telegram y no se puede falsificar desde el
@@ -288,31 +295,13 @@ async function handleCallback(admin: Admin, query: CallbackQuery) {
  * botones de acción al reenviar un mensaje), pero eso es un detalle de la
  * plataforma y no algo en lo que se pueda confiar.
  */
-async function handleRutinaCallback(admin: Admin, query: CallbackQuery, data: string) {
+async function handleAvisosCallback(admin: Admin, query: CallbackQuery, data: string) {
   if (!(await esAdmin(admin, query.from.id))) return;
 
   const chatId = query.message?.chat.id ?? query.from.id;
 
   if (data === "r:stop" || data === "r:go") {
     await cambiarAvisos(admin, chatId, data === "r:stop");
-    return;
-  }
-
-  if (data === "r:hoy") {
-    // Siempre al privado del admin (destinoRutina), nunca al chat desde el que
-    // se pulsó: la rutina es personal y no debe acabar en un grupo por error.
-    await enviarRutina(admin, { forzar: true });
-    return;
-  }
-
-  // Formato fijo: r:t:AAAA-MM-DD:tarea. Lo que no encaje se ignora, y la tarea
-  // se valida además contra la lista cerrada de esTarea().
-  const marca = data.match(/^r:t:(\d{4}-\d{2}-\d{2}):([a-z]+)$/);
-  if (!marca || !esTarea(marca[2])) return;
-
-  const resultado = await alternarTarea(admin, marca[1], marca[2], chatId);
-  if (!resultado.ok && resultado.aviso) {
-    await sendTelegramMessage(chatId, `⚠️ ${resultado.aviso}`);
   }
 }
 
@@ -334,8 +323,7 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
       "🔕 Avisos en pausa\n\n" +
         "A partir de ahora no te mando nada por mi cuenta:\n\n" +
         "🔇 Altas y bajas en los canales\n" +
-        "🔇 Propuestas de noticias\n" +
-        "🔇 La rutina diaria de las 21:00\n\n" +
+        "🔇 Propuestas de noticias\n\n" +
         "Lo que SÍ te sigue llegando:\n\n" +
         "💬 Los mensajes de los usuarios Premium — eso no lo paro nunca, no quiero " +
         "que pierdas a nadie por un interruptor.\n\n" +
@@ -352,13 +340,11 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
     "🔔 Avisos activados\n\n" +
       "Ya te vuelvo a contar todo:\n\n" +
       "🔊 Altas y bajas en los canales\n" +
-      "🔊 Propuestas de noticias\n" +
-      "🔊 La rutina diaria de las 21:00\n\n" +
+      "🔊 Propuestas de noticias\n\n" +
       "Lo que pasó mientras estabas en silencio no se recupera — no te lo voy a " +
       "amontonar de golpe. Empezamos desde ahora.\n\n" +
       "Para volver a pararlos, /stop 👇",
     [
-      [{ text: "📋 Ver mi rutina de hoy", data: "r:hoy" }],
       [{ text: "🔕 Parar los avisos", data: "r:stop" }],
     ]
   );
@@ -730,7 +716,6 @@ async function handleGombos(chatId: number) {
   const descripciones: Record<string, string> = {
     "/noticias": "Buscar noticias nuevas y proponerlas",
     "/video": "Ver el último vídeo de YouTube y publicarlo",
-    "/rutina": "Tu rutina de hoy, fuera de las 21:00",
     "/stop": "Parar todos los avisos automáticos",
     "/arrancar": "Reanudarlos",
   };
@@ -1326,14 +1311,6 @@ export async function POST(request: NextRequest) {
         }
       } else if (comando === "/video") {
         await handleVideoUltimo(admin, message.chat.id);
-      } else if (comando === "/rutina") {
-        const resultado = await enviarRutina(admin, { forzar: true });
-        if (!resultado.enviada) {
-          await sendTelegramMessage(
-            message.chat.id,
-            `⚠️ No he podido montar la rutina.\n\n${resultado.motivo ?? "Error desconocido"}`
-          );
-        }
       } else if (comando === "/stop" || comando === "/arrancar") {
         await cambiarAvisos(admin, message.chat.id, comando === "/stop");
       }

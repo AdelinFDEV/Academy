@@ -189,7 +189,6 @@ if (process.argv.includes("--set-webhook")) {
           commands: [
             { command: "noticias", description: "Buscar noticias nuevas" },
             { command: "video", description: "Último vídeo de YouTube" },
-            { command: "rutina", description: "Mi rutina de hoy" },
             { command: "stop", description: "Parar los avisos" },
             { command: "arrancar", description: "Reanudar los avisos" },
           ],
@@ -416,7 +415,7 @@ for (const [nombre, id] of [["free", env.TELEGRAM_FREE_CHANNEL_ID || "-100378510
   }
 }
 
-// — 8. La rutina diaria y el interruptor de avisos —
+// — 8. El interruptor de avisos —
 //
 // Merece una comprobación propia porque su fallo es SILENCIOSO: si el
 // interruptor está en pausa (se pulsó /stop y se olvidó), el bot deja de
@@ -425,7 +424,7 @@ try {
   const url = env.NEXT_PUBLIC_SUPABASE_URL;
   const key = env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) {
-    aviso("No se pudo comprobar la rutina diaria", "sin credenciales de Supabase");
+    aviso("No se pudo comprobar el interruptor de avisos", "sin credenciales de Supabase");
   } else {
     const cab = { apikey: key, Authorization: `Bearer ${key}` };
 
@@ -444,18 +443,9 @@ try {
       }
     }
 
-    const resRutina = await fetch(`${url}/rest/v1/rutina_diaria?select=fecha&order=fecha.desc&limit=1`, {
-      headers: cab,
-    });
-    if (!resRutina.ok) {
-      mal("Falta la tabla rutina_diaria", "ejecuta scripts/create-rutina-diaria.sql");
-    } else {
-      const filas = await resRutina.json();
-      ok("Rutina diaria lista", filas[0]?.fecha ? `última: ${filas[0].fecha}` : "todavía sin enviar ninguna");
-    }
   }
 } catch (err) {
-  mal("No se pudo comprobar la rutina diaria", err.message);
+  mal("No se pudo comprobar el interruptor de avisos", err.message);
 }
 
 console.log(`\n${GRIS}Nota: que el enlace de invitación exija aprobación no se puede consultar por API.${FIN}`);
