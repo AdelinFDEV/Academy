@@ -1279,6 +1279,66 @@ html {
   gap: 0.55rem;
 }
 
+/* ── Saludo con el nombre de quien ha iniciado sesión ───────────────────────
+   Solo en pantallas anchas: por debajo la barra ya va justa entre el buscador,
+   el botón del panel y el menú, y el nombre ya sale dentro del desplegable. */
+.nav-saludo {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 0.7rem;
+  margin-right: 0.15rem;
+  border-right: 1px solid rgba(240, 244, 255, 0.1);
+  cursor: default;
+  user-select: none;
+}
+
+@media (min-width: 1024px) {
+  .nav-saludo { display: inline-flex; }
+}
+
+/* La inicial, en una moneda naranja. Es lo que hace que el saludo se lea como
+   «tu sitio» y no como un texto suelto en una barra. */
+.nav-saludo-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 27px;
+  height: 27px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--accent-orange-soft) 0%, var(--accent-orange) 100%);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #10203a;
+  box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.28), 0 3px 10px var(--accent-orange-glow);
+}
+
+.nav-saludo-texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.nav-saludo-hola {
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.4);
+}
+
+.nav-saludo-nombre {
+  font-size: 0.85rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: rgba(240, 244, 255, 0.95);
+  max-width: 11ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Botón de vuelta al panel. Presente en TODAS las páginas para quien tiene
    sesión: antes solo se llegaba abriendo el desplegable, que es dos clics y
    además hay que saber que está ahí. */
