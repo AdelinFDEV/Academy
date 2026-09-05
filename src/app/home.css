@@ -317,10 +317,13 @@
 
 .hero-premium-band {
   position: relative;
-  display: flex;
+  /* Un tercio para el acceso a las herramientas y DOS TERCIOS para la oferta
+     Premium, que es lo que convierte y lo que necesita sitio: con la columna
+     estrecha su texto se partía en cuatro líneas. */
+  display: grid;
+  grid-template-columns: 1fr auto 2fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.75rem;
+  gap: 1.6rem;
   width: 100%;
   background: linear-gradient(135deg, rgba(230, 180, 85, 0.14) 0%, rgba(9, 18, 36, 0.9) 55%, rgba(230, 180, 85, 0.08) 100%);
   border: 1.5px solid rgba(230, 180, 85, 0.4);
@@ -1300,105 +1303,20 @@
    y suscripción Premium, cada una con su botón.
    ═══════════════════════════════════════════════════════════ */
 
-.hero-duo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.1rem;
-  margin-bottom: 1rem;
-}
 
-.hero-duo-card {
-  --duo-color: #7ea6ff;
-
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  padding: 1.6rem 1.65rem 1.5rem;
-  border: 1px solid color-mix(in srgb, var(--duo-color) 24%, transparent);
-  border-radius: 22px;
-  background:
-    radial-gradient(120% 100% at 90% -10%, color-mix(in srgb, var(--duo-color) 13%, transparent) 0%, transparent 55%),
-    linear-gradient(165deg, color-mix(in srgb, var(--duo-color) 6%, var(--bg-card)) 0%, var(--bg-card-alt) 60%);
-  text-decoration: none;
-  box-shadow:
-    var(--card-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
-}
 
 /* Filo superior teñido: marca la identidad de cada tarjeta desde el
    primer píxel, sin necesidad de más color en el cuerpo. */
-.hero-duo-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 12%;
-  right: 12%;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    color-mix(in srgb, var(--duo-color) 75%, transparent),
-    transparent);
-  opacity: 0.7;
-  transition: opacity 0.3s ease, left 0.45s ease, right 0.45s ease;
-  pointer-events: none;
-}
 
 /* Barrido de luz al pasar el ratón */
-.hero-duo-card::after {
-  content: "";
-  position: absolute;
-  top: -60%;
-  bottom: -60%;
-  left: -35%;
-  width: 28%;
-  background: linear-gradient(
-    100deg,
-    transparent,
-    rgba(255, 255, 255, 0.07),
-    transparent);
-  transform: skewX(-14deg);
-  opacity: 0;
-  pointer-events: none;
-}
 
 /* Premium es la conversión principal del hero: mismo formato que Asesoría,
    pero con algo más de peso — borde y sombra propia — para que la mirada
    caiga primero ahí sin romper la simetría del dúo. */
-.hero-duo-card--prem {
-  --duo-color: #e6b455;
 
-  border-color: color-mix(in srgb, var(--duo-color) 36%, transparent);
-  box-shadow:
-    var(--card-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 18px 44px -30px color-mix(in srgb, var(--duo-color) 60%, transparent);
-}
 
-.hero-duo-card--prem::before {
-  opacity: 1;
-}
 
-.hero-duo-card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--duo-color) 52%, transparent);
-  box-shadow:
-    var(--card-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),
-    0 24px 56px -26px color-mix(in srgb, var(--duo-color) 68%, transparent);
-}
 
-.hero-duo-card:hover::before {
-  left: 0;
-  right: 0;
-  opacity: 1;
-}
-
-.hero-duo-card:hover::after {
-  animation: heroDuoSheen 0.85s ease-out;
-}
 
 @keyframes heroDuoSheen {
   from { left: -35%; opacity: 0; }
@@ -1407,247 +1325,43 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-duo-card:hover {
-    transform: none;
-  }
 
-  .hero-duo-card:hover::after {
-    animation: none;
-  }
 }
 
-.hero-duo-glow {
-  position: absolute;
-  top: -60%;
-  right: -12%;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--duo-color) 20%, transparent) 0%, transparent 66%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
 
-.hero-duo-card:hover .hero-duo-glow {
-  opacity: 1;
-}
 
-.hero-duo-top {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
 
 /* Regla que continúa hasta el borde tras el eyebrow: aire estructurado
    en lugar de un hueco vacío a la derecha. */
-.hero-duo-top::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--duo-color) 30%, transparent),
-    transparent);
-}
 
-.hero-duo-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background:
-    linear-gradient(150deg,
-      color-mix(in srgb, var(--duo-color) 24%, transparent),
-      color-mix(in srgb, var(--duo-color) 9%, transparent));
-  color: var(--duo-color);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--duo-color) 34%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
-}
 
-.hero-duo-card:hover .hero-duo-icon {
-  transform: translateY(-1px) scale(1.04);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--duo-color) 50%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    0 8px 22px -12px color-mix(in srgb, var(--duo-color) 75%, transparent);
-}
 
-.hero-duo-eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.67rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--duo-color);
-  white-space: nowrap;
-}
 
-.hero-duo-title {
-  margin: 1rem 0 0;
-  font-family: var(--font-display);
-  font-size: 1.24rem;
-  font-weight: 700;
-  line-height: 1.28;
-  letter-spacing: -0.015em;
-  color: var(--text-primary);
-  text-wrap: balance;
-}
 
-.hero-duo-desc {
-  margin: 0.5rem 0 1.35rem;
-  font-size: 0.855rem;
-  line-height: 1.6;
-  color: var(--text-muted);
-  text-wrap: pretty;
-}
 
-.hero-duo-foot {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: auto;
-  padding-top: 1.15rem;
-}
 
 /* Separador sutil: el precio y el botón forman su propia banda */
-.hero-duo-foot::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--duo-color) 22%, transparent),
-    rgba(255, 255, 255, 0.05) 55%,
-    transparent);
-}
 
-.hero-duo-price-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-width: 0;
-}
 
-.hero-duo-price {
-  display: flex;
-  align-items: baseline;
-  gap: 0.35rem;
-  line-height: 1;
-}
 
 /* Precio anterior tachado — el tachón va con el color de la tarjeta para
    que se lea como oferta y no como una errata. */
 /* Letra pequeña honesta: duración de la sesión / condiciones */
-.hero-duo-note {
-  font-size: 0.7rem;
-  line-height: 1.35;
-  letter-spacing: 0.01em;
-  color: color-mix(in srgb, var(--text-muted) 78%, transparent);
-}
 
 /* "desde" (precede al importe) va en versalitas; "/mes" (lo sigue) no */
-.hero-duo-price em {
-  font-size: 0.66rem;
-  font-style: normal;
-  font-weight: 600;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--text-muted) 88%, transparent);
-}
 
-.hero-duo-price strong + em {
-  font-size: 0.78rem;
-  letter-spacing: 0;
-  text-transform: none;
-}
 
-.hero-duo-price strong {
-  font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-}
 
 /* Botón sólido del color identitario de cada tarjeta */
-.hero-duo-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.72rem 1.25rem;
-  border-radius: 13px;
-  background: linear-gradient(135deg, var(--duo-color), color-mix(in srgb, var(--duo-color) 65%, #ffffff));
-  color: #0a1628;
-  font-size: 0.88rem;
-  font-weight: 800;
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 10px 26px -12px color-mix(in srgb, var(--duo-color) 80%, transparent);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
 
-.hero-duo-btn svg {
-  transition: transform 0.25s ease;
-}
 
-.hero-duo-card:hover .hero-duo-btn {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
-    0 0 0 4px color-mix(in srgb, var(--duo-color) 18%, transparent),
-    0 14px 32px -12px color-mix(in srgb, var(--duo-color) 90%, transparent);
-}
 
-.hero-duo-card:hover .hero-duo-btn svg {
-  transform: translateX(3px);
-}
-
-@media (max-width: 800px) {
-  .hero-duo {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
-  }
-}
 
 @media (max-width: 560px) {
-  .hero-duo-card {
-    padding: 1.35rem 1.3rem 1.25rem;
-  }
 
-  .hero-duo-foot {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.85rem;
-  }
 
-  .hero-duo-price-block {
-    align-items: center;
-    text-align: center;
-  }
 
-  .hero-duo-price {
-    justify-content: center;
-  }
 
-  .hero-duo-btn {
-    justify-content: center;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1659,39 +1373,9 @@
 
 /* Riel editorial sobre el mosaico */
 
-.hero-arsenal-head {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  margin-bottom: 0.95rem;
-}
 
-.hero-arsenal-eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--premium-gold);
-  white-space: nowrap;
-}
 
-.hero-arsenal-rule {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(230, 180, 85, 0.35), rgba(240, 244, 255, 0.06));
-}
 
-.hero-arsenal-count {
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
 
 /* Mosaico */
 
@@ -1707,181 +1391,53 @@
   .hero-arsenal {
     grid-template-columns: 1fr 1fr;
   }
+
+  /* Tres tarjetas en dos columnas dejan una huérfana a media anchura, que se
+     lee como un hueco. La última ocupa la fila entera hasta que caben las tres
+     en línea. */
+  .hero-arsenal > :last-child {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (min-width: 1100px) {
-  .hero-arsenal {
-    grid-template-columns: 1.12fr 1fr 1.02fr;
-    grid-template-areas:
-      "guias pred diario"
-      "liber directo folio";
+  .hero-arsenal > :last-child {
+    grid-column: auto;
   }
+}
 
-  .hero-tool--guias { grid-area: guias; }
-  .hero-tool--prediccion { grid-area: pred; }
-  .hero-tool--diario { grid-area: diario; }
-  .hero-tool--portfolio { grid-area: folio; }
-  .hero-tool--liberaciones { grid-area: liber; }
-  .hero-tool--directo { grid-area: directo; }
+@media (min-width: 1100px) {
+  /* Una sola fila de tres. Antes eran dos filas de tres con áreas nombradas;
+     al quedarse el hero con las tres que convierten suscripción, las áreas
+     sobran: el orden lo marca ya EN_EL_HERO en HeroSpotlight.tsx, y así no hay
+     dos sitios que puedan discrepar sobre en qué posición va cada tarjeta. */
+  .hero-arsenal {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* Tarjeta de herramienta */
 
-.hero-tool {
-  --tool-color: #ffd166;
 
-  position: relative;
-  display: flex;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--tool-color) 22%, transparent);
-  border-radius: 20px;
-  background:
-    radial-gradient(120% 90% at 88% -8%, color-mix(in srgb, var(--tool-color) 11%, transparent) 0%, transparent 55%),
-    linear-gradient(168deg, color-mix(in srgb, var(--tool-color) 4%, var(--bg-card)) 0%, rgba(10, 22, 40, 0.92) 60%);
-  box-shadow: var(--card-shadow);
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
 
-.hero-tool:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--tool-color) 45%, transparent);
-  box-shadow:
-    var(--card-shadow),
-    0 24px 55px -30px color-mix(in srgb, var(--tool-color) 60%, transparent);
-}
 
-.hero-tool--soon:hover {
-  transform: none;
-}
-
-.hero-tool-link {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 1.5rem 1.55rem 1.4rem;
-  text-decoration: none;
-}
 
 /* Foco que sigue al cursor (posición vía --mx/--my desde el componente) */
-.hero-tool-spot {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: radial-gradient(
-    240px circle at var(--mx, 50%) var(--my, 50%),
-    color-mix(in srgb, var(--tool-color) 12%, transparent),
-    transparent 72%
-  );
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
 
-.hero-tool:hover .hero-tool-spot {
-  opacity: 1;
-}
 
 /* Línea de acento superior, firma de cada tarjeta */
-.hero-tool-topline {
-  position: absolute;
-  top: 0;
-  left: 14%;
-  right: 14%;
-  height: 2px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--tool-color), transparent);
-  box-shadow: 0 0 16px 1px color-mix(in srgb, var(--tool-color) 50%, transparent);
-  opacity: 0.85;
-}
 
-.hero-tool-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.8rem;
-  margin-bottom: 1.05rem;
-}
 
-.hero-tool-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
-  background: color-mix(in srgb, var(--tool-color) 14%, transparent);
-  color: var(--tool-color);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--tool-color) 34%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease;
-}
 
-.hero-tool:hover .hero-tool-icon {
-  transform: rotate(-5deg) scale(1.05);
-}
 
-.hero-tool-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: 999px;
-  font-family: var(--font-display);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
 
-.hero-tool-badge--top {
-  border: 1px solid color-mix(in srgb, var(--tool-color) 45%, transparent);
-  background: color-mix(in srgb, var(--tool-color) 14%, transparent);
-  color: var(--tool-color);
-}
 
-.hero-tool-badge--premium {
-  border: 1px solid rgba(230, 180, 85, 0.45);
-  background: rgba(230, 180, 85, 0.12);
-  color: var(--premium-gold);
-}
 
-.hero-tool-badge--soon {
-  border: 1px solid rgba(240, 244, 255, 0.14);
-  background: rgba(240, 244, 255, 0.06);
-  color: var(--text-muted);
-}
 
-.hero-tool-name {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.22rem;
-  font-weight: 700;
-  letter-spacing: -0.012em;
-  color: var(--text-primary);
-}
 
-/* El buque insignia habla más alto */
-.hero-tool--guias .hero-tool-name {
-  font-size: 1.42rem;
-}
-
-.hero-tool-desc {
-  margin: 0.45rem 0 0;
-  max-width: 460px;
-  font-size: 0.86rem;
-  line-height: 1.58;
-  color: var(--text-muted);
-}
 
 /* ── Microvisuales ────────────────────────────────────────── */
 
-.hero-tool-viz {
-  margin-top: 1.05rem;
-}
 
 /* Guías: ruta de nodos hacia el logro */
 .hero-viz-path {
@@ -2291,72 +1847,12 @@
 
 /* ── Nota, chips, colaboración, CTA de tarjeta ────────────── */
 
-.hero-tool-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.45rem;
-  margin: 1rem 0 0;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--tool-color) 28%, transparent);
-  border-radius: 11px;
-  background: color-mix(in srgb, var(--tool-color) 9%, transparent);
-  font-size: 0.76rem;
-  font-weight: 600;
-  line-height: 1.5;
-  color: color-mix(in srgb, var(--tool-color) 80%, #ffffff);
-}
 
-.hero-tool-note svg {
-  flex-shrink: 0;
-  margin-top: 0.14rem;
-}
 
-.hero-tool-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: 1.05rem;
-}
 
-.hero-tool-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.34rem 0.7rem;
-  border: 1px solid rgba(240, 244, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.05);
-  font-size: 0.73rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
 
-.hero-tool-collab {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem;
-  margin-top: 0.9rem;
-  font-size: 0.74rem;
-  color: var(--text-muted);
-}
 
-.hero-tool-collab-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.24rem 0.55rem;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #0a1628;
-  font-family: var(--font-display);
-  font-size: 0.74rem;
-  font-weight: 800;
-}
 
-.hero-tool-collab-badge span {
-  color: #2172E5;
-}
 
 .hero-collab-mark {
   display: inline-flex;
@@ -2368,29 +1864,9 @@
   background: #2172E5;
 }
 
-.hero-tool-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: auto;
-  padding-top: 1.15rem;
-  font-family: var(--font-display);
-  font-size: 0.87rem;
-  font-weight: 700;
-  color: var(--tool-color);
-}
 
-.hero-tool-cta svg {
-  transition: transform 0.25s ease;
-}
 
-.hero-tool:hover .hero-tool-cta svg {
-  transform: translateX(4px);
-}
 
-.hero-tool-cta--soon {
-  color: var(--text-muted);
-}
 
 /* ── Dock de acciones (usuario premium) ───────────────────── */
 
@@ -2609,9 +2085,578 @@
     animation: none;
   }
 
-  .hero-tool:hover,
+  .tool:hover,
   .hero-dock-primary:hover,
   .hero-dock-guide:hover {
     transform: none;
   }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAS TRES PIEZAS — tarjetas del hero
+   ══════════════════════════════════════════════════════════════════════════
+
+   Reconstruidas de cero el 04-09-2026. Lo que tenían antes y por qué se fue:
+
+   · Cabecera "ARSENAL · 08 HERRAMIENTAS" con filete. Etiquetaba el bloque como
+     un catálogo y ponía una cifra que contradecía las tres tarjetas visibles.
+   · Icono grande + pastilla de estado compitiendo arriba. Dos focos de atención
+     antes del nombre del producto.
+   · Cápsulas redondas para cada característica. Baratas de leer: mucha caja,
+     poca sustancia.
+
+   La regla de esta versión: MENOS ELEMENTOS Y MÁS AIRE. Un solo acento de color
+   por tarjeta, una sola llamada a la acción, y el microvisual como pieza
+   central — enseñar el producto convence más que adjetivarlo.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.hero-arsenal {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.05rem;
+  width: 100%;
+  margin-bottom: 1.9rem;
+}
+
+@media (min-width: 680px) {
+  .hero-arsenal { grid-template-columns: 1fr 1fr; }
+  .hero-arsenal > :last-child { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1040px) {
+  .hero-arsenal { grid-template-columns: repeat(3, 1fr); }
+  .hero-arsenal > :last-child { grid-column: auto; }
+}
+
+.tool {
+  display: flex;
+  border-radius: 18px;
+  /* El color propio de cada herramienta entra por variable desde el TSX y es
+     lo ÚNICO que las diferencia: misma estructura, distinto acento. */
+  --tool-tint: color-mix(in srgb, var(--tool-color) 100%, transparent);
+}
+
+.tool-link {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1.55rem 1.45rem 1.35rem;
+  border: 1px solid rgba(240, 244, 255, 0.075);
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  /* Fondo profundo con una insinuación del color de la herramienta arriba.
+     Muy sutil a propósito: el color debe reconocerse, no gritar. */
+  background:
+    radial-gradient(120% 90% at 50% -20%, color-mix(in srgb, var(--tool-tint) 9%, transparent) 0%, transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.008) 100%),
+    rgba(9, 13, 24, 0.72);
+  transition: border-color 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.28s ease;
+}
+
+.tool:hover .tool-link {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--tool-tint) 34%, transparent);
+  box-shadow:
+    0 20px 50px -26px rgba(0, 0, 0, 0.85),
+    0 0 0 1px color-mix(in srgb, var(--tool-tint) 10%, transparent);
+}
+
+/* Filete superior: se enciende al pasar por encima. Es el único movimiento de
+   color de la tarjeta, y por eso se nota sin ser ruidoso. */
+.tool-edge {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--tool-tint) 70%, transparent) 50%,
+    transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tool:hover .tool-edge { opacity: 1; }
+
+/* Halo que sigue al cursor. Las variables --mx/--my las escribe trackSpot. */
+.tool-aura {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0%),
+    color-mix(in srgb, var(--tool-tint) 13%, transparent) 0%, transparent 70%);
+  transition: opacity 0.35s ease;
+}
+
+.tool:hover .tool-aura { opacity: 1; }
+
+/* ── Contenido ─────────────────────────────────────────────────────────── */
+
+.tool-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--tool-tint) 78%, #f0f4ff);
+  margin-bottom: 0.85rem;
+}
+
+.tool-name {
+  margin: 0 0 0.5rem;
+  font-size: 1.32rem;
+  line-height: 1.2;
+  letter-spacing: -0.022em;
+  color: rgba(240, 244, 255, 0.97);
+}
+
+.tool-claim {
+  margin: 0 0 1.15rem;
+  font-size: 0.895rem;
+  line-height: 1.62;
+  color: rgba(240, 244, 255, 0.6);
+}
+
+/* La ventana al producto: enmarcada e inset, para que se lea como una captura
+   de la herramienta y no como decoración del fondo. */
+.tool-stage {
+  display: block;
+  padding: 0.9rem 0.85rem;
+  margin-bottom: 1.05rem;
+  border: 1px solid rgba(240, 244, 255, 0.06);
+  border-radius: 12px;
+  background: rgba(4, 7, 14, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.028);
+}
+
+/* Respaldo en una línea, en versalitas y con separador fino. Sustituye a las
+   cápsulas: mismo contenido, la mitad de ruido. */
+.tool-proof {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.15rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.42);
+}
+
+.tool-proof-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tool-proof-sep {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(240, 244, 255, 0.22);
+}
+
+.tool-collab {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: -0.5rem 0 1.05rem;
+  font-size: 0.72rem;
+  color: rgba(240, 244, 255, 0.4);
+}
+
+/* Las acciones se pegan al pie aunque los textos midan distinto: las tres
+   tarjetas terminan alineadas, que es la mitad de la sensación de acabado. */
+/* Las acciones se pegan al pie aunque los textos midan distinto: las tres
+   tarjetas terminan alineadas, que es la mitad de la sensación de acabado.
+
+   Son DOS BOTONES de verdad, con cuerpo, no enlaces de texto. La primera
+   versión dejó la secundaria como un enlace subrayado para que no compitiera
+   con la principal, y el resultado se leía como un pie de página: en una
+   tarjeta de producto, un enlace suelto parece un descuido, no una decisión. */
+.tool-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0.55rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.055);
+}
+
+/* Base común: misma altura y mismo radio en las dos, que es lo que hace que
+   el par se lea como un grupo y no como dos piezas pegadas. */
+.tool-action,
+.tool-detalle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0 1.05rem;
+  border-radius: 11px;
+  font-size: 0.855rem;
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s ease, filter 0.2s ease,
+              background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Principal: cuerpo sólido en el color de la herramienta, texto oscuro. Es la
+   que convierte, así que es la única con relleno saturado. */
+.tool-action {
+  flex: 1 1 auto;
+  color: #0b0f1a;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--tool-tint) 62%, #ffffff) 0%,
+    var(--tool-tint) 100%);
+  box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tool-tint) 70%, transparent);
+}
+
+.tool-action:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+/* Secundaria: cuerpo blanco translúcido sobre el fondo oscuro. Tiene el mismo
+   peso visual que la principal —también es un botón— pero sin color de marca,
+   así que la jerarquía se mantiene sin degradarla a enlace. */
+.tool-detalle {
+  flex: 0 0 auto;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.075);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.tool-detalle:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+/* Tarjetas estrechas: antes de que los textos se corten, los botones se apilan
+   y ocupan el ancho. */
+@media (max-width: 380px) {
+  .tool-actions { flex-direction: column; }
+  .tool-detalle { flex: 1 1 auto; }
+}
+
+@media (max-width: 560px) {
+  .tool-link { padding: 1.35rem 1.2rem 1.2rem; }
+  .tool-name { font-size: 1.22rem; }
+}
+
+/* ── Alineación entre las tres tarjetas ────────────────────────────────────
+   Cada tarjeta medía sus zonas por su cuenta, así que una descripción de dos
+   líneas frente a otra de tres subía el microvisual y la línea de respaldo, y
+   las tres dejaban de cuadrar en horizontal.
+
+   Se resuelve con `subgrid`: las filas las define la rejilla del bloque y cada
+   tarjeta se cuelga de ellas, de modo que el título, la descripción, la
+   ventana del producto, el respaldo y los botones **empiezan a la misma altura
+   en las tres**, sin fijar alturas a mano que se romperían al cambiar un texto.
+
+   Solo a partir de 1040 px, que es cuando van en línea: apiladas no hay nada
+   que alinear. Y bajo @supports, porque un navegador sin subgrid debe quedarse
+   con el flex de arriba, que sigue siendo correcto aunque no cuadre igual. */
+
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 1040px) {
+    .hero-arsenal {
+      /* eyebrow · título · descripción · ventana · respaldo · botones */
+      grid-template-rows: repeat(6, auto);
+    }
+
+    .tool,
+    .tool-link {
+      display: grid;
+      grid-row: span 6;
+      grid-template-rows: subgrid;
+    }
+
+    /* El halo y el filete van en absoluto, así que no ocupan fila; se les
+       ancla al alto completo para que cubran la tarjeta entera igual que antes. */
+    .tool-aura,
+    .tool-edge {
+      grid-row: 1 / -1;
+    }
+  }
+}
+
+
+/* ── Tira de herramientas dentro de la banda ───────────────────────────────
+   Los ocho iconos hacen de escaparate: se entiende que hay más que las tres
+   tarjetas del hero sin escribir una lista. El enlace va al final, alineado a
+   la derecha en pantallas anchas. */
+
+.hero-band-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.hero-band-tools-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.hero-band-tool-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  color: var(--icon-color);
+  background: color-mix(in srgb, var(--icon-color) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--icon-color) 22%, transparent);
+}
+
+.hero-band-tools-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  font-size: 0.84rem;
+  font-weight: 650;
+  color: rgba(240, 244, 255, 0.86);
+  text-decoration: none;
+  transition: gap 0.2s ease, color 0.2s ease;
+}
+
+.hero-band-tools-link:hover {
+  color: #ffffff;
+  gap: 0.62rem;
+}
+
+/* Separador vertical entre las dos zonas. */
+.hero-band-sep {
+  display: block;
+  width: 1px;
+  align-self: stretch;
+  min-height: 90px;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(230, 180, 85, 0.3) 50%,
+    transparent 100%);
+}
+
+/* La zona Premium conserva el reparto izquierda/derecha que tenía la banda. */
+.hero-premium-band-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.75rem;
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .hero-premium-band-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.15rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-premium-band {
+    grid-template-columns: 1fr;
+    gap: 1.15rem;
+  }
+
+  .hero-band-sep {
+    width: 100%;
+    min-height: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(230, 180, 85, 0.28) 50%,
+      transparent 100%);
+  }
+
+  .hero-band-tools {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+
+/* ── Cifras en las tarjetas del hero ───────────────────────────────────────
+   Sustituyen al microvisual en Portfolio y Diario: un número grande y
+   verificable convence más que un gráfico decorativo. */
+
+.hero-cifras {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.hero-cifras-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.hero-cifras-num {
+  /* Tabulares: la cifra no baila de ancho al cambiar el precio de mercado. */
+  font-variant-numeric: tabular-nums;
+  font-size: 2.15rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: rgba(240, 244, 255, 0.97);
+}
+
+.hero-cifras-num.es-verde { color: #4ade80; }
+.hero-cifras-num.es-rojo { color: #f87171; }
+
+.hero-cifras-key {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.44);
+}
+
+/* Marca "ejemplo": el Diario no tiene rentabilidad global que enseñar, así que
+   sus cifras son ilustrativas y deben decirlo. */
+.hero-cifras-tag {
+  font-style: normal;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.36rem;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 244, 255, 0.18);
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.hero-cifras-pie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.9rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.07);
+  font-size: 0.78rem;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+/* ── El mercado ahora mismo ────────────────────────────────────────────────
+   Bloque con los dos widgets del Radar Diario, entre el hero y el contenido
+   editorial. Las tarjetas en sí son las del radar (clases `rd-*`, definidas en
+   herramientas/radar/radar.css, que esta página importa): aquí solo va el
+   marco — cabecera, salida a la herramienta y la rejilla de dos columnas. */
+
+.rdh {
+  max-width: 1200px;
+  /* Aire generoso arriba: el bloque venía pegado al final del hero y los dos
+     se leían como una sola pieza. */
+  margin: 3.6rem auto 2.6rem;
+  padding: 0 1.15rem;
+}
+
+@media (max-width: 700px) {
+  .rdh { margin-top: 2.4rem; }
+}
+
+.rdh-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-bottom: 1.1rem;
+}
+
+.rdh-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4ade80;
+}
+
+.rdh-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: rdh-latido 2.4s ease-out infinite;
+}
+
+@keyframes rdh-latido {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  70%  { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.rdh-title {
+  margin: 0.4rem 0 0;
+  font-size: clamp(1.35rem, 3vw, 1.72rem);
+  line-height: 1.2;
+  letter-spacing: -0.024em;
+  color: rgba(240, 244, 255, 0.96);
+}
+
+.rdh-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.85rem;
+  font-weight: 650;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.rdh-cta:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+/* Dos columnas: Bitcoin pide más ancho que el medidor de sentimiento. */
+.rdh-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+@media (min-width: 780px) {
+  .rdh-grid { grid-template-columns: 1.45fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rdh-dot { animation: none; }
+  .rdh-cta:hover { transform: none; }
 }

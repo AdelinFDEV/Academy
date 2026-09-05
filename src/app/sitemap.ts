@@ -37,8 +37,17 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/articulos", priority: 0.9, changeFrequency: "daily" },
   { path: "/guias", priority: 0.9, changeFrequency: "weekly" },
   { path: "/glosario", priority: 0.8, changeFrequency: "monthly" },
+  // Punto 13: el tercer pilar por fin tiene URL indexable. La landing es
+  // pública y responde 200 sin sesión; las herramientas con muro siguen fuera
+  // del sitemap y bloqueadas en robots.txt.
+  { path: "/herramientas", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/calculadora", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/trading-en-directo", priority: 0.7, changeFrequency: "monthly" },
+  // Fichas públicas por herramienta: explican qué hay dentro sin abrir el
+  // muro. La herramienta en sí sigue fuera del sitemap.
+  { path: "/herramientas/portfolio", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/herramientas/diario", priority: 0.7, changeFrequency: "monthly" },
   { path: "/premium", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/asesoria", priority: 0.7, changeFrequency: "monthly" },
   { path: "/aviso-legal", priority: 0.2, changeFrequency: "yearly" },
   { path: "/privacidad", priority: 0.2, changeFrequency: "yearly" },
   { path: "/cookies", priority: 0.2, changeFrequency: "yearly" },

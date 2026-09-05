@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import {
   NotebookPen, Map, Radio, MessagesSquare, ShieldCheck, Lock, Sparkles, Trophy,
-  ClipboardCheck, BadgeCheck, Hourglass, ArrowRight,
+  ClipboardCheck, BadgeCheck, ArrowRight,
   Radar, Unlock, Target, Eye, PieChart, Wallet, TrendingUp,
 } from "lucide-react";
 
@@ -101,13 +101,14 @@ export default function DashboardSpotlight({ isPremium }: Props) {
 
         <h3 className="dash-spot-title">Diario de Trading</h3>
         <p className="dash-spot-desc">
-          El diario de trading más completo e interactivo de internet. No solo registras
-          tus operaciones — completas <strong>retos</strong> que te convierten, paso a paso, en un trader disciplinado.
+          Registras cada operación con su riesgo y su resultado, y el diario te devuelve
+          <strong>diez estadísticas</strong> que te dicen cómo operas de verdad: win rate, rachas,
+          ganancia y pérdida media, y tu curva de capital.
         </p>
 
         <div className="dash-spot-chips">
           <span className="dash-spot-chip"><ClipboardCheck size={12} /> Registro de operaciones</span>
-          <span className="dash-spot-chip"><Trophy size={12} /> Retos y niveles</span>
+          <span className="dash-spot-chip"><Trophy size={12} /> Retos y niveles (pronto)</span>
           <span className="dash-spot-chip"><BadgeCheck size={12} /> Estadísticas reales</span>
         </div>
 
@@ -170,15 +171,18 @@ export default function DashboardSpotlight({ isPremium }: Props) {
           <div className="dash-spot-icon dash-spot-icon--directo">
             <Radio size={22} strokeWidth={2} />
           </div>
+          {/* Ya no es "Próximamente": las sesiones se hacen lunes, miércoles y
+              viernes desde el 05-09-2026. Dejarlo así le decía a un suscriptor
+              que aún no existe algo que ya está pagando. */}
           <span className="dash-spot-badge dash-spot-badge--soon">
-            <Hourglass size={11} /> Próximamente
+            <Radio size={11} /> 3 sesiones por semana
           </span>
         </div>
 
         <h3 className="dash-spot-title">Trading en Directo</h3>
         <p className="dash-spot-desc">
-          <strong>Futuros sobre Solana en gráficos de 5 minutos</strong>, operados en directo:
-          cada entrada y cada salida comentada en el momento en que se toma.
+          <strong>Futuros de NASDAQ, Bitcoin, Solana y XRP en gráficos de 5 minutos</strong>,
+          operados en directo: cada entrada y cada salida comentada en el momento en que se toma.
         </p>
 
         <div className="dash-spot-chips">
@@ -186,7 +190,10 @@ export default function DashboardSpotlight({ isPremium }: Props) {
           <span className="dash-spot-chip dash-spot-chip--muted"><MessagesSquare size={12} /> Chat de preguntas</span>
         </div>
 
-        <span className="dash-spot-cta dash-spot-cta--soon">Muy pronto disponible</span>
+        <Link href="/trading-en-directo" className="dash-spot-cta dash-spot-cta--trading">
+          Ver horarios y cómo entrar
+          <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
+        </Link>
       </motion.div>
 
       {/* ── Resto de herramientas (data-driven) ── */}

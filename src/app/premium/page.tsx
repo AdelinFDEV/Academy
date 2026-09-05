@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import PremiumFeatureGrid from "@/components/PremiumFeatureGrid";
 import PremiumStickyBar from "@/components/PremiumStickyBar";
-import AsesoriaBand from "@/components/AsesoriaBand";
 import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Star, Lock, Sparkles } from "lucide-react";
 import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
 import "./premium.css";
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/premium" },
   title: "Hazte Premium",
   description:
-    "Desbloquea el diario de trading con retos, guías premium, trading en directo y el calendario de liberaciones de tokens por 49,99€/mes. Sin permanencia.",
+    "Desbloquea el diario de trading, guías premium, trading en directo y el calendario de liberaciones de tokens por 49,99€/mes. Sin permanencia.",
 };
 
 const COMPARE: { label: string; free: boolean | string; premium: boolean | string }[] = [
@@ -23,7 +22,7 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
   { label: "Watchlist y predicción de precio", free: true, premium: true },
   { label: "Logros y rachas", free: true, premium: true },
   { label: "Calculadora de Riesgo", free: true, premium: true },
-  { label: "Diario de Trading con retos y niveles", free: false, premium: true },
+  { label: "Diario de Trading con 10 estadísticas", free: false, premium: true },
   { label: "Liberaciones de tokens en tiempo real", free: false, premium: true },
   { label: "Portfolio Adelin en tiempo real", free: false, premium: true },
   { label: "Trading en directo (próximamente)", free: false, premium: true },
@@ -94,7 +93,7 @@ export default async function PremiumPage() {
 
               <p className="prem-hero-sub">
                 El diario de trading más completo e interactivo, guías premium, trading en directo
-                sobre futuros de Solana y el calendario de liberaciones en tiempo real — todo en una sola suscripción.
+                sobre futuros de NASDAQ y cripto, y el calendario de liberaciones en tiempo real — todo en una sola suscripción.
               </p>
 
               <div className="prem-hero-cta-row">
@@ -191,7 +190,7 @@ export default async function PremiumPage() {
                   </div>
 
                   <ul className="prem-pricing-list">
-                    <li><Check size={16} aria-hidden="true" /> Diario de Trading con retos y niveles</li>
+                    <li><Check size={16} aria-hidden="true" /> Diario de Trading con 10 estadísticas</li>
                     <li><Check size={16} aria-hidden="true" /> Guías premium desbloqueadas</li>
                     <li><Check size={16} aria-hidden="true" /> Trading en directo, incluido</li>
                     <li><Check size={16} aria-hidden="true" /> Liberaciones de tokens en tiempo real</li>
@@ -301,7 +300,6 @@ export default async function PremiumPage() {
             </section>
 
             {/* ── Asesoría 1:1 — el escalón por encima de la suscripción ── */}
-            <AsesoriaBand variant="premium" />
           </div>
         )}
       </main>

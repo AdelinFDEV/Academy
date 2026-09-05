@@ -1,7 +1,68 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import Link from "next/link";
 import { RefreshCw, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
+
+/**
+ * Cálculos que puede hacer alguien sin cuenta antes de pedirle el registro.
+ *
+ * Tres y no uno: con uno se va sin haber entendido la herramienta, y entonces
+ * el muro no capta a nadie — solo molesta. Con tres ya ha visto que la
+ * respuesta es útil y el registro tiene sentido.
+ */
+const CALCULOS_GRATIS = 3;
+const CLAVE_CONTEO = "calc-usos-anon";
+
+/**
+ * Cuenta cuántos resultados DISTINTOS ha visto un visitante sin cuenta.
+ *
+ * La calculadora no tiene botón: recalcula según se teclea. Contar cada
+ * pulsación gastaría los tres intentos escribiendo el primer número, así que se
+ * cuenta un resultado solo cuando la pareja (oferta, precio) se queda quieta
+ * medio segundo y además es distinta de la anterior contada.
+ *
+ * Vive en localStorage, que el propio visitante puede borrar. Es a propósito:
+ * esto es una puerta comercial, no una barrera de seguridad — la herramienta no
+ * usa ningún dato privado. Quien sepa vaciarlo no está robando nada.
+ */
+function useLimiteAnonimo(activo: boolean, firma: string, hayResultado: boolean) {
+  const [usos, setUsos] = useState(0);
+  const contadas = useRef<Set<string>>(new Set());
+
+  // Se lee una vez al montar: en el servidor no hay localStorage.
+  useEffect(() => {
+    if (!activo) return;
+    try {
+      const guardado = Number(window.localStorage.getItem(CLAVE_CONTEO) ?? "0");
+      if (Number.isFinite(guardado) && guardado > 0) setUsos(guardado);
+    } catch {
+      /* navegador con el almacenamiento bloqueado: se cuenta solo en memoria */
+    }
+  }, [activo]);
+
+  useEffect(() => {
+    if (!activo || !hayResultado || contadas.current.has(firma)) return;
+
+    const id = setTimeout(() => {
+      if (contadas.current.has(firma)) return;
+      contadas.current.add(firma);
+      setUsos((previo) => {
+        const siguiente = previo + 1;
+        try {
+          window.localStorage.setItem(CLAVE_CONTEO, String(siguiente));
+        } catch {
+          /* ídem */
+        }
+        return siguiente;
+      });
+    }, 600);
+
+    return () => clearTimeout(id);
+  }, [activo, firma, hayResultado]);
+
+  return { agotado: activo && usos >= CALCULOS_GRATIS, usos };
+}
 
 // ── Types ──────────────────────────────────────────────────
 interface CoinData {
@@ -141,7 +202,7 @@ const COIN_NAMES: Record<string, string> = {
 };
 
 // ── Component ──────────────────────────────────────────────
-export default function CalculadoraClient() {
+export default function CalculadoraClient({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [supplyRaw, setSupplyRaw] = useState("");
   const [priceRaw,  setPriceRaw]  = useState("");
   const [liveData,  setLiveData]  = useState<LiveData | null>(null);
@@ -175,6 +236,15 @@ export default function CalculadoraClient() {
   const targetPrice = parseNum(priceRaw);
   const neededMC    = supply > 0 && targetPrice > 0 ? supply * targetPrice : 0;
   const hasResult   = neededMC > 0;
+
+  // Tope para quien no tiene cuenta. La firma identifica el cálculo concreto:
+  // repetir el mismo no gasta otro intento.
+  const { agotado, usos } = useLimiteAnonimo(
+    !isLoggedIn,
+    `${supply}|${targetPrice}`,
+    hasResult,
+  );
+  const restantes = Math.max(0, CALCULOS_GRATIS - usos);
 
   const displayMC = useCountUp(neededMC);
 
@@ -334,9 +404,35 @@ export default function CalculadoraClient() {
 
         {/* ── Result ── */}
         <div className="calc-result-col">
+          {/* Se avisa solo cuando queda poco: decir "te quedan 3" nada más
+              entrar suena a cuenta atrás y espanta antes de aportar nada. */}
+          {!isLoggedIn && !agotado && restantes <= 2 && (
+            <p className="calc-restantes">
+              Te {restantes === 1 ? "queda 1 cálculo gratis" : `quedan ${restantes} cálculos gratis`}.{" "}
+              <Link href="/register?next=/calculadora">Crea una cuenta</Link> y sigue sin límite.
+            </p>
+          )}
+
           <div className={`calc-result-card${hasResult ? " calc-result-card--active" : ""}`}>
 
-            {!hasResult ? (
+            {agotado ? (
+              /* Muro suave: se enseña DESPUÉS de tres resultados, nunca antes,
+                 para que quien llega de una búsqueda vea funcionar la
+                 herramienta antes de que se le pida nada. */
+              <div className="calc-gate">
+                <p className="calc-gate-title">Has usado tus tres cálculos gratis</p>
+                <p className="calc-gate-text">
+                  Crea una cuenta gratuita y sigue calculando sin límite. También
+                  te abre la calculadora de riesgo y la watchlist, sin pagar nada.
+                </p>
+                <Link href="/register?next=/calculadora" className="calc-gate-cta">
+                  Crear cuenta gratuita
+                </Link>
+                <p className="calc-gate-alt">
+                  ¿Ya tienes una? <Link href="/login?next=/calculadora">Entrar</Link>
+                </p>
+              </div>
+            ) : !hasResult ? (
               <div className="calc-result-empty">
                 <div className="calc-result-empty-icon">
                   <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
@@ -484,7 +580,9 @@ export default function CalculadoraClient() {
           </div>
 
           {/* Context sentence */}
-          {hasResult && liveData && (
+          {/* La comparación también queda tras el muro: si no, el cálculo se
+              lee igual en las barras y el tope no serviría de nada. */}
+          {hasResult && liveData && !agotado && (
             <div className="calc-context">
               {neededMC > btcMC ? (
                 <p>Para alcanzar ese precio, el token necesitaría <strong>{fmtMC(neededMC)}</strong> de Market Cap — superando a Bitcoin ({fmtMC(btcMC)}). Esto nunca ha ocurrido en la historia del crypto.</p>

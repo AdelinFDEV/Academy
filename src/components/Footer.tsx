@@ -91,6 +91,17 @@ export default function Footer() {
               siempre tu propia investigación (DYOR) y consulta con un asesor financiero cualificado antes de
               tomar decisiones de inversión.
             </p>
+            {/* Misma cláusula que cierra <DisclaimerRiesgo> en las herramientas.
+                Va también aquí porque el pie sale en TODAS las páginas: es el
+                único sitio que cubre también las entradas y las guías. */}
+            <p className="footer-disclaimer-text">
+              <strong>Tú decides y tú respondes.</strong> El uso que hagas de cualquier información publicada en
+              esta web —cifras, operaciones, análisis, estadísticas o herramientas— es responsabilidad
+              exclusivamente tuya, y ninguna decisión de inversión que tomes a partir de este contenido genera
+              responsabilidad alguna para AdelinBTC Academy ni para su autor. <strong>Esto no es un grupo de
+              señales</strong>: no se te dice qué comprar, ni cuándo, ni a qué precio, y no se recomienda copiar
+              ninguna operación.
+            </p>
           </div>
         </div>
       </div>

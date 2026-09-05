@@ -2,11 +2,9 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import {
-  NotebookPen, Crosshair, ScanEye, Medal, Wallet,
-  Unlock, Shield, Radar, PieChart,
-} from "lucide-react";
+// Los iconos ya no se eligen aquí: cada herramienta trae el suyo del catálogo.
 import ToolAccessModal, { type ToolModalReason } from "@/components/ToolAccessModal";
+import { HERRAMIENTAS } from "@/lib/herramientas";
 
 interface Props {
   isLoggedIn: boolean;
@@ -31,17 +29,28 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
 
   const closeModal = useCallback(() => setModal((m) => ({ ...m, open: false })), []);
 
-  const tools: ToolDef[] = [
-    { label: "Diario de Trading", href: "/dashboard", Icon: NotebookPen, requiresLogin: true, requiresPremium: true },
-    { label: "Predicción de Precio", href: "/calculadora", Icon: Crosshair, requiresLogin: true, requiresPremium: false },
-    { label: "Mi Watchlist", href: "/dashboard/watchlist", Icon: ScanEye, requiresLogin: true, requiresPremium: false },
-    { label: "Logros y XP", href: "/logros", Icon: Medal, requiresLogin: true, requiresPremium: false },
-    { label: "Portfolio Adelin", href: "/portfolio", Icon: Wallet, requiresLogin: true, requiresPremium: true },
-    { label: "Liberaciones de Tokens", href: "/herramientas/liberaciones", Icon: Unlock, requiresLogin: true, requiresPremium: true },
-    { label: "Radar Diario", href: "/herramientas/radar", Icon: Radar, requiresLogin: true, requiresPremium: true },
-    { label: "Mi Portfolio", href: "/dashboard/mi-portfolio", Icon: PieChart, requiresLogin: true, requiresPremium: true },
-    { label: "Calculadora de Riesgo", href: "/dashboard/calculadora-riesgo", Icon: Shield, requiresLogin: true, requiresPremium: false },
-  ];
+  /**
+   * La lista SALE DEL CATÁLOGO, no se escribe aquí.
+   *
+   * Antes eran dos listas a mano y discrepaban: al sidebar le faltaba el
+   * trading en directo y al catálogo le faltaban Mi Portfolio y Logros, así
+   * que la web decía ocho herramientas en un sitio y nueve en otro. Ahora hay
+   * una sola fuente y el número cuadra solo.
+   *
+   * El acceso también sale de ahí: cuando la calculadora se abrió al público,
+   * esta lista siguió pidiendo registro con su copia propia y nadie podía
+   * llegar a la página, que sí estaba liberada.
+   */
+  const tools: ToolDef[] = HERRAMIENTAS.map((h) => ({
+    label: h.label,
+    // Los atajos llevan a la herramienta en sí; el destino público lo decide
+    // `destinoPorRuta` al pulsar, según quién esté mirando.
+    href: h.premiumHref ?? h.href ?? "/herramientas",
+    Icon: h.icon,
+    requiresLogin: h.acceso === "cuenta" || h.acceso === "premium",
+    requiresPremium: h.acceso === "premium",
+    soon: h.acceso === "proximamente",
+  }));
 
   function handleToolClick(tool: ToolDef, e: React.MouseEvent) {
     if (!isLoggedIn && tool.requiresLogin) {

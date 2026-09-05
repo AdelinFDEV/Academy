@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
+import { RadarBtcCard, RadarFngCard } from "@/components/RadarWidgets";
 import {
-  Radar, TrendingUp, TrendingDown, Landmark, Gauge, Clock,
+  Radar, TrendingUp, TrendingDown, Landmark, Clock,
   Unlock, ScanEye, ChevronRight, RefreshCw, Zap, Info, Star, ExternalLink,
 } from "lucide-react";
 import { MACRO_EVENTS, SERIES_INFO, type MacroEvent, type MacroSeries } from "./macroEvents";
@@ -96,14 +98,6 @@ function etTimeToMadrid(dateStr: string, timeET: string): string {
 }
 
 // Índice de Miedo y Codicia → etiqueta en español + color
-function fngMeta(value: number): { label: string; color: string } {
-  if (value <= 24) return { label: "Miedo extremo", color: "#f87171" };
-  if (value <= 44) return { label: "Miedo", color: "#fb923c" };
-  if (value <= 55) return { label: "Neutral", color: "#fbbf24" };
-  if (value <= 74) return { label: "Codicia", color: "#a3e635" };
-  return { label: "Codicia extrema", color: "#4ade80" };
-}
-
 export default function RadarClient() {
   const [data, setData] = useState<RadarData | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -140,9 +134,6 @@ export default function RadarClient() {
   }
 
   const btc = data?.btc ?? null;
-  const rangePos = btc && btc.high24h > btc.low24h
-    ? Math.min(100, Math.max(0, ((btc.price - btc.low24h) / (btc.high24h - btc.low24h)) * 100))
-    : 50;
 
   const today = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
 
@@ -169,65 +160,10 @@ export default function RadarClient() {
       )}
 
       <div className="rd-grid">
-        {/* ── BTC 24h ── */}
-        <section className="rd-card rd-card--btc">
-          <div className="rd-card-head">
-            <span className="rd-card-title">Bitcoin · últimas 24h</span>
-            <span className="rd-btc-tag">BTC/USD</span>
-          </div>
-          {btc ? (
-            <>
-              <div className="rd-btc-price-row">
-                <span className="rd-btc-price">{usd(btc.price)}</span>
-                <span className={`rd-btc-change ${btc.change24h >= 0 ? "up" : "down"}`}>
-                  {btc.change24h >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                  {pct(btc.change24h)}
-                </span>
-              </div>
-              <div className="rd-range">
-                <div className="rd-range-track">
-                  <span className="rd-range-dot" style={{ left: `${rangePos}%` }} />
-                </div>
-                <div className="rd-range-ends">
-                  <span className="rd-range-low">Mín {usd(btc.low24h)}</span>
-                  <span className="rd-range-high">Máx {usd(btc.high24h)}</span>
-                </div>
-              </div>
-              <div className="rd-btc-foot">
-                <div><span>Cap. mercado</span><strong>{abbrev(btc.marketCap)}</strong></div>
-                <div><span>Volumen 24h</span><strong>{abbrev(btc.volume24h)}</strong></div>
-              </div>
-            </>
-          ) : (
-            <div className="rd-skel">{loaded ? "Sin datos" : "Cargando…"}</div>
-          )}
-        </section>
-
-        {/* ── Fear & Greed ── */}
-        <section className="rd-card rd-card--fng">
-          <div className="rd-card-head">
-            <span className="rd-card-title"><Gauge size={15} /> Miedo y Codicia</span>
-          </div>
-          {data?.fng ? (
-            (() => {
-              const meta = fngMeta(data.fng.value);
-              return (
-                <div className="rd-fng">
-                  <div className="rd-fng-ring" style={{ background: `conic-gradient(${meta.color} ${data.fng.value * 3.6}deg, rgba(240,244,255,0.08) 0deg)` }}>
-                    <div className="rd-fng-inner">
-                      <span className="rd-fng-val" style={{ color: meta.color }}>{data.fng.value}</span>
-                      <span className="rd-fng-max">/100</span>
-                    </div>
-                  </div>
-                  <span className="rd-fng-label" style={{ color: meta.color }}>{meta.label}</span>
-                  <span className="rd-fng-note">Sentimiento del mercado cripto</span>
-                </div>
-              );
-            })()
-          ) : (
-            <div className="rd-skel">{loaded ? "Sin datos" : "Cargando…"}</div>
-          )}
-        </section>
+        {/* Los dos primeros widgets viven en @/components/RadarWidgets:
+            la portada pinta exactamente estos mismos. */}
+        <RadarBtcCard btc={btc} loaded={loaded} />
+        <RadarFngCard fng={data?.fng ?? null} loaded={loaded} />
 
         {/* ── Snapshot de mercado ── */}
         <section className="rd-card rd-card--market">
@@ -367,8 +303,10 @@ export default function RadarClient() {
 
       <p className="rd-disclaimer">
         <Radar size={13} /> Datos de mercado orientativos (CoinGecko, alternative.me), con unos minutos de retardo.
-        Esta herramienta es informativa y no constituye consejo de inversión.
       </p>
+
+      {/* Ver comentario equivalente en MiPortfolioClient. */}
+      <DisclaimerRiesgo variante="general" />
     </div>
   );
 }

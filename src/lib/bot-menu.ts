@@ -19,7 +19,6 @@
  */
 
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
-import { ASESORIA_PLANS } from "@/lib/asesoria";
 import {
   getAdminChatUrl,
   getChannelInviteLink,
@@ -70,12 +69,6 @@ function precioMes(): string {
  *  cifra con algo, y a 49,99€ es un café al día, no uno a la semana. */
 function precioDia(): string {
   return `${(PREMIUM_PRICE_EUR / 30).toFixed(2).replace(".", ",")}€`;
-}
-
-/** El plan de asesoría más barato, para el "desde" del menú de la web. */
-function asesoriaDesde(): string {
-  const min = Math.min(...ASESORIA_PLANS.map((p) => p.priceValue));
-  return `${min}€`;
 }
 
 function url(ruta: string): string {
@@ -337,7 +330,7 @@ const VENTAJAS: Ventaja[] = [
       "Apunta cada operación y deja de operar de memoria.\n\n" +
       "• Registro de entradas, salidas y resultado\n" +
       "• Estadísticas reales: aciertos, ratio, racha\n" +
-      "• Retos y niveles para no abandonarlo a la semana\n\n" +
+      "• Retos y niveles, próximamente\n\n" +
       "Es la herramienta que más gente dice que le cambió la operativa: verlo escrito " +
       "enseña más que cualquier vídeo.",
     ruta: "/dashboard/trading",
@@ -712,7 +705,6 @@ function pantallaWeb(): Pantalla {
       "🧮 Calculadora de riesgo — cuánto arriesgar en cada entrada\n" +
       "📖 Glosario — el vocabulario cripto explicado en cristiano\n" +
       "📊 Dashboard — tu watchlist, tus logros y tus herramientas\n" +
-      `🤝 Asesoría 1:1 — sesiones individuales conmigo, desde ${asesoriaDesde()}\n` +
       "⚙️ Mi cuenta — tu plan, tu suscripción y tu Telegram\n\n" +
       "Pulsa donde quieras entrar 👇",
     botones: [
@@ -728,7 +720,6 @@ function pantallaWeb(): Pantalla {
         { text: "📊 Dashboard", url: url("/dashboard") },
         { text: "⚙️ Mi cuenta", url: getCuentaUrl() },
       ],
-      [{ text: "🤝 Asesoría 1:1 conmigo", url: url("/asesoria") }],
       [{ text: "🌐 Ir a la Academy", url: getSiteUrl() }],
       [VOLVER_INICIO],
     ],

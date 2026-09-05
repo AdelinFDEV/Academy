@@ -15,8 +15,8 @@ const PERKS = [
     icon: NotebookPen,
     color: "#ff9a4d",
     title: "Diario de Trading",
-    desc: "No es solo un registro: son retos que te convierten, operación a operación, en un trader disciplinado.",
-    chips: ["P&L y ratio riesgo/beneficio", "Retos y niveles"],
+    desc: "Cada operación con su riesgo y su resultado, y diez estadísticas que te dicen cómo operas de verdad. Retos y niveles, próximamente.",
+    chips: ["P&L y ratio riesgo/beneficio", "Retos y niveles (pronto)"],
   },
   {
     id: "guias",
@@ -31,8 +31,8 @@ const PERKS = [
     icon: Radio,
     color: "#a3a3ff",
     title: "Trading en Directo",
-    desc: "Futuros sobre Solana en gráficos de 5 minutos, operados en directo y con cada decisión explicada en el momento.",
-    chips: ["Próximamente", "Incluido sin coste extra"],
+    desc: "Futuros de NASDAQ, Bitcoin, Solana y XRP en gráficos de 5 minutos, operados en directo y con cada decisión explicada en el momento.",
+    chips: ["3 sesiones por semana", "Incluido sin coste extra"],
   },
   {
     id: "liberaciones",
@@ -63,8 +63,11 @@ const PERKS = [
     icon: InfinityIcon,
     color: "#e6b455",
     title: "Todo lo nuevo, incluido",
-    desc: "Cada herramienta y contenido que lancemos a partir de ahora entra directo en tu suscripción. Nunca pagas de más.",
-    chips: ["Para siempre", "Sin sorpresas"],
+    desc: "Cada herramienta y contenido que lancemos a partir de ahora entra directo en tu suscripción, sin pagar aparte.",
+    // "Para siempre" prometía más de lo que es: el precio se conserva mientras
+    // la suscripción siga activa, y quien cancela y vuelve entra con la tarifa
+    // vigente — así lo explica la FAQ de esta misma página.
+    chips: ["Mientras seas Premium", "Sin sorpresas"],
   },
 ];
 

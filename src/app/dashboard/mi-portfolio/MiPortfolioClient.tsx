@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, type FormEvent } from "react";
 import Link from "next/link";
+import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { createClient } from "@/lib/supabase/client";
 import { Search, PieChart, Plus, Trash2, ArrowDownCircle, ArrowUpCircle, Wallet } from "lucide-react";
 import MiPortfolioCharts from "./MiPortfolioCharts";
@@ -428,9 +429,12 @@ export default function MiPortfolioClient({ initialTxs }: { initialTxs: Tx[] }) 
 
       <p className="mpf-disclaimer">
         El precio medio se calcula por coste medio ponderado. Los precios de mercado son de CoinGecko, orientativos y con
-        unos minutos de retardo. Esta herramienta es informativa y no constituye consejo de inversión.
-        ¿Solo quieres vigilar precios? Usa tu <Link href="/dashboard/watchlist">Watchlist</Link>.
+        unos minutos de retardo. ¿Solo quieres vigilar precios? Usa tu <Link href="/dashboard/watchlist">Watchlist</Link>.
       </p>
+
+      {/* El aviso legal ya no se escribe aquí a mano: lo pone el componente
+          compartido, que es el único sitio donde vive ese texto. */}
+      <DisclaimerRiesgo variante="general" />
     </div>
   );
 }
