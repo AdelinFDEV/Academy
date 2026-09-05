@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { Send, X } from "lucide-react";
+import { TELEGRAM_CANAL_FREE_URL } from "@/lib/contacto";
 
 const CLAVE_CERRADO = "tg-banner-cerrado";
 
@@ -44,8 +45,17 @@ function cerrar() {
  * Se recuerda en sessionStorage y no en localStorage a propósito: durante la
  * visita no vuelve a molestar, pero en la siguiente reaparece. Con localStorage
  * desaparecería para siempre tras un solo clic y se perdería el canal.
+ *
+ * ── A dónde lleva (cambiado el 06-09-2026) ─────────────────────────────────
+ * Llevaba al BOT, y el texto prometía «únete a la comunidad o escríbeme
+ * personalmente»: un bot no es ninguna de las dos cosas. Quien llegaba se
+ * encontraba un menú de opciones en vez de gente hablando, que es lo peor que
+ * le puede pasar al único aviso permanente de la portada.
+ *
+ * Ahora va al canal gratuito. El bot no se enlaza desde la web: a quien paga se
+ * le lleva a él desde el flujo de la suscripción, donde sí tiene sentido.
  */
-export default function TelegramBanner({ botUsername }: { botUsername: string }) {
+export default function TelegramBanner() {
   const cerrado = useSyncExternalStore(suscribir, estaCerrado, estaCerradoEnServidor);
 
   if (cerrado) return null;
@@ -64,17 +74,17 @@ export default function TelegramBanner({ botUsername }: { botUsername: string })
 
           <p className="tg-banner-text">
             <strong>Únete a la comunidad</strong>
-            <span>o escríbeme personalmente por Telegram</span>
+            <span>Noticias y análisis en el canal gratuito de Telegram</span>
           </p>
 
           <a
-            href={`https://t.me/${botUsername}`}
+            href={TELEGRAM_CANAL_FREE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="tg-banner-btn"
           >
             <Send size={15} aria-hidden="true" />
-            Abrir en Telegram
+            Entrar al canal
           </a>
 
           <button type="button" onClick={cerrar} className="tg-banner-close" aria-label="Cerrar aviso">

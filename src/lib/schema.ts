@@ -18,7 +18,7 @@
  *      puedan desincronizar.
  */
 import { SITE_URL } from "@/lib/site";
-import { INSTAGRAM_URL, TELEGRAM_ADELIN_URL, YOUTUBE_URL } from "@/lib/contacto";
+import { INSTAGRAM_URL, TELEGRAM_CANAL_FREE_URL, YOUTUBE_URL } from "@/lib/contacto";
 import { LEGAL } from "@/lib/legal";
 
 /** Identificadores estables a los que apunta todo lo demás. */
@@ -45,7 +45,9 @@ export function organizationSchema(): JsonLdNode {
       height: 512,
     },
     email: LEGAL.email,
-    sameAs: [INSTAGRAM_URL, YOUTUBE_URL, TELEGRAM_ADELIN_URL],
+    // El canal, no el privado: sameAs declara los PERFILES oficiales de la
+    // marca, y un chat de una persona no lo es.
+    sameAs: [INSTAGRAM_URL, YOUTUBE_URL, TELEGRAM_CANAL_FREE_URL],
   };
 }
 

@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Send } from "lucide-react";
-import { TELEGRAM_ADELIN_URL } from "@/lib/contacto";
-
-const CANAL_FREE_URL = "https://t.me/FreeAdelinBTC";
+import { TELEGRAM_ADELIN_URL, TELEGRAM_CANAL_FREE_URL } from "@/lib/contacto";
 
 /**
  * Cierre fijo al final de cada entrada.
@@ -36,6 +34,8 @@ export default function PostCtaFinal({
             Ir al canal privado
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
+          {/* Aquí sí el privado: es la rama de quien ya paga, y el trato
+              directo es literalmente una de las ventajas de su suscripción. */}
           <a
             href={TELEGRAM_ADELIN_URL}
             target="_blank"
@@ -65,7 +65,7 @@ export default function PostCtaFinal({
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
           <a
-            href={CANAL_FREE_URL}
+            href={TELEGRAM_CANAL_FREE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="post-cierre-btn post-cierre-btn--alt"
@@ -88,7 +88,7 @@ export default function PostCtaFinal({
       </p>
       <div className="post-cierre-acciones">
         <a
-          href={CANAL_FREE_URL}
+          href={TELEGRAM_CANAL_FREE_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="post-cierre-btn"

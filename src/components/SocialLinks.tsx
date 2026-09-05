@@ -1,4 +1,4 @@
-import { INSTAGRAM_URL, TELEGRAM_ADELIN_URL, YOUTUBE_URL } from "@/lib/contacto";
+import { INSTAGRAM_URL, TELEGRAM_CANAL_FREE_URL, YOUTUBE_URL } from "@/lib/contacto";
 
 // lucide-react no exporta iconos de marca, así que el de Instagram es propio.
 // El tamaño es opcional para no tocar los usos ya existentes (15px).
@@ -33,9 +33,12 @@ interface Props {
 export default function SocialLinks({ variant = "footer" }: Props) {
   const links = [
     {
-      href: TELEGRAM_ADELIN_URL,
+      // Al canal, no al privado: aquí Telegram es una red que se sigue, igual
+      // que Instagram y YouTube. Antes abría un chat con Adelin, que es pedirle
+      // a un desconocido que escriba el primer mensaje.
+      href: TELEGRAM_CANAL_FREE_URL,
       label: "Telegram",
-      handle: "@AdelinBTC",
+      handle: "@FreeAdelinBTC",
       icon: <TelegramIcon />,
     },
     {
@@ -76,7 +79,7 @@ export default function SocialLinks({ variant = "footer" }: Props) {
     return (
       <div className="post-social-row">
         <a
-          href={TELEGRAM_ADELIN_URL}
+          href={TELEGRAM_CANAL_FREE_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="post-social-link post-social-link--telegram"

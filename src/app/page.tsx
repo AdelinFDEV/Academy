@@ -8,7 +8,7 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import TelegramBanner from "@/components/TelegramBanner";
 import { TelegramIcon } from "@/components/SocialLinks";
-import { INSTAGRAM_URL, TELEGRAM_ADELIN_URL } from "@/lib/contacto";
+import { INSTAGRAM_URL, TELEGRAM_CANAL_FREE_URL } from "@/lib/contacto";
 import SiteNav from "@/components/SiteNav";
 import GuideSearch from "@/components/GuideSearch";
 import HomeFeed, { HeroPost } from "@/components/HomeFeed";
@@ -371,11 +371,15 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Telegram primero y en primario: es donde está la comunidad y donde
-              responde antes. Instagram queda como alternativa. */}
+          {/* Telegram primero y en primario: es donde está la comunidad.
+              Instagram queda como alternativa.
+
+              Y ahora apunta de verdad a la comunidad: hasta el 06-09-2026 este
+              botón abría el privado de Adelin, justo lo que el comentario de
+              arriba decía que NO era. */}
           <div className="contact-cta-botones">
             <a
-              href={TELEGRAM_ADELIN_URL}
+              href={TELEGRAM_CANAL_FREE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="contact-cta-btn"
@@ -400,10 +404,10 @@ export default async function HomePage() {
 
       <Footer />
 
-      {/* El username sale del entorno en el servidor: TELEGRAM_BOT_USERNAME no
-          lleva el prefijo NEXT_PUBLIC_, así que no es accesible desde el
-          cliente y hay que pasárselo como prop. */}
-      <TelegramBanner botUsername={process.env.TELEGRAM_BOT_USERNAME || "AdelinBTC_Bot"} />
+      {/* Ya no lleva prop: apuntaba al bot y necesitaba que el servidor le
+          pasara el username. Ahora lee el canal de `lib/contacto`, que es una
+          constante y sí llega al cliente. */}
+      <TelegramBanner />
     </div>
   );
 }
