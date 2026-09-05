@@ -8,9 +8,16 @@ const isDev = process.env.NODE_ENV === "development";
 // Cloudflare Turnstile (captcha anti-bots en login/registro/recuperación) carga
 // su script y su iframe desde challenges.cloudflare.com — hay que permitirlo en
 // la CSP o el widget quedaría bloqueado.
+// Google Analytics 4 carga su etiqueta desde googletagmanager.com. Solo se
+// inyecta si el visitante acepta las cookies, pero la CSP se envía en la
+// cabecera de todas las páginas, así que el origen tiene que estar permitido
+// siempre — si no, quien acepte vería el script bloqueado sin ningún aviso.
+const ANALYTICS_SCRIPTS =
+  "https://static.cloudflareinsights.com https://www.googletagmanager.com";
+
 const scriptSrc = isDev
-  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://static.cloudflareinsights.com"
-  : "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://static.cloudflareinsights.com";
+  ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com ${ANALYTICS_SCRIPTS}`
+  : `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com ${ANALYTICS_SCRIPTS}`;
 
 const securityHeaders = [
   // Evita que el sitio sea embebido en iframes (clickjacking)
@@ -32,7 +39,11 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com https://cloudflareinsights.com",
+      // GA4 no manda los datos al mismo dominio del que carga el script: la
+      // etiqueta viene de googletagmanager.com y las medidas salen hacia
+      // google-analytics.com y analytics.google.com. Faltando cualquiera de
+      // los tres, GA4 se ve «instalado» pero no registra nada.
+      "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://challenges.cloudflare.com https://cloudflareinsights.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com",
       // Los vídeos se incrustan con youtube-nocookie.com (más privado / RGPD).
       // Debe listarse explícitamente: la CSP no cubre youtube-nocookie.com por
       // permitir youtube.com. Sin esto, TODOS los embeds de vídeo se bloquean.

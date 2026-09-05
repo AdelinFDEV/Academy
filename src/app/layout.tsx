@@ -7,6 +7,7 @@ import { organizationSchema, websiteSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
 import StreakTracker from "@/components/StreakTracker";
 
@@ -101,12 +102,16 @@ export default function RootLayout({
         <CookieBanner />
         <SiteVisitTracker />
         <StreakTracker />
-        {/* Cloudflare Web Analytics (gratis, sin cookies) */}
+        {/* Cloudflare Web Analytics: sin cookies, así que no depende del
+            banner y mide siempre. Es la red de seguridad si alguien no acepta. */}
         <Script
           src="https://static.cloudflareinsights.com/beacon.min.js"
           strategy="afterInteractive"
           data-cf-beacon='{"token": "7969fb64e16745b899eaf16b074d07c4"}'
         />
+        {/* Google Analytics 4: usa cookies, así que solo se carga si el
+            visitante lo acepta. Ver `src/components/GoogleAnalytics.tsx`. */}
+        <GoogleAnalytics />
       </body>
     </html>
   );

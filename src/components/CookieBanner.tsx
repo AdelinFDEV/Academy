@@ -2,27 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { guardarConsentimiento, leerConsentimiento } from "@/lib/consent";
 
-const CONSENT_KEY = "cookie_consent";
-
+/**
+ * Banner de cookies.
+ *
+ * Hasta que entró Google Analytics esto era informativo: guardaba la respuesta
+ * y no la leía nadie, porque no había nada opcional que activar. Ahora la
+ * elección **decide de verdad** si se carga la analítica, y por eso el estado
+ * vive en `@/lib/consent` en vez de aquí dentro.
+ */
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    try {
-      if (!localStorage.getItem(CONSENT_KEY)) setVisible(true);
-    } catch {
-      // localStorage unavailable (private mode, etc.) — don't show banner
-    }
+    if (!leerConsentimiento()) setVisible(true);
   }, []);
 
-  function accept() {
-    try { localStorage.setItem(CONSENT_KEY, "all"); } catch { /* noop */ }
-    setVisible(false);
-  }
-
-  function essentialOnly() {
-    try { localStorage.setItem(CONSENT_KEY, "essential"); } catch { /* noop */ }
+  function elegir(valor: "all" | "essential") {
+    guardarConsentimiento(valor);
     setVisible(false);
   }
 
@@ -34,15 +32,18 @@ export default function CookieBanner() {
         <div className="cookie-banner-text">
           <p className="cookie-banner-title">Usamos cookies</p>
           <p className="cookie-banner-desc">
-            Utilizamos solo cookies esenciales para mantener tu sesión y la seguridad del sitio. No usamos cookies de publicidad ni de rastreo.{" "}
+            Las esenciales mantienen tu sesión y la seguridad del sitio, y no se pueden
+            desactivar. Si lo aceptas, usamos también <strong>cookies de analítica</strong>{" "}
+            (Google&nbsp;Analytics) para saber qué páginas se leen y mejorar el contenido.
+            No usamos publicidad ni vendemos tus datos.{" "}
             <Link href="/cookies" className="cookie-banner-link">Ver política de cookies</Link>
           </p>
         </div>
         <div className="cookie-banner-actions">
-          <button className="cookie-btn-essential" onClick={essentialOnly}>
+          <button className="cookie-btn-essential" onClick={() => elegir("essential")}>
             Solo esenciales
           </button>
-          <button className="cookie-btn-accept" onClick={accept}>
+          <button className="cookie-btn-accept" onClick={() => elegir("all")}>
             Aceptar todas
           </button>
         </div>
