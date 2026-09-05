@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { cache } from "react";
-import { LayoutDashboard } from "lucide-react";
 import LiveCounter from "@/components/LiveCounter";
 import GuideSearch from "@/components/GuideSearch";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
@@ -59,20 +58,24 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
         <GuideSearch />
       </div>
       <div className="blog-nav-end">
-        {/* Vuelta al panel desde cualquier página, sin abrir el menú.
-            Hasta el 06-09-2026 la única forma de volver al dashboard era el
-            desplegable: dos clics y escondido, en PC y en móvil. Es el gesto
-            más repetido de quien tiene cuenta, así que ahora está siempre a la
-            vista. En pantallas estrechas se queda solo el icono, para no
-            empujar al menú fuera de la barra. */}
+        {/* Identidad y accesos personales, en un solo sitio. Pulsando el
+            nombre se abre el menú con «Mi dashboard» y «Mi cuenta».
+            «Mi dashboard» fue un botón suelto aquí al lado durante unas horas:
+            dos accesos personales pegados competían por el mismo hueco. */}
         {user && nombre && <NavSaludo nombre={nombre} />}
 
-        {user && (
-          <Link href="/dashboard" className="blog-nav-panel" title="Ir a mi dashboard">
-            <LayoutDashboard size={15} strokeWidth={2.1} aria-hidden="true" />
-            <span>Mi dashboard</span>
-          </Link>
+        {/* Y para quien todavía no tiene cuenta, lo que sí le sirve: entrar o
+            registrarse. Antes ambas cosas vivían solo dentro del desplegable,
+            que es donde nadie busca el botón de registrarse. «Entrar» va en
+            texto y «Registrarse» en naranja: son dos acciones distintas y una
+            de ellas es la que interesa. */}
+        {!user && (
+          <span className="nav-acceso">
+            <Link href="/login" className="nav-acceso-entrar">Entrar</Link>
+            <Link href="/register" className="nav-acceso-registro">Registrarse</Link>
+          </span>
         )}
+
         <BlogMobileMenu user={user} isPremium={isPremium} userName={nombre} isAdmin={isAdmin} />
       </div>
     </nav>

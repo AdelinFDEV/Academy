@@ -1274,41 +1274,63 @@ html {
    hamburguesa era antes hijo directo de la rejilla; ahora va aquí dentro. */
 .blog-nav-end {
   justify-self: end;
+  /* Ocupa el alto de la barra (la rejilla centra sus columnas por defecto) para
+     que el desplegable del nombre pueda colgar desde el borde inferior. */
+  align-self: stretch;
   display: flex;
   align-items: center;
   gap: 0.55rem;
 }
 
-/* ── Saludo con el nombre de quien ha iniciado sesión ───────────────────────
-   Solo en pantallas anchas: por debajo la barra ya va justa entre el buscador,
-   el botón del panel y el menú, y el nombre ya sale dentro del desplegable. */
+/* ── El nombre de quien ha iniciado sesión, y su menú ───────────────────────
+   Pulsarlo abre «Mi dashboard» y «Mi cuenta». Antes «Mi dashboard» era un botón
+   suelto al lado: dos accesos personales pegados competían por el mismo hueco.
+
+   La moneda con la inicial se ve SIEMPRE, también en móvil: es el acceso al
+   panel, y esconderlo dejaría otra vez la vuelta al dashboard escondida en el
+   desplegable. Lo que se oculta en estrecho es solo el texto. */
+
+/* Ocupa el alto entero de la barra a propósito: el desplegable se posiciona con
+   `top: 100%`, así que si el contenedor midiera solo lo que el botón, el menú
+   colgaría desde dentro de la barra y le pisaría el borde inferior. */
+.nav-saludo-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+}
+
 .nav-saludo {
-  display: none;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding-right: 0.7rem;
-  margin-right: 0.15rem;
-  border-right: 1px solid rgba(240, 244, 255, 0.1);
-  cursor: default;
-  user-select: none;
+  height: 38px;
+  padding: 0 0.4rem 0 0.28rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
 }
 
-@media (min-width: 1024px) {
-  .nav-saludo { display: inline-flex; }
+.nav-saludo:hover,
+.nav-saludo.is-abierto {
+  background: rgba(240, 244, 255, 0.06);
+  border-color: rgba(240, 244, 255, 0.12);
 }
 
-/* La inicial, en una moneda naranja. Es lo que hace que el saludo se lea como
-   «tu sitio» y no como un texto suelto en una barra. */
+/* La inicial, en una moneda naranja. Es lo que hace que se lea como «tu sitio»
+   y no como un texto suelto en una barra. */
 .nav-saludo-avatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 27px;
-  height: 27px;
+  width: 29px;
+  height: 29px;
   flex-shrink: 0;
   border-radius: 50%;
   background: linear-gradient(140deg, var(--accent-orange-soft) 0%, var(--accent-orange) 100%);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: #10203a;
   box-shadow: 0 0 0 1px rgba(255, 107, 43, 0.28), 0 3px 10px var(--accent-orange-glow);
@@ -1318,6 +1340,7 @@ html {
   display: flex;
   flex-direction: column;
   line-height: 1.15;
+  text-align: left;
 }
 
 .nav-saludo-hola {
@@ -1339,19 +1362,105 @@ html {
   white-space: nowrap;
 }
 
-/* Botón de vuelta al panel. Presente en TODAS las páginas para quien tiene
-   sesión: antes solo se llegaba abriendo el desplegable, que es dos clics y
-   además hay que saber que está ahí. */
-.blog-nav-panel {
+.nav-saludo-flecha {
+  color: rgba(240, 244, 255, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.nav-saludo.is-abierto .nav-saludo-flecha {
+  transform: rotate(180deg);
+}
+
+/* En estrecho queda solo la moneda: el texto empujaría al menú fuera de la
+   barra, pero el acceso al panel tiene que seguir estando. */
+@media (max-width: 1023px) {
+  .nav-saludo-texto,
+  .nav-saludo-flecha { display: none; }
+  .nav-saludo { padding: 0 0.28rem; }
+}
+
+/* ── El desplegable ── */
+
+.nav-saludo-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 500;
+  min-width: 190px;
+  padding: 0.35rem;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 13px;
+  background: rgba(13, 26, 48, 0.98);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  animation: nav-saludo-entra 0.16s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes nav-saludo-entra {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nav-saludo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 9px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.84);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+.nav-saludo-item svg { color: rgba(240, 244, 255, 0.45); transition: color 0.16s ease; }
+
+.nav-saludo-item:hover {
+  color: #fff;
+  background: rgba(240, 244, 255, 0.07);
+}
+
+.nav-saludo-item:hover svg { color: var(--accent-orange-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-saludo-menu { animation: none; }
+  .nav-saludo-flecha { transition: none; }
+}
+
+
+/* ── Visitante sin cuenta: entrar o registrarse ─────────────────────────────
+   Antes ambas cosas vivían solo dentro del desplegable, que es donde nadie
+   busca el botón de registrarse. «Entrar» va en texto y «Registrarse» en
+   naranja: son dos acciones distintas y solo una interesa de verdad. */
+
+.nav-acceso {
   display: inline-flex;
   align-items: center;
-  gap: 0.42rem;
+  gap: 0.3rem;
+}
+
+.nav-acceso-entrar {
+  padding: 0 0.6rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.7);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.nav-acceso-entrar:hover { color: #fff; }
+
+.nav-acceso-registro {
+  display: inline-flex;
+  align-items: center;
   height: 34px;
-  padding: 0 0.85rem;
+  padding: 0 0.9rem;
   border: 1px solid color-mix(in srgb, var(--accent-orange) 42%, transparent);
   border-radius: 10px;
   background: var(--accent-orange-light);
-  font-size: 0.82rem;
+  font-size: 0.83rem;
   font-weight: 650;
   letter-spacing: -0.005em;
   color: var(--accent-orange-soft);
@@ -1361,23 +1470,27 @@ html {
     border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-.blog-nav-panel:hover {
+.nav-acceso-registro:hover {
   color: #fff;
   background: var(--accent-orange);
   border-color: var(--accent-orange);
   box-shadow: 0 4px 14px var(--accent-orange-glow);
 }
 
-/* En estrecho se queda el icono: el texto empujaría al menú fuera de la barra
-   justo en la anchura donde menos sitio hay. */
-@media (max-width: 640px) {
-  .blog-nav-panel {
-    padding: 0;
-    width: 34px;
-    justify-content: center;
-  }
-  .blog-nav-panel span { display: none; }
+/* En estrecho se queda solo «Registrarse»: es la acción que interesa, y
+   «Entrar» sigue estando dentro del desplegable. */
+@media (max-width: 720px) {
+  .nav-acceso-entrar { display: none; }
 }
+
+@media (max-width: 480px) {
+  .nav-acceso-registro {
+    height: 32px;
+    padding: 0 0.7rem;
+    font-size: 0.78rem;
+  }
+}
+
 
 .blog-nav-divider {
   width: 1px;
