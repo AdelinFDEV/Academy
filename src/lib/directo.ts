@@ -25,10 +25,24 @@ const DIAS_SESION = [1, 3, 5];
 const INICIO = 17;
 const FIN = 19;
 
+/**
+ * ⚠️ Las horas se escriben tal cual, **no se convierten a la zona del
+ * visitante**. Alguien mirando desde México o Argentina vería «17:00» y
+ * entendería las 17:00 suyas, que no son las mismas: llegaría tarde o no
+ * llegaría. Por eso `franjaEs` lleva la coletilla incorporada y es la que hay
+ * que usar; `horaEs` a secas solo vale donde el texto de alrededor ya dice de
+ * qué país se habla.
+ */
 export const HORARIO_DIRECTO = {
   dias: "Lunes, miércoles y viernes",
   horaEs: "17:00 a 19:00",
   horaRo: "18:00 a 20:00",
+  /** La forma correcta de enseñar la hora en cualquier sitio. */
+  franjaEs: "17:00 a 19:00 (hora de España)",
+  /** Para cuando la hora ya está escrita aparte. */
+  zonaEs: "hora de España",
+  /** Desde dónde se emite, que es lo que explica el desfase. */
+  franjaRo: "18:00 a 20:00 (hora de Rumanía)",
 } as const;
 
 const DIA_CORTO: Record<string, number> = {

@@ -5,6 +5,11 @@
   --bg-card: #112240;
   --bg-card-alt: #0d1f3c;
   --bg-elevated: #13243f;
+  /* Alto de la barra superior. Se declara aquí porque no solo lo usa la barra:
+     el rail del dashboard es `fixed` y arranca justo debajo. Cuando esto era un
+     número copiado a mano, la barra creció al añadirle el botón "Mi panel" y
+     apareció una franja vacía sobre el rail. */
+  --nav-h: 68px;
   --accent-orange: #ff6b2b;
   --accent-orange-soft: #ff8552;
   --accent-orange-glow: rgba(255, 107, 43, 0.15);
@@ -1249,7 +1254,11 @@ html {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 1.2rem 2rem;
+  /* Alto FIJO, no derivado del contenido: así el rail del dashboard sabe dónde
+     empezar sin adivinar, y añadirle un botón a la barra no vuelve a abrir un
+     hueco debajo. */
+  height: var(--nav-h);
+  padding: 0 2rem;
   border-bottom: 1px solid rgba(240, 244, 255, 0.06);
   position: sticky;
   top: 0;
@@ -1261,8 +1270,51 @@ html {
   justify-self: start;
 }
 
-.blog-nav > .btn-hamburger {
+/* Tercera columna de la barra: la vuelta al panel y el menú, juntos. El
+   hamburguesa era antes hijo directo de la rejilla; ahora va aquí dentro. */
+.blog-nav-end {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+/* Botón de vuelta al panel. Presente en TODAS las páginas para quien tiene
+   sesión: antes solo se llegaba abriendo el desplegable, que es dos clics y
+   además hay que saber que está ahí. */
+.blog-nav-panel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  height: 34px;
+  padding: 0 0.8rem;
+  border: 1px solid rgba(240, 244, 255, 0.13);
+  border-radius: 10px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: rgba(240, 244, 255, 0.82);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s ease, background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.blog-nav-panel:hover {
+  color: #fff;
+  background: rgba(240, 244, 255, 0.09);
+  border-color: rgba(240, 244, 255, 0.26);
+}
+
+/* En estrecho se queda el icono: el texto empujaría al menú fuera de la barra
+   justo en la anchura donde menos sitio hay. */
+@media (max-width: 640px) {
+  .blog-nav-panel {
+    padding: 0;
+    width: 34px;
+    justify-content: center;
+  }
+  .blog-nav-panel span { display: none; }
 }
 
 .blog-nav-divider {
@@ -1533,7 +1585,11 @@ html {
 
   /* Nav: logo izquierda Â· counter centro Â· hamburguesa derecha */
   .blog-nav {
-    padding: 0.85rem 1.1rem;
+    /* Más baja en móvil. Se declara sobre la propia barra y no en :root porque
+       aquí solo la necesita ella: el rail del dashboard está oculto por debajo
+       de 960 px, así que no hay nada más que deba seguirla. */
+    --nav-h: 58px;
+    padding: 0 1.1rem;
   }
 }
 
@@ -4738,7 +4794,11 @@ html {
 
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Blog nav Ã¢â‚¬â€ esconder texto secundario en pantallas muy estrechas Ã¢â€â‚¬Ã¢â€â‚¬ */
   .blog-nav {
-    padding: 0.85rem 1.1rem;
+    /* Más baja en móvil. Se declara sobre la propia barra y no en :root porque
+       aquí solo la necesita ella: el rail del dashboard está oculto por debajo
+       de 960 px, así que no hay nada más que deba seguirla. */
+    --nav-h: 58px;
+    padding: 0 1.1rem;
   }
 
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Post page Ã¢â€â‚¬Ã¢â€â‚¬ */

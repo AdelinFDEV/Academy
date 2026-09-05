@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Wallet, Radio, ArrowRight, Lock } from "lucide-react";
-import { proximaSesion } from "@/lib/directo";
+import { HORARIO_DIRECTO, proximaSesion } from "@/lib/directo";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import { destinoPorRuta } from "@/lib/herramientas";
 
@@ -72,7 +72,7 @@ export default async function DashboardAtajos({ isPremium }: { isPremium: boolea
           <span className="dash-atajo-pie">
             {sesion.enCurso
               ? "La sesión está en marcha ahora mismo"
-              : `Próxima sesión${sesion.relativo ? ` — ${sesion.cuando}` : ""} · 17:00 a 19:00`}
+              : `Próxima sesión${sesion.relativo ? ` — ${sesion.cuando}` : ""} · ${HORARIO_DIRECTO.franjaEs}`}
           </span>
         </span>
 

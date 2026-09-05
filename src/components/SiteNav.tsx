@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LayoutDashboard } from "lucide-react";
 import LiveCounter from "@/components/LiveCounter";
 import GuideSearch from "@/components/GuideSearch";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
@@ -29,7 +30,21 @@ export default function SiteNav({ user, isPremium, userName, isAdmin }: Props) {
         <span className="blog-nav-divider" aria-hidden="true" />
         <GuideSearch />
       </div>
-      <BlogMobileMenu user={user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
+      <div className="blog-nav-end">
+        {/* Vuelta al panel desde cualquier página, sin abrir el menú.
+            Hasta el 06-09-2026 la única forma de volver al dashboard era el
+            desplegable: dos clics y escondido, en PC y en móvil. Es el gesto
+            más repetido de quien tiene cuenta, así que ahora está siempre a la
+            vista. En pantallas estrechas se queda solo el icono, para no
+            empujar al menú fuera de la barra. */}
+        {user && (
+          <Link href="/dashboard" className="blog-nav-panel" title="Ir a mi panel">
+            <LayoutDashboard size={15} strokeWidth={2.1} aria-hidden="true" />
+            <span>Mi panel</span>
+          </Link>
+        )}
+        <BlogMobileMenu user={user} isPremium={isPremium} userName={userName} isAdmin={isAdmin} />
+      </div>
     </nav>
   );
 }

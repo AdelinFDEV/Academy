@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { HORARIO_DIRECTO as HORARIO } from "@/lib/directo";
 import {
   Radio, MessageSquare, ShieldCheck, Video, ArrowRight, Send,
 } from "lucide-react";
@@ -22,22 +23,15 @@ import "../herramientas/detalle.css";
  * día y hora fijos cada semana y quedan grabadas para los suscriptores.
  */
 
-/**
- * Horario de las sesiones, confirmado por el admin el 05-09-2026.
+/*
+ * El horario vive en `@/lib/directo`, que es de donde lo lee también la
+ * tarjeta del dashboard. Aquí había una copia, y una copia de un horario es
+ * un horario que algún día dirá dos cosas distintas.
  *
- * **La hora se publica en horario peninsular español**, que es donde está la
- * mayoría de la audiencia. El admin emite desde Rumanía a las 18:00-20:00, y
- * Rumanía va siempre una hora por delante de la España peninsular (EET/EEST
- * frente a CET/CEST), así que aquí son las 17:00-19:00 durante todo el año.
- *
- * Si algún día cambia el hueco, se cambia aquí y se actualiza en toda la
- * página: aparece en la nota del hero, en la ficha de datos y en la FAQ.
+ * Ojo con `franjaEs`: lleva incorporado el "(hora de España)" porque las horas
+ * NO se convierten a la zona del visitante. Quien mire desde México leería
+ * "17:00" y entendería las suyas.
  */
-const HORARIO = {
-  dias: "Lunes, miércoles y viernes",
-  horaEs: "17:00 a 19:00",
-  horaRo: "18:00 a 20:00",
-};
 
 export const metadata: Metadata = {
   title: "Trading en directo de NASDAQ y cripto",
@@ -117,7 +111,7 @@ const MOMENTOS = [
 const FAQ = [
   {
     q: "¿Cuándo son las sesiones?",
-    a: "Lunes, miércoles y viernes, de 17:00 a 19:00 hora peninsular española (18:00 a 20:00 en Rumanía, desde donde se emite). Se avisa en el canal privado de Telegram incluido en la suscripción Premium.",
+    a: "Lunes, miércoles y viernes, de 17:00 a 19:00 hora de España peninsular (18:00 a 20:00 en Rumanía, desde donde se emite). Las horas se publican siempre en hora española: no se ajustan solas a tu país, así que si vives fuera de España conviene que hagas la cuenta. Se avisa en el canal privado de Telegram incluido en la suscripción Premium.",
   },
   {
     q: "¿Y si no puedo asistir en directo?",
@@ -233,7 +227,7 @@ export default async function TradingEnDirectoPage() {
 
           <p className="det-stats-nota">
             <span className="det-stats-dot" aria-hidden="true" />
-            {HORARIO.dias}, de {HORARIO.horaEs} (hora peninsular española). El
+            {HORARIO.dias}, de <strong>{HORARIO.franjaEs}</strong>. El
             aviso, con el enlace, llega al canal privado de Telegram.
           </p>
         </header>
