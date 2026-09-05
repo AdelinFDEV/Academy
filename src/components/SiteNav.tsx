@@ -20,14 +20,11 @@ export default function SiteNav({ user, isPremium, userName, isAdmin }: Props) {
         adelin<span>btc</span>
       </Link>
       <div className="blog-nav-center">
-        {/* Las herramientas son el tercer pilar del sitio y hasta ahora solo se
-            llegaba a ellas por el menú desplegable. Va aquí, al mismo nivel que
-            la marca, y se oculta en pantallas estrechas: allí ya está en el
-            menú, y en la barra competiría con el buscador. */}
-        <Link href="/herramientas" className="blog-nav-link">
-          Herramientas
-        </Link>
-        <span className="blog-nav-divider" aria-hidden="true" />
+        {/* Aquí estuvo un enlace suelto a /herramientas entre el 05 y el
+            06-09-2026. Se retiró: la barra ya lleva el contador y el buscador,
+            y a las herramientas se llega desde el menú, desde la banda del hero
+            y desde el sidebar de la portada. No hace falta una cuarta puerta
+            compitiendo por el mismo espacio. */}
         <LiveCounter />
         <span className="blog-nav-divider" aria-hidden="true" />
         <GuideSearch />

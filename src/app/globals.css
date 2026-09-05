@@ -1279,30 +1279,9 @@ html {
   justify-self: center;
 }
 
-/* Enlace de primer nivel de la barra (hoy solo Herramientas, el tercer pilar).
-   Se oculta por debajo de 900px: en esa anchura la barra ya va justa entre el
-   contador y el buscador, y el menú desplegable lo cubre igual. */
-.blog-nav-link {
-  flex-shrink: 0;
-  padding: 0.3rem 0.1rem;
-  font-size: 0.86rem;
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  color: rgba(240, 244, 255, 0.72);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.blog-nav-link:hover {
-  color: rgba(240, 244, 255, 0.98);
-}
-
-@media (max-width: 900px) {
-  .blog-nav-link,
-  .blog-nav-link + .blog-nav-divider {
-    display: none;
-  }
-}
+/* Aquí vivió `.blog-nav-link`, el enlace suelto a Herramientas de la barra.
+   Se retiró de `SiteNav` el 06-09-2026 y con él sus estilos: una clase que ya
+   no usa nadie es justo como `globals.css` volvió a crecer la última vez. */
 
 .blog-nav::before {
   content: "";
