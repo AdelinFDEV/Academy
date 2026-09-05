@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import { BADGE_DEFS } from "@/components/Badges";
+import { BADGE_DEFS } from "@/lib/logros";
 import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {

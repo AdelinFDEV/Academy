@@ -3,10 +3,11 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, User, Lock, Sprout, BookOpen, Book, Flame, Zap } from "lucide-react";
+import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, User, Lock } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
-import DashboardSpotlight from "@/components/DashboardSpotlight";
+import DashboardAtajos from "@/components/DashboardAtajos";
+import { LOGROS } from "@/lib/logros";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
@@ -66,18 +67,10 @@ export default async function DashboardPage() {
     .filter((sg): sg is { slug: string; savedAt: string; meta: NonNullable<typeof sg.meta> } => !!sg.meta);
   const earnedBadgeIds = new Set((userBadgesData ?? []).map((b) => b.badge_id));
 
-  const DASH_BADGES = [
-    { id: "first-read", label: "Primer paso", icon: <Sprout size={18} aria-hidden="true" />, condition: "Lee tu primer artículo de la academia" },
-    { id: "reader",     label: "Lector",       icon: <BookOpen size={18} aria-hidden="true" />, condition: "Completa 5 artículos leídos" },
-    { id: "scholar",    label: "Estudioso",    icon: <Book size={18} aria-hidden="true" />, condition: "Alcanza 10 artículos leídos" },
-    { id: "streak3",    label: "Constante",    icon: <Flame size={18} aria-hidden="true" />, condition: "Entra 3 días seguidos a la academia" },
-    { id: "streak7",    label: "Dedicado",     icon: <Zap size={18} aria-hidden="true" />, condition: "Mantén una racha de 7 días consecutivos" },
-    {
-      id: "streak30", label: "Imparable", icon: <Gem size={18} aria-hidden="true" />,
-      condition: "Consigue 30 días consecutivos en la academia",
-      reward: "Tu perfil lucirá una ★ dorada visible en todos tus comentarios",
-    },
-  ];
+  // Los logros salen de `@/lib/logros`, que es la misma lista que pinta
+  // /dashboard/logros. Aquí había una copia a mano con SEIS de los dieciséis
+  // que hay, así que la tarjeta enseñaba "3/6" a quien tenía tres de dieciséis.
+  const DASH_BADGES = LOGROS;
   const badgesUnlockedCount = DASH_BADGES.filter((b) => earnedBadgeIds.has(b.id)).length;
 
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
@@ -121,6 +114,12 @@ export default async function DashboardPage() {
   ];
 
   return (
+    <>
+    {/* El rail va PRIMERO en el DOM aunque esté posicionado aparte: así el
+        tabulador y los lectores de pantalla recorren la navegación antes que
+        el contenido, que es el orden que se ve. */}
+    <DashboardToolsSidebar sections={TOOL_SECTIONS} />
+
     <div className="dash-page-wrap">
     <main className="dashboard-main">
 
@@ -161,8 +160,8 @@ export default async function DashboardPage() {
 
       <TwoFactorNudge />
 
-      {/* ── Spotlight: herramientas top ── */}
-      <DashboardSpotlight isPremium={isPremium} />
+      {/* ── Los dos atajos con dato vivo ── */}
+      <DashboardAtajos isPremium={isPremium} />
 
       {/* ── Logros ── */}
       <div className="dash-badges-card">
@@ -400,7 +399,7 @@ export default async function DashboardPage() {
       </div>
 
     </main>
-    <DashboardToolsSidebar sections={TOOL_SECTIONS} />
     </div>
+    </>
   );
 }

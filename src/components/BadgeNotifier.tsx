@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { BADGE_DEFS, GUIDE_BADGE_DEFS } from "@/components/Badges";
+import { BADGE_DEFS, GUIDE_BADGE_DEFS } from "@/lib/logros";
 
 type BadgeDef = (typeof BADGE_DEFS)[number];
 

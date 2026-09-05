@@ -203,246 +203,158 @@
     order: 1;
   }
 }
+/* ── Los dos atajos con dato vivo ───────────────────────────────────────────
+ *
+ * Sustituyen a las seis tarjetas del antiguo spotlight, retiradas el
+ * 06-09-2026: el usuario entra a su panel a ver lo suyo, no a que le vendan
+ * media academia. Quedan dos, y cada una porque enseña un dato que cambia —la
+ * rentabilidad de la cartera y la fecha de la próxima sesión—, no porque haya
+ * que anunciar la herramienta.
+ *
+ * La cifra manda en la jerarquía: es lo que hace que el ojo pare. */
 
-/* ── Spotlight cards (Diario / Guías / Trading en Directo) ── */
-
-.dash-spot-grid {
+.dash-atajos {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+  margin-bottom: 1.6rem;
 }
 
-.dash-spot-card {
+.dash-atajo {
+  --at: var(--accent-orange-soft);
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  background: linear-gradient(160deg, rgba(15,32,64,0.9) 0%, rgba(9,18,34,0.98) 100%);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "icono cuerpo"
+    "cta   cta";
+  align-items: start;
+  gap: 0.5rem 0.85rem;
+  padding: 1.05rem 1.15rem;
   border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 18px;
-  padding: 1.4rem 1.4rem 1.5rem;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--at) 11%, transparent) 0%, transparent 58%),
+    linear-gradient(160deg, rgba(14, 26, 56, 0.9) 0%, rgba(9, 18, 38, 0.96) 100%);
+  text-decoration: none;
   overflow: hidden;
-  isolation: isolate;
-  transition: border-color 0.25s, box-shadow 0.25s;
+  transition: border-color 0.22s ease, transform 0.22s ease;
 }
 
-.dash-spot-glow {
-  position: absolute;
-  top: -70px;
-  right: -70px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: -1;
-  filter: blur(2px);
+.dash-atajo--directo { --at: #a3a3ff; }
+
+.dash-atajo:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--at) 38%, transparent);
 }
 
-.dash-spot-card--trading {
-  border-color: rgba(255,107,43,0.22);
-  box-shadow: 0 0 32px rgba(255,107,43,0.05);
-}
-.dash-spot-card--trading .dash-spot-glow {
-  background: radial-gradient(circle, rgba(255,107,43,0.22) 0%, transparent 70%);
-}
-.dash-spot-card--trading:hover {
-  border-color: rgba(255,107,43,0.45);
-  box-shadow: 0 12px 40px rgba(255,107,43,0.16);
-}
-
-.dash-spot-card--guias {
-  border-color: rgba(255,209,102,0.22);
-  box-shadow: 0 0 32px rgba(255,209,102,0.05);
-}
-.dash-spot-card--guias .dash-spot-glow {
-  background: radial-gradient(circle, rgba(255,209,102,0.22) 0%, transparent 70%);
-}
-.dash-spot-card--guias:hover {
-  border-color: rgba(255,209,102,0.45);
-  box-shadow: 0 12px 40px rgba(255,209,102,0.14);
-}
-
-.dash-spot-card--directo {
-  border-color: rgba(140,140,255,0.16);
-}
-.dash-spot-card--directo .dash-spot-glow {
-  background: radial-gradient(circle, rgba(140,140,255,0.16) 0%, transparent 70%);
-}
-
-/* Variante genérica por color de acento (--spot): evita una clase por color.
-   La usan las tarjetas de herramientas añadidas al spotlight. */
-.dash-spot-card--accent {
-  border-color: color-mix(in srgb, var(--spot) 22%, transparent);
-}
-.dash-spot-card--accent .dash-spot-glow {
-  background: radial-gradient(circle, color-mix(in srgb, var(--spot) 22%, transparent) 0%, transparent 70%);
-}
-.dash-spot-card--accent:hover {
-  border-color: color-mix(in srgb, var(--spot) 45%, transparent);
-  box-shadow: 0 12px 40px color-mix(in srgb, var(--spot) 16%, transparent);
-}
-.dash-spot-icon--accent {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--spot) 22%, transparent), color-mix(in srgb, var(--spot) 8%, transparent));
-  color: var(--spot);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--spot) 20%, transparent) inset;
-}
-.dash-spot-cta--accent {
-  color: var(--spot);
-}
-
-.dash-spot-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.6rem;
-}
-
-.dash-spot-icon {
-  display: flex;
+.dash-atajo-icon {
+  grid-area: icono;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
-  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--at) 15%, transparent);
+  color: var(--at);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--at) 26%, transparent);
 }
 
-.dash-spot-icon--trading {
-  background: linear-gradient(135deg, rgba(255,107,43,0.22), rgba(255,154,0,0.1));
-  color: #ff9a4d;
-  box-shadow: 0 0 0 1px rgba(255,107,43,0.2) inset;
+.dash-atajo-cuerpo {
+  grid-area: cuerpo;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
 }
 
-.dash-spot-icon--guias {
-  background: linear-gradient(135deg, rgba(255,209,102,0.24), rgba(255,209,102,0.08));
-  color: #ffd166;
-  box-shadow: 0 0 0 1px rgba(255,209,102,0.2) inset;
+.dash-atajo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.45);
 }
 
-.dash-spot-icon--directo {
-  background: linear-gradient(135deg, rgba(140,140,255,0.2), rgba(140,140,255,0.06));
-  color: #a3a3ff;
-  box-shadow: 0 0 0 1px rgba(140,140,255,0.18) inset;
-}
-
-.dash-spot-badge {
+/* El punto rojo late solo cuando hay sesión en marcha. */
+.dash-atajo-vivo {
   display: inline-flex;
   align-items: center;
   gap: 0.28rem;
-  font-size: 0.64rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  padding: 0.28rem 0.55rem;
+  padding: 0.1rem 0.4rem;
   border-radius: 999px;
-  white-space: nowrap;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
 }
 
-.dash-spot-badge--premium {
-  background: rgba(230, 180, 85, 0.12);
-  color: var(--premium-gold);
-  border: 1px solid rgba(230, 180, 85, 0.3);
+.dash-atajo-vivo::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: dash-atajo-latido 1.6s ease-in-out infinite;
 }
 
-.dash-spot-badge--star {
-  background: linear-gradient(135deg, rgba(255,209,102,0.28), rgba(255,209,102,0.1));
-  color: #ffd166;
-  border: 1px solid rgba(255,209,102,0.3);
+@keyframes dash-atajo-latido {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
 }
 
-.dash-spot-badge--soon {
-  background: rgba(240, 244, 255, 0.07);
-  color: var(--text-muted);
-  border: 1px solid rgba(240, 244, 255, 0.1);
-}
-
-.dash-spot-badge--free {
-  background: rgba(52, 211, 153, 0.12);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.3);
-}
-
-.dash-spot-title {
-  font-size: 1.12rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.dash-spot-desc {
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--text-muted);
-  margin: 0;
-}
-
-.dash-spot-desc strong {
-  color: var(--text-primary);
+.dash-atajo-cifra {
+  font-size: 1.75rem;
   font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: #4ade80;
 }
 
-.dash-spot-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.1rem;
+.dash-atajo-cifra.is-baja { color: #f87171; }
+
+/* La fecha es texto, no número: con el mismo cuerpo que un porcentaje se
+   desbordaría en «miércoles, 9 de septiembre». */
+.dash-atajo-cifra--fecha {
+  font-size: 1.28rem;
+  color: rgba(240, 244, 255, 0.97);
+  text-transform: capitalize;
 }
 
-.dash-spot-chip {
+.dash-atajo-pie {
+  font-size: 0.775rem;
+  line-height: 1.45;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.dash-atajo-cta {
+  grid-area: cta;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.68rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: rgba(240, 244, 255, 0.05);
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  padding: 0.32rem 0.55rem;
-  border-radius: 999px;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.07);
+  font-size: 0.8rem;
+  font-weight: 650;
+  color: var(--at);
+  transition: gap 0.2s ease;
 }
 
-.dash-spot-chip--muted {
-  color: var(--text-muted);
+.dash-atajo:hover .dash-atajo-cta { gap: 0.55rem; }
+
+@media (max-width: 720px) {
+  .dash-atajos { grid-template-columns: 1fr; }
 }
 
-.dash-spot-cta {
-  margin-top: auto;
-  padding-top: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.84rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: gap 0.2s, opacity 0.2s;
-}
-
-.dash-spot-cta--trading {
-  color: #ff9a4d;
-}
-
-.dash-spot-cta--locked {
-  color: #ffb673;
-}
-
-.dash-spot-cta--guias {
-  color: #ffd166;
-}
-
-.dash-spot-cta--soon {
-  color: var(--text-muted);
-  cursor: default;
-}
-
-a.dash-spot-cta:hover {
-  gap: 0.6rem;
-}
-
-@media (max-width: 900px) {
-  .dash-spot-grid {
-    grid-template-columns: 1fr;
-  }
+@media (prefers-reduced-motion: reduce) {
+  .dash-atajo:hover { transform: none; }
+  .dash-atajo-vivo::before { animation: none; }
 }
 
 .dash-card-label {
@@ -4444,182 +4356,207 @@ a.dash-spot-cta:hover {
   .dtb-dock-label { font-size: 0.84rem; }
 }
 
+/* ── El armazón del dashboard ───────────────────────────────────────────────
+ *
+ * Rail fijo a la izquierda y contenido a su derecha, como cualquier panel al
+ * uso. Hasta el 06-09-2026 el menú era una tarjeta pegajosa a la DERECHA, con
+ * su borde redondeado y su margen: parecía un widget más de la página en vez de
+ * la navegación del panel, y quedaba en el lado al que nadie mira primero.
+ *
+ * El rail es `fixed`, no `sticky`: así ocupa la pantalla de arriba abajo y no
+ * se mueve al hacer scroll, aunque el contenido sea largo.
+ */
+:root {
+  --dtb-ancho: 264px;
+  /* Alto real de `.blog-nav`, medido en el navegador. La barra es `sticky`, así
+     que se queda arriba siempre y el rail tiene que empezar por debajo. */
+  --dtb-nav: 60px;
+}
+
 .dash-page-wrap {
-  max-width: 1300px;
-  margin: 0 auto;
+  margin-left: var(--dtb-ancho);
   padding: 0 2rem;
-  display: flex;
-  align-items: flex-start;
-  gap: 24px;
   position: relative;
   z-index: 2;
 }
 
 .dash-page-wrap .dashboard-main {
-  flex: 1;
+  /* El contenido se centra en el espacio que deja el rail. Sin tope se
+     estiraría hasta hacer ilegibles las líneas en pantallas anchas. */
+  max-width: 1040px;
   min-width: 0;
-  max-width: none;
-  margin: 0;
+  margin: 0 auto;
   padding-left: 0;
   padding-right: 0;
 }
 
 .dtb-sidebar {
-  width: 264px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 88px;
-  height: fit-content;
+  position: fixed;
+  top: var(--dtb-nav);
+  left: 0;
+  bottom: 0;
+  width: var(--dtb-ancho);
+  /* Por debajo de la barra superior (z-index 400), que sigue mandando. */
+  z-index: 300;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   background: linear-gradient(160deg, rgba(14,26,56,0.97) 0%, rgba(9,18,38,0.99) 100%);
-  border: 1px solid rgba(240,244,255,0.08);
-  border-radius: 18px;
-  margin-top: 2.5rem;
-}
-
-.dtb-sidebar-header {
-  padding: 18px 18px 14px;
-  border-bottom: 1px solid rgba(240,244,255,0.07);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.dtb-sidebar-title {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  /* Solo el borde que separa del contenido: los otros tres tocan el borde de
+     la pantalla y no pintan nada. */
+  border: 0;
+  border-right: 1px solid rgba(240,244,255,0.08);
+  border-radius: 0;
   margin: 0;
-  flex: 1;
+  padding-bottom: 1.5rem;
 }
+
+/* Barra de scroll discreta: el rail puede tener más herramientas que alto de
+   pantalla en portátiles pequeños. */
+.dtb-sidebar::-webkit-scrollbar { width: 6px; }
+.dtb-sidebar::-webkit-scrollbar-thumb {
+  background: rgba(240,244,255,0.12);
+  border-radius: 99px;
+}
+
+/* ── Filas del rail ─────────────────────────────────────────────────────────
+ *
+ * Rediseñadas el 06-09-2026. Antes cada herramienta era una tarjeta con icono
+ * en caja, nombre y descripción: en 264 px la descripción se cortaba a media
+ * frase («¿Qué Market Cap necesita tu tok…») y la lista salía tan alta que las
+ * últimas quedaban fuera de pantalla. Y encima de todo, dos títulos
+ * —HERRAMIENTAS y EDUCACIÓN— que no decían nada que el usuario no supiera.
+ *
+ * Ahora: una fila por herramienta, del alto de un icono, con el activo marcado.
+ * Los grupos se separan con una línea, no con un título. */
 
 .dtb-section {
-  padding: 14px 12px 10px;
-  border-bottom: 1px solid rgba(240,244,255,0.04);
+  padding: 0.55rem 0.6rem;
 }
 
-.dtb-section:last-child {
-  border-bottom: none;
-  padding-bottom: 14px;
-}
-
-.dtb-section-label {
-  font-size: 0.56rem;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent-orange);
-  margin: 0 0 8px 4px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.dtb-section-label::before {
-  content: '';
-  display: block;
-  width: 14px;
-  height: 1.5px;
-  background: var(--accent-orange);
-  opacity: 0.45;
-  flex-shrink: 0;
+/* Línea entre grupos, en vez de la etiqueta que había. */
+.dtb-section + .dtb-section {
+  border-top: 1px solid rgba(240, 244, 255, 0.06);
 }
 
 .dtb-section-tools {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
 .dtb-tool {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 9px 10px;
-  border-radius: 11px;
+  gap: 0.7rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 9px;
   text-decoration: none;
-  color: var(--text-secondary);
-  transition: background 0.16s, border-color 0.16s, color 0.16s;
-  cursor: pointer;
-  border: 1px solid transparent;
+  color: rgba(240, 244, 255, 0.66);
+  transition: color 0.16s ease, background-color 0.16s ease;
+}
+
+/* La barrita del activo se pinta siempre y se revela con scaleY, así el hover
+   no mueve nada de sitio. */
+.dtb-tool::before {
+  content: "";
+  position: absolute;
+  left: -0.6rem;
+  top: 50%;
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+  background: var(--accent-orange-soft);
+  transform: translateY(-50%) scaleY(0);
+  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 a.dtb-tool:hover {
-  background: rgba(255,107,43,0.07);
-  border-color: rgba(255,107,43,0.14);
-  color: var(--text-primary);
+  color: rgba(240, 244, 255, 0.97);
+  background: rgba(240, 244, 255, 0.045);
 }
 
-a.dtb-tool:hover .dtb-tool-icon {
-  background: rgba(255,107,43,0.18);
-  border-color: rgba(255,107,43,0.28);
+.dtb-tool.is-activa {
+  color: #fff;
+  background: rgba(240, 244, 255, 0.07);
 }
 
-.dtb-tool--dim {
-  opacity: 0.42;
-  cursor: not-allowed;
+.dtb-tool.is-activa::before {
+  transform: translateY(-50%) scaleY(1);
 }
 
 .dtb-tool-icon {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  background: rgba(255,107,43,0.07);
-  border: 1px solid rgba(255,107,43,0.14);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-orange);
-  transition: background 0.16s, border-color 0.16s;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  color: rgba(240, 244, 255, 0.42);
+  transition: color 0.16s ease;
 }
 
-.dtb-tool-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
+a.dtb-tool:hover .dtb-tool-icon,
+.dtb-tool.is-activa .dtb-tool-icon {
+  color: var(--accent-orange-soft);
 }
 
 .dtb-tool-name {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: inherit;
-  line-height: 1.2;
-}
-
-.dtb-tool-desc {
-  font-size: 0.67rem;
-  color: var(--text-muted);
+  flex: 1;
+  min-width: 0;
+  font-size: 0.855rem;
+  font-weight: 550;
+  letter-spacing: -0.006em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.3;
 }
 
+/* Lo que no se puede abrir se apaga, pero se sigue leyendo: saber que existe
+   es justo lo que empuja a suscribirse. */
+.dtb-tool--dim {
+  color: rgba(240, 244, 255, 0.38);
+  cursor: default;
+}
+
+.dtb-tool--dim .dtb-tool-icon {
+  color: rgba(240, 244, 255, 0.24);
+}
+
+/* El candado sustituye al texto "PRO": dice lo mismo y no compite con el
+   nombre de la herramienta. */
 .dtb-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  font-size: 0.58rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  padding: 3px 8px;
-  border-radius: 100px;
-  text-transform: uppercase;
 }
 
 .dtb-badge--premium {
-  background: rgba(255,107,43,0.1);
-  color: var(--accent-orange);
-  border: 1px solid rgba(255,107,43,0.22);
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: rgba(255, 138, 61, 0.13);
+  color: var(--accent-orange-soft);
 }
 
 .dtb-badge--soon {
-  background: rgba(240,244,255,0.05);
-  color: var(--text-muted);
-  border: 1px solid rgba(240,244,255,0.1);
+  padding: 0.1rem 0.38rem;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba(240, 244, 255, 0.07);
+  color: rgba(240, 244, 255, 0.5);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .dtb-tool,
+  .dtb-tool::before,
+  .dtb-tool-icon { transition: none; }
+}
+
 
 /* ── Barra inferior de herramientas (móvil) ──────────────────────────────
    Sólida y anclada al borde inferior del dispositivo, no flotante: se lee
@@ -4762,14 +4699,15 @@ a.dtb-tool:hover .dtb-tool-icon {
 
 .dtb-sheet .dtb-tool-name { font-size: 0.88rem; }
 
-.dtb-sheet .dtb-tool-desc { font-size: 0.73rem; white-space: normal; }
 
 @media (max-width: 960px) {
   .dtb-sidebar { display: none; }
   .dtb-dock    { display: flex; animation: dtb-dock-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
 
-  /* Hueco para que la barra no se coma el final de la página */
+  /* Sin rail no hay hueco que reservar a la izquierda, y abajo se deja sitio
+     para que la barra flotante no se coma el final de la página. */
   .dash-page-wrap {
+    margin-left: 0;
     padding: 0 1.25rem;
     padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
   }

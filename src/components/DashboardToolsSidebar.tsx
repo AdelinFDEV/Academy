@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet,
   ListOrdered, MessagesSquare, Network, Unlock, Map,
-  LayoutGrid, X, ChevronUp, Radio, Files, Trophy, Target, PieChart, Award, Shield, Radar,
+  LayoutGrid, X, ChevronUp, Radio, Files, Trophy, Target, PieChart, Award, Shield, Radar, Lock,
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -35,6 +36,7 @@ export type ToolSection = {
 export default function DashboardToolsSidebar({ sections }: { sections: ToolSection[] }) {
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const ruta = usePathname() ?? "";
 
   // Cierre animado: reproduce la salida y desmonta al terminar.
   const close = useCallback(() => {
@@ -58,23 +60,50 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
     };
   }, [open, close]);
 
+  /**
+   * Una fila del rail.
+   *
+   * Sin descripción: en una columna de 264 px el texto se cortaba a media frase
+   * («¿Qué Market Cap necesita tu tok…»), que informa menos que no ponerlo y
+   * hace la lista el doble de alta. El nombre y el icono bastan para reconocer
+   * una herramienta que ya conoces, que es para lo que sirve un menú.
+   */
   function renderTool(t: ToolItem) {
     const Icon = ICON_MAP[t.icon];
     const isClickable = !t.locked && !t.soon;
-    const cls = `dtb-tool${t.locked || t.soon ? " dtb-tool--dim" : ""}`;
+    // El activo sale de la ruta, no de un prop: así ninguna página tiene que
+    // acordarse de decir en cuál está.
+    const activa = ruta === t.href || (t.href !== "/dashboard" && ruta.startsWith(t.href + "/"));
+    const cls = [
+      "dtb-tool",
+      activa ? "is-activa" : "",
+      t.locked || t.soon ? "dtb-tool--dim" : "",
+    ].filter(Boolean).join(" ");
+
     const content = (
       <>
-        <div className="dtb-tool-icon">{Icon && <Icon size={15} aria-hidden="true" />}</div>
-        <div className="dtb-tool-text">
-          <span className="dtb-tool-name">{t.name}</span>
-          <span className="dtb-tool-desc">{t.desc}</span>
-        </div>
-        {t.soon    && <span className="dtb-badge dtb-badge--soon">Pronto</span>}
-        {t.locked  && !t.soon && <span className="dtb-badge dtb-badge--premium">PRO</span>}
+        <span className="dtb-tool-icon" aria-hidden="true">
+          {Icon && <Icon size={16} strokeWidth={1.9} />}
+        </span>
+        <span className="dtb-tool-name">{t.name}</span>
+        {t.soon && <span className="dtb-badge dtb-badge--soon">Pronto</span>}
+        {t.locked && !t.soon && (
+          <span className="dtb-badge dtb-badge--premium" title="Incluida en Premium">
+            <Lock size={10} strokeWidth={2.6} aria-hidden="true" />
+          </span>
+        )}
       </>
     );
     return isClickable ? (
-      <Link key={t.name} href={t.href} className={cls} onClick={close}>{content}</Link>
+      <Link
+        key={t.name}
+        href={t.href}
+        className={cls}
+        onClick={close}
+        aria-current={activa ? "page" : undefined}
+      >
+        {content}
+      </Link>
     ) : (
       <div key={t.name} className={cls}>{content}</div>
     );
@@ -83,13 +112,12 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <aside className="dtb-sidebar">
-        <div className="dtb-sidebar-header">
-          <p className="dtb-sidebar-title">Herramientas</p>
-        </div>
+      <aside className="dtb-sidebar" aria-label="Herramientas">
+        {/* Ni cabecera ni etiquetas de sección: el usuario ya sabe que está en
+            su panel, y "HERRAMIENTAS / EDUCACIÓN" ocupaba tres líneas para no
+            decir nada. Los grupos se distinguen por el separador. */}
         {sections.map((s) => (
           <div key={s.label} className="dtb-section">
-            <p className="dtb-section-label">{s.label}</p>
             <div className="dtb-section-tools">
               {s.tools.map((t) => renderTool(t))}
             </div>
@@ -130,7 +158,6 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
             <div className="dtb-sheet-body">
               {sections.map((s) => (
                 <div key={s.label} className="dtb-section">
-                  <p className="dtb-section-label">{s.label}</p>
                   <div className="dtb-section-tools">
                     {s.tools.map((t) => renderTool(t))}
                   </div>
