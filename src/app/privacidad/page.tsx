@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacidad" },
   title: "Política de Privacidad",
   description:
-    "Política de privacidad de AdelinBTC Academy conforme al RGPD (UE) 2016/679 y la LOPDGDD 3/2018.",
+    "Política de privacidad de AdelinBTC Academy conforme al RGPD (UE) 2016/679 y a la normativa rumana de protección de datos.",
 };
 
 export default function PrivacidadPage() {
@@ -15,15 +15,18 @@ export default function PrivacidadPage() {
 
       <p className="legal-intro">
         En {LEGAL.marca} respetamos tu privacidad y tratamos tus datos personales conforme al
-        Reglamento (UE) 2016/679 (RGPD) y a la Ley Orgánica 3/2018, de Protección de Datos Personales
-        y garantía de los derechos digitales (LOPDGDD). Esta política explica, de forma clara, qué datos
-        recogemos, con qué finalidad, sobre qué base legal y qué derechos tienes.
+        Reglamento (UE) 2016/679 (RGPD) y a la {LEGAL.leyProteccionDatos}, norma nacional aplicable por
+        estar el responsable establecido en {LEGAL.pais}. El RGPD es un reglamento europeo y te ampara
+        igual con independencia de dónde residas dentro de la Unión. Esta política explica, de forma
+        clara, qué datos recogemos, con qué finalidad, sobre qué base legal y qué derechos tienes.
       </p>
 
       <section>
         <h2>1. Responsable del tratamiento</h2>
         <ul>
           <li><strong>Titular:</strong> {LEGAL.titularNombre}</li>
+          <li><strong>Identificación fiscal:</strong> {LEGAL.identificadorFiscal}</li>
+          <li><strong>Domicilio:</strong> {LEGAL.domicilio} ({LEGAL.pais})</li>
           <li><strong>Marca:</strong> {LEGAL.marca}</li>
           <li><strong>Sitio web:</strong> {LEGAL.dominio}</li>
           <li><strong>Correo de contacto y ejercicio de derechos:</strong> {LEGAL.email}</li>
@@ -200,7 +203,14 @@ export default function PrivacidadPage() {
           la estadística asociada.
         </p>
         <p>
-          Si consideras que no hemos atendido correctamente tu solicitud, puedes reclamar ante la{" "}
+          Si consideras que no hemos atendido correctamente tu solicitud, puedes reclamar ante la
+          autoridad de control del país de establecimiento del responsable, la{" "}
+          <a href={LEGAL.autoridadControl.url} target="_blank" rel="noopener noreferrer">
+            {LEGAL.autoridadControl.nombre} ({LEGAL.autoridadControl.siglas})
+          </a>{" "}
+          de {LEGAL.pais}. El artículo 77 del RGPD te permite además presentar la reclamación{" "}
+          <strong>ante la autoridad de tu propio país de residencia</strong>, que la tramitará y la
+          trasladará: si vives en España, puedes dirigirte directamente a la{" "}
           <a href="https://www.aepd.es" target="_blank" rel="noopener noreferrer">Agencia Española de Protección de Datos</a>.
         </p>
       </section>

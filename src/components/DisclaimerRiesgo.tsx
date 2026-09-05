@@ -17,8 +17,12 @@ import { AlertTriangle } from "lucide-react";
  * ⚠️ NO ES ASESORAMIENTO JURÍDICO. Cubre lo evidente —no es recomendación,
  * resultados pasados, riesgo de pérdida total, ausencia de registro como
  * asesor, responsabilidad del usuario— pero **debe revisarlo un abogado**,
- * sobre todo por la normativa española y europea sobre promoción de
- * criptoactivos (CNMV y MiCA), que es específica y cambia.
+ * sobre todo por la normativa sobre promoción de criptoactivos, que es
+ * específica y cambia. Ojo al doble frente desde que el titular opera desde
+ * Rumanía (06-09-2026): manda MiCA a nivel europeo y la autoridad rumana (ASF)
+ * en el país de establecimiento, pero **el público objetivo es español**, así
+ * que las reglas de publicidad de la CNMV siguen siendo relevantes por ser a
+ * quien se dirige la comunicación.
  */
 
 type Variante = "portfolio" | "directo" | "diario" | "general";

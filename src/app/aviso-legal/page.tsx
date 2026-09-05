@@ -15,12 +15,16 @@ export default function AvisoLegalPage() {
       <section>
         <h2>1. Datos identificativos del titular</h2>
         <p>
-          En cumplimiento del artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad
-          de la Información y del Comercio Electrónico (LSSI-CE), se informa de que el titular del sitio
+          En cumplimiento de la {LEGAL.leyComercioElectronico}, y del artículo 5 del Reglamento (UE)
+          2022/2065 de Servicios Digitales, se informa de que el titular del sitio
           web <strong>{LEGAL.dominio}</strong> (en adelante, «el Sitio») es:
         </p>
         <ul>
-          <li><strong>Titular:</strong> {LEGAL.titularNombre} (persona física)</li>
+          <li><strong>Titular:</strong> {LEGAL.titularNombre}</li>
+          <li><strong>Forma jurídica:</strong> {LEGAL.formaJuridica}</li>
+          <li><strong>Identificación fiscal:</strong> {LEGAL.identificadorFiscal}</li>
+          <li><strong>Domicilio a efectos de notificaciones:</strong> {LEGAL.domicilio}</li>
+          <li><strong>País de establecimiento:</strong> {LEGAL.pais}</li>
           <li><strong>Marca comercial:</strong> {LEGAL.marca}</li>
           <li><strong>Correo electrónico de contacto:</strong> {LEGAL.email}</li>
           <li><strong>Actividad:</strong> {LEGAL.actividad}</li>
@@ -84,7 +88,7 @@ export default function AvisoLegalPage() {
         <p>
           Todos los contenidos del Sitio —textos, imágenes, gráficos, vídeos, logotipos, iconos, código
           fuente, software y diseño— son propiedad del titular o de terceros que han autorizado su uso, y
-          están protegidos por la normativa española y europea de propiedad intelectual e industrial. Queda
+          están protegidos por la normativa {LEGAL.gentilicio} y europea de propiedad intelectual e industrial. Queda
           prohibida su reproducción total o parcial sin autorización escrita previa del titular.
         </p>
       </section>
@@ -146,9 +150,13 @@ export default function AvisoLegalPage() {
       <section>
         <h2>10. Ley aplicable y jurisdicción</h2>
         <p>
-          Estas condiciones se rigen por la legislación española. Para la resolución de cualquier
-          controversia, y cuando el usuario tenga la condición de consumidor, serán competentes los
-          Juzgados y Tribunales del domicilio del usuario. Asimismo, la Comisión Europea pone a disposición
+          Estas condiciones se rigen por la legislación de {LEGAL.pais}, país de establecimiento del
+          titular. <strong>Esta elección no priva al usuario consumidor de la protección que le
+          otorgan las disposiciones imperativas de la ley de su país de residencia habitual</strong>,
+          conforme al artículo 6 del Reglamento (CE) 593/2008 (Roma I): si resides en España, conservas
+          íntegramente los derechos que te reconoce la normativa española de consumo. Para la resolución
+          de cualquier controversia, y cuando el usuario tenga la condición de consumidor, serán
+          competentes los Juzgados y Tribunales del domicilio del usuario. Asimismo, la Comisión Europea pone a disposición
           una plataforma de resolución de litigios en línea accesible en{" "}
           <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">ec.europa.eu/consumers/odr</a>.
         </p>
