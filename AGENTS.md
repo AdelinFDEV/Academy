@@ -297,6 +297,29 @@ Para ampliar un término: añadirle `extended` (HTML ya escrito, ~150-250 palabr
 
 **`term` es la clave de los guardados de los usuarios** (tabla `saved_terms`, vía `/api/terms`). Cambiar ese texto deja huérfanos los favoritos de todo el mundo. El `slug` sí se puede tocar mientras el término no esté publicado; una vez indexado, cambiarlo exige una redirección.
 
+### Ampliar un término: hay un guardarraíl, y no es opcional
+
+Las 50 fichas rondan las 205 palabras. El plan es llevarlas a 800-1500 para
+competir con Binance y Bit2Me, y ahí aparece el peligro real: **rellenar**. Una
+ficha larga y hueca posiciona PEOR que la corta de hoy.
+
+```bash
+npm run check:glosario
+```
+
+Se aplica **a partir de 450 palabras**, así que las cortas de hoy no dan error:
+no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien. Exige
+800-2000 palabras, tres `<h2>`, un ejemplo con números, tres enlaces internos,
+un apoyo visual, no repetir la definición corta, densidad del término por debajo
+del 2,5 % y **ninguna frase calcada de otra ficha**.
+
+Ese último es el que más importa: reciclar párrafos entre términos es el atajo
+evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
+
+**El orden lo decide Search Console, no la intuición** — se amplían las que ya
+reciben impresiones. La lista de por dónde empezar, con los datos, está en
+[`TAREAS.md`](./TAREAS.md).
+
 ## Toda entrada nueva sale con 2-4 enlaces internos
 
 Es **obligatorio**, y la regla completa vive en `/admin/posts-instrucciones` (bloque 10). El resumen: enlazar al diccionario (`/glosario/<slug>`) para la jerga, a una guía cuando el concepto da para más, y a otra entrada cuando el texto ya la menciona.

@@ -68,6 +68,54 @@ Que cada usuario pueda subir su avatar.
 
 ---
 
+### 4. El diccionario en profundidad — plantarle cara a Binance
+
+Hoy son **50 términos de ~205 palabras de media** (el más corto, `bull-market`, 179; el más largo, `inflacion`, 276). Las páginas de Binance Academy o Bit2Me para esos mismos términos rondan las **1.000-2.500**. Esa distancia es la razón de estar en posición 33 y no en la 5.
+
+**El objetivo final es que los 50 tengan una ficha capaz de competir de tú a tú.** Pero no de golpe, y por un motivo que no es la pereza: ampliar cincuenta a la vez lleva a rellenar, y **una ficha larga y hueca posiciona PEOR que la corta de hoy**.
+
+#### Por dónde empezar: lo que Google ya te está mandando
+
+Datos reales de Search Console, del 29 de agosto al 3 de septiembre de 2026 (46 impresiones, 7 clics, posición media 33,7). **Cinco de las once consultas del sitio son definiciones**, y eso con las fichas cortas:
+
+| Término | Consultas que ya lo buscan | Impresiones | Estado |
+|---|---|---|---|
+| `exchange` | «que es un exchange», «que es exchange», «que es exchanges» | 4 + la ficha ya recibe 4 | **Primero** |
+| `hot-wallet` | «hot wallet» | 2 | **Segundo** |
+| `roi` | «qué es el roi» | 1 | **Tercero** |
+
+Después de esos tres, la siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`, `staking`— son los siguientes candidatos.
+
+**Regla de selección, y es la importante:** a partir de la cuarta ficha, **el orden lo decide Search Console, no la intuición**. Rendimiento → Consultas, y se amplían las que ya tengan impresiones. Ampliar un término que nadie busca es trabajo perdido por bueno que quede.
+
+#### Las reglas para que Google no lo lea como relleno
+
+Están **verificadas por `npm run check:glosario`**, que se niega a dar por buena una ficha que no las cumpla. Se aplican a partir de 450 palabras, así que las 50 cortas de hoy no dan error: no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien.
+
+| Regla | Mínimo | Por qué |
+|---|---|---|
+| **Longitud** | 800-2.000 palabras | Por debajo no compite; por encima casi siempre sobra texto |
+| **Estructura** | ≥ 3 `<h2>` | Un muro de párrafos no lo lee nadie, y Google no sabe de qué va cada parte |
+| **Números** | al menos un dato o ejemplo con cifras | Cualquiera define «apalancamiento»; pocos ponen la cuenta. Es lo que no tiene el texto genérico |
+| **Enlaces internos** | ≥ 3 | Es lo que convierte 50 fichas sueltas en un cuerpo |
+| **Apoyo visual** | 1 `.prose-chart`, tabla o `.prose-callout` | La misma exigencia que ya tienen las entradas |
+| **Sin repetir la definición corta** | literal prohibida | La página ya muestra las dos: repetirla es duplicado interno |
+| **Densidad del término** | < 2,5 % | Repetirlo en cada frase es la señal de relleno más vieja, y hoy penaliza |
+| **Sin frases calcadas** | 0 entre fichas y 0 dentro | Reciclar párrafos al ampliar cincuenta es el atajo evidente, y es duplicado bajo tu propio dominio |
+
+#### Y lo que ningún script puede comprobar
+
+El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de la de Binance:
+
+1. **El ángulo español.** Binance escribe para el mundo. Tú puedes hablar de Hacienda, del modelo 721, de cómo tributa eso en España. Es lo que ya te está trayendo la consulta más buscada.
+2. **El error típico.** La estructura que ya usan tus fichas —qué es / por qué importa / **error típico**— es justo lo que no tienen las webs grandes, que se quedan en la definición.
+3. **Números tuyos.** Un ejemplo con cifras reales de una operación vale más que tres párrafos de teoría.
+4. **Escribir para quien empieza.** Es el lector al que apunta la academia, y el que peor tratan las webs de los exchanges.
+
+⚠️ **No ampliar por lotes.** Una ficha, publicarla, y a la siguiente. Si se escriben diez seguidas se acaba reciclando estructura y frases sin darse cuenta — y eso es precisamente lo que el script caza.
+
+---
+
 ## Menor, y ya identificado
 
 - [ ] **Fichas públicas que faltan.** Cuatro herramientas siguen sin página propia: calculadora de riesgo, watchlist, Mi Portfolio y Logros. Son las únicas que aún salen con candado en `/herramientas` y apagadas en el sidebar. La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.
