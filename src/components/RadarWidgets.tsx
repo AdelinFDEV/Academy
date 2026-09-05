@@ -1,0 +1,181 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { TrendingUp, TrendingDown, Gauge, ArrowRight } from "lucide-react";
+
+/**
+ * Los dos widgets del Radar Diario —Bitcoin 24h y Miedo y Codicia—, extraídos
+ * para que **la portada y el radar pinten exactamente lo mismo**.
+ *
+ * Estaban escritos dentro de `RadarClient`. Copiarlos a la portada habría
+ * creado dos versiones que se desincronizan a la primera mejora, que es el
+ * problema que ya nos costó dos fallos en esta web (la calculadora que seguía
+ * pidiendo registro y el directo anunciado como «próximamente»).
+ *
+ * Se alimentan de `/api/radar`, que es público y cachea 5 minutos: los datos
+ * son los mismos y están igual de vivos en los dos sitios.
+ */
+
+export interface RadarBtc {
+  price: number;
+  change24h: number;
+  high24h: number;
+  low24h: number;
+  marketCap: number;
+  volume24h: number;
+}
+
+export interface RadarFng {
+  value: number;
+  classification: string;
+}
+
+const usd = (n: number, max = 0) =>
+  "$" + n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: max });
+
+function abbrev(n: number): string {
+  if (n >= 1e12) return "$" + (n / 1e12).toFixed(2) + "T";
+  if (n >= 1e9) return "$" + (n / 1e9).toFixed(2) + "B";
+  if (n >= 1e6) return "$" + (n / 1e6).toFixed(1) + "M";
+  return usd(n);
+}
+
+const pct = (n: number) => (n >= 0 ? "+" : "") + n.toFixed(2) + "%";
+
+export function fngMeta(value: number): { label: string; color: string } {
+  if (value <= 24) return { label: "Miedo extremo", color: "#f87171" };
+  if (value <= 44) return { label: "Miedo", color: "#fb923c" };
+  if (value <= 55) return { label: "Neutral", color: "#fbbf24" };
+  if (value <= 74) return { label: "Codicia", color: "#a3e635" };
+  return { label: "Codicia extrema", color: "#4ade80" };
+}
+
+/** Bitcoin en las últimas 24 h: precio, variación, rango del día y volumen. */
+export function RadarBtcCard({ btc, loaded }: { btc: RadarBtc | null; loaded: boolean }) {
+  // Dónde está el precio actual dentro del rango del día, en porcentaje.
+  const rangePos = btc && btc.high24h > btc.low24h
+    ? ((btc.price - btc.low24h) / (btc.high24h - btc.low24h)) * 100
+    : 50;
+
+  return (
+    <section className="rd-card rd-card--btc">
+      <div className="rd-card-head">
+        <span className="rd-card-title">Bitcoin · últimas 24h</span>
+        <span className="rd-btc-tag">BTC/USD</span>
+      </div>
+      {btc ? (
+        <>
+          <div className="rd-btc-price-row">
+            <span className="rd-btc-price">{usd(btc.price)}</span>
+            <span className={`rd-btc-change ${btc.change24h >= 0 ? "up" : "down"}`}>
+              {btc.change24h >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+              {pct(btc.change24h)}
+            </span>
+          </div>
+          <div className="rd-range">
+            <div className="rd-range-track">
+              <span className="rd-range-dot" style={{ left: `${rangePos}%` }} />
+            </div>
+            <div className="rd-range-ends">
+              <span className="rd-range-low">Mín {usd(btc.low24h)}</span>
+              <span className="rd-range-high">Máx {usd(btc.high24h)}</span>
+            </div>
+          </div>
+          <div className="rd-btc-foot">
+            <div><span>Cap. mercado</span><strong>{abbrev(btc.marketCap)}</strong></div>
+            <div><span>Volumen 24h</span><strong>{abbrev(btc.volume24h)}</strong></div>
+          </div>
+        </>
+      ) : (
+        <div className="rd-skel">{loaded ? "Sin datos" : "Cargando…"}</div>
+      )}
+    </section>
+  );
+}
+
+/** Índice de Miedo y Codicia, con el anillo de progreso. */
+export function RadarFngCard({ fng, loaded }: { fng: RadarFng | null; loaded: boolean }) {
+  if (!fng) {
+    return (
+      <section className="rd-card rd-card--fng">
+        <div className="rd-card-head">
+          <span className="rd-card-title"><Gauge size={15} /> Miedo y Codicia</span>
+        </div>
+        <div className="rd-skel">{loaded ? "Sin datos" : "Cargando…"}</div>
+      </section>
+    );
+  }
+
+  const meta = fngMeta(fng.value);
+
+  return (
+    <section className="rd-card rd-card--fng">
+      <div className="rd-card-head">
+        <span className="rd-card-title"><Gauge size={15} /> Miedo y Codicia</span>
+      </div>
+      <div className="rd-fng">
+        <div
+          className="rd-fng-ring"
+          style={{ background: `conic-gradient(${meta.color} ${fng.value * 3.6}deg, rgba(240,244,255,0.08) 0deg)` }}
+        >
+          <div className="rd-fng-inner">
+            <span className="rd-fng-val" style={{ color: meta.color }}>{fng.value}</span>
+            <span className="rd-fng-max">/100</span>
+          </div>
+        </div>
+        <span className="rd-fng-label" style={{ color: meta.color }}>{meta.label}</span>
+        <span className="rd-fng-note">Sentimiento del mercado cripto</span>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Bloque de la portada: los dos widgets en vivo más la salida al Radar.
+ *
+ * Va tras el hero y antes del contenido editorial. Se pide en cliente igual
+ * que en el radar, así que el dato es el mismo y se refresca al entrar.
+ */
+export default function RadarWidgetsHome() {
+  const [btc, setBtc] = useState<RadarBtc | null>(null);
+  const [fng, setFng] = useState<RadarFng | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    let vivo = true;
+    fetch("/api/radar")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d: { btc: RadarBtc | null; fng: RadarFng | null }) => {
+        if (!vivo) return;
+        setBtc(d.btc);
+        setFng(d.fng);
+      })
+      .catch(() => { /* sin datos: las tarjetas lo dicen solas */ })
+      .finally(() => { if (vivo) setLoaded(true); });
+    return () => { vivo = false; };
+  }, []);
+
+  return (
+    <section className="rdh" aria-label="El mercado hoy">
+      <div className="rdh-head">
+        <div>
+          <span className="rdh-eyebrow">
+            <span className="rdh-dot" aria-hidden="true" />
+            En vivo
+          </span>
+          <h2 className="rdh-title">El mercado, ahora mismo</h2>
+        </div>
+        <Link href="/herramientas/radar" className="rdh-cta">
+          Ver el Radar Diario
+          <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+        </Link>
+      </div>
+
+      <div className="rdh-grid">
+        <RadarBtcCard btc={btc} loaded={loaded} />
+        <RadarFngCard fng={fng} loaded={loaded} />
+      </div>
+    </section>
+  );
+}

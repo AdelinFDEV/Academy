@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { esPrefetchDe, ipDe, registrar, tramoDe } from "@/lib/rate-limit";
 
 // Routes that require an authenticated session.
 const protectedRoutes = ["/dashboard", "/cuenta", "/logros", "/portfolio"];
@@ -10,79 +11,33 @@ const adminRoutes = ["/admin"];
 // mid-recovery-flow even when the user has a temporary recovery session.
 const authOnlyRoutes = ["/login", "/register"];
 
-// Rate limiting for sensitive API routes (checkout, stripe portal).
-// Note: login/register auth is handled client-side by Supabase JS directly,
-// so rate-limiting those POST routes here has no effect — Supabase's own
-// rate limiting covers that path.
-// Tramo estricto: rutas muy sensibles (pago). Pocas peticiones por ventana larga.
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_MAX = 10;
-const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-const rateLimitedApis = ["/api/checkout", "/api/stripe/portal", "/api/account/delete"];
-
-// Tramo amplio: rutas públicas de escritura/contadores propensas a spam
-// (inserciones anónimas, likes, comentarios). Límite generoso para no molestar
-// al uso normal pero cortar el abuso trivial.
-const writeLimitMap = new Map<string, { count: number; resetAt: number }>();
-const WRITE_LIMIT_MAX = 80;
-const WRITE_LIMIT_WINDOW_MS = 60 * 1000;
-const writeLimitedApis = [
-  "/api/guide-shares",
-  "/api/guide-visit",
-  "/api/site-visit",
-  "/api/guide-likes",
-  "/api/guide-saves",
-  "/api/guide-quiz-completion",
-  "/api/guide-badge",
-  "/api/comments",
-  "/api/likes",
-  "/api/shares",
-];
-
-function hitLimit(
-  map: Map<string, { count: number; resetAt: number }>,
-  ip: string,
-  max: number,
-  windowMs: number
-): boolean {
-  const now = Date.now();
-  const entry = map.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    map.set(ip, { count: 1, resetAt: now + windowMs });
-    return false;
-  }
-
-  if (entry.count >= max) return true;
-  entry.count++;
-  return false;
-}
-
-function isRateLimited(ip: string): boolean {
-  return hitLimit(rateLimitMap, ip, RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS);
-}
+// El limitador por IP vive en `@/lib/rate-limit`. Nota heredada que sigue
+// siendo cierta: el login y el registro los hace Supabase JS directamente
+// desde el navegador, así que limitar esas rutas aquí no serviría de nada —
+// la fuerza bruta contra el login la corta el propio Supabase.
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Rate-limit our own API routes. Sensitive payment routes get a strict tier;
-  // public write/counter routes get a generous per-minute tier to stop spam.
-  const isSensitive = rateLimitedApis.some((r) => pathname.startsWith(r));
-  const isWrite = writeLimitedApis.some((r) => pathname.startsWith(r));
-  if (isSensitive || isWrite) {
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-      request.headers.get("x-real-ip") ??
-      "unknown";
+  // Límite por IP para TODA la web —páginas incluidas—, con un tramo distinto
+  // según lo que cueste cada ruta. Va lo PRIMERO de todo, antes de crear el
+  // cliente de Supabase: a quien se pasa del cupo no le montamos una sesión.
+  const tramo = tramoDe(pathname, esPrefetchDe(request.headers));
+  if (tramo) {
+    const { limitado, reintentarEn } = registrar(ipDe(request.headers), tramo);
 
-    const limited = isSensitive
-      ? isRateLimited(ip)
-      : hitLimit(writeLimitMap, ip, WRITE_LIMIT_MAX, WRITE_LIMIT_WINDOW_MS);
+    if (limitado) {
+      const esApi = pathname.startsWith("/api");
+      const cabeceras = {
+        "Retry-After": String(reintentarEn),
+        "Content-Type": esApi ? "application/json" : "text/plain; charset=utf-8",
+      };
 
-    if (limited) {
       return new NextResponse(
-        JSON.stringify({ error: "Demasiadas peticiones. Espera un momento." }),
-        { status: 429, headers: { "Content-Type": "application/json" } }
+        esApi
+          ? JSON.stringify({ error: "Demasiadas peticiones. Espera un momento." })
+          : "Demasiadas peticiones. Espera un momento y vuelve a intentarlo.",
+        { status: 429, headers: cabeceras }
       );
     }
   }
@@ -168,6 +123,11 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Se excluyen los estáticos: no necesitan sesión y hacerlos pasar por aquí
+    // solo gasta invocaciones. Ojo al vídeo (mp4/webm): el navegador lo pide
+    // POR TROZOS con peticiones de rango, así que la portada sola generaba un
+    // puñado de pasadas por el middleware por cada reproducción. Las fuentes de
+    // next/font salen bajo _next/static, ya cubierto.
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|mp4|webm|mov|mp3|woff|woff2|ttf)$).*)",
   ],
 };

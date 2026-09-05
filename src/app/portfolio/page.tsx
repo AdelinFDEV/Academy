@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import PortfolioClient from "@/components/PortfolioClient";
+import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
+import "../herramientas/detalle.css";
 
 export const metadata: Metadata = {
   title: "Portfolio Adelin",
@@ -49,6 +51,12 @@ export default async function PortfolioPage() {
           isAdmin={isAdmin}
           isLoggedIn={!!user}
         />
+
+        {/* El descargo va DEBAJO de las posiciones, no encima: aquí es donde
+            alguien acaba de ver qué compro y a qué precio, y es el momento en
+            que hay que dejar claro que no es una recomendación. Es el mismo
+            componente que la ficha pública, para que no digan cosas distintas. */}
+        <DisclaimerRiesgo variante="portfolio" />
       </main>
 
       <Footer />

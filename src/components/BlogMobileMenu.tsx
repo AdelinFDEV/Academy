@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
+import { destinoPorRuta } from "@/lib/herramientas";
 import {
   FileText, Folder, BookOpen, GraduationCap, LayoutGrid, Radio,
   TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar,
@@ -47,6 +48,17 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
   }, [open]);
 
   const close = () => setOpen(false);
+
+  /**
+   * Destino de cada herramienta según quién mire. La regla NO se escribe aquí:
+   * la decide el catálogo (`@/lib/herramientas`), que es la fuente única.
+   *
+   * Antes cada enlace llevaba su propio ternario, y así fue como la calculadora
+   * siguió mandando a `/register` después de abrirse al público. De paso, quien
+   * tiene cuenta pero no Premium ahora va directo a `/premium` en vez de a una
+   * herramienta que iba a rebotarle.
+   */
+  const destino = (ruta: string) => destinoPorRuta(ruta, { logueado: user, premium: isPremium });
 
   const tradingLocked = !user || !isPremium;
 
@@ -111,13 +123,24 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Herramientas</span>
 
-              <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/dashboard/trading"} className={`blog-mobile-tool-link${a("/dashboard/trading")}`} onClick={close}>
+              {/* La landing va la primera de la sección: es la que explica las
+                  ocho, y en la barra superior solo se ve en pantallas anchas. */}
+              <Link
+                href="/herramientas"
+                className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/herramientas")}`}
+                onClick={close}
+              >
+                <LayoutGrid size={15} aria-hidden="true" />
+                Ver todas las herramientas
+              </Link>
+
+              <Link href={destino("/dashboard/trading")} className={`blog-mobile-tool-link${a("/dashboard/trading")}`} onClick={close}>
                 <TrendingUp size={15} aria-hidden="true" />
                 Diario de Trading
                 {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={!user ? "/register" : "/dashboard/watchlist"} className={`blog-mobile-tool-link${a("/dashboard/watchlist")}`} onClick={close}>
+              <Link href={destino("/dashboard/watchlist")} className={`blog-mobile-tool-link${a("/dashboard/watchlist")}`} onClick={close}>
                 <Eye size={15} aria-hidden="true" />
                 Watchlist
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
@@ -129,29 +152,32 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}
               </Link>
 
+              {/* La calculadora se usa SIN cuenta (tres cálculos y luego se
+                  pide el registro). Antes este enlace mandaba a /register
+                  directamente, así que nadie llegaba a probarla. */}
               <Link
-                href={!user ? "/register" : "/calculadora"}
+                href="/calculadora"
                 className={`blog-mobile-tool-link${a("/calculadora")}`}
                 onClick={close}
               >
                 <Target size={15} aria-hidden="true" />
                 Predicción de Precio
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
+                {!user && <span className="mobile-free-badge">FREE · Sin registro</span>}
               </Link>
 
-              <Link href={tradingLocked ? (!user ? "/register" : "/dashboard") : "/portfolio"} className={`blog-mobile-tool-link${a("/portfolio")}`} onClick={close}>
+              <Link href={destino("/portfolio")} className={`blog-mobile-tool-link${a("/portfolio")}`} onClick={close}>
                 <PieChart size={15} aria-hidden="true" />
                 Portfolio Adelin
                 {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={user ? "/herramientas/liberaciones" : "/register"} className={`blog-mobile-tool-link${a("/herramientas/liberaciones")}`} onClick={close}>
+              <Link href={destino("/herramientas/liberaciones")} className={`blog-mobile-tool-link${a("/herramientas/liberaciones")}`} onClick={close}>
                 <Unlock size={15} aria-hidden="true" />
                 Liberaciones de Tokens
                 {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={user ? "/herramientas/radar" : "/register"} className={`blog-mobile-tool-link${a("/herramientas/radar")}`} onClick={close}>
+              <Link href={destino("/herramientas/radar")} className={`blog-mobile-tool-link${a("/herramientas/radar")}`} onClick={close}>
                 <Radar size={15} aria-hidden="true" />
                 Radar Diario
                 {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
@@ -163,7 +189,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
               </Link>
 
-              <Link href={!user ? "/register" : "/dashboard/calculadora-riesgo"} className={`blog-mobile-tool-link${a("/dashboard/calculadora-riesgo")}`} onClick={close}>
+              <Link href={destino("/dashboard/calculadora-riesgo")} className={`blog-mobile-tool-link${a("/dashboard/calculadora-riesgo")}`} onClick={close}>
                 <Shield size={15} aria-hidden="true" />
                 Calculadora de Riesgo
                 {!user && <span className="mobile-free-badge">FREE · Registro</span>}

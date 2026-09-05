@@ -26,23 +26,24 @@ npm run check && npx tsc --noEmit
 
 | Vas a crear… | Lo que NO se negocia |
 |---|---|
-| **Entrada** | Las [3 preguntas](#resumen-operativo-de-una-entrada-nueva) antes de escribir · 500-1500 palabras · mínimo 1 `.prose-chart` · 2-4 enlaces internos · `seo_title` ≤48 y `meta_description` ≤160 · portada en **WebP** · aprobación del admin antes de publicar |
-| **Guía** | Alta en `GUIDES` (`src/lib/guides.ts`) · `alternates.canonical` propia · `<GuideBreadcrumbJsonLd>` · su propio `[slug].css` · cierre fijo con `GuideInteractions`, `AsesoriaBand` y `Footer` |
+| **Entrada** | Las [3 preguntas](#resumen-operativo-de-una-entrada-nueva) antes de escribir · 500-1500 palabras · mínimo 1 `.prose-chart` · 2-4 enlaces internos · **todo término técnico enlazado al diccionario, creándolo si no existe** · `seo_title` ≤48 y `meta_description` ≤160 · portada en **WebP** · aprobación del admin antes de publicar |
+| **Guía** | Alta en `GUIDES` (`src/lib/guides.ts`) · `alternates.canonical` propia · `<GuideBreadcrumbJsonLd>` · su propio `[slug].css` · **todo término técnico enlazado al diccionario, creándolo si no existe** · cierre fijo con `GuideInteractions` y `Footer` |
 | **Término del diccionario** | Campo `extended` (~150-250 palabras) o **no existe como URL** · `seeAlso` con tres slugs que existan · no tocar `term`, que es la clave de los guardados |
 | **Página pública nueva** | Alta en `STATIC_ROUTES` (`src/app/sitemap.ts`) · `alternates.canonical` a mano · título ≤48 y descripción ≤160 |
 | **Portada de cualquier cosa** | **WebP siempre**, 1600 px de ancho y calidad 82, antes de subirla |
 
 Cada fila está desarrollada, con su porqué, en [«Cómo funciona el SEO de este sitio»](#cómo-funciona-el-seo-de-este-sitio-estado-actual). Lo de arriba es lo que hay que cumplir; lo de abajo es por qué.
 
-## Las cinco que más caro salen
+## Las seis que más caro salen
 
 Son las que ya se rompieron alguna vez, y ninguna la caza el compilador:
 
 1. **Publicar sin aprobación del admin.** `published = true` **manda un aviso a su grupo de Telegram** desde `anunciarPendientes()`. Si no ha dicho que sí, se inserta con `published = false`.
-2. **Enlazar a un destino que no existe.** Un término del diccionario sin `extended` devuelve **404**, y una guía que no esté en `GUIDES` tampoco existe. Comprobar antes de escribir el enlace.
-3. **Subir una portada sin convertirla.** El panel admite hasta 5 MB: **que entre no significa que valga**. Un PNG de 2,7 MB hace más daño a la carga que todo lo que se gane optimizando el servidor.
-4. **Poner una canónica en un `layout.tsx`.** En Next los metadatos del layout los heredan **todas** las rutas hijas, así que una canónica ahí le pone la misma URL a media web.
-5. **Meter en el sitemap una ruta que redirige o exige sesión.** La protección vive en el middleware `src/proxy.ts`, no en el `page.tsx`, así que mirar la página no basta.
+2. **Soltar un término técnico sin enlazarlo al diccionario.** En toda entrada y toda guía, la primera aparición de cada tecnicismo va enlazada a `/glosario/<slug>`, y **si el término no existe en el diccionario se crea antes de publicar**. Es la regla que más se olvida porque el texto «se entiende igual» — pero expulsa al principiante y desperdicia el bloque de URLs más grande del sitio. La detalla la [regla del diccionario](#-regla-del-diccionario--se-aplica-a-toda-entrada-y-toda-guía-sin-excepción), y `check:contenido` avisa de las menciones sin enlazar.
+3. **Enlazar a un destino que no existe.** Un término del diccionario sin `extended` devuelve **404**, y una guía que no esté en `GUIDES` tampoco existe. Comprobar antes de escribir el enlace.
+4. **Subir una portada sin convertirla.** El panel admite hasta 5 MB: **que entre no significa que valga**. Un PNG de 2,7 MB hace más daño a la carga que todo lo que se gane optimizando el servidor.
+5. **Poner una canónica en un `layout.tsx`.** En Next los metadatos del layout los heredan **todas** las rutas hijas, así que una canónica ahí le pone la misma URL a media web.
+6. **Meter en el sitemap una ruta que redirige o exige sesión.** La protección vive en el middleware `src/proxy.ts`, no en el `page.tsx`, así que mirar la página no basta.
 
 ## El estado del plan
 
@@ -52,12 +53,60 @@ Lo que queda por hacer está en su bloque **«🔻 RETOMAR AQUÍ»**: el **punto
 
 **Si se cierra algún punto más**, tres cosas siempre: marcar la casilla y anotar el commit en `SEO-PLAN.md`, traer aquí lo que cambie el día a día, y verificar en producción tras desplegar.
 
-## Compromiso abierto: las herramientas tienen que posicionar
+## Punto 13: las herramientas ya posicionan — hecho en local, PENDIENTE DE DESPLEGAR
 
-**Recordárselo al admin en cada sesión hasta que esté hecho.** Lo pidió expresamente el 30 de agosto de 2026.
+Hecho entre el 4 y el 5 de septiembre de 2026, del compromiso que el admin pidió el 30 de agosto. **Todavía no está verificado en producción**, que es lo que este documento exige para darlo por cerrado: hasta que se despliegue y se compruebe, el punto sigue abierto en [`SEO-PLAN.md`](./SEO-PLAN.md).
 
-Los tres pilares del sitio son **entradas, guías y herramientas**. Las dos primeras están en el sitemap; **las herramientas no tienen ni una URL indexable** — `/herramientas/radar` y `/herramientas/liberaciones` exigen premium, así que Google solo ve la redirección. Es el punto 13 de [`SEO-PLAN.md`](./SEO-PLAN.md), y ahora que los doce están cerrados es lo siguiente. No es abrir las herramientas: es darles una landing pública que muestre una parte y deje el resto tras el muro.
+Lo que se hizo:
 
+- **`/herramientas` es una landing pública** con las diez herramientas agrupadas por intención de uso, `ItemList` + `FAQPage` y un dato real por herramienta. Antes esa URL daba **404**.
+- **Tres fichas públicas por herramienta**: `/herramientas/portfolio`, `/herramientas/diario` y `/trading-en-directo`. Explican qué hay dentro sin abrir el muro, con FAQ y datos estructurados.
+- **`/calculadora` dejó de exigir cuenta.** Es la única herramienta que no usa ningún dato propio, así que cerrarla no protegía nada y costaba la puerta de entrada gratuita. Se usa sin registro con un tope de tres cálculos, y lleva texto explicativo propio: era una página sin una sola frase que indexar.
+- **El diccionario** pasó de 43 a **49 términos** y ganó `DefinedTermSet`.
+
+**Lo que queda:** las fichas de `radar` y `liberaciones`. Es lo de mejor retorno: «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas concretas y de competencia baja. Con la plantilla ya hecha, es escribir el contenido y rellenar `paginaPublica` en el catálogo.
+
+### El catálogo de herramientas es FUENTE ÚNICA
+
+Vive en **`src/lib/herramientas.ts`** y lo consumen el hero de la portada, la landing, el sidebar, la tarjeta de Premium y las fichas. **No hagas una segunda lista.**
+
+Esto no es preferencia de estilo: el 5 de septiembre de 2026 había cuatro listas escritas a mano y eso causó tres fallos reales en producción local — la calculadora abierta al público que seguía mostrando el modal de registro, el trading en directo anunciado como «próximamente» cuando ya había sesiones, y la web diciendo ocho herramientas en un sitio y nueve en otro.
+
+Al añadir una herramienta al catálogo aparece sola en los cinco sitios, con el recuento actualizado. Campos que mandan:
+
+| Campo | Para qué |
+|---|---|
+| `acceso` | `"gratis"`, `"cuenta"`, `"premium"` o `"proximamente"`. **Manda sobre `href`**: de aquí salen las etiquetas, los muros y a dónde va cada botón |
+| `desc` | Copy corto y comercial, para el hero |
+| `resumen` | Copy largo e indexable, para la landing |
+| `paginaPublica` | Ficha pública propia, si la tiene. Si falta, «Ver detalles» cae en su ancla de `/herramientas` |
+| `premiumHref` | La herramienta en sí, tras el muro. **No confundir con `paginaPublica`** |
+
+Los helpers `accesoPorRuta()`, `destinoPorRuta()` y `detalleDe()` deciden el destino según quién mire. Úsalos en vez de escribir ternarios por tu cuenta.
+
+### El sistema visual de las fichas
+
+**`src/app/herramientas/detalle.css`** define el lenguaje de las páginas de herramienta y del diccionario: fondo técnico con rejilla y orbes, cabeceras de sección numeradas, marcas de agua, tarjetas con cuerpo y el cierre con halo. Hereda de la antigua página de asesoría, que era la mejor resuelta del sitio.
+
+Para una página nueva de este tipo: importa `detalle.css`, envuélvela en `.det-main` con su `--det-accent` y usa las piezas ya existentes. **Ojo con los fallbacks claros**: la primera versión de `/herramientas` usaba `var(--surface-card, #fff)` y las tarjetas salían en blanco sobre el fondo oscuro.
+
+### Un solo descargo de responsabilidad
+
+**`src/components/DisclaimerRiesgo.tsx`** es el único sitio donde vive ese texto, con cuatro variantes (`portfolio`, `directo`, `diario`, `general`). Todas cierran con el mismo bloque de responsabilidad, que es innegociable: deja por escrito que la decisión es de quien lee y que esto **no es un grupo de señales**.
+
+No escribas avisos legales a mano en una página: si el texto vive en dos sitios acaban diciendo cosas distintas, y entonces no protege — la defensa de «lo advertí» se cae si en una página lo advertiste y en otra no. Había dos avisos sueltos de una línea (Mi Portfolio y Radar) que decían mucho menos; ahora todos pasan por el componente. El pie de página lleva la misma cláusula, y es el único sitio que cubre también entradas y guías.
+
+⚠️ **No es asesoramiento jurídico.** Cubre lo evidente pero **debe revisarlo un abogado**, sobre todo por la normativa española y europea de promoción de criptoactivos.
+
+### No prometas lo que el producto no hace
+
+Al escribir sobre una herramienta, **abre su código y comprueba que hace lo que vas a decir**. En una sola sesión aparecieron tres textos que prometían de más, los tres en la página de pago:
+
+- «Diario de Trading con **retos y niveles**» — no existen; están previstos, y ahora se anuncian como próximos en los 9 sitios donde salían.
+- Un badge de **«−60 %»** olvidado tras subir el precio a 49,99 €, anunciando una rebaja inexistente.
+- **«Para siempre»** sobre el precio, cuando la propia FAQ dice que se conserva *mientras la suscripción siga activa*.
+
+Ninguno se buscó: salieron al ir a documentar cada herramienta. Es el tipo de cosa que acaba en una reclamación.
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
@@ -165,6 +214,21 @@ Es **obligatorio**, y la regla completa vive en `/admin/posts-instrucciones` (bl
 **El ancla tiene que ser una palabra que ya estaba en el texto.** Nunca se añade una frase para poder colocar un enlace, y nunca se escribe «pincha aquí»: el texto del enlace es lo que le dice a Google de qué va el destino.
 
 Y comprueba el destino antes de escribirlo: un término sin `extended` da 404, y una guía que no esté en `GUIDES` tampoco existe.
+
+### 🔴 REGLA DEL DICCIONARIO — se aplica a TODA entrada y TODA guía, sin excepción
+
+**Todo término técnico que aparezca por primera vez en una entrada o en una guía tiene que estar enlazado a su definición del diccionario.** Y si ese término **no existe todavía en el diccionario, se crea primero y luego se enlaza**. No se publica dejándolo suelto «porque se entiende por el contexto».
+
+El proceso, siempre en este orden:
+
+1. **Antes de dar por terminado el texto, repásalo buscando jerga**: nombres de mecanismos (*vesting*, *staking*, *halving*), de instrumentos (*futuros*, *stablecoin*), de métricas (*market cap*, *oferta circulante*) y de operativa (*apalancamiento*, *stop-loss*, *liquidación*).
+2. **Comprueba cuáles están ya** en `src/lib/glosario.ts` con su campo `extended`.
+3. **Los que falten, créalos** siguiendo las reglas de la sección del diccionario: `term`, `slug`, `category`, `definition` corta, `extended` de ~150-250 palabras y `seeAlso` con tres slugs que existan.
+4. **Enlaza la primera aparición** de cada término en el texto, y solo la primera: repetir el mismo enlace cinco veces no aporta y ensucia la lectura.
+
+**Por qué esto no es cosmético.** Son tres cosas a la vez: quien empieza entiende lo que lee sin salir del sitio, cada término gana enlaces internos que lo posicionan —el diccionario son 49 URLs indexables, el bloque más grande del sitio— y el texto deja de asumir un vocabulario que el lector objetivo no tiene. Escribir «el vesting libera el 20 %» sin explicar *vesting* expulsa exactamente al principiante al que va dirigida la academia.
+
+`npm run check:contenido` **avisa de los términos del diccionario que una entrada menciona sin enlazar**, así que esto no depende de que nadie se acuerde. El aviso no bloquea —hay menciones que no son la primera, o que van dentro de una cita— pero conviene mirarlo entero antes de publicar.
 
 ## Lo que SÍ hay que hacer al crear algo nuevo
 
@@ -325,13 +389,12 @@ Cada guía es un componente React independiente (ver `/admin/guias-instrucciones
 
 ### Cierre obligatorio de toda guía
 
-Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
+Las dos últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
 
 1. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
-2. `<AsesoriaBand variant="guide" />` — banda de asesoría 1:1
-3. `<Footer />`
+2. `<Footer />`
 
-El import va junto al de `Footer`: `import AsesoriaBand from "@/components/AsesoriaBand";`. La banda **no lleva CSS en el `[slug].css` de la guía** — sus estilos están en `globals.css` porque se comparte con home, dashboard y premium. Precios y textos salen de `src/lib/asesoria.ts`, nunca hardcodeados en la guía. Detalle completo en `/admin/guias-instrucciones` (bloque 04).
+> **Eran tres.** Entre las dos iba `<AsesoriaBand variant="guide" />`, la banda de asesoría 1:1. **La asesoría se retiró de la web el 04-09-2026** porque el admin no la está ofreciendo de momento: se quitó de las 7 guías, del dashboard, de premium, de la portada y del menú del bot, y `/asesoria` quedó como stub que redirige a `/premium` (mismo patrón que `/terminos`). El componente, su CSS y `src/lib/asesoria.ts` con los precios **siguen en el historial de git** para cuando se reactive; no hace falta reescribirlos.
 
 Las **entradas del blog no necesitan este patrón**: todas se renderizan con la misma plantilla genérica (`post/[slug]/page.tsx`) y comparten el mismo vocabulario de estilos (`.prose-content` y clases `.prose-*` en `globals.css`) — no hay CSS por-entrada que crear. **Decisión confirmada explícitamente por el admin**: cada entrada nueva es una fila en la tabla `posts` (título + HTML + metadatos), nunca un componente/página de código propia. Motivos: (1) cero código nuevo por entrada = cero riesgo de que `globals.css` vuelva a crecer sin control, (2) publicar así no consume prácticamente nada de la cuota gratuita de Supabase — el texto de cientos de entradas pesa unos pocos MB, muy lejos del límite de 500MB de la BD; lo único remotamente relevante es el storage de imágenes de portada (1GB gratis), y a un ritmo de 1 entrada cada 1–3 días tardaría años en acercarse al límite.
 

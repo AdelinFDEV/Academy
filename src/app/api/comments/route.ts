@@ -15,8 +15,11 @@ export async function POST(request: Request) {
   const post_id = formData.get("post_id") as string;
   const content = formData.get("content") as string;
 
+  // El listado de entradas vive en /articulos. Antes esto mandaba a /blog, que
+  // no existe: quien enviaba el formulario incompleto acababa en un 404 en vez
+  // de volver a donde estaba.
   if (!post_id || !content?.trim()) {
-    return NextResponse.redirect(new URL("/blog", request.url));
+    return NextResponse.redirect(new URL("/articulos", request.url));
   }
 
   // Anti-spam (global): un usuario solo puede tener UN comentario pendiente a la

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
-import AsesoriaBand from "@/components/AsesoriaBand";
 import SiteNav from "@/components/SiteNav";
 import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
@@ -328,8 +327,6 @@ export default async function CiclosDeBitcoinPage() {
         </div>
       </section>
 
-      {/* Asesoria 1:1 */}
-      <AsesoriaBand variant="guide" />
 
       <Footer />
     </div>

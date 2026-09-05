@@ -1,0 +1,336 @@
+/* Diccionario Cripto — listado.
+   El marco (fondo técnico, hero, marca de agua, cifras) sale de
+   `herramientas/detalle.css`, que esta página importa. Aquí van solo el
+   buscador, las tarjetas de término y la paginación. */
+
+.gl-main {
+  max-width: 940px;
+}
+
+/* ── Buscador y categorías ──────────────────────────────────────────────── */
+
+.gl-filtros {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.gl-buscador {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.95rem;
+  min-height: 46px;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 13px;
+  background: rgba(9, 13, 24, 0.6);
+  color: rgba(240, 244, 255, 0.45);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.gl-buscador:focus-within {
+  border-color: color-mix(in srgb, var(--det-accent) 45%, transparent);
+  background: rgba(9, 13, 24, 0.85);
+}
+
+.gl-buscador input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 0.94rem;
+  color: rgba(240, 244, 255, 0.94);
+}
+
+.gl-buscador input::placeholder {
+  color: rgba(240, 244, 255, 0.35);
+}
+
+/* Quita la X nativa del type=search, que en cada navegador se ve distinta. */
+.gl-buscador input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.gl-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.gl-cat {
+  padding: 0.42rem 0.85rem;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.03);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.6);
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.gl-cat:hover {
+  color: rgba(240, 244, 255, 0.92);
+  border-color: rgba(240, 244, 255, 0.22);
+}
+
+.gl-cat.is-activa {
+  color: #06222a;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--det-accent-2) 0%, var(--det-accent) 100%);
+}
+
+.gl-conteo {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.4);
+}
+
+.gl-conteo-pag {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+/* ── Tarjetas de término ────────────────────────────────────────────────── */
+
+.gl-lista {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 780px) {
+  .gl-lista { grid-template-columns: 1fr 1fr; }
+}
+
+.gl-termino {
+  display: flex;
+  flex-direction: column;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 15px;
+  background: rgba(9, 13, 24, 0.55);
+  transition: border-color 0.22s ease, transform 0.22s ease;
+}
+
+/* Los términos fuera de la página actual llevan el atributo `hidden`, pero la
+   regla de arriba les da `display: flex` y una declaración de autor gana al
+   `display: none` del navegador. Sin esto se veían los 49 a la vez. */
+.gl-termino[hidden] {
+  display: none;
+}
+
+.gl-termino:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--det-accent) 28%, transparent);
+}
+
+.gl-termino-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Es un <h2>: hay que anular el margen del navegador. */
+.gl-termino-nombre {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 650;
+  letter-spacing: -0.014em;
+  color: rgba(240, 244, 255, 0.96);
+  text-decoration: none;
+}
+
+.gl-termino-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.gl-termino-link:hover {
+  color: var(--det-accent);
+}
+
+.gl-termino-acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.gl-termino-cat {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+}
+
+/* Un color por categoría: se distingue de un vistazo sin leer la etiqueta. */
+.gl-termino-cat--básicos { color: #7ea6ff; }
+.gl-termino-cat--trading { color: #ff9a4d; }
+.gl-termino-cat--defi { color: #34d399; }
+.gl-termino-cat--seguridad { color: #f472b6; }
+
+.gl-guardar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  background: transparent;
+  color: rgba(240, 244, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.gl-guardar:hover:not(:disabled) {
+  color: rgba(240, 244, 255, 0.85);
+  border-color: rgba(240, 244, 255, 0.25);
+}
+
+.gl-guardar.is-guardado {
+  color: var(--det-accent);
+  border-color: color-mix(in srgb, var(--det-accent) 40%, transparent);
+}
+
+.gl-guardar:disabled { opacity: 0.5; cursor: default; }
+
+.gl-termino-def {
+  margin: 0;
+  font-size: 0.89rem;
+  line-height: 1.62;
+  color: rgba(240, 244, 255, 0.6);
+}
+
+/* Al pie, para que las tarjetas de una fila terminen alineadas. */
+.gl-termino-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: auto;
+  padding-top: 0.8rem;
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--det-accent) 85%, #ffffff);
+  text-decoration: none;
+  transition: gap 0.2s ease;
+}
+
+.gl-termino-mas:hover { gap: 0.45rem; }
+
+.gl-vacio {
+  grid-column: 1 / -1;
+  padding: 2.2rem 0;
+  text-align: center;
+  font-size: 0.94rem;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+/* ── Paginación ─────────────────────────────────────────────────────────── */
+
+.gl-paginacion {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.08);
+}
+
+.gl-pag-flecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 40px;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.82);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.gl-pag-flecha:hover:not(:disabled) {
+  background: rgba(240, 244, 255, 0.09);
+  border-color: rgba(240, 244, 255, 0.24);
+}
+
+.gl-pag-flecha:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.gl-pag-numeros {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.gl-pag-num {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 0.4rem;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 0.85rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: rgba(240, 244, 255, 0.6);
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.gl-pag-num:hover {
+  color: rgba(240, 244, 255, 0.95);
+  background: rgba(240, 244, 255, 0.06);
+}
+
+.gl-pag-num.is-activa {
+  color: #06222a;
+  background: linear-gradient(135deg, var(--det-accent-2) 0%, var(--det-accent) 100%);
+}
+
+.gl-pag-elipsis {
+  padding: 0 0.15rem;
+  color: rgba(240, 244, 255, 0.3);
+}
+
+/* En móvil el texto de las flechas sobra: los iconos ya lo dicen, y así los
+   números caben sin apretarse. */
+@media (max-width: 560px) {
+  .gl-pag-flecha-texto { display: none; }
+  .gl-pag-flecha { padding: 0 0.7rem; }
+  .gl-pag-num { min-width: 32px; height: 32px; }
+  .gl-paginacion { gap: 0.4rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-termino:hover { transform: none; }
+}

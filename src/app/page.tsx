@@ -16,8 +16,11 @@ import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
 import HeroSpotlight from "@/components/HeroSpotlight";
+import RadarWidgetsHome from "@/components/RadarWidgets";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { GUIDES } from "@/lib/guides";
+import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
+import "./herramientas/radar/radar.css";
 import "./home.css";
 import type { PostCategoryRef } from "@/lib/types";
 
@@ -124,6 +127,10 @@ export default async function HomePage() {
   const userSavedSet = new Set(userSaveRows?.filter((r) => r.saved).map((r) => r.post_id) ?? []);
   const userLikedSet = new Set(userLikeRows?.map((r) => r.post_id) ?? []);
 
+  // Cifras reales de la cartera para la tarjeta del hero. Si falla, la
+  // tarjeta cae a su microvisual de siempre y nadie se entera.
+  const resumenPortfolio = await resumenPortfolioPublico();
+
   const latestGuide = GUIDES[GUIDES.length - 1];
 
   // Count posts per category
@@ -181,7 +188,12 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <HeroSpotlight isLoggedIn={!!user} isPremium={isPremium} guidesCount={GUIDES.length} />
+          <HeroSpotlight
+            isLoggedIn={!!user}
+            isPremium={isPremium}
+            guidesCount={GUIDES.length}
+            portfolio={resumenPortfolio}
+          />
 
           {!user && (
             <div className="hero-trust hero-anim hero-anim-4">
@@ -213,6 +225,16 @@ export default async function HomePage() {
           )}
         </div>
       </div>
+
+      {/* ── El mercado ahora mismo ──────────────────────────────────────────
+          Los dos widgets del Radar Diario, en vivo y con el mismo componente
+          que usa la propia herramienta (`@/components/RadarWidgets`): si un
+          día se mejoran allí, aquí cambian solos.
+
+          Va justo aquí, entre el hero y el contenido editorial, porque es
+          información que caduca: primero lo que pasa hoy, después lo que se
+          lee con calma. */}
+      <RadarWidgetsHome />
 
       {/* ── Fila destacada: entrada principal + última guía (50/50, full width) ── */}
       {(enrichedHero || latestGuide) && (
@@ -361,6 +383,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
 
       <Footer />
 

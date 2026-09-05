@@ -120,7 +120,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                     <div className="post-author-row">
                       <span className="post-author">AdelinBTC</span>
                     </div>
-                    <h3 className="post-card-title">{post.title}</h3>
+                    <h2 className="post-card-title">{post.title}</h2>
                     {post.excerpt && <p className="post-card-excerpt">{post.excerpt}</p>}
                     {post.is_premium ? (
                       <span className="post-read-more is-premium"><Icon name="lock" size={14} /> Desbloquear</span>

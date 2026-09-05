@@ -1279,6 +1279,31 @@ html {
   justify-self: center;
 }
 
+/* Enlace de primer nivel de la barra (hoy solo Herramientas, el tercer pilar).
+   Se oculta por debajo de 900px: en esa anchura la barra ya va justa entre el
+   contador y el buscador, y el menú desplegable lo cubre igual. */
+.blog-nav-link {
+  flex-shrink: 0;
+  padding: 0.3rem 0.1rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: rgba(240, 244, 255, 0.72);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.blog-nav-link:hover {
+  color: rgba(240, 244, 255, 0.98);
+}
+
+@media (max-width: 900px) {
+  .blog-nav-link,
+  .blog-nav-link + .blog-nav-divider {
+    display: none;
+  }
+}
+
 .blog-nav::before {
   content: "";
   position: absolute;
@@ -7165,6 +7190,111 @@ select {
   background: linear-gradient(160deg, rgba(255, 122, 0, 0.05) 0%, rgba(240, 244, 255, 0.02) 100%);
 }
 
+/* Texto explicativo bajo la calculadora: es lo único indexable de la página,
+   así que se lee como artículo, no como pie de página. */
+
+.calc-explica {
+  max-width: 68ch;
+  margin: 2.6rem auto 0;
+  padding: 0 0.2rem;
+}
+
+.calc-explica-title {
+  margin: 1.8rem 0 0.7rem;
+  font-size: 1.14rem;
+  line-height: 1.32;
+  letter-spacing: -0.01em;
+  color: rgba(240, 244, 255, 0.94);
+}
+
+.calc-explica-title:first-child {
+  margin-top: 0;
+}
+
+.calc-explica p {
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(240, 244, 255, 0.66);
+}
+
+.calc-explica a {
+  color: rgba(255, 160, 60, 0.95);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Muro suave de la calculadora: aparece tras los tres cálculos gratis de
+   quien no tiene cuenta. Ocupa el hueco del resultado, no lo tapa con una
+   capa encima — así no hay nada que "levantar" desde el inspector. */
+
+.calc-restantes {
+  margin: 0 0 0.7rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(240, 244, 255, 0.62);
+}
+
+.calc-restantes a {
+  color: rgba(255, 160, 60, 0.95);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.calc-gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.55rem;
+  padding: 2.2rem 1.4rem;
+}
+
+.calc-gate-title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.94);
+}
+
+.calc-gate-text {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(240, 244, 255, 0.62);
+}
+
+.calc-gate-cta {
+  margin-top: 0.5rem;
+  padding: 0.62rem 1.15rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1205;
+  background: linear-gradient(135deg, #ffb347 0%, #ff7a00 100%);
+  text-decoration: none;
+  transition: filter 0.18s ease, transform 0.18s ease;
+}
+
+.calc-gate-cta:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.calc-gate-alt {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.calc-gate-alt a {
+  color: rgba(240, 244, 255, 0.8);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .calc-result-empty {
   display: flex;
   flex-direction: column;
@@ -7833,14 +7963,18 @@ select {
   border-radius: 50px;
 }
 
-.premium-pitch-discount {
+/* Contador de herramientas. Ocupa el sitio del antiguo badge "-60%", que se
+   quedó olvidado al subir el precio a 49,99 € y anunciaba una rebaja que ya no
+   existía. La cifra sale del catálogo, así que nunca se queda corta. */
+.premium-pitch-count {
   font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  color: #ff6b6b;
-  background: rgba(255, 85, 85, 0.12);
-  border: 1px solid rgba(255, 85, 85, 0.3);
-  padding: 0.28rem 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.55);
+  background: rgba(240, 244, 255, 0.06);
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  padding: 0.28rem 0.62rem;
   border-radius: 50px;
 }
 
@@ -7889,9 +8023,11 @@ select {
   height: 34px;
   flex-shrink: 0;
   border-radius: 10px;
-  background: rgba(255, 107, 43, 0.12);
-  border: 1px solid rgba(255, 107, 43, 0.25);
-  color: var(--accent-orange);
+  /* Cada herramienta con su color, el mismo del catálogo: la lista se escanea
+     mucho mejor que con ocho iconos naranjas iguales. */
+  background: color-mix(in srgb, var(--pf-color, #ff6b2b) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pf-color, #ff6b2b) 26%, transparent);
+  color: var(--pf-color, var(--accent-orange));
   transition: box-shadow 0.2s ease;
 }
 
@@ -10006,186 +10142,35 @@ select {
    Los estilos propios de /asesoria están en asesoria.css.
    ═══════════════════════════════════════════════════════════ */
 
-.aseband {
-  --aseband-accent: #7ea6ff;
 
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.25rem;
-  overflow: hidden;
-  padding: 1.15rem 1.5rem;
-  border: 1px solid rgba(126, 166, 255, 0.28);
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(126, 166, 255, 0.12) 0%, rgba(167, 139, 250, 0.06) 58%, rgba(13, 31, 60, 0.5) 100%);
-  box-shadow: 0 2px 20px rgba(126, 166, 255, 0.06);
-  text-decoration: none;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
 
-.aseband:hover {
-  transform: translateY(-2px);
-  border-color: rgba(126, 166, 255, 0.5);
-  box-shadow: 0 12px 32px -18px rgba(126, 166, 255, 0.6);
-}
 
-.aseband-glow {
-  position: absolute;
-  top: -70%;
-  left: -10%;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(126, 166, 255, 0.22) 0%, transparent 68%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
 
-.aseband:hover .aseband-glow {
-  opacity: 1;
-}
 
-.aseband-left {
-  display: flex;
-  align-items: center;
-  gap: 0.95rem;
-  min-width: 0;
-}
 
-.aseband-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: rgba(126, 166, 255, 0.14);
-  color: var(--aseband-accent);
-  box-shadow: inset 0 0 0 1px rgba(126, 166, 255, 0.26);
-}
 
-.aseband-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.16rem;
-  min-width: 0;
-}
 
-.aseband-eyebrow {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--aseband-accent);
-}
 
-.aseband-title {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--text-primary);
-}
 
-.aseband-sub {
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: var(--text-muted);
-}
 
-.aseband-right {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  flex-shrink: 0;
-}
 
-.aseband-price {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1.1;
-}
 
-.aseband-price-from {
-  font-size: 0.68rem;
-  color: var(--text-muted);
-}
 
-.aseband-price-amount {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
 
-.aseband-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.62rem 1.05rem;
-  border-radius: 11px;
-  background: rgba(126, 166, 255, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(126, 166, 255, 0.34);
-  color: #eaf1ff;
-  font-size: 0.86rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background 0.25s ease, box-shadow 0.25s ease;
-}
-
-.aseband:hover .aseband-cta {
-  background: rgba(126, 166, 255, 0.26);
-  box-shadow: inset 0 0 0 1px rgba(126, 166, 255, 0.55);
-}
 
 /* ── Ajustes por contexto ─────────────────────────────────── */
 
 /* En el dashboard y en las guías la banda es un bloque suelto y necesita
    sus propios márgenes. */
-.aseband--dashboard {
-  width: 100%;
-  margin: 1.5rem 0;
-}
 
-.aseband--premium {
-  width: 100%;
-  max-width: 900px;
-  margin: 2.5rem auto 0;
-}
 
-.aseband--guide {
-  width: calc(100% - 2.4rem);
-  max-width: 780px;
-  margin: 0 auto 3.5rem;
-}
 
 /* ── Móvil ────────────────────────────────────────────────── */
 
 @media (max-width: 760px) {
-  .aseband {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-    padding: 1.15rem 1.2rem;
-  }
 
-  .aseband-right {
-    justify-content: space-between;
-  }
 
-  .aseband-cta {
-    justify-content: center;
-    flex: 1;
-  }
 
-  .aseband-price {
-    align-items: flex-start;
-  }
 }
 
 /* Portfolio Adelin (/portfolio) — usado fuera de dashboard/guias/admin, por eso vive aquí */
@@ -11002,3 +10987,166 @@ select {
 /* En el listado, el término enlazado se distingue del que aún no tiene página. */
 .glosario-term-link { text-decoration: none; }
 .glosario-term-link:hover { color: var(--accent-gold, var(--accent-orange)); }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DESCARGO DE RESPONSABILIDAD  ·  se pinta con <DisclaimerRiesgo>
+
+   Deliberadamente SOBRIO: ámbar y no rojo de alarma, con el mismo cuerpo de
+   texto que el resto. Un aviso maquetado como error se lee como decoración y
+   se salta; uno que parece parte del texto se lee. Y que se lea es el punto.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.disclaimer {
+  margin: 0 0 4rem;
+  padding: 1.6rem 1.5rem 1.35rem;
+  border: 1px solid rgba(255, 176, 87, 0.22);
+  border-radius: 18px;
+  background:
+    radial-gradient(90% 100% at 0% 0%, rgba(255, 160, 60, 0.07) 0%, transparent 60%),
+    rgba(9, 13, 24, 0.5);
+}
+
+.disclaimer-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.95rem;
+}
+
+.disclaimer-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: rgba(255, 190, 120, 0.95);
+}
+
+.disclaimer-title {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
+  color: rgba(255, 200, 140, 0.96);
+}
+
+.disclaimer-body p {
+  margin: 0 0 0.75rem;
+  max-width: 72ch;
+  font-size: 0.91rem;
+  line-height: 1.7;
+  color: rgba(240, 244, 255, 0.66);
+}
+
+.disclaimer-body p:last-child { margin-bottom: 0; }
+.disclaimer-body strong { color: rgba(240, 244, 255, 0.93); }
+
+.disclaimer-body a {
+  color: rgba(255, 190, 120, 0.95);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.disclaimer-foot {
+  margin: 1.05rem 0 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 176, 87, 0.15);
+  font-size: 0.82rem;
+  color: rgba(240, 244, 255, 0.45);
+}
+
+.disclaimer-foot a {
+  color: rgba(240, 244, 255, 0.72);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* ── Datos duros de cada ventaja ───────────────────────────────────────────
+   Una línea corta con un número, un horario o una fuente. A 49,99 €/mes una
+   lista de adjetivos no convence; un hecho comprobable sí. */
+
+.premium-pitch-feature-text {
+  min-width: 0;
+}
+
+.premium-pitch-feature-dato {
+  display: block;
+  margin-top: 0.3rem;
+  font-style: normal;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--pf-color, #ff6b2b) 78%, #ffffff);
+}
+
+/* Aviso de que el directo ya está en marcha, con punto latiendo. */
+.premium-pitch-included-dot {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pp-latido 2.4s ease-out infinite;
+}
+
+@keyframes pp-latido {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  70%  { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.premium-pitch-price-note {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.76rem;
+  color: rgba(240, 244, 255, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .premium-pitch-included-dot { animation: none; }
+}
+
+/* ── Tarjeta Premium: compactada ───────────────────────────────────────────
+   Con nueve ventajas a cuatro líneas cada una, la tarjeta se salía de la
+   pantalla. Ahora cada fila es título + un dato, y el espaciado va apretado:
+   una tarjeta de venta que obliga a scrollear deja de vender. */
+
+.premium-pitch-features {
+  gap: 0.55rem;
+}
+
+.premium-pitch-feature {
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.premium-pitch-feature-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.premium-pitch-feature-text strong {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.premium-pitch-feature-dato {
+  margin-top: 0;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.premium-pitch-included {
+  padding: 0.7rem 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.premium-pitch-title {
+  font-size: 1.28rem;
+}
+
+.premium-pitch-sub {
+  font-size: 0.88rem;
+  line-height: 1.5;
+}

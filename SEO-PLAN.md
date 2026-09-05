@@ -36,19 +36,38 @@ El resultado en cifras, del 30 al 31 de agosto de 2026: **de 30 URLs indexables 
 | — | Peso de las portadas | **Las 11 portadas del sitio convertidas a WebP: de 22 MB a 3,7 MB**, un 83 % menos. Verificado en producción |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-Lo que queda por delante es el **punto 13**, las landings públicas de las herramientas, que es el compromiso que el admin pidió expresamente y que se ataca justo ahora que los doce están cerrados.
+El **punto 13 está hecho en su mayor parte** (5 de septiembre de 2026) pero **sin desplegar**, así que sigue abierto: este plan solo marca un punto como cerrado cuando está verificado en producción.
 
-## Lo siguiente es el punto 13 — las landings públicas de las herramientas
+## Punto 13 — las landings públicas de las herramientas · HECHO EN LOCAL, SIN DESPLEGAR
 
-**Es el compromiso que el admin pidió expresamente el 30 de agosto de 2026**, y el momento de atacarlo es ahora: se acordó hacerlo al cerrar los doce puntos.
+**Es el compromiso que el admin pidió expresamente el 30 de agosto de 2026.** El problema, en una frase: el admin nombra tres pilares —entradas, guías y herramientas— y el tercero **no tenía ni una sola URL indexable**.
 
-El problema, en una frase: el admin nombra tres pilares —entradas, guías y herramientas— y **el tercero no tiene ni una sola URL indexable**. `/herramientas/radar` y `/herramientas/liberaciones` exigen premium, así que Google solo ve la redirección y se va.
+### Lo hecho
 
-**No es abrir las herramientas.** Es el mismo patrón que acaba de funcionar en el punto 11: una landing pública por herramienta que explique qué hace y muestre **una parte real** —por ejemplo, los próximos unlocks de las 3-4 monedas más buscadas— y deje el resto tras el muro. Requiere sacar `/herramientas/` del `Disallow` de `robots.txt` y darlas de alta en `STATIC_ROUTES`.
+| Qué | Antes | Ahora |
+|---|---|---|
+| `/herramientas` | **404** | Landing pública con las 10 herramientas agrupadas por intención, `ItemList` + `FAQPage` |
+| `/herramientas/portfolio` | No existía | Ficha pública con cifras reales de la cartera en vivo, FAQ y descargo |
+| `/herramientas/diario` | No existía | Ficha pública con las 10 estadísticas explicadas y FAQ |
+| `/trading-en-directo` | Redirigía a `/` salvo admin | Página pública; solo el acceso a la sala queda tras el muro |
+| `/calculadora` | Redirigía a `/login` | Pública, 3 cálculos sin registro y texto explicativo propio |
+| Diccionario | 43 términos | **49**, con `DefinedTermSet` |
 
-Duele especialmente porque «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas reales, de intención muy concreta y competencia baja — el perfil de mejor retorno de toda la auditoría.
+**Sitemap: de 77 a 87 URLs.** `robots.txt` pasó de bloquear todo `/herramientas/` a bloquear solo `radar` y `liberaciones`, que siguen tras el muro — el bloqueo por prefijo habría tapado también las fichas nuevas.
+
+### Lo que queda
+
+Las fichas de **`radar`** y **`liberaciones`**, que son las de mejor retorno de todo el plan: «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas concretas y de competencia baja. La plantilla, el CSS y el descargo ya existen; es escribir el contenido y rellenar `paginaPublica` en `src/lib/herramientas.ts`.
+
+### Al desplegar
+
+1. Comprobar que las cinco URLs nuevas responden 200 **sin sesión**.
+2. Comprobar que el sitemap las sirve y que ninguna redirige.
+3. Pedir indexación manual en Search Console de `/herramientas`, las dos fichas y `/trading-en-directo`. La cuota es de unas 10 al día.
+4. Solo entonces marcar el punto como cerrado aquí.
 
 Y quedan también los **cinco arreglos menores** de más abajo, que entre todos son un rato.
+
 ## El punto 10, por qué se recortó — decisión del 31-08-2026
 
 **Léelo antes de «terminarlo».** El punto 10 está marcado como hecho aunque el refactor que describía —volver estáticas las páginas públicas— **no se hizo, y fue deliberado**. Si en una sesión futura aparece la tentación de completarlo, esto es lo que se sabía al decidir.

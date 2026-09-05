@@ -35,10 +35,14 @@ export default function robots(): MetadataRoute.Robots {
           "/mfa-challenge",
 
           // Redirigen a login o a premium, así que Google solo vería el salto.
-          "/calculadora",
           "/portfolio",
-          "/herramientas/",
-          "/trading-en-directo",
+          // Solo las DOS herramientas que siguen tras el muro, nombradas una a
+          // una. Antes esto era `/herramientas/` a secas, y al ser el bloqueo
+          // por prefijo habría tapado también las fichas públicas
+          // `/herramientas/portfolio` y `/herramientas/diario`, que existen
+          // justamente para que Google las lea.
+          "/herramientas/radar",
+          "/herramientas/liberaciones",
           "/logros",
 
           // Página de confirmación de pago: se llega tras el checkout, nunca

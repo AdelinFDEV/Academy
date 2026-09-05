@@ -2,18 +2,27 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+// Los iconos de las tarjetas viajaron con el catálogo a @/lib/herramientas.
+// Aquí solo quedan los de la propia maquetación del hero y los microvisuales.
 import {
-  NotebookPen, Map, Radio, MessagesSquare, Unlock, Lock, ArrowRight, Crown,
-  Trophy, ClipboardCheck, BadgeCheck, Hourglass, Sparkles, BookOpenText,
-  LayoutDashboard, Gem, UserRound, Check, Wallet, Target, Scale,
+  Lock, ArrowRight, Crown, Trophy, BookOpenText,
+  LayoutDashboard, Check, Scale,
 } from "lucide-react";
 import { DefiLlamaGlyph } from "@/components/BrandMarks";
-import { ASESORIA_PLANS } from "@/lib/asesoria";
+import { HERRAMIENTAS, herramienta, detalleDe } from "@/lib/herramientas";
+
+/** Cifras reales de la cartera, calculadas en el servidor. `null` si fallan. */
+export type ResumenHero = {
+  posiciones: number;
+  rentabilidadPct: number;
+  desdeAnio: number | null;
+} | null;
 
 interface Props {
   isLoggedIn: boolean;
   isPremium: boolean;
   guidesCount: number;
+  portfolio: ResumenHero;
 }
 
 function DefiLlamaMark() {
@@ -24,101 +33,20 @@ function DefiLlamaMark() {
   );
 }
 
-// El arsenal: showcase de la academia (la etiqueta cuenta 8 herramientas
-// reales; aquí se enseñan las 6 destacadas). `viz` decide qué microvisual
-// de producto pinta la tarjeta — enseñar la herramienta vende más que
-// describirla.
-const FEATURES = [
-  {
-    id: "guias",
-    icon: Map,
-    label: "Guías Interactivas",
-    tag: "★ Lo más top",
-    color: "#ffd166",
-    desc: "El elemento estrella de la academia: aprende paso a paso con quizzes y logros exclusivos.",
-    chips: [
-      { icon: Sparkles, label: "100% interactivas" },
-      { icon: BadgeCheck, label: "Logros exclusivos" },
-    ],
-    href: "/guias",
-    viz: "path",
-  },
-  {
-    id: "prediccion",
-    icon: Target,
-    label: "Predicción de Precio",
-    tag: "Gratis",
-    color: "#22d3ee",
-    desc: "Calcula qué market cap necesita un token para llegar a tu precio objetivo, comparado con BTC, ETH y SOL en tiempo real.",
-    chips: [
-      { icon: Sparkles, label: "Market cap objetivo" },
-      { icon: BadgeCheck, label: "Datos en tiempo real" },
-    ],
-    href: "/calculadora",
-    viz: "readout",
-  },
-  {
-    id: "diario",
-    icon: NotebookPen,
-    label: "Diario de Trading",
-    tag: "Premium",
-    color: "#ff9a4d",
-    desc: "No es solo un registro: son retos que te convierten, operación a operación, en un trader disciplinado.",
-    chips: [
-      { icon: ClipboardCheck, label: "Registro de operaciones" },
-      { icon: Trophy, label: "Retos y niveles" },
-    ],
-    premiumGate: true,
-    premiumHref: "/dashboard/trading",
-    viz: "spark",
-  },
-  {
-    id: "portfolio",
-    icon: Wallet,
-    label: "Portfolio Adelin",
-    tag: "Premium",
-    color: "#4f9dff",
-    desc: "Todas mis compras en spot de este ciclo, publicadas con precio de entrada y rentabilidad en tiempo real.",
-    chips: [
-      { icon: ClipboardCheck, label: "Mis posiciones reales" },
-      { icon: BadgeCheck, label: "PnL en vivo" },
-    ],
-    premiumGate: true,
-    premiumHref: "/portfolio",
-    viz: "folio",
-  },
-  {
-    id: "liberaciones",
-    icon: Unlock,
-    label: "Liberaciones de Tokens",
-    tag: "Premium",
-    color: "#34d399",
-    desc: "Anticipa la presión vendedora con el calendario de vesting del mercado en tiempo real.",
-    chips: [
-      { icon: ClipboardCheck, label: "Calendario en vivo" },
-      { icon: BadgeCheck, label: "Datos por token" },
-    ],
-    collab: "defillama",
-    premiumGate: true,
-    premiumHref: "/herramientas/liberaciones",
-    viz: "vest",
-  },
-  {
-    id: "directo",
-    icon: Radio,
-    label: "Trading en Directo",
-    tag: "Próximamente",
-    color: "#a3a3ff",
-    desc: "Futuros sobre Solana en gráficos de 5 minutos, operados en directo: verás cada entrada y cada salida en el momento en que se toman.",
-    note: "Estará incluido en tu única suscripción Premium de 49,99€/mes, sin coste extra.",
-    chips: [
-      { icon: Hourglass, label: "En preparación" },
-      { icon: MessagesSquare, label: "Chat de preguntas" },
-    ],
-    soon: true,
-    viz: "live",
-  },
-];
+/**
+ * Las tres que se pintan en el hero, en este orden.
+ *
+ * Son las que convierten suscripción: las dos Premium que ya se pueden usar
+ * (Portfolio y Diario) y el directo, que es el gancho de lo que viene. El resto
+ * del catálogo vive en `@/lib/herramientas` y se enseña entero en la landing
+ * pública /herramientas: seis tarjetas grandes competían entre sí y diluían
+ * justo lo que se quiere que mire quien entra por primera vez.
+ *
+ * El orden importa y no es alfabético: Portfolio abre porque es la prueba
+ * (posiciones reales), el directo va en medio porque es lo más llamativo, y el
+ * Diario cierra porque es lo que retiene una vez dentro.
+ */
+const EN_EL_HERO = ["portfolio", "directo", "diario"] as const;
 
 /* Microvisuales de producto — decorativos, cada tarjeta "enseña" su
    herramienta en miniatura en lugar de solo describirla. */
@@ -242,28 +170,60 @@ function VizReadout() {
   );
 }
 
-// Portfolio: posiciones reales con barra de asignación, cada activo con su
-// color de marca (SOL rosa, BTC naranja, HYPE verde)
-const FOLIO_ROWS = [
-  { sym: "SOL", color: "#f472b6", w: 72 },
-  { sym: "BTC", color: "#f7931a", w: 48 },
-  { sym: "HYPE", color: "#34d399", w: 30 },
-];
+/**
+ * Portfolio: la rentabilidad REAL de la cartera, en grande.
+ *
+ * Sustituye a las barras de asignación que había antes. Un número verificable
+ * convierte más que un gráfico decorativo, y aquí además es real: sale de
+ * `resumenPortfolioPublico()` en el servidor y llega por props.
+ *
+ * Si el cálculo falla —Supabase caído, CoinGecko sin responder— no se inventa
+ * nada: la tarjeta se queda sin bloque de datos. Ver `VIZ_CON_DATOS`.
+ */
+function VizFolioDatos({ datos }: { datos: ResumenHero }) {
+  if (!datos) return null;
+  const positiva = datos.rentabilidadPct >= 0;
 
-function VizFolio() {
   return (
-    <div className="hero-viz-folio" aria-hidden="true">
-      {FOLIO_ROWS.map((r) => (
-        <div
-          key={r.sym}
-          className="hero-viz-folio-row"
-          style={{ "--row-color": r.color } as React.CSSProperties}
-        >
-          <span className="hero-viz-folio-dot" />
-          <span className="hero-viz-folio-bar"><i style={{ width: `${r.w}%` }} /></span>
-          <span className="hero-viz-folio-tag">{r.sym}</span>
-        </div>
-      ))}
+    <div className="hero-cifras" aria-hidden="true">
+      <div className="hero-cifras-main">
+        <span className={`hero-cifras-num${positiva ? " es-verde" : " es-rojo"}`}>
+          {positiva ? "+" : ""}
+          {datos.rentabilidadPct.toFixed(1).replace(".", ",")} %
+        </span>
+        <span className="hero-cifras-key">Rentabilidad de la cartera</span>
+      </div>
+      <div className="hero-cifras-pie">
+        <span>{datos.posiciones} posiciones abiertas</span>
+        {datos.desdeAnio && <span>Desde {datos.desdeAnio}</span>}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Diario: las estadísticas que devuelve, con cifras de EJEMPLO.
+ *
+ * Aquí no hay dato real que enseñar y es importante entender por qué: las
+ * estadísticas del diario son de cada usuario, privadas, así que no existe una
+ * rentabilidad global del producto. Poner un número sin marcar sería inventar
+ * una rentabilidad, que es justo lo que no se hace en esta web.
+ *
+ * Por eso van etiquetadas como ejemplo, con cifras deliberadamente redondas.
+ */
+function VizSparkDatos() {
+  return (
+    <div className="hero-cifras" aria-hidden="true">
+      <div className="hero-cifras-main">
+        <span className="hero-cifras-num es-verde">58 %</span>
+        <span className="hero-cifras-key">
+          Win rate <i className="hero-cifras-tag">ejemplo</i>
+        </span>
+      </div>
+      <div className="hero-cifras-pie">
+        <span>+1.240 $ acumulado</span>
+        <span>47 operaciones</span>
+      </div>
     </div>
   );
 }
@@ -279,7 +239,7 @@ function VizLive() {
           En directo
         </span>
         <span className="hero-viz-live-pair">
-          SOL <em>Futuros</em> <b>5m</b>
+          NASDAQ <em>Futuros</em> <b>5m</b>
         </span>
       </div>
       <div className="hero-viz-live-feed">
@@ -294,10 +254,19 @@ const VIZ: Record<string, () => React.JSX.Element> = {
   path: VizPath,
   spark: VizSpark,
   vest: VizVest,
-  folio: VizFolio,
   readout: VizReadout,
   live: VizLive,
 };
+
+/**
+ * Herramientas cuya tarjeta enseña CIFRAS en lugar de un microvisual.
+ *
+ * Un número grande convierte más que un gráfico decorativo, sobre todo cuando
+ * es verificable. Decidido el 05-09-2026 para Portfolio —donde la cifra es
+ * real— y Diario, donde va etiquetada como ejemplo porque las estadísticas son
+ * privadas de cada usuario y no existe una rentabilidad global del producto.
+ */
+const CIFRAS = new Set(["portfolio", "diario"]);
 
 // Foco que sigue al cursor: expone la posición como variables CSS que el
 // ::spot de la tarjeta usa para pintar el halo.
@@ -308,7 +277,7 @@ function trackSpot(e: React.MouseEvent<HTMLElement>) {
   el.style.setProperty("--my", `${e.clientY - r.top}px`);
 }
 
-export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Props) {
+export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, portfolio }: Props) {
   const reduceMotion = useReducedMotion();
 
   const cardVariants = {
@@ -320,152 +289,96 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
     }),
   };
 
-  // El "desde" del dúo sale del plan más barato — precio y nota (duración)
-  // vienen de src/lib/asesoria.ts, nunca escritos a mano aquí.
-  const asesoriaEntry = ASESORIA_PLANS.reduce((min, p) => (p.priceValue < min.priceValue ? p : min));
-
   return (
     <div className="hero-spotlight">
-      {/* ── Dúo 50/50: Asesoría 1:1 + Academia Premium ── */}
-      <motion.div
-        className="hero-duo"
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: reduceMotion ? 0 : 0.04, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Link href="/asesoria" className="hero-duo-card hero-duo-card--ase">
-          <span className="hero-duo-glow" aria-hidden="true" />
-          <div className="hero-duo-top">
-            <span className="hero-duo-icon" aria-hidden="true">
-              <UserRound size={20} strokeWidth={2} />
-            </span>
-            <span className="hero-duo-eyebrow">Asesoría 1:1</span>
-          </div>
-          <h3 className="hero-duo-title">Sesiones privadas conmigo</h3>
-          <p className="hero-duo-desc">
-            Trading, estrategia, gestión de riesgo y psicología — sobre tu operativa real, no sobre teoría.
-          </p>
-          <div className="hero-duo-foot">
-            <span className="hero-duo-price-block">
-              <span className="hero-duo-price">
-                <em>desde</em>
-                <strong>{asesoriaEntry.price}</strong>
-              </span>
-              <span className="hero-duo-note">{asesoriaEntry.priceNote}</span>
-            </span>
-            <span className="hero-duo-btn">
-              Ver asesorías <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
-            </span>
-          </div>
-        </Link>
 
-        <Link href="/premium" className="hero-duo-card hero-duo-card--prem">
-          <span className="hero-duo-glow" aria-hidden="true" />
-          <div className="hero-duo-top">
-            <span className="hero-duo-icon" aria-hidden="true">
-              <Crown size={20} strokeWidth={2} />
-            </span>
-            <span className="hero-duo-eyebrow">Academia Premium</span>
-          </div>
-          <h3 className="hero-duo-title">Todas las herramientas y la comunidad</h3>
-          <p className="hero-duo-desc">
-            Diario de trading, liberaciones de tokens, el canal privado de Telegram y cada
-            herramienta nueva — una sola suscripción.
-          </p>
-          <div className="hero-duo-foot">
-            <span className="hero-duo-price-block">
-              <span className="hero-duo-price">
-                <strong>49,99€</strong>
-                <em>/mes</em>
-              </span>
-              <span className="hero-duo-note">Cancela cuando quieras · Sin permanencia</span>
-            </span>
-            <span className="hero-duo-btn">
-              Hazte Premium <ArrowRight size={15} strokeWidth={2.5} aria-hidden="true" />
-            </span>
-          </div>
-        </Link>
-      </motion.div>
+      {/* ── Las tres piezas de la academia ──────────────────────────────────
+          Sin cabecera de sección: el "Arsenal · 08 herramientas" ponía una
+          etiqueta de catálogo encima de lo que tiene que leerse como producto,
+          y una cifra que además contradecía las tres tarjetas visibles.
 
-      {/* ── Riel editorial: título del arsenal ── */}
-      <motion.div
-        className="hero-arsenal-head"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: reduceMotion ? 0 : 0.05, duration: 0.5 }}
-      >
-        <span className="hero-arsenal-eyebrow">Arsenal de la academia</span>
-        <span className="hero-arsenal-rule" aria-hidden="true" />
-        <span className="hero-arsenal-count">08 herramientas</span>
-      </motion.div>
-
-      {/* ── Mosaico asimétrico de herramientas ── */}
+          Cada tarjeta se lee de arriba abajo como un argumento: qué es, qué
+          promete, cómo se ve por dentro y con qué se respalda. La prueba —el
+          microvisual— pesa más que el texto a propósito: enseñar el producto
+          convence más que adjetivarlo. */}
       <div className="hero-arsenal">
-        {FEATURES.map((f, i) => {
-          const Icon = f.icon;
-          const Viz = VIZ[f.viz];
-          const locked = f.premiumGate && !isPremium;
-          const href = f.soon ? null : f.premiumGate ? (isPremium ? f.premiumHref! : "/premium") : f.href!;
+        {EN_EL_HERO.map((id) => herramienta(id)).map((f, i) => {
+          const conCifras = CIFRAS.has(f.id);
+          const Viz = !conCifras && f.viz ? VIZ[f.viz] : undefined;
+          const bloqueada = f.premiumGate && !isPremium;
+          const href = f.premiumGate ? (isPremium ? f.premiumHref! : "/premium") : f.href!;
 
-          const inner = (
+          const cuerpo = (
             <>
-              <span className="hero-tool-spot" aria-hidden="true" />
-              <span className="hero-tool-topline" aria-hidden="true" />
+              {/* Halo que sigue al cursor: da profundidad sin adornos. */}
+              <span className="tool-aura" aria-hidden="true" />
+              <span className="tool-edge" aria-hidden="true" />
 
-              <div className="hero-tool-head">
-                <span className="hero-tool-icon" aria-hidden="true">
-                  <Icon size={21} strokeWidth={2} />
+              <span className="tool-eyebrow">
+                {bloqueada && <Lock size={9} strokeWidth={2.6} aria-hidden="true" />}
+                {f.tag}
+              </span>
+
+              <h3 className="tool-name">{f.label}</h3>
+              <p className="tool-claim">{f.desc}</p>
+
+              {/* La ventana al producto. Va enmarcada para que se lea como una
+                  captura de la herramienta y no como un adorno del fondo.
+                  Portfolio y Diario enseñan cifras en vez de microvisual. */}
+              {conCifras ? (
+                <span className="tool-stage">
+                  {f.id === "portfolio" ? <VizFolioDatos datos={portfolio} /> : <VizSparkDatos />}
                 </span>
-                <span className={`hero-tool-badge${f.soon ? " hero-tool-badge--soon" : f.premiumGate ? " hero-tool-badge--premium" : " hero-tool-badge--top"}`}>
-                  {locked && <Lock size={10} aria-hidden="true" />}
-                  {f.tag}
+              ) : Viz ? (
+                <span className="tool-stage" aria-hidden="true">
+                  <Viz />
                 </span>
-              </div>
+              ) : null}
 
-              <h3 className="hero-tool-name">{f.label}</h3>
-              <p className="hero-tool-desc">{f.desc}</p>
-
-              {Viz && <div className="hero-tool-viz"><Viz /></div>}
-
-              {"note" in f && f.note && (
-                <p className="hero-tool-note">
-                  <Gem size={12} aria-hidden="true" /> {f.note}
-                </p>
-              )}
-
-              <div className="hero-tool-chips">
-                {f.chips.map((c) => (
-                  <span key={c.label} className="hero-tool-chip">
-                    <c.icon size={11} aria-hidden="true" /> {c.label}
+              {/* Respaldo en una sola línea, sin pastillas: las cápsulas
+                  sueltas ensucian y restan seriedad a un precio de 49,99€. */}
+              <span className="tool-proof">
+                {f.chips.map((c, n) => (
+                  <span key={c.label} className="tool-proof-item">
+                    {n > 0 && <i className="tool-proof-sep" aria-hidden="true" />}
+                    {c.label}
                   </span>
                 ))}
-              </div>
+              </span>
 
               {"collab" in f && f.collab === "defillama" && (
-                <span className="hero-tool-collab">
-                  Datos oficiales en colaboración con
-                  <span className="hero-tool-collab-badge">
+                <span className="tool-collab">
+                  Datos en colaboración con
+                  <span className="tool-collab-badge">
                     <DefiLlamaMark />
                     Defi<span>Llama</span>
                   </span>
                 </span>
               )}
 
-              {href ? (
-                <span className="hero-tool-cta">
-                  {locked ? "Hazte Premium" : "Explorar"}
-                  <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
-                </span>
-              ) : (
-                <span className="hero-tool-cta hero-tool-cta--soon">Muy pronto</span>
-              )}
+              {/* Dos acciones, y la tarjeta ya NO es un enlace envolvente: un
+                  <a> dentro de otro <a> es HTML inválido y el navegador lo
+                  deshace por su cuenta. Con dos enlaces hermanos, además, el
+                  teclado los recorre por separado. */}
+              <span className="tool-actions">
+                {/* Etiqueta corta a propósito: con dos botones en línea, una
+                    tarjeta de tres columnas mide unos 340 px y "Desbloquear con
+                    Premium" desbordaba contra el secundario. */}
+                <Link href={href} className="tool-action">
+                  {bloqueada ? "Hazte Premium" : "Entrar"}
+                  <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+                </Link>
+                <Link href={detalleDe(f)} className="tool-detalle">
+                  Ver detalles
+                </Link>
+              </span>
             </>
           );
 
           return (
             <motion.div
               key={f.id}
-              className={`hero-tool hero-tool--${f.id}${f.soon ? " hero-tool--soon" : ""}`}
+              className={`tool tool--${f.id}`}
               style={{ "--tool-color": f.color } as React.CSSProperties}
               custom={i}
               initial="hidden"
@@ -473,11 +386,7 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
               variants={cardVariants}
               onMouseMove={trackSpot}
             >
-              {href ? (
-                <Link href={href} className="hero-tool-link">{inner}</Link>
-              ) : (
-                <div className="hero-tool-link">{inner}</div>
-              )}
+              <article className="tool-link">{cuerpo}</article>
             </motion.div>
           );
         })}
@@ -518,26 +427,59 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount }: Pr
           </div>
         ) : (
           <>
-            <Link href="/premium" className="hero-premium-band">
+            {/* Una sola banda, no dos seguidas.
+                Arriba, la tira con las ocho herramientas y su enlace; abajo, la
+                oferta Premium. Antes eran dos bloques pegados —un botón suelto
+                y la banda— y se leían como una repetición.
+
+                Deja de ser un <Link> envolvente: dentro hay dos destinos
+                distintos, y un <a> dentro de otro es HTML inválido. */}
+            <div className="hero-premium-band">
               <span className="hero-premium-band-glow" aria-hidden="true" />
               <span className="hero-premium-band-shine" aria-hidden="true" />
-              <div className="hero-premium-band-left">
-                <span className="hero-premium-band-eyebrow"><Crown size={12} aria-hidden="true" /> Premium</span>
-                <h3 className="hero-premium-band-title">Dale la vuelta a tu curva de aprendizaje</h3>
-                <p className="hero-premium-band-sub">
-                  Diario de trading con retos, liberaciones de tokens en tiempo real y todas las herramientas exclusivas de la academia.
-                </p>
-              </div>
-              <div className="hero-premium-band-right">
-                <div className="hero-premium-band-price">
-                  <span className="hero-premium-band-amount">49,99€</span>
-                  <span className="hero-premium-band-period">/mes</span>
-                </div>
-                <span className="hero-premium-band-cta">
-                  Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+
+              <div className="hero-band-tools">
+                <span className="hero-band-tools-icons" aria-hidden="true">
+                  {HERRAMIENTAS.map((h) => {
+                    const Icono = h.icon;
+                    return (
+                      <span
+                        key={h.id}
+                        className="hero-band-tool-icon"
+                        style={{ "--icon-color": h.color } as React.CSSProperties}
+                      >
+                        <Icono size={15} strokeWidth={2} />
+                      </span>
+                    );
+                  })}
                 </span>
+                <Link href="/herramientas" className="hero-band-tools-link">
+                  Ver las {HERRAMIENTAS.length} herramientas
+                  <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
+                </Link>
               </div>
-            </Link>
+
+              <span className="hero-band-sep" aria-hidden="true" />
+
+              <div className="hero-premium-band-main">
+                <div className="hero-premium-band-left">
+                  <span className="hero-premium-band-eyebrow"><Crown size={12} aria-hidden="true" /> Premium</span>
+                  <h3 className="hero-premium-band-title">Dale la vuelta a tu curva de aprendizaje</h3>
+                  <p className="hero-premium-band-sub">
+                    Diario de trading con estadísticas, liberaciones de tokens en tiempo real y todas las herramientas exclusivas de la academia.
+                  </p>
+                </div>
+                <div className="hero-premium-band-right">
+                  <div className="hero-premium-band-price">
+                    <span className="hero-premium-band-amount">49,99€</span>
+                    <span className="hero-premium-band-period">/mes</span>
+                  </div>
+                  <Link href="/premium" className="hero-premium-band-cta">
+                    Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+                  </Link>
+                </div>
+              </div>
+            </div>
 
             {!isLoggedIn && (
               <Link href="/register" className="hero-cta-mini">
