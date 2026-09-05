@@ -51,20 +51,29 @@ El **punto 13 está hecho en su mayor parte** (5 de septiembre de 2026) pero **s
 | `/herramientas/diario` | No existía | Ficha pública con las 10 estadísticas explicadas y FAQ |
 | `/trading-en-directo` | Redirigía a `/` salvo admin | Página pública; solo el acceso a la sala queda tras el muro |
 | `/calculadora` | Redirigía a `/login` | Pública, 3 cálculos sin registro y texto explicativo propio |
-| Diccionario | 43 términos | **49**, con `DefinedTermSet` |
+| Diccionario | 43 términos | **50**, con `DefinedTermSet` |
+| `/radar-diario` | No existía | Ficha pública: los 4 datos macro explicados desde `SERIES_INFO`, FAQ y descargo |
+| `/calendario-de-liberaciones` | No existía | Ficha pública: los 10 tokens desde `tokenData.ts`, cómo se lee un unlock, FAQ |
 
-**Sitemap: de 77 a 87 URLs.** `robots.txt` pasó de bloquear todo `/herramientas/` a bloquear solo `radar` y `liberaciones`, que siguen tras el muro — el bloqueo por prefijo habría tapado también las fichas nuevas.
+**Sitemap: de 77 a 90 URLs.** `robots.txt` pasó de bloquear todo `/herramientas/` a bloquear solo `radar` y `liberaciones`, que siguen tras el muro — el bloqueo por prefijo habría tapado también las fichas nuevas.
 
 ### Lo que queda
 
-Las fichas de **`radar`** y **`liberaciones`**, que son las de mejor retorno de todo el plan: «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas concretas y de competencia baja. La plantilla, el CSS y el descargo ya existen; es escribir el contenido y rellenar `paginaPublica` en `src/lib/herramientas.ts`.
+**Nada de contenido: las cinco fichas están escritas** (06-09-2026). Falta desplegar y verificar en producción.
+
+### La lección de la URL, que costó una mañana
+
+Las dos fichas nuevas viven en la **raíz** (`/radar-diario`, `/calendario-de-liberaciones`) y no bajo `/herramientas/`. Sus herramientas ocupan `/herramientas/radar` y `/herramientas/liberaciones`, que están en `robots.txt`, y **el bloqueo es por prefijo**: `/herramientas/radar-diario` habría nacido sin poder rastrearse.
+
+No es teoría. El 06-09-2026, al pedir indexación de `/herramientas/portfolio`, Search Console la dio por **bloqueada por robots.txt**: Google seguía usando su copia cacheada del `robots.txt` viejo, el que bloqueaba todo `/herramientas/`. La regla ya estaba corregida y desplegada, pero **Google cachea ese archivo hasta 24 h**. Si vuelve a pasar: Search Console → Configuración → robots.txt → «Solicitar nuevo rastreo».
 
 ### Al desplegar
 
-1. Comprobar que las cinco URLs nuevas responden 200 **sin sesión**.
-2. Comprobar que el sitemap las sirve y que ninguna redirige.
-3. Pedir indexación manual en Search Console de `/herramientas`, las dos fichas y `/trading-en-directo`. La cuota es de unas 10 al día.
-4. Solo entonces marcar el punto como cerrado aquí.
+1. Comprobar que las **siete** URLs nuevas responden 200 **sin sesión**.
+2. Comprobar que el sitemap las sirve (deben ser **90**) y que ninguna redirige.
+3. Comprobar que ninguna ficha empieza por un prefijo de `Disallow`.
+4. Pedir indexación manual en Search Console de las dos fichas nuevas. La cuota es de unas 10 al día.
+5. Solo entonces marcar el punto como cerrado aquí.
 
 Y quedan también los **cinco arreglos menores** de más abajo, que entre todos son un rato.
 

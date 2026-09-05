@@ -47,6 +47,12 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   // muro. La herramienta en sí sigue fuera del sitemap.
   { path: "/herramientas/portfolio", priority: 0.7, changeFrequency: "monthly" },
   { path: "/herramientas/diario", priority: 0.7, changeFrequency: "monthly" },
+  // Estas dos viven en la raíz, no bajo /herramientas/, y es a propósito: sus
+  // herramientas ocupan `/herramientas/radar` y `/herramientas/liberaciones`,
+  // que están en robots.txt — y el bloqueo es POR PREFIJO, así que cualquier
+  // URL que empiece igual habría quedado sin rastrear.
+  { path: "/radar-diario", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/calendario-de-liberaciones", priority: 0.7, changeFrequency: "monthly" },
   { path: "/premium", priority: 0.7, changeFrequency: "monthly" },
   { path: "/aviso-legal", priority: 0.2, changeFrequency: "yearly" },
   { path: "/privacidad", priority: 0.2, changeFrequency: "yearly" },

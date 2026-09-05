@@ -60,11 +60,26 @@ Hecho entre el 4 y el 5 de septiembre de 2026, del compromiso que el admin pidi�
 Lo que se hizo:
 
 - **`/herramientas` es una landing pública** con las diez herramientas agrupadas por intención de uso, `ItemList` + `FAQPage` y un dato real por herramienta. Antes esa URL daba **404**.
-- **Tres fichas públicas por herramienta**: `/herramientas/portfolio`, `/herramientas/diario` y `/trading-en-directo`. Explican qué hay dentro sin abrir el muro, con FAQ y datos estructurados.
+- **Cinco fichas públicas**: `/herramientas/portfolio`, `/herramientas/diario`, `/trading-en-directo`, `/radar-diario` y `/calendario-de-liberaciones`. Explican qué hay dentro sin abrir el muro, con FAQ y datos estructurados.
 - **`/calculadora` dejó de exigir cuenta.** Es la única herramienta que no usa ningún dato propio, así que cerrarla no protegía nada y costaba la puerta de entrada gratuita. Se usa sin registro con un tope de tres cálculos, y lleva texto explicativo propio: era una página sin una sola frase que indexar.
 - **El diccionario** pasó de 43 a **49 términos** y ganó `DefinedTermSet`.
 
-**Lo que queda:** las fichas de `radar` y `liberaciones`. Es lo de mejor retorno: «calendario de liberaciones de tokens» o «unlocks de <token>» son búsquedas concretas y de competencia baja. Con la plantilla ya hecha, es escribir el contenido y rellenar `paginaPublica` en el catálogo.
+- **El diccionario** llegó a **50 términos** con la entrada de «inflación», que sostiene la ficha del radar.
+
+**Las cinco fichas están escritas (06-09-2026).** Queda desplegar y verificar en producción, que es lo que este documento exige para dar el punto por cerrado.
+
+### La trampa de la URL: robots.txt bloquea POR PREFIJO
+
+Las fichas del radar y de las liberaciones **no** están bajo `/herramientas/`, y no es un descuido:
+
+| Herramienta (de pago, en robots.txt) | Su ficha pública |
+|---|---|
+| `/herramientas/radar` | **`/radar-diario`** |
+| `/herramientas/liberaciones` | **`/calendario-de-liberaciones`** |
+
+`Disallow: /herramientas/radar` bloquea **todo lo que empiece igual**, así que `/herramientas/radar-diario` habría nacido sin poder rastrearse. Es exactamente el fallo que dejó las fichas de portfolio y diario bloqueadas el 06-09-2026, y que solo se vio al inspeccionarlas en Search Console.
+
+**Antes de elegir la URL de una página pública nueva, compárala con cada `Disallow` de `src/app/robots.ts`.** Que no coincida exactamente no basta: tiene que no empezar igual.
 
 ### El catálogo de herramientas es FUENTE ÚNICA
 

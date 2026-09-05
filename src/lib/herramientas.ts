@@ -156,15 +156,20 @@ export const HERRAMIENTAS: Herramienta[] = [
     color: "#34d399",
     desc: "El calendario de desbloqueos del mercado, para no comprar justo antes de que entren millones de monedas nuevas.",
     resumen:
-      "El calendario de desbloqueos del mercado: qué tokens liberan monedas nuevas, cuándo y cuántas. Sirve para no comprar justo antes de que entren en circulación millones de monedas que llevaban años bloqueadas, una de las formas más comunes de perder dinero en cripto. Se rastrean 10 tokens con datos de DefiLlama. Con una cuenta gratuita ves el calendario completo de dos de ellos; la fecha exacta y la cantidad del próximo unlock del resto son de Premium.",
-    acceso: "cuenta",
+      "El calendario de desbloqueos del mercado: qué tokens liberan monedas nuevas, cuándo y cuántas. Sirve para no comprar justo antes de que entren en circulación millones de monedas que llevaban años bloqueadas, una de las formas más comunes de perder dinero en cripto. Se rastrean 10 tokens con datos en vivo de DefiLlama, con la fecha del próximo unlock, la cantidad y el reparto entre equipo, inversores y comunidad.",
+    // `acceso` decía "cuenta" y era falso: `herramientas/liberaciones/page.tsx`
+    // manda a /premium a cualquiera que no lo sea. El cliente tiene lista la
+    // vista parcial con dos tokens abiertos (`FREE_TOKEN_IDS`), pero hoy no se
+    // llega a ella. Si algún día se abre el muro, esto vuelve a "cuenta".
+    acceso: "premium",
     chips: [
       { icon: ClipboardCheck, label: "Calendario en vivo" },
-      { icon: BadgeCheck, label: "Fecha y cantidad, en Premium" },
+      { icon: BadgeCheck, label: "10 tokens, con reparto" },
     ],
     collab: "defillama",
     premiumGate: true,
     premiumHref: "/herramientas/liberaciones",
+    paginaPublica: "/calendario-de-liberaciones",
     viz: "vest",
   },
   {
@@ -183,6 +188,7 @@ export const HERRAMIENTAS: Herramienta[] = [
     ],
     premiumGate: true,
     premiumHref: "/herramientas/radar",
+    paginaPublica: "/radar-diario",
   },
   {
     id: "riesgo",
