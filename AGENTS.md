@@ -108,6 +108,57 @@ Al escribir sobre una herramienta, **abre su código y comprueba que hace lo que
 
 Ninguno se buscó: salieron al ir a documentar cada herramienta. Es el tipo de cosa que acaba en una reclamación.
 
+# El marco legal es RUMANO — no vuelvas a escribir normativa española
+
+Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa española porque apunta a público español, pero **el titular reside y opera desde Rumanía**, así que las leyes nacionales aplicables son las rumanas:
+
+| Antes (España) | Ahora (Rumanía) |
+|---|---|
+| LSSI-CE, Ley 34/2002 | Ley 365/2002, comercio electrónico |
+| art. 22.2 LSSI (cookies) | art. 4 de la Ley 506/2004 |
+| LOPDGDD 3/2018 | Ley 190/2018 |
+| AEPD | ANSPDCP (dataprotection.ro) |
+
+**El RGPD no cambia.** Es un reglamento europeo y rige igual en los dos países, así que toda referencia a sus artículos se queda como está. Confundir «norma nacional» con «RGPD» es el error fácil aquí.
+
+**Las leyes se nombran desde `src/lib/legal.ts`**, nunca a mano en una página. Es el mismo patrón de fuente única que el catálogo de herramientas, y por el mismo motivo: el dato estaba repetido en cuatro sitios.
+
+**Dos cosas que NO se tocan al redactar, porque protegen al cliente español:**
+
+1. El aviso legal deja escrito que elegir ley rumana **no priva al consumidor** de las disposiciones imperativas de su país de residencia (art. 6 del Reglamento Roma I), y la jurisdicción sigue siendo la del domicilio del usuario.
+2. La política de privacidad **mantiene el enlace a la AEPD**: el art. 77 RGPD permite reclamar ante la autoridad del propio país, no solo ante la del responsable.
+
+⚠️ **Pendiente y visible en producción**: `titularNombre`, `formaJuridica` (PFA o SRL), `identificadorFiscal` y `domicilio` siguen con texto de relleno en `/aviso-legal` y `/privacidad`. Identificar al titular es una obligación legal.
+
+⚠️ **No es asesoramiento jurídico.** El cambio de marco, el IVA de vender suscripciones a consumidores españoles desde Rumanía (régimen OSS) y la promoción de criptoactivos —MiCA y ASF en Rumanía, pero reglas de la CNMV por dirigirse a público español— los tiene que revisar un abogado.
+
+# Analítica: dos capas, y el banner manda sobre una de ellas
+
+| Herramienta | Cookies | ¿Consentimiento? | Qué da |
+|---|---|---|---|
+| **Cloudflare Web Analytics** | No | No lo necesita | Visitas, páginas, referentes. Mide al 100 % |
+| **Google Analytics 4** (`G-G74GVKVZRY`) | Sí | **Obligatorio** | Embudos, conversiones, retención. Solo mide a quien acepta |
+
+Las dos conviven a propósito: Cloudflare da el recuento real, GA4 el comportamiento.
+
+**La regla que no se puede romper: el banner de cookies gobierna qué scripts se cargan.** Hasta el 06-09-2026 el banner era decorativo —guardaba la elección y no la leía nadie— porque no había nada opcional. Ahora `src/lib/consent.ts` es la fuente única del consentimiento, y **cualquier script de terceros que use cookies se engancha ahí**, igual que `GoogleAnalytics.tsx`: nada de `<Script>` sueltos en el layout.
+
+**No se carga NADA de Google hasta que el visitante acepta.** Google ofrece un «modo de consentimiento» que carga la etiqueta con el almacenamiento denegado; aquí no se usa, porque la política de cookies promete por escrito consentimiento **previo** y la AEPD es estricta con eso. La comprobación de que sigue bien cuesta un `curl`:
+
+```bash
+curl -s https://adelinacademy.com/ | grep -c "G-G74GVKVZRY"
+```
+
+**Tiene que dar 0.** Si da 1, alguien ha metido la etiqueta fuera del componente y se está cargando sin permiso.
+
+Tres detalles que ahorran un rato de depuración:
+
+- **`NEXT_PUBLIC_GA_ID` solo está en Production.** Ni en Preview ni en local: las pruebas ensuciarían los informes reales. Por eso en `localhost` GA4 nunca aparece, y **es lo correcto**.
+- Las variables `NEXT_PUBLIC_*` **se incrustan al compilar**. Cambiarla en Vercel exige redesplegar.
+- **La CSP tiene que listar los tres dominios**: `googletagmanager.com` para el script, y `google-analytics.com` + `analytics.google.com` para los envíos. Faltando cualquiera, GA4 se ve «instalado» y no registra nada.
+
+**Si algún día cambia lo que se pide en el banner, sube la versión de `CONSENT_KEY`** (hoy `cookie_consent_v2`). El consentimiento del RGPD tiene que ser informado: quien aceptó leyendo otra cosa no ha consentido esto. Cuesta que todo el mundo vuelva a ver el banner una vez, y no hay alternativa.
+
 # Cómo funciona el SEO de este sitio (estado actual)
 
 > Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5, 6, 7 y 8**.
