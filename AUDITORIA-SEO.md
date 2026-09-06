@@ -66,6 +66,19 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/post/<slug>
 
 Si da **404** siendo una entrada premium, para: es el fallo que describe AGENTS.md —contenido de pago protegido y a la vez invisible— y hay que resolverlo antes de auditar nada. Si da **307**, la ruta está protegida por `src/proxy.ts` y no la va a indexar nadie.
 
+### El caso normal: la entrada todavía es un borrador
+
+**Una entrada con `published = false` da 404, y eso es correcto.** No se publica para auditarla: publicar dispara el aviso al grupo de Telegram, y el orden de esta auditoría es justo el contrario.
+
+Así que la auditoría se parte en dos:
+
+| Cuándo | Qué se puede hacer |
+|---|---|
+| **Con el borrador** | Las fases **1 a 15**, enteras. Todo el criterio y casi toda la medición: se mide sobre el `content` de la fila, que es exactamente el HTML que se va a servir |
+| **Justo después de publicar** | La **Fase 16** (`check:seo` contra la página servida) y **los enlaces entrantes de la Fase 10**, que no se pueden crear antes: apuntarían a un 404 |
+
+**Las dos cosas de la Fase 16 y la Fase 10 se hacen en el mismo minuto en que se publica, no «más adelante».** Se dejan preparadas durante la auditoría —el enlace escrito, esperando— y se aplican con el `published = true`. Si `check:seo` sale en rojo ahí, se corrige en el momento: la entrada lleva minutos publicada y no la ha visto nadie.
+
 **0.4 — Lee la página entera, de arriba abajo, como un lector.** Antes de medir nada. Esta lectura produce la mitad de los hallazgos que ningún script encuentra, y hacerla *después* de las métricas no vale: ya vas condicionado por los números.
 
 Al terminar, contesta por escrito, en una frase cada una:

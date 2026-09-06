@@ -374,6 +374,22 @@ const webp = await sharp(original)
           <p className="agi-note">
             <strong>Nunca enlaces externos.</strong> Esto no lo cambia: la regla de siempre sigue en pie, y el enlazado interno no es una excusa para colar un enlace fuera del sitio.
           </p>
+
+          <h3 className="agi-sub">Términos nuevos: se crean sobre la marcha, pero no todos</h3>
+          <p>
+            <strong>Si al redactar aparece jerga que no está en el diccionario, se crea el término antes de publicar.</strong> No es trabajo extra: cada término nuevo es una URL indexable más, y el diccionario es el bloque de URLs más grande del sitio. En la entrada del hackeo de Injective salieron dos así — <code>validador</code> y <code>exploit</code>.
+          </p>
+          <p className="agi-note">
+            <strong>Pero el tope de 4 enlaces manda, y eso obliga a elegir.</strong> No se pueden crear ocho términos y enlazarlos todos. El criterio, en este orden:
+          </p>
+          <ol className="agi-list">
+            <li><strong>¿Va a reaparecer en otras entradas?</strong> Si sí, se crea y se enlaza. <em>Validador</em> vuelve a salir cada vez que se hable de staking o de una red; merece su página.</li>
+            <li><strong>¿Es de esta noticia y de ninguna más?</strong> Se explica en la propia frase y no se crea. <em>Opciones binarias</em> o <em>fondo de seguro</em> se despachan en media línea y no dan para una ficha.</li>
+            <li><strong>Si no cabe dentro de los 4, no se crea el término.</strong> Un término sin enlaces entrantes nace huérfano. Antes que eso, se reformula la frase para no usar la palabra: en la entrada de Injective se cambió <em>oráculo</em> por «la fuente de precios», que además se entiende mejor.</li>
+          </ol>
+          <p className="agi-note">
+            ⚠️ <strong>El aviso de «mencionado sin enlazar» de <code>check:contenido</code> no siempre tiene razón</strong>, y por eso no bloquea. Busca la palabra, no el significado. En la entrada de Injective marcó <em>liquidación</em> porque el texto habla de <em>liquidar</em> unas opciones —cerrarlas y pagar—, que no tiene nada que ver con la <a href="/glosario/liquidacion">liquidación</a> del diccionario, que es que te cierren una posición apalancada. Enlazarlo habría mandado al lector a leer algo que no venía a cuento. <strong>Léelo entero, pero decide tú.</strong>
+          </p>
         </div>
       </section>
 
