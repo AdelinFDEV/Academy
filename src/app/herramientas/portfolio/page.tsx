@@ -244,6 +244,36 @@ export default async function FichaPortfolioPage() {
                   </div>
                 )}
               </div>
+              {/* El DCA va en su propia línea, no sumado al spot: son dos
+                  estrategias distintas y una media entre ambas no describiría
+                  a ninguna. Aquí tampoco se enseña ni una compra suelta. */}
+              {resumen.dca && (
+                <div className="det-stats">
+                  <div className="det-stat">
+                    <span className={`det-stat-value ${resumen.dca.rentabilidadPct >= 0 ? "es-verde" : "es-rojo"}`}>
+                      {pct(resumen.dca.rentabilidadPct)}
+                    </span>
+                    <span className="det-stat-label">DCA de Bitcoin</span>
+                  </div>
+                  <div className="det-stat">
+                    <span className="det-stat-value">{resumen.dca.compras}</span>
+                    <span className="det-stat-label">Aportaciones seguidas</span>
+                  </div>
+                  {resumen.dca.desdeAnio && (
+                    <div className="det-stat">
+                      <span className="det-stat-value">{resumen.dca.desdeAnio}</span>
+                      <span className="det-stat-label">Comprando BTC desde</span>
+                    </div>
+                  )}
+                  {MOSTRAR_IMPORTES && (
+                    <div className="det-stat">
+                      <span className="det-stat-value">{usd(resumen.dca.precioMedio)}</span>
+                      <span className="det-stat-label">Precio medio de entrada</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <p className="det-stats-nota">
                 <span className="det-stats-dot" aria-hidden="true" />
                 Cifras reales, calculadas al abrir esta página. Si la

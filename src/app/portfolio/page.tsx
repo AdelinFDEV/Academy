@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import PortfolioClient from "@/components/PortfolioClient";
+import DcaClient from "@/components/DcaClient";
+import PortfoliosTabs from "@/components/PortfoliosTabs";
+import { precioBitcoin, type CompraDCA } from "@/lib/dca";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import "../herramientas/detalle.css";
 
@@ -33,10 +36,13 @@ export default async function PortfolioPage() {
   // Free and unauthenticated users must not see portfolio data
   if (!isPremium) redirect("/premium");
 
-  const { data: positions } = await supabase
-    .from("portfolio_positions")
-    .select("*")
-    .order("buy_date", { ascending: true });
+  // Las dos carteras y el precio de BTC, en paralelo: son consultas
+  // independientes y encadenarlas solo suma espera.
+  const [{ data: positions }, { data: compras }, precioBtc] = await Promise.all([
+    supabase.from("portfolio_positions").select("*").order("buy_date", { ascending: true }),
+    supabase.from("dca_compras").select("*").order("fecha", { ascending: true }),
+    precioBitcoin(),
+  ]);
 
   return (
     <div className="blog-page">
@@ -45,11 +51,22 @@ export default async function PortfolioPage() {
       <SiteNav user={!!user} isPremium={isPremium} />
 
       <main className="blog-main">
-        <PortfolioClient
-          initialPositions={positions ?? []}
-          isPremium={isPremium}
-          isAdmin={isAdmin}
-          isLoggedIn={!!user}
+        <PortfoliosTabs
+          spot={
+            <PortfolioClient
+              initialPositions={positions ?? []}
+              isPremium={isPremium}
+              isAdmin={isAdmin}
+              isLoggedIn={!!user}
+            />
+          }
+          dca={
+            <DcaClient
+              compras={(compras ?? []) as CompraDCA[]}
+              precioInicial={precioBtc}
+              isAdmin={isAdmin}
+            />
+          }
         />
 
         {/* El descargo va DEBAJO de las posiciones, no encima: aquí es donde

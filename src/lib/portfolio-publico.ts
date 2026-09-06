@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { calcularDCA, precioBitcoin, type CompraDCA } from "@/lib/dca";
 
 /**
  * Cifras AGREGADAS del portfolio para la ficha pública.
@@ -40,6 +41,22 @@ export interface ResumenPublico {
   rentabilidadPct: number;
   /** Año de la compra más antigua: sirve para decir "desde 2024". */
   desdeAnio: number | null;
+  /**
+   * El DCA de Bitcoin, si hay compras cargadas.
+   *
+   * Va aparte y no sumado al spot a propósito: son dos estrategias distintas
+   * y mezclarlas daría una rentabilidad que no describe a ninguna de las dos.
+   * Aquí, como en el resto del resumen, **solo agregados**: ni una fila, ni un
+   * importe si `MOSTRAR_IMPORTES` está en false.
+   */
+  dca: {
+    compras: number;
+    invertido: number;
+    btc: number;
+    precioMedio: number;
+    rentabilidadPct: number;
+    desdeAnio: number | null;
+  } | null;
 }
 
 interface Posicion {
@@ -116,6 +133,45 @@ export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> 
       valorActual,
       rentabilidadPct: ((valorActual - invertido) / invertido) * 100,
       desdeAnio: anioMin,
+      dca: await resumenDCA(),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * El agregado del DCA de Bitcoin para la ficha pública.
+ *
+ * Devuelve `null` en silencio si la tabla no existe todavía o si CoinGecko no
+ * responde: el resumen del spot no debe caerse porque el DCA falle. La ficha ya
+ * sabe pintar sin este bloque.
+ *
+ * Aquí **nunca** se devuelven las compras una a una. Solo cuántas son y los
+ * agregados; el detalle es de Premium y vive en `/portfolio`.
+ */
+async function resumenDCA(): Promise<ResumenPublico["dca"]> {
+  try {
+    const admin = createAdminClient();
+    const { data, error } = await admin
+      .from("dca_compras")
+      .select("id, fecha, importe, precio_btc, estado, notas");
+
+    if (error || !data?.length) return null;
+
+    const precio = await precioBitcoin();
+    if (precio === null) return null;
+
+    const r = calcularDCA(data as CompraDCA[], precio);
+    if (r.invertido <= 0) return null;
+
+    return {
+      compras: r.compras.filter((c) => c.estado === "realizada").length,
+      invertido: r.invertido,
+      btc: r.btc,
+      precioMedio: r.precioMedio,
+      rentabilidadPct: r.rentabilidadPct,
+      desdeAnio: r.primera ? Number(r.primera.slice(0, 4)) : null,
     };
   } catch {
     return null;
