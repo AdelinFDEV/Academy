@@ -14,7 +14,24 @@ interface Props {
   initialRead?: boolean;
   isLoggedIn?: boolean;
   variant?: "card" | "post";
+  /**
+   * Si esta barra es la que marca la entrada como leida. Solo la de la
+   * cabecera lo hace: la del final es la MISMA barra pintada otra vez, y
+   * dejarla marcar tambien dispararia dos veces /api/user-posts y /api/badges
+   * en cada visita.
+   */
+  marksRead?: boolean;
 }
+
+/** Lo que una barra le cuenta a la otra cuando el servidor confirma un cambio. */
+interface Cambio {
+  likes?: number;
+  liked?: boolean;
+  saved?: boolean;
+  shares?: number;
+}
+
+const EVENTO_INTERACCION = "post-interaction";
 
 export default function PostInteractions({
   postId,
@@ -27,6 +44,7 @@ export default function PostInteractions({
   initialRead = false,
   isLoggedIn = false,
   variant = "card",
+  marksRead = true,
 }: Props) {
   const [likes, setLikes]       = useState(initialLikes ?? 0);
   const [liked, setLiked]       = useState(initialLiked);
@@ -53,7 +71,7 @@ export default function PostInteractions({
 
   // Mark as read + check badges when opening a post (logged-in users only)
   useEffect(() => {
-    if (variant !== "post" || initialRead || !isLoggedIn) return;
+    if (variant !== "post" || initialRead || !isLoggedIn || !marksRead) return;
     fetch("/api/user-posts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -72,7 +90,37 @@ export default function PostInteractions({
           });
       })
       .catch(() => {});
-  }, [postId, variant, initialRead, isLoggedIn]);
+  }, [postId, variant, initialRead, isLoggedIn, marksRead]);
+
+  /**
+   * La barra de la cabecera y la del final son el MISMO control pintado dos
+   * veces, pero cada instancia tiene su propio estado de React. Sin esto,
+   * dar like abajo y volver arriba enseñaba el corazon apagado y el contador
+   * viejo: dos widgets discutiendo sobre la misma entrada.
+   *
+   * Se emite SIEMPRE el estado que devuelve el servidor, nunca el optimista,
+   * asi que las dos barras convergen en el dato bueno aunque una falle.
+   */
+  function emitir(cambio: Cambio) {
+    window.dispatchEvent(
+      new CustomEvent<Cambio & { postId: string }>(EVENTO_INTERACCION, {
+        detail: { postId, ...cambio },
+      })
+    );
+  }
+
+  useEffect(() => {
+    function sincronizar(e: Event) {
+      const d = (e as CustomEvent<Cambio & { postId: string }>).detail;
+      if (!d || d.postId !== postId) return;
+      if (typeof d.likes  === "number")  setLikes(d.likes);
+      if (typeof d.liked  === "boolean") setLiked(d.liked);
+      if (typeof d.saved  === "boolean") setSaved(d.saved);
+      if (typeof d.shares === "number")  setShares(d.shares);
+    }
+    window.addEventListener(EVENTO_INTERACCION, sincronizar);
+    return () => window.removeEventListener(EVENTO_INTERACCION, sincronizar);
+  }, [postId]);
 
   async function toggleLike(e: React.MouseEvent) {
     e.preventDefault();
@@ -102,6 +150,7 @@ export default function PostInteractions({
       // Sync with definitive server state
       setLikes(data.count);
       setLiked(data.liked);
+      emitir({ likes: data.count, liked: data.liked });
     } else {
       // Server failed — revert the optimistic update
       setLiked(wasLiked);
@@ -125,6 +174,7 @@ export default function PostInteractions({
     if (res.ok) {
       const data = await res.json();
       setSaved(data.saved);
+      emitir({ saved: data.saved });
     }
     setLoadingSave(false);
   }
@@ -173,7 +223,11 @@ export default function PostInteractions({
         body: JSON.stringify({ post_id: postId }),
       })
         .then((r) => r.json())
-        .then((data) => { if (typeof data.shares === "number") setShares(data.shares); })
+        .then((data) => {
+          if (typeof data.shares !== "number") return;
+          setShares(data.shares);
+          emitir({ shares: data.shares });
+        })
         .catch(() => {});
     }
   }

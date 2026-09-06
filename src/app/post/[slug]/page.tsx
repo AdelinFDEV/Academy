@@ -104,14 +104,43 @@ function slugify(text: string): string {
 
 // El contenido ya es HTML (lo escribe Claude directamente, sin Markdown de por
 // medio) — el índice se saca leyendo los <h2>/<h3> reales del artículo.
-function extractHeadings(html: string) {
-  const matches = [...html.matchAll(/<h([23])(?:\s+id="([^"]*)")?[^>]*>([\s\S]*?)<\/h\1>/gi)];
-  return matches.map((m) => {
-    const level = Number(m[1]);
-    const text = m[3].replace(/<[^>]+>/g, "").trim();
-    const id = m[2] || slugify(text);
-    return { id, text, level };
-  });
+//
+// Devuelve el índice Y el HTML con los `id` ya puestos, EN LA MISMA PASADA, que
+// es justo lo que fallaba: una función calculaba un slug por encabezado para
+// pintar el índice, y el cuerpo del artículo se volcaba tal cual, sin un solo
+// `id`. Todos los enlaces de «En este artículo» apuntaban a anclas que no
+// existían. No cantaba porque saltar a un ancla inexistente no da error: al
+// pulsar sencillamente no pasa nada.
+//
+// Calcular las dos cosas a la vez es lo que impide que vuelvan a separarse.
+function indexarArticulo(html: string) {
+  const headings: { id: string; text: string; level: number }[] = [];
+  const usados = new Map<string, number>();
+
+  const conIds = html.replace(
+    /<h([23])([^>]*)>([\s\S]*?)<\/h\1>/gi,
+    (etiqueta, nivel: string, atributos: string, interior: string) => {
+      const text = interior.replace(/<[^>]+>/g, "").trim();
+      const propio = /\sid="([^"]*)"/i.exec(atributos)?.[1];
+      let id = propio || slugify(text);
+
+      // Un encabezado sin texto ni id no puede ser destino de nada.
+      if (!id) return etiqueta;
+
+      // Dos apartados titulados igual darían el mismo id, y el navegador
+      // saltaría siempre al primero.
+      const vistas = usados.get(id) ?? 0;
+      usados.set(id, vistas + 1);
+      if (vistas > 0) id = `${id}-${vistas + 1}`;
+
+      headings.push({ id, text, level: Number(nivel) });
+
+      const resto = atributos.replace(/\sid="[^"]*"/i, "");
+      return `<h${nivel}${resto} id="${id}">${interior}</h${nivel}>`;
+    }
+  );
+
+  return { headings, html: conIds };
 }
 
 function getYoutubeId(url: string) {
@@ -265,7 +294,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const youtubeId = post.youtube_url ? getYoutubeId(post.youtube_url) : null;
   const wordCount = post.content ? post.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length : 0;
   const readingMinutes = Math.max(1, Math.round(wordCount / 200));
-  const headings = post.content ? extractHeadings(post.content) : [];
+  const { headings, html: cuerpoConAnclas } = post.content
+    ? indexarArticulo(post.content)
+    : { headings: [], html: "" };
 
   // La reserva sigue siendo secuencial a propósito: solo salta cuando la
   // categoría no tiene ninguna otra entrada publicada, que es raro. Lanzarla
@@ -290,7 +321,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />
 
-      <ReadingProgress />
+      {/* La barra mide ESTE elemento, no el documento: si midiera el scroll
+          entero, los relacionados y el hilo de comentarios contarían como
+          artículo y la barra llegaría al final estando a medio leer. Cuando la
+          entrada está tras el muro el selector no encuentra nada y se cae al
+          documento, que es el comportamiento de siempre. */}
+      <ReadingProgress target="#cuerpo-articulo" minutos={readingMinutes} />
 
       {/* Los mismos escalones que las migas de pan de abajo, y en el mismo
           orden: Google exige que el dato estructurado se corresponda con lo que
@@ -406,9 +442,34 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             <TableOfContents headings={headings} />
 
             <div
+              id="cuerpo-articulo"
               className="post-content prose-content"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: cuerpoConAnclas }}
             />
+
+            {/* Las mismas acciones que arriba, pero AQUÍ es donde se usan:
+                nadie guarda ni comparte algo que todavía no ha leído. La de la
+                cabecera se queda porque da contexto social —cuánta gente lo ha
+                encontrado útil— antes de invertir el tiempo en leerlo.
+
+                `marksRead={false}`: marcar la entrada como leída es cosa de una
+                sola barra, o cada visita dispara dos veces /api/user-posts. */}
+            <div className="post-cierre-acciones">
+              <span className="post-cierre-label">¿Te ha servido este artículo?</span>
+              <PostInteractions
+                postId={post.id}
+                postSlug={slug}
+                commentsCount={comments?.length ?? 0}
+                initialLikes={initialLikes}
+                initialLiked={initialLiked}
+                initialShares={initialShares}
+                initialSaved={userPost?.saved ?? false}
+                initialRead={!!userPost?.read_at}
+                isLoggedIn={!!user}
+                variant="post"
+                marksRead={false}
+              />
+            </div>
 
             {/* Cierre fijo: siempre hay un siguiente paso, sea quien sea el
                 que lee. Antes los Premium terminaban el artículo sin nada. */}
