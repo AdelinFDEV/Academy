@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Bookmark, Compass, Check } from "lucide-react";
+import { ArrowRight, Bookmark, Check } from "lucide-react";
 
 /**
- * La llamada a la cuenta, arriba de cada ficha del diccionario.
+ * La llamada a crear cuenta, arriba de cada ficha del diccionario.
  *
  * ── Dónde va, y por qué no más arriba ──────────────────────────────────────
  *
@@ -16,14 +16,20 @@ import { ArrowRight, Bookmark, Compass, Check } from "lucide-react";
  *
  * «Inicio» no es una llamada a la acción, es navegación: nadie la pulsa por lo
  * que le ofrece. La cuenta gratuita sí tiene un gancho, y además contextual —
- * **guardar términos** es una función que ya existe en esta misma página y que
+ * **guardar términos** es una función que existe en esta misma página y que
  * solo funciona con sesión. Se pide algo ofreciendo algo.
  *
- * A quien ya ha entrado se le ofrece otra cosa. Enseñarle «crea tu cuenta» a
- * alguien que la tiene es la forma más rápida de parecer un robot.
+ * ── Y a quien ya tiene cuenta, NADA ────────────────────────────────────────
  *
- * El vídeo del canal **no está aquí**: vive al final de la ficha, en
- * `TerminoVideo`. Dos ofertas juntas compiten y no gana ninguna.
+ * Ya convirtió: cualquier bloque ahí solo compite con lo que ha venido a leer.
+ * Estuvo unas horas preguntándole «¿te ha servido?» **antes** de que leyera el
+ * texto, que además de estorbar no tenía ningún sentido en ese punto.
+ *
+ * Lo único que sí le sirve en esta página —guardar el término— es un botón
+ * junto al título, no un bloque: ver `GuardarTermino`.
+ *
+ * El vídeo del canal tampoco está aquí: vive al final, en `TerminoVideo`. Dos
+ * ofertas juntas compiten y no gana ninguna.
  */
 
 /** Lo que se lleva de verdad quien se registra. Nada que no exista ya. */
@@ -40,31 +46,12 @@ export default function TerminoCta({
   termino: string;
   logueado: boolean;
 }) {
-  if (logueado) {
-    return (
-      <aside className="tcta tcta--vuelto" aria-label="Sigue aprendiendo">
-        <div>
-          <p className="tcta-title">¿Te ha servido? Hay mucho más</p>
-          <p className="tcta-sub">
-            Las guías interactivas llevan estos conceptos a la práctica, con
-            ejercicios y ejemplos reales.
-          </p>
-        </div>
-        <Link href="/guias" className="tcta-btn">
-          <Compass size={15} strokeWidth={2.2} aria-hidden="true" />
-          Ver las guías
-          <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
-        </Link>
-      </aside>
-    );
-  }
+  if (logueado) return null;
 
   return (
     <aside className="tcta" aria-label="Crear una cuenta gratuita">
       <div className="tcta-texto">
-        <p className="tcta-title">
-          Ya sabes qué es {termino}. Guárdalo y sigue.
-        </p>
+        <p className="tcta-title">Ya sabes qué es {termino}. Guárdalo y sigue.</p>
         <p className="tcta-sub">
           Crea tu cuenta gratis en menos de un minuto. Sin tarjeta y sin
           compromiso.

@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import TerminoCta from "@/components/TerminoCta";
 import TerminoVideo from "@/components/TerminoVideo";
+import GuardarTermino from "@/components/GuardarTermino";
 import JsonLd from "@/components/JsonLd";
 import { createClient } from "@/lib/supabase/server";
 import { breadcrumbSchema, definedTermSchema } from "@/lib/schema";
@@ -76,6 +77,19 @@ export default async function TerminoPage({
   const isAdmin = role === "admin";
   const userName = profile?.full_name || user?.email?.split("@")[0] || "Usuario";
 
+  // ¿Lo tiene ya guardado? Solo hace falta si hay sesión: el botón no se
+  // enseña a quien no la tiene.
+  let yaGuardado = false;
+  if (user) {
+    const { data } = await supabase
+      .from("saved_terms")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("term", t.term)
+      .maybeSingle();
+    yaGuardado = !!data;
+  }
+
   const etiquetaCat =
     GLOSARIO_CATEGORIAS.find((c) => c.id === t.category)?.label ?? t.category;
 
@@ -122,7 +136,19 @@ export default async function TerminoPage({
         </nav>
 
         <header className="termino-header">
-          <span className={`termino-cat termino-cat--${t.category}`}>{etiquetaCat}</span>
+          <div className="termino-header-top">
+            <span className={`termino-cat termino-cat--${t.category}`}>{etiquetaCat}</span>
+            {/* Guardar es la única acción de esta página que necesita cuenta,
+                así que es lo único que se le ofrece a quien ya la tiene. */}
+            {user && (
+              <GuardarTermino
+                term={t.term}
+                definition={t.definition}
+                category={t.category}
+                guardadoInicial={yaGuardado}
+              />
+            )}
+          </div>
           <h1 className="termino-title">{t.term}</h1>
           <p className="termino-lead">{t.definition}</p>
         </header>

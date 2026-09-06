@@ -44,10 +44,11 @@ export default async function TerminoVideo() {
         aria-label={`Ver «${ultimo.title}» en YouTube`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* Sin icono de reproducción encima: la miniatura ya es de YouTube y
+            se reconoce sola, y el botón «Ver el vídeo» de al lado dice lo
+            mismo. Superponerlo solo tapaba la cara del vídeo. */}
         <img src={ultimo.thumbnail} alt="" loading="lazy" />
-        <span className="tvid-play" aria-hidden="true">
-          <Play size={26} strokeWidth={2.4} fill="currentColor" />
-        </span>
+        <span className="tvid-velo" aria-hidden="true" />
       </a>
 
       <div className="tvid-texto">

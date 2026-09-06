@@ -12155,26 +12155,15 @@ select {
 
 .tvid-thumb:hover img { transform: scale(1.04); }
 
-.tvid-play {
+/* Un velo mínimo en el borde inferior: da contraste al bloque sin tapar la
+   miniatura. Aquí hubo un botón de reproducción superpuesto y se retiró — la
+   miniatura ya se reconoce como vídeo y el botón de al lado dice lo mismo. */
+.tvid-velo {
   position: absolute;
   inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.12));
-  transition: background-color 0.25s ease;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.28) 0%, transparent 45%);
+  pointer-events: none;
 }
-
-.tvid-play svg {
-  padding: 0.9rem;
-  border-radius: 50%;
-  background: rgba(255, 0, 0, 0.9);
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.tvid-thumb:hover .tvid-play svg { transform: scale(1.1); }
 
 .tvid-texto { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
 
@@ -12256,7 +12245,47 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tvid-thumb img,
-  .tvid-play svg { transition: none; }
+  .tvid-thumb img { transition: none; }
   .tvid-thumb:hover img { transform: none; }
 }
+
+/* La categoría y el botón de guardar, en la misma línea sobre el título. */
+.termino-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+/* Discreto a propósito: es una comodidad para quien ya tiene cuenta, no una
+   llamada a la acción. Lo que tiene que destacar en esta página es el texto. */
+.termino-guardar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 32px;
+  padding: 0 0.75rem;
+  border: 1px solid rgba(240, 244, 255, 0.13);
+  border-radius: 9px;
+  background: rgba(240, 244, 255, 0.03);
+  font-family: inherit;
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.62);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.termino-guardar:hover:not(:disabled) {
+  color: rgba(240, 244, 255, 0.95);
+  border-color: rgba(240, 244, 255, 0.26);
+}
+
+.termino-guardar.is-guardado {
+  color: var(--accent-orange-soft);
+  border-color: color-mix(in srgb, var(--accent-orange) 38%, transparent);
+  background: var(--accent-orange-light);
+}
+
+.termino-guardar:disabled { opacity: 0.6; cursor: default; }
