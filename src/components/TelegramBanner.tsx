@@ -84,7 +84,17 @@ export default function TelegramBanner() {
             className="tg-banner-btn"
           >
             <Send size={15} aria-hidden="true" />
-            Entrar al canal
+            {/*
+             * Dos etiquetas para el mismo botón, y no es un capricho.
+             *
+             * En pantalla ancha el botón dice la acción («entrar al canal»)
+             * porque el destino ya se lee entero en la línea de al lado. En
+             * móvil esa línea no cabe, así que el botón tiene que decir el
+             * DESTINO: era el único sitio de la banda donde podía aparecer la
+             * palabra «Telegram», y sin ella el aviso no decía a dónde llevaba.
+             */}
+            <span className="tg-banner-btn-ancho">Entrar al canal</span>
+            <span className="tg-banner-btn-movil">Telegram</span>
           </a>
 
           <button type="button" onClick={cerrar} className="tg-banner-close" aria-label="Cerrar aviso">
