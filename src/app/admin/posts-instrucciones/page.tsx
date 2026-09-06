@@ -209,7 +209,7 @@ const webp = await sharp(original)
         </div>
         <div className="agi-card" style={{ marginTop: "1rem" }}>
           <p><strong>Importante:</strong> <code>content</code> es <strong>HTML final</strong>, escrito directamente por Claude — no hay Markdown ni ningún parser de por medio (se quitó a propósito: no tiene sentido una sintaxis simplificada pensada para que un humano escriba a mano, cuando quien redacta cada entrada es Claude). Se inserta tal cual con <code>dangerouslySetInnerHTML</code> en <code>post/[slug]/page.tsx</code>.</p>
-          <p style={{ marginTop: "0.6rem" }}>Etiquetas disponibles y ya con estilo propio en <code>.prose-content</code> (globals.css): <code>h1–h4</code>, <code>p</code>, <code>strong</code>, <code>em</code>, <code>a</code>, <code>ul</code>/<code>ol</code>/<code>li</code>, <code>blockquote</code>, <code>pre</code>/<code>code</code>, <code>hr</code>, <code>table</code> (clase <code>.prose-table</code>), imágenes (clase <code>.prose-img</code>), callouts (<code>.prose-callout</code>) y el gráfico de barras (<code>.prose-chart</code>, bloque 08). Cualquier otra etiqueta se renderiza igualmente pero sin estilo propio garantizado — usar solo lo de esta lista.</p>
+          <p style={{ marginTop: "0.6rem" }}>Etiquetas disponibles y ya con estilo propio en <code>.prose-content</code> (globals.css): <code>h1–h4</code>, <code>p</code>, <code>strong</code>, <code>em</code>, <code>a</code>, <code>ul</code>/<code>ol</code>/<code>li</code>, <code>blockquote</code>, <code>pre</code>/<code>code</code>, <code>hr</code>, <code>table</code> (clase <code>.prose-table</code>), imágenes (clase <code>.prose-img</code>), callouts (<code>.prose-callout</code>), el gráfico de barras (<code>.prose-chart</code>) y las piezas para textos largos —<code>.prose-resumen</code>, <code>.prose-vs</code>, <code>.prose-dato</code>, <code>.prose-hitos</code> y <code>.prose-pasos</code>— todas en el bloque 08. Cualquier otra etiqueta se renderiza igualmente pero sin estilo propio garantizado — usar solo lo de esta lista.</p>
         </div>
       </section>
 
@@ -255,7 +255,58 @@ const webp = await sharp(original)
               <li>El <code>width</code> de <code>.prose-chart-fill</code> es un porcentaje calculado a mano por Claude: <code>(valor / valor_más_alto) × 100</code></li>
               <li>Barras horizontales, 100% estático — sin JS de cliente, sin dependencias</li>
               <li>Usar para: comparativas de precio, reparto porcentual, ranking de valores — cualquier dato que se entienda mejor visualmente</li>
+              <li><strong>Grafica la diferencia, no el total.</strong> En la ficha de <code>exchange</code> el primer gráfico comparaba «lo que queda de 1.000 €» con comisiones del 1,5 %, 0,5 % y 0,1 %: las tres barras salían casi idénticas (98,5 / 99,5 / 99,9) y escondían justo lo que se quería enseñar. Cambiado a graficar el <em>coste</em> (15 € / 5 € / 1 €), la diferencia se ve de un vistazo</li>
             </ul>
+          </div>
+        </div>
+
+        {/* Piezas añadidas el 07-09-2026 al ampliar el diccionario. */}
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Piezas para textos largos — que no parezca un muro</h3>
+          <div className="agi-card">
+            <p>Un texto de más de 800 palabras en párrafos seguidos no lo lee nadie, y aquí no hay fotos que lo rompan: la academia no usa imágenes decorativas. Estas piezas ponen el aire, y todas <strong>aportan información</strong> — no son adorno.</p>
+            <p style={{ marginTop: "0.6rem" }}><strong>La regla:</strong> si el bloque no dice nada que el párrafo no diga ya, sobra. Sirven para estructurar, no para decorar.</p>
+          </div>
+          <div className="agi-card agi-card--mono" style={{ marginTop: "1rem" }}>
+            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.78rem", color: "var(--text-secondary)" }}>
+{`<!-- Resumen de entrada: lo que se lleva quien no sigue leyendo -->
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En veinte segundos</span>
+  <p>…</p>
+</div>
+
+<!-- Comparación a dos columnas. data-tono: "favor" (verde) o "contra" (rojo) -->
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Centralizado</p>
+    <p class="prose-vs-sub">CEX · custodia una empresa</p>
+    <ul>
+      <li data-tono="favor">Pagas con tarjeta</li>
+      <li data-tono="contra">Te pide el DNI</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">…</div>
+</div>
+
+<!-- Una cifra que pare el ojo -->
+<div class="prose-dato">
+  <span class="prose-dato-cifra">504 €</span>
+  <span class="prose-dato-texto">Lo que cuesta la diferencia en 36 aportaciones.</span>
+</div>
+
+<!-- Línea temporal -->
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">2014 · Mt. Gox</span>
+    <p>Desapareció con 850.000 BTC de sus clientes.</p>
+  </div>
+</div>
+
+<!-- Pasos numerados (la numeración la pone el CSS) -->
+<ol class="prose-pasos">
+  <li><strong>Comprueba que puedes sacar el dinero.</strong> …</li>
+</ol>`}
+            </pre>
           </div>
         </div>
         <div className="agi-subsection">

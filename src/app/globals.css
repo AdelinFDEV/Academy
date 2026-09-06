@@ -11785,3 +11785,227 @@ select {
 /* El pie de la tabla necesita aire por debajo: justo ahí empieza la caja del
    descargo, y pegados se leían como un solo bloque. */
 .dca-pie { margin-bottom: 0.5rem; }
+
+/* ── Piezas visuales para textos largos ─────────────────────────────────────
+ *
+ * Nacen el 07-09-2026 al ampliar el diccionario. Una ficha de 1.300 palabras
+ * en párrafos seguidos no la lee nadie, y aquí no hay fotos que la rompan: la
+ * academia no usa imágenes decorativas. Así que el aire lo tienen que poner
+ * elementos que además APORTEN algo — una comparación, una cifra, un orden.
+ *
+ * Van con prefijo `prose-` y dentro de `.prose-content` a propósito: sirven
+ * igual en una entrada del blog que en una ficha del diccionario, y tenerlas
+ * en dos vocabularios distintos acabaría en dos diseños distintos.
+ *
+ * Regla al usarlas: **si el bloque no dice nada que el párrafo no diga, sobra.**
+ * Son para estructurar información, no para decorar. */
+
+/* ── Resumen de entrada: lo que el lector se lleva si no sigue leyendo ── */
+.prose-content .prose-resumen {
+  position: relative;
+  margin: 0 0 1.8rem;
+  padding: 1.15rem 1.3rem 1.15rem 1.5rem;
+  border: 1px solid rgba(240, 244, 255, 0.09);
+  border-left: 3px solid var(--accent-orange);
+  border-radius: 0 14px 14px 0;
+  background: linear-gradient(100deg, rgba(255, 107, 43, 0.07) 0%, rgba(240, 244, 255, 0.02) 55%);
+}
+
+.prose-content .prose-resumen-title {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--accent-orange-soft);
+}
+
+.prose-content .prose-resumen p { margin: 0; }
+.prose-content .prose-resumen p + p { margin-top: 0.5rem; }
+
+/* ── Comparación a dos columnas ── */
+.prose-content .prose-vs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+  margin: 1.5rem 0;
+}
+
+.prose-content .prose-vs-lado {
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid rgba(240, 244, 255, 0.09);
+  border-radius: 14px;
+  background: rgba(240, 244, 255, 0.022);
+}
+
+/* Cada lado con su color, para que la comparación se lea de un vistazo. */
+.prose-content .prose-vs-lado--a { border-top: 2px solid #4f9dff; }
+.prose-content .prose-vs-lado--b { border-top: 2px solid #34d399; }
+
+.prose-content .prose-vs-title {
+  margin: 0 0 0.15rem;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: rgba(240, 244, 255, 0.97);
+}
+
+.prose-content .prose-vs-sub {
+  margin: 0 0 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.4);
+}
+
+.prose-content .prose-vs-lado ul { margin: 0; padding: 0; list-style: none; }
+
+.prose-content .prose-vs-lado li {
+  position: relative;
+  margin: 0 0 0.45rem;
+  padding-left: 1.05rem;
+  font-size: 0.87rem;
+  line-height: 1.55;
+  color: rgba(240, 244, 255, 0.7);
+}
+
+.prose-content .prose-vs-lado li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+/* Un `data-tono="contra"` marca lo que juega en contra sin cambiar de bloque. */
+.prose-content .prose-vs-lado li[data-tono="contra"] { color: rgba(248, 113, 113, 0.82); }
+.prose-content .prose-vs-lado li[data-tono="favor"] { color: rgba(74, 222, 128, 0.82); }
+
+/* ── Cifra suelta, para que un dato pare el ojo ── */
+.prose-content .prose-dato {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 14px;
+  background:
+    radial-gradient(70% 130% at 0% 50%, rgba(255, 107, 43, 0.1) 0%, transparent 70%),
+    rgba(9, 13, 24, 0.45);
+}
+
+.prose-content .prose-dato-cifra {
+  flex-shrink: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-orange-soft);
+}
+
+.prose-content .prose-dato-texto {
+  font-size: 0.87rem;
+  line-height: 1.55;
+  color: rgba(240, 244, 255, 0.65);
+}
+
+/* ── Hitos: una línea temporal vertical ── */
+.prose-content .prose-hitos {
+  position: relative;
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose-content .prose-hitos::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(240, 244, 255, 0.18) 12%, rgba(240, 244, 255, 0.18) 88%, transparent);
+}
+
+.prose-content .prose-hito {
+  position: relative;
+  margin-bottom: 1.05rem;
+}
+
+.prose-content .prose-hito::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.5rem + 2px);
+  top: 0.45em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  box-shadow: 0 0 0 3px rgba(10, 22, 40, 1);
+}
+
+.prose-content .prose-hito-fecha {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent-orange-soft);
+}
+
+.prose-content .prose-hito p {
+  margin: 0.15rem 0 0;
+  font-size: 0.89rem;
+  line-height: 1.6;
+}
+
+/* ── Pasos numerados ── */
+.prose-content .prose-pasos {
+  counter-reset: paso;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prose-content .prose-pasos li {
+  counter-increment: paso;
+  position: relative;
+  margin: 0 0 0.75rem;
+  padding: 0.9rem 1.1rem 0.9rem 3.2rem;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.02);
+  font-size: 0.89rem;
+  line-height: 1.6;
+}
+
+.prose-content .prose-pasos li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 1.05rem;
+  top: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: rgba(255, 107, 43, 0.13);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-orange-soft);
+}
+
+@media (max-width: 620px) {
+  .prose-content .prose-vs { grid-template-columns: 1fr; }
+  .prose-content .prose-dato { flex-direction: column; gap: 0.4rem; }
+  .prose-content .prose-dato-cifra { font-size: 1.7rem; }
+}
