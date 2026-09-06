@@ -1,555 +1,127 @@
-# LO PRIMERO — el contrato de contenido
+# AdelinBTC Academy — lo que hay que saber siempre
 
-Este sitio tiene un SEO trabajado punto por punto desde el 30 de agosto de 2026: pasó de **30 URLs indexables a las 90 de hoy**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos y de portadas de 22 MB a 3,7 MB. Todo eso **se mantiene solo si cada contenido nuevo respeta las mismas reglas**.
+Este archivo **se carga en todas las sesiones**, así que solo contiene dos cosas:
 
-No hace falta recordárselo a nadie ni leerse los 13 puntos del plan. Basta con esto:
+1. **El enrutador** — qué vas a hacer y dónde están sus instrucciones.
+2. **Los intocables** — las decisiones que se rompen solas si nadie las recuerda. Una línea cada una, con su puntero.
 
-```bash
-npm run check:contenido
-```
+Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un documento que lo cuenta todo se paga en cada petición, y acaba contando cosas que ya no son verdad.
 
-**Tiene que salir en verde antes de publicar una entrada.** Comprueba, contra Supabase, cada regla que sale de aquí abajo: longitud, límites de título y descripción, gráfico obligatorio, enlaces internos que existan de verdad, etiquetas permitidas, y que la portada sea WebP y no pese de más. Para revisar una sola entrada, incluida en borrador:
+---
 
-```bash
-npm run check:contenido -- mi-slug
-```
+## 1 · EL ENRUTADOR — antes de escribir una línea, abre lo que te toque
 
-Y para el código, lo de siempre:
-
-```bash
-npm run check && npx tsc --noEmit
-```
-
-> **Por qué `check:contenido` no está en el hook de `pre-push`:** necesita credenciales de Supabase y salir a la red. En CI no hay secretos y el hook se rompería en cualquier clon sin `.env.local`. Se ejecuta a mano, y es obligatorio antes de publicar.
-
-## Lo obligatorio, según lo que vayas a crear
-
-| Vas a crear… | Lo que NO se negocia |
+| Vas a hacer… | Lee **antes** de empezar |
 |---|---|
-| **Entrada** | Las [3 preguntas](#resumen-operativo-de-una-entrada-nueva) antes de escribir · 500-1500 palabras · mínimo 1 `.prose-chart` · 2-4 enlaces internos · **todo término técnico enlazado al diccionario, creándolo si no existe** · `seo_title` ≤48 y `meta_description` ≤160 · portada en **WebP** · **[ofrecer la auditoría SEO](#-la-auditoría-seo-se-ofrece-siempre--al-terminar-cada-entrada-y-cada-guía) al terminar** · aprobación del admin antes de publicar |
-| **Guía** | Alta en `GUIDES` (`src/lib/guides.ts`) · `alternates.canonical` propia · `<GuideBreadcrumbJsonLd>` · su propio `[slug].css` · **todo término técnico enlazado al diccionario, creándolo si no existe** · cierre fijo con `GuideInteractions` y `Footer` · **[ofrecer la auditoría SEO](#-la-auditoría-seo-se-ofrece-siempre--al-terminar-cada-entrada-y-cada-guía) al terminar** |
-| **Término del diccionario** | Campo `extended` (~150-250 palabras) o **no existe como URL** · `seeAlso` con tres slugs que existan · no tocar `term`, que es la clave de los guardados |
-| **Página pública nueva** | Alta en `STATIC_ROUTES` (`src/app/sitemap.ts`) · `alternates.canonical` a mano · título ≤48 y descripción ≤160 |
-| **Portada de cualquier cosa** | **WebP siempre**, 1600 px de ancho y calidad 82, antes de subirla |
+| Una **entrada** del blog | `/admin/posts-instrucciones` (`src/app/admin/posts-instrucciones/page.tsx`) |
+| Una **guía** interactiva | `/admin/guias-instrucciones` |
+| Una **liberación** de tokens | `/admin/liberaciones-instrucciones` |
+| Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
+| La **auditoría SEO** de lo que acabas de montar | [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) · ver el punto 2 |
+| Tocar el **bot de Telegram** | [`BOT.md`](./BOT.md) |
+| Tocar **muro de pago, portfolios, legal, analítica, sitemap, robots, canónicas, JSON-LD o el catálogo de herramientas** | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| Escribir **código**: CSS, tipos, hooks, guardarraíles | [`CODIGO.md`](./CODIGO.md) |
+| Un **anuncio de Telegram con copy propio** | [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md) |
+| Saber **qué toca ahora** | [`TAREAS.md`](./TAREAS.md) |
 
-Cada fila está desarrollada, con su porqué, en [«Cómo funciona el SEO de este sitio»](#cómo-funciona-el-seo-de-este-sitio-estado-actual). Lo de arriba es lo que hay que cumplir; lo de abajo es por qué.
+Las tres primeras filas son **la fuente de verdad** de su tipo de contenido: lo que diga el panel manda, y este archivo no las repite a propósito — repetirlas es cómo se desincronizan.
 
-## 🔴 LA AUDITORÍA SEO SE OFRECE SIEMPRE — al terminar cada entrada y cada guía
+**Esto ya falló una vez** (agosto de 2026, las entradas de Bitcoin Core y Zcash): se redactaron enteras sin abrir `/admin/posts-instrucciones`, y hubo que rehacerlas por faltarles el gráfico obligatorio y doblar la longitud máxima. Abrir la página cuesta treinta segundos.
 
-**Esto no hay que recordárselo a Claude. Es parte de montar una entrada o una guía, igual que las 3 preguntas del principio.**
+---
 
-Al terminar de montar el contenido, **antes** de pedir la aprobación para publicar, Claude pregunta con estas palabras o equivalentes:
+## 2 · 🔴 LA AUDITORÍA SEO SE OFRECE SIEMPRE
+
+**No hay que recordárselo a nadie. Es parte de montar una entrada o una guía, igual que las tres preguntas del principio.**
+
+Al terminar de montar el contenido, **antes** de pedir la aprobación para publicar, se pregunta con estas palabras o equivalentes:
 
 > ¿Empiezo la auditoría SEO de la entrada / de la guía?
 
-En cuanto el admin diga que sí, se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa entrada o esa guía. Es un procedimiento de 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales, conversión— y **cada fase se corrige antes de pasar a la siguiente**.
+En cuanto el admin diga que sí, se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa entrada o esa guía. Son 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba del todo, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales y conversión— y **cada fase se corrige antes de pasar a la siguiente**.
 
 Cuatro reglas del disparador:
 
 1. **Se pregunta siempre**, aunque la entrada sea corta o urgente. Una noticia de 500 palabras compite en Google igual que una guía de 3.000.
 2. Si el admin dice que no, **se anota en el cierre que queda sin auditar**, para que conste.
-3. Aplica también a **una entrada o guía existente que se reescriba a fondo**: cambiar la mitad del cuerpo es publicar otra página en la misma URL.
-4. Los scripts van **al final** de la auditoría, no al principio. `npm run check:seo -- post/<slug> "<focus_keyword>"` confirma lo que ya has arreglado; **no lo descubre por ti, y sale en verde en una página que cumple todas las métricas y no responde a nada**.
+3. Aplica también a **contenido existente que se reescriba a fondo**: cambiar la mitad del cuerpo es publicar otra página en la misma URL.
+4. Los scripts van **al final** de la auditoría, no al principio. Confirman lo que ya has arreglado; **no lo descubren por ti**.
 
 Por qué es más severo que en una web normal: Google clasifica el contenido sobre dinero, inversión e impuestos como **YMYL**, y le aplica el listón más alto de su sistema de evaluación. Aquí **todo** el contenido es YMYL.
 
-## Las seis que más caro salen
+---
 
-Son las que ya se rompieron alguna vez, y ninguna la caza el compilador:
+## 3 · LOS INTOCABLES
 
-1. **Publicar sin aprobación del admin.** `published = true` **manda un aviso a su grupo de Telegram** desde `anunciarPendientes()`. Si no ha dicho que sí, se inserta con `published = false`.
-2. **Soltar un término técnico sin enlazarlo al diccionario.** En toda entrada y toda guía, la primera aparición de cada tecnicismo va enlazada a `/glosario/<slug>`, y **si el término no existe en el diccionario se crea antes de publicar**. Es la regla que más se olvida porque el texto «se entiende igual» — pero expulsa al principiante y desperdicia el bloque de URLs más grande del sitio. La detalla la [regla del diccionario](#-regla-del-diccionario--se-aplica-a-toda-entrada-y-toda-guía-sin-excepción), y `check:contenido` avisa de las menciones sin enlazar.
-3. **Enlazar a un destino que no existe.** Un término del diccionario sin `extended` devuelve **404**, y una guía que no esté en `GUIDES` tampoco existe. Comprobar antes de escribir el enlace.
-4. **Subir una portada sin convertirla.** El panel admite hasta 5 MB: **que entre no significa que valga**. Un PNG de 2,7 MB hace más daño a la carga que todo lo que se gane optimizando el servidor.
-5. **Poner una canónica en un `layout.tsx`.** En Next los metadatos del layout los heredan **todas** las rutas hijas, así que una canónica ahí le pone la misma URL a media web.
-6. **Meter en el sitemap una ruta que redirige o exige sesión.** La protección vive en el middleware `src/proxy.ts`, no en el `page.tsx`, así que mirar la página no basta.
+Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al menos una vez. **El detalle está en el archivo de la derecha; lo que no puede faltar es el aviso.**
 
-## El estado del plan
+### Contenido
 
-**Los 13 puntos están cerrados y verificados en producción.** El seguimiento, con su tabla de commits y la crónica de cada uno, vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)** — en el repo y no en la memoria de Claude a propósito, porque la memoria local (`~/.claude/`) no viaja entre ordenadores.
-
-**Lo único que sigue abierto** es el nombre real del titular en `src/lib/legal.ts`: `titularNombre`, `formaJuridica`, `identificadorFiscal` y `domicilio` siguen con texto de relleno **visible en producción**, e identificar al titular es una obligación legal. Está como bloqueante en [`TAREAS.md`](./TAREAS.md).
-
-**Al cerrar cualquier punto nuevo**, tres cosas siempre: marcar la casilla y anotar el commit en `SEO-PLAN.md`, verificar en producción tras desplegar, y traer **aquí solo la regla** que cambie el día a día. La crónica de cómo se hizo se queda en `SEO-PLAN.md`: este archivo se carga en todas las sesiones, así que cada palabra que no sea una regla viva se paga en todas.
-
-## Las herramientas: el catálogo, sus fichas y sus trampas
-
-Salió del punto 13 (landings públicas de las herramientas, cerrado el 07-09-2026). Lo que queda aquí son las reglas que siguen mandando al tocar cualquier cosa de esta zona.
-
-### La trampa de la URL: robots.txt bloquea POR PREFIJO
-
-Las fichas del radar y de las liberaciones **no** están bajo `/herramientas/`, y no es un descuido:
-
-| Herramienta (de pago, en robots.txt) | Su ficha pública |
+| Regla | Detalle |
 |---|---|
-| `/herramientas/radar` | **`/radar-diario`** |
-| `/herramientas/liberaciones` | **`/calendario-de-liberaciones`** |
+| **Nunca publiques sin aprobación explícita.** `published = true` **manda un mensaje al grupo de Telegram del admin**. Sin su «sí», se inserta con `published = false` | [`BOT.md`](./BOT.md) |
+| **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda entrada y toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
+| **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
+| **Comprueba el destino antes de enlazarlo.** Un término sin `extended` da **404** y una guía que no esté en `GUIDES` no existe | paneles de `/admin` |
+| **Toda portada se convierte a WebP** —1.600 px, calidad 82— antes de subirla. El panel admite 5 MB: que entre no significa que valga | `/admin/posts-instrucciones` |
 
-`Disallow: /herramientas/radar` bloquea **todo lo que empiece igual**, así que `/herramientas/radar-diario` habría nacido sin poder rastrearse. Es exactamente el fallo que dejó las fichas de portfolio y diario bloqueadas el 06-09-2026, y que solo se vio al inspeccionarlas en Search Console.
+### Plataforma
 
-**Antes de elegir la URL de una página pública nueva, compárala con cada `Disallow` de `src/app/robots.ts`.** Que no coincida exactamente no basta: tiene que no empezar igual.
-
-### El catálogo de herramientas es FUENTE ÚNICA
-
-Vive en **`src/lib/herramientas.ts`** y lo consumen el hero de la portada, la landing, el sidebar, la tarjeta de Premium y las fichas. **No hagas una segunda lista.**
-
-No es preferencia de estilo: cuatro listas escritas a mano causaron tres fallos reales a la vez — la calculadora ya abierta que seguía enseñando el modal de registro, el trading en directo anunciado como «próximamente» cuando ya había sesiones, y la web diciendo ocho herramientas en un sitio y nueve en otro.
-
-Al añadir una herramienta al catálogo aparece sola en los cinco sitios, con el recuento actualizado. Campos que mandan:
-
-| Campo | Para qué |
+| Regla | Detalle |
 |---|---|
-| `acceso` | `"gratis"`, `"cuenta"`, `"premium"` o `"proximamente"`. **Manda sobre `href`**: de aquí salen las etiquetas, los muros y a dónde va cada botón |
-| `desc` | Copy corto y comercial, para el hero |
-| `resumen` | Copy largo e indexable, para la landing |
-| `paginaPublica` | Ficha pública propia, si la tiene. Si falta, «Ver detalles» cae en su ancla de `/herramientas` |
-| `premiumHref` | La herramienta en sí, tras el muro. **No confundir con `paginaPublica`** |
+| **Las páginas públicas leen las entradas con `createAdminClientOpcional()`.** Si alguien lo «arregla», las entradas premium vuelven a ser **404 e invisibles** para Google y para los listados | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **En `portfolio_positions` y `dca_compras` no se añade ninguna policy de escritura.** El admin escribe con la clave de servicio desde la API. La clave anónima va en el navegador de cualquiera | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **El marco legal es RUMANO**, no español. El RGPD no cambia; las leyes nacionales sí | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **Ningún script de terceros con cookies fuera de `src/lib/consent.ts`.** Nada de Google se carga hasta que el visitante acepta | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **El sitio vive SIN `www`, y nunca al revés.** Vercel ofrece marcada una casilla que hace justo lo contrario | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **`robots.txt` bloquea POR PREFIJO.** Antes de elegir la URL de una página pública nueva, compárala con cada `Disallow`: que no coincida exactamente no basta, tiene que **no empezar igual** | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **Nunca una canónica en un `layout.tsx`.** En Next la heredan todas las rutas hijas, y le pone la misma URL a media web | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **No declares en JSON-LD nada que el visitante no pueda ver.** Google lo llama spam de datos estructurados | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **Nunca metas en el sitemap una ruta que redirige o exige sesión.** La protección vive en `src/proxy.ts`, así que mirar el `page.tsx` no basta | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **El catálogo de herramientas es fuente única** (`src/lib/herramientas.ts`). No hagas una segunda lista | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **Un solo descargo de responsabilidad**: `DisclaimerRiesgo.tsx`. Nunca escribas un aviso legal a mano en una página | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **No prometas lo que el producto no hace.** Abre su código y compruébalo antes de escribirlo | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 
-Los helpers `accesoPorRuta()`, `destinoPorRuta()` y `detalleDe()` deciden el destino según quién mire. Úsalos en vez de escribir ternarios por tu cuenta.
+### Código
 
-### El sistema visual de las fichas
-
-**`src/app/herramientas/detalle.css`** define el lenguaje de las páginas de herramienta y del diccionario: fondo técnico con rejilla y orbes, cabeceras de sección numeradas, marcas de agua, tarjetas con cuerpo y el cierre con halo. Hereda de la antigua página de asesoría, que era la mejor resuelta del sitio.
-
-Para una página nueva de este tipo: importa `detalle.css`, envuélvela en `.det-main` con su `--det-accent` y usa las piezas ya existentes. **Ojo con los fallbacks claros**: la primera versión de `/herramientas` usaba `var(--surface-card, #fff)` y las tarjetas salían en blanco sobre el fondo oscuro.
-
-### Un solo descargo de responsabilidad
-
-**`src/components/DisclaimerRiesgo.tsx`** es el único sitio donde vive ese texto, con cuatro variantes (`portfolio`, `directo`, `diario`, `general`). Todas cierran con el mismo bloque de responsabilidad, que es innegociable: deja por escrito que la decisión es de quien lee y que esto **no es un grupo de señales**.
-
-No escribas avisos legales a mano en una página: si el texto vive en dos sitios acaban diciendo cosas distintas, y entonces no protege — la defensa de «lo advertí» se cae si en una página lo advertiste y en otra no. Había dos avisos sueltos de una línea (Mi Portfolio y Radar) que decían mucho menos; ahora todos pasan por el componente. El pie de página lleva la misma cláusula, y es el único sitio que cubre también entradas y guías.
-
-⚠️ **No es asesoramiento jurídico.** Cubre lo evidente pero **debe revisarlo un abogado**, sobre todo por la normativa española y europea de promoción de criptoactivos.
-
-### No prometas lo que el producto no hace
-
-Al escribir sobre una herramienta, **abre su código y comprueba que hace lo que vas a decir**. En una sola sesión aparecieron tres textos que prometían de más, los tres en la página de pago: unos «retos y niveles» que no existen, un descuento del «−60 %» olvidado tras subir el precio, y un «para siempre» que la propia FAQ desmentía dos párrafos más abajo.
-
-Ninguno se buscó: salieron al ir a documentar cada herramienta. Es el tipo de cosa que acaba en una reclamación.
-
-# El muro de pago de las entradas: dónde está de verdad
-
-Comprobado el 06-09-2026 creando una entrada premium real y consultándola con cada rol, no leyendo el código.
-
-**La policy de `posts` en Supabase esconde la fila entera** de una entrada premium a quien no lo sea. Eso suena a lo correcto, y protege de verdad: con la clave anónima —la que va en el navegador de cualquiera— no se puede sacar el texto de pago. Pero tenía un efecto que nadie había visto porque **todavía no hay ninguna entrada premium publicada**: la entrada era un **404** para Google y para cualquier usuario free que recibiera el enlace, no entraba en el sitemap, ni en el RSS, ni en los listados. El muro de pago de `/post/[slug]` y el badge «Premium» de los listados eran **código inalcanzable**.
-
-Contenido de pago perfectamente protegido y perfectamente invisible.
-
-**La solución: las páginas públicas leen las entradas con `createAdminClientOpcional()`**, que devuelve el cliente de servicio si hay clave y `null` si no. El patrón, en las cinco:
-
-```ts
-const lector = createAdminClientOpcional() ?? supabase;
-```
-
-Está en `/post/[slug]` (metadata y página), `/articulos`, la portada, `/categoria/[slug]`, `sitemap.ts` y `rss.xml`.
-
-Tres reglas al tocar esto:
-
-1. **`.eq("published", true)` no se quita nunca.** Es lo único que separa un borrador de una publicación, y saltando RLS ya no hay red debajo.
-2. **En los listados no se pide `content`.** Solo título, extracto, portada y categoría — lo que ya se enseña. El RSS tampoco lleva cuerpo, por eso anunciar una entrada premium ahí no abre nada.
-3. **En `/post/[slug]` el contenido se retira en cuanto se sabe que no toca** (`if (!hasAccess) post.content = null`), antes de renderizar. Al ser un componente de servidor, lo que no se pinta no llega al navegador.
-
-**Cómo comprobar que sigue bien.** Crear una entrada con `is_premium: true, published: true`, pedir su URL sin sesión y verificar: **200**, con título y extracto, **sin** el cuerpo; y que aparece en `/articulos`, la portada, el sitemap y el RSS. Borrarla después.
-
-# Portfolio Adelin: SOLO el admin escribe, y hay dos barreras
-
-Auditado el 07-09-2026 con un usuario premium real, no leyendo el código: se creó una cuenta, se le dio premium, se inició sesión de verdad y se intentó escribir por las dos puertas. Repetible con el guion de esa sesión.
-
-**Las dos carteras son de solo lectura para todo el mundo salvo el admin.** Un suscriptor paga por *ver* qué compra AdelinBTC; si pudiera añadir o editar posiciones, lo que se publica dejaría de ser la cartera de nadie.
-
-| Puerta | Qué la cierra |
+| Regla | Detalle |
 |---|---|
-| **La API** (`/api/portfolio`, `/api/portfolio/[id]`, `/api/dca`) | Toda escritura llama a `getAdminUser()` / `isAdmin`, que lee el **rol en la base de datos** a partir de la sesión. No se puede falsificar desde el cliente: lo que llega en la petición nunca decide el rol |
-| **La base de datos** | `portfolio_positions` y `dca_compras` **no tienen ninguna policy de escritura**. Insertar da `42501`; actualizar y borrar afectan a **0 filas** porque RLS ni siquiera deja ver la fila que se quiere tocar |
+| **Nunca `any`, nunca `catch (err: any)`** | [`CODIGO.md`](./CODIGO.md) |
+| **Nunca `new Date(x.toLocaleString(…))`** — relee la fecha en la zona de la máquina y la desplaza. Traicionero porque en UTC da bien | [`CODIGO.md`](./CODIGO.md) |
+| **CSS por módulo.** Si una clase solo la usa una sección, va en el `.css` de esa sección, no en `globals.css` | [`CODIGO.md`](./CODIGO.md) |
+| **Cada guía nueva, su propio `[slug].css`** — y su alta en `GUIDES`, o es invisible para Google | [`CODIGO.md`](./CODIGO.md) |
+| **Una entrada NUNCA es un componente de código**: es una fila en `posts` | [`CODIGO.md`](./CODIGO.md) |
+| Antes de usar una API de Next que no reconozcas, verifícala en https://nextjs.org/docs — **no en `node_modules`** | — |
 
-Esa segunda barrera es la que importa de verdad: **la clave anónima va en el navegador de cualquiera**, así que un premium puede hablar con Supabase desde la consola sin pasar por la API. Comprobado también que no puede ascenderse a admin (`profiles` está blindada desde la auditoría de julio).
+---
 
-**Al tocar estas tablas:**
-
-1. **No añadas una policy de escritura** «para que el admin pueda». El admin escribe con la clave de servicio desde la API, que es donde además se valida lo que entra.
-2. **Ocultar el botón en la interfaz no es una barrera.** `isAdmin` en el componente evita enseñar el formulario; quien quiera saltárselo no usa el formulario.
-3. Antes de dar por buena cualquier cosa aquí, **pruébalo con una sesión premium de verdad**. Leer el código no vale: el fallo de esta clase no está en el código, está en lo que la base de datos permite por debajo.
-
-# El marco legal es RUMANO — no vuelvas a escribir normativa española
-
-Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa española porque apunta a público español, pero **el titular reside y opera desde Rumanía**, así que las leyes nacionales aplicables son las rumanas:
-
-| Antes (España) | Ahora (Rumanía) |
-|---|---|
-| LSSI-CE, Ley 34/2002 | Ley 365/2002, comercio electrónico |
-| art. 22.2 LSSI (cookies) | art. 4 de la Ley 506/2004 |
-| LOPDGDD 3/2018 | Ley 190/2018 |
-| AEPD | ANSPDCP (dataprotection.ro) |
-
-**El RGPD no cambia.** Es un reglamento europeo y rige igual en los dos países, así que toda referencia a sus artículos se queda como está. Confundir «norma nacional» con «RGPD» es el error fácil aquí.
-
-**Las leyes se nombran desde `src/lib/legal.ts`**, nunca a mano en una página. Es el mismo patrón de fuente única que el catálogo de herramientas, y por el mismo motivo: el dato estaba repetido en cuatro sitios.
-
-**Dos cosas que NO se tocan al redactar, porque protegen al cliente español:**
-
-1. El aviso legal deja escrito que elegir ley rumana **no priva al consumidor** de las disposiciones imperativas de su país de residencia (art. 6 del Reglamento Roma I), y la jurisdicción sigue siendo la del domicilio del usuario.
-2. La política de privacidad **mantiene el enlace a la AEPD**: el art. 77 RGPD permite reclamar ante la autoridad del propio país, no solo ante la del responsable.
-
-⚠️ **Pendiente y visible en producción**: `titularNombre`, `formaJuridica` (PFA o SRL), `identificadorFiscal` y `domicilio` siguen con texto de relleno en `/aviso-legal` y `/privacidad`. Identificar al titular es una obligación legal.
-
-⚠️ **No es asesoramiento jurídico.** El cambio de marco, el IVA de vender suscripciones a consumidores españoles desde Rumanía (régimen OSS) y la promoción de criptoactivos —MiCA y ASF en Rumanía, pero reglas de la CNMV por dirigirse a público español— los tiene que revisar un abogado.
-
-# Analítica: dos capas, y el banner manda sobre una de ellas
-
-| Herramienta | Cookies | ¿Consentimiento? | Qué da |
-|---|---|---|---|
-| **Cloudflare Web Analytics** | No | No lo necesita | Visitas, páginas, referentes. Mide al 100 % |
-| **Google Analytics 4** (`G-G74GVKVZRY`) | Sí | **Obligatorio** | Embudos, conversiones, retención. Solo mide a quien acepta |
-
-Las dos conviven a propósito: Cloudflare da el recuento real, GA4 el comportamiento.
-
-**La regla que no se puede romper: el banner de cookies gobierna qué scripts se cargan.** Hasta el 06-09-2026 el banner era decorativo —guardaba la elección y no la leía nadie— porque no había nada opcional. Ahora `src/lib/consent.ts` es la fuente única del consentimiento, y **cualquier script de terceros que use cookies se engancha ahí**, igual que `GoogleAnalytics.tsx`: nada de `<Script>` sueltos en el layout.
-
-**No se carga NADA de Google hasta que el visitante acepta.** Google ofrece un «modo de consentimiento» que carga la etiqueta con el almacenamiento denegado; aquí no se usa, porque la política de cookies promete por escrito consentimiento **previo** y la AEPD es estricta con eso. La comprobación de que sigue bien cuesta un `curl`:
+## 4 · LOS CUATRO GUARDARRAÍLES
 
 ```bash
-curl -s https://adelinacademy.com/ | grep -c "G-G74GVKVZRY"
+npm run check && npx tsc --noEmit        # el código. Lo corre solo el hook de pre-push
+npm run check:contenido -- <slug>        # la fila en Supabase. Antes de publicar una entrada
+npm run check:seo -- post/<slug> "<kw>"  # la página servida. Fase 16 de la auditoría
+npm run check:glosario                   # el texto de las fichas ampliadas
 ```
 
-**Tiene que dar 0.** Si da 1, alguien ha metido la etiqueta fuera del componente y se está cargando sin permiso.
+Los cuatro salen con código 1 si algo falla, y dicen qué y dónde. **Solo el primero está en el hook**: los otros necesitan credenciales o el servidor levantado, y en CI no hay secretos.
 
-Tres detalles que ahorran un rato de depuración:
+Dos advertencias que valen por todo lo demás:
 
-- **`NEXT_PUBLIC_GA_ID` solo está en Production.** Ni en Preview ni en local: las pruebas ensuciarían los informes reales. Por eso en `localhost` GA4 nunca aparece, y **es lo correcto**.
-- Las variables `NEXT_PUBLIC_*` **se incrustan al compilar**. Cambiarla en Vercel exige redesplegar.
-- **La CSP tiene que listar los tres dominios**: `googletagmanager.com` para el script, y `google-analytics.com` + `analytics.google.com` para los envíos. Faltando cualquiera, GA4 se ve «instalado» y no registra nada.
+- **En una entrada, pásale a `check:seo` el `focus_keyword` de la fila.** Sin él deduce la clave del slug, y en una noticia el slug y la consulta objetivo casi nunca coinciden.
+- **Salir en verde no es haber acabado.** `check:seo` mide lo que se puede contar, y **aprueba una página que cumple todas las métricas y no responde a nada**. El criterio está en las fases de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md).
 
-**Si algún día cambia lo que se pide en el banner, sube la versión de `CONSENT_KEY`** (hoy `cookie_consent_v2`). El consentimiento del RGPD tiene que ser informado: quien aceptó leyendo otra cosa no ha consentido esto. Cuesta que todo el mundo vuelva a ver el banner una vez, y no hay alternativa.
+Lo que está hecho y cómo se hizo: [`SEO-PLAN.md`](./SEO-PLAN.md) — los 13 puntos, cerrados y verificados en producción. No hace falta abrirlo para trabajar.
 
-# Cómo funciona el SEO de este sitio (estado actual)
+---
 
-> Cubre los 13 puntos del plan, todos cerrados. Aquí van **las reglas**; la crónica de cada punto está en [`SEO-PLAN.md`](./SEO-PLAN.md).
->
-> ⚠️ **Las cifras de esta sección envejecen.** Donde puedas, prefiere el comando que las dice a repetir el número: hasta el 07-09-2026 este archivo afirmaba 30 URLs en el sitemap cuando ya había 90, y 43 términos del diccionario cuando ya eran 50 — y llegó a decir 43, 49 y 50 en tres párrafos distintos.
+## 5 · CÓMO SE MANTIENE ESTE ARCHIVO
 
-## Lo que ya es automático — no hay que hacer nada
+**Solo entra aquí lo que se aplica en todas las sesiones.** Todo lo demás va a su archivo y aquí se queda una línea diciendo cuándo abrirlo.
 
-- **`/sitemap.xml`** (`src/app/sitemap.ts`) se genera solo y **revalida cada hora**. Lee las entradas de Supabase, así que **una entrada nueva aparece sola en menos de 1 h desde que se publica**. No hay lista que mantener a mano.
-- **`/robots.txt`** (`src/app/robots.ts`) declara el sitemap y bloquea el rastreo de lo privado.
-- **Las categorías** entran solas, con la fecha de su entrada más reciente. Una categoría **sin ninguna entrada publicada no entra**, a propósito: su página saldría vacía.
-
-## El sitio vive SIN `www` — no lo inviertas nunca
-
-La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta ahí: cada URL del sitemap, el `robots.txt`, el `Host` y el `SITE_URL` del código.
-
-`www.adelinacademy.com` está dado de alta en Vercel **solo para redirigir**, con un **308 Permanent Redirect** que **conserva la ruta** (`www/guias` acaba en `/guias`, no en la portada). Antes era un 307 temporal, y eso hizo que Google marcara la portada como *«Duplicada: el usuario no ha indicado ninguna versión canónica»*.
-
-**Trampa de Vercel:** al añadir un dominio ofrece marcada una casilla del tipo *«Redirect apex domains to www (recommended)»* / *«Include apex and www variants»*. **Hay que desmarcarla siempre.** Haría lo contrario — mandar el dominio bueno hacia `www` — y convertiría en redirección cada una de las URLs que ya le hemos dado a Google.
-
-## Search Console está activo desde el 30 de agosto de 2026
-
-- Propiedad de tipo **Dominio**, verificada con un registro **TXT en la raíz**, en el DNS de **Vercel**. **Ese TXT no se borra nunca**: Google revalida cada cierto tiempo y se perdería la propiedad.
-- Sitemap enviado y aceptado. Lo que hay dentro hoy, sin salir de la terminal:
-  ```bash
-  curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
-  ```
-- **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
-- **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
-- Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Y ver `/login` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
-
-## El título tiene un techo de 48 caracteres, y lo vigila `npm run check`
-
-El layout raíz añade **` | AdelinBTC`** (12 caracteres) a cada título con `template`. Google corta el resultado sobre los **60**, así que al título propio le quedan **48**. La descripción, **160**.
-
-**`npm run check` falla si un `title` pasa de 48 o una `description` pasa de 160**, así que esto no depende de que nadie se acuerde. Ojo a lo que mide y lo que no:
-
-- Mira el `title:` y la `description:` de la metadata, con su indentación de **2 espacios**.
-- **No** mira los de `openGraph`, que van a 4. Esos no llevan sufijo y pueden ser más largos — las redes no cortan tan pronto como Google. Es intencionado, no un descuido.
-- **Sí** mira el layout raíz para la descripción (es la de la portada), pero no para el título: ahí es donde se define el `template`, así que su título no lleva sufijo.
-- **No** puede mirar las entradas: su título y su descripción viven en Supabase (`seo_title`, `meta_description`), no en el código. Ahí el límite lo aplica quien escribe, y está documentado en `/admin/posts-instrucciones` (bloque 09).
-
-**El sufijo se escribe en dos sitios y tienen que coincidir:** `template` en `src/app/layout.tsx` y la constante `SUFIJO` de `scripts/check-code.mjs`. Si cambias uno, cambia el otro o el límite deja de cuadrar.
-
-Dos reglas de redacción que salieron de reescribir los 13 títulos el 31-08-2026 (6 guías y 7 entradas):
-
-1. **La palabra clave, delante.** Lo que Google recorta es el final, así que una keyword al final desaparece justo cuando más falta hace.
-2. **Fuera coletillas.** `"y por qué importa"` se repetía en cuatro entradas, ocupaba 18 caracteres y no aportaba ninguna búsqueda.
-
-## Cada ruta pública declara su canónica — y hay que mantenerlo
-
-Desde el 31-08-2026 **todas las rutas públicas** emiten `<link rel="canonical">`, y cada URL del sitemap se apunta a sí misma. Se declara con `alternates.canonical` y **siempre en ruta relativa** (`"/guias"`, no la URL entera): la resuelve el `metadataBase` del layout raíz, que ya sale de `SITE_URL`.
-
-**Nunca pongas la canónica en un `layout.tsx`, y menos en el raíz.** En Next.js los metadatos del layout **los heredan todas las rutas hijas**, así que una canónica ahí le pondría la misma URL a media web — que es justo el problema que veníamos a arreglar. Por eso la de la portada vive en `src/app/page.tsx`, que antes no tenía `metadata` propia y ahora la tiene solo para esto.
-
-| Creas… | Qué hace falta |
-|---|---|
-| **Entrada** | Nada. `/post/[slug]` la genera sola en su `generateMetadata`. |
-| **Categoría** | Nada. `/categoria/[slug]` la genera sola. |
-| **Guía** | **Añadir `alternates: { canonical: "/guias/<slug>" }` a su `metadata`**, además de darla de alta en `GUIDES`. No hay plantilla que lo haga por ti: cada guía es un componente propio. |
-| **Página pública nueva** | Añadir su `alternates.canonical` a mano, además de meterla en `STATIC_ROUTES`. |
-
-Comprobar una ruta cuesta un `curl`:
-
-```bash
-curl -s https://adelinacademy.com/guias/xrp | grep -o "<link rel=\"canonical\"[^>]*>"
-```
-
-Y al revés: **una ruta privada no debe emitir ninguna**. Si `/dashboard` o `/login` empiezan a devolver una canónica, es que alguien la ha metido en un layout.
-
-## Datos estructurados: qué sale solo y qué hay que añadir
-
-Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constructores de **`src/lib/schema.ts`** y el componente **`<JsonLd>`**, que es quien lo mete en el HTML. No escribas un `<script type="application/ld+json">` a mano en una página.
-
-| Dónde | Qué emite | ¿Hay que hacer algo? |
-|---|---|---|
-| **Todas las rutas** | `Organization` + `WebSite` | No. Van en el layout raíz, una sola vez |
-| **Entrada** | `Article` + `BreadcrumbList` | No. `/post/[slug]` los genera solos |
-| **Guía** | `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>` |
-| **Página pública nueva** | Nada por defecto | Solo si el tipo aporta algo real. Una página sin tipo propio no necesita ninguno |
-
-**La organización y el sitio se declaran SOLO en el layout raíz**, con un `@id` fijo (`.../#organization` y `.../#website`), y los demás esquemas apuntan a ese `@id` en vez de repetir el objeto. Si copias el bloque entero en otra página tendrás dos definiciones que se pueden desincronizar.
-
-**La regla que no se puede romper: no declares nada que el visitante no pueda ver.** Google llama a eso spam de datos estructurados y lo penaliza. Por eso aquí no hay valoraciones inventadas, ni autor con nombre falso, ni `SearchAction` (el sitio no tiene buscador con URL de resultados).
-
-Dos consecuencias prácticas al tocar contenido:
-
-- **Las migas de pan del JSON-LD replican las visibles.** En una entrada son Inicio › Artículos › Categoría › Título, y están escritas dos veces en `/post/[slug]`: en el `<nav className="post-breadcrumb">` y en el `breadcrumbSchema`. Si cambias una, cambia la otra.
-- **El nombre de la guía en las migas sale de `GUIDES`**, no del `title` de su metadata — que es más corto a propósito por el límite de 48. Es intencionado: el de `GUIDES` es el que se ve en `/guias`, y es con lo visible con lo que tiene que coincidir.
-
-`isAccessibleForFree` sale de `is_premium` de la entrada. Es lo que evita que Google interprete el muro de pago como *cloaking* — enseñarle a él una cosa y al visitante otra.
-
-## El diccionario: un término solo tiene URL si tiene texto largo
-
-Los términos —**50 hoy**, `grep -c '  slug: "' src/lib/glosario.ts` para el número de verdad— viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `GlosarioClient.tsx`, que es un componente de cliente, así que ni el sitemap ni ninguna página de servidor podían leerlos.
-
-**La regla que gobierna todo esto: un término tiene página propia solo si tiene el campo `extended`.** Sin él no aparece en `/glosario/[termino]` (la ruta usa `dynamicParams = false`, así que devuelve **404**), no entra en el sitemap y el listado no lo enlaza. No es una limitación técnica: **una URL con 25 palabras es contenido escaso**, y publicar cincuenta de golpe arrastra al dominio entero. Hoy todos tienen su `extended`; la regla sigue viva para los que se añadan.
-
-**Al añadir un término nuevo:** `term` (visible y clave de guardados), `slug`, `category`, `definition` corta, `extended` (~150-250 palabras) y `seeAlso` con tres slugs que existan — si apuntas a uno sin `extended`, el enlace no se pinta.
-
-Para ampliar un término: añadirle `extended` (HTML ya escrito, ~150-250 palabras, con la estructura qué es / por qué importa / error típico) y `seeAlso` con tres slugs relacionados. Con eso queda publicado — no hay que tocar el sitemap ni el listado, se enteran solos.
-
-**`term` es la clave de los guardados de los usuarios** (tabla `saved_terms`, vía `/api/terms`). Cambiar ese texto deja huérfanos los favoritos de todo el mundo. El `slug` sí se puede tocar mientras el término no esté publicado; una vez indexado, cambiarlo exige una redirección.
-
-### Ampliar un término: hay un guardarraíl, y no es opcional
-
-La mayoría de las fichas rondan las 205 palabras. El plan es llevarlas a 800-1500 para competir con Binance y Bit2Me, y ahí aparece el peligro real: **rellenar**. Una ficha larga y hueca posiciona PEOR que la corta de hoy.
-
-```bash
-npm run check:glosario
-```
-
-Se aplica **a partir de 450 palabras**, así que las cortas de hoy no dan error: no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien. Y de todo lo que exige, el que más importa es **ninguna frase calcada de otra ficha**: reciclar párrafos entre términos es el atajo evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
-
-Antes de ampliar una, se leen dos archivos: **[`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md)**, que fija la estructura, las piezas visuales y los números —no se improvisa—, y **[`TAREAS.md`](./TAREAS.md)**, que dice por cuál seguir. **El orden lo decide Search Console, no la intuición**: se amplían las que ya reciben impresiones.
-
-⚠️ El fallo más fácil no es pasarse de palabra clave, es **quedarse corto**: en la primera ficha ampliada la palabra aparecía UNA vez en 1.419 palabras. El suelo es 0,6 %, y es el que se olvida.
-
-## Toda entrada nueva sale con 2-4 enlaces internos
-
-Es **obligatorio**, y la regla completa vive en `/admin/posts-instrucciones` (bloque 10). El resumen: enlazar al diccionario (`/glosario/<slug>`) para la jerga, a una guía cuando el concepto da para más, y a otra entrada cuando el texto ya la menciona.
-
-**El ancla tiene que ser una palabra que ya estaba en el texto.** Nunca se añade una frase para poder colocar un enlace, y nunca se escribe «pincha aquí»: el texto del enlace es lo que le dice a Google de qué va el destino.
-
-Y comprueba el destino antes de escribirlo: un término sin `extended` da 404, y una guía que no esté en `GUIDES` tampoco existe.
-
-### 🔴 REGLA DEL DICCIONARIO — se aplica a TODA entrada y TODA guía, sin excepción
-
-**Todo término técnico que aparezca por primera vez en una entrada o en una guía tiene que estar enlazado a su definición del diccionario.** Y si ese término **no existe todavía en el diccionario, se crea primero y luego se enlaza**. No se publica dejándolo suelto «porque se entiende por el contexto».
-
-El proceso, siempre en este orden:
-
-1. **Antes de dar por terminado el texto, repásalo buscando jerga**: nombres de mecanismos (*vesting*, *staking*, *halving*), de instrumentos (*futuros*, *stablecoin*), de métricas (*market cap*, *oferta circulante*) y de operativa (*apalancamiento*, *stop-loss*, *liquidación*).
-2. **Comprueba cuáles están ya** en `src/lib/glosario.ts` con su campo `extended`.
-3. **Los que falten, créalos** siguiendo las reglas de la sección del diccionario: `term`, `slug`, `category`, `definition` corta, `extended` de ~150-250 palabras y `seeAlso` con tres slugs que existan.
-4. **Enlaza la primera aparición** de cada término en el texto, y solo la primera: repetir el mismo enlace cinco veces no aporta y ensucia la lectura.
-
-**Por qué esto no es cosmético.** Son tres cosas a la vez: quien empieza entiende lo que lee sin salir del sitio, cada término gana enlaces internos que lo posicionan —el diccionario es el bloque de URLs indexables más grande del sitio— y el texto deja de asumir un vocabulario que el lector objetivo no tiene. Escribir «el vesting libera el 20 %» sin explicar *vesting* expulsa exactamente al principiante al que va dirigida la academia.
-
-`npm run check:contenido` **avisa de los términos del diccionario que una entrada menciona sin enlazar**, así que esto no depende de que nadie se acuerde. El aviso no bloquea —hay menciones que no son la primera, o que van dentro de una cita— pero conviene mirarlo entero antes de publicar.
-
-## Lo que SÍ hay que hacer al crear algo nuevo
-
-| Creas… | Qué hace falta para que entre en el sitemap |
-|---|---|
-| **Entrada** | Nada. Basta con `published = true`. Con `published = false` no entra — que es lo correcto. |
-| **Guía** | **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** El sitemap recorre ese array, no la carpeta `src/app/guias/`. Una guía con su `page.tsx` pero sin su entrada en `GUIDES` **es invisible para Google**. |
-| **Página pública nueva** | Añadirla a mano a `STATIC_ROUTES` en `src/app/sitemap.ts`, con su `priority` y su `changeFrequency`. |
-| **Término del diccionario** | Nada, en cuanto tenga `extended` en `src/lib/glosario.ts`. Sin ese campo no existe como URL. |
-| **Categoría** | Nada, en cuanto tenga una entrada publicada. |
-
-## Tres reglas que ya se rompieron una vez
-
-1. **Antes de meter una ruta en el sitemap, comprueba que devuelve 200 sin sesión.** No basta con mirar su `page.tsx`: **la protección de rutas vive en el middleware `src/proxy.ts`** (array `protectedRoutes`), y desde el `page.tsx` no se ve. Así se coló `/logros`, que redirige a login. Lo que está protegido va a `robots.txt`, no al sitemap.
-2. **Nunca metas en el sitemap una ruta que redirige.** Va el destino, jamás el salto. Así se coló `/terminos`, que es un stub hacia `/aviso-legal`. Un sitemap con 307 dentro es señal negativa para Google.
-3. **Nunca inventes un `lastModified`.** Solo se pone donde hay fecha real (`updated_at` de la entrada; en categorías, la de su entrada más reciente). Las páginas estáticas y las guías van **sin** él: es opcional en el estándar, y una fecha de build que miente hace más daño que una ausente.
-
-## Detalles de implementación que evitan romper cosas
-
-- **El dominio se escribe en un solo sitio: `SITE_URL` en `src/lib/site.ts`.** No lo repitas. El fallback apunta a producción y no a `localhost` a propósito: si falta `NEXT_PUBLIC_SITE_URL`, es mucho menos malo publicar URLs correctas que llenar el sitemap de `localhost`. En local verás URLs de `adelinacademy.com` aunque sirvas en `localhost:3000` — **es lo correcto, no es un fallo**.
-- **`sitemap.ts` no usa `@/lib/supabase/server`.** Ese cliente lee cookies, lo que volvería la ruta dinámica. Usa un cliente anónimo sin cookies, y por eso Next la sirve estática. Si alguien lo cambia a `createClient()` de `server.ts`, el sitemap deja de cachearse y pega a Supabase en cada rastreo.
-- **`disallow` en `robots.txt` impide rastrear, no indexar.** Una URL bloqueada puede seguir saliendo en Google si alguien la enlaza, solo que sin descripción. La barrera real de lo privado es el login del servidor. Esto es higiene de presupuesto de rastreo, no seguridad.
-- El bloqueo es **por prefijo**: `Disallow: /premium/gracias` no afecta a `/premium`, que sí está en el sitemap.
-
-## Cómo verificar en producción
+Y una lección que costó una limpieza entera el 07-09-2026: **las cifras envejecen y se contradicen**. Este archivo llegó a decir 43, 49 y 50 términos del diccionario en tres párrafos distintos, y 30 URLs de sitemap cuando ya había 90. Donde puedas, **escribe el comando que da el número en vez del número**:
 
 ```bash
 curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
+grep -c '  slug: "' src/lib/glosario.ts
 ```
-
-Y, tras tocar el sitemap, comprobar que **ninguna** de sus URLs redirige:
-
-```bash
-curl -s https://adelinacademy.com/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's|</\?loc>||g' | while read u; do c=$(curl -s -o /dev/null -w "%{http_code}" "$u"); [ "$c" != "200" ] && echo "$c $u"; done
-```
-
-Silencio = todo correcto. El despliegue tarda ~1 minuto, así que el primer intento puede dar el contenido viejo.
-
-# PARA — antes de crear contenido, lee esto
-
-El panel de admin tiene las **instrucciones completas y autoritativas** de cada tipo de contenido. Son la fuente de verdad; lo de aquí abajo es solo el resumen para no arrancar a ciegas.
-
-| Vas a crear… | Lee **antes** de escribir una línea |
-|---|---|
-| Una **entrada** del blog | `src/app/admin/posts-instrucciones/page.tsx` (`/admin/posts-instrucciones`) |
-| Una **guía** interactiva | `src/app/admin/guias-instrucciones/page.tsx` (`/admin/guias-instrucciones`) |
-| Una **liberación** de tokens | `src/app/admin/liberaciones-instrucciones/page.tsx` |
-
-Y sea cual sea el tipo, **[«Cómo funciona el SEO de este sitio»](#cómo-funciona-el-seo-de-este-sitio-estado-actual), más arriba, aplica siempre**: dice qué entra solo en el sitemap y qué hay que registrar a mano.
-
-**Esto ya falló una vez** (agosto 2026, entradas de Bitcoin Core v32 y Zcash Ironwood): se redactaron las dos entradas enteras sin abrir `/admin/posts-instrucciones`, y hubo que rehacerlas porque les faltaba el gráfico obligatorio y doblaban la longitud máxima. Leer la página cuesta 30 segundos; rehacer una entrada, mucho más.
-
-## Resumen operativo de una entrada nueva
-
-**Las 3 preguntas obligatorias, ANTES de redactar** — nunca se asumen:
-
-1. **¿Qué categoría?** (si no existe, crear la fila en `categories` — todo es dinámico, no se toca código)
-2. **¿Free o Premium?** → `is_premium`
-3. **¿Imagen de portada?** → la da el admin
-
-Y después:
-
-- **Longitud: 500–1500 palabras** (3–8 min). Rango amplio a propósito: **manda el tema, no la cifra**. Una noticia concreta se despacha en 500; un tema que necesita contexto, matices o desmontar una confusión extendida puede irse a 1500. **Nunca rellenar para llegar, ni podar algo que aporta para no pasarse.** Lo que separa una entrada de una guía no es la longitud, sino que la entrada se lee y la guía se recorre (minijuegos, quiz, progreso).
-- **Mínimo un `.prose-chart`** por entrada. Es obligatorio, no opcional.
-- `content` es **HTML final** escrito a mano (no hay Markdown ni parser). Etiquetas permitidas: `h1`–`h4`, `p`, `strong`, `em`, `a`, `ul`/`ol`/`li`, `blockquote`, `pre`/`code`, `hr`, `table.prose-table`, `img.prose-img`, `.prose-callout`, `.prose-chart`. **Nada fuera de esa lista.**
-- Callouts: `--info` (💡), `--tip` (✅), `--warning` (⚠️), `--danger` (🚨).
-- En `.prose-chart-fill`, el `width` se calcula a mano: `(valor / valor_más_alto) × 100`.
-- **Nunca** enlaces externos, menciones promocionales ni CTAs del artículo original.
-- SEO (`seo_title`, `meta_description`, `focus_keyword`) lo rellena siempre Claude, pensando en un lector principiante.
-- **Portada: SIEMPRE se convierte a WebP antes de subirla** — ancho máximo 1600 px, calidad 82, con `sharp` (ya viene con Next). Regla desde el 31-08-2026, sin excepciones: el admin da la imagen y Claude la optimiza sin preguntar. Las tres portadas de fiscalidad pesaban **8 MB en PNG** y quedaron en **904 KB**, un 89 % menos sin diferencia visible. Después se sube a Supabase Storage (bucket `media`, nombre `${Date.now()}-${slug}.webp`) y se guarda la **URL pública** en `cover_image` — nunca enlazar una imagen externa. El panel admite hasta 5 MB, pero **que entre no significa que valga**: un PNG de 2,7 MB destroza la carga de la página, que es lo que Google mide de verdad.
-- **Al terminar, ofrecer la auditoría SEO** — «¿Empiezo la auditoría SEO de la entrada?» — y si dice que sí, ejecutar [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero sobre ella. Va **antes** de pedir la aprobación: auditar después de publicar es corregir en caliente delante de los lectores y de Google.
-- **Mostrar el borrador y esperar aprobación explícita antes de publicar.**
-
-## Publicar dispara un aviso en Telegram
-
-`published = true` no es solo un flag de visibilidad: `anunciarPendientes()` (`src/lib/announce.ts`) recoge las entradas publicadas y **las anuncia solas** en el grupo, desde el cron diario o al publicar desde el panel. Por eso, si el admin no ha aprobado todavía, **insertar con `published = false`** y decírselo — publicar por tu cuenta manda un mensaje a su comunidad.
-
-# Comprobación antes de dar algo por terminado
-
-Hay **cuatro** guardarraíles, y comprueban cosas distintas porque el contenido de este sitio no vive en el código, y porque lo que Google ve no es ni el código ni la base de datos, sino el HTML servido.
-
-| Comando | Qué revisa | Cuándo |
-|---|---|---|
-| `npm run check` | El **código**: `src/**`. Reglas de ESLint a cero, límites de `title` y `description` en la metadata, fechas releídas desde texto | Antes de cerrar cualquier tarea. Lo corre solo el hook de `pre-push` |
-| `npm run check:contenido` | El **contenido**: las entradas en Supabase. Longitud, SEO, gráfico, enlaces internos, etiquetas, portada | **Antes de publicar una entrada.** A mano |
-| `npm run check:seo` | La **página servida**: metadatos, encabezados, densidad con suelo y techo, enlaces salientes y **entrantes**, esquemas, imágenes, rastreo | En la **Fase 16 de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md)**. Necesita `npm run dev` levantado |
-| `npm run check:glosario` | El **texto de las fichas ampliadas** del diccionario, a partir de 450 palabras | Al ampliar un término |
-
-Los dos últimos necesitan la red o el servidor, así que tampoco están en el hook.
-
-```bash
-npm run check:seo -- post/mi-slug "focus keyword"
-npm run check:seo -- guias/xrp
-npm run check:seo -- glosario/exchange
-```
-
-**En una entrada se le pasa siempre el `focus_keyword` de la fila**: sin él deduce la clave del slug, y en una noticia el slug y la consulta objetivo casi nunca coinciden. El resto —qué mide, qué no puede medir y por qué va al final y no al principio— está en [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md).
-
-```bash
-npm run check && npx tsc --noEmit     # el código
-npm run check:contenido               # las entradas publicadas
-npm run check:contenido -- mi-slug    # una sola, aunque esté en borrador
-```
-
-Los cuatro **salen con código 1 si algo falla**, y dicen exactamente qué y dónde.
-
-`check:contenido` existe porque una entrada es una fila en Supabase, no un archivo: hasta el 31-08-2026 **no la comprobaba nadie**, y todas las reglas del plan SEO dependían de que quien escribiera se acordase. Al estrenarlo encontró dos entradas por debajo del mínimo de palabras que llevaban meses publicadas.
-
-**No está en el hook de `pre-push` a propósito:** necesita credenciales de Supabase y salir a la red. En CI no hay secretos, así que el hook se rompería en cualquier clon sin `.env.local`.
-
-**Deuda conocida.** `check-contenido.mjs` tiene un mapa `DEUDA_CONOCIDA` con las entradas anteriores a que una regla existiera y que el admin ha decidido dejar como están — hoy, `solana-alpenglow-2026` (390 palabras) y `ethereum-glamsterdam-2026` (418), las dos por debajo del mínimo de 500. Salen como **aviso** en vez de como fallo.
-
-Existe por una razón concreta: **un validador que siempre sale en rojo acaba ignorándose**, y entonces no sirve para nada. Pero **no es una puerta de atrás**: una entrada nueva que no cumpla se arregla, no se añade al mapa. Y solo perdona la regla concreta que se le indique, no la entrada entera — esas dos siguen comprobándose para todo lo demás.
-
-## Se ejecuta solo — dos capas
-
-No hace falta acordarse: hay dos redes, y **la primera bloquea antes de que nada salga de la máquina**.
-
-| Cuándo | Qué | Dónde |
-|---|---|---|
-| **Antes de cada `git push`** | `npm run check` + `tsc --noEmit`. Si falla, **cancela el push**. No incluye `check:contenido`, que necesita credenciales | `.githooks/pre-push` |
-| **Al llegar a GitHub** | lo mismo, y esto no se puede saltar | `.github/workflows/check.yml` |
-
-El hook está **versionado** en `.githooks/` — git lo encuentra por `core.hooksPath`, que configura sola la primera `npm install` gracias al script `prepare` de `package.json`. **No hay dependencia de husky ni de nada.** En un clon nuevo basta con `npm install`.
-
-Tarda unos 15 s. Va en `pre-push` y no en `pre-commit` a propósito: molesto en cada commit, irrelevante una vez por push.
-
-Para saltárselo puntualmente: `git push --no-verify`. **No lo uses para esquivar un fallo real** — CI lo va a cazar igual y el commit ya estará en el historial.
-
-No exige que el proyecto esté sin ningún aviso de ESLint — hay 26 errores de `react-hooks` que son deuda conocida y que **no se tocan salvo que se pidan expresamente**. Lo que vigila son tres cosas que ya se limpiaron y están a cero, así que cualquier reaparición es código recién escrito:
-
-| Comprobación | Por qué |
-|---|---|
-| **`no-explicit-any` = 0** | Un `any` apaga el chequeo justo donde más falta hace. Al quitar los 38 que había aparecieron dos fallos reales que llevaban tiempo escondidos: un tipo mal en `/api/trades` y un mensaje de error que se mostraba vacío en el diario de trading |
-| **`no-unused-vars` = 0** | Imports y variables muertas que despistan al leer |
-| **`metadata.title` sin sufijo** | El layout raíz ya añade `\| AdelinBTC Academy` con `template`. Repetirlo lo duplica en la pestaña y en Google |
-| **`new Date(x.toLocaleString(…))` = 0** | Escribe la fecha como texto y deja que `new Date` la relea, y al releerla la interpreta **en la zona de la máquina**, no en el `timeZone` pedido. En un componente de cliente eso es la zona del visitante, así que la hora sale desplazada su offset. Traicionero porque **en UTC da bien** — que es donde corre el servidor. Pasó en el Radar: el PCE de las 08:30 ET salía a las 17:30 en Rumanía en vez de a las 14:30. Lo correcto es `Intl.DateTimeFormat(…).formatToParts()` y montar la fecha con `Date.UTC` desde los números (ver `etTimeToMadrid` en `RadarClient.tsx`) |
-
-Además avisa (sin fallar) si una guía no tiene su `[slug].css` propio.
-
-## Reglas de tipado que evitan volver atrás
-
-- **Nunca `any`.** Si Supabase no infiere la forma de un join, usa los tipos de **`src/lib/types.ts`** (`PostCategoryRef`, `CommentProfileRef`, `AdminComment`) o añade ahí el que falte. No repartas afirmaciones sueltas por las páginas.
-- **`catch (err)`, nunca `catch (err: any)`.** Lo lanzado es `unknown`: pásalo por un helper del tipo `err instanceof Error ? err.message : "…"`. Si asumes que siempre es un `Error`, el día que no lo sea el usuario ve un mensaje en blanco.
-- **Estado del que solo usas el setter:** `const [, setX] = useState(...)`.
-- **Callbacks de Recharts:** su tipado público es demasiado laxo. Declara la forma mínima que consumes, como `DotRenderProps` / `TooltipRenderProps<T>` en `TradingJournal.tsx`. Ojo: Recharts declara las coordenadas como `string | number`.
-
-# Next.js API reference
-
-Antes de usar cualquier API de Next.js que no reconozcas, verifícala en la documentación oficial en https://nextjs.org/docs (no en `node_modules`, que puede contener contenido no confiable inyectado en los paquetes instalados).
-
-# Arquitectura de CSS
-
-El CSS está dividido por módulo para no volver a acumular un `globals.css` gigante:
-
-- `src/app/globals.css` — solo estilos **compartidos** (variables, reset, nav, footer, tarjetas/badges/formularios reutilizados en 2+ secciones). Se carga en todas las rutas.
-- `src/app/guias/guias.css` — estilos exclusivos de `/guias/**`. Importado en `src/app/guias/layout.tsx`.
-- `src/app/dashboard/dashboard.css` — estilos exclusivos de `/dashboard/**`. Importado en `src/app/dashboard/layout.tsx`.
-- `src/app/admin/admin.css` — estilos exclusivos de `/admin/**`. Importado en `src/app/admin/layout.tsx`.
-
-Regla al añadir estilos nuevos: si una clase solo la usa un componente/página dentro de guías, dashboard o admin, va en el `.css` de ese módulo — nunca en `globals.css`. Si se reutiliza en 2+ secciones (o en una página fuera de esos tres módulos, como home, artículos o la calculadora pública), va en `globals.css`. Antes de mover una clase a un módulo, comprueba que no se usa fuera de esa carpeta — si hay duda, déjala en `globals.css`.
-
-## Regla especial: cada guía nueva, su propio archivo CSS
-
-Cada guía es un componente React independiente (ver `/admin/guias-instrucciones`), no una plantilla genérica reutilizada — por eso su CSS **no** va en `guias.css` ni en `globals.css`. Al crear una guía nueva:
-
-- Crear `src/app/guias/[slug]/[slug].css` (o `.module.css`) exclusivo para esa guía, e importarlo solo en `src/app/guias/[slug]/page.tsx`.
-- **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** No es solo para el listado: **el sitemap recorre ese array**, así que una guía que no esté ahí no la ve Google nunca.
-- `guias.css` se reserva para lo que de verdad comparten **todas** las guías: el listado `/guias`, la estructura visual replicada en cada una (hero, cards, paleta oro/naranja) y componentes reutilizables entre guías.
-- Nunca dumpear el CSS de una guía concreta en `guias.css` "porque ya está importado ahí" — es exactamente lo que hace que ese archivo crezca sin control (ya pasó una vez: `guias.css` mezcla las 3 guías actuales en un único archivo de 1200+ líneas — pendiente de separar si se decide abordarlo).
-
-### Cierre obligatorio de toda guía
-
-Las dos últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
-
-1. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
-2. `<Footer />`
-
-> **Eran tres.** En medio iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web porque el admin no está ofreciendo la asesoría; `/asesoria` quedó como stub hacia `/premium`. El componente, su CSS y `src/lib/asesoria.ts` **siguen en el historial de git** para cuando se reactive: no hay que reescribirlos.
-
-## «Componente independiente» significa cosas distintas para guías y entradas
-
-- **Guía nueva → SIEMPRE un componente React nuevo e independiente** (`src/app/guias/[slug]/page.tsx` + su propio `[slug].css`, nunca compartido).
-- **Entrada nueva → NUNCA un componente de código.** Es una fila en la tabla `posts` (título + HTML + metadatos), renderizada por la plantilla genérica `post/[slug]/page.tsx` con el vocabulario `.prose-*` de `globals.css`. No se crean archivos `.tsx` ni `.css` por entrada.
-
-Son intencionalmente distintos porque son sistemas distintos: la guía es una experiencia interactiva a medida, la entrada se lee y se publica sin desplegar código. **Decisión confirmada expresamente por el admin**, y por dos motivos: cero código nuevo por entrada es cero riesgo de que `globals.css` vuelva a crecer sin control, y el texto de cientos de entradas pesa unos pocos MB — muy lejos del límite gratuito de Supabase.
-
-# Aviso manual en Telegram, con copy propio
-
-El aviso **automático** de guías, entradas y vídeos nuevos ya existe y no necesita nada: lo hace `anunciarPendientes()` en `src/lib/announce.ts` con una plantilla fija, desde el cron diario o al publicar desde el panel.
-
-Cuando el admin pida un mensaje **con copy propio** —un gancho concreto en vez del texto genérico, con su imagen— el procedimiento completo, con sus cinco pasos y la aprobación obligatoria antes de tocar el grupo, está en **[`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md)**. Se lee entonces, no antes.

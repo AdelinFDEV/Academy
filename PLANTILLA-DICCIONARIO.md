@@ -1,17 +1,60 @@
-# Plantilla de una ficha ampliada del diccionario
+# EL DICCIONARIO — el término corto y la ficha ampliada
 
-La estructura y el diseño que sigue **toda** ficha ampliada. Se fijó el 07-09-2026 con `exchange`, la primera, después de auditarla entera contra el HTML servido.
+Este archivo cubre el diccionario entero, y son **dos trabajos distintos**:
 
-No es una sugerencia de estilo: cada regla de aquí sale de un fallo real o de un dato de Search Console, y hay dos guardarraíles que las comprueban.
+| | Qué es | Dónde está |
+|---|---|---|
+| **Término** | El campo `extended` de ~150-250 palabras. Es lo mínimo para que el término **exista como URL** | [Parte A](#parte-a--el-término), aquí abajo |
+| **Ficha ampliada** | Llevarlo a 1.200-2.200 palabras para competir con Binance y Bit2Me | [Parte B](#parte-b--la-ficha-ampliada), la plantilla |
+
+Los dos guardarraíles:
 
 ```bash
-npm run check:glosario           # el texto: longitud, enlaces, densidad, relleno
+npm run check:glosario                 # el texto: longitud, enlaces, densidad, relleno
 npm run check:seo -- glosario/<slug>   # la página servida: SEO, encabezados, esquemas
 ```
 
 El segundo necesita `npm run dev` levantado, y por eso no está en el hook de `pre-push`.
 
 ---
+
+# PARTE A · El término
+
+Los términos —**50 hoy**, `grep -c '  slug: "' src/lib/glosario.ts` para el número de verdad— viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `GlosarioClient.tsx`, que es un componente de cliente, así que ni el sitemap ni ninguna página de servidor podían leerlos.
+
+## La regla que gobierna todo: sin `extended`, el término no existe
+
+Sin ese campo no aparece en `/glosario/[termino]` —la ruta usa `dynamicParams = false`, así que devuelve **404**—, no entra en el sitemap y el listado no lo enlaza.
+
+No es una limitación técnica, es una decisión: **una URL con 25 palabras es contenido escaso**, y publicar cincuenta de golpe arrastra al dominio entero. Hoy todos tienen su `extended`; la regla sigue viva para los que se añadan.
+
+## Al añadir un término nuevo
+
+`term` (visible, y clave de los guardados) · `slug` · `category` · `definition` corta · `extended` de ~150-250 palabras en HTML, con la estructura **qué es / por qué importa / error típico** · `seeAlso` con **tres slugs que existan y tengan `extended`** — si apuntas a uno sin él, el enlace no se pinta.
+
+Con eso queda publicado. No hay que tocar el sitemap ni el listado: se enteran solos.
+
+## 🔴 `term` no se toca NUNCA
+
+**Es la clave de los guardados de los usuarios** (tabla `saved_terms`, vía `/api/terms`). Cambiar ese texto deja huérfanos los favoritos de todo el mundo, y no hay vuelta atrás sin una migración.
+
+El `slug` sí se puede cambiar **mientras el término no esté publicado**; una vez indexado, cambiarlo exige montar una redirección.
+
+## Cuándo se amplía, y el peligro
+
+La mayoría de las fichas rondan las 205 palabras. El plan es llevarlas a 1.200-2.200 para competir de tú a tú, y ahí aparece el peligro real: **rellenar**. Una ficha larga y hueca posiciona PEOR que la corta de hoy.
+
+`npm run check:glosario` se aplica **a partir de 450 palabras**, así que las cortas de hoy no dan error: no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien. Y de todo lo que exige, el que más importa es **ninguna frase calcada de otra ficha**: reciclar párrafos entre términos es el atajo evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
+
+**El orden lo decide Search Console, no la intuición**: se amplían las que ya reciben impresiones. La lista de por cuál seguir está en [`TAREAS.md`](./TAREAS.md).
+
+---
+
+# PARTE B · La ficha ampliada
+
+La estructura y el diseño que sigue **toda** ficha ampliada. Se fijó el 07-09-2026 con `exchange`, la primera, después de auditarla entera contra el HTML servido.
+
+No es una sugerencia de estilo: cada regla sale de un fallo real o de un dato de Search Console.
 
 ## 1 · Antes de escribir
 

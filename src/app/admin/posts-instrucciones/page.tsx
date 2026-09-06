@@ -360,7 +360,7 @@ const webp = await sharp(original)
           <p><strong>Toda entrada nueva sale con entre 2 y 4 enlaces internos.</strong> No es opcional ni se deja para después: en agosto de 2026 hubo que repasar las 8 entradas publicadas porque 7 no tenían ni uno solo.</p>
           <p>A dónde enlazar, por orden de preferencia:</p>
           <ul className="agi-list">
-            <li><strong>Al diccionario</strong>, <code>/glosario/&lt;slug&gt;</code> — los 43 términos tienen página propia. Es el destino natural para la jerga que un principiante no domina: <em>staking</em>, <em>gas</em>, <em>monedero</em>, <em>exchange</em>, <em>clave privada</em>…</li>
+            <li><strong>Al diccionario</strong>, <code>/glosario/&lt;slug&gt;</code> — todos los términos con desarrollo largo tienen página propia, y son el bloque de URLs indexables más grande del sitio. Es el destino natural para la jerga que un principiante no domina: <em>staking</em>, <em>gas</em>, <em>monedero</em>, <em>exchange</em>, <em>clave privada</em>…</li>
             <li><strong>A una guía</strong>, <code>/guias/&lt;slug&gt;</code> — cuando el concepto da para mucho más que una definición</li>
             <li><strong>A otra entrada</strong>, <code>/post/&lt;slug&gt;</code> — cuando el texto ya la menciona de forma natural. Si esa otra entrada habla de esta, mejor: los enlaces en los dos sentidos valen más que uno suelto</li>
           </ul>
