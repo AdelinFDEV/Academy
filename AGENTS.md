@@ -1,8 +1,8 @@
 # LO PRIMERO — el contrato de contenido
 
-Este sitio tiene un SEO trabajado punto por punto entre el 30 y el 31 de agosto de 2026: pasó de **30 URLs indexables a 77**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos y de portadas de 22 MB a 3,7 MB. Todo eso **se mantiene solo si cada contenido nuevo respeta las mismas reglas**.
+Este sitio tiene un SEO trabajado punto por punto desde el 30 de agosto de 2026: pasó de **30 URLs indexables a las 90 de hoy**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos y de portadas de 22 MB a 3,7 MB. Todo eso **se mantiene solo si cada contenido nuevo respeta las mismas reglas**.
 
-No hace falta recordárselo a nadie ni leerse los 12 puntos del plan. Basta con esto:
+No hace falta recordárselo a nadie ni leerse los 13 puntos del plan. Basta con esto:
 
 ```bash
 npm run check:contenido
@@ -66,26 +66,15 @@ Son las que ya se rompieron alguna vez, y ninguna la caza el compilador:
 
 ## El estado del plan
 
-Los **12 puntos están cerrados y verificados en producción**. El seguimiento completo, con su tabla de commits, vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)** — está en el repo y no en la memoria de Claude a propósito, porque la memoria local (`~/.claude/`) no viaja entre ordenadores.
+**Los 13 puntos están cerrados y verificados en producción.** El seguimiento, con su tabla de commits y la crónica de cada uno, vive en **[`SEO-PLAN.md`](./SEO-PLAN.md)** — en el repo y no en la memoria de Claude a propósito, porque la memoria local (`~/.claude/`) no viaja entre ordenadores.
 
-Lo que queda por hacer está en su bloque **«🔻 RETOMAR AQUÍ»**: el **punto 13** (landings públicas de las herramientas, el compromiso que el admin pidió expresamente) y el nombre real del titular en `src/lib/legal.ts`, que sigue con un texto de relleno y lo exige la LSSI.
+**Lo único que sigue abierto** es el nombre real del titular en `src/lib/legal.ts`: `titularNombre`, `formaJuridica`, `identificadorFiscal` y `domicilio` siguen con texto de relleno **visible en producción**, e identificar al titular es una obligación legal. Está como bloqueante en [`TAREAS.md`](./TAREAS.md).
 
-**Si se cierra algún punto más**, tres cosas siempre: marcar la casilla y anotar el commit en `SEO-PLAN.md`, traer aquí lo que cambie el día a día, y verificar en producción tras desplegar.
+**Al cerrar cualquier punto nuevo**, tres cosas siempre: marcar la casilla y anotar el commit en `SEO-PLAN.md`, verificar en producción tras desplegar, y traer **aquí solo la regla** que cambie el día a día. La crónica de cómo se hizo se queda en `SEO-PLAN.md`: este archivo se carga en todas las sesiones, así que cada palabra que no sea una regla viva se paga en todas.
 
-## Punto 13: las herramientas ya posicionan — hecho en local, PENDIENTE DE DESPLEGAR
+## Las herramientas: el catálogo, sus fichas y sus trampas
 
-Hecho entre el 4 y el 5 de septiembre de 2026, del compromiso que el admin pidió el 30 de agosto. **Todavía no está verificado en producción**, que es lo que este documento exige para darlo por cerrado: hasta que se despliegue y se compruebe, el punto sigue abierto en [`SEO-PLAN.md`](./SEO-PLAN.md).
-
-Lo que se hizo:
-
-- **`/herramientas` es una landing pública** con las diez herramientas agrupadas por intención de uso, `ItemList` + `FAQPage` y un dato real por herramienta. Antes esa URL daba **404**.
-- **Cinco fichas públicas**: `/herramientas/portfolio`, `/herramientas/diario`, `/trading-en-directo`, `/radar-diario` y `/calendario-de-liberaciones`. Explican qué hay dentro sin abrir el muro, con FAQ y datos estructurados.
-- **`/calculadora` dejó de exigir cuenta.** Es la única herramienta que no usa ningún dato propio, así que cerrarla no protegía nada y costaba la puerta de entrada gratuita. Se usa sin registro con un tope de tres cálculos, y lleva texto explicativo propio: era una página sin una sola frase que indexar.
-- **El diccionario** pasó de 43 a **49 términos** y ganó `DefinedTermSet`.
-
-- **El diccionario** llegó a **50 términos** con la entrada de «inflación», que sostiene la ficha del radar.
-
-**Las cinco fichas están escritas (06-09-2026).** Queda desplegar y verificar en producción, que es lo que este documento exige para dar el punto por cerrado.
+Salió del punto 13 (landings públicas de las herramientas, cerrado el 07-09-2026). Lo que queda aquí son las reglas que siguen mandando al tocar cualquier cosa de esta zona.
 
 ### La trampa de la URL: robots.txt bloquea POR PREFIJO
 
@@ -104,7 +93,7 @@ Las fichas del radar y de las liberaciones **no** están bajo `/herramientas/`, 
 
 Vive en **`src/lib/herramientas.ts`** y lo consumen el hero de la portada, la landing, el sidebar, la tarjeta de Premium y las fichas. **No hagas una segunda lista.**
 
-Esto no es preferencia de estilo: el 5 de septiembre de 2026 había cuatro listas escritas a mano y eso causó tres fallos reales en producción local — la calculadora abierta al público que seguía mostrando el modal de registro, el trading en directo anunciado como «próximamente» cuando ya había sesiones, y la web diciendo ocho herramientas en un sitio y nueve en otro.
+No es preferencia de estilo: cuatro listas escritas a mano causaron tres fallos reales a la vez — la calculadora ya abierta que seguía enseñando el modal de registro, el trading en directo anunciado como «próximamente» cuando ya había sesiones, y la web diciendo ocho herramientas en un sitio y nueve en otro.
 
 Al añadir una herramienta al catálogo aparece sola en los cinco sitios, con el recuento actualizado. Campos que mandan:
 
@@ -134,11 +123,7 @@ No escribas avisos legales a mano en una página: si el texto vive en dos sitios
 
 ### No prometas lo que el producto no hace
 
-Al escribir sobre una herramienta, **abre su código y comprueba que hace lo que vas a decir**. En una sola sesión aparecieron tres textos que prometían de más, los tres en la página de pago:
-
-- «Diario de Trading con **retos y niveles**» — no existen; están previstos, y ahora se anuncian como próximos en los 9 sitios donde salían.
-- Un badge de **«−60 %»** olvidado tras subir el precio a 49,99 €, anunciando una rebaja inexistente.
-- **«Para siempre»** sobre el precio, cuando la propia FAQ dice que se conserva *mientras la suscripción siga activa*.
+Al escribir sobre una herramienta, **abre su código y comprueba que hace lo que vas a decir**. En una sola sesión aparecieron tres textos que prometían de más, los tres en la página de pago: unos «retos y niveles» que no existen, un descuento del «−60 %» olvidado tras subir el precio, y un «para siempre» que la propia FAQ desmentía dos párrafos más abajo.
 
 Ninguno se buscó: salieron al ir a documentar cada herramienta. Es el tipo de cosa que acaba en una reclamación.
 
@@ -238,7 +223,9 @@ Tres detalles que ahorran un rato de depuración:
 
 # Cómo funciona el SEO de este sitio (estado actual)
 
-> Se actualiza al cerrar cada punto del plan. Hoy cubre los **puntos 1, 2, 4, 5, 6, 7 y 8**.
+> Cubre los 13 puntos del plan, todos cerrados. Aquí van **las reglas**; la crónica de cada punto está en [`SEO-PLAN.md`](./SEO-PLAN.md).
+>
+> ⚠️ **Las cifras de esta sección envejecen.** Donde puedas, prefiere el comando que las dice a repetir el número: hasta el 07-09-2026 este archivo afirmaba 30 URLs en el sitemap cuando ya había 90, y 43 términos del diccionario cuando ya eran 50 — y llegó a decir 43, 49 y 50 en tres párrafos distintos.
 
 ## Lo que ya es automático — no hay que hacer nada
 
@@ -248,7 +235,7 @@ Tres detalles que ahorran un rato de depuración:
 
 ## El sitio vive SIN `www` — no lo inviertas nunca
 
-La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta ahí: las 30 URLs del sitemap, el `robots.txt`, el `Host` y el `SITE_URL` del código.
+La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta ahí: cada URL del sitemap, el `robots.txt`, el `Host` y el `SITE_URL` del código.
 
 `www.adelinacademy.com` está dado de alta en Vercel **solo para redirigir**, con un **308 Permanent Redirect** que **conserva la ruta** (`www/guias` acaba en `/guias`, no en la portada). Antes era un 307 temporal, y eso hizo que Google marcara la portada como *«Duplicada: el usuario no ha indicado ninguna versión canónica»*.
 
@@ -257,7 +244,10 @@ La versión canónica es **`https://adelinacademy.com`**, sin `www`. Todo apunta
 ## Search Console está activo desde el 30 de agosto de 2026
 
 - Propiedad de tipo **Dominio**, verificada con un registro **TXT en la raíz**, en el DNS de **Vercel**. **Ese TXT no se borra nunca**: Google revalida cada cierto tiempo y se perdería la propiedad.
-- Sitemap enviado y aceptado: **30 páginas descubiertas**.
+- Sitemap enviado y aceptado. Lo que hay dentro hoy, sin salir de la terminal:
+  ```bash
+  curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
+  ```
 - **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
 - **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
 - Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Y ver `/login` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
@@ -282,7 +272,7 @@ Dos reglas de redacción que salieron de reescribir los 13 títulos el 31-08-202
 
 ## Cada ruta pública declara su canónica — y hay que mantenerlo
 
-Desde el 31-08-2026 las **15 rutas públicas** emiten `<link rel="canonical">` — comprobado en producción: las 30 URLs del sitemap se apuntan a sí mismas. Se declara con `alternates.canonical` y **siempre en ruta relativa** (`"/guias"`, no la URL entera): la resuelve el `metadataBase` del layout raíz, que ya sale de `SITE_URL`.
+Desde el 31-08-2026 **todas las rutas públicas** emiten `<link rel="canonical">`, y cada URL del sitemap se apunta a sí misma. Se declara con `alternates.canonical` y **siempre en ruta relativa** (`"/guias"`, no la URL entera): la resuelve el `metadataBase` del layout raíz, que ya sale de `SITE_URL`.
 
 **Nunca pongas la canónica en un `layout.tsx`, y menos en el raíz.** En Next.js los metadatos del layout **los heredan todas las rutas hijas**, así que una canónica ahí le pondría la misma URL a media web — que es justo el problema que veníamos a arreglar. Por eso la de la portada vive en `src/app/page.tsx`, que antes no tenía `metadata` propia y ahora la tiene solo para esto.
 
@@ -325,9 +315,9 @@ Dos consecuencias prácticas al tocar contenido:
 
 ## El diccionario: un término solo tiene URL si tiene texto largo
 
-Los 43 términos viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `GlosarioClient.tsx`, que es un componente de cliente, así que ni el sitemap ni ninguna página de servidor podían leerlos.
+Los términos —**50 hoy**, `grep -c '  slug: "' src/lib/glosario.ts` para el número de verdad— viven en **`src/lib/glosario.ts`**. Antes estaban dentro de `GlosarioClient.tsx`, que es un componente de cliente, así que ni el sitemap ni ninguna página de servidor podían leerlos.
 
-**La regla que gobierna todo esto: un término tiene página propia solo si tiene el campo `extended`.** Sin él no aparece en `/glosario/[termino]` (la ruta usa `dynamicParams = false`, así que devuelve **404**), no entra en el sitemap y el listado no lo enlaza. No es una limitación técnica: **una URL con 25 palabras es contenido escaso**, y publicar 43 de golpe arrastra al dominio entero. Hoy los 43 están ampliados; la regla sigue viva para los que se añadan.
+**La regla que gobierna todo esto: un término tiene página propia solo si tiene el campo `extended`.** Sin él no aparece en `/glosario/[termino]` (la ruta usa `dynamicParams = false`, así que devuelve **404**), no entra en el sitemap y el listado no lo enlaza. No es una limitación técnica: **una URL con 25 palabras es contenido escaso**, y publicar cincuenta de golpe arrastra al dominio entero. Hoy todos tienen su `extended`; la regla sigue viva para los que se añadan.
 
 **Al añadir un término nuevo:** `term` (visible y clave de guardados), `slug`, `category`, `definition` corta, `extended` (~150-250 palabras) y `seeAlso` con tres slugs que existan — si apuntas a uno sin `extended`, el enlace no se pinta.
 
@@ -337,30 +327,17 @@ Para ampliar un término: añadirle `extended` (HTML ya escrito, ~150-250 palabr
 
 ### Ampliar un término: hay un guardarraíl, y no es opcional
 
-Las 50 fichas rondan las 205 palabras. El plan es llevarlas a 800-1500 para
-competir con Binance y Bit2Me, y ahí aparece el peligro real: **rellenar**. Una
-ficha larga y hueca posiciona PEOR que la corta de hoy.
+La mayoría de las fichas rondan las 205 palabras. El plan es llevarlas a 800-1500 para competir con Binance y Bit2Me, y ahí aparece el peligro real: **rellenar**. Una ficha larga y hueca posiciona PEOR que la corta de hoy.
 
 ```bash
 npm run check:glosario
 ```
 
-Se aplica **a partir de 450 palabras**, así que las cortas de hoy no dan error:
-no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien. Exige
-800-2000 palabras, tres `<h2>`, un ejemplo con números, tres enlaces internos,
-un apoyo visual, no repetir la definición corta, densidad del término por debajo
-del 2,5 % y **ninguna frase calcada de otra ficha**.
+Se aplica **a partir de 450 palabras**, así que las cortas de hoy no dan error: no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien. Y de todo lo que exige, el que más importa es **ninguna frase calcada de otra ficha**: reciclar párrafos entre términos es el atajo evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
 
-Ese último es el que más importa: reciclar párrafos entre términos es el atajo
-evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
+Antes de ampliar una, se leen dos archivos: **[`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md)**, que fija la estructura, las piezas visuales y los números —no se improvisa—, y **[`TAREAS.md`](./TAREAS.md)**, que dice por cuál seguir. **El orden lo decide Search Console, no la intuición**: se amplían las que ya reciben impresiones.
 
-**El orden lo decide Search Console, no la intuición** — se amplían las que ya
-reciben impresiones. La lista de por dónde empezar, con los datos, está en
-[`TAREAS.md`](./TAREAS.md).
-
-**La estructura y el diseño de una ficha ampliada están fijados**, no se improvisan: [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) tiene el orden de las secciones, las piezas visuales, los números que hay que cumplir y los dos guardarraíles que lo comprueban — `check:glosario` sobre el texto y `check:seo` sobre la página servida.
-
-⚠️ El fallo más fácil no es pasarse de palabra clave, es **quedarse corto**: en la primera ficha la palabra aparecía UNA vez en 1.419 palabras. El suelo es 0,6 %, y es el que se olvida.
+⚠️ El fallo más fácil no es pasarse de palabra clave, es **quedarse corto**: en la primera ficha ampliada la palabra aparecía UNA vez en 1.419 palabras. El suelo es 0,6 %, y es el que se olvida.
 
 ## Toda entrada nueva sale con 2-4 enlaces internos
 
@@ -381,7 +358,7 @@ El proceso, siempre en este orden:
 3. **Los que falten, créalos** siguiendo las reglas de la sección del diccionario: `term`, `slug`, `category`, `definition` corta, `extended` de ~150-250 palabras y `seeAlso` con tres slugs que existan.
 4. **Enlaza la primera aparición** de cada término en el texto, y solo la primera: repetir el mismo enlace cinco veces no aporta y ensucia la lectura.
 
-**Por qué esto no es cosmético.** Son tres cosas a la vez: quien empieza entiende lo que lee sin salir del sitio, cada término gana enlaces internos que lo posicionan —el diccionario son 49 URLs indexables, el bloque más grande del sitio— y el texto deja de asumir un vocabulario que el lector objetivo no tiene. Escribir «el vesting libera el 20 %» sin explicar *vesting* expulsa exactamente al principiante al que va dirigida la academia.
+**Por qué esto no es cosmético.** Son tres cosas a la vez: quien empieza entiende lo que lee sin salir del sitio, cada término gana enlaces internos que lo posicionan —el diccionario es el bloque de URLs indexables más grande del sitio— y el texto deja de asumir un vocabulario que el lector objetivo no tiene. Escribir «el vesting libera el 20 %» sin explicar *vesting* expulsa exactamente al principiante al que va dirigida la academia.
 
 `npm run check:contenido` **avisa de los términos del diccionario que una entrada menciona sin enlazar**, así que esto no depende de que nadie se acuerde. El aviso no bloquea —hay menciones que no son la primera, o que van dentro de una cita— pero conviene mirarlo entero antes de publicar.
 
@@ -480,9 +457,7 @@ npm run check:seo -- guias/xrp
 npm run check:seo -- glosario/exchange
 ```
 
-**Ojo con lo que `check:seo` no puede saber.** Mide lo que se puede contar y **sale en verde en una página que cumple todas las métricas y no responde a nada**. El criterio —si el texto responde de verdad a lo que se busca, si el ejemplo aporta, si el título invita a pulsar— va en las 15 fases anteriores del protocolo, y ejecutar el script no las sustituye.
-
-Y una nota sobre la palabra clave: si no se le pasa, la deduce del **slug** —no del title, que lleva coletillas— probando la frase entera y luego los trozos que el texto usa de verdad, sin tildes. En una entrada **se le pasa siempre el `focus_keyword` de la fila**: en una noticia, el slug y la consulta objetivo casi nunca coinciden.
+**En una entrada se le pasa siempre el `focus_keyword` de la fila**: sin él deduce la clave del slug, y en una noticia el slug y la consulta objetivo casi nunca coinciden. El resto —qué mide, qué no puede medir y por qué va al final y no al principio— está en [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md).
 
 ```bash
 npm run check && npx tsc --noEmit     # el código
@@ -564,35 +539,17 @@ Las dos últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **sie
 1. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
 2. `<Footer />`
 
-> **Eran tres.** Entre las dos iba `<AsesoriaBand variant="guide" />`, la banda de asesoría 1:1. **La asesoría se retiró de la web el 04-09-2026** porque el admin no la está ofreciendo de momento: se quitó de las 7 guías, del dashboard, de premium, de la portada y del menú del bot, y `/asesoria` quedó como stub que redirige a `/premium` (mismo patrón que `/terminos`). El componente, su CSS y `src/lib/asesoria.ts` con los precios **siguen en el historial de git** para cuando se reactive; no hace falta reescribirlos.
+> **Eran tres.** En medio iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web porque el admin no está ofreciendo la asesoría; `/asesoria` quedó como stub hacia `/premium`. El componente, su CSS y `src/lib/asesoria.ts` **siguen en el historial de git** para cuando se reactive: no hay que reescribirlos.
 
-Las **entradas del blog no necesitan este patrón**: todas se renderizan con la misma plantilla genérica (`post/[slug]/page.tsx`) y comparten el mismo vocabulario de estilos (`.prose-content` y clases `.prose-*` en `globals.css`) — no hay CSS por-entrada que crear. **Decisión confirmada explícitamente por el admin**: cada entrada nueva es una fila en la tabla `posts` (título + HTML + metadatos), nunca un componente/página de código propia. Motivos: (1) cero código nuevo por entrada = cero riesgo de que `globals.css` vuelva a crecer sin control, (2) publicar así no consume prácticamente nada de la cuota gratuita de Supabase — el texto de cientos de entradas pesa unos pocos MB, muy lejos del límite de 500MB de la BD; lo único remotamente relevante es el storage de imágenes de portada (1GB gratis), y a un ritmo de 1 entrada cada 1–3 días tardaría años en acercarse al límite.
-
-## Regla resumen: "componente independiente" significa cosas distintas para guías y entradas
+## «Componente independiente» significa cosas distintas para guías y entradas
 
 - **Guía nueva → SIEMPRE un componente React nuevo e independiente** (`src/app/guias/[slug]/page.tsx` + su propio `[slug].css`, nunca compartido).
-- **Entrada nueva → NUNCA un componente de código.** Es una fila nueva en Supabase (`posts`), renderizada por la plantilla ya existente. No crear archivos `.tsx` ni `.css` por entrada.
+- **Entrada nueva → NUNCA un componente de código.** Es una fila en la tabla `posts` (título + HTML + metadatos), renderizada por la plantilla genérica `post/[slug]/page.tsx` con el vocabulario `.prose-*` de `globals.css`. No se crean archivos `.tsx` ni `.css` por entrada.
 
-No confundir ambos patrones — son intencionalmente distintos porque guías y entradas son sistemas distintos (guías = experiencia interactiva a medida; entradas = contenido de lectura rápida, publicación ágil sin desplegar código).
+Son intencionalmente distintos porque son sistemas distintos: la guía es una experiencia interactiva a medida, la entrada se lee y se publica sin desplegar código. **Decisión confirmada expresamente por el admin**, y por dos motivos: cero código nuevo por entrada es cero riesgo de que `globals.css` vuelva a crecer sin control, y el texto de cientos de entradas pesa unos pocos MB — muy lejos del límite gratuito de Supabase.
 
-# Aviso manual en Telegram de una guía o entrada (CTA a medida)
+# Aviso manual en Telegram, con copy propio
 
-El aviso **automático** de guías/entradas/vídeos nuevos ya existe y no necesita nada de esto: lo hace `anunciarPendientes()` en `src/lib/announce.ts` con una plantilla fija (`📚 NUEVA GUÍA INTERACTIVA` / `📝 NUEVA ENTRADA`), y se dispara solo desde el cron diario o al publicar desde el panel.
+El aviso **automático** de guías, entradas y vídeos nuevos ya existe y no necesita nada: lo hace `anunciarPendientes()` en `src/lib/announce.ts` con una plantilla fija, desde el cron diario o al publicar desde el panel.
 
-Esto otro es distinto: para cuando el admin pide un mensaje **con copy propio** — por ejemplo, un gancho concreto tipo "completa el quiz y desbloquea el badge X" en vez del texto genérico — con imagen propia si la da, y **con aprobación antes de publicar**. Es `scripts/anuncio-manual.mjs`, y el proceso son siempre estos pasos, en este orden:
-
-1. Redactar el mensaje (con el mismo tono que el resto del bot: `**negrita**`, emojis moderados, nada de exageraciones — ver `bot-menu.ts` para el tono de referencia) y guardarlo en un `.txt` suelto, p. ej. `scripts/anuncio-manual.mensaje.txt`.
-2. Si el admin da una imagen propia, pedirle la **ruta local del archivo** (no hay forma de extraer los bytes de una imagen pegada en el chat; si no da ninguna, cae por defecto a la portada genérica del sitio, `/opengraph-image`, pasándola como `--imagen-url`).
-3. Enviar la vista previa al chat privado del admin:
-   ```bash
-   node scripts/anuncio-manual.mjs admin --texto "scripts/anuncio-manual.mensaje.txt" --boton-texto "📖 Abrir la guía" --boton-url "https://adelinacademy.com/guias/<slug>" --imagen "<ruta local>"
-   ```
-   Esto guarda el contenido exacto en `scripts/.anuncio-manual-cache.json` (gitignored — es un envío puntual, no algo que viva en el repo).
-4. **Esperar la aprobación explícita del admin en el chat** antes de tocar el grupo free — nunca se publica sin que lo confirme, aunque la vista previa "parezca" correcta.
-5. Solo entonces, publicar lo mismo, tal cual, en el grupo gratuito:
-   ```bash
-   node scripts/anuncio-manual.mjs free
-   ```
-   Este paso relee el caché — no hace falta repetir texto ni imagen, y así lo que se aprueba es exactamente lo que se publica.
-
-El script necesita `TELEGRAM_BOT_TOKEN` en `.env.local` (no viene por defecto; si falta, pedírselo al admin) y usa `resolverChatAdmin()` contra Supabase para encontrar el chat del admin — no hace falta que dé su chat ID a mano.
+Cuando el admin pida un mensaje **con copy propio** —un gancho concreto en vez del texto genérico, con su imagen— el procedimiento completo, con sus cinco pasos y la aprobación obligatoria antes de tocar el grupo, está en **[`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md)**. Se lee entonces, no antes.

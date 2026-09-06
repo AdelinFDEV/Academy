@@ -13,11 +13,11 @@ https://claude.ai/code/artifact/ffd27a93-5d0b-4efa-b650-47e34191cd49
 
 ---
 
-# 🔻 RETOMAR AQUÍ — estado a 31 de agosto de 2026
+# 🔻 ESTADO — a 7 de septiembre de 2026
 
-**LOS DOCE PUNTOS ESTÁN HECHOS y verificados en producción, no solo en local.** Cada uno tiene su commit en la tabla de avance del final de este archivo.
+**LOS TRECE PUNTOS ESTÁN HECHOS y verificados en producción, no solo en local.** Cada uno tiene su commit en la tabla de avance del final de este archivo.
 
-El resultado en cifras, del 30 al 31 de agosto de 2026: **de 30 URLs indexables a 77**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos, y las portadas de 22 MB a 3,7 MB.
+El resultado en cifras: **de 30 URLs indexables a 90**, de 1 enlace interno a 24, de cero datos estructurados a cinco tipos, y las portadas de 22 MB a 3,7 MB. Los doce primeros puntos se cerraron entre el 30 y el 31 de agosto; el 13, el 7 de septiembre.
 
 | # | Punto | Comprobado en producción |
 |---|---|---|
@@ -36,9 +36,9 @@ El resultado en cifras, del 30 al 31 de agosto de 2026: **de 30 URLs indexables 
 | — | Peso de las portadas | **Las 11 portadas del sitio convertidas a WebP: de 22 MB a 3,7 MB**, un 83 % menos. Verificado en producción |
 | — | Extra | `www` → **308 permanente** → dominio sin `www`, conservando la ruta |
 
-El **punto 13 está hecho en su mayor parte** (5 de septiembre de 2026) pero **sin desplegar**, así que sigue abierto: este plan solo marca un punto como cerrado cuando está verificado en producción.
+El **punto 13 quedó cerrado y verificado en producción el 07-09-2026**: las seis URLs responden 200 sin sesion y el sitemap sirve 90. Con el, **los 13 puntos del plan estan cerrados**.
 
-## Punto 13 — las landings públicas de las herramientas · HECHO EN LOCAL, SIN DESPLEGAR
+## Punto 13 — las landings públicas de las herramientas · CERRADO Y VERIFICADO (07-09-2026)
 
 **Es el compromiso que el admin pidió expresamente el 30 de agosto de 2026.** El problema, en una frase: el admin nombra tres pilares —entradas, guías y herramientas— y el tercero **no tenía ni una sola URL indexable**.
 
@@ -57,9 +57,18 @@ El **punto 13 está hecho en su mayor parte** (5 de septiembre de 2026) pero **s
 
 **Sitemap: de 77 a 90 URLs.** `robots.txt` pasó de bloquear todo `/herramientas/` a bloquear solo `radar` y `liberaciones`, que siguen tras el muro — el bloqueo por prefijo habría tapado también las fichas nuevas.
 
-### Lo que queda
+### La verificación en producción (07-09-2026)
 
-**Nada de contenido: las cinco fichas están escritas** (06-09-2026). Falta desplegar y verificar en producción.
+```
+/herramientas                    200
+/herramientas/portfolio          200
+/herramientas/diario             200
+/trading-en-directo              200
+/radar-diario                    200
+/calendario-de-liberaciones      200
+```
+
+Y el sitemap sirviendo **90** URLs. Con eso el punto queda cerrado.
 
 ### La lección de la URL, que costó una mañana
 
@@ -67,7 +76,7 @@ Las dos fichas nuevas viven en la **raíz** (`/radar-diario`, `/calendario-de-li
 
 No es teoría. El 06-09-2026, al pedir indexación de `/herramientas/portfolio`, Search Console la dio por **bloqueada por robots.txt**: Google seguía usando su copia cacheada del `robots.txt` viejo, el que bloqueaba todo `/herramientas/`. La regla ya estaba corregida y desplegada, pero **Google cachea ese archivo hasta 24 h**. Si vuelve a pasar: Search Console → Configuración → robots.txt → «Solicitar nuevo rastreo».
 
-### Al desplegar
+### Cómo se cerró — la lista que se siguió al desplegar
 
 1. Comprobar que las **siete** URLs nuevas responden 200 **sin sesión**.
 2. Comprobar que el sitemap las sirve (deben ser **90**) y que ninguna redirige.
@@ -75,7 +84,11 @@ No es teoría. El 06-09-2026, al pedir indexación de `/herramientas/portfolio`,
 4. Pedir indexación manual en Search Console de las dos fichas nuevas. La cuota es de unas 10 al día.
 5. Solo entonces marcar el punto como cerrado aquí.
 
-Y quedan también los **cinco arreglos menores** de más abajo, que entre todos son un rato.
+**Es la lista que hay que repetir con cualquier tanda de páginas públicas nuevas.**
+
+### Lo que de esto se quedó en AGENTS.md
+
+Del punto 13 solo viajaron a `AGENTS.md` las reglas que siguen mandando cada día: el bloqueo por prefijo de `robots.txt`, que el catálogo de `src/lib/herramientas.ts` es fuente única, el sistema visual de `detalle.css`, el descargo en un solo componente y no prometer lo que el producto no hace. **La crónica se queda aquí**: `AGENTS.md` se carga en todas las sesiones, así que lo que no sea una regla viva se paga en todas.
 
 ## El punto 10, por qué se recortó — decisión del 31-08-2026
 
@@ -143,9 +156,9 @@ Se implementa **en orden y de uno en uno**. Para cada punto:
 
 ## ⛔ Pendiente del admin
 
-Del plan SEO, **nada**. Las tres peticiones de indexación en Search Console (portada, `/articulos`, `/guias`) se hicieron el 31-08-2026, y no hay que pedir indexación de las 43 páginas nuevas del glosario: el sitemap las recoge solo en menos de una hora y la cuota es de unas 10 al día.
+Del plan SEO, **nada**: los 13 puntos están cerrados. No hay que pedir indexación de las páginas nuevas del glosario — el sitemap las recoge solo en menos de una hora, y la cuota de Search Console es de unas 10 al día.
 
-Fuera del plan SEO sí queda una cosa, y es legal, no de posicionamiento: **`LEGAL.titularNombre` en `src/lib/legal.ts` sigue con el texto de relleno `[Nombre y apellidos del titular]`**, y se ve así en producción en `/aviso-legal` y `/privacidad`. La LSSI obliga a identificar al titular con su nombre real. Hay que pedírselo al admin y sustituirlo; no se inventa.
+Fuera del plan sí queda una cosa, y es legal, no de posicionamiento: **`titularNombre`, `formaJuridica`, `identificadorFiscal` y `domicilio` en `src/lib/legal.ts` siguen con texto de relleno**, y se ven así en producción en `/aviso-legal` y `/privacidad`. Identificar al titular es una obligación legal. Hay que pedírselo al admin y sustituirlo; **no se inventa**. Ojo: el marco es **rumano** desde el 06-09-2026, así que lo que hace falta es nombre y apellidos, si es PFA o SRL, el CUI y el domicilio.
 
 ## No tocar nunca
 
