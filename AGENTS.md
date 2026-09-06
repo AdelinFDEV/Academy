@@ -339,6 +339,10 @@ evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
 reciben impresiones. La lista de por dónde empezar, con los datos, está en
 [`TAREAS.md`](./TAREAS.md).
 
+**La estructura y el diseño de una ficha ampliada están fijados**, no se improvisan: [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) tiene el orden de las secciones, las piezas visuales, los números que hay que cumplir y los dos guardarraíles que lo comprueban — `check:glosario` sobre el texto y `check:ficha` sobre la página servida.
+
+⚠️ El fallo más fácil no es pasarse de palabra clave, es **quedarse corto**: en la primera ficha la palabra aparecía UNA vez en 1.419 palabras. El suelo es 0,6 %, y es el que se olvida.
+
 ## Toda entrada nueva sale con 2-4 enlaces internos
 
 Es **obligatorio**, y la regla completa vive en `/admin/posts-instrucciones` (bloque 10). El resumen: enlazar al diccionario (`/glosario/<slug>`) para la jerga, a una guía cuando el concepto da para más, y a otra entrada cuando el texto ya la menciona.

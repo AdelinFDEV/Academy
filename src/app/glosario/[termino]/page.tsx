@@ -110,6 +110,19 @@ export default async function TerminoPage({
       <JsonLd
         data={[
           definedTermSchema(t),
+          // FAQPage solo cuando hay preguntas de verdad en la página: declarar
+          // un esquema que el visitante no ve es spam de datos estructurados y
+          // Google lo penaliza.
+          ...(t.faq?.length
+            ? [{
+                "@type": "FAQPage",
+                mainEntity: t.faq.map((f) => ({
+                  "@type": "Question",
+                  name: f.q,
+                  acceptedAnswer: { "@type": "Answer", text: f.a },
+                })),
+              }]
+            : []),
           breadcrumbSchema([
             { name: "Inicio", path: "/" },
             { name: "Diccionario", path: "/glosario" },
@@ -162,6 +175,18 @@ export default async function TerminoPage({
           className="termino-body prose-content"
           dangerouslySetInnerHTML={{ __html: t.extended }}
         />
+
+        {t.faq && t.faq.length > 0 && (
+          <section className="termino-faq">
+            <h2>Preguntas frecuentes</h2>
+            {t.faq.map((f) => (
+              <details key={f.q} className="termino-faq-item">
+                <summary>{f.q}</summary>
+                <p>{f.a}</p>
+              </details>
+            ))}
+          </section>
+        )}
 
         {/* El vídeo va AQUÍ, al final. Quien ha llegado hasta el final de la
             ficha ya ha decidido que el sitio le sirve, y ese es el momento de

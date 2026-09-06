@@ -10,7 +10,8 @@
     "check": "node scripts/check-code.mjs",
     "check:contenido": "node scripts/check-contenido.mjs",
     "prepare": "git config core.hooksPath .githooks || exit 0",
-    "check:glosario": "node scripts/check-glosario.mjs"
+    "check:glosario": "node scripts/check-glosario.mjs",
+    "check:ficha": "node scripts/check-ficha.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.18.0",

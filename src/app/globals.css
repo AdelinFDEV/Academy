@@ -12289,3 +12289,81 @@ select {
 }
 
 .termino-guardar:disabled { opacity: 0.6; cursor: default; }
+
+/* ── Preguntas frecuentes de la ficha ───────────────────────────────────────
+ *
+ * Cubren la cola larga: quien empieza no busca solo «qué es un exchange», sino
+ * «¿es seguro?», «¿cuánto cobran?» o «¿en qué se diferencia de una wallet?».
+ * Cada una es una consulta distinta que el texto corrido no responde de frente.
+ *
+ * Van en <details> a propósito: el contenido está en el HTML desde el primer
+ * momento —Google lo lee aunque esté plegado— y la página no crece a lo alto
+ * con seis respuestas que quizá no interesen. */
+
+.termino-faq {
+  margin: 2.5rem 0 0;
+}
+
+.termino-faq h2 {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: rgba(240, 244, 255, 0.97);
+}
+
+.termino-faq-item {
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 13px;
+  background: rgba(240, 244, 255, 0.02);
+  margin-bottom: 0.55rem;
+  overflow: hidden;
+}
+
+.termino-faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.93rem;
+  font-weight: 620;
+  color: rgba(240, 244, 255, 0.9);
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.16s ease;
+}
+
+.termino-faq-item summary::-webkit-details-marker { display: none; }
+
+/* El signo lo pone el CSS y gira al abrir: un marcador propio se ve igual en
+   todos los navegadores, que el nativo no. */
+.termino-faq-item summary::after {
+  content: "+";
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--accent-orange-soft);
+  transition: transform 0.2s ease;
+}
+
+.termino-faq-item[open] summary::after { transform: rotate(45deg); }
+.termino-faq-item summary:hover { color: #fff; }
+
+.termino-faq-item[open] summary {
+  color: #fff;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.06);
+}
+
+.termino-faq-item p {
+  margin: 0;
+  padding: 0.9rem 1.1rem 1.05rem;
+  font-size: 0.9rem;
+  line-height: 1.68;
+  color: rgba(240, 244, 255, 0.66);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .termino-faq-item summary::after { transition: none; }
+}
