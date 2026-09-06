@@ -395,6 +395,7 @@ const webp = await sharp(original)
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Si la categoría no existe, crearla en Supabase antes de asignarla</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Convertir la portada a WebP</strong> (1600 px, calidad 82) antes de subirla a Supabase Storage (bucket <code>media</code>) y usar la URL pública en <code>cover_image</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npm run check:contenido -- &lt;slug&gt;</code> y que salga en verde</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Ofrecer la auditoría SEO</strong> — «¿empiezo la auditoría SEO de la entrada?» — y si el admin dice que sí, ejecutar <code>AUDITORIA-SEO.md</code> entero sobre ella. Va <strong>antes</strong> de pedir la aprobación</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar el borrador completo al admin y esperar aprobación antes de publicar</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Insertar en la tabla <code>posts</code> tras la aprobación (<code>published = true</code> salvo que se pida borrador)</span></label>
         </div>

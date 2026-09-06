@@ -26,13 +26,32 @@ npm run check && npx tsc --noEmit
 
 | Vas a crear… | Lo que NO se negocia |
 |---|---|
-| **Entrada** | Las [3 preguntas](#resumen-operativo-de-una-entrada-nueva) antes de escribir · 500-1500 palabras · mínimo 1 `.prose-chart` · 2-4 enlaces internos · **todo término técnico enlazado al diccionario, creándolo si no existe** · `seo_title` ≤48 y `meta_description` ≤160 · portada en **WebP** · aprobación del admin antes de publicar |
-| **Guía** | Alta en `GUIDES` (`src/lib/guides.ts`) · `alternates.canonical` propia · `<GuideBreadcrumbJsonLd>` · su propio `[slug].css` · **todo término técnico enlazado al diccionario, creándolo si no existe** · cierre fijo con `GuideInteractions` y `Footer` |
+| **Entrada** | Las [3 preguntas](#resumen-operativo-de-una-entrada-nueva) antes de escribir · 500-1500 palabras · mínimo 1 `.prose-chart` · 2-4 enlaces internos · **todo término técnico enlazado al diccionario, creándolo si no existe** · `seo_title` ≤48 y `meta_description` ≤160 · portada en **WebP** · **[ofrecer la auditoría SEO](#-la-auditoría-seo-se-ofrece-siempre--al-terminar-cada-entrada-y-cada-guía) al terminar** · aprobación del admin antes de publicar |
+| **Guía** | Alta en `GUIDES` (`src/lib/guides.ts`) · `alternates.canonical` propia · `<GuideBreadcrumbJsonLd>` · su propio `[slug].css` · **todo término técnico enlazado al diccionario, creándolo si no existe** · cierre fijo con `GuideInteractions` y `Footer` · **[ofrecer la auditoría SEO](#-la-auditoría-seo-se-ofrece-siempre--al-terminar-cada-entrada-y-cada-guía) al terminar** |
 | **Término del diccionario** | Campo `extended` (~150-250 palabras) o **no existe como URL** · `seeAlso` con tres slugs que existan · no tocar `term`, que es la clave de los guardados |
 | **Página pública nueva** | Alta en `STATIC_ROUTES` (`src/app/sitemap.ts`) · `alternates.canonical` a mano · título ≤48 y descripción ≤160 |
 | **Portada de cualquier cosa** | **WebP siempre**, 1600 px de ancho y calidad 82, antes de subirla |
 
 Cada fila está desarrollada, con su porqué, en [«Cómo funciona el SEO de este sitio»](#cómo-funciona-el-seo-de-este-sitio-estado-actual). Lo de arriba es lo que hay que cumplir; lo de abajo es por qué.
+
+## 🔴 LA AUDITORÍA SEO SE OFRECE SIEMPRE — al terminar cada entrada y cada guía
+
+**Esto no hay que recordárselo a Claude. Es parte de montar una entrada o una guía, igual que las 3 preguntas del principio.**
+
+Al terminar de montar el contenido, **antes** de pedir la aprobación para publicar, Claude pregunta con estas palabras o equivalentes:
+
+> ¿Empiezo la auditoría SEO de la entrada / de la guía?
+
+En cuanto el admin diga que sí, se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa entrada o esa guía. Es un procedimiento de 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales, conversión— y **cada fase se corrige antes de pasar a la siguiente**.
+
+Cuatro reglas del disparador:
+
+1. **Se pregunta siempre**, aunque la entrada sea corta o urgente. Una noticia de 500 palabras compite en Google igual que una guía de 3.000.
+2. Si el admin dice que no, **se anota en el cierre que queda sin auditar**, para que conste.
+3. Aplica también a **una entrada o guía existente que se reescriba a fondo**: cambiar la mitad del cuerpo es publicar otra página en la misma URL.
+4. Los scripts van **al final** de la auditoría, no al principio. `npm run check:seo -- post/<slug> "<focus_keyword>"` confirma lo que ya has arreglado; **no lo descubre por ti, y sale en verde en una página que cumple todas las métricas y no responde a nada**.
+
+Por qué es más severo que en una web normal: Google clasifica el contenido sobre dinero, inversión e impuestos como **YMYL**, y le aplica el listón más alto de su sistema de evaluación. Aquí **todo** el contenido es YMYL.
 
 ## Las seis que más caro salen
 
@@ -339,7 +358,7 @@ evidente al ampliar cincuenta, y es duplicado dentro de tu propio dominio.
 reciben impresiones. La lista de por dónde empezar, con los datos, está en
 [`TAREAS.md`](./TAREAS.md).
 
-**La estructura y el diseño de una ficha ampliada están fijados**, no se improvisan: [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) tiene el orden de las secciones, las piezas visuales, los números que hay que cumplir y los dos guardarraíles que lo comprueban — `check:glosario` sobre el texto y `check:ficha` sobre la página servida.
+**La estructura y el diseño de una ficha ampliada están fijados**, no se improvisan: [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) tiene el orden de las secciones, las piezas visuales, los números que hay que cumplir y los dos guardarraíles que lo comprueban — `check:glosario` sobre el texto y `check:seo` sobre la página servida.
 
 ⚠️ El fallo más fácil no es pasarse de palabra clave, es **quedarse corto**: en la primera ficha la palabra aparecía UNA vez en 1.419 palabras. El suelo es 0,6 %, y es el que se olvida.
 
@@ -435,6 +454,7 @@ Y después:
 - **Nunca** enlaces externos, menciones promocionales ni CTAs del artículo original.
 - SEO (`seo_title`, `meta_description`, `focus_keyword`) lo rellena siempre Claude, pensando en un lector principiante.
 - **Portada: SIEMPRE se convierte a WebP antes de subirla** — ancho máximo 1600 px, calidad 82, con `sharp` (ya viene con Next). Regla desde el 31-08-2026, sin excepciones: el admin da la imagen y Claude la optimiza sin preguntar. Las tres portadas de fiscalidad pesaban **8 MB en PNG** y quedaron en **904 KB**, un 89 % menos sin diferencia visible. Después se sube a Supabase Storage (bucket `media`, nombre `${Date.now()}-${slug}.webp`) y se guarda la **URL pública** en `cover_image` — nunca enlazar una imagen externa. El panel admite hasta 5 MB, pero **que entre no significa que valga**: un PNG de 2,7 MB destroza la carga de la página, que es lo que Google mide de verdad.
+- **Al terminar, ofrecer la auditoría SEO** — «¿Empiezo la auditoría SEO de la entrada?» — y si dice que sí, ejecutar [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero sobre ella. Va **antes** de pedir la aprobación: auditar después de publicar es corregir en caliente delante de los lectores y de Google.
 - **Mostrar el borrador y esperar aprobación explícita antes de publicar.**
 
 ## Publicar dispara un aviso en Telegram
@@ -443,12 +463,26 @@ Y después:
 
 # Comprobación antes de dar algo por terminado
 
-Hay **dos** guardarraíles, y comprueban cosas distintas porque el contenido de este sitio no vive en el código.
+Hay **cuatro** guardarraíles, y comprueban cosas distintas porque el contenido de este sitio no vive en el código, y porque lo que Google ve no es ni el código ni la base de datos, sino el HTML servido.
 
 | Comando | Qué revisa | Cuándo |
 |---|---|---|
 | `npm run check` | El **código**: `src/**`. Reglas de ESLint a cero, límites de `title` y `description` en la metadata, fechas releídas desde texto | Antes de cerrar cualquier tarea. Lo corre solo el hook de `pre-push` |
 | `npm run check:contenido` | El **contenido**: las entradas en Supabase. Longitud, SEO, gráfico, enlaces internos, etiquetas, portada | **Antes de publicar una entrada.** A mano |
+| `npm run check:seo` | La **página servida**: metadatos, encabezados, densidad con suelo y techo, enlaces salientes y **entrantes**, esquemas, imágenes, rastreo | En la **Fase 16 de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md)**. Necesita `npm run dev` levantado |
+| `npm run check:glosario` | El **texto de las fichas ampliadas** del diccionario, a partir de 450 palabras | Al ampliar un término |
+
+Los dos últimos necesitan la red o el servidor, así que tampoco están en el hook.
+
+```bash
+npm run check:seo -- post/mi-slug "focus keyword"
+npm run check:seo -- guias/xrp
+npm run check:seo -- glosario/exchange
+```
+
+**Ojo con lo que `check:seo` no puede saber.** Mide lo que se puede contar y **sale en verde en una página que cumple todas las métricas y no responde a nada**. El criterio —si el texto responde de verdad a lo que se busca, si el ejemplo aporta, si el título invita a pulsar— va en las 15 fases anteriores del protocolo, y ejecutar el script no las sustituye.
+
+Y una nota sobre la palabra clave: si no se le pasa, la deduce del **slug** —no del title, que lleva coletillas— probando la frase entera y luego los trozos que el texto usa de verdad, sin tildes. En una entrada **se le pasa siempre el `focus_keyword` de la fila**: en una noticia, el slug y la consulta objetivo casi nunca coinciden.
 
 ```bash
 npm run check && npx tsc --noEmit     # el código
@@ -456,7 +490,7 @@ npm run check:contenido               # las entradas publicadas
 npm run check:contenido -- mi-slug    # una sola, aunque esté en borrador
 ```
 
-Los dos **salen con código 1 si algo falla**, y dicen exactamente qué y dónde.
+Los cuatro **salen con código 1 si algo falla**, y dicen exactamente qué y dónde.
 
 `check:contenido` existe porque una entrada es una fila en Supabase, no un archivo: hasta el 31-08-2026 **no la comprobaba nadie**, y todas las reglas del plan SEO dependían de que quien escribiera se acordase. Al estrenarlo encontró dos entradas por debajo del mínimo de palabras que llevaban meses publicadas.
 

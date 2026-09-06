@@ -116,6 +116,29 @@ El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de l
 
 ---
 
+## 5. Pasar la auditoría SEO por el contenido que ya está publicado
+
+El protocolo de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) se ejecuta a partir de ahora en **cada entrada y cada guía nueva**, y se ofrece solo. Pero el contenido publicado antes de que existiera no lo ha pasado nunca, y al estrenar el auditor sobre él salieron fallos reales. Estos no son deuda que se perdona: son páginas que ya están compitiendo en Google con un lastre medible.
+
+Lo encontrado en la primera pasada (07-09-2026), por orden de lo que más cuesta:
+
+| Página | Qué falla | Por qué importa |
+|---|---|---|
+| `/post/bitcoin-core-v32-2026` | La palabra clave aparece **1 vez en 1.473 palabras** (0,07 %) | Es el fallo del suelo de densidad, el mismo de la primera ficha. Google no ve de qué va |
+| `/guias/fiscalidad-cripto-espana` | Densidad **0,26 %**, solo **3 `<h2>`**, 3 frases de más de 40 palabras | Es la guía que sostiene la consulta más buscada del sitio. Es la que más urge |
+| `/guias/xrp` | Solo **3 `<h2>`**, 2 frases largas, 1 párrafo de más de 120 palabras | — |
+
+Y un hallazgo estructural que afecta a **todas** las guías: el auditor mide 909 palabras en la de XRP porque **lo que Google recibe es solo lo renderizado en el servidor**. Todo lo que vive dentro de un componente de cliente —quiz, gráficos, minijuegos— no lo ve el rastreador. Merece una comprobación página a página: si el contenido que sostiene la consulta está dentro de un interactivo, hay que sacar una versión en texto al servidor.
+
+```bash
+npm run check:seo -- guias/fiscalidad-cripto-espana
+npm run check:seo -- post/bitcoin-core-v32-2026 "bitcoin core"
+```
+
+**El orden lo decide el tráfico, no la lista.** Se empieza por lo que ya recibe impresiones en Search Console, igual que con las fichas del diccionario.
+
+---
+
 ## Menor, y ya identificado
 
 - [ ] **Fichas públicas que faltan.** Cuatro herramientas siguen sin página propia: calculadora de riesgo, watchlist, Mi Portfolio y Logros. Son las únicas que aún salen con candado en `/herramientas` y apagadas en el sidebar. La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.

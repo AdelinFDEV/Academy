@@ -1,0 +1,308 @@
+/**
+ * Auditoría SEO de una página publicada, contra el HTML que se sirve de verdad.
+ *
+ *   npm run dev                              (en otra terminal)
+ *   npm run check:seo -- /post/mi-slug
+ *   npm run check:seo -- /guias/xrp
+ *   npm run check:seo -- /glosario/exchange
+ *
+ * ── Qué es y qué no es ─────────────────────────────────────────────────────
+ *
+ * Es la parte MECÁNICA de la auditoría descrita en `AUDITORIA-SEO.md`: todo lo
+ * que se puede contar. El criterio —si el texto responde de verdad a lo que se
+ * busca, si el ejemplo aporta, si el título invita a pulsar— no lo mide ningún
+ * script y va en el protocolo, paso a paso.
+ *
+ * Ejecutarlo NO sustituye a leer el documento. Sale en verde una página que
+ * cumple todas las métricas y no responde a nada.
+ *
+ * ── Por qué contra el HTML servido ─────────────────────────────────────────
+ *
+ * Porque es lo que ve Google. Un `title` puede estar perfecto en el código y
+ * salir duplicado por el `template` del layout; un enlace puede existir y
+ * responder 307; un dato estructurado puede compilar y no describir lo que se
+ * ve. Nada de eso se detecta leyendo el código.
+ *
+ * Necesita el servidor levantado, y por eso NO está en el hook de `pre-push`
+ * —igual que `check:contenido`, que necesita credenciales.
+ */
+import { readFileSync } from "node:fs";
+
+const RED = "\x1b[31m", GREEN = "\x1b[32m", YELLOW = "\x1b[33m", DIM = "\x1b[2m", OFF = "\x1b[0m";
+const BASE = process.env.SEO_BASE || "http://localhost:3000";
+
+/**
+ * Se acepta con barra inicial y sin ella, y no es un capricho: Git Bash en
+ * Windows convierte `/post/mi-slug` en `C:/Program Files/post/mi-slug` antes de
+ * que el script lo vea. Escribiéndolo sin la barra no lo toca.
+ */
+let ruta = (process.argv[2] ?? "").trim();
+// Por si aun así llega manglada.
+const manglada = ruta.match(/^[A-Za-z]:[\\/].*?[\\/]((?:post|guias|glosario)[\\/].+)$/);
+if (manglada) ruta = "/" + manglada[1].replace(/\\/g, "/");
+if (ruta && !ruta.startsWith("/")) ruta = "/" + ruta;
+
+if (!ruta || !/^\/(post|guias|glosario)\/[a-z0-9-]+$/.test(ruta)) {
+  console.log(`
+Uso:  npm run check:seo -- post/mi-slug
+      npm run check:seo -- guias/xrp
+      npm run check:seo -- glosario/exchange
+
+  Sin la barra inicial: Git Bash la convierte en una ruta de Windows.
+`);
+  process.exit(1);
+}
+
+/** Umbrales por tipo. Una guía se recorre y una entrada se lee: no piden lo mismo. */
+const PERFILES = {
+  post: { min: 500, max: 1800, h2: 3, enlaces: 2, visuales: 1, nombre: "entrada" },
+  guias: { min: 800, max: 6000, h2: 4, enlaces: 2, visuales: 1, nombre: "guía" },
+  glosario: { min: 1200, max: 2200, h2: 4, enlaces: 5, visuales: 5, nombre: "ficha del diccionario" },
+};
+const tipo = ruta.split("/")[1];
+const P = PERFILES[tipo] ?? PERFILES.post;
+
+let fallos = 0, avisos = 0;
+const ok = (c, etiqueta, detalle = "") => {
+  if (!c) fallos++;
+  console.log(`  ${c ? GREEN + "OK " + OFF : RED + "✗  " + OFF} ${etiqueta.padEnd(44)} ${DIM}${detalle}${OFF}`);
+};
+const aviso = (etiqueta, detalle = "") => {
+  avisos++;
+  console.log(`  ${YELLOW}!  ${OFF} ${etiqueta.padEnd(44)} ${DIM}${detalle}${OFF}`);
+};
+const seccion = (t) => console.log(`\n${DIM}── ${t} ${"─".repeat(Math.max(0, 60 - t.length))}${OFF}`);
+
+const texto = (h) => h.replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/g, " ").replace(/\s+/g, " ").trim();
+
+const res = await fetch(BASE + ruta, { redirect: "manual" });
+if (res.status !== 200) {
+  console.log(`\n${RED}La página devuelve ${res.status}.${OFF} Sin sesión tiene que dar 200 o no la indexa nadie.\n`);
+  process.exit(1);
+}
+const html = await res.text();
+const sinScripts = html.replace(/<script[\s\S]*?<\/script>/g, " ");
+
+/**
+ * El cuerpo del artículo, sin cabecera, CTA ni pie.
+ *
+ * Acotarlo importa más de lo que parece: sin esto se cuela el pie de página
+ * entero y las cifras dejan de describir el artículo — daba 5.416 palabras en
+ * una ficha de 1.445.
+ */
+const INICIOS = ['class="post-content', 'class="termino-body', 'class="gbc-wrap', "<main"];
+const FINALES = ['<section class="termino-faq', '<section class="tvid', '<section class="termino-relacionados',
+  'class="post-cierre', "<footer"];
+const desde = INICIOS.map((m) => html.indexOf(m)).filter((i) => i >= 0)[0] ?? 0;
+const finales = FINALES.map((m) => html.indexOf(m, desde)).filter((i) => i > 0);
+const cuerpo = html.slice(desde, finales.length ? Math.min(...finales) : html.length);
+
+console.log(`\n${DIM}Auditoría SEO · ${P.nombre}${OFF}\n  ${BASE}${ruta}`);
+
+// ── 1. Metadatos ──────────────────────────────────────────────────────────
+seccion("METADATOS");
+const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
+const desc = html.match(/name="description" content="([^"]*)"/)?.[1] ?? "";
+const canon = html.match(/rel="canonical" href="([^"]*)"/)?.[1] ?? "";
+const og = html.match(/property="og:title" content="([^"]*)"/)?.[1] ?? "";
+
+ok(title.length > 0 && title.length <= 60, "title ≤ 60 (se corta ahí en Google)", `${title.length} · ${title}`);
+ok(!/\|\s*AdelinBTC[\s\S]*\|\s*AdelinBTC/.test(title), "sufijo de marca sin duplicar");
+ok(desc.length >= 110 && desc.length <= 160, "description entre 110 y 160", `${desc.length}`);
+ok(canon.startsWith("https://") && canon.endsWith(ruta), "canónica apunta a sí misma", canon);
+ok(!/noindex/i.test(html), "sin noindex");
+ok(/<html[^>]*lang="es"/.test(html), "idioma declarado");
+og ? ok(true, "openGraph con título propio", `${og.length} car`) : aviso("openGraph", "sin og:title propio");
+
+// ── 2. Estructura semántica ───────────────────────────────────────────────
+seccion("ESTRUCTURA");
+const enc = [...sinScripts.matchAll(/<(h[1-6])[^>]*>([\s\S]*?)<\/\1>/g)].map((m) => ({ n: +m[1][1], t: texto(m[2]) }));
+const h1 = enc.filter((e) => e.n === 1);
+ok(h1.length === 1, "exactamente un H1", h1.map((h) => h.t).join(" | ") || "ninguno");
+let saltos = 0;
+for (let i = 1; i < enc.length; i++) if (enc[i].n > enc[i - 1].n + 1) saltos++;
+ok(saltos === 0, "sin saltos de nivel (h2 → h4)", `${saltos}`);
+const h2 = [...cuerpo.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => texto(m[1]));
+ok(h2.length >= P.h2, `≥ ${P.h2} H2 en el cuerpo`, `${h2.length}`);
+const h2Vacios = h2.filter((h) => h.split(/\s+/).length < 2).length;
+ok(h2Vacios === 0, "ningún H2 de una sola palabra", `${h2Vacios}`);
+
+// ── 3. Contenido ──────────────────────────────────────────────────────────
+seccion("CONTENIDO");
+const n = texto(cuerpo).split(/\s+/).filter(Boolean).length;
+ok(n >= P.min, `≥ ${P.min} palabras`, `${n}`);
+ok(n <= P.max, `≤ ${P.max} palabras`, `${n}`);
+
+/**
+ * La palabra clave que se mide.
+ *
+ * Sale del SLUG, no del title, y esto costó tres fallos falsos. El title lleva
+ * coletillas —«qué es un», «de criptomonedas»— y deducirla de ahí devolvía la
+ * frase entera, que no aparece literal en ningún párrafo: la primera ficha
+ * auditada marcaba 0,00 % de densidad estando bien optimizada. El slug es lo
+ * más parecido a la consulta por la que se quiere posicionar.
+ *
+ * Dos cosas más, y las dos salieron de auditar entradas reales:
+ *
+ * 1. **Se compara sin tildes.** El slug dice `metodo-fifo` y el texto escribe
+ *    «método FIFO». Para Google son la misma consulta; para una expresión
+ *    regular no, y la densidad salía a cero.
+ * 2. **Si la frase entera no aparece, se acorta por el final.** De
+ *    `metodo-fifo-criptomonedas` se prueba «metodo fifo criptomonedas», luego
+ *    «metodo fifo», luego «metodo»: se mide la más larga que exista de verdad,
+ *    que es la que describe la página. La línea de abajo dice cuál se midió.
+ *
+ * Y siempre manda la que se imponga a mano — obligatorio cuando el slug y la
+ * consulta objetivo no coinciden, que es lo normal en una entrada de noticia:
+ *
+ *   npm run check:seo -- post/mi-slug "market cap"
+ */
+const VACIAS = new Set(["el", "la", "los", "las", "un", "una", "de", "del", "y", "o", "en",
+  "que", "es", "como", "para", "por", "con", "sin", "su", "sus", "al", "lo"]);
+/**
+ * Sin tildes: para Google «método» y «metodo» son la misma consulta, y sin esto
+ * la densidad de una entrada bien escrita salía a cero. El rango del replace es
+ * el bloque de marcas diacríticas combinantes (U+0300 a U+036F), que es lo que
+ * deja suelto el normalize("NFD") — se ve vacío porque no se pintan solas.
+ */
+const plano = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const t = plano(texto(cuerpo));
+const cuenta = (k) => (k ? (t.match(new RegExp(`\\b${plano(k).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "g")) ?? []).length : 0);
+
+const impuesta = (process.argv[3] ?? "").trim();
+const palabrasSlug = ruta.split("/").pop().split("-");
+/**
+ * Todas las frases seguidas que caben en el slug, no solo los principios.
+ *
+ * Recortar solo por el final no basta: `metodo-fifo-criptomonedas` daba
+ * «metodo fifo» y «metodo», y el texto de esa entrada dice «FIFO» ocho veces
+ * sin escribir «método» ni una. La que describe la página está en medio.
+ *
+ * Se queda con la más larga que aparezca de verdad, y a igual longitud con la
+ * más repetida. Si no aparece ninguna, se mide la frase entera: el fallo es
+ * real —la página no nombra aquello por lo que quiere posicionar— y tiene que
+ * verse en rojo, no taparse con un sucedáneo.
+ */
+const trozos = [];
+for (let i = 0; i < palabrasSlug.length; i++)
+  for (let j = i + 1; j <= palabrasSlug.length; j++) {
+    const p = palabrasSlug.slice(i, j);
+    if (VACIAS.has(p[0]) || VACIAS.has(p.at(-1))) continue;
+    trozos.push({ frase: p.join(" "), largo: p.length });
+  }
+const candidatas = impuesta
+  ? [{ frase: impuesta, largo: 99 }]
+  : trozos
+      .map((c) => ({ ...c, veces: cuenta(c.frase) }))
+      .filter((c) => c.veces > 0)
+      .sort((a, b) => b.largo - a.largo || b.veces - a.veces);
+
+const entera = palabrasSlug.join(" ");
+const keyword = candidatas[0]?.frase ?? entera;
+const veces = cuenta(keyword);
+const origen = impuesta ? "impuesta a mano" : keyword === entera ? "del slug" : "del slug, ajustada a lo que el texto usa";
+const densidad = n ? (veces / n) * 100 : 0;
+console.log(`  ${DIM}    palabra clave medida (${origen}): «${keyword}»${OFF}`);
+ok(densidad >= 0.4, "SUELO de densidad ≥ 0,4 %", `${veces} veces · ${densidad.toFixed(2)} %`);
+ok(densidad <= 2.5, "TECHO de densidad ≤ 2,5 %", `${densidad.toFixed(2)} %`);
+ok(keyword && plano(title).includes(plano(keyword)), "keyword en el title");
+ok(keyword && plano(h1[0]?.t ?? "").includes(plano(keyword)), "keyword en el H1");
+ok(keyword && plano(desc).includes(plano(keyword)), "keyword en la description");
+const primer = plano(texto(cuerpo.match(/<p[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? ""));
+primer.includes(plano(keyword)) ? ok(true, "keyword en el primer párrafo") : aviso("keyword en el primer párrafo", "no aparece");
+
+// Legibilidad. Se mide párrafo a párrafo: las listas y las etiquetas de los
+// gráficos no llevan punto y al concatenarlas salen «frases» que no existen.
+const frases = [...cuerpo.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)]
+  .flatMap((m) => texto(m[1]).split(/(?<=[.!?])\s+/))
+  .filter((f) => f.split(/\s+/).length > 3);
+const media = frases.length ? Math.round(frases.reduce((a, f) => a + f.split(/\s+/).length, 0) / frases.length) : 0;
+const largas = frases.filter((f) => f.split(/\s+/).length > 40).length;
+ok(media <= 24, "frase media ≤ 24 palabras", `${media}`);
+ok(largas === 0, "sin frases de más de 40 palabras", `${largas}`);
+const parrafosLargos = [...cuerpo.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)]
+  .filter((m) => texto(m[1]).split(/\s+/).length > 120).length;
+ok(parrafosLargos === 0, "sin párrafos de más de 120 palabras", `${parrafosLargos}`);
+
+// ── 4. Enlazado ───────────────────────────────────────────────────────────
+seccion("ENLAZADO");
+const salientes = [...new Set([...cuerpo.matchAll(/href="(\/[^"#]+)"/g)].map((m) => m[1]))];
+ok(salientes.length >= P.enlaces, `≥ ${P.enlaces} enlaces internos salientes`, `${salientes.length}`);
+let rotos = 0;
+for (const h of salientes) {
+  const c = (await fetch(BASE + h, { redirect: "manual" })).status;
+  if (c !== 200) { rotos++; console.log(`      ${RED}✗${OFF} ${c} ${h}`); }
+}
+ok(rotos === 0, "ningún enlace saliente roto", `${salientes.length} comprobados`);
+const externos = [...cuerpo.matchAll(/href="https?:\/\/([^/"]+)/g)].map((m) => m[1])
+  .filter((d) => !d.includes("adelinacademy"));
+ok(externos.length === 0, "sin enlaces externos en el cuerpo", externos.join(" "));
+
+/**
+ * ENLACES ENTRANTES. El paso que casi nadie da y el que más pesa: una página a
+ * la que no apunta nada es huérfana, y Google la trata como tal por buena que
+ * sea. Se recorre el sitemap y se cuenta quién la enlaza.
+ */
+const sitemap = await (await fetch(BASE + "/sitemap.xml")).text();
+const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)]
+  .map((m) => m[1].replace(/^https?:\/\/[^/]+/, ""))
+  .filter((u) => u !== ruta);
+let entrantes = 0;
+const quien = [];
+for (const u of urls) {
+  const r = await fetch(BASE + u).catch(() => null);
+  if (!r?.ok) continue;
+  const h = await r.text();
+  const cuerpoOtro = h.slice(h.indexOf("<main"), h.indexOf("<footer") > 0 ? h.indexOf("<footer") : undefined);
+  if (new RegExp(`href="${ruta}"`).test(cuerpoOtro)) { entrantes++; quien.push(u); }
+}
+entrantes >= 2
+  ? ok(true, "≥ 2 enlaces internos ENTRANTES", `${entrantes} · ${quien.slice(0, 3).join(" ")}`)
+  : ok(false, "≥ 2 enlaces internos ENTRANTES", `${entrantes} — es una página huérfana`);
+
+// ── 5. Datos estructurados ────────────────────────────────────────────────
+seccion("DATOS ESTRUCTURADOS");
+const tipos = [];
+let jsonRoto = 0;
+for (const b of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+  try {
+    const j = JSON.parse(b[1].replace(/\\u003c/g, "<"));
+    for (const nodo of j["@graph"] ?? [j]) tipos.push(nodo["@type"]);
+  } catch { jsonRoto++; }
+}
+ok(jsonRoto === 0, "todo el JSON-LD parsea", `${jsonRoto} roto(s)`);
+ok(tipos.includes("BreadcrumbList"), "BreadcrumbList", tipos.join(" · "));
+if (tipo === "post") ok(tipos.includes("Article"), "Article");
+if (tipo === "glosario") ok(tipos.includes("DefinedTerm"), "DefinedTerm");
+// Un esquema que declara algo que el visitante no ve es spam estructurado.
+if (tipos.includes("FAQPage")) {
+  const preguntas = (html.match(/"@type":"Question"/g) ?? []).length;
+  const visibles = (html.match(/<summary/g) ?? []).length;
+  ok(visibles >= preguntas, "las preguntas del esquema se ven", `${preguntas} en esquema · ${visibles} visibles`);
+}
+
+// ── 6. Imágenes y rendimiento ─────────────────────────────────────────────
+seccion("IMÁGENES Y CARGA");
+const imgs = [...sinScripts.matchAll(/<img[^>]*>/g)].map((m) => m[0]);
+ok(imgs.filter((i) => !/alt=/.test(i)).length === 0, "todas las imágenes con alt", `${imgs.length} imágenes`);
+const sinLazy = imgs.filter((i) => !/loading="lazy"|priority/.test(i)).length;
+sinLazy > 1 ? aviso("imágenes sin lazy ni priority", `${sinLazy}`) : ok(true, "carga de imágenes declarada");
+ok(html.length < 400_000, "HTML por debajo de 400 KB", `${Math.round(html.length / 1024)} KB`);
+
+// ── 7. Rastreo ────────────────────────────────────────────────────────────
+seccion("RASTREO E INDEXACIÓN");
+const robots = await (await fetch(BASE + "/robots.txt")).text();
+const bloqueada = robots.split(/\r?\n/)
+  .filter((l) => l.startsWith("Disallow:"))
+  .map((l) => l.replace("Disallow:", "").trim())
+  .filter((p) => p && ruta.startsWith(p));
+ok(bloqueada.length === 0, "robots.txt no la bloquea (por PREFIJO)", bloqueada.join(" "));
+ok(sitemap.includes(ruta + "<"), "está en el sitemap", ruta);
+
+// ── Resultado ─────────────────────────────────────────────────────────────
+console.log(
+  `\n  ${fallos === 0 ? GREEN + "SIN FALLOS" + OFF : RED + fallos + " FALLO(S)" + OFF}` +
+  ` · ${avisos} aviso(s)\n` +
+  `  ${DIM}Esto es solo la parte mecánica. El criterio va en AUDITORIA-SEO.md.${OFF}\n`
+);
+process.exit(fallos ? 1 : 0);

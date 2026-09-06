@@ -6,7 +6,7 @@ No es una sugerencia de estilo: cada regla de aquí sale de un fallo real o de u
 
 ```bash
 npm run check:glosario           # el texto: longitud, enlaces, densidad, relleno
-npm run check:ficha -- <slug>    # la página servida: SEO, encabezados, esquemas
+npm run check:seo -- glosario/<slug>   # la página servida: SEO, encabezados, esquemas
 ```
 
 El segundo necesita `npm run dev` levantado, y por eso no está en el hook de `pre-push`.
@@ -41,7 +41,7 @@ Un término sin `extended` da **404**, y una guía que no esté en `GUIDES` tamp
 | `seoDescription` | La que invita a entrar. Máximo **160**. Entre 110 y 160 es lo óptimo |
 | `faq` | 5-7 preguntas. Ver el punto 4 |
 
-⚠️ `npm run check` **no vigila** `seoTitle` ni `seoDescription`: solo mira la metadata escrita en los `page.tsx`. Aquí el límite lo aplica quien escribe, y `check:ficha` lo verifica después contra la página real.
+⚠️ `npm run check` **no vigila** `seoTitle` ni `seoDescription`: solo mira la metadata escrita en los `page.tsx`. Aquí el límite lo aplica quien escribe, y `check:seo` lo verifica después contra la página real.
 
 ---
 
@@ -166,7 +166,7 @@ La banda va **debajo** de la definición corta, nunca encima: quien llega desde 
 
 ```bash
 npm run check:glosario
-npm run check:ficha -- <slug>
+npm run check:seo -- glosario/<slug>
 npm run check && npx tsc --noEmit
 ```
 
