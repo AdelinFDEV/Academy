@@ -147,6 +147,25 @@ Tres reglas al tocar esto:
 
 **Cómo comprobar que sigue bien.** Crear una entrada con `is_premium: true, published: true`, pedir su URL sin sesión y verificar: **200**, con título y extracto, **sin** el cuerpo; y que aparece en `/articulos`, la portada, el sitemap y el RSS. Borrarla después.
 
+# Portfolio Adelin: SOLO el admin escribe, y hay dos barreras
+
+Auditado el 07-09-2026 con un usuario premium real, no leyendo el código: se creó una cuenta, se le dio premium, se inició sesión de verdad y se intentó escribir por las dos puertas. Repetible con el guion de esa sesión.
+
+**Las dos carteras son de solo lectura para todo el mundo salvo el admin.** Un suscriptor paga por *ver* qué compra AdelinBTC; si pudiera añadir o editar posiciones, lo que se publica dejaría de ser la cartera de nadie.
+
+| Puerta | Qué la cierra |
+|---|---|
+| **La API** (`/api/portfolio`, `/api/portfolio/[id]`, `/api/dca`) | Toda escritura llama a `getAdminUser()` / `isAdmin`, que lee el **rol en la base de datos** a partir de la sesión. No se puede falsificar desde el cliente: lo que llega en la petición nunca decide el rol |
+| **La base de datos** | `portfolio_positions` y `dca_compras` **no tienen ninguna policy de escritura**. Insertar da `42501`; actualizar y borrar afectan a **0 filas** porque RLS ni siquiera deja ver la fila que se quiere tocar |
+
+Esa segunda barrera es la que importa de verdad: **la clave anónima va en el navegador de cualquiera**, así que un premium puede hablar con Supabase desde la consola sin pasar por la API. Comprobado también que no puede ascenderse a admin (`profiles` está blindada desde la auditoría de julio).
+
+**Al tocar estas tablas:**
+
+1. **No añadas una policy de escritura** «para que el admin pueda». El admin escribe con la clave de servicio desde la API, que es donde además se valida lo que entra.
+2. **Ocultar el botón en la interfaz no es una barrera.** `isAdmin` en el componente evita enseñar el formulario; quien quiera saltárselo no usa el formulario.
+3. Antes de dar por buena cualquier cosa aquí, **pruébalo con una sesión premium de verdad**. Leer el código no vale: el fallo de esta clase no está en el código, está en lo que la base de datos permite por debajo.
+
 # El marco legal es RUMANO — no vuelvas a escribir normativa española
 
 Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa española porque apunta a público español, pero **el titular reside y opera desde Rumanía**, así que las leyes nacionales aplicables son las rumanas:

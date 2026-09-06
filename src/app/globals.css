@@ -11269,7 +11269,12 @@ select {
    ═════════════════════════════════════════════════════════════════════════ */
 
 .disclaimer {
-  margin: 0 0 4rem;
+  /* El margen SUPERIOR faltaba, y por eso la caja se pegaba a lo que tuviera
+     encima en todas las páginas que la usan. Es un aviso legal: si va pegado
+     al contenido parece un pie de tabla más y deja de leerse como lo que es.
+     Al ser márgenes de hermanos adyacentes, colapsa con el `margin-bottom` de
+     las secciones de las fichas — allí no cambia nada. */
+  margin: 2.5rem 0 4rem;
   padding: 1.6rem 1.5rem 1.35rem;
   border: 1px solid rgba(255, 176, 87, 0.22);
   border-radius: 18px;
@@ -11739,3 +11744,44 @@ select {
   .dca-cifra-valor { font-size: 1.3rem; }
   .dca-proyeccion { flex-direction: column; }
 }
+
+/* Paginación del DCA. Con 39 compras y una más cada semana, la tabla entera
+   obligaba a un scroll largo y empujaba el descargo fuera de la vista. */
+.dca-paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+.dca-pag-flecha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 9px;
+  background: rgba(240, 244, 255, 0.03);
+  color: rgba(240, 244, 255, 0.75);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease, opacity 0.18s ease;
+}
+
+.dca-pag-flecha:hover:not(:disabled) {
+  background: rgba(240, 244, 255, 0.08);
+  border-color: rgba(240, 244, 255, 0.26);
+}
+
+.dca-pag-flecha:disabled { opacity: 0.3; cursor: default; }
+
+.dca-pag-info {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+/* El pie de la tabla necesita aire por debajo: justo ahí empieza la caja del
+   descargo, y pegados se leían como un solo bloque. */
+.dca-pie { margin-bottom: 0.5rem; }

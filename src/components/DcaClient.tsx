@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { Plus, Pencil, Trash2, TrendingUp, Target, Info } from "lucide-react";
+import { Plus, Pencil, Trash2, TrendingUp, Target, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import { calcularDCA, PRECIO_OBJETIVO, type CompraDCA } from "@/lib/dca";
 
 interface Props {
@@ -9,6 +9,19 @@ interface Props {
   precioInicial: number | null;
   isAdmin: boolean;
 }
+
+/**
+ * Compras por página.
+ *
+ * Con 39 aportaciones y subiendo cada semana, la tabla entera obligaba a un
+ * scroll larguísimo y empujaba el descargo fuera de la vista. Diez entran de
+ * una pantalla y dejan cuatro páginas, que se recorren de un vistazo.
+ *
+ * Aquí sí se recorta el array de verdad, al revés que en el diccionario: esa
+ * página necesitaba los 50 enlaces en el HTML por SEO, y `/portfolio` exige
+ * sesión y ni siquiera está en el sitemap.
+ */
+const POR_PAGINA = 10;
 
 const VACIO = { id: "", fecha: "", importe: "", precio_btc: "", notas: "" };
 
@@ -43,6 +56,7 @@ export default function DcaClient({ compras: iniciales, precioInicial, isAdmin }
   const [form, setForm] = useState(VACIO);
   const [abierto, setAbierto] = useState(false);
   const [guardando, setGuardando] = useState(false);
+  const [pagina, setPagina] = useState(1);
   const [error, setError] = useState("");
 
   // Si el precio no llegó en el servidor se reintenta en el cliente: es mejor
@@ -57,6 +71,14 @@ export default function DcaClient({ compras: iniciales, precioInicial, isAdmin }
 
   const r = useMemo(() => calcularDCA(compras, precio ?? 0), [compras, precio]);
   const hayPrecio = precio !== null && precio > 0;
+
+  // La más reciente primero: es la que se mira al entrar.
+  const ordenadas = useMemo(() => [...r.compras].reverse(), [r.compras]);
+  const totalPaginas = Math.max(1, Math.ceil(ordenadas.length / POR_PAGINA));
+  // Si se borra la última compra de la última página, `pagina` se queda fuera
+  // de rango y la tabla saldría vacía sin explicar por qué.
+  const actual = Math.min(pagina, totalPaginas);
+  const enPantalla = ordenadas.slice((actual - 1) * POR_PAGINA, actual * POR_PAGINA);
 
   async function guardar() {
     setError("");
@@ -220,7 +242,7 @@ export default function DcaClient({ compras: iniciales, precioInicial, isAdmin }
             </tr>
           </thead>
           <tbody>
-            {[...r.compras].reverse().map((c) => (
+            {enPantalla.map((c) => (
               <tr key={c.id}>
                 <td>{fechaCorta(c.fecha)}</td>
                 <td className="es-num">{usd(c.importe)}</td>
@@ -245,6 +267,33 @@ export default function DcaClient({ compras: iniciales, precioInicial, isAdmin }
           </tbody>
         </table>
       </div>
+
+      {totalPaginas > 1 && (
+        <nav className="dca-paginacion" aria-label="Páginas de compras">
+          <button
+            className="dca-pag-flecha"
+            onClick={() => setPagina((p) => Math.max(1, p - 1))}
+            disabled={actual === 1}
+            aria-label="Compras más recientes"
+          >
+            <ChevronLeft size={15} strokeWidth={2.4} aria-hidden="true" />
+          </button>
+
+          <span className="dca-pag-info">
+            Compras {(actual - 1) * POR_PAGINA + 1}–{Math.min(actual * POR_PAGINA, ordenadas.length)}
+            {" "}de {ordenadas.length}
+          </span>
+
+          <button
+            className="dca-pag-flecha"
+            onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+            disabled={actual === totalPaginas}
+            aria-label="Compras más antiguas"
+          >
+            <ChevronRight size={15} strokeWidth={2.4} aria-hidden="true" />
+          </button>
+        </nav>
+      )}
 
       <p className="dca-pie">
         <TrendingUp size={13} aria-hidden="true" />
