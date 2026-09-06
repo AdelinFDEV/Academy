@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
+import TerminoCta from "@/components/TerminoCta";
 import JsonLd from "@/components/JsonLd";
 import { createClient } from "@/lib/supabase/server";
 import { breadcrumbSchema, definedTermSchema } from "@/lib/schema";
@@ -124,6 +125,11 @@ export default async function TerminoPage({
           <h1 className="termino-title">{t.term}</h1>
           <p className="termino-lead">{t.definition}</p>
         </header>
+
+        {/* La banda va DEBAJO de la definición corta: quien llega buscando qué
+            significa una palabra tiene que ver la respuesta antes que una oferta.
+            Si lo primero es un banner, se vuelve a Google — y eso Google lo mide. */}
+        <TerminoCta termino={t.term} logueado={!!user} />
 
         <div
           className="termino-body prose-content"
