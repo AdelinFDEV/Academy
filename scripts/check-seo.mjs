@@ -75,9 +75,101 @@ const seccion = (t) => console.log(`\n${DIM}── ${t} ${"─".repeat(Math.max(
 
 const texto = (h) => h.replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/g, " ").replace(/\s+/g, " ").trim();
 
-const res = await fetch(BASE + ruta, { redirect: "manual" });
+/**
+ * Auditar un BORRADOR, iniciando sesión como admin.
+ *
+ * El sitio deja al admin ver una entrada sin publicar (`src/lib/borradores.ts`)
+ * porque publicar manda un aviso a Telegram y auditar después de anunciar no
+ * sirve de nada. Pero esa vista previa necesita una sesión, y este script pide
+ * la página a pelo — así que sobre un borrador daba 404 y no se podía auditar
+ * nada hasta publicarlo, que es justo lo que queríamos evitar.
+ *
+ * Esto abre una sesión real con un enlace mágico, usando la clave de servicio
+ * que ya está en `.env.local`. Tres límites, y los tres importan:
+ *
+ * 1. **Solo contra localhost.** Contra producción no se intenta siquiera.
+ * 2. **Solo si la página ha dado 404**, nunca en el camino normal.
+ * 3. **No concede nada nuevo.** Quien puede correr esto ya tiene la clave de
+ *    servicio delante, que da mucho más que ver un borrador.
+ *
+ * Lo que sale por pantalla lleva el aviso de que se está mirando un borrador:
+ * una auditoría no puede confundirse sobre qué página está midiendo.
+ */
+/** Mismo cargador que `check:contenido`: aquí no hay Next que lea `.env.local`. */
+function cargarEnv() {
+  try {
+    for (const linea of readFileSync(".env.local", "utf8").split(/\r?\n/)) {
+      const m = linea.match(/^([A-Z0-9_]+)=(.*)$/);
+      if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+    }
+  } catch {
+    // En CI no hay `.env.local`. Sin él simplemente no se auditan borradores.
+  }
+}
+
+async function sesionDeAdmin() {
+  cargarEnv();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key || !BASE.includes("localhost")) return null;
+
+  const { createClient } = await import("@supabase/supabase-js");
+  const sb = createClient(url, key, { auth: { persistSession: false } });
+
+  const { data: perfiles } = await sb.from("profiles").select("id").eq("role", "admin").limit(1);
+  if (!perfiles?.length) return null;
+  const { data: cuenta } = await sb.auth.admin.getUserById(perfiles[0].id);
+  if (!cuenta?.user?.email) return null;
+
+  /**
+   * No se sigue el enlace mágico por HTTP, se canjea su token.
+   *
+   * Seguirlo no funciona: `generateLink` devuelve el enlace apuntando a la
+   * «Site URL» del proyecto —producción— porque `localhost` no está en la lista
+   * de redirecciones permitidas de Supabase. La cookie acabaría puesta para
+   * adelinacademy.com, que no sirve de nada aquí.
+   *
+   * Así que se canjea el `hashed_token` con la clave anónima, y con la sesión
+   * resultante se arma a mano la cookie que espera `@supabase/ssr`:
+   * `sb-<ref>-auth-token` = `base64-` + la sesión en JSON, en base64url.
+   */
+  const { data: enlace, error } = await sb.auth.admin.generateLink({
+    type: "magiclink",
+    email: cuenta.user.email,
+  });
+  if (error || !enlace?.properties?.hashed_token) return null;
+
+  const anon = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
+    auth: { persistSession: false },
+  });
+  const { data: sesion } = await anon.auth.verifyOtp({
+    token_hash: enlace.properties.hashed_token,
+    type: "email",
+  });
+  if (!sesion?.session) return null;
+
+  const ref = new URL(url).hostname.split(".")[0];
+  const valor = "base64-" + Buffer.from(JSON.stringify(sesion.session)).toString("base64url");
+  return `sb-${ref}-auth-token=${valor}`;
+}
+
+let res = await fetch(BASE + ruta, { redirect: "manual" });
+let enBorrador = false;
+
+if (res.status === 404) {
+  const cookie = await sesionDeAdmin();
+  if (cookie) {
+    const conSesion = await fetch(BASE + ruta, { redirect: "manual", headers: { cookie } });
+    if (conSesion.status === 200) {
+      res = conSesion;
+      enBorrador = true;
+    }
+  }
+}
+
 if (res.status !== 200) {
-  console.log(`\n${RED}La página devuelve ${res.status}.${OFF} Sin sesión tiene que dar 200 o no la indexa nadie.\n`);
+  console.log(`\n${RED}La página devuelve ${res.status}.${OFF} Sin sesión tiene que dar 200 o no la indexa nadie.`);
+  console.log(`${DIM}Si es un borrador, esto debería haber entrado con una sesión de admin: comprueba que hay servidor en localhost y clave de servicio en .env.local.${OFF}\n`);
   process.exit(1);
 }
 const html = await res.text();
@@ -98,10 +190,17 @@ const finales = FINALES.map((m) => html.indexOf(m, desde)).filter((i) => i > 0);
 const cuerpo = html.slice(desde, finales.length ? Math.min(...finales) : html.length);
 
 console.log(`\n${DIM}Auditoría SEO · ${P.nombre}${OFF}\n  ${BASE}${ruta}`);
+if (enBorrador) {
+  console.log(`  ${YELLOW}BORRADOR${OFF} ${DIM}· leído con sesión de admin. Los metadatos de indexación`);
+  console.log(`           no se comprueban aquí: un borrador lleva noindex y no lleva`);
+  console.log(`           canónica a propósito. Vuelve a pasarlo tras publicar.${OFF}`);
+}
 
 // ── 1. Metadatos ──────────────────────────────────────────────────────────
 seccion("METADATOS");
-const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
+// El «[Borrador] » que antepone la vista previa no viaja a la página publicada,
+// así que no cuenta para el límite de 60: dejarlo daba un fallo falso de 64.
+const title = (html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "").replace(/^\[Borrador\]\s*/, "");
 const desc = html.match(/name="description" content="([^"]*)"/)?.[1] ?? "";
 const canon = html.match(/rel="canonical" href="([^"]*)"/)?.[1] ?? "";
 const og = html.match(/property="og:title" content="([^"]*)"/)?.[1] ?? "";
@@ -109,8 +208,21 @@ const og = html.match(/property="og:title" content="([^"]*)"/)?.[1] ?? "";
 ok(title.length > 0 && title.length <= 60, "title ≤ 60 (se corta ahí en Google)", `${title.length} · ${title}`);
 ok(!/\|\s*AdelinBTC[\s\S]*\|\s*AdelinBTC/.test(title), "sufijo de marca sin duplicar");
 ok(desc.length >= 110 && desc.length <= 160, "description entre 110 y 160", `${desc.length}`);
-ok(canon.startsWith("https://") && canon.endsWith(ruta), "canónica apunta a sí misma", canon);
-ok(!/noindex/i.test(html), "sin noindex");
+
+/**
+ * Estas tres solo tienen sentido sobre la página publicada.
+ *
+ * Un borrador lleva `noindex, nofollow` y **no** lleva canónica, y las dos
+ * cosas son correctas —ver `src/lib/borradores.ts`—. Darlas por fallo aquí
+ * enseñaría a ignorar dos fallos que sobre una página publicada son graves,
+ * que es la peor cosa que puede hacer un validador.
+ */
+if (enBorrador) {
+  aviso("canónica · noindex · description", "no se miden en un borrador");
+} else {
+  ok(canon.startsWith("https://") && canon.endsWith(ruta), "canónica apunta a sí misma", canon);
+  ok(!/noindex/i.test(html), "sin noindex");
+}
 ok(/<html[^>]*lang="es"/.test(html), "idioma declarado");
 og ? ok(true, "openGraph con título propio", `${og.length} car`) : aviso("openGraph", "sin og:title propio");
 
@@ -169,7 +281,15 @@ const plano = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const t = plano(texto(cuerpo));
 const cuenta = (k) => (k ? (t.match(new RegExp(`\\b${plano(k).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "g")) ?? []).length : 0);
 
-const impuesta = (process.argv[3] ?? "").trim();
+/**
+ * Todo lo que venga después de la ruta es la palabra clave, junto.
+ *
+ * No es `argv[3]` a secas porque **npm se come las comillas**: al escribir
+ *   npm run check:seo -- post/mi-slug "market cap"
+ * el script recibe «market» y «cap» como dos argumentos sueltos, y medía solo
+ * el primero. Con el join da igual cómo sobrevivan las comillas.
+ */
+const impuesta = process.argv.slice(3).join(" ").trim();
 const palabrasSlug = ruta.split("/").pop().split("-");
 /**
  * Todas las frases seguidas que caben en el slug, no solo los principios.
@@ -199,17 +319,40 @@ const candidatas = impuesta
 
 const entera = palabrasSlug.join(" ");
 const keyword = candidatas[0]?.frase ?? entera;
-const veces = cuenta(keyword);
+
+/**
+ * Una consulta de varias palabras NO se mide como frase literal.
+ *
+ * En español el orden cambia: el `focus_keyword` es «injective hackeo» y el
+ * texto dice «el hackeo de Injective». Buscando la frase exacta salía 0,00 % en
+ * una entrada perfectamente optimizada, y con ella tres fallos más —no está en
+ * el title, ni en el H1, ni en la description—, todos falsos. Google no exige
+ * ese orden, así que este script tampoco.
+ *
+ * Cuando la frase entera no aparece literal, se miden **sus palabras con peso,
+ * una a una**, y manda la más floja: la consulta se cubre si están todas, no si
+ * están en fila. Lo mismo para el title, el H1 y la description.
+ */
+const partes = keyword.split(" ").filter((p) => p.length > 2 && !VACIAS.has(p));
+const porPalabras = cuenta(keyword) === 0 && partes.length > 1;
+const veces = porPalabras ? Math.min(...partes.map(cuenta)) : cuenta(keyword);
 const origen = impuesta ? "impuesta a mano" : keyword === entera ? "del slug" : "del slug, ajustada a lo que el texto usa";
 const densidad = n ? (veces / n) * 100 : 0;
+
+/** ¿Están todas las palabras de la consulta en este trozo de texto? */
+const cubre = (s) => (porPalabras ? partes.every((p) => plano(s).includes(p)) : plano(s).includes(plano(keyword)));
+
 console.log(`  ${DIM}    palabra clave medida (${origen}): «${keyword}»${OFF}`);
-ok(densidad >= 0.4, "SUELO de densidad ≥ 0,4 %", `${veces} veces · ${densidad.toFixed(2)} %`);
+if (porPalabras) {
+  console.log(`  ${DIM}    la frase exacta no aparece; se mide por palabras: ${partes.map((p) => `${p} ${cuenta(p)}`).join(" · ")}${OFF}`);
+}
+ok(densidad >= 0.4, "SUELO de densidad ≥ 0,4 %", `${veces} veces · ${densidad.toFixed(2)} %${porPalabras ? " (la más floja)" : ""}`);
 ok(densidad <= 2.5, "TECHO de densidad ≤ 2,5 %", `${densidad.toFixed(2)} %`);
-ok(keyword && plano(title).includes(plano(keyword)), "keyword en el title");
-ok(keyword && plano(h1[0]?.t ?? "").includes(plano(keyword)), "keyword en el H1");
-ok(keyword && plano(desc).includes(plano(keyword)), "keyword en la description");
-const primer = plano(texto(cuerpo.match(/<p[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? ""));
-primer.includes(plano(keyword)) ? ok(true, "keyword en el primer párrafo") : aviso("keyword en el primer párrafo", "no aparece");
+ok(keyword && cubre(title), "keyword en el title");
+ok(keyword && cubre(h1[0]?.t ?? ""), "keyword en el H1");
+ok(keyword && cubre(desc), "keyword en la description");
+const primer = texto(cuerpo.match(/<p[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? "");
+cubre(primer) ? ok(true, "keyword en el primer párrafo") : aviso("keyword en el primer párrafo", "no aparece entera");
 
 // Legibilidad. Se mide párrafo a párrafo: las listas y las etiquetas de los
 // gráficos no llevan punto y al concatenarlas salen «frases» que no existen.
@@ -256,9 +399,16 @@ for (const u of urls) {
   const cuerpoOtro = h.slice(h.indexOf("<main"), h.indexOf("<footer") > 0 ? h.indexOf("<footer") : undefined);
   if (new RegExp(`href="${ruta}"`).test(cuerpoOtro)) { entrantes++; quien.push(u); }
 }
-entrantes >= 2
-  ? ok(true, "≥ 2 enlaces internos ENTRANTES", `${entrantes} · ${quien.slice(0, 3).join(" ")}`)
-  : ok(false, "≥ 2 enlaces internos ENTRANTES", `${entrantes} — es una página huérfana`);
+// En un borrador, cero entrantes es lo normal y no es un fallo todavía: nadie
+// puede enlazar a una URL que da 404. Pero se avisa, porque los enlaces hay que
+// dejarlos escritos y aplicarlos EN EL MISMO MINUTO en que se publica.
+if (enBorrador && entrantes < 2) {
+  aviso("≥ 2 enlaces internos ENTRANTES", `${entrantes} — créalos al publicar o nace huérfana`);
+} else {
+  entrantes >= 2
+    ? ok(true, "≥ 2 enlaces internos ENTRANTES", `${entrantes} · ${quien.slice(0, 3).join(" ")}`)
+    : ok(false, "≥ 2 enlaces internos ENTRANTES", `${entrantes} — es una página huérfana`);
+}
 
 // ── 5. Datos estructurados ────────────────────────────────────────────────
 seccion("DATOS ESTRUCTURADOS");
@@ -297,7 +447,11 @@ const bloqueada = robots.split(/\r?\n/)
   .map((l) => l.replace("Disallow:", "").trim())
   .filter((p) => p && ruta.startsWith(p));
 ok(bloqueada.length === 0, "robots.txt no la bloquea (por PREFIJO)", bloqueada.join(" "));
-ok(sitemap.includes(ruta + "<"), "está en el sitemap", ruta);
+// Un borrador NO tiene que estar en el sitemap — de hecho, que estuviera sería
+// el fallo. Se comprueba lo contrario.
+enBorrador
+  ? ok(!sitemap.includes(ruta + "<"), "un borrador NO está en el sitemap", "correcto")
+  : ok(sitemap.includes(ruta + "<"), "está en el sitemap", ruta);
 
 // ── Resultado ─────────────────────────────────────────────────────────────
 console.log(

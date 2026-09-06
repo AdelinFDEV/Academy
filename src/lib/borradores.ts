@@ -52,8 +52,15 @@ export async function esAdmin(
  *
  * `noindex, nofollow` y **sin canónica**: una canónica en un borrador le diría
  * a Google que esa URL es la buena versión de algo que aún no existe.
+ *
+ * **La descripción sí va**, y no es un descuido. Sin ella, Next hereda la del
+ * layout raíz —la de la portada— y la vista previa enseña una etiqueta que no
+ * es la de esta entrada. Auditando el borrador con `check:seo` eso da un fallo
+ * falso: mide 157 caracteres de una descripción que no es la suya. La vista
+ * previa tiene que parecerse a la página publicada en todo menos en indexarse.
  */
-export const metadataDeBorrador = (titulo: string) => ({
+export const metadataDeBorrador = (titulo: string, descripcion?: string) => ({
   title: `[Borrador] ${titulo}`,
+  description: descripcion,
   robots: { index: false, follow: false },
 });

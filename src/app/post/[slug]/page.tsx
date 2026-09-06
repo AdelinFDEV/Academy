@@ -49,7 +49,12 @@ export async function generateMetadata(
         .select(CAMPOS_META)
         .eq("slug", slug)
         .single();
-      if (borrador) return metadataDeBorrador(borrador.seo_title || borrador.title);
+      if (borrador) {
+        return metadataDeBorrador(
+          borrador.seo_title || borrador.title,
+          borrador.meta_description || borrador.excerpt || undefined,
+        );
+      }
     }
   }
 
