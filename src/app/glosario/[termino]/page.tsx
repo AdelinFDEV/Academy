@@ -40,8 +40,12 @@ export async function generateMetadata(
   // El título propio tiene un techo de 48 caracteres (ver AGENTS.md): el layout
   // raíz añade " | AdelinBTC". "Qué es X" cabe de sobra en todos los términos.
   return {
-    title: `Qué es ${t.term}`,
-    description: t.definition.slice(0, 160),
+    // `seoTitle` gana cuando existe: hay términos que la gente busca con
+    // artículo («que es un exchange») y otros que no, así que la plantilla se
+    // deja como valor por defecto y se sobrescribe solo donde los datos de
+    // Search Console dicen que compensa.
+    title: t.seoTitle ?? `Qué es ${t.term}`,
+    description: (t.seoDescription ?? t.definition).slice(0, 160),
     alternates: { canonical: `/glosario/${t.slug}` },
     openGraph: {
       type: "article",
