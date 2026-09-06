@@ -4,7 +4,13 @@ Lo que está por hacer y no cabe en `SEO-PLAN.md`, que va solo de posicionamient
 
 Vive en el repo **a propósito**, igual que el plan de SEO: la memoria local de Claude (`~/.claude/`) no viaja entre ordenadores, así que lo que solo esté ahí se pierde en cuanto se cambia de máquina.
 
-Al cerrar una tarea: marcar la casilla, anotar el commit, y llevar a `AGENTS.md` lo que cambie el día a día.
+**Cómo se mantiene, y es lo que decide si sirve de algo:**
+
+- **Al cerrar una tarea se BORRA de aquí**, no se marca. El historial ya lo guarda git (`git log -- TAREAS.md`); este archivo responde a una sola pregunta, «¿qué toca ahora?», y una tarea cerrada compite por la atención con las que siguen abiertas.
+- Al borrarla, **su resultado tiene que quedar en algún sitio**: el commit, y si cambia el día a día, la línea que toque en `AGENTS.md` o en el documento de su área.
+- **Nunca escribas aquí una cifra que envejece.** Escribe el comando que la calcula. Es la misma lección que costó una limpieza entera en `AGENTS.md`, donde llegó a haber tres recuentos distintos del diccionario en tres párrafos.
+
+Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si está desactualizado no es neutro —manda a trabajar en cosas ya hechas—, que es exactamente lo que pasó el 07-09-2026 con la ficha de `exchange`.
 
 ---
 
@@ -20,7 +26,7 @@ Al cerrar una tarea: marcar la casilla, anotar el commit, y llevar a `AGENTS.md`
 
 Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin arbitrando.
 
-**Por qué interesa, más allá de la comunidad:** es el único tipo de contenido que **crece sin que nadie lo escriba**. Cada pregunta bien titulada es una URL que responde a una búsqueda real, y Google tiene un tipo de dato estructurado propio para esto (`QAPage`). Es la vía más barata de multiplicar las URLs indexables del sitio, hoy 90.
+**Por qué interesa, más allá de la comunidad:** es el único tipo de contenido que **crece sin que nadie lo escriba**. Cada pregunta bien titulada es una URL que responde a una búsqueda real, y Google tiene un tipo de dato estructurado propio para esto (`QAPage`). Es la vía más barata de multiplicar las URLs indexables del sitio (el recuento actual: `curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"`).
 
 **Con qué se conecta:**
 - Los comentarios ya resuelven media infraestructura: aprobación por el admin, el trigger anti-spam de «un pendiente por persona» (`scripts/comments-one-pending.sql`) y las políticas de RLS. Conviene leerlo antes de empezar de cero.
@@ -31,7 +37,7 @@ Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin
 - ¿Responde solo el admin o también otros usuarios?
 - ¿Las preguntas pasan por aprobación antes de publicarse, como los comentarios?
 
-⚠️ Si el foro es público e indexable, **modera antes de publicar**: una pregunta con spam o con un enlace a una estafa, indexada bajo tu dominio, hace más daño que las 90 URLs que ganas.
+⚠️ Si el foro es público e indexable, **modera antes de publicar**: una pregunta con spam o con un enlace a una estafa, indexada bajo tu dominio, hace más daño que las URLs que ganas.
 
 ---
 
@@ -70,9 +76,15 @@ Que cada usuario pueda subir su avatar.
 
 ### 4. El diccionario en profundidad — plantarle cara a Binance
 
-Hoy son **50 términos de ~205 palabras de media** (el más corto, `bull-market`, 179; el más largo, `inflacion`, 276). Las páginas de Binance Academy o Bit2Me para esos mismos términos rondan las **1.000-2.500**. Esa distancia es la razón de estar en posición 33 y no en la 5.
+El recuento y qué fichas están ya en profundidad **no se escriben aquí, se preguntan**:
 
-**El objetivo final es que los 50 tengan una ficha capaz de competir de tú a tú.** Pero no de golpe, y por un motivo que no es la pereza: ampliar cincuenta a la vez lleva a rellenar, y **una ficha larga y hueca posiciona PEOR que la corta de hoy**.
+```bash
+npm run check:glosario
+```
+
+La mayoría siguen siendo definiciones cortas de ~200 palabras. Las páginas de Binance Academy o Bit2Me para esos mismos términos rondan las **1.000-2.500**. Esa distancia es la razón de estar en posición 33 y no en la 5.
+
+**El objetivo final es que todas tengan una ficha capaz de competir de tú a tú.** Pero no de golpe, y por un motivo que no es la pereza: ampliar cincuenta a la vez lleva a rellenar, y **una ficha larga y hueca posiciona PEOR que la corta de hoy**.
 
 #### Por dónde empezar: lo que Google ya te está mandando
 
@@ -80,24 +92,23 @@ Datos reales de Search Console, del 29 de agosto al 3 de septiembre de 2026 (46 
 
 | Término | Consultas que ya lo buscan | Impresiones | Estado |
 |---|---|---|---|
-| `exchange` | «que es un exchange», «que es exchange», «que es exchanges» | 4 + la ficha ya recibe 4 | **Primero** |
-| `hot-wallet` | «hot wallet» | 2 | **Segundo** |
-| `roi` | «qué es el roi» | 1 | **Tercero** |
+| `hot-wallet` | «hot wallet» | 2 | **Primero** |
+| `roi` | «qué es el roi» | 1 | **Segundo** |
 
-Después de esos tres, la siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`, `staking`— son los siguientes candidatos.
+`exchange` era la primera de esta lista y **ya está hecha** (1.445 palabras, en verde). Después de las dos que quedan, la siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`, `staking`— son los siguientes candidatos.
 
 **Regla de selección, y es la importante:** a partir de la cuarta ficha, **el orden lo decide Search Console, no la intuición**. Rendimiento → Consultas, y se amplían las que ya tengan impresiones. Ampliar un término que nadie busca es trabajo perdido por bueno que quede.
 
 #### Las reglas para que Google no lo lea como relleno
 
-Están **verificadas por `npm run check:glosario`**, que se niega a dar por buena una ficha que no las cumpla. Se aplican a partir de 450 palabras, así que las 50 cortas de hoy no dan error: no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien.
+Están **verificadas por `npm run check:glosario`**, que se niega a dar por buena una ficha que no las cumpla. Se aplican a partir de 450 palabras, así que las cortas de hoy no dan error: no se exige reescribirlas todas, solo que la que se amplíe se amplíe bien.
 
 | Regla | Mínimo | Por qué |
 |---|---|---|
 | **Longitud** | 800-2.000 palabras | Por debajo no compite; por encima casi siempre sobra texto |
 | **Estructura** | ≥ 3 `<h2>` | Un muro de párrafos no lo lee nadie, y Google no sabe de qué va cada parte |
 | **Números** | al menos un dato o ejemplo con cifras | Cualquiera define «apalancamiento»; pocos ponen la cuenta. Es lo que no tiene el texto genérico |
-| **Enlaces internos** | ≥ 3 | Es lo que convierte 50 fichas sueltas en un cuerpo |
+| **Enlaces internos** | ≥ 3 | Es lo que convierte fichas sueltas en un cuerpo |
 | **Apoyo visual** | 1 `.prose-chart`, tabla o `.prose-callout` | La misma exigencia que ya tienen las entradas |
 | **Sin repetir la definición corta** | literal prohibida | La página ya muestra las dos: repetirla es duplicado interno |
 | **Densidad del término** | < 2,5 % | Repetirlo en cada frase es la señal de relleno más vieja, y hoy penaliza |

@@ -19,10 +19,11 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | La **auditoría SEO** de lo que acabas de montar | [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) · ver el punto 2 |
 | Tocar el **bot de Telegram** | [`BOT.md`](./BOT.md) |
+| Tocar el **limitador por IP**, el middleware (`src/proxy.ts`) o **añadir un webhook** | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
 | Tocar **muro de pago, portfolios, legal, analítica, sitemap, robots, canónicas, JSON-LD o el catálogo de herramientas** | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | Escribir **código**: CSS, tipos, hooks, guardarraíles | [`CODIGO.md`](./CODIGO.md) |
 | Un **anuncio de Telegram con copy propio** | [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md) |
-| Saber **qué toca ahora** | [`TAREAS.md`](./TAREAS.md) |
+| Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 
 Las tres primeras filas son **la fuente de verdad** de su tipo de contenido: lo que diga el panel manda, y este archivo no las repite a propósito — repetirlas es cómo se desincronizan.
 
@@ -59,7 +60,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 
 | Regla | Detalle |
 |---|---|
-| **Nunca publiques sin aprobación explícita.** `published = true` **manda un mensaje al grupo de Telegram del admin**. Sin su «sí», se inserta con `published = false` | [`BOT.md`](./BOT.md) |
+| **Nunca publiques sin aprobación explícita.** `published = true` **manda un mensaje al grupo de Telegram del admin**. Sin su «sí», se inserta con `published = false` — y cuando lo dé, **publica él desde el interruptor de `/admin`**: por SQL la fila cambia pero el aviso NO sale | [`BOT.md`](./BOT.md) |
 | **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda entrada y toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **Comprueba el destino antes de enlazarlo.** Un término sin `extended` da **404** y una guía que no esté en `GUIDES` no existe | paneles de `/admin` |
@@ -80,6 +81,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | **Nunca metas en el sitemap una ruta que redirige o exige sesión.** La protección vive en `src/proxy.ts`, así que mirar el `page.tsx` no basta | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **El catálogo de herramientas es fuente única** (`src/lib/herramientas.ts`). No hagas una segunda lista | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **Un solo descargo de responsabilidad**: `DisclaimerRiesgo.tsx`. Nunca escribas un aviso legal a mano en una página | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **Toda ruta que llame un sistema externo se da de alta en `EXENTAS`** (`src/lib/rate-limit.ts`). Si no, cae en el tramo normal y algún día devuelve 429 a Stripe, a Telegram o a Google: se pierde el pago o el mensaje, y no lo ve nadie | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
 | **No prometas lo que el producto no hace.** Abre su código y compruébalo antes de escribirlo | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 
 ### Código
@@ -92,6 +94,13 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | **Cada guía nueva, su propio `[slug].css`** — y su alta en `GUIDES`, o es invisible para Google | [`CODIGO.md`](./CODIGO.md) |
 | **Una entrada NUNCA es un componente de código**: es una fila en `posts` | [`CODIGO.md`](./CODIGO.md) |
 | Antes de usar una API de Next que no reconozcas, verifícala en https://nextjs.org/docs — **no en `node_modules`** | — |
+
+### Proceso
+
+| Regla | Detalle |
+|---|---|
+| **Al cerrar una tarea, bórrala de `TAREAS.md` en el MISMO commit.** No se marca la casilla: se borra, porque el historial ya lo guarda `git log -- TAREAS.md` y una tarea cerrada compite por la atención con las abiertas. Dejarlo «para luego» es no hacerlo | [`TAREAS.md`](./TAREAS.md) |
+| **`TAREAS.md` es el estado real del proyecto, no un archivo de solo lectura.** Si está desactualizado manda a trabajar en cosas ya hechas — pasó el 07-09-2026 con la ficha de `exchange`, ya escrita y aún listada como «Primero» | [`TAREAS.md`](./TAREAS.md) |
 
 ---
 

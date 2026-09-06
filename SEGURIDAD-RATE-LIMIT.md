@@ -42,6 +42,24 @@ Cubre **toda la web**, no solo `/api`. Los tramos salen de lo que cuesta cada ru
 | `paginas` | 300 / 60 s | navegación real | Una IP puede ser una oficina entera |
 | `prefetch` | 900 / 60 s | precargas de Next (`Next-Router-Prefetch`) | Van aparte o rompen la web (ver abajo) |
 
+### En desarrollo el limitador está apagado
+
+`src/proxy.ts` solo llama a `tramoDe()` cuando `NODE_ENV === "production"`. No es
+comodidad: **en localhost no existe `x-forwarded-for`**, así que `ipDe()` devuelve
+`"desconocida"` para todo el tráfico y el navegador, cada pestaña, cada recarga y
+cada hot reload comparten **un mismo cubo**.
+
+Con el tramo `externo` en 40/60 s, eso significaba que unas veinte recargas de la
+portada dejaban `/api/radar` en 429, y los dos widgets del mercado salían «Sin
+datos» a la vez —el `fetch` del cliente no distingue un 429 de un fallo de
+CoinGecko—. En producción no pasaba nunca, porque allí cada visitante trae su IP
+de verdad. Se perdió una sesión entera buscando el fallo en el sitio equivocado.
+
+Limitar tu propia máquina no protege ninguna cuota ajena ni ninguna factura.
+**Contrapartida**: el limitador no se puede probar con `npm run dev`. Para
+comprobarlo hay que levantar `npm run build && npm start`, o mirarlo en
+producción.
+
 ### Rutas exentas — no añadir ni quitar a la ligera
 
 | Ruta | Por qué nunca se limita |

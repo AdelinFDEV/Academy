@@ -73,6 +73,12 @@ El bot lee `profiles` para saber si quien escribe es free, premium o admin, y `m
 
 > 🔴 **Por eso `published = true` no es solo un flag de visibilidad: manda un mensaje a la comunidad del admin.** Si no ha aprobado, se inserta con `published = false`.
 
+> 🔴 **Y al revés: `published = true` escrito a mano en Supabase NO anuncia nada.** El aviso lo dispara la ruta `PATCH /api/admin/posts/[id]`, no la fila. Cambiar la columna por SQL publica la entrada en la web y deja a la comunidad sin enterarse, sin error ni registro.
+>
+> **Publica siempre desde el interruptor Borrador → Publicado de la tabla de `/admin`.** Pasó el 07-09-2026 con `injective-hackeo-2026`: se publicó por SQL, el aviso no salió, y hubo que esperar al barrido del cron de las 04:00. El bot estaba perfecto —`telegram-doctor` en verde de punta a punta—, que es lo que hace que se pierda una hora buscando donde no es.
+>
+> Si por lo que sea hay que publicar fuera del panel, el aviso se dispara después con el botón de anunciar (`POST /api/admin/announce`), y se comprueba en `content_announcements`.
+
 Para un anuncio con copy propio en vez de la plantilla fija, el procedimiento está en [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md).
 
 ### 4 · Tres crons de Vercel

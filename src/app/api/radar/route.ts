@@ -6,25 +6,52 @@ import { NextResponse } from "next/server";
 //   · alternative.me → Índice de Miedo y Codicia
 // Se cachea 5 min; suficientemente fresco para un resumen diario y muy por
 // debajo de los límites gratuitos.
+//
+// Las tres fuentes son INDEPENDIENTES y así se piden: que se caiga una no puede
+// llevarse por delante a las otras dos. Ver `getJson`.
 
 export const revalidate = 300;
 
+/**
+ * Pide un JSON y devuelve `null` si la fuente falla, en vez de lanzar.
+ *
+ * Esto era un fallo real: las tres fuentes iban en un `Promise.all` donde solo
+ * la de Miedo y Codicia llevaba `.catch()`. Como `Promise.all` rechaza en
+ * cuanto rechaza uno, un hipo de CoinGecko —una API gratuita, sin clave y con
+ * límite por IP— tiraba la respuesta entera a 502 y apagaba TAMBIÉN la tarjeta
+ * de sentimiento, que viene de otro proveedor y estaba perfectamente. El
+ * visitante veía «Sin datos» en las dos.
+ *
+ * Ahora cada fuente cae sola y lo que sí ha llegado se pinta. Las tarjetas ya
+ * sabían manejar un `null` suelto (`RadarWidgets.tsx`), así que no hay nada que
+ * cambiar del otro lado.
+ */
 async function getJson(url: string) {
-  const r = await fetch(url, { next: { revalidate: 300 } });
-  if (!r.ok) throw new Error(`${url} → ${r.status}`);
-  return r.json();
+  try {
+    const r = await fetch(url, { next: { revalidate: 300 } });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch {
+    return null;
+  }
 }
 
 export async function GET() {
-  try {
-    const [markets, global, fng] = await Promise.all([
-      getJson(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=24h"
-      ),
-      getJson("https://api.coingecko.com/api/v3/global"),
-      getJson("https://api.alternative.me/fng/?limit=1").catch(() => null),
-    ]);
+  const [markets, global, fng] = await Promise.all([
+    getJson(
+      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=24h"
+    ),
+    getJson("https://api.coingecko.com/api/v3/global"),
+    getJson("https://api.alternative.me/fng/?limit=1"),
+  ]);
 
+  // Si se han caído las TRES no hay nada que enseñar, y un 200 con todo a
+  // `null` sería mentir: se devuelve 502 para que no se cachee como bueno.
+  if (!markets && !global && !fng) {
+    return NextResponse.json({ error: "fetch_failed" }, { status: 502 });
+  }
+
+  try {
     const rows = Array.isArray(markets) ? markets : [];
 
     const btcRow = rows.find((c) => c.id === "bitcoin");

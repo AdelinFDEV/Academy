@@ -22,7 +22,18 @@ export async function proxy(request: NextRequest) {
   // Límite por IP para TODA la web —páginas incluidas—, con un tramo distinto
   // según lo que cueste cada ruta. Va lo PRIMERO de todo, antes de crear el
   // cliente de Supabase: a quien se pasa del cupo no le montamos una sesión.
-  const tramo = tramoDe(pathname, esPrefetchDe(request.headers));
+  // En desarrollo no se limita nada. Aquí NO hay `x-forwarded-for`, así que
+  // `ipDe()` devuelve "desconocida" para TODO el tráfico: el navegador, cada
+  // pestaña, cada recarga y cada hot reload comparten un mismo cubo. Con el
+  // tramo `externo` en 40/60s, veinte recargas de la portada dejaban
+  // `/api/radar` en 429 y el radar salía «Sin datos» en local mientras en
+  // producción iba perfecto —allí cada visitante trae su IP de verdad—.
+  // Limitar tu propia máquina no protege ninguna cuota ni ninguna factura:
+  // solo hace perder una tarde buscando un fallo que no existe.
+  const tramo =
+    process.env.NODE_ENV === "production"
+      ? tramoDe(pathname, esPrefetchDe(request.headers))
+      : null;
   if (tramo) {
     const { limitado, reintentarEn } = registrar(ipDe(request.headers), tramo);
 
