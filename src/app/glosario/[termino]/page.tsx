@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import TerminoCta from "@/components/TerminoCta";
+import TerminoVideo from "@/components/TerminoVideo";
 import JsonLd from "@/components/JsonLd";
 import { createClient } from "@/lib/supabase/server";
 import { breadcrumbSchema, definedTermSchema } from "@/lib/schema";
@@ -135,6 +136,12 @@ export default async function TerminoPage({
           className="termino-body prose-content"
           dangerouslySetInnerHTML={{ __html: t.extended }}
         />
+
+        {/* El vídeo va AQUÍ, al final. Quien ha llegado hasta el final de la
+            ficha ya ha decidido que el sitio le sirve, y ese es el momento de
+            pedirle otro paso — no el primer segundo. Y solo, tiene el ancho
+            entero: arriba salía en 92 px y un vídeo pequeño no invita a nadie. */}
+        <TerminoVideo />
 
         {relacionados.length > 0 && (
           <section className="termino-relacionados">
