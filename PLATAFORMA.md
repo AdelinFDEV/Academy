@@ -46,6 +46,26 @@ Tres reglas al tocar esto:
 
 **Cómo comprobar que sigue bien.** Crear una entrada con `is_premium: true, published: true`, pedir su URL sin sesión y verificar: **200**, con título y extracto, **sin** el cuerpo; y que aparece en `/articulos`, la portada, el sitemap y el RSS. Borrarla después.
 
+## La vista previa de un borrador
+
+Añadida el 07-09-2026. Una entrada con `published = false` daba **404 para todo el mundo, admin incluido**, así que no había forma de ver cómo quedaba antes de publicarla. Y publicar para mirarla no es una opción: `published = true` **manda un aviso al grupo de Telegram**.
+
+**Lo que NO se tocó: `.eq("published", true)` sigue en su sitio, intacto, en todas las consultas.** La vista previa solo añade un **segundo intento**, cuando la primera consulta no devuelve nada **y** quien mira es admin. Dos ventajas sobre quitar el filtro y decidir después:
+
+1. **El camino normal no cambia ni cuesta una consulta.** La segunda solo ocurre sobre lo que iba a ser un 404 de todas formas.
+2. **Si esto se rompe, se rompe hacia el lado seguro.** Un fallo aquí devuelve 404 — lo que pasaba antes. Quitando el filtro, un fallo enseñaría borradores a cualquiera.
+
+El rol se lee de la **base de datos** a partir de la sesión, nunca de la petición. La lógica y su porqué viven en `src/lib/borradores.ts`.
+
+**Un borrador sigue sin aparecer en ningún sitio**: el sitemap, el RSS, `/articulos`, la portada y las categorías mantienen su filtro y no se tocaron. Se ve escribiendo su URL, y solo siendo admin. Además la página sale con `noindex, nofollow` y **sin canónica** — una canónica en un borrador le diría a Google que esa URL es la buena versión de algo que todavía no existe.
+
+**Cómo comprobar que sigue bien**, sin sesión y con un borrador cualquiera:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/post/SLUG   # tiene que dar 404
+curl -s https://adelinacademy.com/sitemap.xml | grep -c "SLUG"                 # tiene que dar 0
+```
+
 ---
 
 # Portfolio Adelin: SOLO el admin escribe, y hay dos barreras

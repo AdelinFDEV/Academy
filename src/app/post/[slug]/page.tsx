@@ -16,6 +16,7 @@ import CommentForm from "@/components/CommentForm";
 import JsonLd from "@/components/JsonLd";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import type { PostCategoryRef, CommentProfileRef } from "@/lib/types";
+import { esAdmin, metadataDeBorrador } from "@/lib/borradores";
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -27,12 +28,30 @@ export async function generateMetadata(
   // lector la etiqueta de la pagina saldria vacia y Google veria un 404.
   const lector = createAdminClientOpcional() ?? supabase;
 
+  const CAMPOS_META =
+    "title, excerpt, cover_image, seo_title, meta_description, focus_keyword, created_at, updated_at";
+
   const { data: post } = await lector
     .from("posts")
-    .select("title, excerpt, cover_image, seo_title, meta_description, focus_keyword, created_at, updated_at")
+    .select(CAMPOS_META)
     .eq("slug", slug)
     .eq("published", true)
     .single();
+
+  // Si no está publicada, puede ser un borrador que el admin está revisando.
+  // Ver `src/lib/borradores.ts`: el filtro de arriba no se toca, esto solo
+  // añade un segundo intento sobre lo que iba a ser un 404 de todas formas.
+  if (!post) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (await esAdmin(supabase, user?.id)) {
+      const { data: borrador } = await lector
+        .from("posts")
+        .select(CAMPOS_META)
+        .eq("slug", slug)
+        .single();
+      if (borrador) return metadataDeBorrador(borrador.seo_title || borrador.title);
+    }
+  }
 
   // Sin entrada no hay canónica que declarar: la ruta acabará en notFound().
   if (!post) return { title: "Artículo no encontrado" };
@@ -118,7 +137,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   // hay acceso — antes de que nada llegue al navegador.
   const lector = createAdminClientOpcional() ?? supabase;
 
-  const [{ data: { user } }, { data: post }] = await Promise.all([
+  const [{ data: { user } }, { data: publicada }] = await Promise.all([
     supabase.auth.getUser(),
     lector
       .from("posts")
@@ -127,6 +146,23 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       .eq("published", true)
       .single(),
   ]);
+
+  // Si no está publicada, el admin puede estar revisando el borrador antes de
+  // publicarlo — publicar manda un aviso a Telegram, así que no vale «publico
+  // y miro». El porqué y las garantías, en `src/lib/borradores.ts`.
+  let post = publicada;
+  let esBorrador = false;
+  if (!post && (await esAdmin(supabase, user?.id))) {
+    const { data: borrador } = await lector
+      .from("posts")
+      .select("*, categories(name, slug)")
+      .eq("slug", slug)
+      .single();
+    if (borrador) {
+      post = borrador;
+      esBorrador = true;
+    }
+  }
 
   if (!post) notFound();
 
@@ -297,6 +333,16 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           <span className="post-breadcrumb-sep">›</span>
           <span className="post-breadcrumb-current">{post.title}</span>
         </nav>
+
+        {/* Solo lo ve el admin, y solo mientras la entrada siga sin publicar.
+            Va arriba del todo y bien visible a propósito: lo peligroso de una
+            vista previa es olvidar que lo es y darla por publicada. */}
+        {esBorrador && (
+          <p className="post-borrador" role="status">
+            <strong>Borrador.</strong> Solo tú ves esta página, y lleva <code>noindex</code>.
+            No está en el sitemap, ni en el RSS, ni en ningún listado.
+          </p>
+        )}
 
         {/* Header del post */}
         <div className="post-header">
