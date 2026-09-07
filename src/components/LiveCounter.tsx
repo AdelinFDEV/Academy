@@ -3,6 +3,23 @@
 import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 
+/**
+ * El total de alumnos, pedido UNA vez por carga.
+ *
+ * En la portada hay dos contadores montados a la vez —el de la barra y el que
+ * sale sobre el buscador en movil—, y cada uno de ellos llamaba a la API por
+ * su cuenta. Compartiendo la promesa, sigue siendo una peticion.
+ */
+let alumnosPendientes: Promise<number | null> | null = null;
+
+function contarAlumnos(): Promise<number | null> {
+  alumnosPendientes ??= fetch("/api/user-count")
+    .then((r) => r.json())
+    .then((data: { count?: unknown }) => (typeof data.count === "number" ? data.count : null))
+    .catch(() => null);
+  return alumnosPendientes;
+}
+
 function randomOnline() {
   return Math.floor(Math.random() * (98 - 21 + 1)) + 21;
 }
@@ -18,12 +35,9 @@ export default function LiveCounter() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/user-count")
-      .then((r) => r.json())
-      .then((data) => {
-        if (typeof data.count === "number") setUsers(data.count);
-      })
-      .catch(() => {});
+    let vivo = true;
+    contarAlumnos().then((n) => { if (vivo && n !== null) setUsers(n); });
+    return () => { vivo = false; };
   }, []);
 
   return (

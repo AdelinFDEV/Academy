@@ -2,8 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, MessageSquare, Send, Check, ArrowRight, Bookmark } from "lucide-react";
+import { Heart, MessageSquare, Send, Check, ArrowRight, Bookmark, Clock } from "lucide-react";
 import type { ReactNode } from "react";
+
+/** Fecha completa para el `title` de la marca de tiempo. Se formatea desde el
+ *  Date original: releerla desde su propio texto la desplazaria de zona. */
+function fechaLarga(iso: string): string {
+  return new Date(iso).toLocaleDateString("es-ES", {
+    day: "numeric", month: "long", year: "numeric",
+  });
+}
 
 type Post = {
   id: string;
@@ -18,6 +26,9 @@ type Post = {
   categories: { name: string; slug: string } | null;
   likes: number;
   saves: number;
+  /** Minutos de lectura estimados en el servidor. Null si la entrada no
+   *  tiene cuerpo todavia. */
+  minutos?: number | null;
   comments: number;
   initialLiked: boolean;
   initialSaved: boolean;
@@ -134,6 +145,14 @@ function ActionBar({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
       <button className="feed-action-btn share-btn" onClick={handleShare} title="Compartir">
         {shared ? <Check size={18} aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}
       </button>
+
+      {/* El titular tambien enlaza a la entrada, pero un enlace de texto no
+          pide que lo pulses. Este si, y ademas llena el hueco que dejaban los
+          contadores a la izquierda. */}
+      <Link href={`/post/${post.slug}`} className="feed-post-cta">
+        {post.is_premium ? "Desbloquear" : "Leer artículo"}
+        <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+      </Link>
     </div>
   );
 }
@@ -167,11 +186,24 @@ function FeedPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean }) {
         )}
 
         <div className="feed-post-meta">
-          <span>AdelinBTC</span>
+          <span className="feed-post-autor">AdelinBTC</span>
           <span className="feed-meta-sep">·</span>
-          <span>{timeAgo(post.created_at)}</span>
+          {/* El «hace 21h» se lee de un vistazo, pero no dice de cuando es.
+              La fecha exacta viaja en el `datetime` y sale al pasar el raton. */}
+          <time dateTime={post.created_at} title={fechaLarga(post.created_at)}>
+            {timeAgo(post.created_at)}
+          </time>
+          {post.minutos && (
+            <>
+              <span className="feed-meta-sep">·</span>
+              <span className="feed-post-lectura">
+                <Clock size={13} strokeWidth={2.2} aria-hidden="true" />
+                {post.minutos} min de lectura
+              </span>
+            </>
+          )}
         </div>
-        
+
         <ActionBar post={post} isLoggedIn={isLoggedIn} />
       </div>
 
@@ -225,9 +257,22 @@ export function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean
           <p className="hero-post-excerpt">{post.excerpt}</p>
         )}
         <div className="feed-post-meta">
-          <span>AdelinBTC</span>
+          <span className="feed-post-autor">AdelinBTC</span>
           <span className="feed-meta-sep">·</span>
-          <span>{timeAgo(post.created_at)}</span>
+          {/* El «hace 21h» se lee de un vistazo, pero no dice de cuando es.
+              La fecha exacta viaja en el `datetime` y sale al pasar el raton. */}
+          <time dateTime={post.created_at} title={fechaLarga(post.created_at)}>
+            {timeAgo(post.created_at)}
+          </time>
+          {post.minutos && (
+            <>
+              <span className="feed-meta-sep">·</span>
+              <span className="feed-post-lectura">
+                <Clock size={13} strokeWidth={2.2} aria-hidden="true" />
+                {post.minutos} min de lectura
+              </span>
+            </>
+          )}
         </div>
         <ActionBar post={post} isLoggedIn={isLoggedIn} />
       </div>
@@ -235,15 +280,18 @@ export function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean
   );
 }
 
-export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero = true }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode; showHero?: boolean }) {
+export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero = true, totalPosts }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode; showHero?: boolean; totalPosts?: number }) {
   // Find the first featured post to show as Hero
   const mainPost = posts.find(p => p.is_featured);
 
   // Remove the mainPost from the regular list to avoid duplication
   const regularPosts = mainPost ? posts.filter(p => p.id !== mainPost.id) : posts;
 
-  // Home shows up to 5 on desktop, 2 on mobile (3rd onward hidden via CSS)
-  const MAX_VISIBLE = 5;
+  // La portada enseña tres entradas y punto: la destacada y la guía ya ocupan
+  // la fila de arriba, y a partir de la tercera el visitante deja de leer y
+  // empieza a hacer scroll. El resto está a un clic en «Ver todas».
+  // Antes eran 5 en escritorio y 2 en móvil, ocultando las demás con CSS.
+  const MAX_VISIBLE = 3;
   const visible = regularPosts.slice(0, MAX_VISIBLE);
 
   return (
@@ -260,18 +308,30 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero =
             <p>No hay artículos en esta sección todavía.</p>
           </div>
         ) : (
-          visible.map((post, i) => (
-            <div key={post.id} className={i >= 2 ? "feed-desktop-only" : undefined}>
-              <FeedPost post={post} isLoggedIn={isLoggedIn} />
-            </div>
+          visible.map((post) => (
+            <FeedPost key={post.id} post={post} isLoggedIn={isLoggedIn} />
           ))
         )}
       </div>
 
+      {/* El paso al archivo. Era un boton gris centrado que decia «Ver todas
+          las entradas»: cerraba el feed en vez de invitar a seguir. Ahora dice
+          cuantas entradas hay esperando, que es el argumento de verdad. */}
       {regularPosts.length > 0 && (
         <Link href="/articulos" className="feed-seeall">
-          Ver todas las entradas
-          <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+          <span className="feed-seeall-texto">
+            <span className="feed-seeall-titulo">
+              {totalPosts && totalPosts > 3
+                ? `Hay ${totalPosts - 3} artículos más`
+                : "Sigue leyendo"}
+            </span>
+            <span className="feed-seeall-sub">
+              Actualizaciones de red, movimientos de mercado y fiscalidad cripto en España
+            </span>
+          </span>
+          <span className="feed-seeall-flecha" aria-hidden="true">
+            <ArrowRight size={18} strokeWidth={2.5} />
+          </span>
         </Link>
       )}
 

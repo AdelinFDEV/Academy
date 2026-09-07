@@ -2,19 +2,17 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClientOpcional } from "@/lib/supabase/admin";
-import { destinoPorRuta } from "@/lib/herramientas";
-import { ArrowRight, BookA, Radio, Route, ShieldCheck, Star, Tag, MessageCircle } from "lucide-react";
-import Link from "next/link";
+import { ArrowRight, ShieldCheck, Star, MessageCircle } from "lucide-react";
 import Footer from "@/components/Footer";
 import TelegramBanner from "@/components/TelegramBanner";
 import { TelegramIcon } from "@/components/SocialLinks";
 import { INSTAGRAM_URL, TELEGRAM_CANAL_FREE_URL } from "@/lib/contacto";
 import SiteNav from "@/components/SiteNav";
+import LiveCounter from "@/components/LiveCounter";
 import GuideSearch from "@/components/GuideSearch";
 import HomeFeed, { HeroPost } from "@/components/HomeFeed";
 import FeaturedGuideCard from "@/components/FeaturedGuideCard";
 import PremiumPitch from "@/components/PremiumPitch";
-import SidebarTools from "@/components/SidebarTools";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
 import HeroSpotlight from "@/components/HeroSpotlight";
@@ -24,7 +22,19 @@ import { GUIDES } from "@/lib/guides";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import "./herramientas/radar/radar.css";
 import "./home.css";
-import type { PostCategoryRef } from "@/lib/types";
+
+/**
+ * Minutos de lectura a ojo: se quitan las etiquetas, se cuentan las palabras y
+ * se dividen entre 200, que es el ritmo de lectura en pantalla que usa todo el
+ * mundo. Nunca devuelve 0: una entrada de tres frases sigue siendo "1 min".
+ */
+function minutosDeLectura(html: string | null): number | null {
+  if (!html) return null;
+  const texto = html.replace(/<[^>]*>/g, " ").replace(/&[a-z]+;|&#\d+;/gi, " ");
+  const palabras = texto.split(/\s+/).filter(Boolean).length;
+  if (palabras === 0) return null;
+  return Math.max(1, Math.round(palabras / 200));
+}
 
 /**
  * La portada hereda del layout raíz el título, la descripción y el OpenGraph;
@@ -65,16 +75,12 @@ export default async function HomePage() {
       .select("id, title, slug, excerpt, cover_image, youtube_url, is_premium, is_featured, created_at, base_likes, base_saves, categories(name, slug)")
       .eq("published", true)
       .order("created_at", { ascending: false }),
-    supabase
-      .from("categories")
-      .select("name, slug")
-      .order("name"),
   ]);
 
   const { data: { user } } = await supabase.auth.getUser();
 
   // Get user profile for nav and premium check
-  const [[{ data: posts }, { data: categories }], profileRes] = await Promise.all([
+  const [[{ data: posts }], profileRes] = await Promise.all([
     publicDataPromise,
     user
       ? supabase.from("profiles").select("role, full_name").eq("id", user.id).single()
@@ -122,6 +128,20 @@ export default async function HomePage() {
       : Promise.resolve({ data: [] }),
   ]);
 
+  // El cuerpo de las entradas que se pintan, solo para medir cuanto se tarda en
+  // leerlas. No se pide en la consulta grande de arriba a proposito: esa trae
+  // TODAS las publicadas, y arrastrar el contenido entero de cada una en cada
+  // carga de la portada se encarece con cada entrada nueva.
+  const { data: contenidos } = postIds.length > 0
+    ? await lector.from("posts").select("id, content").in("id", postIds)
+    : { data: [] };
+
+  const minutosMap: Record<string, number> = {};
+  (contenidos as { id: string; content: string | null }[] | null)?.forEach((p) => {
+    const min = minutosDeLectura(p.content);
+    if (min) minutosMap[p.id] = min;
+  });
+
   const likeMap: Record<string, number> = {};
   likeRows?.forEach((r) => { likeMap[r.post_id] = (likeMap[r.post_id] ?? 0) + 1; });
 
@@ -140,13 +160,6 @@ export default async function HomePage() {
 
   const latestGuide = GUIDES[GUIDES.length - 1];
 
-  // Count posts per category
-  const catPostMap: Record<string, number> = {};
-  allPosts.forEach((p) => {
-    const slug = (p.categories as PostCategoryRef | null)?.slug;
-    if (slug) catPostMap[slug] = (catPostMap[slug] ?? 0) + 1;
-  });
-
   const enrichedPosts = feedPosts.map((p) => ({
     id: p.id,
     title: p.title,
@@ -163,6 +176,7 @@ export default async function HomePage() {
     comments: commentMap[p.id] ?? 0,
     initialLiked: userLikedSet.has(p.id),
     initialSaved: userSavedSet.has(p.id),
+    minutos: minutosMap[p.id] ?? null,
   }));
 
   const enrichedHero = enrichedPosts.find((p) => p.is_featured) ?? null;
@@ -182,6 +196,14 @@ export default async function HomePage() {
         <div className="hero-aurora" aria-hidden="true" />
 
         <div className="hero-content">
+          {/* En movil el contador baja aqui, justo sobre el buscador: en la
+              barra le quitaba el sitio a «Entrar» y «Registrarse», que es lo
+              que de verdad tiene que poder pulsarse desde el telefono. En
+              escritorio sigue en la barra y esto no se pinta. */}
+          <div className="hero-contador hero-anim hero-anim-1">
+            <LiveCounter />
+          </div>
+
           <div className="hero-search-bar hero-anim hero-anim-1">
             <GuideSearch />
           </div>
@@ -251,15 +273,15 @@ export default async function HomePage() {
         </div>
       )}
 
-      {/* ── Main layout ── */}
+      {/* ── Cuerpo ──
+          Hasta el 07-09-2026 esto eran dos columnas, con un lateral de 300 px
+          que llevaba Herramientas, Educación y Categorías. Retirado a mano por
+          el admin: el feed se queda con todo el ancho. Las herramientas siguen
+          accesibles desde la barra de navegación y desde /herramientas. */}
       <div className="home-layout" id="feed">
 
-        <div className="tools-mobile-only">
-          <SidebarTools isLoggedIn={!!user} isPremium={isPremium} />
-        </div>
-
-        {/* Premium pitch — en móvil sube aquí, justo tras Herramientas.
-            En desktop no se muestra aquí: va como sección tras el layout. */}
+        {/* Premium pitch — solo en móvil, bajo el feed. En escritorio no se
+            muestra aquí: va como sección a lo ancho, tras el cuerpo. */}
         <div className="premium-pitch-mobile-only">
           <PremiumPitch variant="card" />
         </div>
@@ -269,6 +291,7 @@ export default async function HomePage() {
           posts={enrichedPosts}
           isLoggedIn={!!user}
           showHero={false}
+          totalPosts={allPosts.length}
           youtubeSection={
             <Suspense key="yt-latest" fallback={null}>
               <YouTubeLatestSection />
@@ -276,62 +299,6 @@ export default async function HomePage() {
           }
         />
 
-        {/* Sidebar */}
-        <aside className="home-sidebar">
-
-          {/* Herramientas */}
-          <div className="tools-desktop-only">
-            <SidebarTools isLoggedIn={!!user} isPremium={isPremium} />
-          </div>
-
-          {/* Educación */}
-          <div className="sidebar-card">
-            <p className="sidebar-card-title">Educación</p>
-            <div className="sidebar-tools-list">
-              <Link href="/glosario" className="sidebar-tool-link">
-                <BookA size={16} className="sidebar-tool-icon" />
-                <span className="sidebar-tool-label">Diccionario Cripto</span>
-              </Link>
-              {/* Decía «Pronto» y no era un enlace, con las sesiones ya en
-                  marcha desde hacía semanas. Los premium van a la sala; el
-                  resto, a la ficha que explica qué es y cuándo se emite. */}
-              <Link
-                href={destinoPorRuta("/trading-en-directo", { logueado: !!user, premium: isPremium })}
-                className="sidebar-tool-link sidebar-tool-link--premium"
-              >
-                <Radio size={16} className="sidebar-tool-icon" />
-                <span className="sidebar-tool-label">Trading en Directo</span>
-                {!isPremium && <span className="sidebar-tool-badge--premium">PREMIUM</span>}
-              </Link>
-              <Link href="/guias" className="sidebar-tool-link sidebar-tool-link--gold">
-                <Route size={16} className="sidebar-tool-icon" />
-                <span className="sidebar-tool-label">Guías Interactivas</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Categorías — temáticas educativas (Bitcoin, blockchain, etc.).
-              Se leen dinámicamente de la tabla `categories` de Supabase. */}
-          {(categories ?? []).length > 0 && (
-            <div className="sidebar-card">
-              <p className="sidebar-card-title">Categorías</p>
-              <div className="sidebar-tools-list">
-                {(categories ?? []).map((c) => (
-                  <Link key={c.slug} href={`/categoria/${c.slug}`} className="sidebar-tool-link">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <Tag size={16} className="sidebar-tool-icon" />
-                      <span>{c.name}</span>
-                    </div>
-                    {catPostMap[c.slug] && (
-                      <span className="sidebar-cat-count">{catPostMap[c.slug]}</span>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-        </aside>
       </div>
 
       {/* ── Premium — sección full-width en desktop (en móvil va arriba, tras Herramientas) ── */}

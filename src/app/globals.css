@@ -1506,56 +1506,111 @@ html {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
+  /* Sin esto, un nombre largo o un centro que crezca podrian comprimir los
+     botones hasta partirles el texto en dos lineas. */
+  flex-shrink: 0;
 }
 
 .nav-acceso-entrar {
-  padding: 0 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 0.95rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  background: #fff;
   font-size: 0.83rem;
-  font-weight: 600;
-  color: rgba(240, 244, 255, 0.7);
+  font-weight: 650;
+  letter-spacing: -0.005em;
+  color: #0a1628;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.18s ease;
+  box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.18s ease, box-shadow 0.18s ease,
+    transform 0.18s ease;
 }
 
-.nav-acceso-entrar:hover { color: #fff; }
+.nav-acceso-entrar:hover {
+  background: #fff;
+  color: #0a1628;
+  box-shadow: 0 6px 18px -6px rgba(255, 255, 255, 0.45);
+  transform: translateY(-1px);
+}
+
+.nav-acceso-entrar:focus-visible {
+  outline: 2px solid var(--accent-orange);
+  outline-offset: 2px;
+}
 
 .nav-acceso-registro {
   display: inline-flex;
   align-items: center;
   height: 34px;
-  padding: 0 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--accent-orange) 42%, transparent);
+  padding: 0 0.95rem;
+  border: 1px solid var(--accent-orange);
   border-radius: 10px;
-  background: var(--accent-orange-light);
+  background: linear-gradient(135deg, var(--accent-orange) 0%, #f2571c 100%);
   font-size: 0.83rem;
-  font-weight: 650;
+  font-weight: 700;
   letter-spacing: -0.005em;
-  color: var(--accent-orange-soft);
+  color: #0a1628;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.18s ease, background-color 0.18s ease,
-    border-color 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 4px 14px -6px rgba(255, 107, 43, 0.9);
+  transition: filter 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .nav-acceso-registro:hover {
-  color: #fff;
-  background: var(--accent-orange);
-  border-color: var(--accent-orange);
-  box-shadow: 0 4px 14px var(--accent-orange-glow);
+  filter: brightness(1.08);
+  box-shadow: 0 8px 22px -8px rgba(255, 107, 43, 0.95);
+  transform: translateY(-1px);
 }
 
-/* En estrecho se queda solo «Registrarse»: es la acción que interesa, y
-   «Entrar» sigue estando dentro del desplegable. */
-@media (max-width: 720px) {
-  .nav-acceso-entrar { display: none; }
+.nav-acceso-registro:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
+/* Los dos accesos se ven tambien en el telefono. Hasta el 07-09-2026 «Entrar»
+   se ocultaba por debajo de 720 px y solo estaba dentro del desplegable, que
+   es justo donde no lo busca quien ya tiene cuenta. El sitio para los dos sale
+   del contador, que en movil baja al hero. */
 @media (max-width: 480px) {
+  .nav-acceso {
+    gap: 0.25rem;
+  }
+
+  .nav-acceso-entrar,
   .nav-acceso-registro {
     height: 32px;
-    padding: 0 0.7rem;
-    font-size: 0.78rem;
+    padding: 0 0.62rem;
+    font-size: 0.76rem;
+  }
+}
+
+/* Pantallas de 360 px o menos. Medido en el navegador: a 320 px los dos
+   botones dejaban 15 px de aire hasta la marca. El sitio no sale de encoger
+   mas los botones —ya van al minimo legible— sino de los margenes de la barra
+   y de la propia marca, que a ese ancho no necesita 1,3 rem. */
+@media (max-width: 360px) {
+  .blog-nav {
+    padding: 0 0.75rem;
+  }
+
+  .blog-brand {
+    font-size: 1.12rem;
+  }
+
+  /* Y la separacion con la hamburguesa, que a este ancho pesa lo mismo que un
+     caracter del boton. */
+  .blog-nav-end {
+    gap: 0.35rem;
+  }
+
+  .nav-acceso-entrar,
+  .nav-acceso-registro {
+    padding: 0 0.55rem;
+    font-size: 0.73rem;
   }
 }
 
@@ -1572,6 +1627,42 @@ html {
   align-items: center;
   gap: 0.5rem;
   justify-self: center;
+}
+
+/* Contador sobre el buscador del hero. Solo existe en el telefono: en
+   escritorio el de la barra se ve de sobra y aqui estorbaria. */
+.hero-contador {
+  display: none;
+}
+
+/* Solo en telefono. El corte son 720 px, el mismo que el proyecto ya usaba
+   para los accesos de la barra: entre 721 y 1200 la barra esta en modo
+   compacto pero le sobra sitio para el contador y los dos botones, asi que
+   ahi no se toca nada. */
+@media (max-width: 720px) {
+  /* El contador se va de la barra: ese hueco es para «Entrar» y
+     «Registrarse», que es lo que hay que poder pulsar desde el telefono. */
+  .blog-nav .live-counter {
+    display: none;
+  }
+
+  .hero-contador {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.7rem;
+  }
+
+  .hero-contador .live-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid rgba(240, 244, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(10, 22, 40, 0.55);
+    backdrop-filter: blur(6px);
+    font-size: 0.8rem;
+  }
 }
 
 /* Aquí vivió `.blog-nav-link`, el enlace suelto a Herramientas de la barra.
@@ -1785,6 +1876,7 @@ html {
   .blog-nav-center .guide-search {
     display: none;
   }
+
 
   .blog-nav-divider {
     display: none;
@@ -3529,31 +3621,42 @@ html {
 }
 
 .articulos-inner {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 2.5rem;
-  align-items: start;
-}
-
-/* Sidebar */
-
-.articulos-sidebar {
-  position: sticky;
-  top: 5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
+
+/* Barra de filtros
+   Esto era una columna lateral fija de 240 px con la lista de tematicas.
+   Pasa a barra horizontal el 07-09-2026, cuando la portada deja de listar
+   categorias y este se queda como el unico navegador por tematica del sitio:
+   en linea caben de un vistazo, la rejilla recupera el ancho completo y en
+   movil ya no hay que pasar por delante de todos los filtros para llegar al
+   primer articulo. */
+
+.articulos-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding-bottom: 1.35rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* En escritorio mandan las tematicas: van a la izquierda aunque en el HTML
+   el buscador vaya primero (en movil ese orden es el bueno). */
+.articulos-toolbar .articulos-filtros { order: -1; }
 
 .articulos-search-wrap {
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0 0.9rem;
+  flex: 0 1 270px;
+  padding: 0 0.95rem;
   background: var(--bg-card);
   border: var(--card-border);
-  border-radius: 10px;
+  border-radius: 999px;
   transition: border-color 0.2s;
 }
 
@@ -3568,11 +3671,12 @@ html {
 
 .articulos-search {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
-  padding: 0.75rem 0;
-  font-size: 0.88rem;
+  padding: 0.6rem 0;
+  font-size: 0.86rem;
   color: var(--text-primary);
   font-family: var(--font-family);
 }
@@ -3596,63 +3700,57 @@ html {
   color: var(--text-primary);
 }
 
-.articulos-categories {
+.articulos-filtros {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  min-width: 0;
 }
 
-.articulos-categories-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--text-muted);
-  padding: 0 0.5rem;
-  margin-bottom: 0.3rem;
-}
-
-.articulos-cat-btn {
-  display: flex;
+.articulos-filtro {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
-  padding: 0.55rem 0.75rem;
+  padding: 0.45rem 0.95rem;
   background: transparent;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
   font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
 }
 
-.articulos-cat-btn:hover {
-  background: rgba(240, 244, 255, 0.04);
+.articulos-filtro:hover {
   color: var(--text-primary);
+  border-color: rgba(240, 244, 255, 0.22);
 }
 
-.articulos-cat-btn.active {
-  background: rgba(255, 107, 43, 0.08);
-  border-color: rgba(255, 107, 43, 0.25);
+.articulos-filtro:focus-visible {
+  outline: 2px solid var(--accent-orange-soft);
+  outline-offset: 2px;
+}
+
+.articulos-filtro.is-activo {
   color: var(--accent-orange);
+  border-color: rgba(255, 107, 43, 0.35);
+  background: var(--accent-orange-light);
 }
 
-.articulos-cat-count {
+/* La cifra acompana, no compite: siempre un escalon por debajo del nombre. */
+.articulos-filtro-cifra {
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-muted);
-  background: rgba(240, 244, 255, 0.06);
-  padding: 0.1rem 0.45rem;
-  border-radius: 20px;
+  font-variant-numeric: tabular-nums;
 }
 
-.articulos-cat-btn.active .articulos-cat-count {
-  background: rgba(255, 107, 43, 0.15);
-  color: var(--accent-orange);
+.articulos-filtro.is-activo .articulos-filtro-cifra {
+  color: var(--accent-orange-soft);
 }
 
 /* Grid */
@@ -3680,22 +3778,26 @@ html {
 }
 
 @media (max-width: 768px) {
-  .articulos-inner {
-    grid-template-columns: 1fr;
+  .articulos-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
   }
 
-  .articulos-sidebar {
-    position: static;
+  .articulos-toolbar .articulos-filtros { order: 0; }
+
+  /* En movil las tematicas van en una sola linea deslizable. Apiladas
+     empujaban la rejilla media pantalla hacia abajo. */
+  .articulos-filtros {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 0.2rem;
   }
 
-  .articulos-categories {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
+  .articulos-filtros::-webkit-scrollbar { display: none; }
 
-  .articulos-cat-btn {
-    flex-direction: row-reverse;
-  }
+  .articulos-search-wrap { flex: 1 1 auto; }
 }
 
 /* Footer */
@@ -5790,35 +5892,6 @@ select {
   transition: background 0.15s, border-color 0.15s;
 }
 
-@media (min-width: 900px) {
-  .home-layout {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1.75rem 2rem 4rem;
-  }
-}
-
-/* â”€â”€ Tools card visibility: mobile above feed, desktop in sidebar â”€â”€ */
-
-.tools-mobile-only {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.tools-desktop-only {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .tools-mobile-only {
-    display: none;
-  }
-  .tools-desktop-only {
-    display: block;
-  }
-}
-
 /* Premium pitch: en móvil sube justo tras Herramientas (antes del feed);
    en desktop se queda al final del sidebar, como el resto de tarjetas. */
 
@@ -5863,10 +5936,10 @@ select {
   padding: 1.25rem 1rem 3rem;
 }
 
+/* Una sola columna desde el 07-09-2026. Antes era `row` con un lateral de
+   300 px; retirado el lateral, el feed ocupa el ancho del contenedor. */
 @media (min-width: 900px) {
   .home-layout {
-    flex-direction: row;
-    align-items: flex-start;
     gap: 1.5rem;
     padding: 1.75rem 2rem 4rem;
   }
@@ -5892,20 +5965,20 @@ select {
   flex-direction: column-reverse;
   align-items: stretch;
   gap: 1rem;
-  background: linear-gradient(135deg, rgba(17, 34, 64, 0.7) 0%, rgba(13, 31, 60, 0.6) 100%);
-  border: 1px solid rgba(240, 244, 255, 0.07);
-  border-radius: 12px;
-  padding: 1.1rem 1.2rem;
+  background: linear-gradient(135deg, rgba(19, 38, 71, 0.92) 0%, rgba(13, 31, 60, 0.86) 100%);
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 14px;
+  padding: 1.5rem 1.6rem 1.4rem;
   transition: all 0.25s ease;
-  box-shadow: 0 2px 12px -4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   position: relative;
 }
 
 @media (min-width: 768px) {
   .feed-post-row {
     flex-direction: row;
-    align-items: flex-start;
-    gap: 0.75rem;
+    align-items: stretch;
+    gap: 1.5rem;
   }
 }
 
@@ -5921,9 +5994,55 @@ select {
 }
 
 .feed-post-row:hover {
-  border-color: rgba(255, 107, 43, 0.2);
-  box-shadow: 0 8px 32px -8px rgba(255, 107, 43, 0.12), 0 4px 20px rgba(0, 0, 0, 0.25);
-  transform: translateY(-2px);
+  border-color: rgba(255, 107, 43, 0.32);
+  box-shadow: 0 16px 44px -12px rgba(255, 107, 43, 0.2), 0 6px 24px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Acento lateral: una linea que crece de arriba abajo al pasar por encima.
+   Da el enganche sin tener que gritar con colores de fondo. */
+.feed-post-row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 2.6rem;
+  bottom: 2.6rem;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, var(--accent-orange) 0%, var(--accent-orange-soft) 100%);
+  opacity: 0.55;
+  transition: top 0.28s ease, bottom 0.28s ease, opacity 0.28s ease;
+  pointer-events: none;
+}
+
+.feed-post-row:hover::after {
+  top: 1.1rem;
+  bottom: 1.1rem;
+  opacity: 1;
+}
+
+/* La foto respira dentro de su marco al pasar por la tarjeta. */
+.feed-post-thumb img {
+  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.feed-post-row:hover .feed-post-thumb img {
+  transform: scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-post-row,
+  .feed-post-row::after,
+  .feed-post-thumb img,
+  .feed-post-cta svg {
+    transition: none;
+  }
+  .feed-post-row:hover {
+    transform: none;
+  }
+  .feed-post-row:hover .feed-post-thumb img {
+    transform: none;
+  }
 }
 
 .feed-post-row:hover::before {
@@ -5942,6 +6061,8 @@ select {
 .feed-post-body {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .feed-post-tags {
@@ -6008,14 +6129,25 @@ select {
 
 .feed-post-title {
   display: block;
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
   font-weight: 700;
   color: var(--text-primary);
   text-decoration: none;
-  line-height: 1.4;
-  margin-bottom: 0.35rem;
-  letter-spacing: -0.015em;
+  line-height: 1.32;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
   transition: color 0.15s;
+}
+
+/* A partir del ancho en el que la tarjeta ocupa la fila entera, el titular
+   crece con ella. A 1 rem se leia como una etiqueta dentro de una caja de
+   1.200 px. */
+@media (min-width: 900px) {
+  .feed-post-title {
+    font-size: 1.45rem;
+  }
 }
 
 .feed-post-title:hover {
@@ -6023,27 +6155,101 @@ select {
 }
 
 .feed-post-excerpt {
-  font-size: 0.84rem;
+  font-size: 0.9rem;
   color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 0.55rem;
+  line-height: 1.62;
+  /* Sin tope, la linea se estiraba hasta los 110 caracteres. */
+  max-width: 72ch;
+  margin-bottom: 0.85rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Cuatro lineas en pantalla ancha: con solo tres entradas en la portada hay
+   sitio de sobra, y la entradilla es lo que decide si se entra a leer. */
+@media (min-width: 900px) {
+  .feed-post-excerpt {
+    font-size: 0.97rem;
+    line-height: 1.68;
+    -webkit-line-clamp: 4;
+  }
 }
 
 .feed-post-meta {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   flex-wrap: wrap;
 }
 
 .feed-meta-sep {
   opacity: 0.4;
+}
+
+.feed-post-autor {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* Tiempo de lectura. Es el dato que mas pesa a la hora de decidir si se entra
+   ahora o se deja para luego, asi que va junto a la fecha y no escondido. */
+.feed-post-lectura {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.feed-post-lectura svg {
+  opacity: 0.75;
+}
+
+.feed-post-meta time {
+  cursor: help;
+}
+
+/* Cierra la linea de autoria por la derecha. En reposo es gris y discreta;
+   al pasar por la tarjeta se enciende y la flecha avanza. */
+.feed-post-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-left: auto;
+  padding: 0.55rem 1.15rem;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-orange) 0%, #f2571c 100%);
+  font-family: var(--font-family);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: #0a1628;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow: 0 6px 16px -8px rgba(255, 107, 43, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.feed-post-cta:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 10px 24px -8px rgba(255, 107, 43, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.feed-post-cta:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.feed-post-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.feed-post-row:hover .feed-post-cta svg {
+  transform: translateX(3px);
 }
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Thumbnail Ã¢â€â‚¬Ã¢â€â‚¬ */
@@ -6081,11 +6287,23 @@ select {
   pointer-events: none;
 }
 
+/* La miniatura se estira a lo alto de la tarjeta (`align-self: stretch`) con
+   un suelo propio: asi la caja nunca queda mas baja que la imagen y la fila
+   tiene cuerpo aunque el texto sea corto. */
 @media (min-width: 768px) {
   .feed-post-thumb {
-    width: 350px;
-    height: 196px;
+    width: 320px;
+    height: auto;
+    min-height: 210px;
     aspect-ratio: auto;
+    align-self: stretch;
+  }
+}
+
+@media (min-width: 1100px) {
+  .feed-post-thumb {
+    width: 420px;
+    min-height: 262px;
   }
 }
 
@@ -6102,17 +6320,6 @@ select {
 }
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Sidebar Ã¢â€â‚¬Ã¢â€â‚¬ */
-
-.home-sidebar {
-  width: 100%;
-  flex-shrink: 0;
-}
-
-@media (min-width: 900px) {
-  .home-sidebar {
-    width: 300px;
-  }
-}
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Sidebar cards Ã¢â€â‚¬Ã¢â€â‚¬ */
 
@@ -6140,16 +6347,6 @@ select {
   margin-bottom: 0.75rem;
   padding-bottom: 0.6rem;
   border-bottom: 1px solid rgba(255, 107, 43, 0.12);
-}
-
-.sidebar-cat-count {
-  margin-left: auto;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  background: rgba(240, 244, 255, 0.04);
-  border: 1px solid var(--hairline);
-  border-radius: 10px;
-  padding: 1px 7px;
 }
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Premium CTA sidebar card Ã¢â€â‚¬Ã¢â€â‚¬ */
@@ -6755,28 +6952,34 @@ select {
 .feed-action-bar {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.85rem;
-  padding-top: 0.75rem;
+  gap: 0.35rem;
+  /* `auto` pega la barra al fondo del cuerpo, que ahora es una columna. */
+  margin-top: auto;
+  padding-top: 0.9rem;
   border-top: 1px solid rgba(240, 244, 255, 0.06);
 }
 
+/* Compartir se queda pegado a los contadores. El fondo de la fila es del
+   boton de leer, que es la accion que de verdad se persigue. */
+
+/* Cada boton ocupa lo que necesita. Con `flex: 1` los cuatro se repartian el
+   ancho completo de la fila: en el feed a toda pagina quedaban cuatro cajas
+   enormes con un icono y un numero perdidos en medio. */
 .feed-action-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.5rem 0.8rem;
+  padding: 0.42rem 0.8rem;
   border-radius: 8px;
   background: rgba(240, 244, 255, 0.03);
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   border: 1px solid transparent;
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s ease;
-  flex: 1;
-  justify-content: center;
 }
 
 .feed-action-btn:hover {
@@ -6883,7 +7086,12 @@ select {
   pointer-events: none;
 }
 
+/* Columna, para que la barra de acciones caiga al fondo igual que en las
+   filas del feed: si no, su `margin-top: auto` no tiene contra que empujar. */
 .hero-post-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   padding: 1.5rem 1.5rem 1.25rem;
 }
 
@@ -7142,14 +7350,11 @@ select {
     margin-bottom: 0.5rem;
   }
 
-  /* Orden en móvil: el feed (contenido principal) primero; luego
-     herramientas, educación/categorías y, al final, la tarjeta premium.
-     En desktop las dos cajas mobile-only están ocultas, así que estos
-     `order` no afectan al layout de escritorio. */
+  /* Orden en móvil: el feed primero y la tarjeta premium después. En
+     escritorio la caja premium está oculta, así que estos `order` no
+     afectan al layout de ahí. */
   .home-layout > .home-feed { order: 1; }
-  .home-layout > .tools-mobile-only { order: 2; }
-  .home-layout > .home-sidebar { order: 3; }
-  .home-layout > .premium-pitch-mobile-only { order: 4; }
+  .home-layout > .premium-pitch-mobile-only { order: 2; }
 }
 
 @media (max-width: 768px) {
@@ -8364,33 +8569,96 @@ select {
 .feed-seeall {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.95rem 1.25rem;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-top: 1.1rem;
+  padding: 1.35rem 1.6rem;
+  background:
+    linear-gradient(135deg, rgba(255, 107, 43, 0.1) 0%, rgba(255, 107, 43, 0) 55%),
+    linear-gradient(135deg, rgba(19, 38, 71, 0.92) 0%, rgba(13, 31, 60, 0.86) 100%);
+  border: 1px solid rgba(255, 107, 43, 0.22);
   border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 0.92rem;
-  font-weight: 600;
+  box-shadow: 0 4px 18px -6px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
 }
 
-.feed-seeall svg {
-  transition: transform 0.2s ease;
+.feed-seeall-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.feed-seeall-titulo {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.feed-seeall-sub {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* La flecha en su propio disco: es lo unico que hace falta para que se lea
+   como «esto continua» sin repetir la palabra «ver». */
+.feed-seeall-flecha {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  color: #0a1628;
+  box-shadow: 0 6px 18px -6px rgba(255, 107, 43, 0.7);
+  transition: transform 0.22s ease;
 }
 
 .feed-seeall:hover {
-  background: rgba(255, 107, 43, 0.06);
-  border-color: rgba(255, 107, 43, 0.3);
-  color: #fff;
+  border-color: rgba(255, 107, 43, 0.45);
+  box-shadow: 0 14px 38px -14px rgba(255, 107, 43, 0.35), 0 4px 18px -6px rgba(0, 0, 0, 0.45);
+  transform: translateY(-2px);
 }
 
-.feed-seeall:hover svg {
+.feed-seeall:hover .feed-seeall-flecha {
   transform: translateX(4px);
+}
+
+@media (max-width: 640px) {
+  .feed-seeall {
+    padding: 1.15rem 1.2rem;
+    gap: 1rem;
+  }
+
+  .feed-seeall-titulo {
+    font-size: 1.02rem;
+  }
+
+  .feed-seeall-flecha {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-seeall,
+  .feed-seeall-flecha {
+    transition: none;
+  }
+
+  .feed-seeall:hover {
+    transform: none;
+  }
+
+  .feed-seeall:hover .feed-seeall-flecha {
+    transform: none;
+  }
 }
 
 /* â”€â”€ YouTube: Ãºltimos vÃ­deos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -8518,10 +8786,11 @@ select {
   color: #fff;
 }
 
-/* 3rd post / 3rd video only visible on desktop */
+/* El tercer video sigue siendo solo de escritorio. La regla hermana
+   `.feed-desktop-only` se retiro el 07-09-2026: la portada enseña las mismas
+   tres entradas en movil y en escritorio. */
 
 @media (max-width: 899px) {
-  .feed-desktop-only { display: none; }
   .yt-card--desktop-only { display: none; }
 }
 

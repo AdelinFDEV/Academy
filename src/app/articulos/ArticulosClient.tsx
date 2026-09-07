@@ -34,6 +34,24 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  // Un recuento por temática, calculado de una pasada. Antes se recorría el
+  // listado entero dentro del map de categorías: tantas pasadas como filtros.
+  const conteoPorCategoria = useMemo(() => {
+    const map: Record<string, number> = {};
+    posts.forEach((p) => {
+      const slug = (p.categories as PostCategoryRef | null)?.slug;
+      if (slug) map[slug] = (map[slug] ?? 0) + 1;
+    });
+    return map;
+  }, [posts]);
+
+  // Una temática sin entradas es un filtro que solo puede devolver la pantalla
+  // vacía. No se pinta.
+  const categoriasConEntradas = useMemo(
+    () => categories.filter((c) => (conteoPorCategoria[c.slug] ?? 0) > 0),
+    [categories, conteoPorCategoria],
+  );
+
   const filtered = useMemo(() => {
     return posts.filter((p) => {
       const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase());
@@ -46,8 +64,9 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
 
   return (
     <div className="articulos-inner">
-      {/* Sidebar */}
-      <aside className="articulos-sidebar">
+      {/* Barra de filtros. Desde el 07-09-2026 esta es la única navegación por
+          temáticas de la web: la portada dejó de listarlas. */}
+      <div className="articulos-toolbar">
         <div className="articulos-search-wrap">
           <Icon name="search" size={15} />
           <input
@@ -64,30 +83,30 @@ export default function ArticulosClient({ posts, categories, commentCountMap = {
           )}
         </div>
 
-        <div className="articulos-categories">
-          <span className="articulos-categories-label">Categorías</span>
+        <div className="articulos-filtros" role="group" aria-label="Filtrar por temática">
           <button
-            className={`articulos-cat-btn${activeCategory === null ? " active" : ""}`}
+            type="button"
+            className={`articulos-filtro${activeCategory === null ? " is-activo" : ""}`}
+            aria-pressed={activeCategory === null}
             onClick={() => setActiveCategory(null)}
           >
             Todas
-            <span className="articulos-cat-count">{posts.length}</span>
+            <span className="articulos-filtro-cifra">{posts.length}</span>
           </button>
-          {categories.map((cat) => {
-            const count = posts.filter((p) => (p.categories as PostCategoryRef | null)?.slug === cat.slug).length;
-            return (
-              <button
-                key={cat.slug}
-                className={`articulos-cat-btn${activeCategory === cat.slug ? " active" : ""}`}
-                onClick={() => setActiveCategory(activeCategory === cat.slug ? null : cat.slug)}
-              >
-                {cat.name}
-                <span className="articulos-cat-count">{count}</span>
-              </button>
-            );
-          })}
+          {categoriasConEntradas.map((cat) => (
+            <button
+              key={cat.slug}
+              type="button"
+              className={`articulos-filtro${activeCategory === cat.slug ? " is-activo" : ""}`}
+              aria-pressed={activeCategory === cat.slug}
+              onClick={() => setActiveCategory(activeCategory === cat.slug ? null : cat.slug)}
+            >
+              {cat.name}
+              <span className="articulos-filtro-cifra">{conteoPorCategoria[cat.slug]}</span>
+            </button>
+          ))}
         </div>
-      </aside>
+      </div>
 
       {/* Grid */}
       <div className="articulos-grid-wrap">
