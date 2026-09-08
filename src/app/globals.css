@@ -3634,13 +3634,21 @@ html {
    movil ya no hay que pasar por delante de todos los filtros para llegar al
    primer articulo. */
 
+/* Misma caja que el navegador de categorias de las entradas (`.cat-nav`), para
+   que las dos pantallas se lean como la misma pieza. Antes era una fila suelta
+   cerrada por un filete. */
 .articulos-toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem 2rem;
-  padding-bottom: 1.35rem;
-  border-bottom: 1px solid var(--hairline);
+  padding: 1.15rem 1.35rem;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(255, 107, 43, 0.05) 0%, transparent 55%),
+    linear-gradient(135deg, rgba(19, 38, 71, 0.78) 0%, rgba(13, 31, 60, 0.6) 100%);
+  border: var(--card-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
 }
 
 /* En escritorio mandan las tematicas: van a la izquierda aunque en el HTML
@@ -3707,50 +3715,15 @@ html {
   min-width: 0;
 }
 
+/* El aspecto de la pastilla —relieve, elevacion, capsula de la cifra y el
+   relleno naranja de la activa— vive con `.cat-nav-chip`, al final de este
+   archivo. Aqui solo queda lo que un <button> no hereda y el nombre distinto
+   de la clase activa (`is-activo` contra `is-activa`). Estaban duplicados y
+   se desincronizaron a la primera: /articulos se quedo con el diseño viejo
+   mientras las entradas ya llevaban el nuevo. */
 .articulos-filtro {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.95rem;
-  background: transparent;
-  border: 1px solid var(--hairline);
-  border-radius: 999px;
   font-family: var(--font-family);
-  font-size: 0.85rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--text-secondary);
-  white-space: nowrap;
   cursor: pointer;
-  transition: color 0.18s, border-color 0.18s, background 0.18s;
-}
-
-.articulos-filtro:hover {
-  color: var(--text-primary);
-  border-color: rgba(240, 244, 255, 0.22);
-}
-
-.articulos-filtro:focus-visible {
-  outline: 2px solid var(--accent-orange-soft);
-  outline-offset: 2px;
-}
-
-.articulos-filtro.is-activo {
-  color: var(--accent-orange);
-  border-color: rgba(255, 107, 43, 0.35);
-  background: var(--accent-orange-light);
-}
-
-/* La cifra acompana, no compite: siempre un escalon por debajo del nombre. */
-.articulos-filtro-cifra {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.articulos-filtro.is-activo .articulos-filtro-cifra {
-  color: var(--accent-orange-soft);
 }
 
 /* Grid */
@@ -3782,6 +3755,8 @@ html {
     flex-direction: column;
     align-items: stretch;
     gap: 0.9rem;
+    padding: 1.05rem 1.05rem 1.15rem;
+    border-radius: 14px;
   }
 
   .articulos-toolbar .articulos-filtros { order: 0; }
@@ -3797,12 +3772,8 @@ html {
     gap: 0.4rem 0.35rem;
   }
 
-  /* Compactadas para que quepan mas por linea. */
-  .articulos-filtro {
-    padding: 0.4rem 0.75rem;
-    gap: 0.35rem;
-    font-size: 0.82rem;
-  }
+  /* El tamaño compacto de la pastilla en movil lo pone la regla compartida
+     con `.cat-nav-chip`, al final del archivo. */
 
   .articulos-search-wrap { flex: 1 1 auto; }
 }
@@ -13111,7 +13082,8 @@ select {
   gap: 0.5rem;
 }
 
-.cat-nav-chip {
+.cat-nav-chip,
+.articulos-filtro {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -13129,7 +13101,8 @@ select {
     transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.cat-nav-chip:hover {
+.cat-nav-chip:hover,
+.articulos-filtro:hover {
   transform: translateY(-1px);
   background: var(--accent-orange-light);
   border-color: rgba(255, 107, 43, 0.35);
@@ -13137,14 +13110,16 @@ select {
   box-shadow: 0 8px 18px -12px rgba(255, 107, 43, 0.9);
 }
 
-.cat-nav-chip:focus-visible {
+.cat-nav-chip:focus-visible,
+.articulos-filtro:focus-visible {
   outline: 2px solid var(--accent-orange-soft);
   outline-offset: 2px;
 }
 
 /* La cifra es un dato, no una etiqueta: va en su propia cápsula, un escalón
    por debajo del nombre, y con ancho fijo para que la fila no baile. */
-.cat-nav-cifra {
+.cat-nav-cifra,
+.articulos-filtro-cifra {
   min-width: 1.35rem;
   padding: 0.1rem 0.35rem;
   border-radius: 999px;
@@ -13159,7 +13134,8 @@ select {
 /* La temática en la que ya estás no se esconde: se marca, y con el mismo
    naranja lleno que el resto de acciones principales del sitio. Quitarla
    dejaría un hueco y obligaría a recontar dónde estabas. */
-.cat-nav-chip.is-activa {
+.cat-nav-chip.is-activa,
+.articulos-filtro.is-activo {
   background: linear-gradient(135deg, var(--accent-orange) 0%, #f2571c 100%);
   border-color: transparent;
   color: #0a1628;
@@ -13167,14 +13143,16 @@ select {
     inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
-.cat-nav-chip.is-activa:hover {
+.cat-nav-chip.is-activa:hover,
+.articulos-filtro.is-activo:hover {
   transform: translateY(-1px);
   background: linear-gradient(135deg, var(--accent-orange) 0%, #f2571c 100%);
   color: #0a1628;
   filter: brightness(1.06);
 }
 
-.cat-nav-chip.is-activa .cat-nav-cifra {
+.cat-nav-chip.is-activa .cat-nav-cifra,
+.articulos-filtro.is-activo .articulos-filtro-cifra {
   background: rgba(10, 22, 40, 0.2);
   color: #0a1628;
 }
@@ -13182,7 +13160,9 @@ select {
 @media (prefers-reduced-motion: reduce) {
   .cat-nav-chip,
   .cat-nav-chip:hover,
-  .cat-nav-chip.is-activa:hover {
+  .cat-nav-chip.is-activa:hover,
+  .articulos-filtro,
+  .articulos-filtro:hover {
     transform: none;
     transition: none;
   }
@@ -13216,7 +13196,8 @@ select {
     gap: 0.4rem 0.35rem;
   }
 
-  .cat-nav-chip {
+  .cat-nav-chip,
+  .articulos-filtro {
     padding: 0.45rem 0.8rem;
     gap: 0.4rem;
     font-size: 0.82rem;
