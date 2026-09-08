@@ -351,19 +351,24 @@ ok(densidad <= 2.5, "TECHO de densidad ≤ 2,5 %", `${densidad.toFixed(2)} %`);
 ok(keyword && cubre(title), "keyword en el title");
 ok(keyword && cubre(h1[0]?.t ?? ""), "keyword en el H1");
 ok(keyword && cubre(desc), "keyword en la description");
-const primer = texto(cuerpo.match(/<p[^>]*>([\s\S]*?)<\/p>/)?.[1] ?? "");
+const primer = texto(cuerpo.match(/<p(?:s[^>]*)?>([\s\S]*?)<\/p>/)?.[1] ?? "");
 cubre(primer) ? ok(true, "keyword en el primer párrafo") : aviso("keyword en el primer párrafo", "no aparece entera");
 
+// Ojo con la expresion: `<p(?:s...)?>` y no `<p[^>]*>`. La segunda tambien
+// casa con los <path> de los iconos SVG del menu, y entonces el «parrafo» iba
+// desde un icono hasta el primer </p> de la pagina, tragandose el menu entero.
+// Daba por malos un parrafo de 123 palabras y una frase de 45 que no existian.
+// Lo cazo la auditoria de la guia de fiscalidad.
 // Legibilidad. Se mide párrafo a párrafo: las listas y las etiquetas de los
 // gráficos no llevan punto y al concatenarlas salen «frases» que no existen.
-const frases = [...cuerpo.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)]
+const frases = [...cuerpo.matchAll(/<p(?:s[^>]*)?>([\s\S]*?)<\/p>/g)]
   .flatMap((m) => texto(m[1]).split(/(?<=[.!?])\s+/))
   .filter((f) => f.split(/\s+/).length > 3);
 const media = frases.length ? Math.round(frases.reduce((a, f) => a + f.split(/\s+/).length, 0) / frases.length) : 0;
 const largas = frases.filter((f) => f.split(/\s+/).length > 40).length;
 ok(media <= 24, "frase media ≤ 24 palabras", `${media}`);
 ok(largas === 0, "sin frases de más de 40 palabras", `${largas}`);
-const parrafosLargos = [...cuerpo.matchAll(/<p[^>]*>([\s\S]*?)<\/p>/g)]
+const parrafosLargos = [...cuerpo.matchAll(/<p(?:s[^>]*)?>([\s\S]*?)<\/p>/g)]
   .filter((m) => texto(m[1]).split(/\s+/).length > 120).length;
 ok(parrafosLargos === 0, "sin párrafos de más de 120 palabras", `${parrafosLargos}`);
 

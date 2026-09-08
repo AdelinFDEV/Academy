@@ -189,7 +189,7 @@ export default async function FiscalidadCriptoEspanaPage() {
         <p className="gbc-hero-desc">
           En la fiscalidad cripto española tributas cuando <strong>vendes, permutas una moneda por otra
           o pagas con ella</strong>: es una ganancia patrimonial que va a la base del ahorro, del{" "}
-          <strong>19% al 30%</strong>. Comprar y mantener no tributa. El staking y los airdrops son
+          <strong>19% al 30%</strong>. Comprar y mantener no tributa. El <Link href="/glosario/staking">staking</Link> y los airdrops son
           rentas aparte. El cálculo es por <strong>FIFO obligatorio</strong>, y si a 31 de diciembre
           tienes más de 50.000 € en plataformas de fuera de España, te toca además el{" "}
           <strong>modelo 721</strong>.
@@ -309,7 +309,7 @@ export default async function FiscalidadCriptoEspanaPage() {
               <span className="fisc-table-why">Cambias euros por otro activo al mismo valor. No hay ganancia todavía: lo que haces es fijar tu precio de adquisición.</span>
             </div>
             <div className="fisc-table-row is-no">
-              <span className="fisc-table-op">Mantener (HODL), aunque suba mucho</span>
+              <span className="fisc-table-op">Mantener (<Link href="/glosario/hodl">HODL</Link>), aunque suba mucho</span>
               <span className="fisc-table-tag fisc-table-tag--no">No</span>
               <span className="fisc-table-why">La plusvalía latente no tributa. En España no existe un impuesto sobre la revalorización no realizada en el IRPF.</span>
             </div>
@@ -336,7 +336,7 @@ export default async function FiscalidadCriptoEspanaPage() {
             <div className="fisc-table-row is-yes">
               <span className="fisc-table-op">Convertir a stablecoins (USDT, USDC)</span>
               <span className="fisc-table-tag fisc-table-tag--yes">Sí</span>
-              <span className="fisc-table-why">Una stablecoin es otra criptomoneda, no un euro. «Ponerse en stable» para protegerse de una caída es una permuta plenamente sujeta.</span>
+              <span className="fisc-table-why">Una <Link href="/glosario/stablecoin">stablecoin</Link> es otra criptomoneda, no un euro. «Ponerse en stable» para protegerse de una caída es una permuta plenamente sujeta.</span>
             </div>
             <div className="fisc-table-row is-yes">
               <span className="fisc-table-op">Cobrar staking, intereses o airdrops</span>
@@ -349,7 +349,7 @@ export default async function FiscalidadCriptoEspanaPage() {
             <div className="gbc-box-title">La trampa de las stablecoins</div>
             <div className="gbc-box-body">
               <p>
-                Merece la pena insistir porque es donde más gente se lleva un susto. Compraste BTC a 20.000 €. El mercado se gira y lo pasas a USDT con BTC a 90.000 €. Acabas de realizar una ganancia de 70.000 € por cada bitcoin, aunque en tu cabeza «no has vendido» y el saldo siga dentro del exchange. Un trader activo que rota posiciones puede acumular
+                Merece la pena insistir porque es donde más gente se lleva un susto. Compraste BTC a 20.000 €. El mercado se gira y lo pasas a USDT con BTC a 90.000 €. Acabas de realizar una ganancia de 70.000 € por cada bitcoin, aunque en tu cabeza «no has vendido» y el saldo siga dentro del <Link href="/glosario/exchange">exchange</Link>. Un trader activo que rota posiciones puede acumular
                 decenas de hechos imponibles al año sin haber retirado un solo euro.
               </p>
             </div>
@@ -569,7 +569,7 @@ export default async function FiscalidadCriptoEspanaPage() {
               </div>
               <div className="fisc-721-item fisc-721-item--star">
                 <div className="fisc-721-k">La autocustodia NO entra</div>
-                <div className="fisc-721-v">La Agencia Tributaria ha aclarado que las criptomonedas en monederos donde <strong>tú controlas las claves privadas</strong>, sin un tercero que las custodie, quedan fuera del modelo 721. Las <em>cold wallets</em> no custodiadas no se declaran aquí. Solo entra lo que está bajo custodia de terceros.</div>
+                <div className="fisc-721-v">La Agencia Tributaria ha aclarado que las criptomonedas en monederos donde <strong>tú controlas las claves privadas</strong>, sin un tercero que las custodie, quedan fuera del modelo 721. Las <Link href="/glosario/cold-wallet"><em>cold wallets</em></Link> no custodiadas no se declaran aquí. Solo entra lo que está bajo custodia de terceros.</div>
               </div>
               <div className="fisc-721-item">
                 <div className="fisc-721-k">Sanciones</div>

@@ -135,13 +135,11 @@ Lo encontrado en la primera pasada (07-09-2026), por orden de lo que más cuesta
 | Página | Qué falla | Por qué importa |
 |---|---|---|
 | `/post/bitcoin-core-v32-2026` | La palabra clave aparece **1 vez en 1.473 palabras** (0,07 %) | Es el fallo del suelo de densidad, el mismo de la primera ficha. Google no ve de qué va |
-| `/guias/fiscalidad-cripto-espana` | Densidad **0,26 %**, solo **3 `<h2>`**, 3 frases de más de 40 palabras | Es la guía que sostiene la consulta más buscada del sitio. Es la que más urge |
 | `/guias/xrp` | Solo **3 `<h2>`**, 2 frases largas, 1 párrafo de más de 120 palabras | — |
 
 Y un hallazgo estructural que afecta a **todas** las guías: el auditor mide 909 palabras en la de XRP porque **lo que Google recibe es solo lo renderizado en el servidor**. Todo lo que vive dentro de un componente de cliente —quiz, gráficos, minijuegos— no lo ve el rastreador. Merece una comprobación página a página: si el contenido que sostiene la consulta está dentro de un interactivo, hay que sacar una versión en texto al servidor.
 
 ```bash
-npm run check:seo -- guias/fiscalidad-cripto-espana
 npm run check:seo -- post/bitcoin-core-v32-2026 "bitcoin core"
 ```
 
