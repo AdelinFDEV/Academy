@@ -113,7 +113,7 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Fiscalidad cripto",
     description: "Qué tributa y qué no, el método FIFO obligatorio, la escala del ahorro del 19% al 30%, cómo declarar staking, airdrops y minería, el modelo 721 de criptomonedas en el extranjero, el Impuesto sobre el Patrimonio y la compensación de pérdidas. Con simulador FIFO y calculadora de impuestos por tramos.",
     difficulty: "avanzado",
-    type: "premium",
+    type: "free",
     sections: 9,
     badge: "Cuentas Claras",
     badgeId: "guide-fiscalidad-cripto",

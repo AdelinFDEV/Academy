@@ -353,374 +353,354 @@ export default async function FiscalidadCriptoEspanaPage() {
         </div>
       </section>
 
-      {/* ── PAYWALL PREMIUM ── */}
-      {!isPremium ? (
+      {/* Secciones 3-8 abiertas. La norma —qué tributa, FIFO, tramos, staking,
+          airdrops y el modelo 721— es lo que se busca en Google y lo que el
+          título promete; esconderla dejaba a la guía compitiendo con dos
+          secciones contra páginas de asesorías que lo cuentan entero.
+          Lo que sigue siendo Premium son las herramientas y el cierre. */}
+        {/* ── SECCIÓN 3: FIFO ── */}
         <section id="fifo" className="gbc-section">
           <div className="gbc-gc">
-            <div className="gbc-ey">Secciones 3–9 <span className="gbc-lock-pill">Premium</span></div>
-            <h2 className="gbc-title">FIFO, tramos, staking, modelo 721, Patrimonio y pérdidas</h2>
+            <div className="gbc-ey">Sección 3</div>
+            <h2 className="gbc-title">FIFO: la regla que decide cuánto ganas «en papel»</h2>
             <div className="gbc-body">
               <p>
-                Ya sabes qué tributa. Lo que viene ahora es cómo se calcula, cuánto se paga y qué
-                formularios te tocan — que es donde de verdad se decide si tu declaración aguanta un
-                cruce de datos o te cuesta una paralela.
+                Imagina que llevas tres años comprando bitcoin poco a poco. Tienes lotes a 18.000 €,
+                a 32.000 €, a 55.000 €. Vendes una parte. ¿Cuál de esos precios usas para calcular la
+                ganancia? La respuesta no es «el que quieras»: en España el método es{" "}
+                <strong>FIFO</strong> —<em>First In, First Out</em>— y es <strong>obligatorio</strong>.
+                Se entiende que vendes primero las monedas que compraste primero.
+              </p>
+              <p>
+                Esto no es un detalle contable menor. En una cartera construida durante años, los lotes
+                más antiguos suelen ser los más baratos, así que el FIFO tiende a <strong>maximizar la
+                ganancia declarada</strong> en las primeras ventas. No puedes elegir el lote más caro
+                para reducir la factura, ni usar el precio medio ponderado, ni aplicar LIFO. Mueve los
+                controles y observa cómo se van consumiendo los lotes:
               </p>
             </div>
 
-            <div className="fisc-locked-list">
-              <div className="fisc-locked-item"><span>3</span> El método FIFO obligatorio, con simulador para ver qué lotes consume cada venta</div>
-              <div className="fisc-locked-item"><span>4</span> La escala del ahorro 19–30% y una calculadora que desglosa tramo a tramo</div>
-              <div className="fisc-locked-item"><span>5</span> Staking, airdrops, minería, lending y NFT: cada renta a su base, con su tipo</div>
-              <div className="fisc-locked-item"><span>6</span> Modelo 721 completo: umbral, plazo, sanciones y el matiz de la autocustodia</div>
-              <div className="fisc-locked-item"><span>7</span> Impuesto sobre el Patrimonio: el olvidado que puede afectarte sin saberlo</div>
-              <div className="fisc-locked-item"><span>8</span> Compensación de pérdidas y la regla del año que casi todos aplican mal</div>
-              <div className="fisc-locked-item"><span>9</span> Calendario fiscal y los seis errores que más dinero cuestan</div>
+              {isPremium ? (
+                <GuideFiscalFifo />
+              ) : (
+                <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+                  <div className="gbc-box-title">El simulador FIFO es Premium</div>
+                  <div className="gbc-box-body">
+                    <p>
+                      La regla está explicada entera aquí arriba y no hace falta la herramienta para entenderla. El simulador sirve para lo otro: meter tus compras y tus ventas y ver qué lote consume cada una. <Link href="/premium">Hazte Premium</Link> para usarla.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+            <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+              <div className="gbc-box-title">El FIFO se aplica por criptomoneda, no por plataforma</div>
+              <div className="gbc-box-body">
+                <p>
+                  Un malentendido habitual: llevar el FIFO por separado en cada exchange. La Dirección
+                  General de Tributos considera que las unidades de una misma criptomoneda son bienes
+                  homogéneos, así que tu bitcoin es <strong>uno solo</strong> aunque esté repartido entre
+                  Binance, Kraken y una Ledger. El orden de compra que cuenta es el global. Si operas en
+                  varias plataformas y no consolidas, tu cálculo estará mal aunque cada exchange
+                  individualmente cuadre.
+                </p>
+              </div>
             </div>
 
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔒 Has leído 2 de 9 secciones</div>
-              <div className="gbc-paywall-t">
-                {isRegistered
-                  ? "Hazte Premium para desbloquear la guía completa"
-                  : "Esta guía es Premium"}
-              </div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 7 secciones restantes, el <strong>simulador FIFO</strong>, la{" "}
-                <strong>calculadora de impuestos</strong> por tramos, el quiz y tu badge{" "}
-                <strong>Cuentas Claras</strong>. Una sola declaración mal planteada cuesta más que la
-                suscripción de un año.
-              </div>
-              <Link href="/premium" className="gbc-paywall-btn">Hazte Premium →</Link>
-              <div className="gbc-paywall-login">
-                {isRegistered ? (
-                  <>Ya tienes cuenta gratuita — solo te falta el acceso Premium.</>
-                ) : (
-                  <>¿Ya eres Premium? <Link href="/login">Inicia sesión</Link></>
-                )}
+            <div className="gbc-body" style={{ marginTop: 28 }}>
+              <p>
+                Una nota práctica: los <strong>gastos y comisiones</strong> inherentes a la operación
+                suman al valor de adquisición cuando compras y restan del valor de transmisión cuando
+                vendes. No son un detalle despreciable — en operativa frecuente pueden suponer una
+                parte relevante del resultado, y olvidarlos significa pagar de más.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECCIÓN 4: ESCALA ── */}
+        <section id="escala" className="gbc-section">
+          <div className="gbc-gc">
+            <div className="gbc-ey">Sección 4</div>
+            <h2 className="gbc-title">Cuánto pagas: la escala del ahorro, tramo a tramo</h2>
+            <div className="gbc-body">
+              <p>
+                Las ganancias por vender o permutar criptomonedas se integran en la{" "}
+                <strong>base imponible del ahorro</strong>, que tiene su propia escala, separada de la
+                de tu nómina. Desde el 1 de enero de 2025, con la entrada en vigor de la Ley 7/2024,
+                esa escala tiene cinco tramos y el último subió del 28% al <strong>30%</strong>.
+              </p>
+            </div>
+
+            <div className="gbc-stats">
+              <GuideAnimatedStat end={19} suffix="%" decimals={0} label="Hasta 6.000 € de base del ahorro" source="Escala estatal 2025" />
+              <GuideAnimatedStat end={21} suffix="%" decimals={0} label="De 6.000 € a 50.000 €" source="Escala estatal 2025" />
+              <GuideAnimatedStat end={23} suffix="%" decimals={0} label="De 50.000 € a 200.000 €" source="Escala estatal 2025" />
+              <GuideAnimatedStat end={30} suffix="%" decimals={0} label="Más de 300.000 € (antes 28%)" source="Ley 7/2024" />
+            </div>
+
+            <div className="gbc-body" style={{ marginTop: 28 }}>
+              <p>
+                El tramo intermedio que falta en las cifras de arriba es el de <strong>200.000 € a
+                300.000 €, al 27%</strong>. Y aquí conviene deshacer el malentendido más extendido de
+                todos: los tramos son <strong>marginales</strong>. Entrar en el tramo del 30% no
+                significa que pagues el 30% de toda tu ganancia, sino solo de la parte que excede los
+                300.000 €. Compruébalo tú mismo:
+              </p>
+            </div>
+
+              {isPremium ? (
+                <GuideFiscalCalc />
+              ) : (
+                <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+                  <div className="gbc-box-title">La calculadora por tramos es Premium</div>
+                  <div className="gbc-box-body">
+                    <p>
+                      La escala y el funcionamiento marginal están contados arriba. La calculadora hace la cuenta con tu cifra y te enseña cuánto cae en cada tramo. <Link href="/premium">Hazte Premium</Link> para usarla.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+            <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+              <div className="gbc-box-title">La base del ahorro es un saco compartido</div>
+              <div className="gbc-box-body">
+                <p>
+                  En esa misma base entran los dividendos de tus acciones, los intereses de tus depósitos
+                  y las recompensas de staking. El tipo que acabas pagando por tu ganancia cripto depende,
+                  por tanto, de todo lo demás que tengas ahí dentro. Dos personas con la misma ganancia de
+                  10.000 € en bitcoin pueden pagar tipos distintos según el resto de sus rentas del ahorro.
+                </p>
               </div>
             </div>
           </div>
         </section>
-      ) : (
+
+        {/* ── SECCIÓN 5: RENTAS ── */}
+        <section id="rentas" className="gbc-section">
+          <div className="gbc-gc">
+            <div className="gbc-ey">Sección 5</div>
+            <h2 className="gbc-title">Staking, airdrops y minería: cada renta a su base</h2>
+            <div className="gbc-body">
+              <p>
+                No todo lo que entra en tu wallet es una ganancia patrimonial. Hay rentas que no vienen
+                de transmitir nada — vienen de <em>tener</em> o de <em>hacer</em> — y cada una tiene su
+                propia calificación fiscal. Esto importa muchísimo, porque de ello depende si tributas
+                al 19% o si te vas por encima del 40%.
+              </p>
+              <p>
+                El caso más relevante es el <strong>staking</strong>. La Dirección General de Tributos,
+                en su consulta vinculante <strong>V1766-22</strong>, estableció que las recompensas de
+                staking son <strong>rendimientos del capital mobiliario</strong> obtenidos por la cesión
+                de capitales propios a terceros. Van a la base del ahorro y —esto es lo que más
+                sorprende— se devengan <strong>al recibirlas</strong>, valoradas en euros al precio de
+                mercado de ese día, aunque no vendas absolutamente nada.
+              </p>
+            </div>
+
+            <GuideSpotlightCards uses={RENTAS} />
+
+            <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+              <div className="gbc-box-title">El riesgo real del staking: tributar por lo que luego se desploma</div>
+              <div className="gbc-box-body">
+                <p>
+                  Como la recompensa tributa el día que la recibes, puedes acabar pagando impuestos por
+                  un valor que después se evapora. Si recibes tokens valorados en 5.000 € a lo largo del
+                  año y en diciembre valen 1.200 €, tu rendimiento del capital mobiliario sigue siendo de
+                  5.000 €. La caída posterior no corrige ese rendimiento: generará, en su caso, una
+                  pérdida patrimonial cuando vendas — y las pérdidas patrimoniales solo se compensan
+                  contra rendimientos del capital mobiliario hasta un límite del 25%. Son compartimentos
+                  distintos, y por eso conviene tenerlo previsto antes de que llegue la campaña.
+                </p>
+              </div>
+            </div>
+
+            <div className="gbc-body" style={{ marginTop: 28 }}>
+              <p>
+                Un apunte sobre gastos: al no tener las criptomonedas la consideración de valores
+                negociables, <strong>no son deducibles</strong> los gastos de administración y custodia
+                que sí lo serían en una cartera de acciones. Es una asimetría poco conocida y que juega
+                en contra del inversor.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECCIÓN 6: MODELO 721 ── */}
+        <section id="modelo-721" className="gbc-section">
+          <div className="gbc-gc">
+            <div className="gbc-ey">Sección 6</div>
+            <h2 className="gbc-title">Modelo 721: el informativo que más sanciones genera</h2>
+            <div className="gbc-body">
+              <p>
+                El modelo 721 es la <strong>declaración informativa sobre monedas virtuales situadas en
+                el extranjero</strong>, aprobada por la Orden HFP/886/2023. Es el hermano cripto del
+                conocido modelo 720 de bienes en el extranjero, y tiene una característica que lo hace
+                peligroso: <strong>no se paga nada con él</strong>. Es puramente informativo. Precisamente
+                por eso se olvida — y precisamente por eso genera sanciones.
+              </p>
+            </div>
+
+            <div className="fisc-721">
+              <div className="fisc-721-item">
+                <div className="fisc-721-k">¿Quién lo presenta?</div>
+                <div className="fisc-721-v">Personas físicas y jurídicas residentes en España que sean titulares, beneficiarias o autorizadas sobre monedas virtuales custodiadas en el extranjero. También quien lo haya sido durante el año aunque ya no lo sea.</div>
+              </div>
+              <div className="fisc-721-item">
+                <div className="fisc-721-k">Umbral</div>
+                <div className="fisc-721-v">Cuando el valor conjunto a <strong>31 de diciembre</strong> supera los <strong>50.000 €</strong>. Es un umbral global, no por plataforma: se suman todos los saldos custodiados fuera de España.</div>
+              </div>
+              <div className="fisc-721-item">
+                <div className="fisc-721-k">Plazo</div>
+                <div className="fisc-721-v">Del <strong>1 de enero al 31 de marzo</strong> del año siguiente. Para el ejercicio 2025, el plazo fue del 1 de enero al 31 de marzo de 2026.</div>
+              </div>
+              <div className="fisc-721-item">
+                <div className="fisc-721-k">Años siguientes</div>
+                <div className="fisc-721-v">Si ya lo presentaste, solo vuelves a presentarlo cuando el valor conjunto se haya incrementado en más de <strong>20.000 €</strong> respecto a la última declaración presentada.</div>
+              </div>
+              <div className="fisc-721-item fisc-721-item--star">
+                <div className="fisc-721-k">La autocustodia NO entra</div>
+                <div className="fisc-721-v">La Agencia Tributaria ha aclarado que las criptomonedas en monederos donde <strong>tú controlas las claves privadas</strong>, sin un tercero que las custodie, quedan fuera del modelo 721. Las <em>cold wallets</em> no custodiadas no se declaran aquí. Solo entra lo que está bajo custodia de terceros.</div>
+              </div>
+              <div className="fisc-721-item">
+                <div className="fisc-721-k">Sanciones</div>
+                <div className="fisc-721-v">Multa fija de <strong>300 €</strong> por no presentarlo tras requerimiento y <strong>150 €</strong> por presentarlo incompleto o con errores, además de <strong>20 € por cada dato omitido</strong> y <strong>10 € por cada dato incorrecto</strong>.</div>
+              </div>
+            </div>
+
+            <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+              <div className="gbc-box-title">Presentar el 721 no es declarar</div>
+              <div className="gbc-box-body">
+                <p>
+                  Son obligaciones independientes y hay que cumplir las dos. Puedes tener que presentar
+                  el 721 sin haber vendido nada en todo el año (informas de un saldo, no de una ganancia),
+                  y puedes tener que declarar ganancias en el IRPF sin llegar nunca al umbral del 721.
+                  Confundirlas —o creer que una sustituye a la otra— es un error frecuente y caro.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECCIÓN 7: PATRIMONIO ── */}
+        <section id="patrimonio" className="gbc-section">
+          <div className="gbc-gc">
+            <div className="gbc-ey">Sección 7</div>
+            <h2 className="gbc-title">El olvidado: Impuesto sobre el Patrimonio</h2>
+            <div className="gbc-body">
+              <p>
+                Casi nadie lo tiene en el radar, y sin embargo puede afectarte sin que hayas hecho una
+                sola operación en todo el año. El <strong>Impuesto sobre el Patrimonio</strong> (modelo
+                714) grava lo que <em>tienes</em>, no lo que ganas, y las criptomonedas forman parte de
+                la base como cualquier otro bien, valoradas a precio de mercado a 31 de diciembre.
+              </p>
+              <p>
+                La obligación de declarar aparece, con carácter general, cuando el patrimonio neto supera
+                los <strong>700.000 €</strong> —con una exención adicional de hasta 300.000 € para la
+                vivienda habitual— o cuando el valor de los bienes supera los 2.000.000 €, aunque salga
+                a cuota cero. Aquí entra todo: inmuebles, cuentas, fondos, acciones y, por supuesto, tu
+                cartera cripto.
+              </p>
+            </div>
+
+            <div className="gbc-box gbc-box--gold" style={{ marginTop: 8 }}>
+              <div className="gbc-box-title">Es un impuesto cedido: tu comunidad autónoma manda</div>
+              <div className="gbc-box-body">
+                <p>
+                  Aquí está la clave que hace imposible dar una respuesta única: el Patrimonio está
+                  cedido a las comunidades autónomas, que fijan mínimo exento, tipos y bonificaciones.
+                  El resultado va desde comunidades donde la cuota queda prácticamente bonificada al
+                  100% hasta otras donde se paga íntegro. Dos personas con la misma cartera y el mismo
+                  saldo a 31 de diciembre pueden tener facturas radicalmente distintas según dónde
+                  residan. Y ojo: <strong>la obligación de declarar puede existir aunque la cuota final
+                  sea cero</strong>.
+                </p>
+              </div>
+            </div>
+
+            <div className="gbc-body" style={{ marginTop: 28 }}>
+              <p>
+                Un detalle que descoloca a mucha gente: la fecha de valoración es el <strong>31 de
+                diciembre</strong>, un único día. Si tu cartera valía mucho ese día y se desplomó en
+                enero, el impuesto se calcula sobre la foto de diciembre. Es exactamente el mismo
+                fenómeno que vimos con el staking — la fiscalidad congela un instante, y el mercado
+                sigue moviéndose.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SECCIÓN 8: PÉRDIDAS ── */}
+        <section id="perdidas" className="gbc-section">
+          <div className="gbc-gc">
+            <div className="gbc-ey">Sección 8</div>
+            <h2 className="gbc-title">Pérdidas: cómo compensarlas y la regla que casi todos aplican mal</h2>
+            <div className="gbc-body">
+              <p>
+                Las pérdidas no son solo un mal trago: son un activo fiscal, siempre que sepas usarlas.
+                El orden de compensación en la base del ahorro funciona así:
+              </p>
+            </div>
+
+            <div className="fisc-steps">
+              <div className="fisc-step">
+                <div className="fisc-step-n">1</div>
+                <div>
+                  <strong>Contra tus propias ganancias patrimoniales</strong>
+                  <p>Primero, las pérdidas se restan de las ganancias del mismo ejercicio dentro de la base del ahorro. Si vendiste una cripto con 8.000 € de ganancia y otra con 3.000 € de pérdida, tributas por 5.000 €.</p>
+                </div>
+              </div>
+              <div className="fisc-step">
+                <div className="fisc-step-n">2</div>
+                <div>
+                  <strong>Contra rendimientos del capital mobiliario, con tope del 25%</strong>
+                  <p>Si aún te queda saldo negativo, puedes compensarlo contra el saldo positivo de rendimientos del capital mobiliario —dividendos, intereses, staking— pero solo hasta el <strong>25%</strong> de ese saldo.</p>
+                </div>
+              </div>
+              <div className="fisc-step">
+                <div className="fisc-step-n">3</div>
+                <div>
+                  <strong>Los cuatro años siguientes</strong>
+                  <p>Lo que siga sin compensar no se pierde: se arrastra a los <strong>cuatro ejercicios siguientes</strong>, aplicando el mismo orden. Pasado ese plazo, caduca — por eso conviene llevar un control anual de saldos pendientes.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+              <div className="gbc-box-title">La regla de recompra: para cripto es un año, no dos meses</div>
+              <div className="gbc-box-body">
+                <p>
+                  Circula mucha desinformación con esto. La famosa <strong>«regla de los dos meses»</strong>
+                  está pensada para <em>valores admitidos a negociación</em> —acciones cotizadas— y las
+                  criptomonedas no lo son. A ellas se les aplica la regla general del{" "}
+                  <strong>artículo 33.5.e) de la Ley del IRPF</strong>: si vendes con pérdidas y{" "}
+                  <strong>recompras el mismo activo dentro del año siguiente</strong>, esa pérdida no se
+                  computa en ese ejercicio.
+                </p>
+                <p style={{ marginTop: 12 }}>
+                  Matiz importante y tranquilizador: la pérdida <strong>no se pierde, se difiere</strong>.
+                  Podrás computarla cuando transmitas definitivamente esas monedas recompradas. Lo que la
+                  norma impide es aflorar una pérdida fiscal manteniendo en la práctica la misma posición.
+                </p>
+              </div>
+            </div>
+
+            <div className="gbc-body" style={{ marginTop: 28 }}>
+              <p>
+                ¿Y si el problema es que <strong>no puedes vender</strong>? El caso de los fondos
+                atrapados en una plataforma quebrada —el escenario FTX— es distinto: no basta con que el
+                activo valga cero, hace falta que la pérdida esté <em>justificada</em> y que exista una
+                alteración patrimonial acreditable, normalmente ligada al procedimiento concursal. No es
+                algo que se pueda dar por hecho el año del colapso, y es uno de los supuestos donde
+                merece más la pena sentarse con un asesor.
+              </p>
+            </div>
+          </div>
+        </section>
+
+      {/* ── MURO PREMIUM: las herramientas y el cierre ── */}
+      {isPremium ? (
         <>
-          {/* ── SECCIÓN 3: FIFO ── */}
-          <section id="fifo" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">FIFO: la regla que decide cuánto ganas «en papel»</h2>
-              <div className="gbc-body">
-                <p>
-                  Imagina que llevas tres años comprando bitcoin poco a poco. Tienes lotes a 18.000 €,
-                  a 32.000 €, a 55.000 €. Vendes una parte. ¿Cuál de esos precios usas para calcular la
-                  ganancia? La respuesta no es «el que quieras»: en España el método es{" "}
-                  <strong>FIFO</strong> —<em>First In, First Out</em>— y es <strong>obligatorio</strong>.
-                  Se entiende que vendes primero las monedas que compraste primero.
-                </p>
-                <p>
-                  Esto no es un detalle contable menor. En una cartera construida durante años, los lotes
-                  más antiguos suelen ser los más baratos, así que el FIFO tiende a <strong>maximizar la
-                  ganancia declarada</strong> en las primeras ventas. No puedes elegir el lote más caro
-                  para reducir la factura, ni usar el precio medio ponderado, ni aplicar LIFO. Mueve los
-                  controles y observa cómo se van consumiendo los lotes:
-                </p>
-              </div>
-
-              <GuideFiscalFifo />
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">El FIFO se aplica por criptomoneda, no por plataforma</div>
-                <div className="gbc-box-body">
-                  <p>
-                    Un malentendido habitual: llevar el FIFO por separado en cada exchange. La Dirección
-                    General de Tributos considera que las unidades de una misma criptomoneda son bienes
-                    homogéneos, así que tu bitcoin es <strong>uno solo</strong> aunque esté repartido entre
-                    Binance, Kraken y una Ledger. El orden de compra que cuenta es el global. Si operas en
-                    varias plataformas y no consolidas, tu cálculo estará mal aunque cada exchange
-                    individualmente cuadre.
-                  </p>
-                </div>
-              </div>
-
-              <div className="gbc-body" style={{ marginTop: 28 }}>
-                <p>
-                  Una nota práctica: los <strong>gastos y comisiones</strong> inherentes a la operación
-                  suman al valor de adquisición cuando compras y restan del valor de transmisión cuando
-                  vendes. No son un detalle despreciable — en operativa frecuente pueden suponer una
-                  parte relevante del resultado, y olvidarlos significa pagar de más.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 4: ESCALA ── */}
-          <section id="escala" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Cuánto pagas: la escala del ahorro, tramo a tramo</h2>
-              <div className="gbc-body">
-                <p>
-                  Las ganancias por vender o permutar criptomonedas se integran en la{" "}
-                  <strong>base imponible del ahorro</strong>, que tiene su propia escala, separada de la
-                  de tu nómina. Desde el 1 de enero de 2025, con la entrada en vigor de la Ley 7/2024,
-                  esa escala tiene cinco tramos y el último subió del 28% al <strong>30%</strong>.
-                </p>
-              </div>
-
-              <div className="gbc-stats">
-                <GuideAnimatedStat end={19} suffix="%" decimals={0} label="Hasta 6.000 € de base del ahorro" source="Escala estatal 2025" />
-                <GuideAnimatedStat end={21} suffix="%" decimals={0} label="De 6.000 € a 50.000 €" source="Escala estatal 2025" />
-                <GuideAnimatedStat end={23} suffix="%" decimals={0} label="De 50.000 € a 200.000 €" source="Escala estatal 2025" />
-                <GuideAnimatedStat end={30} suffix="%" decimals={0} label="Más de 300.000 € (antes 28%)" source="Ley 7/2024" />
-              </div>
-
-              <div className="gbc-body" style={{ marginTop: 28 }}>
-                <p>
-                  El tramo intermedio que falta en las cifras de arriba es el de <strong>200.000 € a
-                  300.000 €, al 27%</strong>. Y aquí conviene deshacer el malentendido más extendido de
-                  todos: los tramos son <strong>marginales</strong>. Entrar en el tramo del 30% no
-                  significa que pagues el 30% de toda tu ganancia, sino solo de la parte que excede los
-                  300.000 €. Compruébalo tú mismo:
-                </p>
-              </div>
-
-              <GuideFiscalCalc />
-
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La base del ahorro es un saco compartido</div>
-                <div className="gbc-box-body">
-                  <p>
-                    En esa misma base entran los dividendos de tus acciones, los intereses de tus depósitos
-                    y las recompensas de staking. El tipo que acabas pagando por tu ganancia cripto depende,
-                    por tanto, de todo lo demás que tengas ahí dentro. Dos personas con la misma ganancia de
-                    10.000 € en bitcoin pueden pagar tipos distintos según el resto de sus rentas del ahorro.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 5: RENTAS ── */}
-          <section id="rentas" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 5</div>
-              <h2 className="gbc-title">Staking, airdrops y minería: cada renta a su base</h2>
-              <div className="gbc-body">
-                <p>
-                  No todo lo que entra en tu wallet es una ganancia patrimonial. Hay rentas que no vienen
-                  de transmitir nada — vienen de <em>tener</em> o de <em>hacer</em> — y cada una tiene su
-                  propia calificación fiscal. Esto importa muchísimo, porque de ello depende si tributas
-                  al 19% o si te vas por encima del 40%.
-                </p>
-                <p>
-                  El caso más relevante es el <strong>staking</strong>. La Dirección General de Tributos,
-                  en su consulta vinculante <strong>V1766-22</strong>, estableció que las recompensas de
-                  staking son <strong>rendimientos del capital mobiliario</strong> obtenidos por la cesión
-                  de capitales propios a terceros. Van a la base del ahorro y —esto es lo que más
-                  sorprende— se devengan <strong>al recibirlas</strong>, valoradas en euros al precio de
-                  mercado de ese día, aunque no vendas absolutamente nada.
-                </p>
-              </div>
-
-              <GuideSpotlightCards uses={RENTAS} />
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">El riesgo real del staking: tributar por lo que luego se desploma</div>
-                <div className="gbc-box-body">
-                  <p>
-                    Como la recompensa tributa el día que la recibes, puedes acabar pagando impuestos por
-                    un valor que después se evapora. Si recibes tokens valorados en 5.000 € a lo largo del
-                    año y en diciembre valen 1.200 €, tu rendimiento del capital mobiliario sigue siendo de
-                    5.000 €. La caída posterior no corrige ese rendimiento: generará, en su caso, una
-                    pérdida patrimonial cuando vendas — y las pérdidas patrimoniales solo se compensan
-                    contra rendimientos del capital mobiliario hasta un límite del 25%. Son compartimentos
-                    distintos, y por eso conviene tenerlo previsto antes de que llegue la campaña.
-                  </p>
-                </div>
-              </div>
-
-              <div className="gbc-body" style={{ marginTop: 28 }}>
-                <p>
-                  Un apunte sobre gastos: al no tener las criptomonedas la consideración de valores
-                  negociables, <strong>no son deducibles</strong> los gastos de administración y custodia
-                  que sí lo serían en una cartera de acciones. Es una asimetría poco conocida y que juega
-                  en contra del inversor.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 6: MODELO 721 ── */}
-          <section id="modelo-721" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 6</div>
-              <h2 className="gbc-title">Modelo 721: el informativo que más sanciones genera</h2>
-              <div className="gbc-body">
-                <p>
-                  El modelo 721 es la <strong>declaración informativa sobre monedas virtuales situadas en
-                  el extranjero</strong>, aprobada por la Orden HFP/886/2023. Es el hermano cripto del
-                  conocido modelo 720 de bienes en el extranjero, y tiene una característica que lo hace
-                  peligroso: <strong>no se paga nada con él</strong>. Es puramente informativo. Precisamente
-                  por eso se olvida — y precisamente por eso genera sanciones.
-                </p>
-              </div>
-
-              <div className="fisc-721">
-                <div className="fisc-721-item">
-                  <div className="fisc-721-k">¿Quién lo presenta?</div>
-                  <div className="fisc-721-v">Personas físicas y jurídicas residentes en España que sean titulares, beneficiarias o autorizadas sobre monedas virtuales custodiadas en el extranjero. También quien lo haya sido durante el año aunque ya no lo sea.</div>
-                </div>
-                <div className="fisc-721-item">
-                  <div className="fisc-721-k">Umbral</div>
-                  <div className="fisc-721-v">Cuando el valor conjunto a <strong>31 de diciembre</strong> supera los <strong>50.000 €</strong>. Es un umbral global, no por plataforma: se suman todos los saldos custodiados fuera de España.</div>
-                </div>
-                <div className="fisc-721-item">
-                  <div className="fisc-721-k">Plazo</div>
-                  <div className="fisc-721-v">Del <strong>1 de enero al 31 de marzo</strong> del año siguiente. Para el ejercicio 2025, el plazo fue del 1 de enero al 31 de marzo de 2026.</div>
-                </div>
-                <div className="fisc-721-item">
-                  <div className="fisc-721-k">Años siguientes</div>
-                  <div className="fisc-721-v">Si ya lo presentaste, solo vuelves a presentarlo cuando el valor conjunto se haya incrementado en más de <strong>20.000 €</strong> respecto a la última declaración presentada.</div>
-                </div>
-                <div className="fisc-721-item fisc-721-item--star">
-                  <div className="fisc-721-k">La autocustodia NO entra</div>
-                  <div className="fisc-721-v">La Agencia Tributaria ha aclarado que las criptomonedas en monederos donde <strong>tú controlas las claves privadas</strong>, sin un tercero que las custodie, quedan fuera del modelo 721. Las <em>cold wallets</em> no custodiadas no se declaran aquí. Solo entra lo que está bajo custodia de terceros.</div>
-                </div>
-                <div className="fisc-721-item">
-                  <div className="fisc-721-k">Sanciones</div>
-                  <div className="fisc-721-v">Multa fija de <strong>300 €</strong> por no presentarlo tras requerimiento y <strong>150 €</strong> por presentarlo incompleto o con errores, además de <strong>20 € por cada dato omitido</strong> y <strong>10 € por cada dato incorrecto</strong>.</div>
-                </div>
-              </div>
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Presentar el 721 no es declarar</div>
-                <div className="gbc-box-body">
-                  <p>
-                    Son obligaciones independientes y hay que cumplir las dos. Puedes tener que presentar
-                    el 721 sin haber vendido nada en todo el año (informas de un saldo, no de una ganancia),
-                    y puedes tener que declarar ganancias en el IRPF sin llegar nunca al umbral del 721.
-                    Confundirlas —o creer que una sustituye a la otra— es un error frecuente y caro.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 7: PATRIMONIO ── */}
-          <section id="patrimonio" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 7</div>
-              <h2 className="gbc-title">El olvidado: Impuesto sobre el Patrimonio</h2>
-              <div className="gbc-body">
-                <p>
-                  Casi nadie lo tiene en el radar, y sin embargo puede afectarte sin que hayas hecho una
-                  sola operación en todo el año. El <strong>Impuesto sobre el Patrimonio</strong> (modelo
-                  714) grava lo que <em>tienes</em>, no lo que ganas, y las criptomonedas forman parte de
-                  la base como cualquier otro bien, valoradas a precio de mercado a 31 de diciembre.
-                </p>
-                <p>
-                  La obligación de declarar aparece, con carácter general, cuando el patrimonio neto supera
-                  los <strong>700.000 €</strong> —con una exención adicional de hasta 300.000 € para la
-                  vivienda habitual— o cuando el valor de los bienes supera los 2.000.000 €, aunque salga
-                  a cuota cero. Aquí entra todo: inmuebles, cuentas, fondos, acciones y, por supuesto, tu
-                  cartera cripto.
-                </p>
-              </div>
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 8 }}>
-                <div className="gbc-box-title">Es un impuesto cedido: tu comunidad autónoma manda</div>
-                <div className="gbc-box-body">
-                  <p>
-                    Aquí está la clave que hace imposible dar una respuesta única: el Patrimonio está
-                    cedido a las comunidades autónomas, que fijan mínimo exento, tipos y bonificaciones.
-                    El resultado va desde comunidades donde la cuota queda prácticamente bonificada al
-                    100% hasta otras donde se paga íntegro. Dos personas con la misma cartera y el mismo
-                    saldo a 31 de diciembre pueden tener facturas radicalmente distintas según dónde
-                    residan. Y ojo: <strong>la obligación de declarar puede existir aunque la cuota final
-                    sea cero</strong>.
-                  </p>
-                </div>
-              </div>
-
-              <div className="gbc-body" style={{ marginTop: 28 }}>
-                <p>
-                  Un detalle que descoloca a mucha gente: la fecha de valoración es el <strong>31 de
-                  diciembre</strong>, un único día. Si tu cartera valía mucho ese día y se desplomó en
-                  enero, el impuesto se calcula sobre la foto de diciembre. Es exactamente el mismo
-                  fenómeno que vimos con el staking — la fiscalidad congela un instante, y el mercado
-                  sigue moviéndose.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 8: PÉRDIDAS ── */}
-          <section id="perdidas" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 8</div>
-              <h2 className="gbc-title">Pérdidas: cómo compensarlas y la regla que casi todos aplican mal</h2>
-              <div className="gbc-body">
-                <p>
-                  Las pérdidas no son solo un mal trago: son un activo fiscal, siempre que sepas usarlas.
-                  El orden de compensación en la base del ahorro funciona así:
-                </p>
-              </div>
-
-              <div className="fisc-steps">
-                <div className="fisc-step">
-                  <div className="fisc-step-n">1</div>
-                  <div>
-                    <strong>Contra tus propias ganancias patrimoniales</strong>
-                    <p>Primero, las pérdidas se restan de las ganancias del mismo ejercicio dentro de la base del ahorro. Si vendiste una cripto con 8.000 € de ganancia y otra con 3.000 € de pérdida, tributas por 5.000 €.</p>
-                  </div>
-                </div>
-                <div className="fisc-step">
-                  <div className="fisc-step-n">2</div>
-                  <div>
-                    <strong>Contra rendimientos del capital mobiliario, con tope del 25%</strong>
-                    <p>Si aún te queda saldo negativo, puedes compensarlo contra el saldo positivo de rendimientos del capital mobiliario —dividendos, intereses, staking— pero solo hasta el <strong>25%</strong> de ese saldo.</p>
-                  </div>
-                </div>
-                <div className="fisc-step">
-                  <div className="fisc-step-n">3</div>
-                  <div>
-                    <strong>Los cuatro años siguientes</strong>
-                    <p>Lo que siga sin compensar no se pierde: se arrastra a los <strong>cuatro ejercicios siguientes</strong>, aplicando el mismo orden. Pasado ese plazo, caduca — por eso conviene llevar un control anual de saldos pendientes.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La regla de recompra: para cripto es un año, no dos meses</div>
-                <div className="gbc-box-body">
-                  <p>
-                    Circula mucha desinformación con esto. La famosa <strong>«regla de los dos meses»</strong>
-                    está pensada para <em>valores admitidos a negociación</em> —acciones cotizadas— y las
-                    criptomonedas no lo son. A ellas se les aplica la regla general del{" "}
-                    <strong>artículo 33.5.e) de la Ley del IRPF</strong>: si vendes con pérdidas y{" "}
-                    <strong>recompras el mismo activo dentro del año siguiente</strong>, esa pérdida no se
-                    computa en ese ejercicio.
-                  </p>
-                  <p style={{ marginTop: 12 }}>
-                    Matiz importante y tranquilizador: la pérdida <strong>no se pierde, se difiere</strong>.
-                    Podrás computarla cuando transmitas definitivamente esas monedas recompradas. Lo que la
-                    norma impide es aflorar una pérdida fiscal manteniendo en la práctica la misma posición.
-                  </p>
-                </div>
-              </div>
-
-              <div className="gbc-body" style={{ marginTop: 28 }}>
-                <p>
-                  ¿Y si el problema es que <strong>no puedes vender</strong>? El caso de los fondos
-                  atrapados en una plataforma quebrada —el escenario FTX— es distinto: no basta con que el
-                  activo valga cero, hace falta que la pérdida esté <em>justificada</em> y que exista una
-                  alteración patrimonial acreditable, normalmente ligada al procedimiento concursal. No es
-                  algo que se pueda dar por hecho el año del colapso, y es uno de los supuestos donde
-                  merece más la pena sentarse con un asesor.
-                </p>
-              </div>
-            </div>
-          </section>
-
           {/* ── SECCIÓN 9: ERRORES Y CALENDARIO ── */}
           <section id="errores" className="gbc-section">
             <div className="gbc-gc">
@@ -815,6 +795,54 @@ export default async function FiscalidadCriptoEspanaPage() {
             </div>
           </section>
         </>
+      ) : (
+        <section id="errores" className="gbc-section">
+          <div className="gbc-gc">
+            <div className="gbc-ey">
+              Herramientas y cierre <span className="gbc-lock-pill">Premium</span>
+            </div>
+            <h2 className="gbc-title">Calendario fiscal, los seis errores caros y las herramientas</h2>
+            <div className="gbc-body">
+              <p>
+                Hasta aquí tienes la norma entera y gratis: qué tributa, cómo se calcula con FIFO,
+                cuánto se paga en cada tramo, cómo van staking y airdrops, a quién le toca el modelo
+                721, el Patrimonio y la compensación de pérdidas. Lo que queda es la parte que se usa
+                con la declaración delante.
+              </p>
+            </div>
+
+            <div className="fisc-locked-list">
+              <div className="fisc-locked-item"><span>1</span> Simulador FIFO: mete tus compras y tus ventas y mira qué lote consume cada una</div>
+              <div className="fisc-locked-item"><span>2</span> Calculadora por tramos: tu ganancia desglosada del 19% al 30%, tramo a tramo</div>
+              <div className="fisc-locked-item"><span>3</span> Calendario fiscal del ejercicio y los seis errores que más dinero cuestan</div>
+              <div className="fisc-locked-item"><span>4</span> Quiz de cinco preguntas y el badge Cuentas Claras</div>
+            </div>
+
+            <div className="gbc-paywall" id="quiz">
+              <div className="gbc-paywall-badge">Has leído las 8 secciones de teoría</div>
+              <div className="gbc-paywall-t">
+                {isRegistered
+                  ? "Hazte Premium para las herramientas"
+                  : "Las herramientas son Premium"}
+              </div>
+              <div className="gbc-paywall-d">
+                La norma la tienes entera arriba. Lo que desbloquea Premium es aplicarla a tu caso:
+                el <strong>simulador FIFO</strong>, la <strong>calculadora por tramos</strong>, el
+                calendario con los errores caros, el quiz y tu badge{" "}
+                <strong>Cuentas Claras</strong>. Una sola declaración mal planteada cuesta más que la
+                suscripción de un año.
+              </div>
+              <Link href="/premium" className="gbc-paywall-btn">Hazte Premium →</Link>
+              <div className="gbc-paywall-login">
+                {isRegistered ? (
+                  <>Ya tienes cuenta gratuita — solo te falta el acceso Premium.</>
+                ) : (
+                  <>¿Ya eres Premium? <Link href="/login">Inicia sesión</Link></>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
       )}
 
       {/* ── Interacciones ── */}
