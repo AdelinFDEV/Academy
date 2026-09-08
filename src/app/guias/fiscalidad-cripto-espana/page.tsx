@@ -20,11 +20,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/guias/fiscalidad-cripto-espana" },
   title: "Fiscalidad Cripto en España: FIFO y Modelo 721",
   description:
-    "Fiscalidad cripto en España: qué tributa, el método FIFO obligatorio, la escala del ahorro 19–30%, staking, airdrops y el modelo 721. Con simulador y quiz.",
+    "Fiscalidad cripto en España: qué tributa, cuánto pagas, el método FIFO, staking, airdrops y el modelo 721. Guía completa y gratis, con ejemplos y cifras.",
   openGraph: {
     title: "Fiscalidad Cripto en España: Modelo 721, Staking, FIFO y Ganancias",
     description:
-      "Todo lo que Hacienda espera de ti si tienes criptomonedas en España: hechos imponibles, FIFO obligatorio, tramos del ahorro, staking, modelo 721, Patrimonio y compensación de pérdidas. Con simuladores y quiz.",
+      "Todo lo que Hacienda espera de ti si tienes criptomonedas en España: hechos imponibles, FIFO obligatorio, tramos del ahorro, staking, modelo 721, Patrimonio y compensación de pérdidas. Ocho secciones abiertas.",
     type: "article",
   },
 };
@@ -181,23 +181,31 @@ export default async function FiscalidadCriptoEspanaPage() {
       {/* Hero */}
       <header className="gbc-hero">
         <div className="gbc-hero-glow" aria-hidden="true" />
-        <div className="gbc-hero-ey">Guía premium · AdelinBTC Academy · 2026</div>
+        <div className="gbc-hero-ey">Guía completa · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
           Fiscalidad cripto en España<br />
           <span className="gbc-hero-gold">Todo lo que Hacienda espera de ti.</span>
         </h1>
         <p className="gbc-hero-desc">
-          Desde 2026, con DAC8 en marcha, la Agencia Tributaria recibe automáticamente tus saldos y tus
-          operaciones de cualquier plataforma europea. La pregunta ya no es si lo van a saber: es si lo que
-          declaras cuadra con lo que ellos ya tienen. Esta guía cubre los cuatro frentes completos —
-          el modelo 721, el método FIFO, la declaración de ganancias y el staking — con simuladores para
-          que veas los números aplicados a tu caso.
+          En la fiscalidad cripto española tributas cuando <strong>vendes, permutas una moneda por otra
+          o pagas con ella</strong>: es una ganancia patrimonial que va a la base del ahorro, del{" "}
+          <strong>19% al 30%</strong>. Comprar y mantener no tributa. El staking y los airdrops son
+          rentas aparte. El cálculo es por <strong>FIFO obligatorio</strong>, y si a 31 de diciembre
+          tienes más de 50.000 € en plataformas de fuera de España, te toca además el{" "}
+          <strong>modelo 721</strong>.
+        </p>
+        <p className="gbc-hero-desc gbc-hero-desc--sec">
+          Esa es la respuesta corta de la fiscalidad cripto. Abajo está cada pieza con su ejemplo y
+          sus cifras, porque desde
+          2026, con DAC8 en marcha, la Agencia Tributaria recibe tus saldos y tus operaciones de
+          cualquier plataforma europea. La pregunta ya no es si lo van a saber: es si lo que declaras
+          cuadra con lo que ellos ya tienen.
         </p>
         <div className="gbc-hero-pills">
-          <span className="gbc-pill">9 secciones</span>
-          <span className="gbc-pill">Simulador FIFO</span>
-          <span className="gbc-pill">Calculadora de impuestos</span>
-          <span className="gbc-pill">Quiz + Badge</span>
+          <span className="gbc-pill">8 secciones abiertas</span>
+          <span className="gbc-pill">Normativa 2026</span>
+          <span className="gbc-pill">Ejemplos con cifras</span>
+          <span className="gbc-pill">Simulador y quiz · Premium</span>
         </div>
         <GuideHeroStats stats={HERO_STATS} />
       </header>
@@ -233,9 +241,7 @@ export default async function FiscalidadCriptoEspanaPage() {
             <p>
               El primero fueron los <strong>modelos 172 y 173</strong>, aprobados por la Orden HFP/887/2023.
               Desde entonces, los proveedores de servicios de criptoactivos con presencia en España están
-              obligados a comunicar a la Agencia Tributaria dos cosas: los <strong>saldos</strong> de sus
-              usuarios a 31 de diciembre (modelo 172) y <strong>todas las operaciones</strong> —compras,
-              ventas, permutas, cobros y pagos— realizadas durante el año (modelo 173). Se presentaron por
+              obligados a comunicar dos cosas a la Agencia Tributaria. Una, los <strong>saldos</strong> de sus usuarios a 31 de diciembre (modelo 172). Dos, <strong>todas las operaciones</strong> del año —compras, ventas, permutas, cobros y pagos— en el modelo 173. Se presentaron por
               primera vez en enero de 2024. Tú no presentas ninguno de los dos: los presenta la plataforma,
               hablando de ti.
             </p>
@@ -265,7 +271,7 @@ export default async function FiscalidadCriptoEspanaPage() {
             <div className="gbc-box-title">Qué significa esto en la práctica</div>
             <div className="gbc-box-body">
               <p>
-                Que las declaraciones cripto pasan a comprobarse igual que se comprueban las de un
+                Que la fiscalidad cripto pasa a comprobarse igual que se comprueba la declaración de un
                 asalariado: por cruce automático de datos. Si tu exchange informa de 40.000 € en ventas
                 y tu declaración no recoge ninguna ganancia patrimonial, esa discrepancia no depende de
                 que un inspector se fije en ti — salta sola. Declarar bien deja de ser una cuestión de
@@ -280,10 +286,11 @@ export default async function FiscalidadCriptoEspanaPage() {
       <section id="que-tributa" className="gbc-section">
         <div className="gbc-gc">
           <div className="gbc-ey">Sección 2 <span className="gbc-free-pill">Gratis</span></div>
-          <h2 className="gbc-title">Qué tributa y qué no: los hechos imponibles</h2>
+          <h2 className="gbc-title">Qué tributa y qué no en la fiscalidad cripto</h2>
           <div className="gbc-body">
             <p>
-              Aquí está el 80% de los errores, y casi todos vienen de la misma confusión: creer que el
+              Aquí está el 80% de los errores de la fiscalidad cripto, y casi todos vienen de la misma
+              confusión: creer que el
               impuesto se activa al recibir euros en el banco. No es así. Lo que grava el IRPF es la
               <strong> alteración en la composición de tu patrimonio</strong> que pone de manifiesto una
               ganancia o una pérdida. El euro es solo la unidad de medida, no el desencadenante.
@@ -342,10 +349,7 @@ export default async function FiscalidadCriptoEspanaPage() {
             <div className="gbc-box-title">La trampa de las stablecoins</div>
             <div className="gbc-box-body">
               <p>
-                Merece la pena insistir porque es donde más gente se lleva un susto. Si compraste BTC a
-                20.000 € y, viendo que el mercado se gira, lo pasas a USDT con BTC a 90.000 €, has
-                realizado una ganancia de 70.000 € por cada bitcoin — aunque en tu cabeza «no has vendido»
-                y el saldo sigue dentro del exchange. Un trader activo que rota posiciones puede acumular
+                Merece la pena insistir porque es donde más gente se lleva un susto. Compraste BTC a 20.000 €. El mercado se gira y lo pasas a USDT con BTC a 90.000 €. Acabas de realizar una ganancia de 70.000 € por cada bitcoin, aunque en tu cabeza «no has vendido» y el saldo siga dentro del exchange. Un trader activo que rota posiciones puede acumular
                 decenas de hechos imponibles al año sin haber retirado un solo euro.
               </p>
             </div>
@@ -367,7 +371,8 @@ export default async function FiscalidadCriptoEspanaPage() {
               <p>
                 Imagina que llevas tres años comprando bitcoin poco a poco. Tienes lotes a 18.000 €,
                 a 32.000 €, a 55.000 €. Vendes una parte. ¿Cuál de esos precios usas para calcular la
-                ganancia? La respuesta no es «el que quieras»: en España el método es{" "}
+                ganancia? La respuesta no es «el que quieras»: en la fiscalidad cripto española el
+                método es{" "}
                 <strong>FIFO</strong> —<em>First In, First Out</em>— y es <strong>obligatorio</strong>.
                 Se entiende que vendes primero las monedas que compraste primero.
               </p>
@@ -425,7 +430,9 @@ export default async function FiscalidadCriptoEspanaPage() {
             <h2 className="gbc-title">Cuánto pagas: la escala del ahorro, tramo a tramo</h2>
             <div className="gbc-body">
               <p>
-                Las ganancias por vender o permutar criptomonedas se integran en la{" "}
+                Aquí se responde la pregunta con la que llega casi todo el mundo a la fiscalidad
+                cripto: cuánto se paga. Las ganancias por vender o permutar criptomonedas se integran
+                en la{" "}
                 <strong>base imponible del ahorro</strong>, que tiene su propia escala, separada de la
                 de tu nómina. Desde el 1 de enero de 2025, con la entrada en vigor de la Ley 7/2024,
                 esa escala tiene cinco tramos y el último subió del 28% al <strong>30%</strong>.
@@ -483,7 +490,8 @@ export default async function FiscalidadCriptoEspanaPage() {
             <h2 className="gbc-title">Staking, airdrops y minería: cada renta a su base</h2>
             <div className="gbc-body">
               <p>
-                No todo lo que entra en tu wallet es una ganancia patrimonial. Hay rentas que no vienen
+                La parte de la fiscalidad cripto que más se falla después del FIFO es esta. No todo lo
+                que entra en tu wallet es una ganancia patrimonial. Hay rentas que no vienen
                 de transmitir nada — vienen de <em>tener</em> o de <em>hacer</em> — y cada una tiene su
                 propia calificación fiscal. Esto importa muchísimo, porque de ello depende si tributas
                 al 19% o si te vas por encima del 40%.
@@ -533,7 +541,8 @@ export default async function FiscalidadCriptoEspanaPage() {
             <h2 className="gbc-title">Modelo 721: el informativo que más sanciones genera</h2>
             <div className="gbc-body">
               <p>
-                El modelo 721 es la <strong>declaración informativa sobre monedas virtuales situadas en
+                Es la única obligación de la fiscalidad cripto que no depende de que hayas ganado ni
+                un euro. El modelo 721 es la <strong>declaración informativa sobre monedas virtuales situadas en
                 el extranjero</strong>, aprobada por la Orden HFP/886/2023. Es el hermano cripto del
                 conocido modelo 720 de bienes en el extranjero, y tiene una característica que lo hace
                 peligroso: <strong>no se paga nada con él</strong>. Es puramente informativo. Precisamente
@@ -589,16 +598,14 @@ export default async function FiscalidadCriptoEspanaPage() {
             <h2 className="gbc-title">El olvidado: Impuesto sobre el Patrimonio</h2>
             <div className="gbc-body">
               <p>
-                Casi nadie lo tiene en el radar, y sin embargo puede afectarte sin que hayas hecho una
+                Es el punto ciego de la fiscalidad cripto en España. Casi nadie lo tiene en el radar, y
+                sin embargo puede afectarte sin que hayas hecho una
                 sola operación en todo el año. El <strong>Impuesto sobre el Patrimonio</strong> (modelo
                 714) grava lo que <em>tienes</em>, no lo que ganas, y las criptomonedas forman parte de
                 la base como cualquier otro bien, valoradas a precio de mercado a 31 de diciembre.
               </p>
               <p>
-                La obligación de declarar aparece, con carácter general, cuando el patrimonio neto supera
-                los <strong>700.000 €</strong> —con una exención adicional de hasta 300.000 € para la
-                vivienda habitual— o cuando el valor de los bienes supera los 2.000.000 €, aunque salga
-                a cuota cero. Aquí entra todo: inmuebles, cuentas, fondos, acciones y, por supuesto, tu
+                La obligación de declarar aparece, con carácter general, en dos supuestos. Cuando el patrimonio neto supera los <strong>700.000 €</strong>, con una exención adicional de hasta 300.000 € para la vivienda habitual. O cuando el valor de los bienes supera los 2.000.000 €, aunque salga a cuota cero. Aquí entra todo: inmuebles, cuentas, fondos, acciones y, por supuesto, tu
                 cartera cripto.
               </p>
             </div>
@@ -637,7 +644,8 @@ export default async function FiscalidadCriptoEspanaPage() {
             <h2 className="gbc-title">Pérdidas: cómo compensarlas y la regla que casi todos aplican mal</h2>
             <div className="gbc-body">
               <p>
-                Las pérdidas no son solo un mal trago: son un activo fiscal, siempre que sepas usarlas.
+                Las pérdidas no son solo un mal trago: en la fiscalidad cripto son un activo, siempre
+                que sepas usarlas.
                 El orden de compensación en la base del ahorro funciona así:
               </p>
             </div>
@@ -687,10 +695,7 @@ export default async function FiscalidadCriptoEspanaPage() {
 
             <div className="gbc-body" style={{ marginTop: 28 }}>
               <p>
-                ¿Y si el problema es que <strong>no puedes vender</strong>? El caso de los fondos
-                atrapados en una plataforma quebrada —el escenario FTX— es distinto: no basta con que el
-                activo valga cero, hace falta que la pérdida esté <em>justificada</em> y que exista una
-                alteración patrimonial acreditable, normalmente ligada al procedimiento concursal. No es
+                ¿Y si el problema es que <strong>no puedes vender</strong>? El caso de los fondos atrapados en una plataforma quebrada —el escenario FTX— es distinto. No basta con que el activo valga cero: hace falta que la pérdida esté <em>justificada</em> y que exista una alteración patrimonial acreditable, normalmente ligada al procedimiento concursal. No es
                 algo que se pueda dar por hecho el año del colapso, y es uno de los supuestos donde
                 merece más la pena sentarse con un asesor.
               </p>
@@ -708,7 +713,8 @@ export default async function FiscalidadCriptoEspanaPage() {
               <h2 className="gbc-title">Calendario fiscal y los errores que más dinero cuestan</h2>
               <div className="gbc-body">
                 <p>
-                  El año fiscal cripto tiene dos citas fijas y una tarea continua que casi nadie hace hasta
+                  El año de la fiscalidad cripto tiene dos citas fijas y una tarea continua que casi nadie
+                  hace hasta
                   que es tarde: mantener el histórico de operaciones al día.
                 </p>
               </div>
@@ -804,9 +810,7 @@ export default async function FiscalidadCriptoEspanaPage() {
             <h2 className="gbc-title">Calendario fiscal, los seis errores caros y las herramientas</h2>
             <div className="gbc-body">
               <p>
-                Hasta aquí tienes la norma entera y gratis: qué tributa, cómo se calcula con FIFO,
-                cuánto se paga en cada tramo, cómo van staking y airdrops, a quién le toca el modelo
-                721, el Patrimonio y la compensación de pérdidas. Lo que queda es la parte que se usa
+                Hasta aquí tienes la fiscalidad cripto entera y gratis. Qué tributa, cómo se calcula con FIFO y cuánto se paga en cada tramo. Cómo van staking y airdrops, y a quién le tocan el modelo 721, el Patrimonio y la compensación de pérdidas. Lo que queda es la parte que se usa
                 con la declaración delante.
               </p>
             </div>

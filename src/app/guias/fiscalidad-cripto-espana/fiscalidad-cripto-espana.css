@@ -401,3 +401,14 @@
   .fisc-calc-tax { grid-area: tax; }
   .fisc-disclaimer { font-size: 13.5px; padding: 15px 16px; }
 }
+
+/* Segundo párrafo del hero: el contexto, y va DESPUÉS de la respuesta.
+   La fase 4 de la auditoría pide que quien llega desde Google vea la respuesta
+   antes que nada; el encuadre de DAC8 con el que abría la guía era exactamente
+   la contextualización que hace volver al buscador. Se marca un escalón por
+   debajo para que la respuesta corta siga siendo lo primero que se lee. */
+.gbc-hero-desc--sec {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin: -16px auto 32px;
+}
