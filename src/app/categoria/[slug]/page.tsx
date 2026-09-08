@@ -149,7 +149,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         )}
         {/* Sin esto la página de una temática es un callejón sin salida:
             enseña sus artículos y no dice que existan las otras siete. */}
-        <CategoriasNav activa={category.slug} titulo="Otras temáticas" />
+        <CategoriasNav activa={category.slug} titulo="Otras categorías" />
       </main>
 
       <Footer />

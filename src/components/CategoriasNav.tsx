@@ -48,7 +48,7 @@ const leerTematicas = cache(async () => {
  */
 export default async function CategoriasNav({
   activa,
-  titulo = "Explora por temática",
+  titulo = "Explora por categoría",
   variant = "pie",
 }: {
   /** Slug de la temática en la que ya está el visitante, si la hay. */

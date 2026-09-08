@@ -425,7 +425,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             buscando una cosa concreta descubre que hay otras siete secciones. */}
         <CategoriasNav
           activa={(post.categories as PostCategoryRef | null)?.slug ?? null}
-          titulo="Temas de la academia"
+          titulo="Categorías"
           variant="cabecera"
         />
 
@@ -540,7 +540,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             que es donde se decide adónde ir después. */}
         <CategoriasNav
           activa={(post.categories as PostCategoryRef | null)?.slug ?? null}
-          titulo="Sigue explorando por temática"
+          titulo="Sigue explorando por categoría"
         />
 
         {/* Comentarios */}
