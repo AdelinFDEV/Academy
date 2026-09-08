@@ -7014,6 +7014,46 @@ select {
   cursor: default;
 }
 
+/* En movil la barra no cabe en una linea: cuatro contadores mas el boton de
+   leer suman mas ancho que la pantalla, y el boton se salia de la tarjeta.
+   Los contadores se quedan en su fila y el boton baja a la suya, a todo
+   ancho — que ademas es la unica forma de que se pulse bien con el pulgar. */
+@media (max-width: 600px) {
+  .feed-action-bar {
+    flex-wrap: wrap;
+    gap: 0.4rem 0.3rem;
+  }
+
+  .feed-action-btn {
+    padding: 0.42rem 0.6rem;
+  }
+
+  .feed-post-cta {
+    flex: 1 0 100%;
+    margin-left: 0;
+    margin-top: 0.25rem;
+    justify-content: center;
+    padding: 0.7rem 1rem;
+  }
+}
+
+/* Telefonos estrechos: la tarjeta recupera unos milimetros de margen para que
+   los contadores sigan cabiendo en una sola fila. */
+@media (max-width: 400px) {
+  .feed-post-row {
+    padding: 1.25rem 1.1rem 1.15rem;
+  }
+
+  .hero-post-content {
+    padding: 1.25rem 1.1rem 1.15rem;
+  }
+
+  .feed-action-btn {
+    padding: 0.42rem 0.5rem;
+    font-size: 0.78rem;
+  }
+}
+
 @keyframes pop {
   0% {
     transform: scale(1);
