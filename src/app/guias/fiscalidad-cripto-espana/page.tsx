@@ -385,6 +385,71 @@ export default async function FiscalidadCriptoEspanaPage() {
               </p>
             </div>
 
+              {/* El FIFO, dibujado. Era el concepto que más cuesta de toda la
+                  guía y solo estaba en palabras y dentro del simulador, que es
+                  de pago. El dibujo va en SVG escrito a mano: no hay archivo
+                  que subir ni optimizar, y se lee igual en cualquier pantalla. */}
+              <figure className="fisc-fifo-fig">
+                <svg
+                  className="fisc-fifo-svg"
+                  viewBox="0 0 720 300"
+                  role="img"
+                  aria-labelledby="fifo-svg-t fifo-svg-d"
+                >
+                  <title id="fifo-svg-t">Cómo consume el FIFO tus lotes de bitcoin</title>
+                  <desc id="fifo-svg-d">
+                    Tres compras de 0,5 BTC a 18.000, 32.000 y 55.000 euros. Una venta de 0,7 BTC
+                    consume el lote más antiguo entero y 0,2 BTC del segundo, nunca el más caro.
+                  </desc>
+
+                  {/* La venta, marcada arriba: entra por la izquierda */}
+                  <path d="M60 34 L60 46 L340 46 L340 34" className="fisc-fifo-llave" />
+                  <text x="200" y="26" className="fisc-fifo-tx fisc-fifo-tx--venta" textAnchor="middle">
+                    Vendes 0,7 BTC a 90.000 €
+                  </text>
+
+                  {/* Los tres lotes, en orden de compra */}
+                  <rect x="60" y="70" width="200" height="72" rx="8" className="fisc-fifo-lote fisc-fifo-lote--usado" />
+                  <rect x="260" y="70" width="80" height="72" rx="8" className="fisc-fifo-lote fisc-fifo-lote--usado" />
+                  <rect x="340" y="70" width="120" height="72" rx="8" className="fisc-fifo-lote" />
+                  <rect x="460" y="70" width="200" height="72" rx="8" className="fisc-fifo-lote" />
+
+                  {/* Las divisiones reales entre compras */}
+                  <line x1="260" y1="70" x2="260" y2="142" className="fisc-fifo-corte" />
+                  <line x1="460" y1="70" x2="460" y2="142" className="fisc-fifo-corte" />
+
+                  <text x="160" y="100" className="fisc-fifo-tx fisc-fifo-tx--fuerte" textAnchor="middle">18.000 €</text>
+                  <text x="160" y="122" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="middle">0,5 BTC · la más antigua</text>
+
+                  <text x="360" y="100" className="fisc-fifo-tx fisc-fifo-tx--fuerte" textAnchor="middle">32.000 €</text>
+                  <text x="360" y="122" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="middle">0,5 BTC</text>
+
+                  <text x="560" y="100" className="fisc-fifo-tx fisc-fifo-tx--fuerte" textAnchor="middle">55.000 €</text>
+                  <text x="560" y="122" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="middle">0,5 BTC · intacta</text>
+
+                  <text x="60" y="166" className="fisc-fifo-tx fisc-fifo-tx--min">Primera compra</text>
+                  <text x="660" y="166" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="end">Última compra</text>
+
+                  {/* La cuenta */}
+                  <line x1="60" y1="196" x2="660" y2="196" className="fisc-fifo-corte" />
+
+                  <text x="60" y="228" className="fisc-fifo-tx fisc-fifo-tx--min">Coste que se resta (FIFO)</text>
+                  <text x="60" y="254" className="fisc-fifo-tx fisc-fifo-tx--fuerte">15.400 €</text>
+                  <text x="60" y="276" className="fisc-fifo-tx fisc-fifo-tx--min">0,5 × 18.000 + 0,2 × 32.000</text>
+
+                  <text x="300" y="228" className="fisc-fifo-tx fisc-fifo-tx--min">Importe de la venta</text>
+                  <text x="300" y="254" className="fisc-fifo-tx fisc-fifo-tx--fuerte">63.000 €</text>
+
+                  <text x="660" y="228" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="end">Ganancia que declaras</text>
+                  <text x="660" y="254" className="fisc-fifo-tx fisc-fifo-tx--oro" textAnchor="end">47.600 €</text>
+                  <text x="660" y="276" className="fisc-fifo-tx fisc-fifo-tx--min" textAnchor="end">9.100 € más que a precio medio</text>
+                </svg>
+                <figcaption className="fisc-fifo-cap">
+                  La venta entra siempre por la izquierda. Con precio medio ponderado la ganancia
+                  serían 38.500 € — <strong>9.100 € menos</strong>—, y por eso no puedes elegirlo.
+                </figcaption>
+              </figure>
+
               {isPremium ? (
                 <GuideFiscalFifo />
               ) : (
