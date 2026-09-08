@@ -51,12 +51,32 @@ export function fngMeta(value: number): { label: string; color: string } {
   return { label: "Codicia extrema", color: "#4ade80" };
 }
 
+/**
+ * El rango del día que se pinta, y dónde cae el precio dentro de él.
+ *
+ * CoinGecko refresca `high_24h` y `low_24h` en otro ciclo que
+ * `current_price`, y `/api/radar` cachea cinco minutos por encima: llega a
+ * pasar que el precio venga por DEBAJO del mínimo del propio rango (o por
+ * encima del máximo). Cuando pasaba, la posición salía negativa, el punto se
+ * pintaba con un `left` negativo y —como el carril solo es
+ * `position: relative`— se escapaba de la tarjeta hasta el borde izquierdo
+ * de la web.
+ *
+ * Se estira el rango hasta incluir el precio, que además es lo cierto: si
+ * ahora mismo vale 77.826, el mínimo de las 24 h es 77.826 y no 78.193. Y la
+ * posición se acota a [0, 100] de todas formas, que cubre el rango degenerado
+ * —máximo igual al mínimo— y cualquier dato raro que llegue de la fuente.
+ */
+function rangoDelDia(btc: RadarBtc): { low: number; high: number; pos: number } {
+  const low = Number.isFinite(btc.low24h) ? Math.min(btc.low24h, btc.price) : btc.price;
+  const high = Number.isFinite(btc.high24h) ? Math.max(btc.high24h, btc.price) : btc.price;
+  const pos = high > low ? ((btc.price - low) / (high - low)) * 100 : 50;
+  return { low, high, pos: Math.min(100, Math.max(0, pos)) };
+}
+
 /** Bitcoin en las últimas 24 h: precio, variación, rango del día y volumen. */
 export function RadarBtcCard({ btc, loaded }: { btc: RadarBtc | null; loaded: boolean }) {
-  // Dónde está el precio actual dentro del rango del día, en porcentaje.
-  const rangePos = btc && btc.high24h > btc.low24h
-    ? ((btc.price - btc.low24h) / (btc.high24h - btc.low24h)) * 100
-    : 50;
+  const rango = btc ? rangoDelDia(btc) : null;
 
   return (
     <section className="rd-card rd-card--btc">
@@ -64,7 +84,7 @@ export function RadarBtcCard({ btc, loaded }: { btc: RadarBtc | null; loaded: bo
         <span className="rd-card-title">Bitcoin · últimas 24h</span>
         <span className="rd-btc-tag">BTC/USD</span>
       </div>
-      {btc ? (
+      {btc && rango ? (
         <>
           <div className="rd-btc-price-row">
             <span className="rd-btc-price">{usd(btc.price)}</span>
@@ -75,11 +95,11 @@ export function RadarBtcCard({ btc, loaded }: { btc: RadarBtc | null; loaded: bo
           </div>
           <div className="rd-range">
             <div className="rd-range-track">
-              <span className="rd-range-dot" style={{ left: `${rangePos}%` }} />
+              <span className="rd-range-dot" style={{ left: `${rango.pos}%` }} />
             </div>
             <div className="rd-range-ends">
-              <span className="rd-range-low">Mín {usd(btc.low24h)}</span>
-              <span className="rd-range-high">Máx {usd(btc.high24h)}</span>
+              <span className="rd-range-low">Mín {usd(rango.low)}</span>
+              <span className="rd-range-high">Máx {usd(rango.high)}</span>
             </div>
           </div>
           <div className="rd-btc-foot">
