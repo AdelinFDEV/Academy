@@ -13134,6 +13134,19 @@ select {
   color: var(--accent-orange-soft);
 }
 
+/* Dos variantes, porque el navegador sale dos veces en una entrada.
+   `cabecera` va pegado al encabezado, sin linea de separacion y sin abrir un
+   hueco antes de la portada; `pie` cierra el articulo con su linea. */
+.cat-nav--cabecera {
+  margin: 1.5rem 0 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.cat-nav--cabecera .cat-nav-titulo {
+  margin-bottom: 0.7rem;
+}
+
 @media (max-width: 768px) {
   .cat-nav-lista {
     gap: 0.4rem 0.35rem;

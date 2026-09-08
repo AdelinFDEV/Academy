@@ -420,6 +420,15 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           />
         </div>
 
+        {/* Arriba también, no solo al pie. Al final del artículo el que
+            sigue leyendo ya ha decidido quedarse; arriba es donde el que llegó
+            buscando una cosa concreta descubre que hay otras siete secciones. */}
+        <CategoriasNav
+          activa={(post.categories as PostCategoryRef | null)?.slug ?? null}
+          titulo="Temas de la academia"
+          variant="cabecera"
+        />
+
         {/* Portada: vídeo de YouTube si existe, sino imagen estática */}
         {youtubeId ? (
           <div className="post-video">
@@ -529,7 +538,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             otras temáticas: la portada ya no las lista y `/articulos` no lo
             pisa nadie que entre por una entrada. Van antes de los comentarios,
             que es donde se decide adónde ir después. */}
-        <CategoriasNav activa={(post.categories as PostCategoryRef | null)?.slug ?? null} />
+        <CategoriasNav
+          activa={(post.categories as PostCategoryRef | null)?.slug ?? null}
+          titulo="Sigue explorando por temática"
+        />
 
         {/* Comentarios */}
         <div id="comentarios" className="post-comments">
