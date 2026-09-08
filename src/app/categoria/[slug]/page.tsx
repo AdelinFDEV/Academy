@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import Icon from "@/components/Icon";
 import PostInteractions from "@/components/PostInteractions";
 import SiteNav from "@/components/SiteNav";
+import CategoriasNav from "@/components/CategoriasNav";
 import type { PostCategoryRef } from "@/lib/types";
 
 export async function generateMetadata(
@@ -146,6 +147,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             ))}
           </div>
         )}
+        {/* Sin esto la página de una temática es un callejón sin salida:
+            enseña sus artículos y no dice que existan las otras siete. */}
+        <CategoriasNav activa={category.slug} titulo="Otras temáticas" />
       </main>
 
       <Footer />

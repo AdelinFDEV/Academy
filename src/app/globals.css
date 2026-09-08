@@ -13061,3 +13061,87 @@ select {
 @media (prefers-reduced-motion: reduce) {
   .termino-faq-item summary::after { transition: none; }
 }
+
+/* ── Navegador por temáticas (CategoriasNav) ──────────────────────────────
+   Va al pie de las entradas y de las páginas de categoría. Comparte el
+   lenguaje visual de las pastillas de `/articulos`, pero con clases propias:
+   allí son botones de un filtro en cliente y aquí son enlaces de servidor. */
+
+.cat-nav {
+  margin: 2.5rem 0 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.cat-nav-titulo {
+  display: block;
+  margin-bottom: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cat-nav-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.cat-nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.18s, border-color 0.18s, background 0.18s;
+}
+
+.cat-nav-chip:hover {
+  color: var(--text-primary);
+  border-color: rgba(240, 244, 255, 0.22);
+}
+
+.cat-nav-chip:focus-visible {
+  outline: 2px solid var(--accent-orange-soft);
+  outline-offset: 2px;
+}
+
+/* La temática en la que ya estás no se esconde: se marca. Quitarla dejaría un
+   hueco y obligaría a recontar dónde estabas. */
+.cat-nav-chip.is-activa {
+  color: var(--accent-orange);
+  border-color: rgba(255, 107, 43, 0.35);
+  background: var(--accent-orange-light);
+}
+
+.cat-nav-cifra {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.cat-nav-chip.is-activa .cat-nav-cifra {
+  color: var(--accent-orange-soft);
+}
+
+@media (max-width: 768px) {
+  .cat-nav-lista {
+    gap: 0.4rem 0.35rem;
+  }
+
+  .cat-nav-chip {
+    padding: 0.4rem 0.75rem;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+  }
+}

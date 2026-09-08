@@ -14,6 +14,7 @@ import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents from "@/components/TableOfContents";
 import CommentForm from "@/components/CommentForm";
 import JsonLd from "@/components/JsonLd";
+import CategoriasNav from "@/components/CategoriasNav";
 import { articleSchema, breadcrumbSchema } from "@/lib/schema";
 import type { PostCategoryRef, CommentProfileRef } from "@/lib/types";
 import { esAdmin, metadataDeBorrador } from "@/lib/borradores";
@@ -523,6 +524,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
         )}
+
+        {/* Quien llega desde Google termina el artículo sin saber que hay
+            otras temáticas: la portada ya no las lista y `/articulos` no lo
+            pisa nadie que entre por una entrada. Van antes de los comentarios,
+            que es donde se decide adónde ir después. */}
+        <CategoriasNav activa={(post.categories as PostCategoryRef | null)?.slug ?? null} />
 
         {/* Comentarios */}
         <div id="comentarios" className="post-comments">
