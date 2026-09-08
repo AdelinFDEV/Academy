@@ -92,10 +92,9 @@ Datos reales de Search Console, del 29 de agosto al 3 de septiembre de 2026 (46 
 
 | Término | Consultas que ya lo buscan | Impresiones | Estado |
 |---|---|---|---|
-| `hot-wallet` | «hot wallet» | 2 | **Primero** |
-| `roi` | «qué es el roi» | 1 | **Segundo** |
+| `roi` | «qué es el roi» | 1 | **Primero** |
 
-`exchange` era la primera de esta lista y **ya está hecha** (1.445 palabras, en verde). Después de las dos que quedan, la siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`, `staking`— son los siguientes candidatos.
+`exchange` y `hot-wallet` eran las dos primeras de esta lista y **ya están hechas** (1.445 y 1.218 palabras, las dos en verde). Después de la que queda, la siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`, `staking`— son los siguientes candidatos.
 
 **Regla de selección, y es la importante:** a partir de la cuarta ficha, **el orden lo decide Search Console, no la intuición**. Rendimiento → Consultas, y se amplían las que ya tengan impresiones. Ampliar un término que nadie busca es trabajo perdido por bueno que quede.
 
