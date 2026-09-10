@@ -146,11 +146,14 @@ Seis de las siete guías cortan en la **sección 2 de 8**. La séptima, fiscalid
 
 Las seis con muro tienen **exactamente 3 `<h2>`** —dos secciones abiertas más el reclamo— y por eso ninguna llega al mínimo de 4. No es un problema de redacción: **es el muro**, y arreglarlo con un encabezado de adorno sería justo lo que el propio protocolo prohíbe.
 
-Esa decisión es del admin, porque cambia el producto y no solo el SEO:
+**Decidido por el admin el 10-09-2026: el muro no se toca.** Lo que es de registro sigue siendo de registro. Queda anotado como **deuda aceptada** en `DEUDA_CONOCIDA` de `scripts/check-seo.mjs`, con dos etiquetas —`h2` y `palabras`—, para que las seis guías dejen de pedir en rojo una corrección que no va a llegar y sigan diciendo la verdad en amarillo.
 
-- [ ] **Decidir qué ve Googlebot.** Tres caminos: abrir una tercera sección en las seis (el muro sigue, desde la sección 4); quitar el muro de registro de las guías y dejarlo solo para lo Premium, como en fiscalidad; o asumir que las seis compiten con ~900 palabras y anotarlo como deuda aceptada.
-- [ ] **Cuatro guías son huérfanas.** `ciclos-de-bitcoin`, `hyperliquid`, `render` y `worldcoin` reciben **un solo enlace interno entrante**, el de `/guias`. No existe un bloque de guías relacionadas, y ninguna enlaza a las demás. Google trata una página sin enlaces entrantes como periférica por buena que sea.
-- [ ] **`ciclos-de-bitcoin` y `worldcoin` no llegan a 800 palabras** (745 y 737). Se arregla solo si se abre una sección más; si no, hay que engordar las dos abiertas.
+Conviene tener claro qué significa y qué no: **las guías con muro aparecen en Google igual**, están indexadas y en el sitemap. Lo que cambia es con cuánto compiten — Googlebot juzga `/guias/xrp` por las 917 palabras que ve, no por las ~3.000 que lee un registrado.
+
+Lo que sigue abierto, y **no depende del muro**:
+
+- [ ] **Declarar el muro en el JSON-LD.** Google tiene una forma oficial de que le digas que el contenido está detrás de un registro a propósito: `isAccessibleForFree: false` y `hasPart` sobre la parte cerrada. Sin eso, la página no le parece cerrada, le parece corta. No toca el muro ni una línea.
+- [ ] **Cuatro guías son huérfanas.** `ciclos-de-bitcoin`, `hyperliquid`, `render` y `worldcoin` reciben **un solo enlace interno entrante**, el de `/guias`. Es el único fallo que les queda al auditor. No existe un bloque de guías relacionadas y ninguna enlaza a las demás; Google trata una página sin enlaces entrantes como periférica por buena que sea.
 
 Lo que ya está corregido y verificado en verde el 10-09-2026: la densidad de `/post/bitcoin-core-v32-2026` (0,07 % → 0,60 %, hoy **sin fallos**), las once frases de más de 40 palabras repartidas por seis guías, la frase media de `worldcoin` (31 → 21), la clave de `ciclos-de-bitcoin` en el H1 y en la description, y el techo de densidad de `render` (2,55 % → 2,30 %).
 

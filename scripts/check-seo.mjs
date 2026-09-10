@@ -62,8 +62,36 @@ const PERFILES = {
 const tipo = ruta.split("/")[1];
 const P = PERFILES[tipo] ?? PERFILES.post;
 
+/**
+ * Deuda aceptada por el admin, por ruta y por etiqueta de regla.
+ *
+ * Un fallo perdonado sale en amarillo y no cuenta: la pagina sigue diciendo
+ * la verdad, pero deja de pedir una correccion que no va a llegar. Sin la
+ * etiqueta en la llamada a `ok()`, un fallo no se puede perdonar nunca — que
+ * es lo que evita que esto se convierta en la puerta de atras del auditor.
+ */
+const DEUDA_CONOCIDA = {
+  // Decision del admin, 10-09-2026: el muro de registro de las guias no se
+  // toca. Googlebot entra sin sesion, asi que ve las dos secciones abiertas
+  // mas el reclamo: exactamente 3 H2, y de ahi no pasa mientras el muro este.
+  // Ver TAREAS.md. La unica guia sin muro, fiscalidad, mide 9 H2 sin ayuda.
+  "/guias/ciclos-de-bitcoin": ["h2", "palabras"],
+  "/guias/que-es-la-blockchain": ["h2"],
+  "/guias/hyperliquid": ["h2"],
+  "/guias/render": ["h2"],
+  "/guias/worldcoin": ["h2", "palabras"],
+  "/guias/xrp": ["h2"],
+};
+const perdonadas = DEUDA_CONOCIDA[ruta] ?? [];
+
 let fallos = 0, avisos = 0;
-const ok = (c, etiqueta, detalle = "") => {
+/** `regla` es la etiqueta con la que se perdona desde DEUDA_CONOCIDA. */
+const ok = (c, etiqueta, detalle = "", regla = "") => {
+  if (!c && regla && perdonadas.includes(regla)) {
+    avisos++;
+    console.log(`  ${YELLOW}!  ${OFF} ${etiqueta.padEnd(44)} ${DIM}${detalle} — deuda aceptada por el admin${OFF}`);
+    return;
+  }
   if (!c) fallos++;
   console.log(`  ${c ? GREEN + "OK " + OFF : RED + "✗  " + OFF} ${etiqueta.padEnd(44)} ${DIM}${detalle}${OFF}`);
 };
@@ -235,14 +263,14 @@ let saltos = 0;
 for (let i = 1; i < enc.length; i++) if (enc[i].n > enc[i - 1].n + 1) saltos++;
 ok(saltos === 0, "sin saltos de nivel (h2 → h4)", `${saltos}`);
 const h2 = [...cuerpo.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/g)].map((m) => texto(m[1]));
-ok(h2.length >= P.h2, `≥ ${P.h2} H2 en el cuerpo`, `${h2.length}`);
+ok(h2.length >= P.h2, `≥ ${P.h2} H2 en el cuerpo`, `${h2.length}`, "h2");
 const h2Vacios = h2.filter((h) => h.split(/\s+/).length < 2).length;
 ok(h2Vacios === 0, "ningún H2 de una sola palabra", `${h2Vacios}`);
 
 // ── 3. Contenido ──────────────────────────────────────────────────────────
 seccion("CONTENIDO");
 const n = texto(cuerpo).split(/\s+/).filter(Boolean).length;
-ok(n >= P.min, `≥ ${P.min} palabras`, `${n}`);
+ok(n >= P.min, `≥ ${P.min} palabras`, `${n}`, "palabras");
 ok(n <= P.max, `≤ ${P.max} palabras`, `${n}`);
 
 /**
