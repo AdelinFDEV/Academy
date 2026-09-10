@@ -251,7 +251,9 @@ export default async function QueEsLaBlockchainPage() {
             <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
             <h2 className="gbc-title">Estado 2026, usos reales, potencial y computación cuántica</h2>
             <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado actual del mercado con datos verificados de 2026, los 8 casos de uso más importantes, el potencial futuro de la blockchain y la amenaza real que representa la computación cuántica — incluyendo quiz interactivo y badge de logro.</p>
+              <p>Las secciones siguientes cubren el estado actual del mercado con datos verificados de 2026 y los 8
+              casos de uso más importantes. También el potencial futuro de la blockchain y la amenaza real que
+              representa la computación cuántica, con quiz interactivo y badge de logro.</p>
             </div>
             <div className="gbc-paywall">
               <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>

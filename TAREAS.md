@@ -126,22 +126,33 @@ El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de l
 
 ---
 
-## 5. Pasar la auditoría SEO por el contenido que ya está publicado
+## 5. El muro de registro es lo que Google ve de las guías
 
-El protocolo de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) se ejecuta a partir de ahora en **cada entrada y cada guía nueva**, y se ofrece solo. Pero el contenido publicado antes de que existiera no lo ha pasado nunca, y al estrenar el auditor sobre él salieron fallos reales. Estos no son deuda que se perdona: son páginas que ya están compitiendo en Google con un lastre medible.
+El protocolo de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) se ejecuta a partir de ahora en **cada entrada y cada guía nueva**, y se ofrece solo. El contenido anterior no lo había pasado nunca. La primera pasada fue el 07-09-2026; la segunda, el 10-09-2026, encontró la causa de fondo.
 
-Lo encontrado en la primera pasada (07-09-2026), por orden de lo que más cuesta:
+**El diagnóstico de la primera pasada era erróneo y conviene decirlo:** se apuntó a los componentes de cliente —quiz, gráficos, minijuegos— como lo que Google no ve. Las siete guías son **componentes de servidor**, así que eso se renderiza. Lo que Googlebot no ve es lo que hay **detrás del muro de registro**, porque entra siempre sin sesión.
 
-| Página | Qué falla | Por qué importa |
+Seis de las siete guías cortan en la **sección 2 de 8**. La séptima, fiscalidad, solo cierra los extras de Premium. El resultado se mide solo:
+
+| Guía | Palabras que ve Google | H2 |
 |---|---|---|
-| `/post/bitcoin-core-v32-2026` | La palabra clave aparece **1 vez en 1.473 palabras** (0,07 %) | Es el fallo del suelo de densidad, el mismo de la primera ficha. Google no ve de qué va |
-| `/guias/xrp` | Solo **3 `<h2>`**, 2 frases largas, 1 párrafo de más de 120 palabras | — |
+| `fiscalidad-cripto-espana` — sin muro de registro | **3.617** | **9** |
+| `que-es-la-blockchain` | 1.090 | 3 |
+| `xrp` | 917 | 3 |
+| `hyperliquid` | 905 | 3 |
+| `render` | 826 | 3 |
+| `worldcoin` | 737 | 3 |
+| `ciclos-de-bitcoin` | 745 | 3 |
 
-Y un hallazgo estructural que afecta a **todas** las guías: el auditor mide 909 palabras en la de XRP porque **lo que Google recibe es solo lo renderizado en el servidor**. Todo lo que vive dentro de un componente de cliente —quiz, gráficos, minijuegos— no lo ve el rastreador. Merece una comprobación página a página: si el contenido que sostiene la consulta está dentro de un interactivo, hay que sacar una versión en texto al servidor.
+Las seis con muro tienen **exactamente 3 `<h2>`** —dos secciones abiertas más el reclamo— y por eso ninguna llega al mínimo de 4. No es un problema de redacción: **es el muro**, y arreglarlo con un encabezado de adorno sería justo lo que el propio protocolo prohíbe.
 
-```bash
-npm run check:seo -- post/bitcoin-core-v32-2026 "bitcoin core"
-```
+Esa decisión es del admin, porque cambia el producto y no solo el SEO:
+
+- [ ] **Decidir qué ve Googlebot.** Tres caminos: abrir una tercera sección en las seis (el muro sigue, desde la sección 4); quitar el muro de registro de las guías y dejarlo solo para lo Premium, como en fiscalidad; o asumir que las seis compiten con ~900 palabras y anotarlo como deuda aceptada.
+- [ ] **Cuatro guías son huérfanas.** `ciclos-de-bitcoin`, `hyperliquid`, `render` y `worldcoin` reciben **un solo enlace interno entrante**, el de `/guias`. No existe un bloque de guías relacionadas, y ninguna enlaza a las demás. Google trata una página sin enlaces entrantes como periférica por buena que sea.
+- [ ] **`ciclos-de-bitcoin` y `worldcoin` no llegan a 800 palabras** (745 y 737). Se arregla solo si se abre una sección más; si no, hay que engordar las dos abiertas.
+
+Lo que ya está corregido y verificado en verde el 10-09-2026: la densidad de `/post/bitcoin-core-v32-2026` (0,07 % → 0,60 %, hoy **sin fallos**), las once frases de más de 40 palabras repartidas por seis guías, la frase media de `worldcoin` (31 → 21), la clave de `ciclos-de-bitcoin` en el H1 y en la description, y el techo de densidad de `render` (2,55 % → 2,30 %).
 
 **El orden lo decide el tráfico, no la lista.** Se empieza por lo que ya recibe impresiones en Search Console, igual que con las fichas del diccionario.
 

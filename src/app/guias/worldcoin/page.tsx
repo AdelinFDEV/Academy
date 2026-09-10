@@ -202,16 +202,16 @@ export default async function WorldcoinPage() {
           <h2 className="gbc-title">El problema que Sam Altman quiere resolver: ¿quién es humano?</h2>
           <div className="gbc-body">
             <p>
-              En 2019, mientras dirigía OpenAI y veía de primera mano hacia dónde iba la inteligencia artificial,
-              Sam Altman llegó a una conclusión incómoda: si la IA puede generar texto, voces, caras y
-              comportamientos indistinguibles de los humanos, internet va a tener un problema fundamental —
-              ya no vamos a poder saber si hay una persona real al otro lado de una pantalla.
+              En 2019, Sam Altman dirigía OpenAI y veía de primera mano hacia dónde iba la inteligencia
+              artificial. Llegó a una conclusión incómoda: la IA ya puede generar texto, voces, caras y
+              comportamientos indistinguibles de los humanos. Y eso deja a internet con un problema de fondo: ya
+              no vamos a poder saber si hay una persona real al otro lado de la pantalla.
             </p>
             <p>
-              Junto al físico Alex Blania y Max Novendstern, fundó Tools for Humanity con una propuesta radical:
-              un sistema biométrico que verifica que eres un humano único — sin depender de un DNI, un gobierno
-              o una red social — y que, de paso, reparte una nueva criptomoneda entre todos los verificados como
-              una especie de renta básica universal experimental.
+              Junto al físico Alex Blania y Max Novendstern fundó Tools for Humanity. La propuesta era radical:
+              un sistema biométrico que verifica que eres un humano único, sin depender de un DNI, un gobierno
+              ni una red social. Y que, de paso, reparte una nueva criptomoneda entre todos los verificados,
+              como una especie de renta básica universal experimental.
             </p>
           </div>
 
@@ -225,10 +225,9 @@ export default async function WorldcoinPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              El proyecto se presentó públicamente en 2021 y lanzó su token en julio de 2023. En 2025, la
-              compañía renombró el ecosistema de <strong>Worldcoin</strong> a <strong>World</strong>, para dejar claro
-              que el proyecto es mucho más que un token: es una identidad digital (World ID), una app (World App) y
-              su propia red blockchain (World Chain). El token sigue llamándose WLD.
+              El proyecto se presentó públicamente en 2021 y lanzó su token en julio de 2023. En 2025, la compañía renombró el ecosistema de <strong>Worldcoin</strong> a
+              <strong>World</strong>. Quería dejar claro que el proyecto es mucho más que un token: es una
+              identidad digital (World ID), una app (World App) y su propia red blockchain (World Chain). El token sigue llamándose WLD.
             </p>
           </div>
         </div>
@@ -241,9 +240,9 @@ export default async function WorldcoinPage() {
           <h2 className="gbc-title">Cómo funciona: el Orb, World ID y World Chain</h2>
           <div className="gbc-body">
             <p>
-              El proceso, en teoría, es sencillo. Te acercas a un Orb — un dispositivo esférico pulido,
-              del tamaño de un balón de playa — miras a su cámara durante unos segundos, y este captura el
-              patrón único de tu iris con sensores infrarrojos y de luz visible.
+              El proceso, en teoría, es sencillo. Te acercas a un Orb, un dispositivo esférico pulido del tamaño de un balón de playa. Miras a su
+              cámara durante unos segundos y el aparato captura el patrón único de tu iris con sensores
+              infrarrojos y de luz visible.
             </p>
             <p>
               Ese patrón se convierte en un código matemático (un <em>hash</em>) que representa tu iris sin ser
@@ -275,9 +274,9 @@ export default async function WorldcoinPage() {
             <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
             <h2 className="gbc-title">Estado 2026, casos de uso, tokenomics y controversias</h2>
             <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado actual de Worldcoin, sus casos de uso reales, cómo
-              se reparte el token WLD, las prohibiciones y controversias regulatorias en distintos países,
-              el vídeo del canal explicándolo todo, y el quiz interactivo con badge de logro.</p>
+              <p>Las secciones siguientes cubren el estado actual de Worldcoin, sus casos de uso reales y cómo se
+              reparte el token WLD. También las prohibiciones y controversias regulatorias en distintos países,
+              el vídeo del canal explicándolo todo y el quiz interactivo con badge de logro.</p>
             </div>
             <div className="gbc-paywall">
               <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>

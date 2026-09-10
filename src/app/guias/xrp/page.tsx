@@ -263,10 +263,10 @@ export default async function XrpPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              Este diseño explica las tres grandes cualidades del XRPL: es <strong>rápido</strong> (cierres cada
-              3–5 segundos), <strong>barato</strong> (la comisión por transacción es una fracción minúscula de un
-              céntimo, y además se <em>destruye</em>, no va a nadie) y de <strong>bajísimo consumo energético</strong>,
-              porque no gasta electricidad en minar. El precio a pagar es distinto: la seguridad no descansa en el
+              Este diseño explica las tres grandes cualidades del XRPL. Es <strong>rápido</strong>: cierra un
+              ledger cada 3–5 segundos. Es <strong>barato</strong>: la comisión por transacción es una fracción
+              minúscula de un céntimo, y además se <em>destruye</em>, no va a nadie. Y es de <strong>bajísimo
+              consumo energético</strong>, porque no gasta electricidad en minar. El precio a pagar es distinto: la seguridad no descansa en el
               poder de cómputo, sino en la <strong>diversidad e independencia de los validadores</strong> — justo
               el punto donde más se le critica, como veremos.
             </p>
@@ -290,9 +290,9 @@ export default async function XrpPage() {
             <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
             <h2 className="gbc-title">El caso SEC, casos de uso, tokenomics y riesgos</h2>
             <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado de XRP en 2026 tras el juicio con la SEC, sus casos de
-              uso reales, el glosario técnico interactivo, cómo funciona su tokenomics con el escrow, los riesgos
-              de centralización y el quiz con badge de logro.</p>
+              <p>Las secciones siguientes cubren el estado de XRP en 2026 tras el juicio con la SEC y sus casos
+              de uso reales. También el glosario técnico interactivo, cómo funciona su tokenomics con el escrow,
+              los riesgos de centralización y el quiz con badge de logro.</p>
             </div>
             <div className="gbc-paywall">
               <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>

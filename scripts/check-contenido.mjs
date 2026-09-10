@@ -84,7 +84,7 @@ function cargarEnv() {
 function terminosDelGlosario() {
   const glosario = readFileSync("src/lib/glosario.ts", "utf8");
   const terminos = [];
-  for (const bloque of glosario.split("  {").slice(1)) {
+  for (const bloque of glosario.split(/\r?\n  \{\r?\n/).slice(1)) {
     const slug = bloque.match(/slug: "([^"]*)"/)?.[1];
     const term = bloque.match(/term: "([^"]*)"/)?.[1];
     if (slug && term && bloque.includes("extended:")) terminos.push({ slug, term });
@@ -132,8 +132,21 @@ function destinosValidos(slugsEntradas) {
   const validos = new Set(RUTAS_FIJAS);
 
   const glosario = readFileSync("src/lib/glosario.ts", "utf8");
-  // Solo los términos con `extended`: sin él la ruta devuelve 404.
-  for (const bloque of glosario.split("  {").slice(1)) {
+  /**
+   * Solo los términos con `extended`: sin él la ruta devuelve 404.
+   *
+   * El corte es `\r?\n  {\r?\n` —dos espacios exactos— y no `"  {"` a secas, que es
+   * lo que había. Cada objeto del array `faq` va sangrado a seis espacios y
+   * lleva dentro esos mismos dos, así que la ficha se partía en el primer
+   * `faq` y el trozo con el `slug` se quedaba sin ver el `extended`, que va
+   * después.
+   *
+   * Resultado: las tres únicas fichas con FAQ —exchange, hot-wallet y roi,
+   * que son justo las tres ampliadas a fondo— salían como enlaces rotos, y
+   * con ellas fallaba cualquier entrada que las enlazara. Un guardarraíl que
+   * da por malo lo mejor del diccionario es peor que no tenerlo.
+   */
+  for (const bloque of glosario.split(/\r?\n  \{\r?\n/).slice(1)) {
     const slug = bloque.match(/slug: "([^"]*)"/)?.[1];
     if (slug && bloque.includes("extended:")) validos.add(`/glosario/${slug}`);
   }

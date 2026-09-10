@@ -287,9 +287,9 @@ export default async function HyperliquidPage() {
             <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
             <h2 className="gbc-title">Estado 2026, casos de uso, el token HYPE y los riesgos</h2>
             <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado de Hyperliquid en 2026, sus casos de uso reales, el
-              glosario interactivo con los términos clave, cómo funciona el token HYPE y su famoso airdrop sin
-              inversores, los riesgos del proyecto y el quiz con badge de logro.</p>
+              <p>Las secciones siguientes cubren el estado de Hyperliquid en 2026 y sus casos de uso reales.
+              También el glosario interactivo con los términos clave, cómo funciona el token HYPE y su famoso
+              airdrop sin inversores, los riesgos del proyecto y el quiz con badge de logro.</p>
             </div>
             <div className="gbc-paywall">
               <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>

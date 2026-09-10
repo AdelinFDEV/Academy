@@ -228,10 +228,10 @@ export default async function RenderPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              De esa idea nació Render Network. Su creador, <strong>Jules Urbach</strong>, no es un recién
-              llegado: lleva décadas en el mundo del renderizado como fundador de <strong>OTOY</strong>, la
-              empresa detrás de <strong>OctaneRender</strong>, uno de los motores de render por GPU más usados
-              de la industria. Render es su apuesta por descentralizar esa potencia: en lugar de granjas
+              De esa idea nació Render Network. Su creador, <strong>Jules Urbach</strong>, no es un recién llegado: lleva décadas en el mundo del
+              renderizado. Es el fundador de <strong>OTOY</strong>, la empresa detrás de
+              <strong>OctaneRender</strong>, uno de los motores de render por GPU más usados de la industria. Es su apuesta por descentralizar
+              esa potencia: en lugar de granjas
               propiedad de unos pocos, un mercado abierto donde cualquiera con una buena GPU puede ofrecer su
               capacidad y cobrar por ella.
             </p>
@@ -249,7 +249,7 @@ export default async function RenderPage() {
               El funcionamiento tiene tres protagonistas. Por un lado, el <strong>artista o estudio</strong>
               que necesita renderizar y sube su trabajo a la red. Por otro, los <strong>node operators</strong>:
               personas que conectan su GPU ociosa para hacer ese trabajo a cambio de tokens RENDER. Y en el
-              medio, la <strong>red Render</strong>, que reparte las tareas, verifica los resultados y liquida
+              medio, la <strong>propia red</strong>, que reparte las tareas, verifica los resultados y liquida
               los pagos.
             </p>
             <p>
@@ -281,8 +281,8 @@ export default async function RenderPage() {
             <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
             <h2 className="gbc-title">Estado 2026, casos de uso, tokenomics y riesgos</h2>
             <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado actual de Render, sus casos de uso reales, la
-              migración a Solana, el glosario de términos clave, cómo funciona su tokenomics Burn-and-Mint de
+              <p>Las secciones siguientes cubren el estado actual de Render, sus casos de uso reales y la migración
+              a Solana. También el glosario de términos clave, cómo funciona su tokenomics Burn-and-Mint de
               forma interactiva, los riesgos del proyecto, el vídeo explicativo y el quiz con badge de logro.</p>
             </div>
             <div className="gbc-paywall">

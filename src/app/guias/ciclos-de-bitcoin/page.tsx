@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/guias/ciclos-de-bitcoin" },
   title: "Ciclos de Bitcoin: ¿es el momento de comprar?",
   description:
-    "El ciclo de 4 años del halving en lenguaje simple: por qué la fase bajista está terminando, qué esperar de las altcoins y los rangos de precio del ciclo.",
+    "Los ciclos de Bitcoin explicados sin rodeos: por qué la fase bajista está terminando, qué esperar de las altcoins y los rangos de precio del halving.",
   openGraph: {
     title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin?",
     description: "Análisis de ciclos del halving, con gráfica interactiva, señales de entrada y quiz con badge.",
@@ -100,13 +100,13 @@ export default async function CiclosDeBitcoinPage() {
         <div className="gbc-hero-glow" aria-hidden="true" />
         <div className="gbc-hero-ey">Análisis de mercado · AdelinBTC Academy · 2026</div>
         <h1 className="gbc-hero-title">
-          ¿Por qué AHORA es el momento<br />
-          <span className="gbc-hero-gold">de empezar a comprar Bitcoin?</span>
+          Los ciclos de Bitcoin:<br />
+          <span className="gbc-hero-gold">¿por qué AHORA es el momento de empezar a comprar?</span>
         </h1>
         <p className="gbc-hero-desc">
-          El ciclo del halving explicado sin rodeos: dónde estamos, por qué la fase bajista
-          está llegando a su fin, y qué patrón siguen históricamente las altcoins antes de que
-          empiece el siguiente mercado alcista.
+          Los ciclos de Bitcoin explicados sin rodeos: dónde estamos, por qué la fase bajista está llegando a su
+          fin, y qué patrón siguen históricamente las altcoins antes de que empiece el siguiente mercado
+          alcista.
         </p>
         <div className="gbc-hero-pills">
           <span className="gbc-pill">5 secciones</span>
@@ -120,7 +120,7 @@ export default async function CiclosDeBitcoinPage() {
       <section id="ciclos" className="gbc-section">
         <div className="gbc-gc">
           <div className="gbc-ey">Sección 1 <span className="gbc-free-pill">Gratis</span></div>
-          <h2 className="gbc-title">El ciclo de 4 años: la variable que más mueve el precio de Bitcoin</h2>
+          <h2 className="gbc-title">Los ciclos de Bitcoin: el reloj de 4 años que más mueve el precio</h2>
           <div className="gbc-body">
             <p>
               Bitcoin no sube ni baja al azar. Desde su creación se mueve siguiendo un patrón que se repite cada
@@ -160,7 +160,7 @@ export default async function CiclosDeBitcoinPage() {
       <section id="donde-estamos" className="gbc-section">
         <div className="gbc-gc">
           <div className="gbc-ey">Sección 2 <span className="gbc-free-pill">Gratis</span></div>
-          <h2 className="gbc-title">Dónde estamos ahora: cerrando la fase bajista</h2>
+          <h2 className="gbc-title">Dónde estamos ahora en los ciclos de Bitcoin: cerrando la fase bajista</h2>
           <div className="gbc-body">
             <p>
               El último halving fue en <strong>abril de 2024</strong>. Como en ciclos anteriores, el precio subió
@@ -186,9 +186,10 @@ export default async function CiclosDeBitcoinPage() {
             <div className="gbc-ey">Sección 3–5 <span className="gbc-lock-pill">Registro gratuito</span></div>
             <h2 className="gbc-title">Señales de compra, estrategia y quiz con badge</h2>
             <div className="gbc-body">
-              <p>Las secciones siguientes cubren las señales concretas de que el momento de acumular ya está aquí,
-              por qué las altcoins suelen adelantarse al halving, los rangos de precio estimados para este ciclo,
-              cómo posicionarse sin apostarlo todo a una fecha exacta, y el quiz interactivo con badge de logro.</p>
+              <p>Las secciones siguientes cubren las señales concretas de que el momento de acumular ya está aquí y
+              por qué las altcoins suelen adelantarse al halving. También los rangos de precio estimados para
+              este ciclo, cómo posicionarse sin apostarlo todo a una fecha exacta y el quiz interactivo con
+              badge de logro.</p>
             </div>
             <div className="gbc-paywall">
               <div className="gbc-paywall-badge"><Unlock size={13} strokeWidth={2.2} aria-hidden="true" /> Has leído 2 de 5 secciones</div>
