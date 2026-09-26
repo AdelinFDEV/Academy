@@ -14,8 +14,10 @@ export const maxDuration = 60;
  * Lee el feed de noticias y propone al admin las que sean nuevas, con los
  * botones de publicar o descartar.
  *
- * Corre cada hora. No hace falta más: las noticias no envejecen en minutos, y
- * si alguna vez hay prisa está el comando /noticias, que lee al momento.
+ * Corre una vez al día (07:00 UTC). El plan Hobby de Vercel no admite crons más
+ * frecuentes: con uno horario rechaza el despliegue entero, sin llegar a
+ * construir (pasó el 26-09-2026). Lo que no entra en la tanda sale en la del
+ * día siguiente, y si hay prisa está el comando /noticias, que lee al momento.
  *
  * Nunca publica nada por su cuenta — eso es deliberado. En cripto salen
  * titulares alarmistas y bulos a diario, y el criterio del admin en medio es

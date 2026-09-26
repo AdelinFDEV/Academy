@@ -89,7 +89,7 @@ Declarados en `vercel.json` y protegidos por `CRON_SECRET`:
 |---|---|---|
 | `telegram-sync` | 04:00 diario | **Expulsa del canal a quien ya no es premium**, avisa a quien está a punto de caducar y limpia los `telegram_events` viejos |
 | `promo-premium` | 13:00 dom · mié · vie | Manda la promoción de Premium al canal gratuito |
-| `noticias` | cada hora | Propone noticias al admin para que las apruebe |
+| `noticias` | a diario, 07:00 UTC | Propone noticias al admin para que las apruebe. **En el plan Hobby ningún cron puede correr más de una vez al día**: si no, Vercel rechaza el despliegue sin construir |
 
 `telegram-sync` es el que más cuidado pide: **expulsa gente**. Antes de echar a nadie comprueba si está realmente dentro del canal, y no es un detalle de eficiencia — sin esa comprobación, cada usuario gratuito que vinculó Telegram pero nunca entró al canal generaría una llamada de expulsión y un registro, todos los días, para siempre.
 
