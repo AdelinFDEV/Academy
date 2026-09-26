@@ -1,6 +1,10 @@
 import React from "react";
-import { Sprout, BookOpen, Book, Flame, Zap, Gem, Bookmark, Compass, Trophy } from "lucide-react";
+import {
+  Footprints, BookOpen, GraduationCap, Flame, Zap, Gem, Bookmark, Compass, Trophy,
+  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, type LucideIcon,
+} from "lucide-react";
 import { GUIDES } from "@/lib/guides";
+import { MILESTONES, milestoneBadgeId } from "@/components/trading/tjStats";
 
 /**
  * Los logros de la academia — fuente única.
@@ -25,6 +29,18 @@ export interface BadgeDef {
   special?: boolean;
   guideSlug?: string;
   guideTitle?: string;
+  /** Hito del Diario de Trading: se guarda un logro por nivel ("diario-racha-2"). */
+  diario?: { family: string; levels: number };
+  /** Logro de actividad: qué contador mide y cuánto hace falta. /api/badges decide con esto. */
+  progress?: { stat: keyof BadgeStats; target: number; unit: string };
+}
+
+/** Los contadores de actividad que calcula /api/badges. */
+export interface BadgeStats {
+  readCount: number;
+  savedCount: number;
+  categoriesRead: number;
+  maxStreak: number;
 }
 function PremiumCrownIcon({ size = 24 }: { size?: number }) {
   // El escalado lo resuelve el viewBox, no hace falta factor manual.
@@ -141,8 +157,9 @@ export const BADGE_DEFS: BadgeDef[] = [
     id: "first-read",
     label: "Primer paso",
     condition: "Lee tu primer artículo de la academia",
-    icon: <Sprout size={24} aria-hidden="true" />,
-    bigIcon: <Sprout size={48} aria-hidden="true" />,
+    icon: <Footprints size={24} aria-hidden="true" />,
+    bigIcon: <Footprints size={48} aria-hidden="true" />,
+    progress: { stat: "readCount", target: 1, unit: "artículos leídos" },
   },
   {
     id: "reader",
@@ -150,13 +167,15 @@ export const BADGE_DEFS: BadgeDef[] = [
     condition: "Completa 5 artículos leídos",
     icon: <BookOpen size={24} aria-hidden="true" />,
     bigIcon: <BookOpen size={48} aria-hidden="true" />,
+    progress: { stat: "readCount", target: 5, unit: "artículos leídos" },
   },
   {
     id: "scholar",
     label: "Estudioso",
     condition: "Alcanza 10 artículos leídos",
-    icon: <Book size={24} aria-hidden="true" />,
-    bigIcon: <Book size={48} aria-hidden="true" />,
+    icon: <GraduationCap size={24} aria-hidden="true" />,
+    bigIcon: <GraduationCap size={48} aria-hidden="true" />,
+    progress: { stat: "readCount", target: 10, unit: "artículos leídos" },
   },
   {
     id: "streak3",
@@ -164,6 +183,7 @@ export const BADGE_DEFS: BadgeDef[] = [
     condition: "Entra 3 días seguidos a la academia",
     icon: <Flame size={24} aria-hidden="true" />,
     bigIcon: <Flame size={48} aria-hidden="true" />,
+    progress: { stat: "maxStreak", target: 3, unit: "días seguidos" },
   },
   {
     id: "streak7",
@@ -171,6 +191,7 @@ export const BADGE_DEFS: BadgeDef[] = [
     condition: "Mantén una racha de 7 días consecutivos",
     icon: <Zap size={24} aria-hidden="true" />,
     bigIcon: <Zap size={48} aria-hidden="true" />,
+    progress: { stat: "maxStreak", target: 7, unit: "días seguidos" },
   },
   {
     id: "streak30",
@@ -180,6 +201,7 @@ export const BADGE_DEFS: BadgeDef[] = [
     icon: <Gem size={24} aria-hidden="true" />,
     bigIcon: <Gem size={48} aria-hidden="true" />,
     special: true,
+    progress: { stat: "maxStreak", target: 30, unit: "días seguidos" },
   },
   {
     id: "collector",
@@ -187,6 +209,7 @@ export const BADGE_DEFS: BadgeDef[] = [
     condition: "Guarda 5 artículos en tu lista",
     icon: <Bookmark size={24} aria-hidden="true" />,
     bigIcon: <Bookmark size={48} aria-hidden="true" />,
+    progress: { stat: "savedCount", target: 5, unit: "artículos guardados" },
   },
   {
     id: "explorer",
@@ -194,6 +217,7 @@ export const BADGE_DEFS: BadgeDef[] = [
     condition: "Lee artículos de al menos 3 categorías distintas",
     icon: <Compass size={24} aria-hidden="true" />,
     bigIcon: <Compass size={48} aria-hidden="true" />,
+    progress: { stat: "categoriesRead", target: 3, unit: "categorías leídas" },
   },
 ];
 
@@ -225,5 +249,42 @@ export const GUIDE_BADGE_DEFS: BadgeDef[] = GUIDES.map((g) => {
   };
 });
 
-/** Los dieciséis: ocho de actividad, el de Miembro Fundador y uno por guía. */
-export const LOGROS: BadgeDef[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS];
+// Los hitos del Diario de Trading. Salen de MILESTONES (tjStats.ts), la misma
+// definición que usa el diario: un hito nuevo allí aparece aquí solo.
+export const DIARIO_ICONS: Record<string, LucideIcon> = {
+  muestra: ListChecks,
+  disciplina: ShieldCheck,
+  porque: NotebookPen,
+  revancha: Hourglass,
+  meses: CalendarCheck,
+  rentabilidad: TrendingUp,
+  recuperacion: RefreshCw,
+};
+
+export const DIARIO_BADGE_DEFS: BadgeDef[] = MILESTONES.map((m) => {
+  const Icon = DIARIO_ICONS[m.id] ?? Trophy;
+  return {
+    id: `diario-${m.id}`,
+    label: m.title,
+    condition: `${m.desc}. Niveles: ${m.tiers.map(m.format).join(" · ")}${m.needsCapital ? " (necesita tu capital inicial)" : ""}.`,
+    icon: <Icon size={24} aria-hidden="true" />,
+    bigIcon: <Icon size={48} aria-hidden="true" />,
+    diario: { family: m.id, levels: m.tiers.length },
+  };
+});
+
+/** Nivel alcanzado en un hito del diario, según los logros guardados. */
+export function diarioLevel(earned: Set<string>, badge: BadgeDef): number {
+  if (!badge.diario) return 0;
+  let level = 0;
+  for (let i = 1; i <= badge.diario.levels; i++) if (earned.has(milestoneBadgeId(badge.diario.family, i))) level = i;
+  return level;
+}
+
+/** Un hito del diario cuenta como logro conseguido desde su primer nivel. */
+export function isEarned(earned: Set<string>, badge: BadgeDef): boolean {
+  return badge.diario ? diarioLevel(earned, badge) > 0 : earned.has(badge.id);
+}
+
+/** Todos: los de actividad, el de Miembro Fundador, uno por guía y uno por hito del diario. */
+export const LOGROS: BadgeDef[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS, ...DIARIO_BADGE_DEFS];

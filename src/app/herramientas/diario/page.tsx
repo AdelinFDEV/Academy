@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
-  NotebookPen, BarChart3, LineChart, Lock, ArrowRight, Hourglass,
+  NotebookPen, BarChart3, LineChart, Lock, ArrowRight, Trophy, CalendarRange, Crosshair,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
@@ -14,10 +14,14 @@ import "../detalle.css";
  * Ficha pública del Diario de Trading — punto 13 del plan SEO.
  *
  * Escrita sobre lo que la herramienta hace DE VERDAD, revisado en
- * `TradingJournal.tsx`: capital inicial configurable, diez estadísticas, curva
- * de capital, reparto ganadoras/perdedoras, P&L por par, mejor par y registro
- * con notas. **No hay retos ni niveles**, aunque medio sitio los prometía; se
- * corrigió el 05-09-2026 y aquí aparecen como lo que son, algo que llegará.
+ * `TradingJournal.tsx` y `src/components/trading/`: capital inicial, diez
+ * estadísticas, curva de capital, P&L real opcional, rendimiento por periodo,
+ * calendario, desglose por par/estrategia/día/hora e hitos con niveles.
+ *
+ * **Hitos, no retos.** Hasta el 26-09-2026 aquí se decía que no había retos ni
+ * niveles. Desde entonces hay siete hitos con niveles, y el admin decidió que
+ * cumplen esa promesa. No hay "retos" (objetivos que se aceptan o se proponen):
+ * no los anuncies.
  *
  * El texto le habla a quien YA opera y no lleva registro (decisión del admin),
  * y el gancho son las estadísticas, no la gamificación.
@@ -60,11 +64,35 @@ const DENTRO = [
     text: "Par, dirección, riesgo asumido, ganancia esperada, resultado, estrategia y una nota. Ese porqué es lo que dentro de tres meses te dirá si el problema era el método o la disciplina.",
   },
   {
+    icon: CalendarRange,
+    title: "Dónde ganas y dónde pierdes",
+    text: "Tu rendimiento por mes, trimestre y año, un calendario con el resultado de cada día y el desglose por par, estrategia, día de la semana y franja horaria.",
+  },
+  {
+    icon: Crosshair,
+    title: "El plan frente a lo que pasó",
+    text: "Si cerraste antes del objetivo o el stop-loss se deslizó, apuntas el P&L real. El diario mide qué parte del objetivo te llevas en las ganadoras y cuánto pierdes frente al stop en las perdedoras.",
+    link: { term: "stop-loss", href: "/glosario/stop-loss" },
+  },
+  {
     icon: Lock,
     title: "Privado de verdad",
     text: "Cada operación queda ligada a tu cuenta y no la ve nadie más: ni otros suscriptores, ni un muro público de resultados. Es tu registro.",
   },
 ];
+
+/** Enlaza al diccionario la primera aparición de un término dentro de un texto plano. */
+function TextoConTermino({ text, link }: { text: string; link?: { term: string; href: string } }) {
+  const i = link ? text.indexOf(link.term) : -1;
+  if (!link || i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <Link href={link.href}>{link.term}</Link>
+      {text.slice(i + link.term.length)}
+    </>
+  );
+}
 
 const FAQ = [
   {
@@ -88,8 +116,8 @@ const FAQ = [
     a: "Sí, hay opción de resetear el diario y borrar todas las operaciones registradas. Es irreversible, así que conviene estar seguro.",
   },
   {
-    q: "¿Y los retos y niveles?",
-    a: "Todavía no están. Es una función prevista, no algo incluido hoy: ahora mismo el diario es registro, estadísticas y curva de capital. Cuando llegue, entrará sin coste adicional en la misma suscripción.",
+    q: "¿Tiene niveles o recompensas?",
+    a: "Tiene siete hitos con niveles, y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde. Van incluidos en la suscripción.",
   },
 ];
 
@@ -289,8 +317,8 @@ export default async function FichaDiarioPage() {
             <div className="det-sechead-text">
               <h2 className="det-h2">Y además</h2>
               <p className="det-sechead-sub">
-                Lo que rodea al panel: la curva, el registro y a quién pertenece
-                todo esto.
+                Lo que rodea al panel: la curva, el análisis, el registro y a
+                quién pertenece todo esto.
               </p>
             </div>
           </header>
@@ -307,7 +335,7 @@ export default async function FichaDiarioPage() {
                     <Icon size={19} strokeWidth={1.9} />
                   </span>
                   <h3 className="det-card-title">{b.title}</h3>
-                  <p className="det-card-text">{b.text}</p>
+                  <p className="det-card-text"><TextoConTermino text={b.text} link={b.link} /></p>
                 </article>
               );
             })}
@@ -390,37 +418,49 @@ export default async function FichaDiarioPage() {
               <strong>No importa tu histórico automáticamente.</strong> Empiezas
               desde la próxima operación, no desde tus últimos dos años.
             </li>
-            <li>
-              <strong>Todavía no tiene retos ni niveles.</strong> Es una función
-              prevista, no algo incluido hoy.
-            </li>
           </ul>
         </section>
 
-        {/* ── 06 · Lo que llegará ── */}
+        {/* ── 06 · Hitos ── */}
         <section className="det-seccion">
           <header className="det-sechead">
             <span className="det-sechead-num">06</span>
             <div className="det-sechead-text">
-              <h2 className="det-h2">Lo que llegará</h2>
+              <h2 className="det-h2">Hitos que premian la disciplina</h2>
+              <p className="det-sechead-sub">
+                El problema de un diario nunca es abrirlo: es seguir
+                escribiéndolo al mes siguiente.
+              </p>
             </div>
           </header>
 
           <div className="det-lectura">
             <span className="det-lectura-cifra es-mute">
-              <Hourglass size={22} strokeWidth={2} aria-hidden="true" />
+              <Trophy size={22} strokeWidth={2} aria-hidden="true" />
             </span>
             <span>
-              <span className="det-lectura-title">Retos y niveles</span>
+              <span className="det-lectura-title">Siete hitos con niveles</span>
               <span className="det-lectura-text">
-                El problema de un diario nunca es abrirlo: es seguir
-                escribiéndolo al mes siguiente. Los retos irán en esa dirección
-                — convertir el registro en algo que apetezca mantener. Aún no
-                están disponibles, y cuando lo estén entrarán en la misma
-                suscripción sin coste adicional.
+                Cada uno sube de nivel a medida que apuntas, y te avisa cuando
+                lo consigues. Ninguno premia operar más ni tener una buena
+                racha: premian lo que depende de ti.
               </span>
             </span>
           </div>
+
+          <ul className="det-lista">
+            <li>
+              <strong>Del proceso:</strong> muestra fiable (tus números
+              empiezan a significar algo), disciplina de riesgo, diario con
+              porqué y sin revancha, que cuenta las veces que esperaste una
+              hora tras una pérdida antes de volver a entrar.
+            </li>
+            <li>
+              <strong>De los resultados:</strong> meses cerrados en verde,
+              rentabilidad sobre tu capital y vuelta a máximos después de una
+              caída de más del 5 %.
+            </li>
+          </ul>
         </section>
 
         {/* ── 07 · FAQ ── */}

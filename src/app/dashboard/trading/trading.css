@@ -1,0 +1,1062 @@
+/*
+ * Diario de Trading — solo lo usa /dashboard/trading (se importa en su page.tsx).
+ *
+ * Un sistema, no una colección de variantes: los componentes con color leen
+ * `var(--tone, …)`, y las clases tone-win / tone-loss / tone-be lo fijan. Así un
+ * chip, una métrica o un botón no necesitan su propio .win/.loss/.breakeven.
+ */
+
+.trading-journal {
+  /* Mismos valores que TJ_COLORS en tjFormat.ts (los gráficos SVG los necesitan literales). */
+  --tj-win: #5fd39a;
+  --tj-loss: #ff5c5c;
+  --tj-be: #93a3c4;
+  /* El oro es el acento del diario: selección, foco, hitos. El naranja de marca
+     queda solo para "Nueva operación": junto a una pérdida en rojo se confundían (ΔE 6). */
+  --tj-accent: var(--premium-gold);
+  --tj-accent-soft: rgba(230, 180, 85, 0.13);
+  --tj-accent-line: rgba(230, 180, 85, 0.35);
+  --tj-accent-2: #f5d48a;
+  /* Paneles translúcidos: dejan intuir el fondo (cuadrícula y luces) sin perder legibilidad. */
+  --tj-panel: rgba(15, 30, 57, 0.82);
+  --tj-panel-solid: #0f1e39;
+  --tj-surface: rgba(240, 244, 255, 0.035);
+  --tj-surface-2: rgba(240, 244, 255, 0.07);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(.trading-journal) .tone-win { --tone: var(--tj-win); color: var(--tone); }
+:where(.trading-journal) .tone-loss { --tone: var(--tj-loss); color: var(--tone); }
+:where(.trading-journal) .tone-be { --tone: var(--tj-be); color: var(--tone); }
+
+.trading-journal .muted { color: var(--text-muted); }
+.trading-journal .strong { font-weight: 700; }
+.trading-journal .cap { text-transform: capitalize; }
+.trading-journal .nowrap { white-space: nowrap; }
+.trading-journal .num { text-align: right; }
+
+/* ── Primitivas ── */
+
+.tj-card {
+  min-width: 0;
+  padding: 1.35rem 1.5rem;
+  background: radial-gradient(120% 90% at 0% 0%, rgba(230, 180, 85, 0.05), transparent 55%), var(--tj-panel);
+  border: var(--card-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+}
+
+.tj-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.1rem;
+}
+
+/* Título de tarjeta: fuente de titulares y el icono en una pastilla dorada. */
+.tj-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: rgba(240, 244, 255, 0.96);
+}
+
+.tj-label svg {
+  box-sizing: content-box;
+  flex-shrink: 0;
+  padding: 7px;
+  border: 1px solid var(--tj-accent-line);
+  border-radius: 10px;
+  background: var(--tj-accent-soft);
+  color: var(--tj-accent);
+}
+
+.tj-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.tj-actions.is-end { justify-content: flex-end; margin-left: auto; }
+
+.tj-count { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+.tj-note { margin: 0 0 0.9rem; font-size: 0.78rem; line-height: 1.5; color: var(--text-muted); }
+.tj-sub { display: block; margin-top: 0.15rem; font-size: 0.72rem; font-weight: 500; color: var(--tone, var(--text-muted)); }
+
+.tj-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.tj-btn,
+.tj-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  background: var(--tj-surface);
+  color: var(--tone, var(--text-secondary));
+  font: 600 0.8rem var(--font-family);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.tj-btn { height: 34px; padding: 0 0.8rem; white-space: nowrap; }
+.tj-icon-btn { width: 30px; height: 30px; padding: 0; flex-shrink: 0; }
+
+.tj-btn:hover,
+.tj-icon-btn:hover {
+  background: var(--tj-surface-2);
+  border-color: color-mix(in srgb, var(--tone, #f0f4ff) 35%, transparent);
+  color: var(--tone, var(--text-primary));
+}
+
+.tj-btn:disabled,
+.tj-icon-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Acción de guardar. "Nueva operación" usa el .btn-primary naranja de la web; nada más. */
+.tj-btn.is-primary {
+  padding: 0 1.1rem;
+  border-color: var(--tj-accent);
+  background: var(--tj-accent);
+  color: var(--bg-dark);
+  font-weight: 700;
+}
+
+.tj-btn.is-primary:hover { border-color: #f0c779; background: #f0c779; color: var(--bg-dark); }
+
+.tj-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--tone, #f0f4ff) 28%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone, #f0f4ff) 12%, transparent);
+  color: var(--tone, var(--text-secondary));
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.tj-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--tj-surface);
+}
+
+.tj-seg button {
+  padding: 0.38rem 0.75rem;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--text-muted);
+  font: 600 0.78rem var(--font-family);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tj-seg button:hover { color: var(--text-primary); }
+
+.tj-seg button.active {
+  background: var(--tj-accent-soft);
+  color: var(--tj-accent);
+  box-shadow: inset 0 0 0 1px var(--tj-accent-line);
+}
+
+.tj-bar {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--tj-surface-2);
+}
+
+.tj-bar i {
+  display: block;
+  height: 100%;
+  min-width: 3px;
+  border-radius: inherit;
+  background: var(--tone, var(--tj-accent));
+}
+
+.tj-bar.is-accent i { background: linear-gradient(90deg, #c9923a, var(--tj-accent)); }
+
+.tj-bar-cell { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.7rem; }
+.tj-bar-cell .tj-bar { width: 72px; }
+
+/* Métrica: etiqueta, valor y una línea de contexto. Se usa en todo el diario. */
+.tj-metric { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; margin: 0; }
+
+.tj-metric dt {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tj-metric dd {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--tone, var(--text-primary));
+}
+
+.tj-metric dd.tj-metric-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-family: var(--font-family);
+  letter-spacing: 0;
+  white-space: normal;
+  color: var(--text-muted);
+}
+
+/* ── Ayuda de una métrica (ⓘ) ── */
+
+.tj-metric { position: relative; }
+.tj-info { display: inline-flex; }
+
+.tj-info-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  background: var(--tj-surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.tj-info-btn:hover,
+.tj-info-btn:focus-visible,
+.tj-info.open .tj-info-btn {
+  outline: none;
+  border-color: var(--tj-accent-line);
+  background: var(--tj-accent-soft);
+  color: var(--tj-accent);
+}
+
+.tj-info-pop {
+  position: absolute;
+  top: 1.7rem;
+  left: 0;
+  z-index: 30;
+  width: max(100%, 230px);
+  max-width: 300px;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--tj-accent-line);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.75);
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-secondary);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+}
+
+/* En la columna de la derecha, la ayuda se abre hacia dentro para no salirse. */
+.tj-metric:nth-child(even) .tj-info-pop { left: auto; right: 0; }
+
+.tj-info.open .tj-info-pop,
+.tj-info-btn:focus-visible + .tj-info-pop { opacity: 1; visibility: visible; transform: none; }
+
+@media (hover: hover) {
+  .tj-info:hover .tj-info-pop { opacity: 1; visibility: visible; transform: none; }
+}
+
+.tj-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin: 0 0 1.1rem;
+}
+
+.tj-strip .tj-metric {
+  padding: 0.75rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--tone, #f0f4ff) 16%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--tone, #f0f4ff) 5%, transparent);
+}
+
+/* :not() para no agrandar también la línea de contexto: tiene la misma especificidad. */
+.tj-strip .tj-metric dd:not(.tj-metric-sub) { font-size: 1.1rem; }
+.tj-strip.is-grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 1rem 0 0; }
+
+.tj-tip {
+  --tone: initial;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 150px;
+  padding: 0.65rem 0.8rem;
+  border: var(--card-border);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.7);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tj-tip-head { font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+.tj-tip strong { font-size: 1.05rem; color: var(--tone, var(--text-primary)); }
+.tj-tip-row { display: flex; justify-content: space-between; gap: 0.8rem; }
+
+.tj-table-wrap { overflow-x: auto; margin: 0 -0.5rem; }
+.tj-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+
+.tj-table th {
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+  white-space: nowrap;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tj-table td { padding: 0.7rem 0.5rem; border-bottom: 1px solid rgba(240, 244, 255, 0.05); vertical-align: middle; }
+.tj-table tbody tr:last-child td { border-bottom: 0; }
+.tj-table tbody tr:hover td { background: rgba(240, 244, 255, 0.025); }
+
+/* ── Controles de formulario ── */
+
+.tj-select { position: relative; width: 100%; }
+.tj-select.compact { width: auto; }
+
+.tj-select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  background: rgba(240, 244, 255, 0.04);
+  color: var(--text-primary);
+  font: 0.95rem var(--font-family);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tj-select-btn:hover { border-color: rgba(240, 244, 255, 0.18); }
+
+.tj-select-btn:focus-visible,
+.tj-select-btn.open {
+  outline: none;
+  border-color: var(--tj-accent);
+  box-shadow: 0 0 0 3px var(--tj-accent-soft);
+}
+
+.tj-select-btn.is-date { justify-content: flex-start; color: var(--text-secondary); }
+.tj-select-btn.is-derived { cursor: default; color: var(--text-muted); border-style: dashed; }
+.tj-select-btn.is-derived:hover { border-color: var(--hairline); }
+.tj-select-btn svg { flex-shrink: 0; color: var(--text-muted); }
+
+.tj-select.compact .tj-select-btn {
+  height: 34px;
+  padding: 0 0.7rem;
+  border-radius: 9px;
+  background: var(--tj-surface);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tj-select-chevron { transition: transform 0.15s; }
+.tj-select-chevron.open { transform: rotate(180deg); }
+
+.tj-select-menu,
+.tj-datepicker-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 40;
+  border: var(--card-border);
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, 0.7);
+}
+
+.tj-select-menu {
+  right: 0;
+  min-width: max-content;
+  max-height: 240px;
+  margin: 0;
+  padding: 0.35rem;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.tj-select-option {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.tj-select-option:hover { background: var(--tj-surface-2); color: var(--text-primary); }
+.tj-select-option.active { background: var(--tj-accent-soft); color: var(--tj-accent); font-weight: 600; }
+
+.tj-datepicker-panel { width: max-content; min-width: 264px; padding: 1rem; }
+
+.tj-datepicker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.tj-datepicker-head button,
+.tj-datepicker-day,
+.tj-datepicker-today {
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tj-datepicker-head button { display: flex; padding: 0.25rem; }
+
+.tj-datepicker-weekdays,
+.tj-datepicker-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+
+.tj-datepicker-weekdays { margin-bottom: 0.3rem; font-size: 0.68rem; text-transform: uppercase; color: var(--text-muted); }
+.tj-datepicker-day { aspect-ratio: 1; font-size: 0.82rem; }
+
+.tj-datepicker-head button:hover,
+.tj-datepicker-day:hover:not(:disabled),
+.tj-datepicker-today:hover { background: var(--tj-surface-2); color: var(--text-primary); }
+
+.tj-datepicker-day.active { background: var(--tj-accent); color: var(--bg-dark); font-weight: 700; }
+.tj-datepicker-day:disabled { visibility: hidden; }
+
+.tj-datepicker-time {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.tj-datepicker-time label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tj-datepicker-time label input { width: 52px; padding: 0.35rem 0.4rem; text-align: center; }
+
+.tj-datepicker-today {
+  margin-left: auto;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--tj-accent-line);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--tj-accent);
+}
+
+.tj-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 34px;
+  padding: 0 0.7rem;
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  background: var(--tj-surface);
+  color: var(--text-muted);
+}
+
+.tj-search:focus-within { border-color: var(--tj-accent); }
+
+.tj-search input {
+  width: 190px;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--text-primary);
+  font: 500 0.82rem var(--font-family);
+}
+
+/* ── Cabecera y avisos ── */
+
+/* ── Cabecera: el fondo, la marca de agua y los títulos son los compartidos imm-* (dashboard.css) ── */
+
+.tj-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.tj-new { display: inline-flex; align-items: center; gap: 0.4rem; }
+
+.tj-alert {
+  border-color: color-mix(in srgb, var(--tj-loss) 35%, transparent);
+  background: color-mix(in srgb, var(--tj-loss) 8%, var(--tj-panel));
+}
+
+.tj-alert p { margin: 0 0 0.9rem; font-size: 0.88rem; line-height: 1.5; color: var(--text-secondary); }
+.tj-alert strong { color: var(--text-primary); }
+
+.tj-scroll-anchor { scroll-margin-top: calc(var(--nav-h) + 1rem); }
+
+/* ── Resumen de rentabilidad ── */
+
+.tj-hero {
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(230, 180, 85, 0.13), transparent 55%),
+    radial-gradient(80% 120% at 100% 100%, rgba(126, 166, 255, 0.06), transparent 60%),
+    var(--tj-panel);
+  border-color: rgba(230, 180, 85, 0.18);
+}
+
+.tj-hero-caption {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tj-hero-value {
+  display: block;
+  margin: 0.2rem 0 0.55rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--tone, var(--text-primary));
+}
+
+.tj-hero-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.tj-hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.4rem 0 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.tj-hero-metrics dt { cursor: help; }
+
+.tj-inline-form { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 0.75rem; }
+.tj-inline-form .field input { width: 180px; }
+.tj-inline-form .auth-error { width: 100%; margin: 0; }
+
+.tj-insights ul { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+
+.tj-insights li {
+  position: relative;
+  padding-left: 1.2rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.tj-insights li::before {
+  content: "";
+  position: absolute;
+  top: 0.5em;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 20%, transparent);
+}
+
+.tj-onboarding ol { display: flex; flex-direction: column; gap: 0.7rem; margin: 1rem 0 1.3rem; padding: 0; list-style: none; }
+.tj-onboarding li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-secondary); }
+
+.tj-onboarding li span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--tj-accent-soft);
+  color: var(--tj-accent);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.tj-onboarding li.on span { background: var(--tj-win); color: var(--bg-dark); }
+
+/* ── Filtros y métricas ── */
+
+/* Pestañas de vista: lo único fijo al hacer scroll. */
+.tj-tabs {
+  position: sticky;
+  top: calc(var(--nav-h) + 0.5rem);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem 1rem;
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 4px;
+  border: var(--card-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg-card) 88%, transparent);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.tj-tabs .tj-seg { padding: 0; border: 0; background: none; }
+.tj-tabs .tj-seg button { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
+.tj-tabs .tj-count { padding-right: 0.8rem; white-space: nowrap; }
+
+.tj-filters { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem 1rem; }
+
+/* Una sola franja: el hueco de 1px deja ver la línea del fondo entre celdas, a cualquier número de columnas. */
+.tj-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  background: var(--hairline);
+}
+
+.tj-card.tj-kpis { padding: 0; }
+
+.tj-kpis .tj-metric { padding: 1rem 1.2rem; background: var(--tj-panel-solid); }
+
+/* ── Gráficos ── */
+
+.tj-split { display: grid; grid-template-columns: minmax(0, 1fr) 320px; align-items: start; gap: 1.25rem; }
+.tj-split.is-balanced { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: stretch; }
+.tj-split > :only-child { grid-column: 1 / -1; }
+.tj-split:empty { display: none; }
+.tj-chart { height: 300px; }
+.tj-chart.is-short { height: 200px; margin-bottom: 1.1rem; }
+
+.tj-hist-card { display: flex; flex-direction: column; }
+.tj-hist { display: grid; flex: 1; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; min-height: 150px; margin-top: 1rem; }
+.tj-hist div { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 0.3rem; min-width: 0; }
+
+.tj-hist i {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 5px 5px 2px 2px;
+  background: linear-gradient(180deg, var(--tone), color-mix(in srgb, var(--tone) 30%, transparent));
+}
+
+.tj-hist strong { font-size: 0.75rem; }
+.tj-hist span { font-size: 0.6rem; font-weight: 600; white-space: nowrap; color: var(--text-muted); }
+
+/* ── Calendario ── */
+
+.tj-cal-nav { display: flex; align-items: center; gap: 0.5rem; }
+.tj-cal-nav .tj-label { justify-content: center; min-width: 11.5rem; }
+.tj-cal-year { font-weight: 500; color: var(--text-muted); }
+
+/* Resumen del mes: cuatro mini-métricas en vez de una frase corrida. */
+.tj-cal-stats { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0; }
+
+.tj-cal-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 5.2rem;
+  padding: 0.38rem 0.75rem;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--tj-surface);
+}
+
+.tj-cal-stat dt { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.tj-cal-stat dd { margin: 0; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--tone, var(--text-primary)); }
+
+.tj-cal-stat.is-main {
+  border-color: color-mix(in srgb, var(--tone) 38%, transparent);
+  background: color-mix(in srgb, var(--tone) 10%, transparent);
+}
+
+.tj-cal-stat.is-main dd { font-size: 1.05rem; }
+
+/* Siete días y una columna de semana, separada por un hueco mayor. */
+.tj-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 7.4rem; gap: 6px; }
+
+.tj-cal-weekdays {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tj-cal-weekdays .is-weekend { opacity: 0.55; }
+.tj-cal-weekhead { margin-left: 10px; padding-right: 0.7rem; text-align: right; color: var(--tj-accent-2); }
+
+/* clip, no hidden: recorta el deslizamiento lateral sin cortar el tooltip de la primera fila. */
+.tj-cal-viewport { overflow-x: clip; }
+
+.tj-cal-day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-height: 88px;
+  padding: 0.5rem 0.55rem;
+  border: 1px solid rgba(240, 244, 255, 0.05);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.022);
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.tj-cal-day.is-empty { border-color: transparent; background: none; }
+.tj-cal-day.is-weekend:not(.has-data) { background: rgba(240, 244, 255, 0.01); }
+.tj-cal-day.is-weekend:not(.has-data) .tj-cal-num { opacity: 0.55; }
+
+.tj-cal-day.has-data {
+  cursor: pointer;
+  border-color: color-mix(in srgb, var(--tone) 35%, transparent);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--tone) calc(var(--intensity) * 32%), transparent),
+    color-mix(in srgb, var(--tone) calc(var(--intensity) * 10%), transparent)
+  );
+}
+
+.tj-cal-day.has-data:hover { z-index: 5; transform: translateY(-2px); border-color: color-mix(in srgb, var(--tone) 65%, transparent); }
+
+.tj-cal-day.is-today { border-color: rgba(240, 244, 255, 0.5); }
+
+.tj-cal-day.is-best {
+  border-color: var(--premium-gold);
+  box-shadow: 0 0 0 1px rgba(230, 180, 85, 0.3), 0 10px 26px -14px rgba(230, 180, 85, 0.6);
+}
+
+.tj-cal-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--tone, var(--text-secondary));
+}
+
+.tj-cal-day.is-today .tj-cal-num::after {
+  content: "Hoy";
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.12);
+  font-family: var(--font-family);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+/* El importe y el recuento, abajo: arriba solo el número del día. */
+.tj-cal-pnl { margin-top: auto; font-family: var(--font-display); font-size: 0.92rem; font-weight: 600; }
+.tj-cal-count { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+.tj-cal-crown { position: absolute; top: 7px; right: 7px; display: flex; color: var(--premium-gold); }
+
+.tj-cal-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.tj-cal-day:hover .tj-cal-tip { opacity: 1; transform: translate(-50%, 0); }
+
+/* La semana no es un día más: marco propio, degradado y lectura alineada a la derecha. */
+.tj-cal-week {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.15rem;
+  margin-left: 10px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--tone, var(--tj-accent)) 42%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tone, var(--tj-accent)) 16%, transparent), rgba(7, 12, 24, 0.55));
+  text-align: right;
+}
+
+.tj-cal-week.is-quiet { border-style: dashed; border-color: var(--hairline); background: rgba(7, 12, 24, 0.35); }
+.tj-cal-week-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tj-cal-week strong { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--tone); }
+.tj-cal-week-meta { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+
+/* El detalle del día en móvil; en PC queda oculto y manda el tooltip. */
+.tj-modal-backdrop { display: none; }
+.tj-modal-list { display: flex; flex-direction: column; gap: 6px; margin: 0.8rem 0 0; padding: 0; list-style: none; }
+
+.tj-modal-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 0.7rem;
+  border-radius: 9px;
+  background: var(--tj-surface);
+  font-size: 0.84rem;
+}
+
+.tj-modal-list li span { color: var(--text-secondary); }
+
+/* ── Hitos ── */
+
+.tj-milestones-total { height: 8px; margin-bottom: 1.4rem; }
+
+.tj-milestone-group + .tj-milestone-group { margin-top: 1.6rem; }
+.tj-milestone-group-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.75rem; margin-bottom: 0.8rem; }
+.tj-milestone-group-head h3 { margin: 0; font-size: 0.95rem; }
+.tj-milestone-group-head p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+
+.tj-milestones { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem; }
+
+.tj-milestone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--tj-surface);
+}
+
+.tj-milestone.is-done {
+  border-color: color-mix(in srgb, var(--premium-gold) 45%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--premium-gold) 10%, transparent), var(--tj-surface));
+}
+
+.tj-milestone.is-locked .tj-milestone-top { opacity: 0.55; }
+.tj-milestone-locked { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+
+.tj-next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border-color: var(--tj-accent-line);
+  background: linear-gradient(160deg, rgba(230, 180, 85, 0.1), transparent 55%), var(--tj-panel);
+}
+
+.tj-next .tj-milestone-value strong { color: var(--tj-accent); }
+.tj-milestone .tj-note { margin: 0; font-size: 0.72rem; }
+
+.tj-milestone-top { display: flex; align-items: flex-start; gap: 0.7rem; }
+.tj-milestone-top h4 { margin: 0; font-size: 0.92rem; }
+.tj-milestone-top p { margin: 0.1rem 0 0; font-size: 0.75rem; color: var(--text-muted); }
+
+.tj-milestone-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--tj-accent-soft);
+  color: var(--tj-accent);
+}
+
+.tj-milestone.is-done .tj-milestone-icon {
+  background: linear-gradient(135deg, var(--premium-gold), #f5c842);
+  color: #1a0f00;
+}
+
+.tj-milestone-level { margin-left: auto; white-space: nowrap; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
+
+.tj-milestone-value { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.tj-milestone-value strong { font-size: 1.4rem; letter-spacing: -0.02em; }
+.tj-milestone-value span { font-size: 0.75rem; color: var(--text-muted); }
+
+.tj-milestone-tiers { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
+
+.tj-milestone-tiers li {
+  padding: 0.12rem 0.45rem;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--tj-surface);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.tj-milestone-tiers li.on {
+  border-color: color-mix(in srgb, var(--premium-gold) 40%, transparent);
+  background: color-mix(in srgb, var(--premium-gold) 10%, transparent);
+  color: var(--premium-gold);
+}
+
+/* ── Formulario ── */
+
+.tj-form { border-color: var(--tj-accent-line); }
+
+.trading-journal .field input:focus,
+.trading-journal .field textarea:focus {
+  border-color: var(--tj-accent);
+  box-shadow: 0 0 0 3px var(--tj-accent-soft);
+}
+.tj-form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.1rem; }
+.tj-form-grid textarea { resize: none; }
+.tj-form label .tj-count { float: right; letter-spacing: 0; text-transform: none; }
+.field .tj-seg { display: flex; }
+.field .tj-seg button { flex: 1; padding: 0.5rem; font-size: 0.88rem; }
+
+/* ── Registro ── */
+
+.tj-log-row { cursor: pointer; }
+.tj-log-row[data-tone="win"] td:first-child { box-shadow: inset 3px 0 0 var(--tj-win); }
+.tj-log-row[data-tone="loss"] td:first-child { box-shadow: inset 3px 0 0 var(--tj-loss); }
+.tj-log-row[data-tone="be"] td:first-child { box-shadow: inset 3px 0 0 var(--tj-be); }
+
+.tj-log-chevron { color: var(--text-muted); transition: transform 0.2s; }
+.tj-log-row.is-open .tj-log-chevron { transform: rotate(180deg); }
+
+.tj-log-row.is-open td,
+.tj-log-detail td { background: rgba(240, 244, 255, 0.03); }
+
+.tj-table .tj-log-detail td { padding: 0.4rem 1rem 1.1rem; }
+.tj-log-detail .tj-strip { margin-bottom: 0.7rem; }
+
+.tj-log-notes {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-left: 2px solid var(--tj-accent);
+  border-radius: 0 8px 8px 0;
+  background: var(--tj-surface);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.tj-more { display: flex; margin: 1rem auto 0; }
+
+/* ── Responsive ── */
+
+@media (max-width: 1100px) {
+  .tj-split,
+  .tj-split.is-balanced { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .tj-kpis,
+  .tj-hero-metrics,
+  .tj-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .tj-card { padding: 1.1rem; }
+  .tj-tabs { align-self: stretch; }
+  .tj-hide-sm { display: none; }
+  .tj-chart { height: 240px; }
+  .tj-search input { width: 130px; }
+  .tj-form-grid { grid-template-columns: 1fr; }
+
+  .tj-cal-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .tj-cal-week,
+  .tj-cal-weekhead,
+  .tj-cal-pnl,
+  .tj-cal-tip { display: none; }
+  .tj-cal-day { min-height: 52px; padding: 0.3rem; }
+  .tj-cal-count { font-size: 0.6rem; line-height: 1.2; }
+  .tj-cal-day.is-today .tj-cal-num::after { display: none; }
+
+  .tj-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: rgba(4, 10, 22, 0.62);
+    backdrop-filter: blur(7px);
+  }
+
+  .tj-modal {
+    width: 100%;
+    max-width: 340px;
+    max-height: 78vh;
+    overflow-y: auto;
+    padding: 1.1rem;
+    border: var(--card-border);
+    border-radius: 16px;
+    background: var(--bg-elevated);
+    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.6);
+  }
+}

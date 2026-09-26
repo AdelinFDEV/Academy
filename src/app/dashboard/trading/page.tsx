@@ -3,6 +3,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import TradingJournal from "@/components/TradingJournal";
+import { readDiarioLogros } from "@/lib/diarioLogros";
+import "./trading.css";
 
 export const metadata: Metadata = {
   title: "Diario de Trading",
@@ -29,12 +31,15 @@ export default async function TradingPage() {
   const isPremium = role === "premium" || role === "admin";
   if (!isPremium) redirect("/dashboard");
 
-  const { data: trades } = await supabase
-    .from("trades")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("date", { ascending: true })
-    .order("created_at", { ascending: true });
+  const [{ data: trades }, logros] = await Promise.all([
+    supabase
+      .from("trades")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("date", { ascending: true })
+      .order("created_at", { ascending: true }),
+    readDiarioLogros(supabase, user.id),
+  ]);
 
   const name = profile?.full_name || user.email?.split("@")[0] || "Trader";
 
@@ -44,6 +49,7 @@ export default async function TradingPage() {
         initialTrades={trades ?? []}
         userName={name}
         initialCapital={profile?.trading_starting_capital ?? null}
+        initialLogros={logros}
       />
     </main>
   );

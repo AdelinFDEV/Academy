@@ -1,24 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import type { PostCategoryRef } from "@/lib/types";
+import { syncDiarioLogros } from "@/lib/diarioLogros";
+import { BADGE_DEFS, type BadgeStats } from "@/lib/logros";
 
-// Computes which badges the user has earned based on current stats
-function computeEarned(stats: {
-  readCount: number;
-  savedCount: number;
-  categoriesRead: number;
-  maxStreak: number;
-}): string[] {
-  const earned: string[] = [];
-  if (stats.readCount >= 1)        earned.push("first-read");
-  if (stats.readCount >= 5)        earned.push("reader");
-  if (stats.readCount >= 10)       earned.push("scholar");
-  if (stats.maxStreak >= 3)        earned.push("streak3");
-  if (stats.maxStreak >= 7)        earned.push("streak7");
-  if (stats.maxStreak >= 30)       earned.push("streak30");
-  if (stats.savedCount >= 5)       earned.push("collector");
-  if (stats.categoriesRead >= 3)   earned.push("explorer");
-  return earned;
+/**
+ * Los logros de actividad que se cumplen con estos contadores. Los umbrales
+ * viven en BADGE_DEFS (`progress`): la página de logros enseña el avance con
+ * los mismos números, y no hay una segunda lista que se desincronice.
+ */
+function computeEarned(stats: BadgeStats): string[] {
+  return BADGE_DEFS.filter((b) => b.progress && stats[b.progress.stat] >= b.progress.target).map((b) => b.id);
 }
 
 export async function POST() {
@@ -63,8 +55,13 @@ export async function POST() {
     );
   }
 
+  // Los hitos del diario también son logros. Se sincronizan aquí para que la
+  // página de logros salga bien aunque no se haya abierto el diario, pero no se
+  // anuncian: ese aviso lo da el propio diario al conseguirlos.
+  const diario = await syncDiarioLogros(supabase, user.id);
+
   // Union computed badges with manually-granted ones already in DB (e.g. guide badges)
-  const allEarned = [...new Set([...earnedNow, ...Array.from(savedBadgeIds)])];
+  const allEarned = [...new Set([...earnedNow, ...Array.from(savedBadgeIds), ...diario.stored.map((b) => b.badge_id)])];
 
   return NextResponse.json({
     earned: allEarned,

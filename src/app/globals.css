@@ -1496,7 +1496,6 @@ html {
   .nav-saludo-flecha { transition: none; }
 }
 
-
 /* ── Visitante sin cuenta: entrar o registrarse ─────────────────────────────
    Antes ambas cosas vivían solo dentro del desplegable, que es donde nadie
    busca el botón de registrarse. «Entrar» va en texto y «Registrarse» en
@@ -1613,7 +1612,6 @@ html {
     font-size: 0.73rem;
   }
 }
-
 
 .blog-nav-divider {
   width: 1px;
@@ -1876,7 +1874,6 @@ html {
   .blog-nav-center .guide-search {
     display: none;
   }
-
 
   .blog-nav-divider {
     display: none;
@@ -3502,26 +3499,6 @@ html {
   overflow: visible;
 }
 
-/* Ã¢â€â‚¬ Unlocked Ã¢â€â‚¬ */
-
-.badge-item.unlocked {
-  background: linear-gradient(150deg, rgba(255, 107, 43, 0.22) 0%, rgba(255, 154, 0, 0.1) 100%);
-  border-color: rgba(255, 107, 43, 0.5);
-  color: var(--text-primary);
-  box-shadow: 0 4px 16px -8px rgba(255, 107, 43, 0.35);
-}
-
-.badge-item.unlocked:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px -8px rgba(255, 107, 43, 0.45);
-  border-color: rgba(255, 107, 43, 0.7);
-}
-
-.badge-item.unlocked .badge-label {
-  color: #ffb27a;
-}
-
-
 /* Ã¢â€â‚¬ Locked Ã¢â€â‚¬ */
 
 .badge-item.locked {
@@ -3537,7 +3514,6 @@ html {
 
 /* Ã¢â€â‚¬ Special (30-day streak) Ã¢â€â‚¬ */
 
-
 /* Ã¢â€â‚¬ Icon Ã¢â€â‚¬ */
 
 .badge-icon {
@@ -3552,12 +3528,6 @@ html {
   transition: background 0.2s;
 }
 
-.badge-item.unlocked .badge-icon {
-  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
-  color: #1a0800;
-  box-shadow: 0 4px 14px -4px rgba(255, 107, 43, 0.55);
-}
-
 /* Ã¢â€â‚¬ Label Ã¢â€â‚¬ */
 
 .badge-label {
@@ -3565,13 +3535,6 @@ html {
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1.2;
-}
-
-/* Ã¢â€â‚¬ Tooltip Ã¢â€â‚¬ */
-
-.badge-item:hover .badge-tooltip {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
 }
 
 /* arrow */
@@ -4216,8 +4179,6 @@ html {
 
   /* Dashboard: sidebar oculto, header con hamburguesa */
 
-
-
   /* El scroll lo maneja la pÃƒÂ¡gina, no el contenedor */
 
   /* MÃƒÂ¡s espacio lateral en tablet */
@@ -4244,15 +4205,9 @@ html {
     grid-template-columns: repeat(2, 1fr);
   }
 
-
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
   }
-
-
-
-
-
 
   .featured-title {
     font-size: 1.8rem;
@@ -5223,13 +5178,6 @@ html {
 
   /* Hero */
 
-
-
-
-
-
-
-
   /* Contenido */
   .blog-main {
     padding: 2rem 1.5rem;
@@ -5241,18 +5189,11 @@ html {
 
   /* Featured */
 
-
   .featured-title {
     font-size: 1.5rem;
   }
 
-
-
   /* CTA */
-
-
-
-
 
   .cta-btn-primary,
   .cta-btn-secondary {
@@ -5262,11 +5203,6 @@ html {
 
   /* Secciones nuevas */
 
-
-
-
-
-
   /* Trading journal */
 
   /* Stats dashboard Ã¢â‚¬â€ 2Ãƒâ€”2 en mÃƒÂ³vil */
@@ -5274,7 +5210,6 @@ html {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
-
 
   /* Paywall Ã¢â‚¬â€ post */
   .post-paywall {
@@ -5412,15 +5347,9 @@ html {
 
   /* Dashboard: sidebar oculto, header con hamburguesa */
 
-
-
-
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Dashboard content Ã¢â€â‚¬Ã¢â€â‚¬ */
 
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Streak teaser Ã¢â€â‚¬Ã¢â€â‚¬ */
-
-
-
 
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Badge popup Ã¢â€â‚¬Ã¢â€â‚¬ */
   .badge-popup {
@@ -5518,8 +5447,6 @@ html {
   .post-title {
     font-size: 1.6rem;
   }
-
-
 
   .stats-grid {
     gap: 0.6rem;
@@ -5625,7 +5552,6 @@ select {
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Watchlist: columnas compactas Ã¢â€â‚¬Ã¢â€â‚¬ */
 
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Buscador home: no desborda Ã¢â€â‚¬Ã¢â€â‚¬ */
-
 
   /* Ã¢â€â‚¬Ã¢â€â‚¬ Glosario controles Ã¢â€â‚¬Ã¢â€â‚¬ */
   .glosario-controls {
@@ -7145,13 +7071,17 @@ select {
 
 @media (min-width: 901px) {
   .blog-mobile-menu-nav {
-    flex-direction: row;
-    justify-content: center;
-    gap: 4rem;
+    /* Rejilla, no flex: align-content centra el BLOQUE en vertical (si no
+       cabe, pantalla baja, cae arriba + scroll en vez de cortar enlaces) y
+       align-items: start alinea arriba las tres columnas. Con flex y
+       align-items: center, cada columna se centraba por su cuenta y
+       «Educación», la más corta, quedaba a media altura. */
+    display: grid;
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    column-gap: 4rem;
     max-width: 1200px;
-    /* Centrado vertical del bloque; si no cabe (pantalla baja), cae a
-       arriba + scroll en vez de cortar los enlaces de abajo. */
-    align-items: safe center;
+    align-content: safe center;
+    align-items: start;
     padding-top: 24px;
     padding-bottom: 24px;
     /* Red de seguridad: con muchos ítems, permitir scroll para que el
@@ -7379,7 +7309,6 @@ select {
   .pi-text-hide-mobile {
     display: none !important;
   }
-
 
   .home-feature {
     font-size: 0.75rem;
@@ -9567,7 +9496,6 @@ select {
    HOME â€” Guides section
    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    /guias PAGE
    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
@@ -9582,9 +9510,7 @@ select {
 
 /* Responsive */
 
-
 /* ── Contacto cercano — Instagram CTA ── */
-
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Admin Â· GuÃ­as Â· PÃ¡gina de instrucciones internas
@@ -11063,44 +10989,6 @@ select {
   color: #ff6b6b;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   ASESORÍA — banda de entrada (dashboard, premium, guías)
-   Compartida por 3 secciones, por eso vive aquí y no en el CSS
-   de un módulo. En la home el acceso es el dúo hero-duo (home.css).
-   Los estilos propios de /asesoria están en asesoria.css.
-   ═══════════════════════════════════════════════════════════ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ── Ajustes por contexto ─────────────────────────────────── */
-
-/* En el dashboard y en las guías la banda es un bloque suelto y necesita
-   sus propios márgenes. */
-
-
-
-/* ── Móvil ────────────────────────────────────────────────── */
-
-@media (max-width: 760px) {
-
-
-
-}
-
 /* Portfolio Adelin (/portfolio) — usado fuera de dashboard/guias/admin, por eso vive aquí */
 .pf-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; }
 
@@ -11694,7 +11582,6 @@ select {
   color: var(--text-primary, #f2f7ff);
 }
 
-
 @media (max-width: 720px) {
   .contact-cta-botones {
     width: 100%;
@@ -11820,7 +11707,6 @@ select {
   .post-cierre-acciones { flex-direction: column; }
   .post-cierre-btn { justify-content: center; }
 }
-
 
 /* ── Página de un término del diccionario (/glosario/[termino]) ─────────── */
 /* Va aquí y no en un .css de módulo porque /glosario queda fuera de guías,
@@ -12002,7 +11888,6 @@ select {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-
 
 /* ── Datos duros de cada ventaja ───────────────────────────────────────────
    Una línea corta con un número, un horario o una fuente. A 49,99 €/mes una

@@ -7,7 +7,7 @@ import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, Lock } from 
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardAtajos from "@/components/DashboardAtajos";
-import { LOGROS } from "@/lib/logros";
+import { LOGROS, diarioLevel, isEarned } from "@/lib/logros";
 import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
@@ -70,8 +70,10 @@ export default async function DashboardPage() {
   // Los logros salen de `@/lib/logros`, que es la misma lista que pinta
   // /dashboard/logros. Aquí había una copia a mano con SEIS de los dieciséis
   // que hay, así que la tarjeta enseñaba "3/6" a quien tenía tres de dieciséis.
-  const DASH_BADGES = LOGROS;
-  const badgesUnlockedCount = DASH_BADGES.filter((b) => earnedBadgeIds.has(b.id)).length;
+  // Los del diario solo se consiguen con Premium: a quien no lo tiene (ni tiene
+  // ninguno de antes) no se le enseñan siete logros imposibles.
+  const DASH_BADGES = LOGROS.filter((b) => !b.diario || isPremium || isEarned(earnedBadgeIds, b));
+  const badgesUnlockedCount = DASH_BADGES.filter((b) => isEarned(earnedBadgeIds, b)).length;
 
   const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
   const savedIds = new Set(userPosts.filter((up) => up.saved).map((up) => up.post_id));
@@ -174,20 +176,27 @@ export default async function DashboardPage() {
         </div>
         <div className="dash-badges-row">
           {DASH_BADGES.map((badge) => {
-            const unlocked = earnedBadgeIds.has(badge.id);
+            const unlocked = isEarned(earnedBadgeIds, badge);
             return (
               <div key={badge.id} className={`dash-badge-tile${unlocked ? " dash-badge-tile--unlocked" : ""}`}>
-                {unlocked && (
-                  <span className="dash-badge-tile-check" title="Logro obtenido">
+                {unlocked ? (
+                  <span className={`badge-unlocked-check${badge.special ? " badge-unlocked-check--gold" : ""}`} title="Logro obtenido">
                     <Check size={10} strokeWidth={3.2} aria-hidden="true" />
                   </span>
+                ) : (
+                  <span className="badge-lock" title="Aún no conseguido">
+                    <Lock size={9} strokeWidth={3} aria-hidden="true" />
+                  </span>
                 )}
-                <div className="dash-badge-tile-icon">
-                  {unlocked ? badge.icon : <Lock size={16} aria-hidden="true" />}
-                </div>
+                <div className="dash-badge-tile-icon">{badge.icon}</div>
                 <span className="dash-badge-tile-label">{badge.label}</span>
                 <div className="badge-tooltip">
                   <p className="badge-tooltip-condition">{badge.condition}</p>
+                  {badge.diario && (
+                    <p className="badge-tooltip-reward">
+                      <span className="badge-tooltip-reward-star">★</span> Nivel {diarioLevel(earnedBadgeIds, badge)} de {badge.diario.levels}
+                    </p>
+                  )}
                   {badge.reward && (
                     <p className="badge-tooltip-reward">
                       <span className="badge-tooltip-reward-star">★</span> {badge.reward}

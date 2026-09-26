@@ -43,7 +43,9 @@ Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin
 
 ### 2. Niveles de usuarios
 
-**Ojo: esto ya está prometido en la web.** El 05-09-2026 se encontró que nueve sitios anunciaban «retos y niveles» del Diario de Trading como si existieran; se cambiaron a «próximamente», pero la promesa sigue en pie, incluida la tabla comparativa de `/premium`. Cerrar esta tarea es lo que permite quitar ese «próximamente».
+Niveles de usuario **en toda la web**. No confundir con los hitos del Diario de Trading, que ya existen.
+
+**Lo del diario está cerrado (26-09-2026).** La web prometía «retos y niveles» del diario como «próximamente». El admin decidió que los hitos cumplen esa promesa (`src/components/trading/TjMilestones.tsx`: siete familias con niveles y el mismo aviso que los logros), y los textos dicen ya «hitos con niveles» en el catálogo, el bot, `/premium` y la ficha `/herramientas/diario`. No hay «retos»: que no se vuelvan a anunciar. Desde el 26-09-2026 los hitos también son logros: el servidor los recalcula desde las operaciones (`src/lib/diarioLogros.ts`) y guarda una fila por nivel en `user_badges` (`diario-<hito>-<nivel>`), así que salen en `/dashboard/logros` y en la tarjeta del panel. Si esta tarea llega a calcular un nivel de usuario a partir de los logros, esos niveles ya están ahí.
 
 **Con qué se conecta:**
 - Ya existe medio sistema: **16 logros** en `src/lib/logros.tsx` (ocho de actividad, uno de pago y uno por guía, derivados de `GUIDES`), rachas diarias, y la tabla `user_badges`. Los niveles serían la capa de encima, no algo nuevo.

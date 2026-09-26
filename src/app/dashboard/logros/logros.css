@@ -1,0 +1,400 @@
+/*
+ * Logros — solo /dashboard/logros (se importa en su page.tsx).
+ * El fondo, la cabecera y las cabeceras numeradas son los imm-* compartidos de
+ * dashboard.css. Cada categoría pone su color en --lg-cat, y todo lo que se
+ * tiñe (medallas, barras, bordes) lo lee de ahí.
+ */
+
+.lg-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.lg-cat--actividad { --lg-cat: #ff8552; }
+.lg-cat--guias { --lg-cat: #8ea2ff; }
+.lg-cat--diario { --lg-cat: #e6b455; }
+
+.lg-panel {
+  padding: 1.5rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 18px;
+  background: radial-gradient(120% 90% at 0% 0%, rgba(230, 180, 85, 0.06), transparent 55%), rgba(15, 30, 57, 0.82);
+  box-shadow: var(--card-shadow);
+}
+
+.lg-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.lg-bar {
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.07);
+}
+
+.lg-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--lg-cat, var(--premium-gold)) 60%, #0a1628), var(--lg-cat, var(--premium-gold)));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--lg-cat, var(--premium-gold)) 45%, transparent);
+  transition: width 0.6s ease;
+}
+
+.lg-foot-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ── Progreso total ── */
+
+.lg-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 300px);
+  align-items: center;
+  gap: 1.5rem 2.2rem;
+  border-color: rgba(230, 180, 85, 0.2);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(230, 180, 85, 0.14), transparent 55%),
+    radial-gradient(80% 120% at 100% 100%, rgba(126, 166, 255, 0.07), transparent 60%),
+    rgba(15, 30, 57, 0.82);
+}
+
+.lg-ring { position: relative; width: 132px; height: 132px; }
+.lg-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.lg-ring-track { fill: none; stroke: rgba(240, 244, 255, 0.07); stroke-width: 9; }
+
+.lg-ring-fill {
+  fill: none;
+  stroke: url(#lg-ring-grad);
+  stroke-width: 9;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px rgba(230, 180, 85, 0.45));
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.lg-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.lg-ring-center strong { font-family: var(--font-display); font-size: 2.1rem; font-weight: 700; line-height: 1; color: var(--text-primary); }
+.lg-ring-center span { margin-top: 0.25rem; font-size: 0.72rem; color: var(--text-muted); }
+
+.lg-hero-main h2 {
+  margin: 0.3rem 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: rgba(240, 244, 255, 0.96);
+}
+
+.lg-hero-main > p { margin: 0 0 1rem; font-size: 0.88rem; color: rgba(240, 244, 255, 0.55); }
+
+.lg-cats { display: flex; flex-direction: column; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+
+.lg-cats a {
+  display: grid;
+  grid-template-columns: 28px 7.5rem minmax(0, 1fr) 2.8rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 -0.4rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.lg-cats a:hover,
+.lg-cats a:focus-visible { outline: none; background: rgba(240, 244, 255, 0.05); }
+
+.lg-cat-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--lg-cat) 14%, transparent);
+  color: var(--lg-cat);
+}
+
+.lg-cat-name { font-size: 0.84rem; font-weight: 600; color: var(--text-secondary); }
+.lg-cat-count { font-size: 0.8rem; font-weight: 700; text-align: right; color: var(--text-secondary); }
+
+.lg-next {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--lg-cat) 30%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--lg-cat) 7%, rgba(7, 12, 24, 0.5));
+}
+
+.lg-next .lg-kicker { color: var(--lg-cat); }
+.lg-next-row { display: flex; align-items: center; gap: 0.8rem; }
+.lg-next-row strong { display: block; font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+.lg-next-row span { display: block; font-size: 0.76rem; line-height: 1.4; color: rgba(240, 244, 255, 0.55); }
+
+/* ── Racha ── */
+
+.lg-streak { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem 1.25rem; }
+
+.lg-flame {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
+  color: #1a0800;
+  box-shadow: 0 10px 28px -10px rgba(255, 107, 43, 0.7);
+}
+
+.lg-streak-num { display: block; font-family: var(--font-display); font-size: 2.1rem; font-weight: 700; line-height: 1; color: var(--text-primary); }
+.lg-streak-label { display: block; margin-top: 0.2rem; font-size: 0.82rem; color: var(--text-muted); }
+
+.lg-chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
+
+.lg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.lg-chip strong { color: var(--text-primary); }
+.lg-chip.is-gold { border-color: rgba(230, 180, 85, 0.35); background: rgba(230, 180, 85, 0.1); color: #f5d48a; }
+
+.lg-streak-goal {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.lg-streak-goal p { margin: 0; font-size: 0.86rem; line-height: 1.5; color: var(--text-secondary); }
+.lg-streak-goal strong { color: var(--lg-cat); }
+
+/* ── Secciones ── */
+
+.lg-section { display: flex; flex-direction: column; gap: 1.2rem; scroll-margin-top: calc(var(--nav-h) + 1rem); }
+
+.lg-count {
+  flex-shrink: 0;
+  align-self: center;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--lg-cat) 30%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lg-cat) 10%, transparent);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--lg-cat);
+}
+
+.lg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; }
+
+/* ── Tarjeta de logro: una medalla ── */
+
+.lg-link { display: block; height: 100%; color: inherit; text-decoration: none; }
+.lg-link:focus-visible { outline: none; }
+.lg-link:focus-visible .lg-card { border-color: var(--lg-cat); }
+
+.lg-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  height: 100%;
+  overflow: hidden;
+  padding: 1.25rem 1.2rem 1.1rem;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 16px;
+  background: rgba(15, 30, 57, 0.7);
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.lg-card.is-special { --lg-cat: #e6b455; }
+
+.lg-card.is-earned {
+  border-color: color-mix(in srgb, var(--lg-cat) 32%, transparent);
+  background: radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--lg-cat) 12%, transparent), transparent 60%), rgba(15, 30, 57, 0.82);
+}
+
+.lg-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--lg-cat) 50%, transparent);
+  box-shadow: 0 16px 36px -18px color-mix(in srgb, var(--lg-cat) 60%, transparent);
+}
+
+/* Destello al pasar por encima: solo los especiales ya conseguidos. */
+.lg-card.is-special.is-earned::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 240, 200, 0.14) 50%, transparent 65%);
+  transform: translateX(-100%);
+  transition: transform 0.9s ease;
+  pointer-events: none;
+}
+
+.lg-card.is-special.is-earned:hover::after { transform: translateX(100%); }
+
+.lg-special {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.18rem 0.5rem;
+  border: 1px solid rgba(230, 180, 85, 0.4);
+  border-radius: 999px;
+  background: rgba(230, 180, 85, 0.1);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f5d48a;
+}
+
+.lg-medal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 0.35rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.07), transparent 60%), #0c1830;
+  box-shadow: inset 0 0 0 1px rgba(240, 244, 255, 0.1);
+  color: rgba(240, 244, 255, 0.45);
+}
+
+.lg-medal svg { width: 26px; height: 26px; }
+.lg-medal.is-small { width: 46px; height: 46px; margin: 0; }
+.lg-medal.is-small svg { width: 21px; height: 21px; }
+
+.lg-card.is-locked .lg-medal { outline: 1px dashed rgba(240, 244, 255, 0.16); outline-offset: 4px; }
+.lg-card.is-locked .lg-medal > svg { opacity: 0.55; }
+
+/* Conseguido: medalla metálica del color de su categoría. */
+.lg-card.is-earned .lg-medal,
+.lg-next .lg-medal {
+  color: #1a1204;
+  background: radial-gradient(
+    circle at 32% 28%,
+    #ffffff 0%,
+    color-mix(in srgb, var(--lg-cat) 55%, #ffffff) 18%,
+    var(--lg-cat) 55%,
+    color-mix(in srgb, var(--lg-cat) 65%, #000000) 100%
+  );
+  box-shadow:
+    0 0 0 4px color-mix(in srgb, var(--lg-cat) 16%, transparent),
+    0 12px 28px -10px color-mix(in srgb, var(--lg-cat) 75%, transparent),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25),
+    inset 0 2px 3px rgba(255, 255, 255, 0.45);
+}
+
+.lg-medal-lock {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #0f1e39;
+  border-radius: 50%;
+  background: #2a3a55;
+  color: var(--text-muted);
+}
+
+.lg-name { margin: 0; font-family: var(--font-display); font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; color: rgba(240, 244, 255, 0.96); }
+.lg-card.is-locked .lg-name { color: var(--text-secondary); }
+.lg-cond { margin: 0; font-size: 0.82rem; line-height: 1.5; color: rgba(240, 244, 255, 0.55); }
+
+.lg-reward { display: flex; gap: 0.35rem; margin: 0; font-size: 0.78rem; line-height: 1.45; color: #f5c16c; }
+.lg-reward svg { flex-shrink: 0; margin-top: 0.15rem; }
+
+.lg-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.06);
+}
+
+.lg-got { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; font-weight: 700; color: #5fd39a; }
+.lg-got svg { box-sizing: content-box; padding: 2px; border-radius: 50%; background: rgba(95, 211, 154, 0.15); }
+
+.lg-levels { display: flex; gap: 4px; }
+.lg-levels i { flex: 1; height: 6px; border-radius: 999px; background: rgba(240, 244, 255, 0.08); }
+.lg-levels i.on { background: var(--lg-cat); box-shadow: 0 0 8px color-mix(in srgb, var(--lg-cat) 50%, transparent); }
+
+.lg-cta { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.78rem; font-weight: 700; color: #f5d48a; text-decoration: none; }
+.lg-cta:hover { text-decoration: underline; }
+
+/* ── Responsive ── */
+
+@media (max-width: 1000px) {
+  .lg-hero { grid-template-columns: auto minmax(0, 1fr); }
+  .lg-next { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .lg-hero { grid-template-columns: 1fr; justify-items: start; }
+  .lg-ring { width: 112px; height: 112px; }
+  .lg-cats a { grid-template-columns: 28px 6rem minmax(0, 1fr) 2.6rem; }
+  .lg-streak { grid-template-columns: auto 1fr; }
+  .lg-chips { grid-column: 1 / -1; justify-content: flex-start; }
+  .lg-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+  .lg-card { padding: 1rem; }
+  .lg-cond { font-size: 0.76rem; }
+  .imm-sechead .lg-count { display: none; }
+}
+
+@media (max-width: 420px) {
+  .lg-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lg-card,
+  .lg-ring-fill,
+  .lg-bar i { transition: none; }
+}

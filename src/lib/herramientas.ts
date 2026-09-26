@@ -118,13 +118,13 @@ export const HERRAMIENTAS: Herramienta[] = [
     label: "Diario de Trading",
     tag: "Premium",
     color: "#ff9a4d",
-    desc: "Cada operación con su riesgo, su resultado y por qué la tomaste, y diez estadísticas que te dicen cómo operas de verdad.",
+    desc: "Cada operación con su riesgo, su resultado real y por qué la tomaste, y diez estadísticas que te dicen cómo operas de verdad.",
     resumen:
-      "Un diario donde anotas cada operación con su riesgo, su resultado y por qué la tomaste, y que te devuelve las estadísticas que de verdad importan: ratio de acierto, racha, mejor y peor operación. Incluye curva de capital, reparto de ganadoras y perdedoras y P&L por par. Los retos y niveles llegarán más adelante.",
+      "Un diario donde anotas cada operación con su riesgo, su objetivo, lo que de verdad pasó y por qué la tomaste, y que te devuelve las estadísticas que importan: acierto, esperanza en R, profit factor, drawdown y rachas. Incluye curva de capital, rendimiento por mes, trimestre y año, calendario, desglose por par, estrategia, día y hora, e hitos con niveles que premian la disciplina.",
     acceso: "premium",
     chips: [
       { icon: ClipboardCheck, label: "Registro de operaciones" },
-      { icon: Trophy, label: "Retos y niveles (pronto)" },
+      { icon: Trophy, label: "Hitos con niveles" },
     ],
     premiumGate: true,
     premiumHref: "/dashboard/trading",

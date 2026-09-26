@@ -1,15 +1,34 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import Link from "next/link";
 import { BADGE_DEFS, GUIDE_BADGE_DEFS } from "@/lib/logros";
 
-type BadgeDef = (typeof BADGE_DEFS)[number];
+/**
+ * Lo que el aviso necesita para pintarse. Un logro de `logros.tsx` ya lo cumple;
+ * otras partes de la web (los hitos del diario) mandan el suyo completo en
+ * `detail.notices`, con su propio encabezado y su enlace.
+ */
+export interface UnlockNotice {
+  id: string;
+  label: string;
+  condition: string;
+  reward?: string;
+  bigIcon: React.ReactNode;
+  special?: boolean;
+  eyebrow?: string;
+  link?: { href: string; label: string };
+}
 
-const ALL_BADGE_DEFS: BadgeDef[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS];
+export interface UnlockEventDetail {
+  ids?: string[];
+  notices?: UnlockNotice[];
+}
 
-import Link from "next/link";
+const ALL_BADGE_DEFS: UnlockNotice[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS];
 
-function Popup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
+function Popup({ badge, onClose }: { badge: UnlockNotice; onClose: () => void }) {
+  const link = badge.link ?? { href: "/logros", label: "Ver Logros" };
   return (
     <div className="badge-popup-overlay" onClick={onClose}>
       <div className="badge-popup" onClick={(e) => e.stopPropagation()}>
@@ -22,7 +41,7 @@ function Popup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
           {badge.bigIcon}
           {badge.special && <span className="badge-popup-star">★</span>}
         </div>
-        <p className="badge-popup-eyebrow">¡Logro desbloqueado!</p>
+        <p className="badge-popup-eyebrow">{badge.eyebrow ?? "¡Logro desbloqueado!"}</p>
         <h3 className="badge-popup-title">{badge.label}</h3>
         <p className="badge-popup-desc">{badge.condition}</p>
         {badge.reward && (
@@ -31,15 +50,20 @@ function Popup({ badge, onClose }: { badge: BadgeDef; onClose: () => void }) {
           </p>
         )}
         <button className="badge-popup-close" onClick={onClose}>Genial ✓</button>
-        <Link href="/logros" className="badge-popup-viewall" onClick={onClose}>Ver Logros</Link>
+        {/* Un enlace de solo hash tiene que ser <a>: Link no dispara "hashchange". */}
+        {link.href.startsWith("#") ? (
+          <a href={link.href} className="badge-popup-viewall" onClick={onClose}>{link.label}</a>
+        ) : (
+          <Link href={link.href} className="badge-popup-viewall" onClick={onClose}>{link.label}</Link>
+        )}
       </div>
     </div>
   );
 }
 
 export default function BadgeNotifier() {
-  const [, setQueue] = useState<BadgeDef[]>([]);
-  const [current, setCurrent] = useState<BadgeDef | null>(null);
+  const [, setQueue] = useState<UnlockNotice[]>([]);
+  const [current, setCurrent] = useState<UnlockNotice | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const dismiss = useCallback(() => {
@@ -56,10 +80,11 @@ export default function BadgeNotifier() {
 
   useEffect(() => {
     function onBadge(e: Event) {
-      const ids: string[] = (e as CustomEvent).detail.ids;
-      const badges = ids
-        .map((id) => ALL_BADGE_DEFS.find((b) => b.id === id))
-        .filter(Boolean) as BadgeDef[];
+      const { ids = [], notices = [] } = (e as CustomEvent<UnlockEventDetail>).detail;
+      const badges = [
+        ...ids.map((id) => ALL_BADGE_DEFS.find((b) => b.id === id)).filter((b): b is UnlockNotice => !!b),
+        ...notices,
+      ];
 
       if (badges.length === 0) return;
       setQueue((q) => {

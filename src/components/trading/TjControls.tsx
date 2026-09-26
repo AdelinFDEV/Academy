@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
-import { WEEKDAYS, MONTHS } from "./tjDateConstants";
+import { useEffect, useId, useRef, useState } from "react";
+import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from "lucide-react";
+import { WEEKDAYS, MONTHS } from "./tjFormat";
 
-function useClickOutside(open: boolean, onClose: () => void) {
-  const ref = useRef<HTMLDivElement>(null);
+function useClickOutside<T extends HTMLElement = HTMLDivElement>(open: boolean, onClose: () => void) {
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -19,23 +19,80 @@ function useClickOutside(open: boolean, onClose: () => void) {
   return ref;
 }
 
+// ─────────────────────────── Ayuda ───────────────────────────
+
+/**
+ * Explicación de una métrica. En PC se abre al pasar el ratón; en el móvil,
+ * al tocar el botón (y se cierra tocando fuera o con Escape).
+ */
+export function TjInfo({ label, children }: { label: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const ref = useClickOutside<HTMLSpanElement>(open, () => setOpen(false));
+  const id = useId();
+
+  return (
+    <span className={`tj-info${open ? " open" : ""}`} ref={ref} onKeyDown={e => e.key === "Escape" && setOpen(false)}>
+      <button
+        type="button" className="tj-info-btn" aria-label={`Qué significa: ${label}`}
+        aria-expanded={open} aria-describedby={id} onClick={() => setOpen(o => !o)}
+      >
+        <Info size={12} aria-hidden="true" />
+      </button>
+      <span role="tooltip" id={id} className="tj-info-pop">{children}</span>
+    </span>
+  );
+}
+
+// ─────────────────────────── Segmented ───────────────────────────
+
+export function TjSegmented<T extends string>({
+  value,
+  onChange,
+  options,
+  label,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  options: { value: T; label: string }[];
+  label: string;
+}) {
+  return (
+    <div className="tj-seg" role="tablist" aria-label={label}>
+      {options.map(o => (
+        <button
+          key={o.value}
+          type="button"
+          role="tab"
+          aria-selected={o.value === value}
+          className={o.value === value ? "active" : undefined}
+          onClick={() => onChange(o.value)}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ───────────────────────────── Select ─────────────────────────────
 
 export function TjSelect({
   value,
   onChange,
   options,
+  compact = false,
 }: {
   value: string;
   onChange: (v: string) => void;
   options: { value: string; label: string }[];
+  compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(open, () => setOpen(false));
   const selected = options.find(o => o.value === value);
 
   return (
-    <div className="tj-select" ref={ref}>
+    <div className={`tj-select${compact ? " compact" : ""}`} ref={ref}>
       <button type="button" className={`tj-select-btn${open ? " open" : ""}`} onClick={() => setOpen(o => !o)}>
         <span>{selected?.label ?? value}</span>
         <ChevronDown size={15} className={`tj-select-chevron${open ? " open" : ""}`} />
@@ -59,28 +116,31 @@ export function TjSelect({
   );
 }
 
-// ─────────────────────────── Pair combobox ───────────────────────────
+// ─────────────────────────── Combobox ───────────────────────────
 
-export function TjPairInput({
+export function TjCombobox({
   value,
   onChange,
   options,
   placeholder,
+  required = false,
 }: {
   value: string;
   onChange: (v: string) => void;
   options: string[];
   placeholder?: string;
+  required?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(open, () => setOpen(false));
 
-  const filtered = value
-    ? options.filter(o => o.toLowerCase().includes(value.toLowerCase()))
-    : options;
+  const filtered = (value
+    ? options.filter(o => o.toLowerCase().includes(value.toLowerCase()) && o !== value)
+    : options
+  ).slice(0, 8);
 
   return (
-    <div className="tj-combobox" ref={ref}>
+    <div className="tj-select" ref={ref}>
       <input
         type="text"
         value={value}
@@ -88,7 +148,7 @@ export function TjPairInput({
         onChange={(e) => { onChange(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         autoComplete="off"
-        required
+        required={required}
       />
       {open && filtered.length > 0 && (
         <ul className="tj-select-menu" role="listbox">
@@ -96,6 +156,7 @@ export function TjPairInput({
             <li
               key={opt}
               role="option"
+              aria-selected={opt === value}
               className={`tj-select-option${opt === value ? " active" : ""}`}
               onClick={() => { onChange(opt); setOpen(false); }}
             >
@@ -190,8 +251,8 @@ export function TjDateTimePicker({
     day === selected.getDate() && viewMonth === selected.getMonth() && viewYear === selected.getFullYear();
 
   return (
-    <div className="tj-datepicker" ref={ref}>
-      <button type="button" className={`tj-select-btn${open ? " open" : ""}`} onClick={() => (open ? setOpen(false) : openPicker())}>
+    <div className="tj-select" ref={ref}>
+      <button type="button" className={`tj-select-btn is-date${open ? " open" : ""}`} onClick={() => (open ? setOpen(false) : openPicker())}>
         <CalendarIcon size={14} />
         <span>{formatDisplay(selected)}</span>
       </button>

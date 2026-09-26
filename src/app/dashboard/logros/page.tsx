@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Trophy } from "lucide-react";
 import Badges from "@/components/Badges";
+import "./logros.css";
 
 export const metadata: Metadata = {
   title: "Logros",
@@ -16,38 +16,23 @@ export default async function LogrosPage() {
   const [{ data: profile }, { data: userBadges }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("current_streak, max_streak, is_featured")
+      .select("current_streak, max_streak, is_featured, role")
       .eq("id", user.id)
       .single(),
     supabase
       .from("user_badges")
-      .select("badge_id")
+      .select("badge_id, unlocked_at")
       .eq("user_id", user.id),
   ]);
 
-  const earnedIds = (userBadges ?? []).map((b) => b.badge_id);
-
   return (
     <main className="dashboard-main">
-      <div className="logros-header">
-        <div className="logros-header-icon">
-          <Trophy size={22} aria-hidden="true" />
-        </div>
-        <div className="logros-header-text">
-          <span className="logros-eyebrow">
-            <span className="logros-eyebrow-dot" />
-            Tu progreso
-          </span>
-          <h1 className="logros-title">Logros</h1>
-          <p>Rachas, hitos y recompensas que vas desbloqueando en la academia.</p>
-        </div>
-      </div>
-
       <Badges
         initialStreak={profile?.current_streak ?? 0}
         initialMax={profile?.max_streak ?? 0}
         initialFeatured={profile?.is_featured ?? false}
-        initialEarned={earnedIds}
+        initialEarned={userBadges ?? []}
+        showDiario={profile?.role === "premium" || profile?.role === "admin"}
       />
     </main>
   );

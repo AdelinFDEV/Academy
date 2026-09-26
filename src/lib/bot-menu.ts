@@ -328,9 +328,9 @@ const VENTAJAS: Ventaja[] = [
     titulo: "📓 Diario de Trading",
     texto:
       "Apunta cada operación y deja de operar de memoria.\n\n" +
-      "• Registro de entradas, salidas y resultado\n" +
-      "• Estadísticas reales: aciertos, ratio, racha\n" +
-      "• Retos y niveles, próximamente\n\n" +
+      "• Registro con riesgo, objetivo y resultado real\n" +
+      "• Estadísticas reales: acierto, esperanza en R, drawdown\n" +
+      "• Hitos con niveles que premian la disciplina\n\n" +
       "Es la herramienta que más gente dice que le cambió la operativa: verlo escrito " +
       "enseña más que cualquier vídeo.",
     ruta: "/dashboard/trading",

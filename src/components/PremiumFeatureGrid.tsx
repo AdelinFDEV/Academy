@@ -15,8 +15,8 @@ const PERKS = [
     icon: NotebookPen,
     color: "#ff9a4d",
     title: "Diario de Trading",
-    desc: "Cada operación con su riesgo y su resultado, y diez estadísticas que te dicen cómo operas de verdad. Retos y niveles, próximamente.",
-    chips: ["P&L y ratio riesgo/beneficio", "Retos y niveles (pronto)"],
+    desc: "Cada operación con su riesgo y su resultado real, diez estadísticas que te dicen cómo operas de verdad e hitos con niveles que premian la disciplina.",
+    chips: ["P&L real y ratio riesgo/beneficio", "Hitos con niveles"],
   },
   {
     id: "guias",

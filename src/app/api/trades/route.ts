@@ -26,6 +26,7 @@ interface TradeValues {
   risk_amount: number;
   expected_gain: number;
   pnl: number;
+  real_pnl: number | null;
   result: string;
   strategy: string | null;
   notes: string | null;
@@ -50,12 +51,15 @@ interface TradeBody {
   risk_amount?: string;
   expected_gain?: string;
   result?: string;
+  /** Opcional. Vacío o ausente = el P&L sale del plan, como siempre. */
+  real_pnl?: string | number | null;
   strategy?: string | null;
   notes?: string | null;
 }
 
 function parseTradeBody(body: TradeBody): ParsedTrade {
-  const { date, pair, direction, risk_amount, expected_gain, result, strategy, notes } = body;
+  const { date, pair, direction, risk_amount, expected_gain, real_pnl, strategy, notes } = body;
+  let { result } = body;
 
   if (!date || !pair || !direction || !risk_amount || !expected_gain || !result) {
     return { ok: false, error: "Faltan campos obligatorios" };
@@ -68,6 +72,15 @@ function parseTradeBody(body: TradeBody): ParsedTrade {
     return { ok: false, error: "Riesgo asumido o ganancia esperada inválidos" };
   }
 
+  // Con P&L real, el resultado lo decide su signo: una ganadora cerrada a mitad
+  // de camino sigue siendo ganadora, y un stop con deslizamiento, perdedora.
+  const hasReal = real_pnl != null && String(real_pnl).trim() !== "";
+  const real = hasReal ? Number(String(real_pnl).trim()) : null;
+  if (real != null && !Number.isFinite(real)) {
+    return { ok: false, error: "P&L real inválido" };
+  }
+  if (real != null) result = real > 0 ? "win" : real < 0 ? "loss" : "breakeven";
+
   if (!isTradeResult(result)) {
     return { ok: false, error: "Resultado inválido" };
   }
@@ -76,7 +89,7 @@ function parseTradeBody(body: TradeBody): ParsedTrade {
     return { ok: false, error: `Las notas no pueden superar ${NOTES_MAX} caracteres` };
   }
 
-  const pnl = result === "win" ? gain : result === "loss" ? -risk : 0;
+  const pnl = real ?? (result === "win" ? gain : result === "loss" ? -risk : 0);
 
   return {
     ok: true,
@@ -87,6 +100,7 @@ function parseTradeBody(body: TradeBody): ParsedTrade {
       risk_amount: risk,
       expected_gain: gain,
       pnl,
+      real_pnl: real,
       result,
       strategy: strategy?.trim() || null,
       notes: notes?.trim() || null,
