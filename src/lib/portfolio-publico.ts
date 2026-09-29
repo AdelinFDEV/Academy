@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { calcularDCA, precioBitcoin, type CompraDCA } from "@/lib/dca";
+import { cgFetch } from "@/lib/coingecko";
 
 /**
  * Cifras AGREGADAS del portfolio para la ficha pública.
@@ -76,9 +77,9 @@ async function preciosDe(ids: string[]): Promise<Precios> {
   const lista = [...new Set(ids)].sort().join(",");
 
   try {
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(lista)}&vs_currencies=usd`,
-      { headers: { Accept: "application/json" }, next: { revalidate: 300 } },
+    const res = await cgFetch(
+      `/simple/price?ids=${encodeURIComponent(lista)}&vs_currencies=usd`,
+      { next: { revalidate: 300 } },
     );
     if (!res.ok) return {};
     return (await res.json()) as Precios;

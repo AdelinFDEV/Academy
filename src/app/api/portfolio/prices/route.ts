@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cgFetch } from "@/lib/coingecko";
 
 const MAX_IDS = 100;
 
@@ -21,12 +22,9 @@ export async function GET(req: Request) {
   if (!ids) return NextResponse.json({});
 
   try {
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(ids)}&vs_currencies=usd,eur&include_24hr_change=true`,
-      {
-        headers: { Accept: "application/json" },
-        next: { revalidate: 60 },
-      }
+    const res = await cgFetch(
+      `/simple/price?ids=${encodeURIComponent(ids)}&vs_currencies=usd,eur&include_24hr_change=true`,
+      { next: { revalidate: 60 } }
     );
 
     if (!res.ok) return NextResponse.json({}, { status: res.status });

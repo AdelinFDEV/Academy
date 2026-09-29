@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cgFetch } from "@/lib/coingecko";
 
 // Radar Diario: agrega datos de mercado en vivo desde APIs gratuitas, en el
 // servidor (evita CORS y cachea para respetar los límites de rate).
@@ -26,9 +27,9 @@ export const revalidate = 300;
  * sabían manejar un `null` suelto (`RadarWidgets.tsx`), así que no hay nada que
  * cambiar del otro lado.
  */
-async function getJson(url: string) {
+async function getJson(pending: Promise<Response>) {
   try {
-    const r = await fetch(url, { next: { revalidate: 300 } });
+    const r = await pending;
     if (!r.ok) return null;
     return await r.json();
   } catch {
@@ -37,12 +38,16 @@ async function getJson(url: string) {
 }
 
 export async function GET() {
+  const cache = { next: { revalidate: 300 } };
   const [markets, global, fng] = await Promise.all([
     getJson(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=24h"
+      cgFetch(
+        "/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&price_change_percentage=24h",
+        cache
+      )
     ),
-    getJson("https://api.coingecko.com/api/v3/global"),
-    getJson("https://api.alternative.me/fng/?limit=1"),
+    getJson(cgFetch("/global", cache)),
+    getJson(fetch("https://api.alternative.me/fng/?limit=1", cache)),
   ]);
 
   // Si se han caído las TRES no hay nada que enseñar, y un 200 con todo a

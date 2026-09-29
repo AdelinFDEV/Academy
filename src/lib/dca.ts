@@ -31,6 +31,8 @@
  * es exactamente el tipo de cosa que acaba en una reclamación.
  */
 
+import { cgFetch } from "@/lib/coingecko";
+
 /** Precio objetivo del Excel (`$H$2`). Es una hipótesis, no una previsión. */
 export const PRECIO_OBJETIVO = 200_000;
 
@@ -144,10 +146,9 @@ export function calcularDCA(compras: CompraDCA[], precioActual: number): Resumen
  */
 export async function precioBitcoin(): Promise<number | null> {
   try {
-    const res = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd",
-      { next: { revalidate: 300 } }
-    );
+    const res = await cgFetch("/simple/price?ids=bitcoin&vs_currencies=usd", {
+      next: { revalidate: 300 },
+    });
     if (!res.ok) return null;
     const json = (await res.json()) as { bitcoin?: { usd?: number } };
     const precio = json.bitcoin?.usd;

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cgFetch } from "@/lib/coingecko";
 
 // Caché en memoria acotada por término de búsqueda. Evita que se pegue a
 // CoinGecko en cada tecleo y que un flood de búsquedas repetidas queme la
@@ -24,10 +25,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/search?query=${encodeURIComponent(query)}`,
-      { headers: { Accept: "application/json" } }
-    );
+    const res = await cgFetch(`/search?query=${encodeURIComponent(query)}`);
     if (!res.ok) {
       if (hit) return NextResponse.json({ coins: hit.coins });
       return NextResponse.json({ coins: [] }, { status: 503 });

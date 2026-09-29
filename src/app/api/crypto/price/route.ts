@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cgFetch } from "@/lib/coingecko";
 
 // Caché en memoria acotada por combinación de `ids`. Sin esto, variando el
 // parámetro `ids` se llamaba a CoinGecko en cada petición → riesgo de quemar la
@@ -32,9 +33,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(ids)}&vs_currencies=usd&include_24hr_change=true`,
-      { headers: { Accept: "application/json" } }
+    const res = await cgFetch(
+      `/simple/price?ids=${encodeURIComponent(ids)}&vs_currencies=usd&include_24hr_change=true`
     );
     if (!res.ok) {
       if (hit) return NextResponse.json(hit.data);

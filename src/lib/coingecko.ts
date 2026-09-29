@@ -10,8 +10,32 @@
  * decir dónde está el fallo en vez de dejar una fila muda.
  */
 
-const SIMPLE_PRICE = "https://api.coingecko.com/api/v3/simple/price";
-const SEARCH = "https://api.coingecko.com/api/v3/search";
+const API = "https://api.coingecko.com/api/v3";
+
+/**
+ * TODA llamada del servidor a CoinGecko pasa por aquí, para que lleve la clave.
+ *
+ * Sin clave, la API pública limita y bloquea por IP, y un servidor de Vercel
+ * sale por IPs compartidas con miles de proyectos. En septiembre de 2026
+ * empezó a devolver 403 «Request blocked» desde producción mientras en local
+ * iba bien: se quedaron sin datos el Bitcoin 24h de la home, el Portfolio
+ * Adelin y los mercados, sin ningún error visible. Con la clave Demo el límite
+ * va por clave y no por IP.
+ *
+ * `COINGECKO_API_KEY` NO lleva `NEXT_PUBLIC_`: en el navegador vale
+ * `undefined` y la petición sale sin clave, que es justo lo que se quiere —
+ * la clave nunca llega al cliente. Sin la variable (en local, por ejemplo) se
+ * pide igual, sin clave.
+ *
+ * `path` va con su barra y su query: `cgFetch("/global")`.
+ */
+export function cgFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const headers = new Headers(init.headers);
+  headers.set("Accept", "application/json");
+  const key = process.env.COINGECKO_API_KEY;
+  if (key) headers.set("x-cg-demo-api-key", key);
+  return fetch(`${API}${path}`, { ...init, headers });
+}
 
 /**
  * ¿Conoce CoinGecko este id?
@@ -23,9 +47,9 @@ const SEARCH = "https://api.coingecko.com/api/v3/search";
  */
 export async function coingeckoIdExiste(id: string): Promise<boolean> {
   try {
-    const res = await fetch(
-      `${SIMPLE_PRICE}?ids=${encodeURIComponent(id)}&vs_currencies=usd`,
-      { headers: { Accept: "application/json" }, cache: "no-store" }
+    const res = await cgFetch(
+      `/simple/price?ids=${encodeURIComponent(id)}&vs_currencies=usd`,
+      { cache: "no-store" }
     );
     if (!res.ok) return true;
     const data = await res.json();
@@ -52,8 +76,7 @@ interface SearchCoin {
  */
 export async function sugerirCoingeckoId(query: string): Promise<string | null> {
   try {
-    const res = await fetch(`${SEARCH}?query=${encodeURIComponent(query)}`, {
-      headers: { Accept: "application/json" },
+    const res = await cgFetch(`/search?query=${encodeURIComponent(query)}`, {
       cache: "no-store",
     });
     if (!res.ok) return null;

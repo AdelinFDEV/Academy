@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cgFetch } from "@/lib/coingecko";
 
 // Precios históricos diarios de varias monedas (para el gráfico de crecimiento
 // del balance de Mi Portfolio). Server-side + caché de 1h para respetar los
@@ -15,8 +16,8 @@ export async function GET(req: Request) {
   const entries = await Promise.all(
     ids.map(async (id): Promise<[string, number[][] | null]> => {
       try {
-        const r = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
+        const r = await cgFetch(
+          `/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
           { next: { revalidate: 3600 } }
         );
         if (!r.ok) return [id, null];

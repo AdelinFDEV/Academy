@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { cgFetch } from "@/lib/coingecko";
 
 let cache: { data: unknown; ts: number } = { data: null, ts: 0 };
 const TTL = 28_000; // 28s — slightly under the 30s poll interval
@@ -12,9 +13,9 @@ export async function GET() {
   }
 
   try {
-    const res = await fetch(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&price_change_percentage=7d",
-      { headers: { Accept: "application/json" }, next: { revalidate: 28 } }
+    const res = await cgFetch(
+      "/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=200&page=1&sparkline=false&price_change_percentage=7d",
+      { next: { revalidate: 28 } }
     );
     if (!res.ok) {
       if (cache.data) return NextResponse.json(cache.data);
