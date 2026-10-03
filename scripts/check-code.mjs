@@ -208,6 +208,9 @@ function checkDateReparse() {
 // ── 4) CSS de guías fuera de su sitio ─────────────────────────────────────
 // AGENTS.md: cada guía lleva su propio [slug].css. Si aparece una guía nueva
 // sin él, su CSS ha acabado en guias.css o en globals.css.
+//
+// Era un aviso mientras las tres primeras guías vivían dentro de guias.css.
+// Desde el 03-10-2026 están separadas y el recuento es cero, así que ahora falla.
 function checkGuideCss() {
   const guiasDir = join("src", "app", "guias");
   const missing = [];
@@ -222,8 +225,11 @@ function checkGuideCss() {
   if (missing.length === 0) {
     console.log(`${GREEN}✓${OFF} cada guía tiene su propio CSS ${DIM}— 0 casos${OFF}`);
   } else {
-    console.log(`${YELLOW}!${OFF} guías sin CSS propio: ${missing.join(", ")}`);
-    console.log(`    ${DIM}(las 3 primeras guías son deuda conocida, ver AGENTS.md)${OFF}`);
+    console.log(`${RED}✗${OFF} guías sin CSS propio ${RED}— ${missing.length} caso(s)${OFF}: ${missing.join(", ")}`);
+    problems.push([
+      "CSS de guías",
+      "Cada guía lleva su src/app/guias/<slug>/<slug>.css, importado en su page.tsx. Nunca en guias.css ni en globals.css (CODIGO.md).",
+    ]);
   }
 }
 

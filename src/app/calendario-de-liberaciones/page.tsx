@@ -7,6 +7,7 @@ import {
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { TOKENS } from "@/app/herramientas/liberaciones/tokenData";
 import "../herramientas/detalle.css";
@@ -29,9 +30,14 @@ import "../herramientas/detalle.css";
  * catálogo decía «cuenta gratuita» y se corrigió el 06-09-2026.
  */
 export const metadata: Metadata = {
-  title: "Calendario de liberaciones de tokens",
+  // Search Console, sept. 2026: posición 7,7 con 55 impresiones y cero clics,
+  // y casi todas las consultas salen anónimas. Apuesta, no dato: el título usa
+  // «token unlocks» y «desbloqueos», que es como suele nombrarse esto en
+  // español; «liberación» es la palabra de la casa y se queda en el H1.
+  // Revisar el CTR en Search Console unas semanas después del cambio.
+  title: "Token unlocks: calendario de desbloqueos cripto",
   description:
-    "Qué tokens desbloquean monedas nuevas, cuándo y cuántas. Diez proyectos con datos en vivo de DefiLlama para no comprar justo antes de un unlock.",
+    "Qué tokens desbloquean monedas nuevas, cuándo y cuántas: ARB, SUI, SOL, XRP y seis más, con datos en vivo de DefiLlama. Míralo antes de comprar.",
   alternates: { canonical: "/calendario-de-liberaciones" },
 };
 
@@ -121,14 +127,11 @@ export default async function FichaLiberacionesPage() {
       <div className="bg-ambient" />
       <JsonLd
         data={[
-          {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Inicio", item: "/" },
-              { "@type": "ListItem", position: 2, name: "Herramientas", item: "/herramientas" },
-              { "@type": "ListItem", position: 3, name: "Calendario de liberaciones" },
-            ],
-          },
+          breadcrumbSchema([
+            { name: "Inicio", path: "/" },
+            { name: "Herramientas", path: "/herramientas" },
+            { name: "Calendario de liberaciones", path: "/calendario-de-liberaciones" },
+          ]),
           {
             "@type": "FAQPage",
             mainEntity: FAQ.map((f) => ({

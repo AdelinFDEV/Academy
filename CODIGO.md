@@ -10,7 +10,9 @@ Son cuatro cosas: dónde va cada estilo, qué no se tipa nunca, qué te bloquea 
 El CSS está dividido por módulo para no volver a acumular un `globals.css` gigante:
 
 - `src/app/globals.css` — solo estilos **compartidos** (variables, reset, nav, footer, tarjetas/badges/formularios reutilizados en 2+ secciones). Se carga en todas las rutas.
-- `src/app/guias/guias.css` — estilos exclusivos de `/guias/**`. Importado en `src/app/guias/layout.tsx`.
+- `src/app/guias/guias.css` — lo que comparten **todas** las guías. Importado en `src/app/guias/layout.tsx`.
+- `src/app/guias/listado.css` — solo el listado `/guias`. Importado en `src/app/guias/page.tsx`.
+- `src/app/guias/[slug]/[slug].css` — lo de cada guía. Importado en su `page.tsx`.
 - `src/app/dashboard/dashboard.css` — estilos exclusivos de `/dashboard/**`. Importado en `src/app/dashboard/layout.tsx`.
 - `src/app/admin/admin.css` — estilos exclusivos de `/admin/**`. Importado en `src/app/admin/layout.tsx`.
 
@@ -21,9 +23,10 @@ Regla al añadir estilos nuevos: si una clase solo la usa un componente/página 
 Cada guía es un componente React independiente (ver `/admin/guias-instrucciones`), no una plantilla genérica reutilizada — por eso su CSS **no** va en `guias.css` ni en `globals.css`. Al crear una guía nueva:
 
 - Crear `src/app/guias/[slug]/[slug].css` (o `.module.css`) exclusivo para esa guía, e importarlo solo en `src/app/guias/[slug]/page.tsx`.
-- **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** No es solo para el listado: **el sitemap recorre ese array**, así que una guía que no esté ahí no la ve Google nunca.
-- `guias.css` se reserva para lo que de verdad comparten **todas** las guías: el listado `/guias`, la estructura visual replicada en cada una (hero, cards, paleta oro/naranja) y componentes reutilizables entre guías.
-- Nunca dumpear el CSS de una guía concreta en `guias.css` "porque ya está importado ahí" — es exactamente lo que hace que ese archivo crezca sin control (ya pasó una vez: `guias.css` mezcla las 3 guías actuales en un único archivo de 1200+ líneas — pendiente de separar si se decide abordarlo).
+- **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** No es solo para el listado: **el sitemap recorre ese array**, así que una guía que no esté ahí no la ve Google nunca. Y de ahí sale también la columna «Guías» del pie, que enlaza **todas** las guías desde **todas** las páginas: es lo que garantiza que ninguna se quede sin enlaces entrantes, como les pasó a cuatro hasta octubre de 2026.
+- `guias.css` se reserva para lo que de verdad comparten **todas** las guías: la estructura visual replicada en cada una (hero, cards, paleta oro/naranja) y componentes reutilizables entre guías. El listado `/guias` tiene el suyo, `listado.css`.
+- Nunca dumpear el CSS de una guía concreta en `guias.css` "porque ya está importado ahí" — es exactamente lo que hace que ese archivo crezca sin control (ya pasó una vez: `guias.css` llegó a mezclar las tres primeras guías y el listado en casi 1.400 líneas, y se separó el 03-10-2026). Desde entonces `npm run check` **falla** si una guía no tiene su `.css`.
+- **El orden importa:** `guias.css` lo carga el layout, y por tanto **antes** que el `.css` de la guía. Una regla de la guía gana a una de `guias.css` con la misma especificidad. Si mueves una regla de un archivo a otro, comprueba que no deja detrás otra que antes la pisaba (un `@media` de móvil, típicamente).
 
 ### Cierre obligatorio de toda guía
 
@@ -33,7 +36,7 @@ Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **si
 2. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
 3. `<Footer />`
 
-> **Antes de la asesoría eran otras tres.** Entre las interacciones y el footer iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web porque el admin no está ofreciendo la asesoría; `/asesoria` quedó como stub hacia `/premium`. El componente, su CSS y `src/lib/asesoria.ts` **siguen en el historial de git** para cuando se reactive: no hay que reescribirlos.
+> **Antes de la asesoría eran otras tres.** Entre las interacciones y el footer iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web. El 03-10-2026 el admin confirmó que la asesoría **no vuelve**: `/asesoria` redirige de forma permanente (308) a `/premium`. No la añadas a ninguna guía.
 
 ## «Componente independiente» significa cosas distintas para guías y entradas
 

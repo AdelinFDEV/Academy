@@ -3756,7 +3756,7 @@ html {
   margin: 0 auto;
   padding: 3.5rem 2rem 2.5rem;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.6fr repeat(5, 1fr);
   gap: 2rem;
 }
 
@@ -3809,6 +3809,13 @@ html {
 
 .footer-links-group a:hover {
   color: var(--accent-orange);
+}
+
+/* El título de la columna Guías es un enlace a /guias: sin esto le ganaría
+   `.footer-links-group a` y se vería como un enlace más de la lista. */
+.footer-links-group a.footer-links-title {
+  font-size: 0.75rem;
+  color: var(--text-primary);
 }
 
 .footer-bottom {

@@ -162,7 +162,6 @@ Lo que ya está corregido y verificado en verde el 10-09-2026: la densidad de `/
 
 ## Menor, y ya identificado
 
+- [ ] **Revisar la indexación a partir del 17-10-2026.** El 03-10-2026 solo 47 de las URLs del sitemap estaban indexadas (las que salgan en Search Console → Páginas). Se pidió a mano la indexación de diez: `/premium`, las guías `hyperliquid`, `render` y `worldcoin` (las dos primeras Google ni las conocía), `/calculadora`, `/categoria/fiscalidad`, las entradas `actualizacion-xrp-ledger-2026` y `staking-airdrops-impuestos-espana`, y las fichas `pnl` y `staking`. Comprobar cuáles han entrado. **`staking-airdrops-impuestos-espana` es distinta**: Google la leyó y decidió no indexarla («Rastreada: actualmente sin indexar»), que es una señal de calidad; si sigue fuera, pasarle la auditoría SEO. Mirar también el CTR de los títulos nuevos de `/calendario-de-liberaciones` y `/glosario/atl`.
 - [ ] **Fichas públicas que faltan.** Cuatro herramientas siguen sin página propia: calculadora de riesgo, watchlist, Mi Portfolio y Logros. Son las únicas que aún salen con candado en `/herramientas` y apagadas en el sidebar. La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.
 - [ ] **`BlogMobileMenu`** es la última lista de herramientas escrita a mano; debería salir del catálogo como el resto.
-- [ ] **La tabla `rutina_diaria`** quedó huérfana al retirar la rutina diaria. Borrarla es opcional: `scripts/drop-rutina-diaria.sql`.
-- [ ] **Separar `guias.css`**, que mezcla las tres primeras guías en 1200+ líneas (deuda conocida, ver `AGENTS.md`).

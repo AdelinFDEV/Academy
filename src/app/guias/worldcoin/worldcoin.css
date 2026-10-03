@@ -1,0 +1,100 @@
+/* Solo la guía /guias/worldcoin. Lo compartido por todas las guías vive en
+   ../guias.css, que carga el layout ANTES que este archivo. */
+
+.orb-game {
+  background: rgba(15,32,64,0.5);
+  border: 1px solid rgba(230,180,85,0.15);
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 28px;
+  text-align: center;
+}
+
+.orb-game-header { margin-bottom: 22px; text-align: left; }
+
+.orb-game-stage { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+.orb-sphere {
+  position: relative;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 35% 30%, #1e3558, #060f1f 70%);
+  border: 1px solid rgba(230,180,85,0.3);
+  box-shadow: 0 0 40px -10px rgba(230,180,85,0.15);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.orb-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid rgba(230,180,85,0.18);
+}
+
+.orb-ring-1 { inset: 14px; }
+
+.orb-ring-2 { inset: 28px; }
+
+.orb-ring-3 { inset: 42px; }
+
+.orb-scan-line {
+  position: absolute;
+  left: 8%; right: 8%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff6b2b, transparent);
+  box-shadow: 0 0 12px 2px rgba(255,107,43,0.7);
+  animation: orb-scan-move 1.4s ease-in-out infinite;
+}
+
+.orb-core {
+  position: relative; z-index: 2;
+  color: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.orb-status { min-height: 78px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; color: var(--text-muted); width: 100%; max-width: 340px; }
+
+.orb-progress-track { width: 100%; height: 6px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+
+.orb-progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b2b, var(--gold)); border-radius: 4px; transition: width 0.1s linear; }
+
+.orb-result { display: flex; flex-direction: column; gap: 4px; animation: orb-result-in 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+
+.orb-result-title { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 14px; }
+
+.orb-result--ok .orb-result-title { color: #4ade80; }
+
+.orb-result--ko .orb-result-title { color: #f87171; }
+
+.orb-result-hash { font-size: 12px; color: var(--text-muted); }
+
+.orb-result-hash code { color: var(--gold); }
+
+.orb-result-grant { font-size: 12px; font-weight: 600; color: var(--gold); }
+
+.orb-result--ko .orb-result-grant { color: #f87171; font-weight: 500; }
+
+.orb-game-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+
+.tokenomics-donut-wrap { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+
+.tokenomics-legend { display: flex; flex-direction: column; gap: 10px; min-width: 220px; }
+
+.tokenomics-legend-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #dce8f8; }
+
+.tokenomics-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+.tokenomics-legend-label { flex: 1; }
+
+.tokenomics-legend-val { font-weight: 700; color: var(--gold); }
+
+@media (max-width: 640px) {
+  .orb-sphere { width: 112px; height: 112px; }
+  .tokenomics-donut-wrap { flex-direction: column; }
+}
+
+@keyframes orb-scan-move {
+  0%, 100% { top: 20%; }
+  50% { top: 78%; }
+}
+
+@keyframes orb-result-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }

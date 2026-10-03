@@ -16,6 +16,7 @@ import GuideVideoEmbed from "@/components/GuideVideoEmbed";
 import GuideOrbScanner from "./GuideOrbScanner";
 import GuideWorldTokenomics from "./GuideWorldTokenomics";
 import GuideWorldQuiz from "./GuideWorldQuiz";
+import "./worldcoin.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/worldcoin" },

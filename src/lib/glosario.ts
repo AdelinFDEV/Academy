@@ -218,6 +218,12 @@ export const GLOSARIO: GlosarioTerm[] = [
   {
     term: "ATL",
     slug: "atl",
+    // Search Console, sept. 2026: posición 6 con 23 impresiones y cero clics. Las
+    // búsquedas son «atl trading» y «atl bitcoin»: buscan el término en
+    // contexto, y «Qué es ATL» a secas no lo decía.
+    seoTitle: "ATL en cripto: qué es el mínimo histórico",
+    seoDescription:
+      "ATL (All Time Low) es el precio más bajo que ha tocado una criptomoneda. Qué te dice de una caída y por qué un mínimo histórico no es un suelo.",
     category: "trading",
     definition: "All Time Low. El precio más bajo registrado de un activo. Otro nivel de referencia clave para evaluar el recorrido de un proyecto.",
     seeAlso: ["ath","bear-market","soporte"],

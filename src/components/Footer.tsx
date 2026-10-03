@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Crown, ShieldAlert } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
 import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
+import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -42,6 +43,19 @@ export default function Footer() {
             Hazte Premium
           </Link>
         </div>
+
+        {/* Todas las guías, en todas las páginas, y sacadas de GUIDES: una guía
+            nueva aparece aquí sola. Existe por el SEO: hasta octubre de 2026 la
+            portada solo enlazaba la guía más reciente, y cuatro guías no
+            recibían ningún enlace fuera de /guias; dos ni las conocía Google.
+            Las guías son el contenido de más valor del sitio y no pueden
+            depender de que alguien se acuerde de enlazarlas. */}
+        <nav className="footer-links-group" aria-label="Guías">
+          <Link href="/guias" className="footer-links-title">Guías</Link>
+          {GUIDES_NEWEST_FIRST.map((g) => (
+            <Link key={g.slug} href={`/guias/${g.slug}`}>{g.shortTitle}</Link>
+          ))}
+        </nav>
 
         <div className="footer-links-group">
           <span className="footer-links-title">Legal</span>

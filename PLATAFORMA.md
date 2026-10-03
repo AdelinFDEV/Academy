@@ -240,7 +240,8 @@ Dos consecuencias prácticas al tocar contenido:
   ```
 - **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
 - **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
-- Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Y ver `/login` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
+- Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Ver `/auth/` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
+- **Para sacar una página del índice, `noindex` y NO `disallow`.** Con la ruta bloqueada en `robots.txt` Google no entra, no ve el `noindex` y la indexa igual si alguien la enlaza: pasó con `/login` y `/forgot-password` en septiembre de 2026. Desde el 03-10-2026 esas dos y `/register` llevan `noindex` en su `layout.tsx` y ya no están en el `disallow`.
 
 ### Cómo verificar en producción
 

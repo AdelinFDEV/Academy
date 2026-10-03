@@ -7,6 +7,7 @@ import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Lock, Star } from "lucide
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import JsonLd from "@/components/JsonLd";
 import { itemListSchema } from "@/lib/schema";
+import "./listado.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias" },

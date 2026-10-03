@@ -26,11 +26,12 @@ export default function robots(): MetadataRoute.Robots {
           "/cuenta",
           "/api/",
 
-          // Autenticación: sin contenido que posicionar, y algunas rutas llevan
-          // tokens de un solo uso en la URL.
-          "/login",
-          "/register",
-          "/forgot-password",
+          // Autenticación con tokens de un solo uso en la URL.
+          //
+          // /login, /register y /forgot-password NO van aquí a propósito: llevan
+          // `noindex` en su layout, y un disallow impediría a Google entrar a
+          // verlo. Así se quedaron /login y /forgot-password indexadas en
+          // septiembre de 2026 pese a estar bloqueadas.
           "/auth/",
           "/mfa-challenge",
 

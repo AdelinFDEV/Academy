@@ -7,6 +7,7 @@ import {
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
+import { breadcrumbSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import "../detalle.css";
 
@@ -146,14 +147,11 @@ export default async function FichaDiarioPage() {
       <div className="bg-ambient" />
       <JsonLd
         data={[
-          {
-            "@type": "BreadcrumbList",
-            itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Inicio", item: "/" },
-              { "@type": "ListItem", position: 2, name: "Herramientas", item: "/herramientas" },
-              { "@type": "ListItem", position: 3, name: "Diario de Trading" },
-            ],
-          },
+          breadcrumbSchema([
+            { name: "Inicio", path: "/" },
+            { name: "Herramientas", path: "/herramientas" },
+            { name: "Diario de Trading", path: "/herramientas/diario" },
+          ]),
           {
             "@type": "FAQPage",
             mainEntity: FAQ.map((f) => ({

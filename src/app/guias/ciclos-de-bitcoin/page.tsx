@@ -14,6 +14,7 @@ import GuideCyclePhases from "./GuideCyclePhases";
 import GuideCycleQuiz from "./GuideCycleQuiz";
 import GuideRevealCard from "./GuideRevealCard";
 import { Unlock } from "lucide-react";
+import "./ciclos-de-bitcoin.css";
 
 const HERO_STATS = [
   { prefix: "", value: 4, suffix: "", dec: 0, label: "Halvings de Bitcoin\nhasta hoy" },

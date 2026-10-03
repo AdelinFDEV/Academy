@@ -1,0 +1,379 @@
+/* Solo la guía /guias/ciclos-de-bitcoin. Lo compartido por todas las guías vive en
+   ../guias.css, que carga el layout ANTES que este archivo. */
+
+.gbc-cycle-wrap { padding: 26px 24px 22px; }
+
+.gbc-cycle-bands { display: flex; gap: 3px; margin-top: 4px; margin-bottom: 18px; border-radius: 8px; overflow: hidden; }
+
+.gbc-cycle-band { padding: 8px 6px; font-size: 11px; font-weight: 700; text-align: center; letter-spacing: 0.3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.gbc-cycle-svg-wrap { border-radius: 10px; background: rgba(6,15,31,0.35); }
+
+.gbc-cycle-legend { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+.gbc-cycle-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: #8fa3b8; font-weight: 600; }
+
+.gbc-cycle-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+@media (max-width: 640px) {
+  .gbc-cycle-wrap { padding: 18px 12px 16px; }
+  .gbc-cycle-band { font-size: 9px; padding: 7px 3px; }
+  .gbc-cycle-legend { gap: 12px 16px; }
+}
+
+.gbc-chart-tip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(6, 15, 31, 0.94);
+  border: 1px solid rgba(230, 180, 85, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+}
+
+.gbc-chart-tip-price {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.gbc-chart-tip-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8fa3b8;
+}
+
+.gbc-chart-tip-phase {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.gbc-chart-hint {
+  text-align: center;
+  font-size: 11px;
+  color: #5c7185;
+  margin-top: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.gbc-cycle-band {
+  transition: filter 0.2s, transform 0.2s;
+  cursor: default;
+}
+
+.gbc-cycle-band.is-hot {
+  filter: brightness(1.5);
+}
+
+.gbc-tl-track {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 0 6px;
+  margin-bottom: 16px;
+}
+
+.gbc-tl-lbl {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8fa3b8;
+  transition: color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.gbc-tl-here {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #ff8552;
+  background: rgba(255, 133, 82, 0.12);
+  border: 1px solid rgba(255, 133, 82, 0.3);
+  padding: 2px 7px;
+  border-radius: 100px;
+  margin-top: -2px;
+}
+
+.gbc-tl-card {
+  background: linear-gradient(135deg, #0f2040, #0a1628);
+  border: 1px solid color-mix(in srgb, var(--ph) 30%, transparent);
+  border-left: 3px solid var(--ph);
+  border-radius: 16px;
+  padding: 20px 22px;
+  animation: gbcTlCardIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gbc-tl-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.gbc-tl-card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ph);
+  background: color-mix(in srgb, var(--ph) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ph) 28%, transparent);
+}
+
+.gbc-tl-card-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.gbc-tl-card-step {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8fa3b8;
+}
+
+.gbc-tl-card-name {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: var(--ph);
+}
+
+.gbc-tl-card-desc {
+  font-size: 14px;
+  color: #dce8f8;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.gbc-reveal {
+  cursor: pointer;
+  outline: none;
+}
+
+.gbc-reveal:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(230, 180, 85, 0.25);
+}
+
+.gbc-reveal.is-revealed {
+  cursor: default;
+}
+
+.gbc-reveal-body {
+  filter: blur(9px);
+  opacity: 0.5;
+  user-select: none;
+  pointer-events: none;
+  transition: filter 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+}
+
+.gbc-reveal.is-revealed .gbc-reveal-body {
+  filter: blur(0);
+  opacity: 1;
+  user-select: auto;
+}
+
+.gbc-reveal-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+
+.gbc-reveal.is-revealed .gbc-reveal-overlay {
+  opacity: 0;
+}
+
+.gbc-reveal-eye {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(230, 180, 85, 0.12);
+  border: 1px solid rgba(230, 180, 85, 0.35);
+  animation: gbcRevealPulse 2.2s ease-in-out infinite;
+}
+
+.gbc-reveal:hover:not(.is-revealed) .gbc-reveal-eye {
+  background: rgba(230, 180, 85, 0.2);
+}
+
+.gbc-quiz-bar {
+  height: 5px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.gbc-quiz-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #e6b455, #ff8552);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gbc-quiz-step {
+  animation: gbcQuizStepIn 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gbc-quiz-opt--lettered {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+.gbc-opt-letter {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 11.5px;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #8fa3b8;
+  transition: all 0.2s;
+  margin-top: -1px;
+}
+
+.gbc-opt-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.gbc-score-wrap {
+  position: relative;
+  width: 116px;
+  height: 116px;
+  margin: 0 auto 14px;
+}
+
+.gbc-score-ring {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.gbc-score-arc {
+  animation: gbcScoreIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gbc-score-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.gbc-score-num {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 640px) {
+  .gbc-tl-track {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+  }
+  .gbc-tl-track::-webkit-scrollbar {
+    display: none;
+  }
+  .gbc-tl-node {
+    flex: 0 0 auto;
+    min-width: 76px;
+  }
+  .gbc-tl-lbl {
+    font-size: 10.5px;
+  }
+  .gbc-tl-card {
+    padding: 16px;
+  }
+  .gbc-tl-card-desc {
+    font-size: 13.5px;
+  }
+  .gbc-chart-tip {
+    padding: 6px 9px;
+  }
+  .gbc-chart-tip-price {
+    font-size: 13px;
+  }
+  .gbc-chart-hint {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gbc-tl-card,
+  .gbc-quiz-step,
+  .gbc-score-arc {
+    animation: none;
+  }
+  .gbc-reveal-eye {
+    animation: none;
+  }
+}
+
+@keyframes gbcTlCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gbcRevealPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(230, 180, 85, 0.3); }
+  50%      { box-shadow: 0 0 0 8px rgba(230, 180, 85, 0); }
+}
+
+@keyframes gbcQuizStepIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gbcScoreIn {
+  from { stroke-dashoffset: 276.46; }
+}

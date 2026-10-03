@@ -288,8 +288,8 @@ export default function GuiasInstruccionesPage() {
             </div>
             <p>
               <strong>Antes de la asesoría eran otras tres.</strong> Entre las interacciones y el footer iba la banda de asesoría 1:1, que se retiró de toda la web
-              el 4 de septiembre de 2026 porque la asesoría no se está ofreciendo de momento. No la añadas a una
-              guía nueva. El componente y los precios siguen en el historial de git para cuando se reactive.
+              el 4 de septiembre de 2026. El 3 de octubre se confirmó que la asesoría no vuelve. No la añadas a
+              ninguna guía.
             </p>
           </div>
         </div>

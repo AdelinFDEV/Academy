@@ -18,6 +18,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import "./que-es-la-blockchain.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/que-es-la-blockchain" },

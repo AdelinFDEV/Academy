@@ -1,39 +1,19 @@
--- ⚠️  OBSOLETO EN PARTE (06-09-2026): la rutina diaria del admin se retiró de
---     la web y del bot, así que la tabla `rutina_diaria` que se crea aquí ya no
---     la usa nadie. El archivo se conserva porque también crea `bot_ajustes`
---     (el interruptor de /stop y /arrancar) y `noticia_votos`, que siguen vivas.
---     Para retirar la tabla vieja: scripts/drop-rutina-diaria.sql
+-- ⚠️  El nombre es histórico. La rutina diaria del admin se retiró el 06-09-2026
+--     y su tabla `rutina_diaria` se borró el 03-10-2026; su `create table` se
+--     quitó de aquí para que relanzar el archivo no la resucite. Lo que queda
+--     crea `bot_ajustes` (el interruptor de /stop y /arrancar) y
+--     `noticia_votos`, que siguen vivas.
 
--- Rutina diaria del admin + interruptor de avisos del bot.
+-- Interruptor de avisos del bot + votos de las noticias.
 --
 -- Ejecutar en Supabase → SQL Editor. Es idempotente: se puede lanzar dos
 -- veces sin romper nada.
 --
--- Las dos tablas son de USO EXCLUSIVO DEL BOT: solo las toca el servidor con
+-- Las tablas son de USO EXCLUSIVO DEL BOT: solo las toca el servidor con
 -- la service_role key. Por eso llevan RLS activado y CERO políticas — así
 -- ningún cliente con la clave pública puede leerlas ni escribirlas, ni
--- siquiera un usuario autenticado. Es justo lo que hace falta aquí: la rutina
--- del admin y el estado del interruptor no son asunto de nadie más.
-
--- ── 1. La rutina de cada día ────────────────────────────────────────────────
---
--- Una fila por día. `fecha` es la fecha EN RUMANÍA (no en UTC): es la que
--- vale, porque el mensaje sale a las 6:00 de la mañana de allí.
-create table if not exists public.rutina_diaria (
-  fecha         date primary key,
-  -- A qué chat se mandó. Sirve para dos cosas: reescribir el mensaje al
-  -- marcar una tarea, y comprobar que quien pulsa un botón es el dueño de esa
-  -- rutina y no otra persona con el mismo id de mensaje.
-  chat_id       bigint not null,
-  message_id    bigint,
-  youtube       boolean not null default false,
-  entreno       boolean not null default false,
-  trading       boolean not null default false,
-  enviada_en    timestamptz not null default now(),
-  completada_en timestamptz
-);
-
-alter table public.rutina_diaria enable row level security;
+-- siquiera un usuario autenticado. Es justo lo que hace falta aquí: el estado
+-- del interruptor no es asunto de nadie más.
 
 -- ── 2. Ajustes del bot (el botón de STOP) ───────────────────────────────────
 --
