@@ -36,7 +36,7 @@ Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **si
 2. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
 3. `<Footer />`
 
-> **Antes de la asesoría eran otras tres.** Entre las interacciones y el footer iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web. El 03-10-2026 el admin confirmó que la asesoría **no vuelve**: `/asesoria` redirige de forma permanente (308) a `/premium`. No la añadas a ninguna guía.
+> **Antes de la asesoría eran otras tres.** Entre las interacciones y el footer iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web. El 03-10-2026 el admin confirmó que la asesoría **no vuelve**: la ruta `/asesoria` se borró y da 404. No la añadas a ninguna guía.
 
 ## «Componente independiente» significa cosas distintas para guías y entradas
 

@@ -60,7 +60,7 @@ const ETIQUETAS = new Set([
 
 /** Rutas públicas sin slug dinámico a las que sí se puede enlazar. */
 const RUTAS_FIJAS = new Set([
-  "/", "/articulos", "/guias", "/glosario", "/premium", "/asesoria",
+  "/", "/articulos", "/guias", "/glosario", "/premium",
   "/aviso-legal", "/privacidad", "/cookies",
 ]);
 
