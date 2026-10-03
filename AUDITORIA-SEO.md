@@ -380,7 +380,7 @@ Publicar una tercera página sobre lo mismo **nunca** es la salida.
 | Tipo | Esquema | ¿Automático? |
 |---|---|---|
 | Entrada | `Article` + `BreadcrumbList` | Sí, los genera `/post/[slug]` |
-| Guía | `BreadcrumbList` | **No: hay que añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** |
+| Guía | `Article` (con su muro) + `BreadcrumbList` | **No: hay que añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** y rellenar `muro` en `GUIDES` |
 | Ficha | `DefinedTerm` + `BreadcrumbList` (+ `FAQPage` si hay FAQ) | Sí |
 | Todas | `Organization` + `WebSite` | Sí, en el layout raíz, una sola vez |
 
@@ -504,7 +504,7 @@ npm run check:contenido -- <slug>                     # la fila en Supabase
 npm run check && npx tsc --noEmit                     # el código
 ```
 
-Para una guía, además, se comprueba a mano lo que el auditor no puede saber: que está en `GUIDES`, que tiene su `<slug>.css`, su `<GuideBreadcrumbJsonLd>` y el cierre fijo con `GuideInteractions` y `Footer`.
+Para una guía, además, se comprueba a mano lo que el auditor no puede saber: que está en `GUIDES`, que tiene su `<slug>.css`, su `<GuideBreadcrumbJsonLd>`, el campo `muro` de `GUIDES` y el cierre fijo con `GuiasRelacionadas`, `GuideInteractions` y `Footer`.
 
 **Los tres en verde. Sin excepciones y sin «esto no aplica».**
 

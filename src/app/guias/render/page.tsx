@@ -11,6 +11,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideVideoEmbed from "@/components/GuideVideoEmbed";
 import GuideRenderNetwork from "./GuideRenderNetwork";
 import GuideRenderTokenomics from "./GuideRenderTokenomics";
@@ -455,6 +456,8 @@ export default async function RenderPage() {
           </section>
         </>
       )}
+
+      <GuiasRelacionadas slug={SLUG} />
 
       {/* ── Interacciones ── */}
       <section className="gbc-section gbc-interactions-section">

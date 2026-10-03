@@ -152,10 +152,7 @@ Las seis con muro tienen **exactamente 3 `<h2>`** —dos secciones abiertas más
 
 Conviene tener claro qué significa y qué no: **las guías con muro aparecen en Google igual**, están indexadas y en el sitemap. Lo que cambia es con cuánto compiten — Googlebot juzga `/guias/xrp` por las 917 palabras que ve, no por las ~3.000 que lee un registrado.
 
-Lo que sigue abierto, y **no depende del muro**:
-
-- [ ] **Declarar el muro en el JSON-LD.** Google tiene una forma oficial de que le digas que el contenido está detrás de un registro a propósito: `isAccessibleForFree: false` y `hasPart` sobre la parte cerrada. Sin eso, la página no le parece cerrada, le parece corta. No toca el muro ni una línea.
-- [ ] **Cuatro guías son huérfanas.** `ciclos-de-bitcoin`, `hyperliquid`, `render` y `worldcoin` reciben **un solo enlace interno entrante**, el de `/guias`. Es el único fallo que les queda al auditor. No existe un bloque de guías relacionadas y ninguna enlaza a las demás; Google trata una página sin enlaces entrantes como periférica por buena que sea.
+Lo que no dependía del muro quedó cerrado el 03-10-2026: las guías declaran su muro en el JSON-LD (`isAccessibleForFree`, desde el campo `muro` de `GUIDES`) y todas llevan el bloque `<GuiasRelacionadas>` fuera del muro, así que ninguna depende ya solo del enlace de `/guias`.
 
 Lo que ya está corregido y verificado en verde el 10-09-2026: la densidad de `/post/bitcoin-core-v32-2026` (0,07 % → 0,60 %, hoy **sin fallos**), las once frases de más de 40 palabras repartidas por seis guías, la frase media de `worldcoin` (31 → 21), la clave de `ciclos-de-bitcoin` en el H1 y en la description, y el techo de densidad de `render` (2,55 % → 2,30 %).
 

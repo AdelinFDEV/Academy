@@ -7,6 +7,7 @@ import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideCycleChart from "./GuideCycleChart";
 import GuideCyclePhases from "./GuideCyclePhases";
@@ -310,6 +311,8 @@ export default async function CiclosDeBitcoinPage() {
           </section>
         </>
       )}
+
+      <GuiasRelacionadas slug={SLUG} />
 
       {/* ── Interacciones ── */}
       <section className="gbc-section gbc-interactions-section">

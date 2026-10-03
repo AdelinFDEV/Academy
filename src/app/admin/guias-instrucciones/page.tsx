@@ -268,14 +268,17 @@ export default function GuiasInstruccionesPage() {
           <h3 className="agi-subsection-title">Cierre obligatorio — toda guía termina igual</h3>
           <div className="agi-card">
             <p>
-              Las dos últimas piezas de <code>src/app/guias/[slug]/page.tsx</code> son <strong>fijas y no negociables</strong>, siempre en este orden.
+              Las tres últimas piezas de <code>src/app/guias/[slug]/page.tsx</code> son <strong>fijas y no negociables</strong>, siempre en este orden.
               Una guía sin ellas está incompleta:
             </p>
             <ul className="agi-list">
-              <li><strong>1. Interacciones</strong> — <code>&lt;GuideInteractions /&gt;</code> dentro de <code>section.gbc-section.gbc-interactions-section</code> (me gusta, guardar, compartir)</li>
-              <li><strong>2. Footer</strong> — <code>&lt;Footer /&gt;</code></li>
+              <li><strong>1. Guías relacionadas</strong> — <code>&lt;GuiasRelacionadas slug={"{"}SLUG{"}"} /&gt;</code>, <strong>fuera del muro de registro</strong>: Googlebot entra sin sesión, y es el único enlace que reciben unas guías de otras</li>
+              <li><strong>2. Interacciones</strong> — <code>&lt;GuideInteractions /&gt;</code> dentro de <code>section.gbc-section.gbc-interactions-section</code> (me gusta, guardar, compartir)</li>
+              <li><strong>3. Footer</strong> — <code>&lt;Footer /&gt;</code></li>
             </ul>
             <div className="agi-card agi-card--mono">
+              {`<GuiasRelacionadas slug={SLUG} />`}<br />
+              <br />
               {`{/* ── Interacciones ── */}`}<br />
               {`<section className="gbc-section gbc-interactions-section">`}<br />
               {`  ...<GuideInteractions ... />`}<br />
@@ -284,7 +287,7 @@ export default function GuiasInstruccionesPage() {
               {`<Footer />`}
             </div>
             <p>
-              <strong>Eran tres.</strong> Entre las dos iba la banda de asesoría 1:1, que se retiró de toda la web
+              <strong>Antes de la asesoría eran otras tres.</strong> Entre las interacciones y el footer iba la banda de asesoría 1:1, que se retiró de toda la web
               el 4 de septiembre de 2026 porque la asesoría no se está ofreciendo de momento. No la añadas a una
               guía nueva. El componente y los precios siguen en el historial de git para cuando se reactive.
             </p>
@@ -455,7 +458,7 @@ export default function GuiasInstruccionesPage() {
         </div>
 
         <div className="agi-subsection">
-          <h3 className="agi-subsection-title">2 · Las migas de pan en JSON-LD</h3>
+          <h3 className="agi-subsection-title">2 · El JSON-LD: el muro y las migas de pan</h3>
           <div className="agi-card agi-card--mono">
             <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
 {`import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
@@ -465,6 +468,7 @@ export default function GuiasInstruccionesPage() {
             </pre>
           </div>
           <div className="agi-card" style={{ marginTop: "1rem" }}>
+            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (<code>"registro"</code>, <code>"premium"</code> o <code>null</code> si se lee entera sin cuenta), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
             <p>El nombre que sale en las migas lo saca de <code>GUIDES</code>, no del <code>title</code> de la metadata — que es más corto a propósito. Es intencionado: el de <code>GUIDES</code> es el que se ve en <code>/guias</code>, y el dato estructurado <strong>tiene que coincidir con lo visible</strong> o Google lo trata como spam.</p>
           </div>
         </div>
@@ -515,7 +519,7 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Layout full-width con <code>max-width: 1100px</code> en contenido</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir qué secciones son gratuitas (primeras 1–2) y cuáles tienen paywall</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear el badge de logro: nombre + descripción + emoji</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Cerrar la guía con el bloque obligatorio</strong>: interacciones → <code>&lt;Footer /&gt;</code> (ver bloque 04)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Cerrar la guía con el bloque obligatorio</strong>: <code>&lt;GuiasRelacionadas /&gt;</code> → interacciones → <code>&lt;Footer /&gt;</code> (ver bloque 04)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar preview al admin y esperar aprobación antes de implementar</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir <code>alternates: {"{"} canonical: &quot;/guias/[slug]&quot; {"}"}</code></strong> a su <code>metadata</code> (bloque 08)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir <code>&lt;GuideBreadcrumbJsonLd slug={"{"}SLUG{"}"} /&gt;</code></strong> dentro del <code>return</code> (bloque 08)</span></label>

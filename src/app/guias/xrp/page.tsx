@@ -11,6 +11,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideXrpConsensus from "./GuideXrpConsensus";
 import GuideXrpQuiz from "./GuideXrpQuiz";
 import "./xrp.css";
@@ -454,6 +455,8 @@ export default async function XrpPage() {
           </section>
         </>
       )}
+
+      <GuiasRelacionadas slug={SLUG} />
 
       {/* ── Interacciones ── */}
       <section className="gbc-section gbc-interactions-section">

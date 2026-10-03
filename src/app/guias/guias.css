@@ -795,6 +795,27 @@
   .wq-result { padding: 28px 18px; }
 }
 
+/* Guías relacionadas (GuiasRelacionadas.tsx) — compartido por todas las guías */
+.gbc-rel-title { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 28px; }
+
+.gbc-rel-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+
+.gbc-rel-card { display: flex; flex-direction: column; gap: 10px; height: 100%; padding: 22px; border-radius: 14px; background: #0a1628; border: 1px solid rgba(230,180,85,0.14); text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
+
+.gbc-rel-card:hover { border-color: var(--gold-border); transform: translateY(-2px); }
+
+.gbc-rel-meta { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+
+.gbc-rel-name { font-size: 17px; font-weight: 700; color: #fff; line-height: 1.35; }
+
+.gbc-rel-desc { font-size: 14px; color: #8aa2bd; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.gbc-rel-cta { margin-top: auto; font-size: 13px; font-weight: 700; color: var(--gold); }
+
+@media (max-width: 900px) {
+  .gbc-rel-grid { grid-template-columns: 1fr; }
+}
+
 .gbc-interactions-section { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 32px !important; padding-bottom: 32px !important; }
 
 .gbc-interactions-wrap { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }

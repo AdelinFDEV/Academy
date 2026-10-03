@@ -11,6 +11,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideHyperliquidOrderBook from "./GuideHyperliquidOrderBook";
 import GuideHyperliquidQuiz from "./GuideHyperliquidQuiz";
 import "./hyperliquid.css";
@@ -451,6 +452,8 @@ export default async function HyperliquidPage() {
           </section>
         </>
       )}
+
+      <GuiasRelacionadas slug={SLUG} />
 
       {/* ── Interacciones ── */}
       <section className="gbc-section gbc-interactions-section">

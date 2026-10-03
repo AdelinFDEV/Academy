@@ -228,15 +228,17 @@ function checkGuideCss() {
 }
 
 // ── 5) Cada guía trae lo que el plan SEO le exige ─────────────────────────
-// Una guía es un componente propio, no una plantilla, así que estas tres cosas
+// Una guía es un componente propio, no una plantilla, así que estas cuatro cosas
 // hay que ponerlas a mano en cada una y nada las cazaba:
 //
 //   · su `alternates.canonical` (punto 4 del plan),
-//   · su `<GuideBreadcrumbJsonLd>` (punto 6),
+//   · su `<GuideBreadcrumbJsonLd>` (punto 6): el Article con su muro y las migas,
+//   · su `<GuiasRelacionadas>`, fuera del muro: sin él la guía no recibe más
+//     enlace interno que el de `/guias`, y Google la trata como periférica,
 //   · y su alta en el array `GUIDES`, sin la cual **es invisible para Google**
 //     porque el sitemap recorre ese array y no la carpeta.
 //
-// Olvidar cualquiera de las tres no rompe nada visible: la guía se ve
+// Olvidar cualquiera de las cuatro no rompe nada visible: la guía se ve
 // perfectamente en el navegador y el fallo solo se nota semanas después, al
 // mirar por qué no aparece en las búsquedas.
 function checkGuiasSeo() {
@@ -261,6 +263,9 @@ function checkGuiasSeo() {
     if (!src.includes("<GuideBreadcrumbJsonLd")) {
       problemas.push("falta <GuideBreadcrumbJsonLd slug={SLUG} />");
     }
+    if (!src.includes("<GuiasRelacionadas")) {
+      problemas.push("falta <GuiasRelacionadas slug={SLUG} />, antes de las interacciones y fuera del muro");
+    }
     if (!registradas.has(entry)) {
       problemas.push("no está en el array GUIDES de src/lib/guides.ts, así que no entra en el sitemap");
     }
@@ -269,7 +274,7 @@ function checkGuiasSeo() {
   }
 
   if (faltas.length === 0) {
-    console.log(`${GREEN}✓${OFF} guías con canónica, migas y alta en GUIDES ${DIM}— 0 casos${OFF}`);
+    console.log(`${GREEN}✓${OFF} guías con canónica, JSON-LD, relacionadas y alta en GUIDES ${DIM}— 0 casos${OFF}`);
     return;
   }
 
@@ -280,7 +285,7 @@ function checkGuiasSeo() {
   }
   problems.push([
     "guías",
-    "Cada guía necesita su canónica, su <GuideBreadcrumbJsonLd> y su entrada en GUIDES. Detalle en /admin/guias-instrucciones.",
+    "Cada guía necesita su canónica, su <GuideBreadcrumbJsonLd>, su <GuiasRelacionadas> y su entrada en GUIDES. Detalle en /admin/guias-instrucciones.",
   ]);
 }
 

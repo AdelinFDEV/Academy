@@ -11,6 +11,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideFiscalFifo from "./GuideFiscalFifo";
 import GuideFiscalCalc from "./GuideFiscalCalc";
 import GuideFiscalQuiz from "./GuideFiscalQuiz";
@@ -913,6 +914,8 @@ export default async function FiscalidadCriptoEspanaPage() {
           </div>
         </section>
       )}
+
+      <GuiasRelacionadas slug={SLUG} />
 
       {/* ── Interacciones ── */}
       <section className="gbc-section gbc-interactions-section">

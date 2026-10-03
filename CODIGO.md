@@ -27,12 +27,13 @@ Cada guía es un componente React independiente (ver `/admin/guias-instrucciones
 
 ### Cierre obligatorio de toda guía
 
-Las dos últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
+Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
 
-1. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
-2. `<Footer />`
+1. `<GuiasRelacionadas slug={SLUG} />` — **fuera del muro de registro**, o Googlebot, que entra sin sesión, no ve los enlaces. Lo vigila `npm run check`.
+2. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
+3. `<Footer />`
 
-> **Eran tres.** En medio iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web porque el admin no está ofreciendo la asesoría; `/asesoria` quedó como stub hacia `/premium`. El componente, su CSS y `src/lib/asesoria.ts` **siguen en el historial de git** para cuando se reactive: no hay que reescribirlos.
+> **Antes de la asesoría eran otras tres.** Entre las interacciones y el footer iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web porque el admin no está ofreciendo la asesoría; `/asesoria` quedó como stub hacia `/premium`. El componente, su CSS y `src/lib/asesoria.ts` **siguen en el historial de git** para cuando se reactive: no hay que reescribirlos.
 
 ## «Componente independiente» significa cosas distintas para guías y entradas
 

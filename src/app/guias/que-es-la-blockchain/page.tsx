@@ -17,6 +17,7 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
+import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias/que-es-la-blockchain" },
@@ -485,6 +486,8 @@ export default async function QueEsLaBlockchainPage() {
           </section>
         </>
       )}
+
+      <GuiasRelacionadas slug={SLUG} />
 
       {/* ── Interacciones ── */}
       <section className="gbc-section gbc-interactions-section">
