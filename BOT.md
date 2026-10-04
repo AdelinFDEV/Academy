@@ -88,7 +88,7 @@ Desde el 04-10-2026, cuando alguien **completa** su registro —confirma el emai
 - **Una vez por cuenta**: la marca `alta_avisada` va en `app_metadata` (solo la escribe el servidor).
 - **Solo cuentas de menos de 24 h**: por el callback pasa también quien vuelve a entrar con Google, y sin el tope cada usuario antiguo dispararía un «nuevo registro» falso la primera vez que entrara.
 - **Respeta `/stop`**, como el resto de avisos de altas.
-- Los totales cuentan filas de `profiles` (Premium = `role = premium`, sin admins). No llevan la base de 100 que suma el contador público de `/api/user-count`.
+- Los totales cuentan filas de `profiles` **sin administradores** (Premium = `role = premium`). No llevan la base de 100 que suma el contador público de `/api/user-count`.
 
 ### 4 · Tres crons de Vercel
 

@@ -45,7 +45,8 @@ export async function avisarNuevoRegistro(user: User): Promise<void> {
     }
 
     const [total, premium] = await Promise.all([
-      admin.from("profiles").select("id", { count: "exact", head: true }),
+      // Sin administradores, igual que en /admin/premium: no son usuarios.
+      admin.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin"),
       admin.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
     ]);
 

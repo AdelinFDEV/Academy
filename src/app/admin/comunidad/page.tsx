@@ -1,11 +1,15 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getChannelMemberCount, getFreeChannelId, getFreeChannelUrl } from "@/lib/telegram";
+import Link from "next/link";
 import Icon from "@/components/Icon";
 import AnunciarNovedadesBtn from "@/components/admin/AnunciarNovedadesBtn";
 
 export const dynamic = "force-dynamic";
 
 const DIA = 24 * 60 * 60 * 1000;
+
+/** Altas por página en «Últimos en unirse». */
+const POR_PAGINA = 10;
 
 type Evento = {
   telegram_user_id: number;
@@ -58,11 +62,16 @@ function calcular(eventos: Evento[], fotos: Foto[]) {
     // significar que lo prometido y lo publicado no coinciden.
     abandono: altas30 > 0 ? bajas30 / altas30 : null,
     curva,
-    ultimas: eventos.filter((e) => e.action === "join").slice(0, 12),
+    ultimas: eventos.filter((e) => e.action === "join"),
   };
 }
 
-export default async function AdminComunidadPage() {
+export default async function AdminComunidadPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ pagina?: string }>;
+}) {
+  const { pagina } = await searchParams;
   const admin = createAdminClient();
   const canal = getFreeChannelId();
 
@@ -85,7 +94,15 @@ export default async function AdminComunidadPage() {
       admin.from("profiles").select("telegram_user_id, role").not("telegram_user_id", "is", null),
     ]);
 
-  const eventos = (eventosData ?? []) as Evento[];
+  // Los administradores fuera de todo, como en /admin/premium: su alta en el
+  // canal no es un usuario que llega, y su rol contaba como «Premium» en la
+  // conversión.
+  const adminsTelegram = new Set(
+    (vinculados ?? []).filter((p) => p.role === "admin").map((p) => Number(p.telegram_user_id))
+  );
+  const eventos = ((eventosData ?? []) as Evento[]).filter(
+    (e) => !adminsTelegram.has(Number(e.telegram_user_id))
+  );
   const fotos = (fotosData ?? []) as Foto[];
   const m = calcular(eventos, fotos);
 
@@ -94,11 +111,18 @@ export default async function AdminComunidadPage() {
   // gente. Solo se ve a quien además vinculó su cuenta.
   const premiumPorTelegram = new Set(
     (vinculados ?? [])
-      .filter((p) => p.role === "premium" || p.role === "admin")
+      .filter((p) => p.role === "premium")
       .map((p) => Number(p.telegram_user_id))
   );
   const entraron = new Set(eventos.filter((e) => e.action === "join").map((e) => e.telegram_user_id));
   const convertidos = [...entraron].filter((id) => premiumPorTelegram.has(id)).length;
+
+  // Paginación de «Últimos en unirse». Una página fuera de rango cae en la
+  // más cercana en vez de enseñar una tabla vacía.
+  const totalPaginas = Math.max(1, Math.ceil(m.ultimas.length / POR_PAGINA));
+  const paginaActual = Math.min(Math.max(1, Number.parseInt(pagina ?? "1", 10) || 1), totalPaginas);
+  const visibles = m.ultimas.slice((paginaActual - 1) * POR_PAGINA, paginaActual * POR_PAGINA);
+  const enlacePagina = (n: number) => (n === 1 ? "/admin/comunidad" : `/admin/comunidad?pagina=${n}`);
 
   const maxCurva = Math.max(...m.curva.map((f) => f.miembros), 1);
   const sinDatos = eventos.length === 0 && fotos.length === 0;
@@ -222,7 +246,7 @@ export default async function AdminComunidadPage() {
             {m.ultimas.length === 0 && (
               <tr><td colSpan={4} className="admin-empty">Todavía no se ha registrado ninguna alta</td></tr>
             )}
-            {m.ultimas.map((e, i) => (
+            {visibles.map((e, i) => (
               <tr key={`${e.telegram_user_id}-${i}`}>
                 <td className="users-table-name">
                   <div className="users-avatar">{(e.nombre ?? "?")[0].toUpperCase()}</div>
@@ -255,6 +279,24 @@ export default async function AdminComunidadPage() {
           </tbody>
         </table>
       </div>
+
+      {totalPaginas > 1 && (
+        <nav className="cp-paginacion" aria-label="Páginas de altas">
+          {paginaActual > 1 ? (
+            <Link href={enlacePagina(paginaActual - 1)} className="cp-pag-flecha" aria-label="Página anterior">‹</Link>
+          ) : (
+            <span className="cp-pag-flecha cp-pag-flecha--off" aria-hidden="true">‹</span>
+          )}
+          <span className="cp-pag-info">
+            Página {paginaActual} de {totalPaginas} · {m.ultimas.length} altas
+          </span>
+          {paginaActual < totalPaginas ? (
+            <Link href={enlacePagina(paginaActual + 1)} className="cp-pag-flecha" aria-label="Página siguiente">›</Link>
+          ) : (
+            <span className="cp-pag-flecha cp-pag-flecha--off" aria-hidden="true">›</span>
+          )}
+        </nav>
+      )}
 
       <p className="cp-nota">
         La conversión solo ve a quien vinculó su cuenta de la Academy con Telegram: alguien puede

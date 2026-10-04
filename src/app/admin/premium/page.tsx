@@ -77,8 +77,10 @@ function calcularMetricas(todos: Fila[]) {
   const ahora = Date.now();
   const hace30 = ahora - 30 * DIA;
 
-  const activos = todos.filter((f) => f.role === "premium" || f.role === "admin");
-  const dePago = activos.filter((f) => f.role === "premium");
+  // `todos` ya llega sin administradores (ver AdminPremiumPage), así que
+  // activos y de pago son lo mismo: quien tiene rol premium.
+  const activos = todos.filter((f) => f.role === "premium");
+  const dePago = activos;
   const bajas = todos.filter((f) => f.role === "free" && f.premium_since);
 
   const altas30 = todos.filter(
@@ -178,7 +180,6 @@ function altasPorMes(todos: Fila[]): { etiqueta: string; total: number }[] {
 }
 
 function etiquetaEstado(f: Fila): { texto: string; clase: string } {
-  if (f.role === "admin") return { texto: "Admin", clase: "cp-tag--admin" };
   if (f.subscription_cancel_at_period_end && f.subscription_status === "active") {
     return { texto: "Cancelada", clase: "cp-tag--warn" };
   }
@@ -213,7 +214,13 @@ export default async function AdminPremiumPage() {
     if (u.email) emails[u.id] = u.email;
   });
 
-  const todos = (perfiles ?? []) as Fila[];
+  // Los administradores fuera de TODAS las cifras: tienen acceso Premium por
+  // su rol, no porque paguen, y contarlos inflaba los activos, la tabla, el
+  // «con Telegram» y la base de la conversión. Solo se usan abajo para cuadrar
+  // los miembros del canal, donde sí están dentro.
+  const filas = (perfiles ?? []) as Fila[];
+  const todos = filas.filter((f) => f.role !== "admin");
+  const adminsConTelegram = filas.filter((f) => f.role === "admin" && f.telegram_user_id).length;
   const m = calcularMetricas(todos);
   const { activos, dePago, bajas } = m;
   const grafica = altasPorMes(todos);
@@ -241,8 +248,8 @@ export default async function AdminPremiumPage() {
   const sinVincular = activos.filter((f) => !f.telegram_user_id);
   const renuevanPronto = ordenarPorVencimiento(dePago);
 
-  // El bot también cuenta como miembro del canal.
-  const previsto = conTelegram.length + 1;
+  // El bot y los administradores vinculados también son miembros del canal.
+  const previsto = conTelegram.length + adminsConTelegram + 1;
   const descuadre = miembrosCanal !== null ? miembrosCanal - previsto : null;
 
   return (
@@ -540,9 +547,7 @@ export default async function AdminPremiumPage() {
                   </td>
 
                   <td>
-                    {f.role === "admin" ? (
-                      <span className="cp-muted">—</span>
-                    ) : f.stripe_subscription_id ? (
+                    {f.stripe_subscription_id ? (
                       <span className="cp-origen">Stripe · {PREMIUM_PRICE_EUR}€/mes</span>
                     ) : (
                       <span className="cp-origen cp-origen--manual">Concedido a mano</span>
@@ -564,7 +569,7 @@ export default async function AdminPremiumPage() {
                   <td className="users-table-date">{antiguedad(f.premium_since)}</td>
 
                   <td className="users-table-num">
-                    {f.premium_since && f.role !== "admin"
+                    {f.premium_since
                       ? euros(mesesCobrados(f.premium_since) * PREMIUM_PRICE_EUR)
                       : <span className="cp-muted">—</span>}
                   </td>

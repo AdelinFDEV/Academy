@@ -177,21 +177,23 @@ export default async function AdminPage() {
   ] = await Promise.all([
     supabase.from("posts").select("id", { count: "exact", head: true }),
     supabase.from("comments").select("id", { count: "exact", head: true }).eq("approved", false),
-    supabase.from("profiles").select("id", { count: "exact", head: true }),
+    // Usuarios sin administradores en todas las cifras, igual que en /admin/premium
+    // y /admin/comunidad: el admin no es un usuario que llega ni que paga.
+    supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin"),
     supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
     supabase.from("posts").select("id", { count: "exact", head: true }).eq("published", true),
-    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d7.toISOString()),
-    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
-    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d30.toISOString()),
-    supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", d60.toISOString()).lt("created_at", d30.toISOString()),
-    supabase.from("profiles").select("created_at").gte("created_at", d30.toISOString()).order("created_at"),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d7.toISOString()),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d30.toISOString()),
+    supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d60.toISOString()).lt("created_at", d30.toISOString()),
+    supabase.from("profiles").select("created_at").neq("role", "admin").gte("created_at", d30.toISOString()).order("created_at"),
     supabase.from("posts").select("created_at, published").gte("created_at", m6.toISOString()),
     supabase.from("posts").select("is_premium").eq("published", true),
     supabase.from("comments")
       .select("id, content, approved, created_at, profiles(full_name), posts(title, slug)")
       .order("created_at", { ascending: false })
       .limit(6),
-    supabase.from("profiles").select("id, full_name, role, created_at").order("created_at", { ascending: false }).limit(5),
+    supabase.from("profiles").select("id, full_name, role, created_at").neq("role", "admin").order("created_at", { ascending: false }).limit(5),
     supabase.from("user_posts").select("post_id, posts(title, slug)").not("read_at", "is", null),
     supabase.from("post_likes").select("created_at").gte("created_at", d30.toISOString()),
     supabase.from("comments").select("created_at").gte("created_at", d30.toISOString()),
