@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { HORARIO_DIRECTO as HORARIO } from "@/lib/directo";
+import { HORARIO_DIRECTO as HORARIO, OPERATIVA_DIRECTO as OPERATIVA } from "@/lib/directo";
 import {
   Radio, MessageSquare, ShieldCheck, Video, ArrowRight, Send,
 } from "lucide-react";
@@ -35,17 +35,17 @@ import "../herramientas/detalle.css";
  */
 
 export const metadata: Metadata = {
-  title: "Trading en directo de NASDAQ y cripto",
+  title: "Trading en directo de NASDAQ en 5 minutos",
   description:
-    "Sesiones operando futuros de NASDAQ, Bitcoin, Solana y XRP en gráficos de 5 minutos, tres días por semana y con cada entrada comentada. Quedan grabadas.",
+    "Sesiones operando solo futuros de NASDAQ en gráficos de 5 minutos, los martes y jueves, con cada entrada comentada. Quedan grabadas.",
   alternates: { canonical: "/trading-en-directo" },
 };
 
 /** Datos de la sesión. Son hechos, no métricas de adorno. */
 const FICHA = [
-  { valor: "NASDAQ", label: "Lo más operado ahora" },
-  { valor: "5m", label: "Temporalidad" },
-  { valor: "3 / semana", label: "Sesiones fijas" },
+  { valor: "NASDAQ", label: "Único mercado" },
+  { valor: "5m", label: "Única temporalidad" },
+  { valor: "Mar · Jue", label: "Solo estos dos días" },
   { valor: "Sí", label: "Quedan grabadas" },
 ];
 
@@ -71,7 +71,7 @@ const EN_SESION = [
   {
     icon: Radio,
     title: "La operativa mientras ocurre",
-    text: "Futuros en gráficos de 5 minutos, sobre todo NASDAQ, y también Bitcoin, Solana y XRP. Verás dónde entro, dónde coloco el stop y por qué salgo, en el instante en que se decide.",
+    text: "Solo futuros de NASDAQ y solo en gráficos de 5 minutos: ni cripto ni otras temporalidades. Verás dónde entro, dónde coloco el stop y por qué salgo, en el instante en que se decide.",
   },
   {
     icon: ShieldCheck,
@@ -95,7 +95,7 @@ const MOMENTOS = [
   {
     cifra: "Antes",
     title: "Se avisa en el canal privado",
-    text: "Los huecos son fijos —lunes, miércoles y viernes— y el aviso con el enlace llega al canal de Telegram incluido en tu suscripción. No hay que estar pendiente de nada más.",
+    text: "Los huecos son fijos —solo martes y jueves— y el aviso con el enlace llega al canal de Telegram incluido en tu suscripción. No hay que estar pendiente de nada más.",
   },
   {
     cifra: "Durante",
@@ -112,7 +112,7 @@ const MOMENTOS = [
 const FAQ = [
   {
     q: "¿Cuándo son las sesiones?",
-    a: "Lunes, miércoles y viernes, de 17:00 a 19:00 hora de España peninsular (18:00 a 20:00 en Rumanía, desde donde se emite). Las horas se publican siempre en hora española: no se ajustan solas a tu país, así que si vives fuera de España conviene que hagas la cuenta. Se avisa en el canal privado de Telegram incluido en la suscripción Premium.",
+    a: "Solo martes y jueves, de 17:00 a 19:00 hora de España peninsular (18:00 a 20:00 en Rumanía, desde donde se emite). Las horas se publican siempre en hora española: no se ajustan solas a tu país, así que si vives fuera de España conviene que hagas la cuenta. Se avisa en el canal privado de Telegram incluido en la suscripción Premium. Ningún otro día de la semana hay sesión.",
   },
   {
     q: "¿Y si no puedo asistir en directo?",
@@ -128,7 +128,7 @@ const FAQ = [
   },
   {
     q: "¿Qué activos se operan?",
-    a: "Futuros de NASDAQ, que es lo que más se está operando ahora mismo, y también Bitcoin, Solana y XRP. Que haya un índice y no solo cripto es intencionado: el NASDAQ se mueve con otra lógica y obliga a mirar el contexto macro, no solo el gráfico.",
+    a: "Solo futuros de NASDAQ, y siempre en gráficos de 5 minutos. No se opera Bitcoin ni ninguna otra cripto, ni otras temporalidades: un único mercado y un único marco de tiempo.",
   },
   {
     q: "¿Se opera con dinero real?",
@@ -207,11 +207,11 @@ export default async function TradingEnDirectoPage() {
           </h1>
 
           <p className="det-lead">
-            Tres sesiones por semana operando{" "}
-            <Link href="/glosario/futuros">futuros</Link> en gráficos de 5
-            minutos: <strong>NASDAQ</strong>, que es lo que más se opera ahora
-            mismo, y también Bitcoin, Solana y XRP. Cada entrada y cada salida,
-            en el momento en que se toman.
+            Dos sesiones por semana, <strong>solo martes y jueves</strong>,
+            operando <Link href="/glosario/futuros">futuros</Link> de{" "}
+            <strong>NASDAQ</strong> y nada más, siempre en gráficos de{" "}
+            <strong>5 minutos</strong>. Cada entrada y cada salida, en el
+            momento en que se toman.
           </p>
 
           <div className="det-stats">
@@ -225,8 +225,9 @@ export default async function TradingEnDirectoPage() {
 
           <p className="det-stats-nota">
             <span className="det-stats-dot" aria-hidden="true" />
-            {HORARIO.dias}, de <strong>{HORARIO.franjaEs}</strong>. El
-            aviso, con el enlace, llega al canal privado de Telegram.
+            <strong>{OPERATIVA.resumen}</strong>, de{" "}
+            <strong>{HORARIO.franjaEs}</strong>. El aviso, con el enlace, llega
+            al canal privado de Telegram.
           </p>
         </header>
 

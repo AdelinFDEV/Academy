@@ -243,8 +243,8 @@ function VizLive() {
         </span>
       </div>
       <div className="hero-viz-live-feed">
-        <span>Operativa comentada</span>
-        <span>Gestión de riesgo en vivo</span>
+        <span>Solo NASDAQ en 5 minutos</span>
+        <span>Solo martes y jueves</span>
       </div>
     </div>
   );
@@ -312,7 +312,6 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
             <>
               {/* Halo que sigue al cursor: da profundidad sin adornos. */}
               <span className="tool-aura" aria-hidden="true" />
-              <span className="tool-edge" aria-hidden="true" />
 
               <span className="tool-eyebrow">
                 {bloqueada && <Lock size={9} strokeWidth={2.6} aria-hidden="true" />}
@@ -337,10 +336,13 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
 
               {/* Respaldo en una sola línea, sin pastillas: las cápsulas
                   sueltas ensucian y restan seriedad a un precio de 49,99€. */}
-              <span className="tool-proof">
+              {/* En Portfolio el respaldo es el argumento —PnL real, posiciones
+                  en vivo— y va resaltado con el color de la tarjeta. */}
+              <span className={`tool-proof${f.id === "portfolio" ? " tool-proof--destacada" : ""}`}>
                 {f.chips.map((c, n) => (
                   <span key={c.label} className="tool-proof-item">
                     {n > 0 && <i className="tool-proof-sep" aria-hidden="true" />}
+                    {f.id === "portfolio" && n === 1 && <i className="tool-proof-live" aria-hidden="true" />}
                     {c.label}
                   </span>
                 ))}
@@ -434,9 +436,19 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
 
                 Deja de ser un <Link> envolvente: dentro hay dos destinos
                 distintos, y un <a> dentro de otro es HTML inválido. */}
-            <div className="hero-premium-band">
-              <span className="hero-premium-band-glow" aria-hidden="true" />
-              <span className="hero-premium-band-shine" aria-hidden="true" />
+            {/* Dos tarjetas (04-10-2026): a la izquierda la puerta gratuita
+                —«Ir a mi dashboard», que sin sesión lleva al registro— con la
+                tira de herramientas; a la derecha, la oferta Premium. Antes era
+                una sola banda y la opción gratis quedaba en un enlace pequeño
+                debajo, que casi nadie veía. */}
+            <div className="hero-bands">
+            <div className="hero-free-card">
+              <div className="hero-free-card-head">
+                <span className="hero-free-card-eyebrow">
+                  <LayoutDashboard size={12} aria-hidden="true" /> Cuenta gratuita
+                </span>
+                <h3 className="hero-free-card-title">Empieza gratis</h3>
+              </div>
 
               <div className="hero-band-tools">
                 <span className="hero-band-tools-icons" aria-hidden="true">
@@ -459,7 +471,16 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
                 </Link>
               </div>
 
-              <span className="hero-band-sep" aria-hidden="true" />
+              {/* Sin sesión, al registro; con cuenta gratuita ya no tiene
+                  sentido registrarse, así que va a su dashboard. */}
+              <Link href={isLoggedIn ? "/dashboard" : "/register"} className="hero-free-card-cta">
+                Ir a mi dashboard <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+              </Link>
+            </div>
+
+            <div className="hero-premium-band">
+              <span className="hero-premium-band-glow" aria-hidden="true" />
+              <span className="hero-premium-band-shine" aria-hidden="true" />
 
               <div className="hero-premium-band-main">
                 <div className="hero-premium-band-left">
@@ -480,12 +501,7 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
                 </div>
               </div>
             </div>
-
-            {!isLoggedIn && (
-              <Link href="/register" className="hero-cta-mini">
-                ¿Prefieres empezar gratis? Crea tu cuenta <ArrowRight size={13} aria-hidden="true" />
-              </Link>
-            )}
+            </div>
           </>
         )}
       </motion.div>

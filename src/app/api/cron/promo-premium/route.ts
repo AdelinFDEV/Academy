@@ -29,7 +29,7 @@ function mensaje(): string {
     "📚 Todas las guías interactivas desbloqueadas\n\n" +
     "🔥 Aquí se trabaja a diario para intentar ganar dinero, con el máximo compromiso " +
     "por mi parte y por la de cada miembro. Nadie está de adorno.\n\n" +
-    "🔴 Y muy pronto: directos de trading de futuros.\n\n" +
+    "🔴 Trading en directo: solo NASDAQ en 5 minutos, martes y jueves.\n\n" +
     "Sin permanencia. Cancelas cuando quieras."
   );
 }

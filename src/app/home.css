@@ -315,15 +315,132 @@
 
 /* ── Banda Premium: el CTA principal del hero ── */
 
+/* Dos tarjetas en fila: un tercio para la cuenta gratuita y DOS TERCIOS para
+   la oferta Premium, que es lo que convierte y lo que necesita sitio: con la
+   columna estrecha su texto se partía en cuatro líneas. */
+.hero-bands {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 860px) {
+  .hero-bands {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tarjeta gratuita: misma forma que la Premium, pero en neutro, para que el
+   dorado siga siendo lo que más llama. */
+.hero-free-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.5rem 1.6rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(91, 141, 239, 0.1) 0%, rgba(9, 18, 36, 0.9) 60%);
+  border: 1.5px solid rgba(240, 244, 255, 0.12);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+/* Solo con ratón: en táctil el :hover se queda pegado tras tocar. */
+@media (hover: hover) {
+  .hero-free-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(240, 244, 255, 0.24);
+  }
+}
+
+/* En móvil, centrada como la tarjeta Premium que va justo debajo, y con el
+   mismo relleno, para que se lean como pareja. */
+@media (max-width: 760px) {
+  .hero-free-card {
+    align-items: center;
+    text-align: center;
+    padding: 1.4rem 1.3rem;
+  }
+
+  .hero-free-card-head {
+    align-items: center;
+  }
+
+  .hero-free-card .hero-band-tools {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-free-card .hero-band-tools-icons {
+    justify-content: center;
+  }
+
+  .hero-free-card-cta {
+    width: 100%;
+  }
+}
+
+.hero-free-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hero-free-card-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.66rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9db8f5;
+}
+
+.hero-free-card-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.hero-free-card-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-decoration: none;
+  /* Naranja de la marca, con texto blanco: el botón es lo que tiene que
+     llamar en esta tarjeta, no los iconos. */
+  background: linear-gradient(135deg, #ff8a4c 0%, var(--accent-orange, #ff6b2b) 55%, #e8551a 100%);
+  border: 1px solid rgba(255, 170, 120, 0.45);
+  padding: 0.72rem 1.4rem;
+  border-radius: 11px;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(120, 40, 0, 0.35);
+  box-shadow: 0 8px 24px -6px rgba(255, 107, 43, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.hero-free-card-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 30px -6px rgba(255, 107, 43, 0.65);
+}
+
 .hero-premium-band {
   position: relative;
-  /* Un tercio para el acceso a las herramientas y DOS TERCIOS para la oferta
-     Premium, que es lo que convierte y lo que necesita sitio: con la columna
-     estrecha su texto se partía en cuatro líneas. */
-  display: grid;
-  grid-template-columns: 1fr auto 2fr;
+  display: flex;
   align-items: center;
-  gap: 1.6rem;
   width: 100%;
   background: linear-gradient(135deg, rgba(230, 180, 85, 0.14) 0%, rgba(9, 18, 36, 0.9) 55%, rgba(230, 180, 85, 0.08) 100%);
   border: 1.5px solid rgba(230, 180, 85, 0.4);
@@ -1029,8 +1146,9 @@
   height: 42px;
   border-radius: 50%;
   color: #fff;
-  background: linear-gradient(135deg, #feda75 0%, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5 100%);
-  box-shadow: 0 8px 20px -8px rgba(214, 41, 118, 0.5);
+  /* Lleva el icono de Telegram, así que va en su azul. */
+  background: linear-gradient(135deg, #37bbfe 0%, #229ed9 55%, #1c8ac0 100%);
+  box-shadow: 0 8px 20px -8px rgba(34, 158, 217, 0.55);
 }
 
 .contact-cta-text {
@@ -1123,21 +1241,50 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  justify-content: center;
   padding: 0.75rem 1.3rem;
   border-radius: 100px;
-  background: linear-gradient(135deg, #feda75 0%, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5 100%);
   color: #fff;
   font-weight: 700;
   font-size: 0.86rem;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 10px 26px -10px rgba(214, 41, 118, 0.5);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .contact-cta-btn:hover {
   transform: translateY(-2px);
+}
+
+/* Cada red con sus colores. Antes el modificador de Instagram vivía en
+   globals.css y la base de aquí, que carga después, lo pisaba: los dos botones
+   salían con el degradado de Instagram, Telegram incluido. */
+.contact-cta-btn--telegram {
+  background: linear-gradient(135deg, #37bbfe 0%, #229ed9 55%, #1c8ac0 100%);
+  box-shadow: 0 10px 26px -10px rgba(34, 158, 217, 0.55);
+}
+
+.contact-cta-btn--telegram:hover {
+  box-shadow: 0 14px 32px -8px rgba(34, 158, 217, 0.65);
+}
+
+.contact-cta-btn--instagram {
+  background: linear-gradient(135deg, #feda75 0%, #fa7e1e 25%, #d62976 50%, #962fbf 75%, #4f5bd5 100%);
+  box-shadow: 0 10px 26px -10px rgba(214, 41, 118, 0.5);
+}
+
+.contact-cta-btn--instagram:hover {
   box-shadow: 0 14px 32px -8px rgba(214, 41, 118, 0.6);
+}
+
+/* Los dos botones, mismo ancho: la columna se estira y cada botón la llena. */
+.contact-cta-botones {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  flex-shrink: 0;
+  min-width: 170px;
 }
 
 .contact-cta-btn-arrow {
@@ -1176,9 +1323,23 @@
     font-size: 0.85rem;
   }
 
-  .contact-cta-btn {
+  .contact-cta-botones {
     width: 100%;
-    justify-content: center;
+    min-width: 0;
+    flex-direction: row;
+  }
+
+  .contact-cta-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* En los móviles más estrechos, dos botones de ~120px no caben con icono,
+   texto y flecha: uno debajo del otro, a todo el ancho. */
+@media (max-width: 420px) {
+  .contact-cta-botones {
+    flex-direction: column;
   }
 }
 
@@ -2049,23 +2210,6 @@
   transform: translateX(3px);
 }
 
-/* Enlace mini bajo la banda premium (visitantes sin cuenta) */
-.hero-cta-mini {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: rgba(226, 232, 240, 0.75);
-  text-decoration: none;
-  padding: 0.5rem 0;
-  transition: color 0.2s ease;
-}
-
-.hero-cta-mini:hover {
-  color: #fff;
-}
-
 /* ── Responsive y movimiento reducido ─────────────────────── */
 
 @media (max-width: 760px) {
@@ -2087,7 +2231,8 @@
 
   .tool:hover,
   .hero-dock-primary:hover,
-  .hero-dock-guide:hover {
+  .hero-dock-guide:hover,
+  .hero-free-card:hover {
     transform: none;
   }
 }
@@ -2166,22 +2311,6 @@
     0 20px 50px -26px rgba(0, 0, 0, 0.85),
     0 0 0 1px color-mix(in srgb, var(--tool-tint) 10%, transparent);
 }
-
-/* Filete superior: se enciende al pasar por encima. Es el único movimiento de
-   color de la tarjeta, y por eso se nota sin ser ruidoso. */
-.tool-edge {
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    color-mix(in srgb, var(--tool-tint) 70%, transparent) 50%,
-    transparent 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.tool:hover .tool-edge { opacity: 1; }
 
 /* Halo que sigue al cursor. Las variables --mx/--my las escribe trackSpot. */
 .tool-aura {
@@ -2264,6 +2393,36 @@
   height: 3px;
   border-radius: 50%;
   background: rgba(240, 244, 255, 0.22);
+}
+
+/* Portfolio: «PnL real · Posiciones en vivo», con el tinte de la tarjeta y un
+   punto que late delante de lo que está en vivo. */
+.tool-proof--destacada {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--tool-tint) 80%, #f0f4ff);
+}
+
+.tool-proof--destacada .tool-proof-sep {
+  background: color-mix(in srgb, var(--tool-tint) 55%, transparent);
+}
+
+.tool-proof-live {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: tool-proof-live 1.8s ease-in-out infinite;
+}
+
+@keyframes tool-proof-live {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  50%      { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-proof-live { animation: none; }
 }
 
 .tool-collab {
@@ -2387,10 +2546,9 @@
       grid-template-rows: subgrid;
     }
 
-    /* El halo y el filete van en absoluto, así que no ocupan fila; se les
-       ancla al alto completo para que cubran la tarjeta entera igual que antes. */
-    .tool-aura,
-    .tool-edge {
+    /* El halo va en absoluto, así que no ocupa fila; se le ancla al alto
+       completo para que cubra la tarjeta entera igual que antes. */
+    .tool-aura {
       grid-row: 1 / -1;
     }
   }
@@ -2446,18 +2604,6 @@
   gap: 0.62rem;
 }
 
-/* Separador vertical entre las dos zonas. */
-.hero-band-sep {
-  display: block;
-  width: 1px;
-  align-self: stretch;
-  min-height: 90px;
-  background: linear-gradient(to bottom,
-    transparent 0%,
-    rgba(230, 180, 85, 0.3) 50%,
-    transparent 100%);
-}
-
 /* La zona Premium conserva el reparto izquierda/derecha que tenía la banda. */
 .hero-premium-band-main {
   display: flex;
@@ -2470,27 +2616,14 @@
 @media (max-width: 720px) {
   .hero-premium-band-main {
     flex-direction: column;
-    align-items: flex-start;
+    /* stretch y no flex-start: el texto ya va centrado y, pegado a la
+       izquierda, desentonaba con la tarjeta gratuita de encima. */
+    align-items: stretch;
     gap: 1.15rem;
   }
 }
 
 @media (max-width: 860px) {
-  .hero-premium-band {
-    grid-template-columns: 1fr;
-    gap: 1.15rem;
-  }
-
-  .hero-band-sep {
-    width: 100%;
-    min-height: 0;
-    height: 1px;
-    background: linear-gradient(90deg,
-      transparent 0%,
-      rgba(230, 180, 85, 0.28) 50%,
-      transparent 100%);
-  }
-
   .hero-band-tools {
     flex-direction: row;
     align-items: center;

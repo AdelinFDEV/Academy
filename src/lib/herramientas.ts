@@ -21,7 +21,7 @@
  */
 import {
   NotebookPen, Radio, Unlock, Wallet, Target, Scale, Eye, Radar, PieChart, Medal,
-  Trophy, ClipboardCheck, BadgeCheck, Sparkles, MessagesSquare,
+  Trophy, ClipboardCheck, BadgeCheck, Sparkles, CalendarDays, CandlestickChart,
   type LucideIcon,
 } from "lucide-react";
 
@@ -83,8 +83,8 @@ export const HERRAMIENTAS: Herramienta[] = [
       "El portfolio real de este ciclo, publicado posición a posición: qué compré, a qué precio entré y cuánto lleva ganado o perdido cada moneda, actualizado con precios en vivo. No es una cartera de ejemplo ni una captura antigua — es la cartera con la que opero, y se actualiza cuando la muevo.",
     acceso: "premium",
     chips: [
-      { icon: ClipboardCheck, label: "Mis posiciones reales" },
-      { icon: BadgeCheck, label: "PnL en vivo" },
+      { icon: BadgeCheck, label: "PnL real" },
+      { icon: ClipboardCheck, label: "Posiciones en vivo" },
     ],
     premiumGate: true,
     premiumHref: "/portfolio",
@@ -97,13 +97,13 @@ export const HERRAMIENTAS: Herramienta[] = [
     label: "Trading en Directo",
     tag: "Premium",
     color: "#a3a3ff",
-    desc: "Futuros de NASDAQ, Bitcoin, Solana y XRP en gráficos de 5 minutos, operados en directo: cada entrada y cada salida, en el momento en que se toman.",
+    desc: "Solo futuros de NASDAQ, solo en gráficos de 5 minutos y solo martes y jueves, operados en directo: cada entrada y cada salida, en el momento en que se toman.",
     resumen:
-      "Tres sesiones por semana operando futuros en gráficos de 5 minutos: NASDAQ, que es lo que más se opera ahora, y también Bitcoin, Solana y XRP. Se comenta cada decisión mientras se toma y hay chat de preguntas. La diferencia con un vídeo grabado es que no hay edición: las operaciones que salen mal se ven igual. Quedan grabadas para los suscriptores.",
+      "Dos sesiones por semana, solo martes y jueves, operando únicamente futuros de NASDAQ en gráficos de 5 minutos. Se comenta cada decisión mientras se toma y hay chat de preguntas. La diferencia con un vídeo grabado es que no hay edición: las operaciones que salen mal se ven igual. Quedan grabadas para los suscriptores.",
     acceso: "premium",
     chips: [
-      { icon: MessagesSquare, label: "Chat de preguntas" },
-      { icon: BadgeCheck, label: "Sin edición" },
+      { icon: CandlestickChart, label: "Solo NASDAQ · 5 min" },
+      { icon: CalendarDays, label: "Martes y jueves" },
     ],
     premiumGate: true,
     premiumHref: "/trading-en-directo",

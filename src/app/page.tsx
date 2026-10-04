@@ -349,7 +349,7 @@ export default async function HomePage() {
               href={TELEGRAM_CANAL_FREE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-cta-btn"
+              className="contact-cta-btn contact-cta-btn--telegram"
             >
               <TelegramIcon />
               Telegram
@@ -359,10 +359,11 @@ export default async function HomePage() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-cta-btn contact-cta-btn--alt"
+              className="contact-cta-btn contact-cta-btn--instagram"
             >
               <InstagramIcon />
               Instagram
+              <ArrowRight size={15} className="contact-cta-btn-arrow" aria-hidden="true" />
             </a>
           </div>
         </div>

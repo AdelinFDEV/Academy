@@ -31,8 +31,8 @@ const PERKS = [
     icon: Radio,
     color: "#a3a3ff",
     title: "Trading en Directo",
-    desc: "Futuros de NASDAQ, Bitcoin, Solana y XRP en gráficos de 5 minutos, operados en directo y con cada decisión explicada en el momento.",
-    chips: ["3 sesiones por semana", "Incluido sin coste extra"],
+    desc: "Solo futuros de NASDAQ y solo en gráficos de 5 minutos, operados en directo los martes y jueves, con cada decisión explicada en el momento.",
+    chips: ["Solo NASDAQ · 5 min", "Martes y jueves"],
   },
   {
     id: "liberaciones",

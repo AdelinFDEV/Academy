@@ -93,9 +93,9 @@ export default async function DashboardPage() {
       tools: [
         { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
         // Estaba como "soon" y con href "#", ademas de decir solo Solana. Las
-        // sesiones llevan semanas: lunes, miercoles y viernes, y lo que mas se
-        // opera ahora es NASDAQ.
-        { href: "/trading-en-directo", icon: "radio", name: "Trading en Directo",   desc: "NASDAQ, BTC, SOL y XRP · 3 sesiones/semana", locked: false, soon: false },
+        // sesiones llevan semanas: desde octubre de 2026, solo martes y jueves y
+        // solo NASDAQ en 5 minutos.
+        { href: "/trading-en-directo", icon: "radio", name: "Trading en Directo",   desc: "Solo NASDAQ en 5 min · martes y jueves", locked: false, soon: false },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
       ],
     },

@@ -120,7 +120,7 @@ export default async function HerramientasPage() {
     portfolio: resumen
       ? `${resumen.rentabilidadPct >= 0 ? "+" : ""}${resumen.rentabilidadPct.toFixed(1).replace(".", ",")} % en la cartera real`
       : undefined,
-    directo: "3 sesiones por semana",
+    directo: "Solo NASDAQ en 5 min · martes y jueves",
     diario: "10 estadísticas automáticas",
     liberaciones: "10 tokens rastreados",
     riesgo: "Tamaño de posición en 4 datos",

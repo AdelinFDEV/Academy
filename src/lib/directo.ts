@@ -18,8 +18,8 @@
 /** Zona en la que se anuncian las sesiones al público. */
 const ZONA = "Europe/Madrid";
 
-/** Lunes, miércoles y viernes (0 = domingo, como `Date.getUTCDay()`). */
-const DIAS_SESION = [1, 3, 5];
+/** Martes y jueves (0 = domingo, como `Date.getUTCDay()`). */
+const DIAS_SESION = [2, 4];
 
 /** Hora peninsular de inicio y fin. */
 const INICIO = 17;
@@ -34,7 +34,9 @@ const FIN = 19;
  * qué país se habla.
  */
 export const HORARIO_DIRECTO = {
-  dias: "Lunes, miércoles y viernes",
+  dias: "Martes y jueves",
+  /** Solo dos días: no se opera ningún otro día de la semana. */
+  sesionesSemana: 2,
   horaEs: "17:00 a 19:00",
   horaRo: "18:00 a 20:00",
   /** La forma correcta de enseñar la hora en cualquier sitio. */
@@ -43,6 +45,20 @@ export const HORARIO_DIRECTO = {
   zonaEs: "hora de España",
   /** Desde dónde se emite, que es lo que explica el desfase. */
   franjaRo: "18:00 a 20:00 (hora de Rumanía)",
+} as const;
+
+/**
+ * Qué se opera. Desde octubre de 2026 **solo NASDAQ, solo en 5 minutos**: ni
+ * Bitcoin, ni Solana, ni XRP, ni otra temporalidad. Antes se anunciaban los
+ * cuatro activos; si vuelve a cambiar, se cambia aquí y en las fichas que
+ * citan estas constantes, no en textos sueltos.
+ */
+export const OPERATIVA_DIRECTO = {
+  mercado: "NASDAQ",
+  temporalidad: "5 minutos",
+  temporalidadCorta: "5m",
+  /** La regla entera en una línea, para chips y tarjetas. */
+  resumen: "Solo NASDAQ en 5 minutos · martes y jueves",
 } as const;
 
 const DIA_CORTO: Record<string, number> = {
@@ -86,8 +102,8 @@ export type ProximaSesion = {
 /**
  * Cuándo es la siguiente sesión, mirado desde España.
  *
- * Un día de sesión cuenta como «hoy» hasta que termina: a las 18:00 de un lunes
- * la próxima sesión sigue siendo la de ese lunes, en curso, no la del miércoles.
+ * Un día de sesión cuenta como «hoy» hasta que termina: a las 18:00 de un martes
+ * la próxima sesión sigue siendo la de ese martes, en curso, no la del jueves.
  */
 export function proximaSesion(momento: Date = new Date()): ProximaSesion {
   const { anio, mes, dia, hora, diaSemana } = ahoraEnEspana(momento);
@@ -116,7 +132,7 @@ export function proximaSesion(momento: Date = new Date()): ProximaSesion {
     };
   }
 
-  // Inalcanzable con tres días por semana, pero devolver algo coherente es
+  // Inalcanzable con dos días por semana, pero devolver algo coherente es
   // mejor que dejar que la tarjeta reviente si alguien toca DIAS_SESION.
   return { cuando: HORARIO_DIRECTO.dias, relativo: null, enCurso: false, enDias: 0 };
 }

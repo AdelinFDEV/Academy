@@ -23,8 +23,8 @@ import { HERRAMIENTAS } from "@/lib/herramientas";
  * de la pantalla. Una lista de venta se lee de un vistazo o no se lee.
  */
 const DATOS: Record<string, string> = {
-  directo: "3 sesiones/semana · NASDAQ, BTC, SOL y XRP",
-  portfolio: "Mis posiciones reales, con PnL en vivo",
+  directo: "Solo NASDAQ en 5 min · martes y jueves",
+  portfolio: "PnL real y posiciones en vivo",
   diario: "10 estadísticas y tu curva de capital",
   radar: "Bitcoin 24h, miedo y codicia y macro de EE. UU.",
   liberaciones: "Calendario de 10 tokens, datos de DefiLlama",
@@ -139,8 +139,8 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
     </div>
   );
 
-  /* Antes decía «el trading en directo llega pronto». Ya no: hay sesiones tres
-     días por semana desde septiembre de 2026, y anunciarlo como futuro
+  /* Antes decía «el trading en directo llega pronto». Ya no: hay sesiones
+     cada semana desde septiembre de 2026 (martes y jueves desde octubre), y anunciarlo como futuro
      desperdiciaba el argumento más fuerte de la suscripción. */
   const included = (
     <div className="premium-pitch-included">
@@ -148,7 +148,7 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
       <Radio size={15} aria-hidden="true" />
       <span>
         <strong className="premium-pitch-included-em">Trading en directo, ya disponible</strong>{" "}
-        — tres sesiones por semana operando NASDAQ, Bitcoin, Solana y XRP, y
+        — solo martes y jueves, operando solo NASDAQ en gráficos de 5 minutos, y
         quedan grabadas.
       </span>
     </div>

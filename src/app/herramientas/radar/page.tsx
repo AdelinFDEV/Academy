@@ -15,7 +15,8 @@ export default async function RadarPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  // Con `next`, para que tras iniciar sesión vuelva al radar y no al dashboard.
+  if (!user) redirect("/login?next=/herramientas/radar");
 
   const { data: profile } = await supabase
     .from("profiles")

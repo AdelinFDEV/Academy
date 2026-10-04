@@ -19,6 +19,7 @@
  */
 
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
+import { HORARIO_DIRECTO } from "@/lib/directo";
 import {
   getAdminChatUrl,
   getChannelInviteLink,
@@ -427,13 +428,15 @@ const VENTAJAS: Ventaja[] = [
   {
     id: "directo",
     boton: "🔴 Trading en directo",
-    titulo: "🔴 Trading en directo (próximamente)",
+    titulo: "🔴 Trading en directo",
     texto:
-      "Sesiones en directo operando el mercado, comentando cada decisión.\n\n" +
+      "Sesiones en directo operando futuros, comentando cada decisión.\n\n" +
+      "📈 Solo NASDAQ, solo en gráficos de 5 minutos\n" +
+      `📅 Solo martes y jueves, de ${HORARIO_DIRECTO.franjaEs}\n\n` +
       "• Por qué entro y por qué no\n" +
       "• Dónde pongo el stop y cuánto arriesgo\n" +
       "• Preguntas en el momento\n\n" +
-      "Todavía no está abierto. Cuando lo esté, va incluido en Premium sin pagar nada más.",
+      "Va incluido en Premium sin pagar nada más, y las sesiones quedan grabadas.",
   },
 ];
 
