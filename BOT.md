@@ -104,7 +104,7 @@ Declarados en `vercel.json` y protegidos por `CRON_SECRET`:
 | `telegram_access_log` | Quién entró y quién fue expulsado del canal, y por qué |
 | `telegram_support_threads` | Los hilos de soporte: el usuario escribe al bot, el admin contesta |
 | `telegram_channel_events` · `telegram_channel_stats` | Altas, bajas y recuento del canal |
-| `bot_ajustes` | Interruptores del bot. Hoy, el de pausar avisos (`/stop`) |
+| `bot_ajustes` | Interruptores del bot: `avisos_pausados` (`/stop`, calla todos los avisos automáticos) y `noticias_pausadas` (solo el cron de noticias; **en pausa desde el 04-10-2026**, se reactiva poniendo la fila a `"0"`) |
 | `content_announcements` | Qué se ha anunciado ya, para no repetirlo |
 | `posts` · `profiles` · `noticias` | Las de la web, en solo lectura desde el bot |
 

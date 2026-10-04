@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { MAXIMO_POR_TANDA, guardarNuevas, pendientesSinProponer, proponerNoticia } from "@/lib/noticias";
-import { avisosPausados, getAdminChatId, getLogChatId } from "@/lib/telegram";
+import { avisosPausados, getAdminChatId, getLogChatId, noticiasPausadas } from "@/lib/telegram";
 
 
 export const runtime = "nodejs";
@@ -40,6 +40,11 @@ export async function GET(request: NextRequest) {
   // El comando /noticias sigue funcionando igual: eso lo pide el admin.
   if (await avisosPausados(admin)) {
     return NextResponse.json({ ok: true, omitida: "avisos pausados" });
+  }
+
+  // Interruptor solo de noticias: ni lee el feed ni propone nada.
+  if (await noticiasPausadas(admin)) {
+    return NextResponse.json({ ok: true, omitida: "noticias pausadas" });
   }
 
   // Mismo destino que los avisos de altas: el chat de registro si existe y,

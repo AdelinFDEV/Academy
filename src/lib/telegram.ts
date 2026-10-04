@@ -445,6 +445,32 @@ export async function avisosPausados(admin: SupabaseAdmin): Promise<boolean> {
   return data?.valor === "1";
 }
 
+/**
+ * ¿Está en pausa la revisión diaria de noticias?
+ *
+ * Interruptor propio, separado de `avisos_pausados`: aquel calla TODO lo que
+ * el bot manda por su cuenta (altas, entradas nuevas…), y aquí solo se quiere
+ * parar el cron de noticias. Pausado desde el 04-10-2026 a petición del admin.
+ * Para reactivarlo, la fila `noticias_pausadas` de `bot_ajustes` a "0".
+ *
+ * Mismo criterio ante un error que `avisosPausados`: se responde "no
+ * pausadas", porque las noticias solo se PROPONEN al admin y nunca se
+ * publican solas, así que un fallo no puede sacar nada al canal.
+ */
+export async function noticiasPausadas(admin: SupabaseAdmin): Promise<boolean> {
+  const { data, error } = await admin
+    .from("bot_ajustes")
+    .select("valor")
+    .eq("clave", "noticias_pausadas")
+    .maybeSingle();
+
+  if (error) {
+    console.warn("[telegram] No se pudo leer el interruptor de noticias:", error.message);
+    return false;
+  }
+  return data?.valor === "1";
+}
+
 /** Enciende o apaga los avisos automáticos. Devuelve si se pudo guardar. */
 export async function pausarAvisos(admin: SupabaseAdmin, pausar: boolean): Promise<boolean> {
   const { error } = await admin
