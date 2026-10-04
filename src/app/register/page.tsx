@@ -30,6 +30,9 @@ function RegisterForm() {
     return next;
   }
 
+  // Viene de pulsar «Hazte Premium»: al terminar va directo a Stripe.
+  const vieneAPagar = safeNext() === "/api/checkout";
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -160,7 +163,8 @@ function RegisterForm() {
           <div className="auth-brand">adelin<span>btc</span></div>
           <p className="auth-subtitle">Revisa tu email</p>
           <p className="auth-success">
-            Te hemos enviado un enlace de confirmación a <strong>{email}</strong>. Ábrelo para activar tu cuenta.
+            Te hemos enviado un enlace de confirmación a <strong>{email}</strong>. Ábrelo para activar tu cuenta
+            {vieneAPagar ? " y pasarás directamente al pago." : "."}
           </p>
           <Link
             href={safeNext() ? `/login?next=${encodeURIComponent(safeNext()!)}` : "/login"}
@@ -182,7 +186,23 @@ function RegisterForm() {
         <Link href="/" className="auth-brand" style={{ textDecoration: "none" }}>
           adelin<span>btc</span>
         </Link>
-        <p className="auth-subtitle">Crea tu cuenta</p>
+        <p className="auth-subtitle">
+          {vieneAPagar ? "Paso 1 de 2: crea tu cuenta y pasas al pago" : "Crea tu cuenta"}
+        </p>
+
+        {/* Quien viene a pagar ve Google primero: un clic, sin formulario y sin
+            esperar el email de confirmación. Es el camino más corto al pago. */}
+        {vieneAPagar && (
+          <>
+            <button onClick={handleGoogle} className="btn-google">
+              <GoogleIcon />
+              Continuar con Google
+            </button>
+            <div className="auth-divider">
+              <span>o con tu email</span>
+            </div>
+          </>
+        )}
 
         <form onSubmit={handleRegister} className="auth-form">
           <div className="field">
@@ -256,14 +276,18 @@ function RegisterForm() {
           </button>
         </form>
 
-        <div className="auth-divider">
-          <span>o continúa con</span>
-        </div>
+        {!vieneAPagar && (
+          <>
+            <div className="auth-divider">
+              <span>o continúa con</span>
+            </div>
 
-        <button onClick={handleGoogle} className="btn-google">
-          <GoogleIcon />
-          Google
-        </button>
+            <button onClick={handleGoogle} className="btn-google">
+              <GoogleIcon />
+              Google
+            </button>
+          </>
+        )}
 
         <p className="auth-footer">
           ¿Ya tienes cuenta?{" "}

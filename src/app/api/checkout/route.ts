@@ -9,7 +9,9 @@ export const dynamic = "force-dynamic";
  * aquí (vía la página /premium) para que el checkout de Stripe quede SIEMPRE
  * enlazado con el usuario que paga.
  *
- *  - Sin sesión  → a registro/login, volviendo luego a /premium.
+ *  - Sin sesión  → a registro/login, volviendo luego AQUÍ, y de aquí directo a
+ *                  Stripe. Antes volvía a /premium y había que pulsar el botón
+ *                  de pago otra vez: un clic más justo donde más gente se cae.
  *  - Ya Premium  → al dashboard (no tiene sentido pagar dos veces).
  *  - Si no       → redirige al Payment Link de Stripe con client_reference_id.
  */
@@ -20,7 +22,7 @@ export async function GET(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    const next = encodeURIComponent("/premium");
+    const next = encodeURIComponent("/api/checkout");
     return NextResponse.redirect(new URL(`/register?next=${next}`, request.url));
   }
 

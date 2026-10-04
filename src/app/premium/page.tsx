@@ -211,7 +211,7 @@ export default async function PremiumPage() {
 
                   {!user && (
                     <p className="prem-pricing-login-note">
-                      ¿Ya tienes cuenta? <Link href="/login?next=/premium">Inicia sesión</Link>
+                      ¿Ya tienes cuenta? <Link href="/login?next=/api/checkout">Inicia sesión</Link>
                     </p>
                   )}
                 </div>

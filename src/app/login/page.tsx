@@ -28,6 +28,10 @@ function LoginForm() {
   const supabase = createClient();
   const searchParams = useSearchParams();
   const aviso = AVISOS[searchParams.get("error") ?? ""] ?? "";
+  // Mismo filtro que /register: solo rutas propias (contra open-redirect).
+  const nextCrudo = searchParams.get("next");
+  const nextSeguro = nextCrudo && nextCrudo.startsWith("/") && !nextCrudo.startsWith("//") ? nextCrudo : null;
+  const vieneAPagar = nextSeguro === "/api/checkout";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -71,6 +75,13 @@ function LoginForm() {
       } catch { /* malformed URL → keep default */ }
     }
 
+    // Una ruta de API (el checkout) redirige fuera, a Stripe: eso solo lo
+    // sigue una navegación completa, no la del router de Next.
+    if (target.startsWith("/api/")) {
+      window.location.assign(target);
+      return;
+    }
+
     router.push(target);
     router.refresh();
   }
@@ -100,7 +111,9 @@ function LoginForm() {
         <Link href="/" className="auth-brand" style={{ textDecoration: "none" }}>
           adelin<span>btc</span>
         </Link>
-        <p className="auth-subtitle">Accede a tu academia</p>
+        <p className="auth-subtitle">
+          {vieneAPagar ? "Inicia sesión y pasas directo al pago" : "Accede a tu academia"}
+        </p>
 
         {/* Sale de /auth/callback: cuenta de Google fuera de política o enlace
             de confirmación caducado. Antes se redirigía con ?error= y no se
@@ -166,7 +179,9 @@ function LoginForm() {
 
         <p className="auth-footer">
           ¿No tienes cuenta?{" "}
-          <Link href="/register">Regístrate</Link>
+          {/* Conserva el destino: quien venía a pagar y cambia a registro no
+              debe acabar en el dashboard. */}
+          <Link href={nextSeguro ? `/register?next=${encodeURIComponent(nextSeguro)}` : "/register"}>Regístrate</Link>
         </p>
       </div>
     </div>
