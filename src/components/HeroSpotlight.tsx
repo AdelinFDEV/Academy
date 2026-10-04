@@ -478,10 +478,10 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
               </Link>
             </div>
 
+            {/* Rediseñada el 04-10-2026: fuera el brillo que cruzaba la tarjeta,
+                la mancha de luz y el botón en mayúsculas. Sobria: texto, tres
+                ventajas que existen hoy y un bloque de precio separado. */}
             <div className="hero-premium-band">
-              <span className="hero-premium-band-glow" aria-hidden="true" />
-              <span className="hero-premium-band-shine" aria-hidden="true" />
-
               <div className="hero-premium-band-main">
                 <div className="hero-premium-band-left">
                   <span className="hero-premium-band-eyebrow"><Crown size={12} aria-hidden="true" /> Premium</span>
@@ -489,6 +489,11 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
                   <p className="hero-premium-band-sub">
                     Diario de trading con estadísticas, liberaciones de tokens en tiempo real y todas las herramientas exclusivas de la academia.
                   </p>
+                  <ul className="hero-premium-band-list">
+                    <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Las {HERRAMIENTAS.length} herramientas</li>
+                    <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Trading en directo</li>
+                    <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Comunidad privada</li>
+                  </ul>
                 </div>
                 <div className="hero-premium-band-right">
                   <div className="hero-premium-band-price">
@@ -496,8 +501,10 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
                     <span className="hero-premium-band-period">/mes</span>
                   </div>
                   <Link href="/premium" className="hero-premium-band-cta">
-                    Hazte Premium <ArrowRight size={17} strokeWidth={2.6} aria-hidden="true" />
+                    Hazte Premium
+                    <ArrowRight size={16} strokeWidth={2.4} className="hero-premium-band-cta-arrow" aria-hidden="true" />
                   </Link>
+                  <span className="hero-premium-band-note">Sin permanencia · Cancela cuando quieras</span>
                 </div>
               </div>
             </div>
