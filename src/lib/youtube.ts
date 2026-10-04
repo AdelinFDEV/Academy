@@ -246,3 +246,28 @@ export async function getLatestVideos(limit = 3, sinCache = false): Promise<YouT
     return [];
   }
 }
+
+/**
+ * Suscriptores del canal, con la API oficial. Sin YOUTUBE_API_KEY, null.
+ *
+ * YouTube redondea la cifra pública (1.234 sale como 1.230 a partir de mil),
+ * así que sirve para ver la tendencia, no para contar de uno en uno. Lo usa la
+ * foto diaria de /admin/objetivos (fotografiarYoutube).
+ */
+export async function getSubscriberCount(): Promise<number | null> {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key) return null;
+  const channelId = process.env.YOUTUBE_CHANNEL_ID || CHANNEL_ID_POR_DEFECTO;
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${key}`,
+      { cache: "no-store", signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
+    );
+    if (!res.ok) return null;
+    const json = (await res.json()) as { items?: { statistics?: { subscriberCount?: string } }[] };
+    const total = Number(json.items?.[0]?.statistics?.subscriberCount);
+    return Number.isFinite(total) ? total : null;
+  } catch {
+    return null;
+  }
+}

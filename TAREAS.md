@@ -22,6 +22,13 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 0. Objetivos y diario: fases 2 y 3
+
+Hecho entre el 04 y el 05-10-2026: objetivos (repetibles, con historial, +1 y métricas automáticas), calendario con cierre automático de piezas al publicar, ideas, diario con análisis del ánimo y pestaña Crecimiento, en `/admin/objetivos`. El admin eligió canales **YouTube, Web y Telegram** y **usar el bot**. Falta:
+
+- [ ] **Fase 2 — el bot:** `/nota <texto>` e `/idea <texto>` guardan en `diario_notas` y `contenido_plan` desde el móvil; resumen diario con lo que toca hoy, lo retrasado y cómo van los objetivos. En el plan Hobby cada cron corre una vez al día como mucho: aprovechar uno existente (el de noticias está en pausa). **El resumen va a las 22:00 de Rumanía** (decidido el 05-10-2026). Ojo: los crons de Vercel van en UTC y no cambian de hora, así que 22:00 es `0 20 * * *` en invierno (UTC+2, desde el 25-10-2026) y `0 19 * * *` en verano (UTC+3). Con uno fijo, medio año llega una hora antes o después; o se acepta, o se cambia a mano dos veces al año.
+- [ ] **Fase 3:** balance del domingo por el bot e ideas sugeridas a partir de las consultas de Search Console sin contenido.
+
 ### 1. Foro de preguntas y respuestas
 
 Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin arbitrando.

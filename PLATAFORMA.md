@@ -89,6 +89,20 @@ Esa segunda barrera es la que importa de verdad: **la clave anónima va en el na
 
 ---
 
+# Objetivos y diario del negocio (/admin/objetivos): solo el admin, ni para leer
+
+Desde el 04-10-2026. Cinco tablas —`objetivos`, `objetivo_registros`, `contenido_plan`, `diario_notas` y `metricas_diarias`— con **RLS activado y cero policies**, creadas por `scripts/create-objetivos.sql`. A diferencia del portfolio, aquí **ni siquiera se lee** con la clave anónima: el diario guarda cómo se siente el admin con su negocio, y no lo ve nadie más.
+
+- **Leer:** la página de servidor, con `createAdminClient()`, detrás del layout de `/admin` que exige rol admin.
+- **Escribir:** `/api/admin/plan/[recurso]` y `/api/admin/plan/[recurso]/[id]`, con `requireAdmin()` y los validadores de `src/lib/objetivosValidar.ts`, que solo dejan pasar las columnas que conocen.
+- **El progreso de los objetivos automáticos no se guarda**: se calcula al leer en `src/lib/objetivosServidor.ts` (`src/lib/objetivos.ts` es la parte pura, que también importa el cliente). Sale de `posts`, `content_announcements`, `profiles` (sin administradores), `telegram_channel_stats` y `metricas_diarias`. Los vídeos cuentan los que anuncia el bot, que son solo los largos; los ingresos son la **misma estimación** que `/admin/premium`.
+- **El progreso manual sí se guarda, uno por periodo** en `objetivo_registros`: es lo que da historial a los objetivos que se repiten cada semana o cada mes. `objetivos.progreso_manual` queda por compatibilidad y ya no se lee.
+- **Suscriptores de YouTube**: necesitan `YOUTUBE_API_KEY`. El cron de las 04:00 (`telegram-sync`) guarda una foto diaria en `metricas_diarias`; sin clave no guarda nada y el objetivo se queda en 0.
+- **No añadas una policy** «para que el admin pueda». Mismo error que en el portfolio, y aquí con datos más personales.
+- **Pestaña Crecimiento** (`/admin/objetivos/crecimiento`, lógica en `src/lib/crecimiento.ts`): miembros de Telegram (fotos de `telegram_channel_stats` + dato en vivo), suscriptores de YouTube (`metricas_diarias` + API) e ingresos de Premium. Los ingresos usan `contarCuotas()` de `objetivosServidor.ts`, la misma cuenta que los objetivos de ingresos: no dupliques la estimación. El canal Premium solo aparece donde existe `TELEGRAM_CHANNEL_ID` (Vercel).
+
+---
+
 # El marco legal es RUMANO — no vuelvas a escribir normativa española
 
 Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa española porque apunta a público español, pero **el titular reside y opera desde Rumanía**, así que las leyes nacionales aplicables son las rumanas:

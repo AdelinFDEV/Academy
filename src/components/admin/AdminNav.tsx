@@ -9,6 +9,7 @@ const links = [
   { href: "/admin/users",                label: "Usuarios",    icon: "users" as const,     priority: true },
   { href: "/admin/premium",              label: "Premium",     icon: "crown" as const,     priority: true },
   { href: "/admin/comunidad",            label: "Canal free",  icon: "globe" as const,     priority: true },
+  { href: "/admin/objetivos",            label: "Objetivos",   icon: "target" as const,    priority: true },
   { href: "/admin/comments",             label: "Comentarios", icon: "chat" as const },
   { href: "/admin/posts",                label: "Entradas",    icon: "list" as const },
   { href: "/admin/categories",           label: "Categorías",  icon: "folder" as const },

@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fotografiarYoutube } from "@/lib/objetivosServidor";
 import {
   getChannelId,
   getChannelMemberCount,
@@ -223,5 +224,12 @@ export async function GET(request: NextRequest) {
     return null;
   });
 
-  return NextResponse.json({ expulsiones, avisos, limpieza, novedades, fotos });
+  // Foto diaria de los suscriptores de YouTube para los objetivos de nivel
+  // (/admin/objetivos). Sin YOUTUBE_API_KEY devuelve null y no pasa nada.
+  const youtube = await fotografiarYoutube(admin).catch((err) => {
+    console.error("[telegram-sync] Error fotografiando YouTube:", err);
+    return null;
+  });
+
+  return NextResponse.json({ expulsiones, avisos, limpieza, novedades, fotos, youtube });
 }

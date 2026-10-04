@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getLatestVideos } from "@/lib/youtube";
 import { getFreeChannelId, getSiteUrl, sendChannelPost } from "@/lib/telegram";
+import { cerrarPiezaPlaneada } from "@/lib/objetivosServidor";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
@@ -200,6 +201,14 @@ async function anunciarEntradas(admin: Admin, soloSlug?: string): Promise<string
     if (await yaAnunciado(admin, "entrada", post.slug)) continue;
     if (!(await marcar(admin, "entrada", post.slug))) continue;
 
+    // Cierra en /admin/objetivos la entrada que estuviera planeada.
+    await cerrarPiezaPlaneada(admin, {
+      canal: "web",
+      tipos: ["entrada"],
+      cuando: new Date(),
+      enlace: `${getSiteUrl()}/post/${post.slug}`,
+    });
+
     try {
       await publicarSegunPlan({
         esPremium: !!post.is_premium,
@@ -243,6 +252,7 @@ export async function publicarVideoConcreto(
   if (!(await marcar(admin, "video", video.id))) {
     return { ok: false, motivo: "Alguien se te ha adelantado por segundos" };
   }
+  await cerrarPiezaPlaneada(admin, { canal: "youtube", tipos: ["video"], cuando: new Date(), enlace: `https://youtu.be/${video.id}` });
 
   try {
     await sendChannelPost(plantillaVideo(video), {
@@ -268,6 +278,12 @@ async function anunciarVideos(admin: Admin, sinCache: boolean): Promise<string[]
     if (!esReciente(video.publishedAt)) continue;
     if (await yaAnunciado(admin, "video", video.id)) continue;
     if (!(await marcar(admin, "video", video.id))) continue;
+    await cerrarPiezaPlaneada(admin, {
+      canal: "youtube",
+      tipos: ["video"],
+      cuando: new Date(video.publishedAt),
+      enlace: `https://youtu.be/${video.id}`,
+    });
 
     try {
       // Los vídeos de YouTube son públicos: su sitio es el canal gratuito.
