@@ -81,6 +81,15 @@ El bot lee `profiles` para saber si quien escribe es free, premium o admin, y `m
 
 Para un anuncio con copy propio en vez de la plantilla fija, el procedimiento está en [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md).
 
+### 3b · Un registro nuevo dispara un aviso
+
+Desde el 04-10-2026, cuando alguien **completa** su registro —confirma el email o entra por primera vez con Google— el bot avisa al admin con su nombre, cómo se registró y los totales de usuarios registrados y Premium. Vive en `src/lib/avisoAlta.ts` y se llama desde `src/app/auth/callback/route.ts` con `after`, para no retrasar la entrada.
+
+- **Una vez por cuenta**: la marca `alta_avisada` va en `app_metadata` (solo la escribe el servidor).
+- **Solo cuentas de menos de 24 h**: por el callback pasa también quien vuelve a entrar con Google, y sin el tope cada usuario antiguo dispararía un «nuevo registro» falso la primera vez que entrara.
+- **Respeta `/stop`**, como el resto de avisos de altas.
+- Los totales cuentan filas de `profiles` (Premium = `role = premium`, sin admins). No llevan la base de 100 que suma el contador público de `/api/user-count`.
+
 ### 4 · Tres crons de Vercel
 
 Declarados en `vercel.json` y protegidos por `CRON_SECRET`:

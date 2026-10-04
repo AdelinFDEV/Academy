@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
+import { avisarNuevoRegistro } from "@/lib/avisoAlta";
 
 // Tipos de OTP por email que puede traer el enlace (confirmación / recuperación).
 type EmailOtpType = "email" | "signup" | "recovery" | "invite" | "magiclink" | "email_change";
@@ -43,6 +44,12 @@ export async function GET(request: Request) {
   if (type === "recovery") {
     return NextResponse.redirect(`${origin}/auth/reset-password`);
   }
+
+  // Aviso al admin de registro nuevo: email recién confirmado o primera
+  // entrada con Google. Va en `after` para no retrasar la redirección, y la
+  // propia función decide si la cuenta es nueva y si ya se avisó.
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) after(() => avisarNuevoRegistro(user));
 
   // Solo rutas propias, relativas (evita open-redirect vía "next").
   const destination = next && next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
