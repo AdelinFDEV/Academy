@@ -3,7 +3,6 @@ import Link from "next/link";
 import Icon from "@/components/Icon";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import type { AdminComment } from "@/lib/types";
-import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 
 // ── Helpers ──────────────────────────────────────────────
 function buildDayBuckets(n: number) {
@@ -106,40 +105,6 @@ function Donut({ pct, color }: { pct: number; color: string }) {
         strokeLinecap="round"
         style={{ transform: "rotate(-90deg)", transformOrigin: "22px 22px" }}
       />
-    </svg>
-  );
-}
-
-// ── Insignia de hito (medallón SVG, usa currentColor para el tema) ──
-function MilestoneBadge({ variant }: { variant: string }) {
-  const ring = (
-    <>
-      <circle cx="24" cy="24" r="21" fill="currentColor" fillOpacity="0.12" />
-      <circle cx="24" cy="24" r="21" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1.5" />
-    </>
-  );
-  if (variant === "first") {
-    return (
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        {ring}
-        <path d="M24 13.5l2.9 6 6.6.9-4.8 4.6 1.1 6.6L24 28.5l-5.9 3.1 1.1-6.6-4.8-4.6 6.6-.9z" fill="currentColor" />
-      </svg>
-    );
-  }
-  if (variant === "ten") {
-    return (
-      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-        {ring}
-        <text x="24" y="30" textAnchor="middle" fontSize="16" fontWeight="800" fill="currentColor" fontFamily="var(--font-poppins, sans-serif)">10</text>
-      </svg>
-    );
-  }
-  // goal — corona
-  return (
-    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      {ring}
-      <path d="M15 30l-2-11 6 4 5-8 5 8 6-4-2 11z" fill="currentColor" />
-      <rect x="15" y="30.5" width="18" height="2.6" rx="1.3" fill="currentColor" />
     </svg>
   );
 }
@@ -343,23 +308,6 @@ export default async function AdminPage() {
   const userWeekTrend  = trend(newUsersThisWeek, newUsersLastWeek);
   const userMonthTrend = trend(newUsersThisMonth, newUsersLastMonth);
 
-  // ── Objetivo de MRR ──
-  const PREMIUM_PRICE   = PREMIUM_PRICE_EUR;
-  const MRR_GOAL        = 1000;
-  const currentMRR      = (premiumCount ?? 0) * PREMIUM_PRICE;
-  const goalPct         = Math.min((currentMRR / MRR_GOAL) * 100, 100);
-  const usersNeededGoal = Math.ceil(MRR_GOAL / PREMIUM_PRICE);
-  const usersRemaining  = Math.max(usersNeededGoal - (premiumCount ?? 0), 0);
-  const goalReached     = currentMRR >= MRR_GOAL;
-
-  // ── Hitos / objetivos con insignias ──
-  const premiumUsers = premiumCount ?? 0;
-  const milestones = [
-    { key: "first", label: "Primer Premium", target: 1,               desc: "Tu primer suscriptor",                    color: "#4ade80" },
-    { key: "ten",   label: "Club de los 10", target: 10,              desc: "10 usuarios premium",                     color: "var(--accent-orange)" },
-    { key: "goal",  label: "Meta 1.000€",    target: usersNeededGoal, desc: `${usersNeededGoal} premium · 1.000€/mes`, color: "var(--premium-gold)" },
-  ].map((m) => ({ ...m, reached: premiumUsers >= m.target }));
-
   return (
     <div className="admin-page">
       {/* Header */}
@@ -368,94 +316,6 @@ export default async function AdminPage() {
           <h1>Panel de administración</h1>
           <p className="admin-page-subtitle">Resumen de actividad y crecimiento</p>
         </div>
-      </div>
-
-      {/* Revenue hero — lo primero que se ve: cuánto dinero genera la academia */}
-      <div className="admin-revenue-hero">
-        <div className="admin-revenue-hero-top">
-          <div className="admin-revenue-hero-main">
-            <span className="admin-revenue-hero-icon"><Icon name="crown" size={20} /></span>
-            <div>
-              <span className="admin-revenue-hero-label">MRR estimado</span>
-              <span className="admin-revenue-hero-value">{currentMRR.toFixed(0)}€<small>/mes</small></span>
-              <span className="admin-revenue-hero-sub">{premiumCount ?? 0} suscripción{premiumCount === 1 ? "" : "es"} premium × {precioEur(PREMIUM_PRICE_EUR)}</span>
-            </div>
-          </div>
-
-          <div className="admin-revenue-hero-divider" />
-
-          <div className="admin-funnel-strip">
-            <div className="admin-funnel-step">
-              <span className="admin-funnel-step-n">{usersCount ?? 0}</span>
-              <span className="admin-funnel-step-label">Registrados</span>
-            </div>
-            <span className="admin-funnel-arrow">→</span>
-            <div className="admin-funnel-step">
-              <span className="admin-funnel-step-n">{(usersCount ?? 0) - (premiumCount ?? 0)}</span>
-              <span className="admin-funnel-step-label">Free</span>
-            </div>
-            <span className="admin-funnel-arrow">→</span>
-            <div className="admin-funnel-step">
-              <span className="admin-funnel-step-n" style={{ color: "var(--accent-orange)" }}>{premiumCount ?? 0}</span>
-              <span className="admin-funnel-step-label">Premium</span>
-            </div>
-            <div className="admin-funnel-divider" />
-            <div className="admin-funnel-kpi">
-              <span className="admin-funnel-kpi-v">
-                {usersCount ? Math.round(((premiumCount ?? 0) / usersCount) * 100) : 0}%
-              </span>
-              <span className="admin-funnel-kpi-l">Conversión</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="admin-revenue-goal">
-          <div className="admin-revenue-goal-head">
-            <span className="admin-revenue-goal-label">
-              Objetivo <strong>{MRR_GOAL}€/mes</strong>
-            </span>
-            <span className={`admin-revenue-goal-status${goalReached ? " reached" : ""}`}>
-              {goalReached
-                ? "¡Objetivo conseguido!"
-                : `Te falta${usersRemaining === 1 ? "" : "n"} ${usersRemaining} usuario${usersRemaining === 1 ? "" : "s"} premium`}
-            </span>
-          </div>
-          <div className="admin-revenue-goal-bar-track">
-            <div className="admin-revenue-goal-bar-fill" style={{ width: `${goalPct}%` }} />
-          </div>
-          <div className="admin-revenue-goal-foot">
-            <span>{currentMRR.toFixed(0)}€ de {MRR_GOAL}€</span>
-            <span>{goalPct.toFixed(0)}%</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Hitos / objetivos con insignias */}
-      <div className="admin-milestones">
-        {milestones.map((m) => (
-          <div
-            key={m.key}
-            className={`admin-milestone${m.reached ? " reached" : ""}`}
-            style={{ "--ms-color": m.color } as React.CSSProperties}
-          >
-            <div className="admin-milestone-badge">
-              <MilestoneBadge variant={m.key} />
-            </div>
-            <div className="admin-milestone-body">
-              <span className="admin-milestone-title">{m.label}</span>
-              <span className="admin-milestone-desc">{m.desc}</span>
-              <span className="admin-milestone-status">
-                {m.reached ? (
-                  <>
-                    <Icon name="check" size={12} /> Conseguido
-                  </>
-                ) : (
-                  `${premiumUsers} / ${m.target}`
-                )}
-              </span>
-            </div>
-          </div>
-        ))}
       </div>
 
       {/* Recent activity */}

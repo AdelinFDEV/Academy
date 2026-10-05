@@ -127,7 +127,7 @@ async function nivel(ctx: Contexto, metrica: "miembros_telegram" | "suscriptores
 
 /**
  * Valor al final del periodo y valor con que empezó. Sirve para las fotos de
- * los canales y para las marcas personales: si no hay nada antes del periodo,
+ * los canales y para las marcas que apuntas tú: si no hay nada antes del periodo,
  * el punto de partida es lo primero apuntado dentro de él.
  */
 function nivelDe(fotos: Foto[], p: Periodo) {

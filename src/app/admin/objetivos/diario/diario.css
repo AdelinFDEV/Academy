@@ -1,0 +1,982 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   EL DIARIO — /admin/objetivos/diario
+   ───────────────────────────────────────────────────────────────────────────
+   Con presencia pero sin ruido: una cabecera cálida, una hoja de papel para
+   escribir que se ilumina al usarla, tarjetas tranquilas al lado y un
+   cuaderno en línea de tiempo para releer. Color solo donde significa algo:
+   el ánimo y lo que ya has cumplido.
+
+   Usa los tokens --o-* de objetivos.css (vive dentro de .obj-pagina).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.dia {
+  --d-tinta: #eef2f8;
+  --d-tinta-2: #b4c0d2;
+  --d-tinta-3: #7a8aa2;
+  --d-linea: rgba(255, 255, 255, 0.08);
+  --d-ambar: #f6b26b;
+  --d-ambar-2: #ffd6a5;
+  --d-violeta: #b8a4ff;
+  --d-tarjeta: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  --d-letra: "Iowan Old Style", "Charter", "Georgia", "Cambria", serif;
+  /* Escala del ánimo: rojo → gris → verde, la misma que el resto del panel */
+  --d-animo-1: #ef4444;
+  --d-animo-2: #fb7185;
+  --d-animo-3: #94a3b8;
+  --d-animo-4: #4ade80;
+  --d-animo-5: #22c55e;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ── Cabecera ──────────────────────────────────────────────────────────── */
+
+.dia-hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  padding: 28px 30px;
+  overflow: hidden;
+  border: 1px solid rgba(246, 178, 107, 0.28);
+  border-radius: 24px;
+  background:
+    radial-gradient(70% 120% at 0% 0%, rgba(246, 178, 107, 0.2), transparent 60%),
+    radial-gradient(60% 120% at 100% 100%, rgba(184, 164, 255, 0.16), transparent 60%),
+    linear-gradient(135deg, #131c2e, #0d1524);
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
+}
+
+/* Un trazo de pluma de fondo, muy suave */
+.dia-hero::after {
+  content: "✒";
+  position: absolute;
+  right: -12px;
+  bottom: -48px;
+  font-size: 190px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.035);
+  transform: rotate(-12deg);
+  pointer-events: none;
+}
+
+.dia-hero-textos { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+
+.dia-hero-ey {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--d-ambar);
+}
+
+.dia-hero-titulo {
+  margin: 0;
+  font-family: var(--d-letra);
+  font-size: clamp(26px, 3.4vw, 36px);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+  color: var(--d-tinta);
+  text-transform: capitalize;
+}
+
+.dia-hero-sub { margin: 0; max-width: 52ch; font-size: 14px; line-height: 1.55; color: var(--d-tinta-2); }
+
+.dia-hero-datos { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 10px; }
+
+.dia-hero-dato {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 10px;
+  min-width: 132px;
+  padding: 12px 16px;
+  border: 1px solid var(--d-linea);
+  border-radius: 16px;
+  background: rgba(6, 12, 24, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.dia-hero-dato > span { grid-row: 1 / 3; font-size: 26px; line-height: 1; }
+.dia-hero-dato strong { font-size: 19px; font-weight: 800; line-height: 1.15; color: var(--d-tinta); }
+.dia-hero-dato small { font-size: 11.5px; color: var(--d-tinta-3); white-space: nowrap; }
+
+.dia-hero-dato--fuego {
+  border-color: rgba(251, 146, 60, 0.5);
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.22), rgba(6, 12, 24, 0.55));
+}
+
+/* ── Las tres vistas: un control segmentado ────────────────────────────── */
+
+.dia-vistas {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--d-linea);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.dia-vista {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 100px;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--d-tinta-3);
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.dia-vista:hover { color: var(--d-tinta); }
+.dia-vista-emoji { font-size: 16px; }
+
+.dia-vista small {
+  padding: 1px 8px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.dia-vista--activa {
+  background: linear-gradient(135deg, rgba(246, 178, 107, 0.26), rgba(246, 178, 107, 0.1));
+  box-shadow: inset 0 0 0 1px rgba(246, 178, 107, 0.45), 0 6px 18px -10px rgba(246, 178, 107, 0.8);
+  color: var(--d-ambar-2);
+}
+
+.dia-vista--activa small { background: rgba(246, 178, 107, 0.25); }
+
+/* ── Escribir: la hoja y el lateral ─────────────────────────────────────── */
+
+.dia-escritorio {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+.dia-hoja {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 30px 38px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  /* Papel: un tono cálido con renglones casi invisibles */
+  background:
+    repeating-linear-gradient(180deg, transparent 0 33px, rgba(255, 255, 255, 0.028) 33px 34px),
+    radial-gradient(90% 60% at 50% 0%, rgba(246, 178, 107, 0.07), transparent 70%),
+    linear-gradient(180deg, #151e30, #111a2a);
+  background-position: 0 92px, 0 0, 0 0;
+  box-shadow: 0 20px 44px -26px rgba(0, 0, 0, 0.95);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Un margen rojo de cuaderno, a la izquierda */
+.dia-hoja::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 20px;
+  width: 1px;
+  background: rgba(251, 113, 133, 0.22);
+}
+
+.dia-hoja:focus-within {
+  border-color: rgba(246, 178, 107, 0.45);
+  box-shadow: 0 0 0 4px rgba(246, 178, 107, 0.08), 0 24px 50px -24px rgba(0, 0, 0, 0.95);
+}
+
+.dia-hoja-cabeza { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+
+.dia-fecha {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--d-ambar);
+}
+
+.dia-estado {
+  padding: 4px 11px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  color: var(--d-tinta-3);
+}
+
+.dia-estado--ok { background: rgba(34, 197, 94, 0.16); color: #86efac; }
+
+.dia-aviso {
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(246, 178, 107, 0.1);
+  font-size: 13px;
+  color: var(--d-ambar-2);
+}
+
+.dia-texto {
+  width: 100%;
+  min-height: 360px;
+  field-sizing: content;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--d-letra);
+  font-size: 20px;
+  line-height: 34px;
+  color: var(--d-tinta);
+  caret-color: var(--d-ambar);
+  resize: none;
+  outline: none;
+}
+
+.dia-texto::placeholder { color: rgba(180, 192, 210, 0.45); font-style: italic; }
+
+/* El ánimo: cinco botones que se encienden con su color */
+.dia-sentir {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.dia-sentir-pregunta { font-size: 13.5px; font-weight: 700; color: var(--d-tinta-2); }
+.dia-sentir-opciones { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.dia-animo {
+  --c: var(--d-animo-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.03);
+  font: inherit;
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, filter 0.15s ease;
+  filter: saturate(0.4);
+}
+
+.dia-animo--1 { --c: var(--d-animo-1); }
+.dia-animo--2 { --c: var(--d-animo-2); }
+.dia-animo--3 { --c: var(--d-animo-3); }
+.dia-animo--4 { --c: var(--d-animo-4); }
+.dia-animo--5 { --c: var(--d-animo-5); }
+
+.dia-animo:hover { transform: translateY(-2px); filter: none; border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+.dia-animo-texto { display: none; font-size: 13px; font-weight: 800; color: var(--d-tinta); }
+
+.dia-animo--activo {
+  border-color: var(--c);
+  background: color-mix(in srgb, var(--c) 22%, transparent);
+  box-shadow: 0 6px 18px -8px var(--c);
+  filter: none;
+}
+
+.dia-animo--activo .dia-animo-texto { display: inline; }
+
+/* Los detalles, plegados hasta que se piden */
+.dia-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid var(--d-linea);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.dia-detalles-dos { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 14px; }
+
+.dia-hoja-pie { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; padding-top: 4px; }
+
+.dia-mas {
+  padding: 8px 14px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 100px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-tinta-2);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.dia-mas:hover { border-color: var(--d-ambar); color: var(--d-ambar-2); }
+
+.dia-privado { margin-left: auto; font-size: 12px; color: var(--d-tinta-3); }
+
+.dia-guardar {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #f6b26b, #f08a4b);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #1c1006;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -12px rgba(240, 138, 75, 0.9);
+  transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
+}
+
+.dia-guardar:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.06); }
+.dia-guardar:disabled { opacity: 0.35; box-shadow: none; cursor: default; }
+
+.dia-enlace {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-ambar);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ── El lateral: tarjetas tranquilas ───────────────────────────────────── */
+
+.dia-lado { display: flex; flex-direction: column; gap: 14px; }
+
+.dia-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--d-linea);
+  border-radius: 20px;
+  background: var(--d-tarjeta);
+}
+
+.dia-bloque-titulo {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--d-tinta-2);
+}
+
+.dia-nota { margin: 0; font-size: 13px; line-height: 1.55; color: var(--d-tinta-3); }
+
+/* Intenciones */
+.dia-intenciones {
+  border-color: rgba(134, 201, 160, 0.28);
+  background:
+    radial-gradient(90% 60% at 100% 0%, rgba(134, 201, 160, 0.12), transparent 70%),
+    var(--d-tarjeta);
+}
+
+.dia-intencion-grupo { display: flex; flex-direction: column; gap: 6px; }
+.dia-intencion-grupo + .dia-intencion-grupo { padding-top: 12px; border-top: 1px solid var(--d-linea); }
+
+.dia-intencion-cabeza { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; font-weight: 800; color: var(--d-tinta); }
+.dia-intencion-cabeza small { font-size: 12px; font-weight: 700; color: #86c9a0; }
+
+.dia-intencion-pista { height: 5px; border-radius: 100px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.dia-intencion-pista > div { height: 100%; border-radius: 100px; background: linear-gradient(90deg, #4ade80, #86c9a0); transition: width 0.3s ease; }
+
+.dia-intencion-lista { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+
+.dia-intencion { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; }
+
+.dia-intencion-marca {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 7px;
+  background: none;
+  font-size: 13px;
+  font-weight: 900;
+  color: #0b1424;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.dia-intencion-marca:hover { border-color: #86c9a0; transform: scale(1.08); }
+.dia-intencion--hecha .dia-intencion-marca { border-color: #4ade80; background: #4ade80; }
+
+.dia-intencion-texto { flex: 1; min-width: 0; font-family: var(--d-letra); font-size: 16px; line-height: 1.45; color: var(--d-tinta); overflow-wrap: anywhere; }
+
+.dia-intencion--hecha .dia-intencion-texto {
+  color: var(--d-tinta-3);
+  text-decoration: line-through;
+  text-decoration-color: rgba(134, 201, 160, 0.6);
+}
+
+.dia-intencion-quitar {
+  flex-shrink: 0;
+  padding: 2px 4px;
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: var(--d-tinta-3);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.dia-intencion:hover .dia-intencion-quitar,
+.dia-intencion-quitar:focus-visible { opacity: 1; }
+
+.dia-intencion-nueva input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18);
+  font: inherit;
+  font-size: 14px;
+  color: var(--d-tinta);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.dia-intencion-nueva input::placeholder { color: var(--d-tinta-3); }
+.dia-intencion-nueva input:focus { border-style: solid; border-color: #86c9a0; }
+
+/* Cierre del día */
+.dia-cierre {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid rgba(184, 164, 255, 0.28);
+  border-radius: 14px;
+  background: rgba(184, 164, 255, 0.08);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--d-tinta);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.dia-cierre:hover { border-color: rgba(184, 164, 255, 0.55); background: rgba(184, 164, 255, 0.14); }
+.dia-cierre-flecha { margin-left: auto; font-size: 18px; color: var(--d-violeta); }
+.dia-cierre-nota { margin: 0; font-size: 13px; line-height: 1.5; color: var(--d-tinta-2); }
+
+/* Preguntas guía */
+.dia-preguntas { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+
+.dia-pregunta {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  font-family: var(--d-letra);
+  font-size: 15px;
+  font-style: italic;
+  color: var(--d-tinta-2);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.dia-pregunta:hover { border-color: rgba(246, 178, 107, 0.4); background: rgba(246, 178, 107, 0.08); color: var(--d-ambar-2); }
+
+/* La última vez */
+.dia-ultima {
+  display: -webkit-box;
+  margin: 0;
+  padding-left: 12px;
+  overflow: hidden;
+  border-left: 2px solid rgba(246, 178, 107, 0.4);
+  font-family: var(--d-letra);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--d-tinta-2);
+  white-space: pre-line;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+/* ── Releer: un cuaderno en línea de tiempo ────────────────────────────── */
+
+.dia-releer { display: flex; flex-direction: column; gap: 26px; max-width: 820px; }
+
+.dia-buscar { display: flex; flex-direction: column; gap: 12px; }
+
+.dia-buscar input {
+  width: 100%;
+  padding: 13px 18px;
+  border: 1px solid var(--d-linea);
+  border-radius: 14px;
+  background: var(--d-tarjeta);
+  font: inherit;
+  font-size: 15px;
+  color: var(--d-tinta);
+  outline: none;
+}
+
+.dia-buscar input:focus { border-color: rgba(246, 178, 107, 0.45); }
+
+.dia-areas { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.dia-area {
+  padding: 7px 14px;
+  border: 1px solid var(--d-linea);
+  border-radius: 100px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-tinta-3);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dia-area:hover { color: var(--d-tinta); }
+.dia-area--activa { border-color: rgba(246, 178, 107, 0.55); background: rgba(246, 178, 107, 0.12); color: var(--d-ambar-2); }
+
+.dia-fijadas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 22px;
+  border: 1px solid rgba(246, 178, 107, 0.3);
+  border-radius: 20px;
+  background:
+    radial-gradient(80% 80% at 0% 0%, rgba(246, 178, 107, 0.12), transparent 70%),
+    var(--d-tarjeta);
+}
+
+/* Cada día, con un punto en la línea de la izquierda */
+.dia-dia { position: relative; display: flex; flex-direction: column; gap: 10px; padding-left: 28px; }
+
+.dia-dia::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: -26px;
+  left: 6px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(246, 178, 107, 0.4), rgba(255, 255, 255, 0.05));
+}
+
+.dia-dia:last-of-type::before { bottom: 0; }
+
+.dia-dia-fecha {
+  position: relative;
+  margin: 0;
+  font-family: var(--d-letra);
+  font-size: 22px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--d-tinta);
+  text-transform: capitalize;
+}
+
+.dia-dia-fecha::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: -28px;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #0d1524;
+  border-radius: 50%;
+  background: var(--d-ambar);
+  box-shadow: 0 0 0 1px rgba(246, 178, 107, 0.5);
+}
+
+.dia-entrada {
+  --c: rgba(255, 255, 255, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 22px;
+  border: 1px solid var(--d-linea);
+  border-left: 3px solid var(--c);
+  border-radius: 16px;
+  background: var(--d-tarjeta);
+}
+
+.dia-entrada--animo-1 { --c: var(--d-animo-1); }
+.dia-entrada--animo-2 { --c: var(--d-animo-2); }
+.dia-entrada--animo-3 { --c: var(--d-animo-3); }
+.dia-entrada--animo-4 { --c: var(--d-animo-4); }
+.dia-entrada--animo-5 { --c: var(--d-animo-5); }
+
+.dia-entrada-cabeza { display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--d-tinta-3); }
+
+.dia-entrada-animo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 6px;
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  font-weight: 700;
+  color: var(--d-tinta);
+}
+
+.dia-entrada-editar { margin-left: auto; font-size: 12.5px; opacity: 0.75; }
+.dia-entrada-editar:hover { opacity: 1; }
+
+.dia-entrada-texto {
+  margin: 0;
+  font-family: var(--d-letra);
+  font-size: 17.5px;
+  line-height: 1.8;
+  color: var(--d-tinta);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.dia-entrada-fotos { display: flex; gap: 8px; overflow-x: auto; }
+.dia-entrada-fotos img { flex-shrink: 0; width: 132px; height: 96px; border-radius: 12px; object-fit: cover; }
+
+.dia-entrada-meta { margin: 0; padding-top: 10px; border-top: 1px solid var(--d-linea); font-size: 12.5px; color: var(--d-tinta-3); }
+
+.dia-paginas { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--d-tinta-3); }
+
+.dia-paginas button {
+  padding: 9px 16px;
+  border: 1px solid var(--d-linea);
+  border-radius: 100px;
+  background: var(--d-tarjeta);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--d-tinta-2);
+  cursor: pointer;
+}
+
+.dia-paginas button:hover:not(:disabled) { border-color: rgba(246, 178, 107, 0.45); color: var(--d-ambar-2); }
+.dia-paginas button:disabled { opacity: 0.35; cursor: default; }
+
+.dia-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+  margin: 24px auto;
+  padding: 36px 28px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  text-align: center;
+}
+
+.dia-vacio > span { font-size: 40px; }
+.dia-vacio p { margin: 0; font-family: var(--d-letra); font-size: 17px; line-height: 1.7; color: var(--d-tinta-2); }
+
+.dia-sentir-vista { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Móvil ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .dia-escritorio { grid-template-columns: minmax(0, 1fr); }
+  .dia-lado { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .dia { gap: 16px; }
+  .dia-hero { padding: 22px 20px; border-radius: 20px; }
+  .dia-hero-datos { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .dia-hero-dato { min-width: 0; grid-template-columns: 1fr; justify-items: center; padding: 10px 6px; text-align: center; }
+  .dia-hero-dato > span { grid-row: auto; font-size: 22px; }
+  .dia-hero-dato strong { font-size: 15px; }
+  .dia-hero-dato small { white-space: normal; font-size: 10.5px; }
+  .dia-vistas { align-self: stretch; display: flex; }
+  .dia-vista { flex: 1; justify-content: center; padding: 10px 8px; font-size: 13px; }
+  .dia-vista small { display: none; }
+  .dia-hoja { padding: 22px 18px 18px 30px; border-radius: 20px; }
+  .dia-hoja::before { left: 16px; }
+  .dia-texto { min-height: 280px; font-size: 18px; line-height: 32px; }
+  .dia-sentir { padding: 14px; }
+  .dia-sentir-opciones { width: 100%; justify-content: space-between; gap: 4px; }
+  .dia-animo { flex: 1; justify-content: center; padding: 0; font-size: 22px; }
+  .dia-animo--activo .dia-animo-texto { display: none; }
+  .dia-detalles { padding: 14px; }
+  .dia-detalles-dos { grid-template-columns: minmax(0, 1fr); }
+  .dia-privado { display: none; }
+  .dia-guardar { margin-left: auto; }
+  .dia-dia { padding-left: 22px; }
+  .dia-dia-fecha::before { left: -22px; }
+  .dia-dia::before { left: 5px; }
+  .dia-entrada { padding: 16px; }
+  .dia-entrada-texto { font-size: 16.5px; }
+}
+
+@media (max-width: 380px) {
+  .dia-vista-emoji { display: none; }
+}
+
+@media (hover: none) {
+  .dia-intencion-quitar { opacity: 1; }
+  .dia-animo { filter: none; }
+}
+
+/* ── Lo que te afecta y lo que te motiva ───────────────────────────────── */
+
+.dia-hoja .obj-factores-grupo { background: rgba(0, 0, 0, 0.2); }
+
+/* En cada entrada al releer */
+.dia-entrada-factores { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.dia-factor {
+  --f: #fb7185;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--f) 35%, transparent);
+  border-radius: 100px;
+  background: color-mix(in srgb, var(--f) 10%, transparent);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--d-tinta-2);
+}
+
+.dia-factor--bien { --f: #4ade80; }
+
+/* El análisis, en «Cómo me siento» */
+.dia-sens { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+
+.dia-sens-col {
+  --f: #fb7185;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--f) 30%, transparent);
+  border-radius: 20px;
+  background:
+    radial-gradient(80% 70% at 0% 0%, color-mix(in srgb, var(--f) 13%, transparent), transparent 70%),
+    var(--d-tarjeta);
+}
+
+.dia-sens-col--bien { --f: #4ade80; }
+
+.dia-sens-titulo { margin: 0; font-size: 15px; font-weight: 800; color: var(--d-tinta); }
+
+.dia-sens-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--f) 12%, rgba(0, 0, 0, 0.25));
+}
+
+.dia-sens-top-emoji { flex-shrink: 0; font-size: 34px; line-height: 1; }
+.dia-sens-top > div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.dia-sens-top strong { font-size: 17px; font-weight: 800; color: var(--d-tinta); }
+.dia-sens-top span { font-size: 12.5px; line-height: 1.45; color: var(--d-tinta-2); }
+
+.dia-sens-lista { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+.dia-sens-fila { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto 22px; align-items: center; gap: 10px; }
+
+.dia-sens-nombre { overflow: hidden; font-size: 13px; font-weight: 600; color: var(--d-tinta); white-space: nowrap; text-overflow: ellipsis; }
+.dia-sens-pista { height: 7px; border-radius: 100px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.dia-sens-pista > span { display: block; height: 100%; border-radius: 100px; background: var(--f); }
+.dia-sens-veces { font-size: 12.5px; font-weight: 800; color: var(--d-tinta-2); font-variant-numeric: tabular-nums; }
+.dia-sens-animo { font-size: 16px; text-align: center; }
+
+.dia-sens-vacio {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+}
+
+.dia-sens-vacio > span { font-size: 30px; }
+.dia-sens-vacio p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--d-tinta-2); }
+
+@media (max-width: 760px) {
+  .dia-sens { grid-template-columns: minmax(0, 1fr); }
+  .dia-sens-col { padding: 16px; }
+  .dia-sens-fila { grid-template-columns: minmax(0, 1fr) 70px auto 20px; gap: 8px; }
+}
+
+/* ── Cómo me siento: periodo, evolución y mapas ────────────────────────── */
+
+.sen-barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+
+.sen-rangos { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--d-linea); border-radius: 100px; background: rgba(255, 255, 255, 0.03); }
+
+.sen-rango {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 100px;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--d-tinta-3);
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.sen-rango:hover { color: var(--d-tinta); }
+.sen-rango--activo { background: rgba(184, 164, 255, 0.2); box-shadow: inset 0 0 0 1px rgba(184, 164, 255, 0.5); color: #e4dcff; }
+
+.sen-barra-nota { font-size: 12.5px; color: var(--d-tinta-3); }
+
+/* Gráfica del ánimo */
+.sen-grafica { position: relative; }
+.sen-svg { display: block; width: 100%; height: auto; overflow: visible; touch-action: pan-y; }
+.sen-rejilla { stroke: rgba(255, 255, 255, 0.06); stroke-width: 1; }
+.sen-banda--bien { fill: rgba(34, 197, 94, 0.06); }
+.sen-banda--mal { fill: rgba(239, 68, 68, 0.06); }
+.sen-eje { fill: #7a8aa2; font-size: 11px; font-family: inherit; }
+.sen-eje-emoji { font-size: 14px; }
+.sen-linea { fill: none; stroke: #b8a4ff; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.sen-tendencia { fill: none; stroke: #f6b26b; stroke-width: 2; stroke-dasharray: 6 5; opacity: 0.85; }
+.sen-guia { stroke: rgba(255, 255, 255, 0.3); stroke-dasharray: 3 3; }
+.sen-punto { stroke: #0d1524; stroke-width: 2.5; transition: r 0.15s ease; }
+.sen-punto--1 { fill: var(--d-animo-1); }
+.sen-punto--2 { fill: var(--d-animo-2); }
+.sen-punto--3 { fill: var(--d-animo-3); }
+.sen-punto--4 { fill: var(--d-animo-4); }
+.sen-punto--5 { fill: var(--d-animo-5); }
+
+.sen-tip {
+  position: absolute;
+  top: -4px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border: 1px solid rgba(184, 164, 255, 0.45);
+  border-radius: 12px;
+  background: #121b2c;
+  box-shadow: 0 14px 30px -12px rgba(0, 0, 0, 0.85);
+  font-size: 11.5px;
+  color: var(--d-tinta-3);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sen-tip strong { font-size: 13.5px; color: var(--d-tinta); }
+
+.sen-leyenda { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 8px; font-size: 12px; color: var(--d-tinta-3); }
+.sen-leyenda span { display: inline-flex; align-items: center; gap: 7px; }
+.sen-leyenda-linea { display: inline-block; width: 22px; height: 0; border-top: 2.5px solid #b8a4ff; }
+.sen-leyenda-linea--tendencia { border-top: 2px dashed #f6b26b; }
+
+.sen-vacio { margin: 10px 0; font-size: 13.5px; color: var(--d-tinta-3); }
+
+/* Cómo has cambiado */
+.sen-cambios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid rgba(246, 178, 107, 0.3);
+  border-radius: 20px;
+  background:
+    radial-gradient(80% 80% at 0% 0%, rgba(246, 178, 107, 0.1), transparent 70%),
+    var(--d-tarjeta);
+}
+
+.sen-cambios ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+
+.sen-cambios li {
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--d-tinta);
+}
+
+/* Mapa de calor: factores × tramos */
+.sen-mapa { --m: 251, 113, 133; display: flex; flex-direction: column; gap: 10px; overflow-x: auto; }
+.sen-mapa--bien { --m: 74, 222, 128; }
+
+.sen-mapa-rejilla { display: grid; gap: 4px; min-width: max-content; }
+.sen-mapa-fila { display: contents; }
+
+.sen-mapa-nombre {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  overflow: hidden;
+  padding-right: 8px;
+  background: #0f1828;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 22px;
+  color: var(--d-tinta);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sen-mapa-celda {
+  min-width: 18px;
+  height: 22px;
+  border-radius: 5px;
+  background: rgba(var(--m), var(--p));
+}
+
+.sen-mapa-celda--nada { background: rgba(255, 255, 255, 0.03); }
+
+.sen-mapa-col {
+  overflow: visible;
+  font-size: 10.5px;
+  color: var(--d-tinta-3);
+  white-space: nowrap;
+}
+
+.sen-mapa-leyenda { display: flex; align-items: center; gap: 4px; font-size: 11.5px; color: var(--d-tinta-3); }
+.sen-mapa-leyenda span:first-child { margin-right: 4px; }
+.sen-mapa-leyenda span:last-child { margin-left: 4px; }
+.sen-mapa-leyenda i { width: 16px; height: 12px; border-radius: 3px; background: rgba(var(--m), 0.15); }
+.sen-mapa-leyenda i:nth-of-type(2) { background: rgba(var(--m), 0.4); }
+.sen-mapa-leyenda i:nth-of-type(3) { background: rgba(var(--m), 0.7); }
+.sen-mapa-leyenda i:nth-of-type(4) { background: rgba(var(--m), 1); }
+
+@media (max-width: 760px) {
+  .sen-rangos { width: 100%; }
+  .sen-rango { flex: 1; padding: 8px 6px; font-size: 13px; }
+}
+
+/* La nota a la que se llega desde el calendario: un destello que se apaga solo */
+.dia-entrada { scroll-margin: 120px; transition: box-shadow 0.6s ease, border-color 0.6s ease; }
+
+.dia-entrada--resaltada {
+  border-color: rgba(246, 178, 107, 0.7);
+  box-shadow: 0 0 0 3px rgba(246, 178, 107, 0.25), 0 12px 30px -14px rgba(246, 178, 107, 0.6);
+}

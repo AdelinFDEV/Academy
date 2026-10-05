@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const PESTANAS = [
   { href: "/admin/objetivos", emoji: "🎯", texto: "Objetivos", detalle: "Qué quieres conseguir" },
   { href: "/admin/objetivos/calendario", emoji: "🗓️", texto: "Calendario", detalle: "Qué publicas y cuándo" },
-  { href: "/admin/objetivos/ideas", emoji: "💡", texto: "Ideas", detalle: "Lo que aún no tiene día" },
+  { href: "/admin/objetivos/ideas", emoji: "💡", texto: "Ideas", detalle: "Notas sueltas" },
   { href: "/admin/objetivos/diario", emoji: "📓", texto: "Diario", detalle: "Cómo te sientes" },
   { href: "/admin/objetivos/crecimiento", emoji: "📈", texto: "Crecimiento", detalle: "Canales y dinero" },
 ];

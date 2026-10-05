@@ -2,85 +2,240 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  CANALES, CANAL_EMOJI, ESTADOS, ESTADO_EMOJI, TIPOS, TIPO_EMOJI, type Canal, type ObjetivoConProgreso, type Pieza,
-} from "@/lib/objetivos";
-import { datosPieza, enviar, useEditor } from "../editor";
+import { CANALES, CANAL_EMOJI, type Canal, type Idea } from "@/lib/objetivos";
+import { enviar } from "../editor";
+import "./ideas.css";
 
 /**
- * Las ideas, una columna por canal. Una idea deja de estar aquí en cuanto le
- * pones día: pasa al calendario.
+ * Ideas: una columna por canal. En cada una, un campo para apuntar y la lista
+ * de ideas con un tick para tacharlas cuando ya están hechas. Nada más: sin
+ * día, sin estado y sin relación con el calendario.
  */
-export default function SeccionIdeas({ objetivos, ideas }: { objetivos: ObjetivoConProgreso[]; ideas: Pieza[] }) {
-  const editor = useEditor(objetivos);
-  const router = useRouter();
-  const [programando, setProgramando] = useState<string | null>(null);
 
-  async function programar(p: Pieza, fecha: string) {
-    if (!fecha) return;
-    const fallo = await enviar("pieza", p.id, { ...datosPieza(p), fecha });
-    if (fallo) alert(fallo);
-    else router.refresh();
-    setProgramando(null);
+const AYUDA: Record<Canal, string> = {
+  youtube: "Vídeos, shorts, directos…",
+  web: "Entradas, guías, herramientas…",
+  telegram: "Mensajes, encuestas, avisos…",
+};
+
+/** Minúsculas y sin tildes, para buscar. */
+function normalizar(t: string): string {
+  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+export default function SeccionIdeas({ ideas, falta }: { ideas: Idea[]; falta: boolean }) {
+  const [busqueda, setBusqueda] = useState("");
+
+  if (falta) {
+    return (
+      <p className="ide-aviso">
+        Falta actualizar la base de datos: ejecuta <code>scripts/create-objetivos.sql</code> en el SQL Editor de Supabase.
+      </p>
+    );
+  }
+
+  const q = normalizar(busqueda.trim());
+  const visibles = q ? ideas.filter((i) => normalizar(i.texto).includes(q)) : ideas;
+
+  return (
+    <div className="ide">
+      {ideas.length > 9 && (
+        <input
+          type="search"
+          className="ide-buscar"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          placeholder={`Buscar entre ${ideas.length} ideas`}
+          aria-label="Buscar ideas"
+        />
+      )}
+      <div className="ide-columnas">
+        {(Object.keys(CANALES) as Canal[]).map((canal) => (
+          <Columna key={canal} canal={canal} ideas={visibles.filter((i) => i.canal === canal)} buscando={!!q} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Columna({ canal, ideas, buscando }: { canal: Canal; ideas: Idea[]; buscando: boolean }) {
+  const router = useRouter();
+  const [nueva, setNueva] = useState("");
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState("");
+  const [verHechas, setVerHechas] = useState(false);
+
+  const pendientes = ideas.filter((i) => !i.hecha);
+  const hechas = ideas.filter((i) => i.hecha);
+
+  async function anadir() {
+    if (!nueva.trim() || guardando) return;
+    setGuardando(true);
+    setError("");
+    const fallo = await enviar("idea", null, { texto: nueva, canal, hecha: false });
+    setGuardando(false);
+    if (fallo) return setError(fallo);
+    setNueva("");
+    router.refresh();
   }
 
   return (
-    <>
-      <div className="obj-barra-seccion">
+    <section className={`ide-col ide-col--${canal}`}>
+      <header className="ide-col-cabeza">
+        <span className="ide-col-emoji" aria-hidden="true">{CANAL_EMOJI[canal]}</span>
         <div>
-          <h2 className="obj-titulo-seccion">💡 Ideas sin fecha</h2>
-          <p className="obj-sub-seccion">
-            Apunta todo lo que se te ocurra, aunque no sepas cuándo saldrá. Cuando le pongas día, pasa al calendario.
-          </p>
+          <h3>{CANALES[canal]}</h3>
+          <span>{pendientes.length ? `${pendientes.length} por hacer` : "Nada pendiente"}{hechas.length ? ` · ${hechas.length} hecha${hechas.length === 1 ? "" : "s"}` : ""}</span>
         </div>
-        <button className="obj-boton obj-boton--principal" onClick={() => editor.nuevaPieza("")}>＋ Nueva idea</button>
-      </div>
+      </header>
 
-      <div className="obj-columnas">
-        {(Object.keys(CANALES) as Canal[]).map((canal) => {
-          const delCanal = ideas.filter((p) => p.canal === canal);
-          return (
-            <section key={canal} className={`obj-columna obj-columna--${canal}`}>
-              <header className="obj-columna-cabeza">
-                <span className="obj-columna-emoji" aria-hidden="true">{CANAL_EMOJI[canal]}</span>
-                <h3 className="obj-columna-titulo">{CANALES[canal]}</h3>
-                <span className="obj-columna-total">{delCanal.length}</span>
-                <button className="obj-columna-mas" onClick={() => editor.nuevaPieza("", canal)} aria-label={`Nueva idea para ${CANALES[canal]}`} title="Nueva idea">＋</button>
-              </header>
+      <form
+        className="ide-nueva"
+        onSubmit={(e) => {
+          e.preventDefault();
+          anadir();
+        }}
+      >
+        <textarea
+          value={nueva}
+          onChange={(e) => setNueva(e.target.value)}
+          onKeyDown={(e) => {
+            // Enter guarda; Mayús + Enter, salto de línea.
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              anadir();
+            }
+          }}
+          placeholder={`＋ Idea para ${CANALES[canal]} · ${AYUDA[canal]}`}
+          aria-label={`Nueva idea para ${CANALES[canal]}`}
+          maxLength={5000}
+          rows={1}
+          disabled={guardando}
+        />
+        {nueva.trim() && (
+          <button type="submit" className="ide-anadir" disabled={guardando}>
+            {guardando ? "…" : "Añadir"}
+          </button>
+        )}
+      </form>
+      {error && <p className="ide-error">⚠️ {error}</p>}
 
-              {delCanal.length === 0 ? (
-                <button className="obj-columna-vacia" onClick={() => editor.nuevaPieza("", canal)}>
-                  Sin ideas todavía.<br />＋ Apunta la primera
-                </button>
-              ) : (
-                delCanal.map((p) => (
-                  <div key={p.id} className="obj-idea">
-                    <button className="obj-idea-abrir" onClick={() => editor.editarPieza(p)}>
-                      <span className="obj-idea-titulo">{p.titulo}</span>
-                      <span className="obj-idea-meta">
-                        <span className="obj-chip"><span aria-hidden="true">{TIPO_EMOJI[p.tipo]}</span> {TIPOS[p.tipo]}</span>
-                        <span className="obj-chip obj-chip--estado"><span aria-hidden="true">{ESTADO_EMOJI[p.estado]}</span> {ESTADOS[p.estado]}</span>
-                      </span>
-                      {p.notas && <span className="obj-idea-notas">{p.notas}</span>}
-                    </button>
-                    {programando === p.id ? (
-                      <label className="obj-idea-programar">
-                        <span>📅 ¿Qué día?</span>
-                        <input type="date" className="obj-input" autoFocus onChange={(e) => programar(p, e.target.value)} />
-                        <button type="button" className="obj-boton obj-boton--suave obj-boton--pequeno" onClick={() => setProgramando(null)}>✕</button>
-                      </label>
-                    ) : (
-                      <button className="obj-idea-accion" onClick={() => setProgramando(p.id)}>📅 Ponerle día</button>
-                    )}
-                  </div>
-                ))
-              )}
-            </section>
-          );
-        })}
-      </div>
+      {pendientes.length === 0 && hechas.length === 0 ? (
+        <p className="ide-vacio">{buscando ? "Nada coincide aquí." : "Aún no hay ideas."}</p>
+      ) : (
+        <ul className="ide-lista">
+          {pendientes.map((i) => <FilaIdea key={`${i.id}-${i.texto.length}`} idea={i} />)}
+        </ul>
+      )}
 
-      {editor.modal}
-    </>
+      {hechas.length > 0 && (
+        <div className="ide-hechas">
+          <button type="button" className="ide-hechas-boton" onClick={() => setVerHechas((v) => !v)} aria-expanded={verHechas}>
+            {verHechas ? "▾" : "▸"} Hechas ({hechas.length})
+          </button>
+          {verHechas && (
+            <ul className="ide-lista">
+              {hechas.map((i) => <FilaIdea key={`${i.id}-${i.texto.length}`} idea={i} />)}
+            </ul>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function FilaIdea({ idea }: { idea: Idea }) {
+  const router = useRouter();
+  const [hecha, setHecha] = useState(idea.hecha);
+  const [editando, setEditando] = useState(false);
+  const [texto, setTexto] = useState(idea.texto);
+  const [ocupado, setOcupado] = useState(false);
+  const [error, setError] = useState("");
+
+  async function guardar(cambios: { texto?: string; hecha?: boolean }) {
+    setOcupado(true);
+    setError("");
+    const fallo = await enviar("idea", idea.id, { texto: cambios.texto ?? idea.texto, canal: idea.canal, hecha: cambios.hecha ?? idea.hecha });
+    setOcupado(false);
+    if (fallo) {
+      setError(fallo);
+      setHecha(idea.hecha);
+      return false;
+    }
+    router.refresh();
+    return true;
+  }
+
+  async function alternar() {
+    setHecha(!hecha);
+    await guardar({ hecha: !hecha });
+  }
+
+  async function borrar() {
+    if (!confirm("¿Borrar esta idea?")) return;
+    setOcupado(true);
+    const fallo = await enviar("idea", idea.id, null);
+    setOcupado(false);
+    if (fallo) return setError(fallo);
+    router.refresh();
+  }
+
+  if (editando) {
+    return (
+      <li className="ide-fila ide-fila--editando">
+        <textarea
+          value={texto}
+          onChange={(e) => setTexto(e.target.value)}
+          onKeyDown={async (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              if (texto.trim() && (await guardar({ texto }))) setEditando(false);
+            }
+            if (e.key === "Escape") {
+              setTexto(idea.texto);
+              setEditando(false);
+            }
+          }}
+          aria-label="Editar idea"
+          maxLength={5000}
+          autoFocus
+        />
+        {error && <span className="ide-error">⚠️ {error}</span>}
+        <div className="ide-fila-acciones">
+          <button type="button" className="ide-enlace ide-enlace--peligro" onClick={borrar} disabled={ocupado}>Borrar</button>
+          <button type="button" className="ide-enlace" onClick={() => { setTexto(idea.texto); setEditando(false); }} disabled={ocupado}>Cancelar</button>
+          <button
+            type="button"
+            className="ide-anadir"
+            onClick={async () => {
+              if (texto.trim() && (await guardar({ texto }))) setEditando(false);
+            }}
+            disabled={ocupado || !texto.trim()}
+          >
+            Guardar
+          </button>
+        </div>
+      </li>
+    );
+  }
+
+  return (
+    <li className={`ide-fila${hecha ? " ide-fila--hecha" : ""}`}>
+      <button
+        type="button"
+        role="checkbox"
+        aria-checked={hecha}
+        className="ide-tick"
+        onClick={alternar}
+        disabled={ocupado}
+        aria-label={hecha ? `Desmarcar: ${idea.texto}` : `Marcar como hecha: ${idea.texto}`}
+      >
+        {hecha ? "✓" : ""}
+      </button>
+      <button type="button" className="ide-fila-texto" onClick={() => setEditando(true)} title="Pulsa para editarla">
+        {idea.texto}
+      </button>
+      {error && <span className="ide-error">⚠️ {error}</span>}
+    </li>
   );
 }

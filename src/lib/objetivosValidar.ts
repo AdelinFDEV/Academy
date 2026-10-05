@@ -1,5 +1,5 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
-import { AMBITOS, ANIMOS, CANALES, EMOCIONES, ESTADOS, ETIQUETAS, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
+import { AMBITOS, ANIMOS, CANALES, EMOCIONES, ESTADOS, ETIQUETAS, FACTORES_MOTIVOS, FACTORES_NEGATIVOS, HORIZONTES, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
 
 /** Nombre de una foto del diario tal como lo pone /api/admin/plan/foto: uuid + extensión. */
 export const NOMBRE_FOTO = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpg|png)$/;
@@ -18,6 +18,8 @@ export const RECURSOS = {
   objetivo: "objetivos",
   pieza: "contenido_plan",
   nota: "diario_notas",
+  intencion: "diario_intenciones",
+  idea: "ideas",
 } as const;
 export type Recurso = keyof typeof RECURSOS;
 
@@ -85,7 +87,7 @@ function pieza(b: Record<string, unknown>): Resultado {
   if (!(canal in CANALES)) return { error: "Elige el canal." };
   if (!(tipo in TIPOS)) return { error: "Elige el tipo." };
   if (!(estado in ESTADOS)) return { error: "Estado desconocido." };
-  if (fecha && !esFecha(fecha)) return { error: "La fecha no es válida." };
+  if (!esFecha(fecha)) return { error: "Ponle un día. Las ideas sin fecha van en la pestaña Ideas." };
   if (enlace && !/^https?:\/\//i.test(enlace)) return { error: "El enlace tiene que empezar por http:// o https://." };
 
   return {
@@ -118,6 +120,11 @@ function nota(b: Record<string, unknown>): Resultado {
   const lat = b.lat === "" || b.lat === null || b.lat === undefined ? null : Number(b.lat);
   const lng = b.lng === "" || b.lng === null || b.lng === undefined ? null : Number(b.lng);
   const fotos = Array.isArray(b.fotos) ? b.fotos.filter((f): f is string => typeof f === "string") : [];
+  // Solo claves conocidas y sin repetir: lo demás se ignora.
+  const lista = (v: unknown, validas: object) =>
+    Array.isArray(v) ? [...new Set(v.filter((x): x is string => typeof x === "string" && x in validas))] : [];
+  const negativos = lista(b.negativos, FACTORES_NEGATIVOS);
+  const motivos = lista(b.motivos, FACTORES_MOTIVOS);
 
   if (!textoNota) return { error: "La nota está vacía." };
   if (textoNota.length > 20000) return { error: "La nota es demasiado larga." };
@@ -147,12 +154,36 @@ function nota(b: Record<string, unknown>): Resultado {
       fotos,
       objetivo_id: objetivoId,
       ancla: b.ancla === true,
+      negativos,
+      motivos,
       updated_at: new Date().toISOString(),
     },
   };
 }
 
-export const VALIDAR: Record<Recurso, (b: Record<string, unknown>) => Resultado> = { objetivo, pieza, nota };
+function intencion(b: Record<string, unknown>): Resultado {
+  const textoIntencion = texto(b.texto);
+  const horizonte = texto(b.horizonte);
+  const desde = texto(b.desde);
+
+  if (!textoIntencion) return { error: "Escribe lo que te propones." };
+  if (textoIntencion.length > 200) return { error: "Mejor en una frase corta: 200 caracteres como mucho." };
+  if (!(horizonte in HORIZONTES)) return { error: "¿Para esta semana o para este mes?" };
+  if (!esFecha(desde)) return { error: "Fecha no válida." };
+
+  return { datos: { texto: textoIntencion, horizonte, desde, hecha: b.hecha === true, updated_at: new Date().toISOString() } };
+}
+
+function idea(b: Record<string, unknown>): Resultado {
+  const textoIdea = texto(b.texto);
+  const canal = texto(b.canal);
+  if (!textoIdea) return { error: "La idea está vacía." };
+  if (textoIdea.length > 5000) return { error: "La idea es demasiado larga." };
+  if (!(canal in CANALES)) return { error: "¿Para YouTube, la web o Telegram?" };
+  return { datos: { texto: textoIdea, canal, hecha: b.hecha === true, updated_at: new Date().toISOString() } };
+}
+
+export const VALIDAR: Record<Recurso, (b: Record<string, unknown>) => Resultado> = { objetivo, pieza, nota, intencion, idea };
 
 export function esRecurso(v: string): v is Recurso {
   return v in RECURSOS;
@@ -199,4 +230,14 @@ export async function fijarProgreso(
     .from("objetivo_registros")
     .upsert({ objetivo_id: id, periodo, valor, updated_at: new Date().toISOString() }, { onConflict: "objetivo_id,periodo" });
   return error ? error.message : null;
+}
+
+/**
+ * El error de la base, en castellano cuando es que falta lanzar el SQL: tabla
+ * (PGRST205) o columna (PGRST204 / 42703) que aún no existen.
+ */
+export function mensajeError(e: { code?: string; message: string }): string {
+  return ["PGRST205", "PGRST204", "42703"].includes(e.code ?? "")
+    ? "Falta actualizar la base de datos: ejecuta scripts/create-objetivos.sql en el SQL Editor de Supabase."
+    : e.message;
 }

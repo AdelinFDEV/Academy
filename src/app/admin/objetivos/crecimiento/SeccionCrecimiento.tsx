@@ -4,6 +4,8 @@ import Link from "next/link";
 import { RANGOS, type DatosCrecimiento, type Punto, type Rango, type Serie } from "@/lib/crecimiento";
 import { GraficaBarras, GraficaLinea, type Tono } from "./Graficas";
 import TuDinero from "./TuDinero";
+import ActividadMes from "./ActividadMes";
+import type { ActividadMes as DatosActividad } from "@/lib/actividadMes";
 import type { DineroMes } from "@/lib/objetivosServidor";
 import { fechaCorta, nombreMes } from "../editor";
 
@@ -56,7 +58,13 @@ function Tarjetas({ s, unidad, tono, emoji }: { s: Serie; unidad: string; tono: 
   );
 }
 
-export default function SeccionCrecimiento({ datos, rango, dineroMeses }: { datos: DatosCrecimiento; rango: Rango; dineroMeses: DineroMes[] }) {
+export default function SeccionCrecimiento({ datos, rango, dineroMeses, actividad }: { datos: DatosCrecimiento; rango: Rango; dineroMeses: DineroMes[]; actividad: DatosActividad }) {
+  // Los enlaces conservan el otro filtro: cambiar el periodo no cambia el mes, y al revés.
+  const mesActual = datos.hoy.slice(0, 7);
+  const href = (r: Rango, mes: string) => {
+    const q = [r !== "30" ? `rango=${r}` : "", mes !== mesActual ? `mes=${mes}` : ""].filter(Boolean).join("&");
+    return `/admin/objetivos/crecimiento${q ? `?${q}` : ""}`;
+  };
   const d = datos.dinero;
   const renuevan = d.activos - d.cancelan;
   return (
@@ -72,7 +80,7 @@ export default function SeccionCrecimiento({ datos, rango, dineroMeses }: { dato
           {(Object.keys(RANGOS) as Rango[]).map((r) => (
             <Link
               key={r}
-              href={r === "90" ? "/admin/objetivos/crecimiento" : `/admin/objetivos/crecimiento?rango=${r}`}
+              href={href(r, actividad.mes)}
               className={`crec-rango${r === rango ? " crec-rango--activo" : ""}`}
               aria-current={r === rango ? "page" : undefined}
             >
@@ -84,6 +92,9 @@ export default function SeccionCrecimiento({ datos, rango, dineroMeses }: { dato
 
       {/* ── Tu dinero: lo primero, es la base de todo ─────────────── */}
       <TuDinero meses={dineroMeses} hoy={datos.hoy} />
+
+      {/* ── Lo publicado en el mes ───────────────────────────────── */}
+      <ActividadMes datos={actividad} hoy={datos.hoy} hrefMes={(m) => href(rango, m)} />
 
       {/* ── Telegram ─────────────────────────────────────────────── */}
       <section className="crec-bloque crec-bloque--telegram">

@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { RECURSOS, VALIDAR, esRecurso, fijarProgreso, marcarPublicada } from "@/lib/objetivosValidar";
+import { RECURSOS, VALIDAR, esRecurso, fijarProgreso, marcarPublicada, mensajeError } from "@/lib/objetivosValidar";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Crea un objetivo, una pieza del plan de contenido o una nota del diario.
+ * Crea un objetivo, una pieza del plan de contenido, una nota del diario o
+ * una intención.
  *
  * Solo el admin. Las tablas no tienen ninguna policy (scripts/create-objetivos.sql),
  * así que se escribe con la clave de servicio DESPUÉS de comprobar el rol.
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ rec
     .select("id")
     .single();
 
-  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  if (dbErr) return NextResponse.json({ error: mensajeError(dbErr) }, { status: 500 });
   if (recurso === "pieza") await marcarPublicada(admin, data.id, v.datos);
   await guardarProgreso(admin, recurso, data.id, body as Record<string, unknown>);
   return NextResponse.json({ ok: true, id: data.id }, { status: 201 });

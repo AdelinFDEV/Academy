@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FUENTES, PRODUCTIVIDAD, type Balance, type Fuente, type Productividad } from "@/lib/objetivos";
-import { cifra } from "./editor";
 
 /**
  * «Cierre del día»: cómo de productivo fue y cuánto ganaste, por fuente.
@@ -174,14 +173,4 @@ export function useCierreDia() {
   );
 
   return { abrir, modal };
-}
-
-/** La píldora de un día cerrado: su icono de productividad y lo ganado. */
-export function PildoraDia({ balance }: { balance: Balance }) {
-  return (
-    <span className={`obj-pildora-dia${balance.productividad ? ` obj-pildora-dia--${balance.productividad}` : ""}`}>
-      {balance.productividad && <span aria-hidden="true">{PRODUCTIVIDAD[balance.productividad].emoji}</span>}
-      {balance.total > 0 && <strong>+{cifra(balance.total)} €</strong>}
-    </span>
-  );
 }

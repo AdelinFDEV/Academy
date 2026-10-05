@@ -271,3 +271,83 @@ export async function getSubscriberCount(): Promise<number | null> {
     return null;
   }
 }
+
+export interface VideoSubido extends YouTubeVideo {
+  /** Duración en segundos; null si no se pudo leer. */
+  segundos: number | null;
+}
+
+/** Hasta este tamaño cuenta como Short (YouTube los admite de hasta 3 minutos). */
+export const SEGUNDOS_SHORT = 180;
+
+/**
+ * Todo lo subido al canal entre dos instantes —vídeos largos y Shorts—, con
+ * título y duración. Lo usa el resumen mensual de /admin/objetivos/crecimiento.
+ *
+ * Recorre la lista de subidas del canal (playlistItems, de la más nueva a la
+ * más antigua) hasta pasar `desde`, y pide las duraciones en una sola
+ * consulta por cada 50 vídeos. Cuesta 1 unidad de cuota por página: un mes
+ * normal son 2 o 3 unidades de las 10.000 diarias.
+ *
+ * Sin YOUTUBE_API_KEY, o si la API falla, devuelve null: quien llama decide
+ * qué enseñar en su lugar.
+ */
+export async function getSubidasEntre(desde: Date, hasta: Date): Promise<VideoSubido[] | null> {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key) return null;
+  const channelId = process.env.YOUTUBE_CHANNEL_ID || CHANNEL_ID_POR_DEFECTO;
+  // La lista de subidas de un canal es su id con «UU» en vez de «UC».
+  const subidas = `UU${channelId.slice(2)}`;
+
+  try {
+    const encontrados: YouTubeVideo[] = [];
+    let pagina: string | undefined;
+    for (let vuelta = 0; vuelta < 12; vuelta++) {
+      const url =
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50` +
+        `&playlistId=${subidas}&key=${key}${pagina ? `&pageToken=${pagina}` : ""}`;
+      const res = await fetch(url, { next: { revalidate: REVALIDATE_SECONDS }, signal: AbortSignal.timeout(WATCH_FETCH_TIMEOUT_MS) });
+      if (!res.ok) return null;
+      const json = (await res.json()) as {
+        nextPageToken?: string;
+        items?: {
+          snippet?: { title?: string; thumbnails?: { medium?: { url?: string }; high?: { url?: string } } };
+          contentDetails?: { videoId?: string; videoPublishedAt?: string };
+        }[];
+      };
+      let pasado = false;
+      for (const item of json.items ?? []) {
+        const id = item.contentDetails?.videoId;
+        const publicado = item.contentDetails?.videoPublishedAt;
+        // Los privados o programados aún no tienen fecha de publicación.
+        if (!id || !publicado) continue;
+        const t = Date.parse(publicado);
+        if (t < desde.getTime()) {
+          pasado = true;
+          continue;
+        }
+        if (t >= hasta.getTime()) continue;
+        encontrados.push({
+          id,
+          title: item.snippet?.title ?? "",
+          publishedAt: publicado,
+          thumbnail: item.snippet?.thumbnails?.medium?.url ?? item.snippet?.thumbnails?.high?.url ?? `https://i.ytimg.com/vi/${id}/mqdefault.jpg`,
+          url: `https://www.youtube.com/watch?v=${id}`,
+        });
+      }
+      pagina = json.nextPageToken;
+      if (pasado || !pagina) break;
+    }
+
+    const duraciones = new Map<string, number>();
+    for (let i = 0; i < encontrados.length; i += 50) {
+      const lote = await duracionesPorApi(encontrados.slice(i, i + 50).map((v) => v.id));
+      for (const [id, s] of lote ?? []) duraciones.set(id, s);
+    }
+    return encontrados
+      .map((v) => ({ ...v, segundos: duraciones.get(v.id) ?? null }))
+      .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
+  } catch {
+    return null;
+  }
+}

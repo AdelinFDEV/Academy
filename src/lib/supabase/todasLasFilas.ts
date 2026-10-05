@@ -13,14 +13,17 @@
 
 const PAGINA = 1000;
 
-type Respuesta<T> = { data: T[] | null; error: { message: string } | null };
+type Respuesta<T> = { data: T[] | null; error: { message: string; code?: string } | null };
+
+/** Tabla o columna que aún no existe (falta lanzar el SQL): la página ya lo avisa. */
+const FALTA_SQL = ["PGRST205", "PGRST204", "42703"];
 
 export async function todasLasFilas<T>(pedir: (desde: number, hasta: number) => PromiseLike<Respuesta<T>>): Promise<T[]> {
   const filas: T[] = [];
   for (let desde = 0; ; desde += PAGINA) {
     const { data, error } = await pedir(desde, desde + PAGINA - 1);
     if (error) {
-      console.error("[todasLasFilas]", error.message);
+      if (!FALTA_SQL.includes(error.code ?? "")) console.error("[todasLasFilas]", error.message);
       break;
     }
     filas.push(...(data ?? []));

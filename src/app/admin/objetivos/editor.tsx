@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  AMBITOS,
   ANIMOS,
   ANIMO_EMOJI,
   CANALES,
@@ -13,6 +12,8 @@ import {
   ESTADOS,
   ESTADO_EMOJI,
   ETIQUETAS,
+  FACTORES_MOTIVOS,
+  FACTORES_NEGATIVOS,
   METRICAS,
   REPETICIONES,
   REPETICION_EMOJI,
@@ -99,7 +100,7 @@ export function piezaVacia(fecha: string): Datos {
 }
 
 export function notaVacia(hoy: string): Datos {
-  return { texto: "", fecha: hoy, animo: "", emocion: "", etiqueta: "", fotos: [], lugar: "", lat: "", lng: "", objetivo_id: "", ancla: false };
+  return { texto: "", fecha: hoy, animo: "", emocion: "", etiqueta: "", fotos: [], lugar: "", lat: "", lng: "", objetivo_id: "", ancla: false, negativos: [], motivos: [] };
 }
 
 /** La ficha completa de una pieza, como la espera la API (que siempre recibe la ficha entera). */
@@ -118,7 +119,7 @@ export function siguienteEstado(estado: Estado): Estado | null {
 }
 
 /** Manda una ficha a la API. Devuelve el mensaje de error, o null si fue bien. */
-export async function enviar(recurso: Recurso, id: string | null, datos: Datos | null): Promise<string | null> {
+export async function enviar(recurso: Recurso | "intencion" | "idea", id: string | null, datos: Datos | null): Promise<string | null> {
   try {
     const url = `/api/admin/plan/${recurso}${id ? `/${id}` : ""}`;
     const res = await fetch(url, {
@@ -240,8 +241,7 @@ export function useEditor(objetivos: ObjetivoConProgreso[], urlsFotos: Record<st
 
   return {
     modal,
-    nuevoObjetivo: (mes: string, ambito: "negocio" | "personal" = "negocio") =>
-      abrir("objetivo", null, { ...objetivoVacio(mes), ambito }),
+    nuevoObjetivo: (mes: string) => abrir("objetivo", null, objetivoVacio(mes)),
     /** Con `canal`, sugiere también el tipo que le pega: vídeo, entrada o publicación. */
     nuevaPieza: (fecha: string, canal?: Canal) =>
       abrir("pieza", null, {
@@ -259,7 +259,7 @@ export function useEditor(objetivos: ObjetivoConProgreso[], urlsFotos: Record<st
         texto: n.texto, fecha: n.fecha, animo: n.animo === null ? "" : String(n.animo),
         emocion: n.emocion ?? "", etiqueta: n.etiqueta ?? "", fotos: n.fotos ?? [], lugar: n.lugar ?? "",
         lat: n.lat === null ? "" : String(n.lat), lng: n.lng === null ? "" : String(n.lng),
-        objetivo_id: n.objetivo_id ?? "", ancla: n.ancla,
+        objetivo_id: n.objetivo_id ?? "", ancla: n.ancla, negativos: n.negativos ?? [], motivos: n.motivos ?? [],
       }),
   };
 }
@@ -319,7 +319,47 @@ export function Opciones({
   );
 }
 
-function Campo({ etiqueta, children, ayuda }: { etiqueta: string; children: React.ReactNode; ayuda?: string }) {
+/**
+ * Lo que te ha afectado y lo que te ha motivado: chips que se marcan y
+ * desmarcan, varios a la vez. Lo usan el escritorio del diario y la ventana
+ * de edición de una nota.
+ */
+export function Factores({ d, cambiar }: FormProps) {
+  const grupos = [
+    { campo: "negativos", titulo: "😣 ¿Qué te ha afectado?", opciones: FACTORES_NEGATIVOS, tono: "mal" },
+    { campo: "motivos", titulo: "🚀 ¿Qué te ha motivado?", opciones: FACTORES_MOTIVOS, tono: "bien" },
+  ] as const;
+  return (
+    <div className="obj-factores">
+      {grupos.map((g) => {
+        const marcados = Array.isArray(d[g.campo]) ? (d[g.campo] as string[]) : [];
+        return (
+          <div key={g.campo} className={`obj-factores-grupo obj-factores-grupo--${g.tono}`}>
+            <span className="obj-factores-titulo">{g.titulo}</span>
+            <div className="obj-factores-lista">
+              {(Object.entries(g.opciones) as [string, { texto: string; emoji: string }][]).map(([clave, f]) => {
+                const activo = marcados.includes(clave);
+                return (
+                  <button
+                    key={clave}
+                    type="button"
+                    aria-pressed={activo}
+                    className={`obj-factor${activo ? " obj-factor--activo" : ""}`}
+                    onClick={() => cambiar(g.campo, activo ? marcados.filter((x) => x !== clave) : [...marcados, clave])}
+                  >
+                    <span aria-hidden="true">{f.emoji}</span> {f.texto}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function Campo({ etiqueta, children, ayuda }: { etiqueta: string; children: React.ReactNode; ayuda?: string }) {
   return (
     <label className="obj-campo">
       <span className="obj-etiqueta">{etiqueta}</span>
@@ -329,7 +369,7 @@ function Campo({ etiqueta, children, ayuda }: { etiqueta: string; children: Reac
   );
 }
 
-function Interruptor({ activo, onCambio, children }: { activo: boolean; onCambio: (v: boolean) => void; children: React.ReactNode }) {
+export function Interruptor({ activo, onCambio, children }: { activo: boolean; onCambio: (v: boolean) => void; children: React.ReactNode }) {
   return (
     <button type="button" role="switch" aria-checked={activo} className={`obj-interruptor${activo ? " obj-interruptor--on" : ""}`} onClick={() => onCambio(!activo)}>
       <span className="obj-interruptor-pista" aria-hidden="true"><span /></span>
@@ -345,7 +385,6 @@ const opcionesMetrica = (grupo: "yo" | "auto"): Opcion[] =>
 
 function FormObjetivo({ d, cambiar }: FormProps) {
   const metrica = String(d.metrica) as Metrica;
-  const personal = d.ambito === "personal";
   const esNuevo = !("progreso_periodo" in d) || d.marca_inicial !== undefined;
   const repite = d.repeticion !== "no";
   const esNivel = METRICAS[metrica]?.tipo === "nivel";
@@ -354,35 +393,16 @@ function FormObjetivo({ d, cambiar }: FormProps) {
   return (
     <>
       <Campo etiqueta="¿Qué quieres conseguir?">
-        <input className="obj-input obj-input--grande" value={String(d.titulo)} onChange={(e) => cambiar("titulo", e.target.value)} placeholder={personal ? "Ej.: Press banca a 100 kg" : "Ej.: 4 vídeos al mes"} required autoFocus />
+        <input className="obj-input obj-input--grande" value={String(d.titulo)} onChange={(e) => cambiar("titulo", e.target.value)} placeholder="Ej.: 4 vídeos al mes" required autoFocus />
       </Campo>
-
-      <Opciones
-        etiqueta="¿De qué parte de tu vida?"
-        forma="segmentos"
-        opciones={[
-          { valor: "negocio", emoji: "💼", texto: AMBITOS.negocio },
-          { valor: "personal", emoji: "💪", texto: `${AMBITOS.personal} (gimnasio, salud…)` },
-        ]}
-        valor={String(d.ambito || "negocio")}
-        onCambio={(v) => {
-          cambiar("ambito", v);
-          // Las métricas de la web no tienen sentido para una meta personal.
-          if (v === "personal" && METRICAS[metrica]?.grupo === "auto") cambiar("metrica", "marca");
-        }}
-      />
 
       <div className="obj-opciones-bloque">
         <span className="obj-etiqueta">¿Cómo se mide?</span>
         <div className="obj-medida">
           <span className="obj-medida-titulo">Lo apuntas tú</span>
           <Opciones etiqueta="" opciones={opcionesMetrica("yo")} valor={metrica} onCambio={(v) => cambiar("metrica", v)} forma="tarjetas" />
-          {!personal && (
-            <>
-              <span className="obj-medida-titulo">Se cuenta solo con los datos de la web</span>
-              <Opciones etiqueta="" opciones={opcionesMetrica("auto")} valor={metrica} onCambio={(v) => cambiar("metrica", v)} forma="tarjetas" />
-            </>
-          )}
+          <span className="obj-medida-titulo">Se cuenta solo con los datos de la web</span>
+          <Opciones etiqueta="" opciones={opcionesMetrica("auto")} valor={metrica} onCambio={(v) => cambiar("metrica", v)} forma="tarjetas" />
         </div>
         <p className="obj-pista">
           <span aria-hidden="true">{METRICAS[metrica]?.emoji}</span> {METRICAS[metrica]?.ayuda}
@@ -464,8 +484,8 @@ function FormPieza({ d, cambiar }: FormProps) {
         onCambio={(v) => cambiar("estado", v)}
       />
       <div className="obj-fila">
-        <Campo etiqueta="📅 Día" ayuda="Vacío = idea sin fecha">
-          <input className="obj-input" type="date" value={String(d.fecha)} onChange={(e) => cambiar("fecha", e.target.value)} />
+        <Campo etiqueta="📅 Día">
+          <input className="obj-input" type="date" value={String(d.fecha)} onChange={(e) => cambiar("fecha", e.target.value)} required />
         </Campo>
         <Campo etiqueta="🔗 Enlace (opcional)">
           <input className="obj-input" type="url" value={String(d.enlace)} onChange={(e) => cambiar("enlace", e.target.value)} placeholder="https://" />
@@ -479,13 +499,10 @@ function FormPieza({ d, cambiar }: FormProps) {
 }
 
 /** Un color por área del diario, para reconocerla de un vistazo. */
-const TONO_AREA: Record<keyof typeof ETIQUETAS, string> = {
-  negocio: "#ff8a3d",
-  contenido: "#ff4d5e",
-  gimnasio: "#22c55e",
-  salud: "#2dd4bf",
-  personal: "#f472b6",
-  aprendizaje: "#a78bfa",
+export const TONO_AREA: Record<keyof typeof ETIQUETAS, string> = {
+  dinero: "#22c55e",
+  crecimiento: "#38bdf8",
+  contenido: "#ff8a3d",
 };
 
 /** Los campos de una nota. Lo usan la ventana de edición y el escritorio del diario. */
@@ -503,7 +520,7 @@ export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = 
         rows={filasTexto}
         value={String(d.texto)}
         onChange={(e) => cambiar("texto", e.target.value)}
-        placeholder="¿Qué ha pasado hoy? El proyecto, el gimnasio, cómo te sientes… lo que sea."
+        placeholder="¿Qué ha pasado hoy con el proyecto? Dinero, crecimiento, contenido, cómo te sientes…"
         aria-label="Texto de la nota"
         required
         autoFocus={autoFocus}
@@ -547,6 +564,8 @@ export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = 
         onCambio={(v) => cambiar("emocion", v)}
         permitirVacio
       />
+
+      <Factores d={d} cambiar={cambiar} />
 
       <div className="obj-nota-dos">
         <FotosNota fotos={Array.isArray(d.fotos) ? d.fotos : []} urls={urlsFotos} onCambio={(f) => cambiar("fotos", f)} />
@@ -601,7 +620,7 @@ async function comprimir(archivo: File): Promise<Blob> {
   );
 }
 
-function FotosNota({ fotos, urls, onCambio }: { fotos: string[]; urls: Record<string, string>; onCambio: (f: string[]) => void }) {
+export function FotosNota({ fotos, urls, onCambio }: { fotos: string[]; urls: Record<string, string>; onCambio: (f: string[]) => void }) {
   const [subiendo, setSubiendo] = useState(0);
   const [encima, setEncima] = useState(false);
   const [error, setError] = useState("");
@@ -720,7 +739,7 @@ function FotosNota({ fotos, urls, onCambio }: { fotos: string[]; urls: Record<st
 
 // ── Ubicación de la nota ─────────────────────────────────────────────────────
 
-function UbicacionNota({ d, cambiar }: FormProps) {
+export function UbicacionNota({ d, cambiar }: FormProps) {
   const [buscando, setBuscando] = useState(false);
   const [error, setError] = useState("");
   const tieneCoordenadas = String(d.lat ?? "") !== "" && String(d.lng ?? "") !== "";
@@ -751,7 +770,7 @@ function UbicacionNota({ d, cambiar }: FormProps) {
           className="obj-input"
           value={String(d.lugar ?? "")}
           onChange={(e) => cambiar("lugar", e.target.value)}
-          placeholder="Gimnasio, casa, oficina…"
+          placeholder="Casa, oficina, estudio de grabación…"
           maxLength={120}
         />
         {tieneCoordenadas ? (

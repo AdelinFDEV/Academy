@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  METRICAS, REPETICIONES, REPETICION_EMOJI, cumpleMeta, porcentajeAvance, type Ambito, type ObjetivoConProgreso, type Ritmo,
+  METRICAS, REPETICIONES, REPETICION_EMOJI, cumpleMeta, porcentajeAvance, type ObjetivoConProgreso, type Ritmo,
 } from "@/lib/objetivos";
 import { RITMO, cifra, diasEntre, fechaCorta, nombreMes, useEditor } from "./editor";
 
@@ -18,12 +18,9 @@ const RESUMEN: { ritmos: Ritmo[]; texto: string; emoji: string; tono: string }[]
 export default function SeccionObjetivos({ hoy, objetivos }: { hoy: string; objetivos: ObjetivoConProgreso[] }) {
   const editor = useEditor(objetivos);
   const [verArchivados, setVerArchivados] = useState(false);
-  const [ambito, setAmbito] = useState<Ambito | "">("");
 
-  const delAmbito = objetivos.filter((o) => !ambito || o.ambito === ambito);
-  const activos = delAmbito.filter((o) => !o.archivado);
-  const archivados = delAmbito.filter((o) => o.archivado);
-  const cuenta = (a: Ambito | "") => objetivos.filter((o) => !o.archivado && (!a || o.ambito === a)).length;
+  const activos = objetivos.filter((o) => !o.archivado);
+  const archivados = objetivos.filter((o) => o.archivado);
   const bien = activos.filter((o) => ["cumplido", "adelantado", "en-ritmo"].includes(o.ritmo)).length;
 
   return (
@@ -33,23 +30,9 @@ export default function SeccionObjetivos({ hoy, objetivos }: { hoy: string; obje
           <h2 className="obj-titulo-seccion">🎯 Tus objetivos</h2>
           <p className="obj-sub-seccion">Cada tarjeta te dice si vas por delante o por detrás del ritmo que necesitas.</p>
         </div>
-        <button className="obj-boton obj-boton--principal" onClick={() => editor.nuevoObjetivo(hoy.slice(0, 7), ambito || "negocio")}>
+        <button className="obj-boton obj-boton--principal" onClick={() => editor.nuevoObjetivo(hoy.slice(0, 7))}>
           ＋ Nuevo objetivo
         </button>
-      </div>
-
-      <div className="obj-areas" role="radiogroup" aria-label="Filtrar por ámbito">
-        {([["", "🗂️", "Todos"], ["negocio", "💼", "Negocio"], ["personal", "💪", "Personal"]] as const).map(([valor, emoji, texto]) => (
-          <button
-            key={valor || "todos"}
-            role="radio"
-            aria-checked={ambito === valor}
-            className={`obj-area${ambito === valor ? " obj-area--activa" : ""}`}
-            onClick={() => setAmbito(valor)}
-          >
-            <span aria-hidden="true">{emoji}</span> {texto} <small>{cuenta(valor)}</small>
-          </button>
-        ))}
       </div>
 
       {activos.length > 0 && (

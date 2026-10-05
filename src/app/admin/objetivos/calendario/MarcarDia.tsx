@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { PRODUCTIVIDAD, type Balance, type Productividad } from "@/lib/objetivos";
 
 /**
- * Marcar un día desde el propio calendario, en el pie de cada celda:
- * ✅ / ❌ de un toque, y 📌 para la nota, que sale como aviso al pasar por
- * encima. Guarda en modo parcial: el dinero del día no se toca.
+ * Marcar un día desde el propio calendario, en la esquina de su cuadrado:
+ * - sin marcar: ✓ y ✗ (aparecen al pasar por el día) guardan de un toque;
+ * - marcado: su emoji, que abre el panelito para cambiarlo o escribir la nota;
+ * - con nota: un 📌 que la enseña al pasar por encima.
+ * Guarda en modo parcial: el dinero del día no se toca.
  */
 
 type Props = { dia: string; balance?: Balance; aLaIzquierda: boolean };
+
+const EMOJI: Record<Productividad, string> = { 3: "🔥", 2: "✅", 1: "❌" };
 
 export function MarcarDia({ dia, balance, aLaIzquierda }: Props) {
   const router = useRouter();
@@ -67,72 +71,61 @@ export function MarcarDia({ dia, balance, aLaIzquierda }: Props) {
   const notaGuardada = balance?.nota ?? "";
 
   return (
-    <div className={`obj-marcar${actual ? " obj-marcar--hecho" : ""}`} ref={caja}>
-      {actual ? (
-        <button
-          type="button"
-          className={`obj-marcar-estado obj-marcar-estado--${actual}`}
-          onClick={abrir}
-          title="Pulsa para cambiarlo o editar la nota"
-        >
-          <span aria-hidden="true">{actual === 3 ? "🔥" : PRODUCTIVIDAD[actual].emoji}</span>
-          <span className="obj-marcar-estado-texto">{actual === 1 ? "No productivo" : actual === 3 ? "Muy productivo" : "Productivo"}</span>
-        </button>
-      ) : (
-        <>
-          <button type="button" className="obj-marcar-rapido obj-marcar-rapido--si" onClick={() => guardar(2, notaGuardada)} disabled={guardando} title="Día productivo" aria-label="Marcar como productivo">✅</button>
-          <button type="button" className="obj-marcar-rapido obj-marcar-rapido--no" onClick={() => guardar(1, notaGuardada)} disabled={guardando} title="Día no productivo" aria-label="Marcar como no productivo">❌</button>
-        </>
+    <div className={`cal-marca${actual ? " cal-marca--hecho" : ""}`} ref={caja}>
+      {notaGuardada && (
+        <span className="cal-marca-nota" tabIndex={0} onClick={abrir} aria-label={`Nota del día: ${notaGuardada}`}>
+          📌
+          <span className={`cal-marca-aviso${aLaIzquierda ? " cal-marca-aviso--izq" : ""}`} role="tooltip">{notaGuardada}</span>
+        </span>
       )}
 
-      {notaGuardada ? (
-        <span className="obj-cal-nota" tabIndex={0} onClick={abrir} aria-label={`Nota del día: ${notaGuardada}`}>
-          📌
-          <span className={`obj-cal-nota-pop${aLaIzquierda ? " obj-cal-nota-pop--izq" : ""}`} role="tooltip">
-            <strong>📌 Nota del día</strong>
-            {notaGuardada}
-          </span>
-        </span>
+      {actual ? (
+        <button type="button" className="cal-marca-estado" onClick={abrir} title={`${PRODUCTIVIDAD[actual].texto}. Pulsa para cambiarlo.`}>
+          {EMOJI[actual]}
+        </button>
       ) : (
-        <button type="button" className="obj-marcar-rapido obj-marcar-rapido--nota" onClick={abrir} title="Añadir una nota al día" aria-label="Añadir una nota al día">📌</button>
+        <span className="cal-marca-rapido">
+          <button type="button" onClick={() => guardar(2, notaGuardada)} disabled={guardando} title="Día productivo" aria-label="Marcar como productivo">✓</button>
+          <button type="button" onClick={() => guardar(1, notaGuardada)} disabled={guardando} title="Día no productivo" aria-label="Marcar como no productivo">✗</button>
+          {!notaGuardada && <button type="button" onClick={abrir} title="Añadir una nota" aria-label="Añadir una nota al día">✎</button>}
+        </span>
       )}
 
       {abierto && (
-        <div className={`obj-marcar-pop${aLaIzquierda ? " obj-marcar-pop--izq" : ""}`} role="dialog" aria-label="Marcar el día">
-          <span className="obj-marcar-titulo">¿Cómo ha ido el día?</span>
-          <div className="obj-marcar-opciones">
+        <div className={`cal-marca-pop${aLaIzquierda ? " cal-marca-pop--izq" : ""}`} role="dialog" aria-label="Marcar el día">
+          <span className="cal-marca-titulo">¿Cómo ha ido el día?</span>
+          <div className="cal-marca-opciones">
             {([3, 2, 1] as Productividad[]).map((n) => (
               <button
                 key={n}
                 type="button"
-                className={`obj-marcar-op obj-marcar-op--${n}${prod === n ? " obj-marcar-op--activo" : ""}`}
+                className={`cal-marca-op cal-marca-op--${n}${prod === n ? " cal-marca-op--activo" : ""}`}
                 onClick={() => setProd(prod === n ? null : n)}
                 aria-pressed={prod === n}
               >
-                <span aria-hidden="true">{n === 3 ? "🔥" : PRODUCTIVIDAD[n].emoji}</span> {PRODUCTIVIDAD[n].texto}
+                <span aria-hidden="true">{EMOJI[n]}</span> {PRODUCTIVIDAD[n].texto}
               </button>
             ))}
           </div>
-          <label className="obj-marcar-campo">
-            <span>📌 Nota del día <small>· saldrá al pasar por el día</small></span>
+          <label className="cal-marca-campo">
+            <span>Nota del día</span>
             <textarea
-              className="obj-input"
               rows={2}
               maxLength={500}
               value={nota}
               onChange={(e) => setNota(e.target.value)}
-              placeholder="Ej.: grabé dos vídeos y cerré la entrada de Solana"
+              placeholder="Una frase: qué hizo que el día fuera así"
               autoFocus
             />
           </label>
-          {error && <p className="obj-error">⚠️ {error}</p>}
-          <div className="obj-marcar-acciones">
+          {error && <p className="cal-error">{error}</p>}
+          <div className="cal-marca-acciones">
             {(actual || notaGuardada) && (
-              <button type="button" className="obj-boton obj-boton--suave obj-boton--pequeno" onClick={() => guardar(null, "")} disabled={guardando}>
+              <button type="button" className="cal-texto-boton cal-texto-boton--peligro" onClick={() => guardar(null, "")} disabled={guardando}>
                 Quitar
               </button>
             )}
-            <button type="button" className="obj-boton obj-boton--principal obj-boton--pequeno" onClick={() => guardar(prod, nota)} disabled={guardando}>
+            <button type="button" className="cal-boton" onClick={() => guardar(prod, nota)} disabled={guardando}>
               {guardando ? "Guardando…" : "Guardar"}
             </button>
           </div>

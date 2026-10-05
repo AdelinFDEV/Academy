@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { RECURSOS, VALIDAR, esRecurso, fijarProgreso, marcarPublicada } from "@/lib/objetivosValidar";
+import { RECURSOS, VALIDAR, esRecurso, fijarProgreso, marcarPublicada, mensajeError } from "@/lib/objetivosValidar";
 
 export const dynamic = "force-dynamic";
 
@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   const fotosAntes = recurso === "nota" ? await fotosDeNota(admin, id) : [];
 
   const { error: dbErr } = await admin.from(RECURSOS[recurso]).update(v.datos).eq("id", id);
-  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  if (dbErr) return NextResponse.json({ error: mensajeError(dbErr) }, { status: 500 });
 
   if (recurso === "pieza") await marcarPublicada(admin, id, v.datos);
   if (recurso === "objetivo" && v.datos.metrica === "manual") {
@@ -67,7 +67,7 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   const fotos = recurso === "nota" ? await fotosDeNota(admin, id) : [];
 
   const { error: dbErr } = await admin.from(RECURSOS[recurso]).delete().eq("id", id);
-  if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+  if (dbErr) return NextResponse.json({ error: mensajeError(dbErr) }, { status: 500 });
 
   await borrarFotos(admin, fotos);
   return NextResponse.json({ ok: true });

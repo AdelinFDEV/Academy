@@ -255,3 +255,69 @@ create table if not exists public.ingresos_dia (
 );
 
 alter table public.ingresos_dia enable row level security;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 05-10-2026 · Diario: intenciones
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Lo que el admin se propone, escrito a mano, para esta semana o este mes.
+-- Sin números: los objetivos medibles siguen en `objetivos`. `desde` es el
+-- lunes de la semana o el día 1 del mes al que pertenece.
+create table if not exists public.diario_intenciones (
+  id          uuid primary key default gen_random_uuid(),
+  texto       text not null check (length(trim(texto)) between 1 and 200),
+  horizonte   text not null check (horizonte in ('semana', 'mes')),
+  desde       date not null,
+  hecha       boolean not null default false,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.diario_intenciones enable row level security;
+
+create index if not exists diario_intenciones_desde_idx on public.diario_intenciones (desde desc);
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 05-10-2026 · Ideas: notas sueltas, sin calendario
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Una idea es texto y su canal (youtube, web o telegram), con un tick de
+-- hecha para tacharla. Nada de día ni estado: no tiene relación con el
+-- calendario; si llega a hacerse, se planea allí aparte.
+create table if not exists public.ideas (
+  id          uuid primary key default gen_random_uuid(),
+  texto       text not null check (length(trim(texto)) between 1 and 5000),
+  canal       text not null default 'youtube',
+  hecha       boolean not null default false,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
+);
+
+alter table public.ideas enable row level security;
+
+-- Para quien creó la tabla antes de que tuviera canal y tick.
+alter table public.ideas add column if not exists canal text not null default 'youtube';
+alter table public.ideas add column if not exists hecha boolean not null default false;
+alter table public.ideas drop constraint if exists ideas_canal_check;
+alter table public.ideas add constraint ideas_canal_check check (canal in ('youtube', 'web', 'telegram'));
+
+create index if not exists ideas_created_idx on public.ideas (created_at desc);
+
+-- Las ideas antiguas eran piezas del plan sin fecha: pasan a ser notas y
+-- salen del plan. Idempotente: la segunda vez ya no queda ninguna sin fecha.
+insert into public.ideas (texto, canal, created_at)
+select trim(titulo || coalesce(E'\n\n' || nullif(trim(notas), ''), '')), canal, created_at
+from public.contenido_plan
+where fecha is null;
+
+delete from public.contenido_plan where fecha is null;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 05-10-2026 · Diario: lo que te afecta y lo que te motiva
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Factores marcados en cada nota (claves de FACTORES_NEGATIVOS y
+-- FACTORES_MOTIVOS en src/lib/objetivos.ts). Son lo que permite contar qué
+-- pesa más y cruzarlo con el ánimo.
+alter table public.diario_notas add column if not exists negativos text[] not null default '{}';
+alter table public.diario_notas add column if not exists motivos text[] not null default '{}';

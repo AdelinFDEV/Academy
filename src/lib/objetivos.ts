@@ -15,8 +15,8 @@
  * («llegar a 500 miembros»), y su avance se mide desde donde empezó el periodo.
  */
 export const METRICAS = {
-  manual: { texto: "Lo cuento yo", emoji: "✍️", grupo: "yo", tipo: "flujo", ayuda: "Veces que haces algo: grabar, ir al gimnasio, llamar a alguien… Lo sumas tú con el botón +1." },
-  marca: { texto: "Una marca que mejoro", emoji: "📏", grupo: "yo", tipo: "nivel", ayuda: "Un valor que apuntas cada vez (80 kg en press banca, tu peso, tu 5 km…). Si la meta es menor que donde empiezas, el objetivo es bajar." },
+  manual: { texto: "Lo cuento yo", emoji: "✍️", grupo: "yo", tipo: "flujo", ayuda: "Veces que haces algo: grabar, escribir un guion, cerrar una colaboración… Lo sumas tú con el botón +1." },
+  marca: { texto: "Una cifra que apunto yo", emoji: "📏", grupo: "yo", tipo: "nivel", ayuda: "Un número que apuntas cada vez: seguidores en X, saldo de la cuenta de trading, visitas del mes… Si la meta es menor que donde empiezas, el objetivo es bajar." },
   entradas: { texto: "Entradas publicadas", emoji: "📝", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las entradas que publicas en la web dentro del periodo." },
   videos: { texto: "Vídeos de YouTube", emoji: "🎬", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los vídeos largos que el bot anuncia en el canal." },
   registros: { texto: "Registros nuevos", emoji: "👤", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las cuentas nuevas en la web, sin administradores." },
@@ -27,7 +27,11 @@ export const METRICAS = {
 } as const;
 export type Metrica = keyof typeof METRICAS;
 
-/** Dónde vive un objetivo: los del negocio en su pestaña; los personales, en el diario. */
+/**
+ * Ámbito de un objetivo. El panel se centra SOLO en el negocio (dinero,
+ * crecimiento y contenido) desde el 05-10-2026: la interfaz ya no ofrece
+ * «personal». Se mantiene el tipo porque la columna existe en la base.
+ */
 export const AMBITOS = { negocio: "Negocio", personal: "Personal" } as const;
 export type Ambito = keyof typeof AMBITOS;
 
@@ -62,18 +66,58 @@ export type Estado = keyof typeof ESTADOS;
 export const ESTADO_EMOJI = { idea: "💡", guion: "✍️", grabado: "🎙️", editado: "✂️", programado: "⏰", publicado: "✅" } as const;
 
 /**
- * De qué va una nota del diario. Un solo diario para todo —negocio y vida— y
- * la etiqueta es lo que permite filtrar y analizar cada cosa por separado.
+ * De qué va una nota del diario. El diario se centra en el negocio: dinero,
+ * crecimiento y gestión del contenido. Nada personal (decidido el 05-10-2026).
  */
 export const ETIQUETAS = {
-  negocio: { texto: "Negocio", emoji: "💼" },
+  dinero: { texto: "Dinero", emoji: "💶" },
+  crecimiento: { texto: "Crecimiento", emoji: "📈" },
   contenido: { texto: "Contenido", emoji: "🎬" },
-  gimnasio: { texto: "Gimnasio", emoji: "💪" },
-  salud: { texto: "Salud", emoji: "🧘" },
-  personal: { texto: "Personal", emoji: "❤️" },
-  aprendizaje: { texto: "Aprendizaje", emoji: "📚" },
 } as const;
 export type Etiqueta = keyof typeof ETIQUETAS;
+
+/**
+ * Qué te ha afectado y qué te ha motivado, marcado en cada nota del diario.
+ * Listas cerradas a propósito: son las que se pueden contar y cruzar con el
+ * ánimo para saber qué pesa más. Casi todo es del negocio; apariencia,
+ * familia y vida amorosa están porque también mueven el ánimo con el que
+ * trabajas. Las claves se guardan en la base: no se renombran.
+ */
+export const FACTORES_NEGATIVOS = {
+  pocos_ingresos: { texto: "Pocos ingresos", emoji: "💸" },
+  poco_crecimiento: { texto: "Crecer despacio", emoji: "🐢" },
+  contenido_flojo: { texto: "Contenido que no funciona", emoji: "📉" },
+  sin_tiempo: { texto: "Falta de tiempo", emoji: "⏳" },
+  cansancio: { texto: "Cansancio", emoji: "😮‍💨" },
+  procrastinar: { texto: "Procrastinar", emoji: "🛋️" },
+  comparacion: { texto: "Compararme con otros", emoji: "👀" },
+  mercado_bajista: { texto: "Mercado bajista", emoji: "🐻" },
+  criticas: { texto: "Críticas o comentarios", emoji: "💬" },
+  tecnico: { texto: "Problemas técnicos", emoji: "🛠️" },
+  incertidumbre: { texto: "Incertidumbre", emoji: "🌫️" },
+  apariencia: { texto: "Apariencia personal", emoji: "🪞" },
+  familia: { texto: "Familia", emoji: "👨‍👩‍👧" },
+  amor: { texto: "Vida amorosa", emoji: "❤️" },
+} as const;
+export type Negativo = keyof typeof FACTORES_NEGATIVOS;
+
+export const FACTORES_MOTIVOS = {
+  dinero: { texto: "Ganar dinero", emoji: "💶" },
+  nuevos_premium: { texto: "Nuevos Premium", emoji: "👑" },
+  crecimiento: { texto: "Ver crecer la comunidad", emoji: "📈" },
+  contenido_exito: { texto: "Contenido que funciona", emoji: "🚀" },
+  mensaje_seguidor: { texto: "Mensaje de un seguidor", emoji: "💌" },
+  terminar: { texto: "Terminar algo", emoji: "✅" },
+  aprender: { texto: "Aprender algo nuevo", emoji: "🧠" },
+  idea_nueva: { texto: "Una idea nueva", emoji: "💡" },
+  mercado_alcista: { texto: "Mercado alcista", emoji: "🐂" },
+  rutina: { texto: "Buena rutina", emoji: "🔁" },
+  colaboracion: { texto: "Una colaboración", emoji: "🤝" },
+  apariencia: { texto: "Apariencia personal", emoji: "🪞" },
+  familia: { texto: "Familia", emoji: "👨‍👩‍👧" },
+  amor: { texto: "Vida amorosa", emoji: "❤️" },
+} as const;
+export type Motivo = keyof typeof FACTORES_MOTIVOS;
 
 export const ANIMOS = ["Muy mal", "Mal", "Regular", "Bien", "Muy bien"] as const;
 /** Pedidos expresamente por el admin para el diario: solo en /admin/objetivos, nunca en la web pública. */
@@ -141,7 +185,26 @@ export type Nota = {
   lng: number | null;
   objetivo_id: string | null;
   ancla: boolean;
+  /** Vacíos (o sin la columna, antes del SQL) si no se marcó nada. */
+  negativos?: Negativo[] | null;
+  motivos?: Motivo[] | null;
   created_at: string;
+};
+
+/** Una idea: texto y canal, con un tick de hecha. Sin día ni estado. */
+export type Idea = { id: string; texto: string; canal: Canal; hecha: boolean; created_at: string };
+
+/** Lo que te propones en el diario, escrito a mano: sin cifras, solo hecho o no. */
+export const HORIZONTES = { semana: "Esta semana", mes: "Este mes" } as const;
+export type Horizonte = keyof typeof HORIZONTES;
+
+export type Intencion = {
+  id: string;
+  texto: string;
+  horizonte: Horizonte;
+  /** El lunes de su semana o el día 1 de su mes. */
+  desde: string;
+  hecha: boolean;
 };
 
 /** Cómo va un objetivo respecto al ritmo que necesita. */
