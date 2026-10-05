@@ -9,6 +9,21 @@ type Ctx = { params: Promise<{ recurso: string; id: string }> };
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
+type Admin = ReturnType<typeof createAdminClient>;
+
+/** Las fotos que tiene ahora una nota, para borrar del bucket las que se quiten. */
+async function fotosDeNota(admin: Admin, id: string): Promise<string[]> {
+  const { data } = await admin.from("diario_notas").select("fotos").eq("id", id).maybeSingle();
+  return (data?.fotos as string[] | null) ?? [];
+}
+
+/** Borra fotos del bucket privado. Un fallo aquí no deshace lo guardado: solo deja un archivo huérfano. */
+async function borrarFotos(admin: Admin, rutas: string[]) {
+  if (!rutas.length) return;
+  const { error } = await admin.storage.from("diario").remove(rutas);
+  if (error) console.error("[diario] No se pudieron borrar fotos:", error.message);
+}
+
 /** Edita un objetivo, una pieza o una nota. Se manda siempre la ficha entera. */
 export async function PATCH(req: NextRequest, { params }: Ctx) {
   const { error } = await requireAdmin();
@@ -24,12 +39,19 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
   if (!v.datos) return NextResponse.json({ error: v.error }, { status: 400 });
 
   const admin = createAdminClient();
+  const fotosAntes = recurso === "nota" ? await fotosDeNota(admin, id) : [];
+
   const { error: dbErr } = await admin.from(RECURSOS[recurso]).update(v.datos).eq("id", id);
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+
   if (recurso === "pieza") await marcarPublicada(admin, id, v.datos);
-  if (recurso === "objetivo" && v.datos.metrica === "manual" && body && typeof body === "object") {
+  if (recurso === "objetivo" && v.datos.metrica === "manual") {
     const progreso = Number((body as Record<string, unknown>).progreso_periodo);
     if (Number.isFinite(progreso) && progreso >= 0) await fijarProgreso(admin, id, () => progreso);
+  }
+  if (recurso === "nota") {
+    const ahora = new Set((v.datos.fotos as string[] | undefined) ?? []);
+    await borrarFotos(admin, fotosAntes.filter((f) => !ahora.has(f)));
   }
   return NextResponse.json({ ok: true });
 }
@@ -41,7 +63,12 @@ export async function DELETE(_req: NextRequest, { params }: Ctx) {
   const { recurso, id } = await params;
   if (!esRecurso(recurso) || !UUID.test(id)) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
 
-  const { error: dbErr } = await createAdminClient().from(RECURSOS[recurso]).delete().eq("id", id);
+  const admin = createAdminClient();
+  const fotos = recurso === "nota" ? await fotosDeNota(admin, id) : [];
+
+  const { error: dbErr } = await admin.from(RECURSOS[recurso]).delete().eq("id", id);
   if (dbErr) return NextResponse.json({ error: dbErr.message }, { status: 500 });
+
+  await borrarFotos(admin, fotos);
   return NextResponse.json({ ok: true });
 }

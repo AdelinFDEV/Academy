@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { RANGOS, type DatosCrecimiento, type Punto, type Rango, type Serie } from "@/lib/crecimiento";
 import { GraficaBarras, GraficaLinea, type Tono } from "./Graficas";
+import TuDinero from "./TuDinero";
+import type { DineroMes } from "@/lib/objetivosServidor";
 import { fechaCorta, nombreMes } from "../editor";
 
 /** Cuánto ha cambiado una serie dentro del rango, y su media semanal. */
@@ -54,7 +56,7 @@ function Tarjetas({ s, unidad, tono, emoji }: { s: Serie; unidad: string; tono: 
   );
 }
 
-export default function SeccionCrecimiento({ datos, rango }: { datos: DatosCrecimiento; rango: Rango }) {
+export default function SeccionCrecimiento({ datos, rango, dineroMeses }: { datos: DatosCrecimiento; rango: Rango; dineroMeses: DineroMes[] }) {
   const d = datos.dinero;
   const renuevan = d.activos - d.cancelan;
   return (
@@ -79,6 +81,9 @@ export default function SeccionCrecimiento({ datos, rango }: { datos: DatosCreci
           ))}
         </nav>
       </div>
+
+      {/* ── Tu dinero: lo primero, es la base de todo ─────────────── */}
+      <TuDinero meses={dineroMeses} hoy={datos.hoy} />
 
       {/* ── Telegram ─────────────────────────────────────────────── */}
       <section className="crec-bloque crec-bloque--telegram">
@@ -125,7 +130,7 @@ export default function SeccionCrecimiento({ datos, rango }: { datos: DatosCreci
 
       {/* ── Dinero ───────────────────────────────────────────────── */}
       <section className="crec-bloque crec-bloque--dinero">
-      <h3 className="crec-bloque-titulo"><span aria-hidden="true">💶</span> Dinero · Premium</h3>
+      <h3 className="crec-bloque-titulo"><span aria-hidden="true">👑</span> Premium · estimado por suscripciones</h3>
       <div className="obj-tiles crec-tiles--dinero">
         <div className="obj-tile obj-tile--destacado">
           <span className="obj-tile-emoji" aria-hidden="true">💰</span>

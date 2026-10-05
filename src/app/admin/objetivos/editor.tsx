@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  AMBITOS,
   ANIMOS,
   ANIMO_EMOJI,
   CANALES,
@@ -11,6 +12,7 @@ import {
   EMOCION_EMOJI,
   ESTADOS,
   ESTADO_EMOJI,
+  ETIQUETAS,
   METRICAS,
   REPETICIONES,
   REPETICION_EMOJI,
@@ -85,11 +87,11 @@ export function cifra(n: number): string {
 // ── Fichas en blanco y helpers de piezas ─────────────────────────────────────
 
 type Recurso = "objetivo" | "pieza" | "nota";
-type Datos = Record<string, string | boolean>;
+export type Datos = Record<string, string | boolean | string[]>;
 type Edicion = { recurso: Recurso; id: string | null; datos: Datos };
 
 export function objetivoVacio(mes: string): Datos {
-  return { titulo: "", metrica: "manual", repeticion: "no", meta: "", progreso_periodo: "0", desde: `${mes}-01`, hasta: finDeMes(mes), notas: "", archivado: false };
+  return { titulo: "", metrica: "manual", ambito: "negocio", repeticion: "no", meta: "", progreso_periodo: "0", marca_inicial: "", desde: `${mes}-01`, hasta: finDeMes(mes), notas: "", archivado: false };
 }
 
 export function piezaVacia(fecha: string): Datos {
@@ -97,7 +99,7 @@ export function piezaVacia(fecha: string): Datos {
 }
 
 export function notaVacia(hoy: string): Datos {
-  return { texto: "", fecha: hoy, animo: "", emocion: "", objetivo_id: "", ancla: false };
+  return { texto: "", fecha: hoy, animo: "", emocion: "", etiqueta: "", fotos: [], lugar: "", lat: "", lng: "", objetivo_id: "", ancla: false };
 }
 
 /** La ficha completa de una pieza, como la espera la API (que siempre recibe la ficha entera). */
@@ -147,7 +149,7 @@ const CABECERA: Record<Recurso, { emoji: string; nuevo: string; editar: string }
  *   …onClick={() => editor.editarPieza(p)}
  *   {editor.modal}
  */
-export function useEditor(objetivos: ObjetivoConProgreso[]) {
+export function useEditor(objetivos: ObjetivoConProgreso[], urlsFotos: Record<string, string> = {}) {
   const router = useRouter();
   const [edicion, setEdicion] = useState<Edicion | null>(null);
   const [guardando, setGuardando] = useState(false);
@@ -168,7 +170,7 @@ export function useEditor(objetivos: ObjetivoConProgreso[]) {
     setEdicion({ recurso, id, datos });
   }
 
-  function cambiar(campo: string, valor: string | boolean) {
+  function cambiar(campo: string, valor: string | boolean | string[]) {
     setEdicion((e) => (e ? { ...e, datos: { ...e.datos, [campo]: valor } } : e));
   }
 
@@ -216,7 +218,7 @@ export function useEditor(objetivos: ObjetivoConProgreso[]) {
         <div className="obj-modal-cuerpo">
           {edicion.recurso === "objetivo" && <FormObjetivo d={edicion.datos} cambiar={cambiar} />}
           {edicion.recurso === "pieza" && <FormPieza d={edicion.datos} cambiar={cambiar} />}
-          {edicion.recurso === "nota" && <CamposNota d={edicion.datos} cambiar={cambiar} objetivos={objetivos} />}
+          {edicion.recurso === "nota" && <CamposNota d={edicion.datos} cambiar={cambiar} objetivos={objetivos} urlsFotos={urlsFotos} />}
         </div>
 
         {error && <p className="obj-error">⚠️ {error}</p>}
@@ -238,7 +240,8 @@ export function useEditor(objetivos: ObjetivoConProgreso[]) {
 
   return {
     modal,
-    nuevoObjetivo: (mes: string) => abrir("objetivo", null, objetivoVacio(mes)),
+    nuevoObjetivo: (mes: string, ambito: "negocio" | "personal" = "negocio") =>
+      abrir("objetivo", null, { ...objetivoVacio(mes), ambito }),
     /** Con `canal`, sugiere también el tipo que le pega: vídeo, entrada o publicación. */
     nuevaPieza: (fecha: string, canal?: Canal) =>
       abrir("pieza", null, {
@@ -247,23 +250,25 @@ export function useEditor(objetivos: ObjetivoConProgreso[]) {
       }),
     editarObjetivo: (o: ObjetivoConProgreso) =>
       abrir("objetivo", o.id, {
-        titulo: o.titulo, metrica: o.metrica, repeticion: o.repeticion, meta: String(o.meta), progreso_periodo: String(o.actual),
+        titulo: o.titulo, metrica: o.metrica, ambito: o.ambito, repeticion: o.repeticion, meta: String(o.meta), progreso_periodo: String(o.actual),
         desde: o.desde, hasta: o.hasta ?? "", notas: o.notas ?? "", archivado: o.archivado,
       }),
     editarPieza: (p: Pieza) => abrir("pieza", p.id, datosPieza(p)),
     editarNota: (n: Nota) =>
       abrir("nota", n.id, {
         texto: n.texto, fecha: n.fecha, animo: n.animo === null ? "" : String(n.animo),
-        emocion: n.emocion ?? "", objetivo_id: n.objetivo_id ?? "", ancla: n.ancla,
+        emocion: n.emocion ?? "", etiqueta: n.etiqueta ?? "", fotos: n.fotos ?? [], lugar: n.lugar ?? "",
+        lat: n.lat === null ? "" : String(n.lat), lng: n.lng === null ? "" : String(n.lng),
+        objetivo_id: n.objetivo_id ?? "", ancla: n.ancla,
       }),
   };
 }
 
 // ── Piezas de formulario ─────────────────────────────────────────────────────
 
-type FormProps = { d: Datos; cambiar: (campo: string, valor: string | boolean) => void };
+type FormProps = { d: Datos; cambiar: (campo: string, valor: string | boolean | string[]) => void };
 
-type Opcion = { valor: string; emoji: string; texto: string; detalle?: string };
+type Opcion = { valor: string; emoji: string; texto: string; detalle?: string; tono?: string };
 
 /**
  * Una elección entre opciones visibles: chips en fila, tarjetas en rejilla o
@@ -297,7 +302,8 @@ export function Opciones({
               key={o.valor || "ninguno"}
               role="radio"
               aria-checked={activa}
-              className={`obj-opcion${activa ? " obj-opcion--activa" : ""}`}
+              className={`obj-opcion${activa ? " obj-opcion--activa" : ""}${o.tono ? " obj-opcion--tono" : ""}`}
+              style={o.tono ? ({ "--tono": o.tono } as React.CSSProperties) : undefined}
               onClick={() => onCambio(activa && permitirVacio ? "" : o.valor)}
             >
               <span className="obj-opcion-emoji" aria-hidden="true">{o.emoji}</span>
@@ -339,6 +345,8 @@ const opcionesMetrica = (grupo: "yo" | "auto"): Opcion[] =>
 
 function FormObjetivo({ d, cambiar }: FormProps) {
   const metrica = String(d.metrica) as Metrica;
+  const personal = d.ambito === "personal";
+  const esNuevo = !("progreso_periodo" in d) || d.marca_inicial !== undefined;
   const repite = d.repeticion !== "no";
   const esNivel = METRICAS[metrica]?.tipo === "nivel";
   const periodo = d.repeticion === "semanal" ? "semana" : d.repeticion === "mensual" ? "mes" : "periodo";
@@ -346,16 +354,35 @@ function FormObjetivo({ d, cambiar }: FormProps) {
   return (
     <>
       <Campo etiqueta="¿Qué quieres conseguir?">
-        <input className="obj-input obj-input--grande" value={String(d.titulo)} onChange={(e) => cambiar("titulo", e.target.value)} placeholder="Ej.: 4 vídeos al mes" required autoFocus />
+        <input className="obj-input obj-input--grande" value={String(d.titulo)} onChange={(e) => cambiar("titulo", e.target.value)} placeholder={personal ? "Ej.: Press banca a 100 kg" : "Ej.: 4 vídeos al mes"} required autoFocus />
       </Campo>
+
+      <Opciones
+        etiqueta="¿De qué parte de tu vida?"
+        forma="segmentos"
+        opciones={[
+          { valor: "negocio", emoji: "💼", texto: AMBITOS.negocio },
+          { valor: "personal", emoji: "💪", texto: `${AMBITOS.personal} (gimnasio, salud…)` },
+        ]}
+        valor={String(d.ambito || "negocio")}
+        onCambio={(v) => {
+          cambiar("ambito", v);
+          // Las métricas de la web no tienen sentido para una meta personal.
+          if (v === "personal" && METRICAS[metrica]?.grupo === "auto") cambiar("metrica", "marca");
+        }}
+      />
 
       <div className="obj-opciones-bloque">
         <span className="obj-etiqueta">¿Cómo se mide?</span>
         <div className="obj-medida">
           <span className="obj-medida-titulo">Lo apuntas tú</span>
           <Opciones etiqueta="" opciones={opcionesMetrica("yo")} valor={metrica} onCambio={(v) => cambiar("metrica", v)} forma="tarjetas" />
-          <span className="obj-medida-titulo">Se cuenta solo con los datos de la web</span>
-          <Opciones etiqueta="" opciones={opcionesMetrica("auto")} valor={metrica} onCambio={(v) => cambiar("metrica", v)} forma="tarjetas" />
+          {!personal && (
+            <>
+              <span className="obj-medida-titulo">Se cuenta solo con los datos de la web</span>
+              <Opciones etiqueta="" opciones={opcionesMetrica("auto")} valor={metrica} onCambio={(v) => cambiar("metrica", v)} forma="tarjetas" />
+            </>
+          )}
         </div>
         <p className="obj-pista">
           <span aria-hidden="true">{METRICAS[metrica]?.emoji}</span> {METRICAS[metrica]?.ayuda}
@@ -379,6 +406,11 @@ function FormObjetivo({ d, cambiar }: FormProps) {
         <Campo etiqueta={esNivel ? "🏁 Llegar a" : repite ? `🏁 Meta cada ${periodo}` : "🏁 Meta"}>
           <input className="obj-input" type="number" min="0" step="any" value={String(d.meta)} onChange={(e) => cambiar("meta", e.target.value)} required />
         </Campo>
+        {metrica === "marca" && esNuevo && (
+          <Campo etiqueta="📏 Empiezo en" ayuda="Tu marca de hoy: el punto de partida">
+            <input className="obj-input" type="number" step="any" value={String(d.marca_inicial ?? "")} onChange={(e) => cambiar("marca_inicial", e.target.value)} />
+          </Campo>
+        )}
         {metrica === "manual" && (
           <Campo etiqueta={`✍️ Llevo este ${periodo}`}>
             <input className="obj-input" type="number" min="0" step="any" value={String(d.progreso_periodo)} onChange={(e) => cambiar("progreso_periodo", e.target.value)} />
@@ -446,11 +478,22 @@ function FormPieza({ d, cambiar }: FormProps) {
   );
 }
 
+/** Un color por área del diario, para reconocerla de un vistazo. */
+const TONO_AREA: Record<keyof typeof ETIQUETAS, string> = {
+  negocio: "#ff8a3d",
+  contenido: "#ff4d5e",
+  gimnasio: "#22c55e",
+  salud: "#2dd4bf",
+  personal: "#f472b6",
+  aprendizaje: "#a78bfa",
+};
+
 /** Los campos de una nota. Lo usan la ventana de edición y el escritorio del diario. */
-export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = true }: FormProps & {
+export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = true, urlsFotos = {} }: FormProps & {
   objetivos: ObjetivoConProgreso[];
   filasTexto?: number;
   autoFocus?: boolean;
+  urlsFotos?: Record<string, string>;
 }) {
   const activos = objetivos.filter((o) => !o.archivado);
   return (
@@ -460,10 +503,18 @@ export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = 
         rows={filasTexto}
         value={String(d.texto)}
         onChange={(e) => cambiar("texto", e.target.value)}
-        placeholder="¿Cómo te sientes con el proyecto? ¿Qué ha funcionado, qué te pesa, qué quieres conseguir?"
+        placeholder="¿Qué ha pasado hoy? El proyecto, el gimnasio, cómo te sientes… lo que sea."
         aria-label="Texto de la nota"
         required
         autoFocus={autoFocus}
+      />
+
+      <Opciones
+        etiqueta="¿De qué va?"
+        opciones={(Object.keys(ETIQUETAS) as (keyof typeof ETIQUETAS)[]).map((k) => ({ valor: k, emoji: ETIQUETAS[k].emoji, texto: ETIQUETAS[k].texto, tono: TONO_AREA[k] }))}
+        valor={String(d.etiqueta ?? "")}
+        onCambio={(v) => cambiar("etiqueta", v)}
+        permitirVacio
       />
 
       <div className="obj-opciones-bloque">
@@ -497,6 +548,16 @@ export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = 
         permitirVacio
       />
 
+      <div className="obj-nota-dos">
+        <FotosNota fotos={Array.isArray(d.fotos) ? d.fotos : []} urls={urlsFotos} onCambio={(f) => cambiar("fotos", f)} />
+        <div className="obj-nota-col">
+          <UbicacionNota d={d} cambiar={cambiar} />
+          <Campo etiqueta="📅 Fecha">
+            <input className="obj-input" type="date" value={String(d.fecha)} onChange={(e) => cambiar("fecha", e.target.value)} />
+          </Campo>
+        </div>
+      </div>
+
       {activos.length > 0 && (
         <Opciones
           etiqueta="¿Va sobre algún objetivo?"
@@ -506,14 +567,205 @@ export function CamposNota({ d, cambiar, objetivos, filasTexto = 6, autoFocus = 
         />
       )}
 
-      <div className="obj-fila obj-fila--centrada">
-        <Campo etiqueta="📅 Fecha">
-          <input className="obj-input" type="date" value={String(d.fecha)} onChange={(e) => cambiar("fecha", e.target.value)} />
-        </Campo>
+      <div className="obj-nota-fijar">
         <Interruptor activo={d.ancla === true} onCambio={(v) => cambiar("ancla", v)}>
-          📌 Fijar arriba: tu visión, tu porqué
+          📌 Fijar arriba
         </Interruptor>
+        <span className="obj-ayuda">Para lo que quieres releer: tu visión a un año, por qué haces esto.</span>
       </div>
     </>
+  );
+}
+
+// ── Fotos de la nota ─────────────────────────────────────────────────────────
+
+const MAX_FOTOS = 6;
+const LADO_MAX = 1600;
+
+/**
+ * Reduce la foto en el navegador antes de subirla: WebP de 1.600 px como
+ * mucho y calidad 0,82, la misma regla que las portadas de la web. Una foto
+ * del móvil pasa de 3-8 MB a unos 300 KB, y además cabe en el límite de 4,5 MB
+ * por petición de Vercel, que con la original se superaba.
+ */
+async function comprimir(archivo: File): Promise<Blob> {
+  const imagen = await createImageBitmap(archivo);
+  const escala = Math.min(1, LADO_MAX / Math.max(imagen.width, imagen.height));
+  const lienzo = document.createElement("canvas");
+  lienzo.width = Math.round(imagen.width * escala);
+  lienzo.height = Math.round(imagen.height * escala);
+  lienzo.getContext("2d")?.drawImage(imagen, 0, 0, lienzo.width, lienzo.height);
+  imagen.close();
+  return new Promise((resolver, fallar) =>
+    lienzo.toBlob((b) => (b ? resolver(b) : fallar(new Error("No se pudo procesar la foto."))), "image/webp", 0.82)
+  );
+}
+
+function FotosNota({ fotos, urls, onCambio }: { fotos: string[]; urls: Record<string, string>; onCambio: (f: string[]) => void }) {
+  const [subiendo, setSubiendo] = useState(0);
+  const [encima, setEncima] = useState(false);
+  const [error, setError] = useState("");
+  // Vista previa local de lo recién subido: aún no tiene enlace firmado.
+  const [previas, setPrevias] = useState<Record<string, string>>({});
+  const quedan = MAX_FOTOS - fotos.length;
+
+  async function subir(lista: File[]) {
+    const archivos = lista.filter((f) => f.type.startsWith("image/")).slice(0, quedan);
+    if (!archivos.length) return;
+    setError("");
+    setSubiendo(archivos.length);
+    const nuevas: string[] = [];
+    for (const archivo of archivos) {
+      try {
+        const blob = await comprimir(archivo);
+        const datos = new FormData();
+        datos.append("foto", blob, "foto.webp");
+        const res = await fetch("/api/admin/plan/foto", { method: "POST", body: datos });
+        const json: { ruta?: string; error?: string } = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ruta) throw new Error(json.error || "No se pudo subir la foto.");
+        nuevas.push(json.ruta);
+        const ruta = json.ruta;
+        // data: y no blob:, porque la CSP de la web solo permite imágenes
+        // 'self', data: y https: (next.config.ts).
+        const previa = await new Promise<string>((ok) => {
+          const lector = new FileReader();
+          lector.onload = () => ok(String(lector.result));
+          lector.readAsDataURL(blob);
+        });
+        setPrevias((p) => ({ ...p, [ruta]: previa }));
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "No se pudo subir la foto.");
+      }
+      setSubiendo((n) => n - 1);
+    }
+    if (nuevas.length) onCambio([...fotos, ...nuevas]);
+  }
+
+  const zona = quedan > 0 && (
+    <label
+      className={[
+        "obj-fotos-zona",
+        fotos.length ? "obj-fotos-zona--mini" : "",
+        encima ? "obj-fotos-zona--encima" : "",
+        subiendo ? "obj-fotos-zona--subiendo" : "",
+      ].filter(Boolean).join(" ")}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setEncima(true);
+      }}
+      onDragLeave={() => setEncima(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setEncima(false);
+        subir(Array.from(e.dataTransfer.files));
+      }}
+    >
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        disabled={subiendo > 0}
+        onChange={(e) => {
+          const lista = Array.from(e.target.files ?? []);
+          e.target.value = "";
+          subir(lista);
+        }}
+      />
+      <span className="obj-fotos-zona-icono" aria-hidden="true">{subiendo ? "⏳" : encima ? "📥" : "📷"}</span>
+      {fotos.length ? (
+        <span className="obj-fotos-zona-titulo">{subiendo ? "Subiendo…" : "Añadir"}</span>
+      ) : (
+        <>
+          <span className="obj-fotos-zona-titulo">
+            {subiendo ? `Subiendo ${subiendo} foto${subiendo === 1 ? "" : "s"}…` : encima ? "Suelta para añadir" : "Añade fotos"}
+          </span>
+          <span className="obj-fotos-zona-sub">Pulsa o arrastra aquí · hasta {MAX_FOTOS} · se comprimen solas</span>
+        </>
+      )}
+    </label>
+  );
+
+  return (
+    <div className="obj-opciones-bloque obj-fotos-bloque">
+      <span className="obj-etiqueta">
+        📷 Fotos {fotos.length > 0 && <span className="obj-etiqueta-dato">{fotos.length}/{MAX_FOTOS}</span>}
+      </span>
+      {fotos.length === 0 ? (
+        zona
+      ) : (
+        <div className="obj-fotos">
+          {fotos.map((f) => {
+            const src = previas[f] ?? urls[f];
+            return (
+              <div key={f} className="obj-foto">
+                {src ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- enlace firmado y privado: no pasa por el optimizador de Next
+                  <img src={src} alt="" />
+                ) : (
+                  <span className="obj-foto-sin">📷</span>
+                )}
+                <button type="button" className="obj-foto-quitar" onClick={() => onCambio(fotos.filter((x) => x !== f))} aria-label="Quitar foto">
+                  ✕
+                </button>
+              </div>
+            );
+          })}
+          {zona}
+        </div>
+      )}
+      {error && <p className="obj-error">⚠️ {error}</p>}
+    </div>
+  );
+}
+
+// ── Ubicación de la nota ─────────────────────────────────────────────────────
+
+function UbicacionNota({ d, cambiar }: FormProps) {
+  const [buscando, setBuscando] = useState(false);
+  const [error, setError] = useState("");
+  const tieneCoordenadas = String(d.lat ?? "") !== "" && String(d.lng ?? "") !== "";
+
+  function usarUbicacion() {
+    if (!navigator.geolocation) return setError("Este navegador no da la ubicación.");
+    setBuscando(true);
+    setError("");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        cambiar("lat", pos.coords.latitude.toFixed(6));
+        cambiar("lng", pos.coords.longitude.toFixed(6));
+        setBuscando(false);
+      },
+      () => {
+        setError("No se pudo obtener la ubicación. Revisa el permiso del navegador.");
+        setBuscando(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  return (
+    <div className="obj-opciones-bloque">
+      <span className="obj-etiqueta">📍 ¿Dónde estás?</span>
+      <div className="obj-ubicacion">
+        <input
+          className="obj-input"
+          value={String(d.lugar ?? "")}
+          onChange={(e) => cambiar("lugar", e.target.value)}
+          placeholder="Gimnasio, casa, oficina…"
+          maxLength={120}
+        />
+        {tieneCoordenadas ? (
+          <span className="obj-ubicacion-ok">
+            <a href={`https://www.google.com/maps?q=${d.lat},${d.lng}`} target="_blank" rel="noopener noreferrer">🗺️ Ver en el mapa</a>
+            <button type="button" className="obj-enlace" onClick={() => { cambiar("lat", ""); cambiar("lng", ""); }}>Quitar</button>
+          </span>
+        ) : (
+          <button type="button" className="obj-boton obj-boton--suave obj-boton--pequeno" onClick={usarUbicacion} disabled={buscando}>
+            {buscando ? "⏳ Buscando…" : "📍 Usar mi ubicación"}
+          </button>
+        )}
+      </div>
+      {error && <p className="obj-error">⚠️ {error}</p>}
+    </div>
   );
 }

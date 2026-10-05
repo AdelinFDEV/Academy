@@ -44,7 +44,17 @@ async function guardarProgreso(
   id: string,
   body: Record<string, unknown>
 ) {
-  if (recurso !== "objetivo" || body.metrica !== "manual") return;
-  const progreso = Number(body.progreso_periodo);
-  if (Number.isFinite(progreso) && progreso > 0) await fijarProgreso(admin, id, () => progreso);
+  if (recurso !== "objetivo") return;
+  if (body.metrica === "manual") {
+    const progreso = Number(body.progreso_periodo);
+    if (Number.isFinite(progreso) && progreso > 0) await fijarProgreso(admin, id, () => progreso);
+  }
+  // «Empiezo en»: la primera marca, que es el punto de partida del objetivo.
+  if (body.metrica === "marca" && body.marca_inicial !== "" && body.marca_inicial !== undefined) {
+    const valor = Number(body.marca_inicial);
+    const fecha = typeof body.desde === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.desde) ? body.desde : null;
+    if (Number.isFinite(valor) && fecha) {
+      await admin.from("objetivo_marcas").upsert({ objetivo_id: id, fecha, valor }, { onConflict: "objetivo_id,fecha" });
+    }
+  }
 }

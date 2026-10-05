@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { RANGOS, cargarCrecimiento, type Rango } from "@/lib/crecimiento";
+import { cargarDineroPorMes } from "@/lib/objetivosServidor";
 import SeccionCrecimiento from "./SeccionCrecimiento";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function CrecimientoPage({ searchParams }: { searchParams: Promise<{ rango?: string }> }) {
   const { rango: pedido } = await searchParams;
   const rango: Rango = pedido && pedido in RANGOS ? (pedido as Rango) : "90";
-  const datos = await cargarCrecimiento(createAdminClient(), rango);
-  return <SeccionCrecimiento datos={datos} rango={rango} />;
+  const admin = createAdminClient();
+  const [datos, dineroMeses] = await Promise.all([cargarCrecimiento(admin, rango), cargarDineroPorMes(admin)]);
+  return <SeccionCrecimiento datos={datos} rango={rango} dineroMeses={dineroMeses} />;
 }

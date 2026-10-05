@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { cargarObjetivos } from "@/lib/objetivosServidor";
+import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
+import { cargarBalances, cargarObjetivos, premiumEstimadoPorDia } from "@/lib/objetivosServidor";
 import { diaRumania, hoyISO, type Nota } from "@/lib/objetivos";
 import SeccionDiario from "./SeccionDiario";
 import FaltaSql from "../FaltaSql";
@@ -22,13 +23,28 @@ export default async function DiarioPage() {
   // Lo publicado en las últimas 13 semanas, para cruzarlo con el ánimo
   // («¿me siento mejor las semanas que publico?»).
   const desde = haceTreceSemanas();
-  const [{ objetivos, faltaSql }, notasRes, entradasRes, videosRes] = await Promise.all([
+  const hoy = hoyISO();
+  const [{ objetivos, faltaSql }, notasRes, entradasRes, videosRes, balancesHoy, premiumHoy] = await Promise.all([
     cargarObjetivos(admin),
-    admin.from("diario_notas").select("*").order("fecha", { ascending: false }).order("created_at", { ascending: false }).limit(2000),
+    todasLasFilas((a, b) =>
+      admin.from("diario_notas").select("*").order("fecha", { ascending: false }).order("created_at", { ascending: false }).order("id").range(a, b)
+    ),
     admin.from("posts").select("created_at").eq("published", true).gte("created_at", desde),
     admin.from("content_announcements").select("announced_at").eq("kind", "video").gte("announced_at", desde),
+    cargarBalances(admin, hoy, hoy),
+    premiumEstimadoPorDia(admin, hoy, hoy),
   ]);
   if (faltaSql) return <FaltaSql />;
+
+  // Las fotos viven en un bucket PRIVADO: se enseñan con enlaces firmados que
+  // caducan en una hora, pedidos todos de una vez.
+  const notas = notasRes as Nota[];
+  const rutas = notas.flatMap((n) => n.fotos ?? []);
+  const urlsFotos: Record<string, string> = {};
+  if (rutas.length) {
+    const { data: firmadas } = await admin.storage.from("diario").createSignedUrls(rutas, 3600);
+    for (const f of firmadas ?? []) if (f.path && f.signedUrl) urlsFotos[f.path] = f.signedUrl;
+  }
 
   const publicaciones = [
     ...(entradasRes.data ?? []).map((p) => diaRumania(p.created_at)),
@@ -37,10 +53,13 @@ export default async function DiarioPage() {
 
   return (
     <SeccionDiario
-      hoy={hoyISO()}
+      hoy={hoy}
       objetivos={objetivos}
-      notas={(notasRes.data ?? []) as Nota[]}
+      notas={notas}
       publicaciones={publicaciones}
+      urlsFotos={urlsFotos}
+      balanceHoy={balancesHoy[hoy]}
+      premiumHoy={premiumHoy[hoy] ?? 0}
     />
   );
 }

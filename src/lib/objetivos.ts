@@ -15,7 +15,8 @@
  * («llegar a 500 miembros»), y su avance se mide desde donde empezó el periodo.
  */
 export const METRICAS = {
-  manual: { texto: "Lo cuento yo", emoji: "✍️", grupo: "yo", tipo: "flujo", ayuda: "Para lo que la web no puede medir: grabar, entrenar, llamar a alguien… Lo sumas tú con el botón +1." },
+  manual: { texto: "Lo cuento yo", emoji: "✍️", grupo: "yo", tipo: "flujo", ayuda: "Veces que haces algo: grabar, ir al gimnasio, llamar a alguien… Lo sumas tú con el botón +1." },
+  marca: { texto: "Una marca que mejoro", emoji: "📏", grupo: "yo", tipo: "nivel", ayuda: "Un valor que apuntas cada vez (80 kg en press banca, tu peso, tu 5 km…). Si la meta es menor que donde empiezas, el objetivo es bajar." },
   entradas: { texto: "Entradas publicadas", emoji: "📝", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las entradas que publicas en la web dentro del periodo." },
   videos: { texto: "Vídeos de YouTube", emoji: "🎬", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los vídeos largos que el bot anuncia en el canal." },
   registros: { texto: "Registros nuevos", emoji: "👤", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las cuentas nuevas en la web, sin administradores." },
@@ -25,6 +26,10 @@ export const METRICAS = {
   suscriptores_youtube: { texto: "Suscriptores de YouTube", emoji: "▶️", grupo: "auto", tipo: "nivel", ayuda: "Un total a alcanzar. Se fotografía cada día a las 04:00 con la clave de YouTube." },
 } as const;
 export type Metrica = keyof typeof METRICAS;
+
+/** Dónde vive un objetivo: los del negocio en su pestaña; los personales, en el diario. */
+export const AMBITOS = { negocio: "Negocio", personal: "Personal" } as const;
+export type Ambito = keyof typeof AMBITOS;
 
 export const REPETICIONES = { no: "Una sola vez", semanal: "Cada semana", mensual: "Cada mes" } as const;
 export const REPETICION_EMOJI = { no: "🎯", semanal: "🔁", mensual: "📅" } as const;
@@ -55,6 +60,20 @@ export const ESTADOS = {
 } as const;
 export type Estado = keyof typeof ESTADOS;
 export const ESTADO_EMOJI = { idea: "💡", guion: "✍️", grabado: "🎙️", editado: "✂️", programado: "⏰", publicado: "✅" } as const;
+
+/**
+ * De qué va una nota del diario. Un solo diario para todo —negocio y vida— y
+ * la etiqueta es lo que permite filtrar y analizar cada cosa por separado.
+ */
+export const ETIQUETAS = {
+  negocio: { texto: "Negocio", emoji: "💼" },
+  contenido: { texto: "Contenido", emoji: "🎬" },
+  gimnasio: { texto: "Gimnasio", emoji: "💪" },
+  salud: { texto: "Salud", emoji: "🧘" },
+  personal: { texto: "Personal", emoji: "❤️" },
+  aprendizaje: { texto: "Aprendizaje", emoji: "📚" },
+} as const;
+export type Etiqueta = keyof typeof ETIQUETAS;
 
 export const ANIMOS = ["Muy mal", "Mal", "Regular", "Bien", "Muy bien"] as const;
 /** Pedidos expresamente por el admin para el diario: solo en /admin/objetivos, nunca en la web pública. */
@@ -88,6 +107,7 @@ export type Objetivo = {
   titulo: string;
   metrica: Metrica;
   meta: number;
+  ambito: Ambito;
   repeticion: Repeticion;
   desde: string;
   /** Vacío solo en los que se repiten: sin fin. */
@@ -113,6 +133,12 @@ export type Nota = {
   texto: string;
   animo: number | null;
   emocion: Emocion | null;
+  etiqueta: Etiqueta | null;
+  /** Rutas dentro del bucket privado `diario`. */
+  fotos: string[];
+  lugar: string | null;
+  lat: number | null;
+  lng: number | null;
   objetivo_id: string | null;
   ancla: boolean;
   created_at: string;
@@ -138,7 +164,25 @@ export type ObjetivoConProgreso = Objetivo & {
   ritmo: Ritmo;
   /** Periodos anteriores ya cerrados, del más antiguo al más reciente (hasta 6). */
   historial: PeriodoCerrado[];
+  /** Solo en los de tipo «marca»: todo lo apuntado, del más antiguo al más reciente. */
+  marcas: { fecha: string; valor: number }[];
 };
+
+/**
+ * ¿Se alcanzó la meta? En los que bajan (meta menor que el punto de partida,
+ * como perder peso) se cumple al llegar a la meta o por debajo.
+ */
+export function cumpleMeta(meta: number, base: number, valor: number): boolean {
+  return meta < base ? valor <= meta : valor >= meta;
+}
+
+/** Cuánto del camino lleva, de 0 a 100, sirva el objetivo para subir o para bajar. */
+export function porcentajeAvance(o: { metrica: Metrica; meta: number; base: number; actual: number }): number {
+  const base = METRICAS[o.metrica].tipo === "nivel" ? o.base : 0;
+  const recorrido = o.meta - base;
+  if (recorrido === 0) return cumpleMeta(o.meta, base, o.actual) ? 100 : 0;
+  return Math.min(100, Math.max(0, ((o.actual - base) / recorrido) * 100));
+}
 
 const DIA = 24 * 60 * 60 * 1000;
 
@@ -209,6 +253,28 @@ function periodoQueContiene(fecha: string, repeticion: "semanal" | "mensual"): P
 }
 
 /**
+ * Los periodos de un objetivo que tocan el rango [desde, hasta], recortados a
+ * él. Lo usa el calendario para pintar cada objetivo como una franja que cubre
+ * sus días: uno solo si no se repite, o cada semana o cada mes si sí.
+ */
+export function periodosEnRango(o: Objetivo, desde: string, hasta: string): Periodo[] {
+  const fin = o.hasta ?? "9999-12-31";
+  if (o.desde > hasta || fin < desde) return [];
+  if (o.repeticion === "no") {
+    return [{ desde: o.desde > desde ? o.desde : desde, hasta: fin < hasta ? fin : hasta }];
+  }
+  const periodos: Periodo[] = [];
+  let cursor = periodoQueContiene(o.desde > desde ? o.desde : desde, o.repeticion);
+  while (cursor.desde <= hasta && cursor.desde <= fin) {
+    const ini = [cursor.desde, desde, o.desde].sort().at(-1) as string;
+    const fi = [cursor.hasta, hasta, fin].sort()[0];
+    if (ini <= fi) periodos.push({ desde: ini, hasta: fi });
+    cursor = periodoQueContiene(sumarDiasISO(cursor.hasta, 1), o.repeticion);
+  }
+  return periodos;
+}
+
+/**
  * El periodo que se mide ahora y los anteriores ya cerrados (hasta `cuantos`).
  *
  * - Una sola vez: su único periodo; sin historial.
@@ -253,16 +319,20 @@ export function calcularRitmo(meta: number, base: number, actual: number, period
   const ini = Date.parse(iniIso);
   const fin = Date.parse(finIso);
   const fraccion = Math.min(1, Math.max(0, (ahora - ini) / (fin - ini)));
-  const camino = Math.max(0, meta - base);
+  // El camino puede ser hacia abajo (bajar de peso): se mide en el sentido de
+  // la meta, así que «avanzar» es acercarse a ella venga de donde venga.
+  const camino = meta - base;
   const esperado = base + camino * fraccion;
-  const margen = Math.max(camino, 1) * 0.1;
+  const sentido = camino < 0 ? -1 : 1;
+  const margen = Math.max(Math.abs(camino), 1) * 0.1;
+  const adelanto = (actual - esperado) * sentido;
 
   let ritmo: Ritmo;
-  if (actual >= meta) ritmo = "cumplido";
+  if (cumpleMeta(meta, base, actual) && (camino !== 0 || actual === meta)) ritmo = "cumplido";
   else if (ahora >= fin) ritmo = "fallido";
   else if (ahora < ini) ritmo = "pendiente";
-  else if (actual >= esperado + margen) ritmo = "adelantado";
-  else if (actual >= esperado - margen) ritmo = "en-ritmo";
+  else if (adelanto >= margen) ritmo = "adelantado";
+  else if (adelanto >= -margen) ritmo = "en-ritmo";
   else ritmo = "retrasado";
 
   return { esperado, ritmo };
@@ -285,3 +355,31 @@ export function estadoPieza(p: Pieza, hoy: string): "hecha" | "vencida" | "en-ri
   return "en-curso";
 }
 
+
+// ── Cierre del día: productividad y dinero ───────────────────────────────────
+
+/** Cómo fue el día. 3 arriba: es la escala que se guarda en `dias_balance`. */
+export const PRODUCTIVIDAD = {
+  3: { texto: "Muy productivo", emoji: "✅", corto: "¡Muy productivo!" },
+  2: { texto: "Productivo", emoji: "✅", corto: "Productivo" },
+  1: { texto: "No productivo", emoji: "❌", corto: "No productivo" },
+} as const;
+export type Productividad = keyof typeof PRODUCTIVIDAD;
+
+/** De dónde viene el dinero de cada día. */
+export const FUENTES = {
+  premium: { texto: "Premium", emoji: "👑" },
+  youtube: { texto: "YouTube", emoji: "▶️" },
+  trading: { texto: "Trading", emoji: "📈" },
+  asesorias: { texto: "Asesorías", emoji: "🤝" },
+  otros: { texto: "Otros", emoji: "💶" },
+} as const;
+export type Fuente = keyof typeof FUENTES;
+
+export type Balance = {
+  fecha: string;
+  productividad: Productividad | null;
+  nota: string | null;
+  ingresos: Partial<Record<Fuente, number>>;
+  total: number;
+};

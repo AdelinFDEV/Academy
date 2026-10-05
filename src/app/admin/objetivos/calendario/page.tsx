@@ -1,8 +1,8 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_URL } from "@/lib/site";
-import { cargarObjetivos } from "@/lib/objetivosServidor";
+import { cargarBalances, cargarDineroPorMes, cargarObjetivos, premiumEstimadoPorDia } from "@/lib/objetivosServidor";
 import { diaRumania, hoyISO, medianocheRumania, type Pieza } from "@/lib/objetivos";
-import SeccionCalendario, { type Hecho } from "./SeccionCalendario";
+import SeccionCalendario, { type Animo, type Hecho } from "./SeccionCalendario";
 import FaltaSql from "../FaltaSql";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,15 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
   const desdeInstante = medianocheRumania(ini).toISOString();
   const hastaInstante = medianocheRumania(fin).toISOString();
 
-  const [{ objetivos, faltaSql }, piezasRes, entradasRes, videosRes] = await Promise.all([
+  // El ánimo del diario de este mes y del anterior, para pintarlo en cada día
+  // y comparar en el resumen. Solo las columnas que hacen falta: el texto de
+  // las notas no sale del diario.
+  const [a, m] = mes.split("-").map(Number);
+  const iniAnterior = new Date(Date.UTC(a, m - 2, 1)).toISOString().slice(0, 10);
+
+  const finMes = new Date(Date.parse(`${fin}T00:00:00Z`) - 86400000).toISOString().slice(0, 10);
+
+  const [{ objetivos, faltaSql }, piezasRes, entradasRes, videosRes, animosRes, balances, premiumEstimado, dineroMeses] = await Promise.all([
     cargarObjetivos(admin),
     admin.from("contenido_plan").select("*").gte("fecha", ini).lt("fecha", fin).order("fecha"),
     // Lo que de verdad salió ese mes, aunque no estuviera en el plan.
@@ -38,6 +46,12 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
       .gte("created_at", desdeInstante).lt("created_at", hastaInstante),
     admin.from("content_announcements").select("ref, announced_at").eq("kind", "video")
       .gte("announced_at", desdeInstante).lt("announced_at", hastaInstante),
+    admin.from("diario_notas").select("fecha, animo, emocion, etiqueta")
+      .gte("fecha", iniAnterior).lt("fecha", fin),
+    // Cierre del día: productividad y dinero, de este mes y del anterior.
+    cargarBalances(admin, iniAnterior, finMes),
+    premiumEstimadoPorDia(admin, ini, finMes),
+    cargarDineroPorMes(admin),
   ]);
   if (faltaSql) return <FaltaSql />;
 
@@ -69,6 +83,10 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
       objetivos={objetivos}
       piezas={piezas}
       hechos={sueltos}
+      animos={(animosRes.data ?? []) as Animo[]}
+      balances={balances}
+      premiumEstimado={premiumEstimado}
+      dineroMeses={dineroMeses}
     />
   );
 }

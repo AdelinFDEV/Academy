@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { METRICAS, REPETICIONES, REPETICION_EMOJI, type ObjetivoConProgreso, type Ritmo } from "@/lib/objetivos";
+import {
+  METRICAS, REPETICIONES, REPETICION_EMOJI, cumpleMeta, porcentajeAvance, type Ambito, type ObjetivoConProgreso, type Ritmo,
+} from "@/lib/objetivos";
 import { RITMO, cifra, diasEntre, fechaCorta, nombreMes, useEditor } from "./editor";
 
 /** El resumen de arriba: primero lo que pide atención. */
@@ -16,9 +18,12 @@ const RESUMEN: { ritmos: Ritmo[]; texto: string; emoji: string; tono: string }[]
 export default function SeccionObjetivos({ hoy, objetivos }: { hoy: string; objetivos: ObjetivoConProgreso[] }) {
   const editor = useEditor(objetivos);
   const [verArchivados, setVerArchivados] = useState(false);
+  const [ambito, setAmbito] = useState<Ambito | "">("");
 
-  const activos = objetivos.filter((o) => !o.archivado);
-  const archivados = objetivos.filter((o) => o.archivado);
+  const delAmbito = objetivos.filter((o) => !ambito || o.ambito === ambito);
+  const activos = delAmbito.filter((o) => !o.archivado);
+  const archivados = delAmbito.filter((o) => o.archivado);
+  const cuenta = (a: Ambito | "") => objetivos.filter((o) => !o.archivado && (!a || o.ambito === a)).length;
   const bien = activos.filter((o) => ["cumplido", "adelantado", "en-ritmo"].includes(o.ritmo)).length;
 
   return (
@@ -28,9 +33,23 @@ export default function SeccionObjetivos({ hoy, objetivos }: { hoy: string; obje
           <h2 className="obj-titulo-seccion">🎯 Tus objetivos</h2>
           <p className="obj-sub-seccion">Cada tarjeta te dice si vas por delante o por detrás del ritmo que necesitas.</p>
         </div>
-        <button className="obj-boton obj-boton--principal" onClick={() => editor.nuevoObjetivo(hoy.slice(0, 7))}>
+        <button className="obj-boton obj-boton--principal" onClick={() => editor.nuevoObjetivo(hoy.slice(0, 7), ambito || "negocio")}>
           ＋ Nuevo objetivo
         </button>
+      </div>
+
+      <div className="obj-areas" role="radiogroup" aria-label="Filtrar por ámbito">
+        {([["", "🗂️", "Todos"], ["negocio", "💼", "Negocio"], ["personal", "💪", "Personal"]] as const).map(([valor, emoji, texto]) => (
+          <button
+            key={valor || "todos"}
+            role="radio"
+            aria-checked={ambito === valor}
+            className={`obj-area${ambito === valor ? " obj-area--activa" : ""}`}
+            onClick={() => setAmbito(valor)}
+          >
+            <span aria-hidden="true">{emoji}</span> {texto} <small>{cuenta(valor)}</small>
+          </button>
+        ))}
       </div>
 
       {activos.length > 0 && (
@@ -100,7 +119,7 @@ function nombrePeriodo(o: ObjetivoConProgreso, p: { desde: string; hasta: string
 }
 
 /** Anillo de progreso. El porcentaje va escrito dentro: el color nunca va solo. */
-function Anillo({ pct, tono }: { pct: number; tono: string }) {
+export function Anillo({ pct, tono }: { pct: number; tono: string }) {
   const r = 30;
   const c = 2 * Math.PI * r;
   return (
@@ -114,7 +133,7 @@ function Anillo({ pct, tono }: { pct: number; tono: string }) {
   );
 }
 
-const TONO: Record<Ritmo, string> = {
+export const TONO: Record<Ritmo, string> = {
   cumplido: "ok", adelantado: "ok", "en-ritmo": "neutro", retrasado: "warn", fallido: "bad", pendiente: "off",
 };
 
@@ -122,20 +141,39 @@ export function TarjetaObjetivo({ o, hoy, onEditar }: { o: ObjetivoConProgreso; 
   const router = useRouter();
   const [sumando, setSumando] = useState(false);
 
+  const [nuevaMarca, setNuevaMarca] = useState("");
   const esNivel = METRICAS[o.metrica].tipo === "nivel";
   const base = esNivel ? o.base : 0;
-  const recorrido = Math.max(o.meta - base, 1);
-  const pct = Math.min(100, Math.max(0, ((o.actual - base) / recorrido) * 100));
-  const marca = Math.min(100, Math.max(0, ((o.esperado - base) / recorrido) * 100));
+  const pct = porcentajeAvance(o);
+  const marca = porcentajeAvance({ ...o, actual: o.esperado });
   const quedan = diasEntre(hoy, o.periodo.hasta);
   const r = RITMO[o.ritmo];
   const tono = TONO[o.ritmo];
   const euros = o.metrica === "ingresos";
   const valor = (n: number) => (euros ? `${cifra(n)} €` : cifra(n));
-  const falta = Math.max(0, o.meta - o.actual);
+  const falta = cumpleMeta(o.meta, base, o.actual) ? 0 : Math.abs(o.meta - o.actual);
 
   const cumplidos = o.historial.filter((h) => h.cumplido).length;
   const unidad = o.repeticion === "semanal" ? "semanas" : "meses";
+
+  async function apuntarMarca(e: React.FormEvent) {
+    e.preventDefault();
+    if (nuevaMarca.trim() === "") return;
+    setSumando(true);
+    const res = await fetch(`/api/admin/plan/objetivo/${o.id}/marca`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ valor: nuevaMarca.replace(",", ".") }),
+    }).catch(() => null);
+    setSumando(false);
+    if (res?.ok) {
+      setNuevaMarca("");
+      router.refresh();
+    } else {
+      const json: { error?: string } = (await res?.json().catch(() => ({}))) ?? {};
+      alert(json.error || "No se pudo apuntar la marca.");
+    }
+  }
 
   async function sumar(delta: number) {
     setSumando(true);
@@ -198,6 +236,27 @@ export function TarjetaObjetivo({ o, hoy, onEditar }: { o: ObjetivoConProgreso; 
         </span>
       </div>
 
+      {o.metrica === "marca" && (
+        <>
+          {o.marcas.length >= 2 && <MiniGrafica marcas={o.marcas} meta={o.meta} />}
+          <form className="obj-marca" onSubmit={apuntarMarca}>
+            <input
+              className="obj-input"
+              type="number"
+              step="any"
+              inputMode="decimal"
+              value={nuevaMarca}
+              onChange={(e) => setNuevaMarca(e.target.value)}
+              placeholder={o.marcas.length ? `Última: ${cifra(o.marcas[o.marcas.length - 1].valor)}` : "Tu marca de hoy"}
+              aria-label="Nueva marca"
+            />
+            <button type="submit" className="obj-boton obj-boton--principal" disabled={sumando || nuevaMarca.trim() === ""}>
+              📏 Apuntar
+            </button>
+          </form>
+        </>
+      )}
+
       {o.metrica === "manual" && (
         <div className="obj-sumar">
           <button onClick={() => sumar(-1)} disabled={sumando || o.actual <= 0} aria-label="Restar uno" className="obj-sumar-menos">−1</button>
@@ -231,5 +290,34 @@ export function TarjetaObjetivo({ o, hoy, onEditar }: { o: ObjetivoConProgreso; 
       {o.notas && <p className="obj-card-notas">💭 {o.notas}</p>}
       {o.repeticion !== "no" && <span className="obj-card-repite">{REPETICIONES[o.repeticion]}</span>}
     </article>
+  );
+}
+
+/** La evolución de las marcas apuntadas, con la meta como línea de puntos. */
+function MiniGrafica({ marcas, meta }: { marcas: { fecha: string; valor: number }[]; meta: number }) {
+  const ultimas = marcas.slice(-20);
+  const valores = [...ultimas.map((m) => m.valor), meta];
+  const min = Math.min(...valores);
+  const max = Math.max(...valores);
+  const rango = max - min || 1;
+  const ancho = 240;
+  const alto = 56;
+  const x = (i: number) => (i / Math.max(ultimas.length - 1, 1)) * ancho;
+  const y = (v: number) => 4 + (1 - (v - min) / rango) * (alto - 8);
+  const linea = ultimas.map((m, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(m.valor).toFixed(1)}`).join(" ");
+  const primera = ultimas[0];
+  const ultima = ultimas[ultimas.length - 1];
+  const cambio = ultima.valor - primera.valor;
+  return (
+    <div className="obj-mini">
+      <svg viewBox={`0 0 ${ancho} ${alto}`} preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" x2={ancho} y1={y(meta)} y2={y(meta)} className="obj-mini-meta" />
+        <path d={linea} className="obj-mini-linea" />
+        <circle cx={x(ultimas.length - 1)} cy={y(ultima.valor)} r="3.5" className="obj-mini-punto" />
+      </svg>
+      <span className="obj-mini-texto">
+        {cambio === 0 ? "➖ sin cambios" : `${cambio > 0 ? "📈 +" : "📉 "}${cifra(cambio)}`} desde el {fechaCorta(primera.fecha)} · {ultimas.length} marcas
+      </span>
+    </div>
   );
 }

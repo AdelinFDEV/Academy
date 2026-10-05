@@ -2,10 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ANIMOS, ANIMO_EMOJI, EMOCIONES, EMOCION_EMOJI, METRICAS, type Emocion, type Nota, type ObjetivoConProgreso } from "@/lib/objetivos";
-import { CamposNota, cifra, enviar, fechaCorta, nombreMes, notaVacia, sumarDias, useEditor } from "../editor";
+import { ANIMOS, ANIMO_EMOJI, EMOCIONES, EMOCION_EMOJI, ETIQUETAS, METRICAS, PRODUCTIVIDAD, type Balance, type Emocion, type Etiqueta, type Nota, type ObjetivoConProgreso } from "@/lib/objetivos";
+import ResumenMetas from "./ResumenMetas";
+import { PildoraDia, useCierreDia } from "../CierreDia";
+import { type Datos, CamposNota, cifra, enviar, fechaCorta, nombreMes, notaVacia, sumarDias, useEditor } from "../editor";
 
-type Props = { hoy: string; objetivos: ObjetivoConProgreso[]; notas: Nota[]; publicaciones: string[] };
+type Props = {
+  hoy: string;
+  objetivos: ObjetivoConProgreso[];
+  notas: Nota[];
+  publicaciones: string[];
+  /** Enlaces firmados (1 h) de las fotos del bucket privado, por ruta. */
+  urlsFotos: Record<string, string>;
+  /** El cierre de hoy, si ya se hizo, y lo que Premium habría cobrado hoy. */
+  balanceHoy?: Balance;
+  premiumHoy: number;
+};
 
 const DIAS_GRAFICA = 60;
 const SEMANAS = 12;
@@ -115,6 +127,15 @@ function analizar(notas: Nota[], hoy: string, publicaciones: string[], objetivos
     .filter((o) => o.notas > 0)
     .sort((a, b) => b.notas - a.notas);
 
+  // Ánimo por área: con qué ánimo escribes del negocio, del gimnasio…
+  const porArea = (Object.keys(ETIQUETAS) as Etiqueta[])
+    .map((e) => {
+      const deEsta = conAnimo.filter((n) => n.etiqueta === e);
+      return { etiqueta: e, animo: media(deEsta.map((n) => n.animo)), notas: deEsta.length };
+    })
+    .filter((e) => e.notas > 0)
+    .sort((x, y) => y.notas - x.notas);
+
   // Racha: días seguidos con alguna nota, terminando hoy o ayer.
   const dias = new Set(notas.map((n) => n.fecha));
   let racha = 0;
@@ -125,7 +146,7 @@ function analizar(notas: Nota[], hoy: string, publicaciones: string[], objetivos
   }
 
   return {
-    media30, mediaPrev, porDia, reparto, meses, emociones, semanas, comparacion, porObjetivo, racha,
+    media30, mediaPrev, porDia, reparto, meses, emociones, semanas, comparacion, porObjetivo, porArea, racha,
     notasMes: notas.filter((n) => n.fecha.startsWith(mesActual)).length,
     totalConAnimo: conAnimo.length,
   };
@@ -143,16 +164,16 @@ function emojiAnimo(v: number): string {
   return ANIMO_EMOJI[nivel(v) - 1];
 }
 
-function leerBorrador(): Record<string, string | boolean> | null {
+function leerBorrador(): Datos | null {
   try {
     const crudo = window.localStorage.getItem(CLAVE_BORRADOR);
-    return crudo ? (JSON.parse(crudo) as Record<string, string | boolean>) : null;
+    return crudo ? (JSON.parse(crudo) as Datos) : null;
   } catch {
     return null;
   }
 }
 
-function escribirBorrador(datos: Record<string, string | boolean> | null) {
+function escribirBorrador(datos: Datos | null) {
   try {
     if (datos && String(datos.texto).trim()) window.localStorage.setItem(CLAVE_BORRADOR, JSON.stringify(datos));
     else window.localStorage.removeItem(CLAVE_BORRADOR);
@@ -162,14 +183,16 @@ function escribirBorrador(datos: Record<string, string | boolean> | null) {
   }
 }
 
-export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: Props) {
+export default function SeccionDiario({ hoy, objetivos, notas, publicaciones, urlsFotos, balanceHoy, premiumHoy }: Props) {
+  const cierre = useCierreDia();
   const router = useRouter();
-  const editor = useEditor(objetivos);
-  const [borrador, setBorrador] = useState<Record<string, string | boolean>>(() => notaVacia(hoy));
+  const editor = useEditor(objetivos, urlsFotos);
+  const [borrador, setBorrador] = useState<Datos>(() => notaVacia(hoy));
   const [recuperado, setRecuperado] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
   const [filtro, setFiltro] = useState<Emocion | "">("");
+  const [area, setArea] = useState<Etiqueta | "">("");
   const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(1);
   const cargado = useRef(false);
@@ -192,7 +215,11 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
   const anclas = notas.filter((n) => n.ancla);
   const q = normalizar(busqueda.trim());
   const filtradas = notas.filter(
-    (n) => !n.ancla && (!filtro || n.emocion === filtro) && (!q || normalizar(n.texto).includes(q))
+    (n) =>
+      !n.ancla &&
+      (!filtro || n.emocion === filtro) &&
+      (!area || n.etiqueta === area) &&
+      (!q || normalizar(`${n.texto} ${n.lugar ?? ""}`).includes(q))
   );
   const totalPaginas = Math.max(1, Math.ceil(filtradas.length / POR_PAGINA));
   const paginaActual = Math.min(pagina, totalPaginas);
@@ -203,7 +230,7 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
   const maxPublicado = Math.max(1, ...a.semanas.map((s) => s.publicado));
   const delta = a.media30 !== null && a.mediaPrev !== null ? a.media30 - a.mediaPrev : null;
 
-  function cambiar(campo: string, valor: string | boolean) {
+  function cambiar(campo: string, valor: string | boolean | string[]) {
     setBorrador((b) => {
       const nuevo = { ...b, [campo]: valor };
       escribirBorrador(nuevo);
@@ -238,6 +265,23 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
 
   return (
     <>
+      {/* ── Así vas con tus metas: arriba, para escribir sabiendo cómo van ── */}
+      <ResumenMetas hoy={hoy} objetivos={objetivos} notas={notas} />
+
+      {/* ── Cierre del día: productividad y dinero, a un toque ── */}
+      <button type="button" className={`obj-hoy${balanceHoy ? " obj-hoy--cerrado" : ""}`} onClick={() => cierre.abrir(hoy, balanceHoy, premiumHoy)}>
+        <span className="obj-hoy-emoji" aria-hidden="true">{balanceHoy?.productividad ? PRODUCTIVIDAD[balanceHoy.productividad].emoji : "🌙"}</span>
+        <span className="obj-hoy-textos">
+          <strong>{balanceHoy ? "Día cerrado" : "¿Cómo ha ido hoy?"}</strong>
+          <span>
+            {balanceHoy
+              ? `${balanceHoy.productividad ? PRODUCTIVIDAD[balanceHoy.productividad].texto : "Sin productividad"} · pulsa para cambiarlo`
+              : "Marca si ha sido productivo y apunta lo que has ganado"}
+          </span>
+        </span>
+        {balanceHoy ? <PildoraDia balance={balanceHoy} /> : <span className="obj-hoy-cta">🌙 Cerrar el día</span>}
+      </button>
+
       {/* ── Escribir ─────────────────────────────────────────────── */}
       <div className="obj-barra-seccion">
         <div>
@@ -264,7 +308,7 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
           </div>
         </div>
 
-        <CamposNota d={borrador} cambiar={cambiar} objetivos={objetivos} filasTexto={8} autoFocus={false} />
+        <CamposNota d={borrador} cambiar={cambiar} objetivos={objetivos} filasTexto={8} autoFocus={false} urlsFotos={urlsFotos} />
         {error && <p className="auth-error">{error}</p>}
         <div className="obj-diario-acciones">
           <span className="obj-ayuda">
@@ -294,9 +338,9 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
             <div className="obj-tile obj-tile--destacado">
               <span className="obj-tile-emoji" aria-hidden="true">{a.media30 !== null ? emojiAnimo(a.media30) : "😶"}</span>
               <span className="cp-card-label">Ánimo, últimos 30 días</span>
-              <strong className="cp-card-value">{a.media30 !== null ? cifra(a.media30) : "—"}</strong>
+              <strong className="cp-card-value obj-valor-texto">{a.media30 !== null ? textoAnimo(a.media30) : "—"}</strong>
               <span className="cp-card-foot">
-                {a.media30 !== null ? `${textoAnimo(a.media30)} de media` : "sin notas con ánimo"}
+                {a.media30 !== null ? `media de ${cifra(a.media30)} sobre 5` : "sin notas con ánimo"}
                 {delta !== null && ` · ${delta >= 0 ? "+" : ""}${cifra(delta)} frente a los 30 anteriores`}
               </span>
             </div>
@@ -393,29 +437,39 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
           <div className="obj-graficas-fila">
             <figure className="obj-grafica">
               <figcaption className="obj-grafica-titulo">Reparto del ánimo · todas las notas</figcaption>
-              {a.reparto.slice().reverse().map((r) => (
-                <div key={r.nivel} className="obj-hbarra" data-tip={`${r.total} nota${r.total === 1 ? "" : "s"}`}>
-                  <span className="obj-hbarra-etiqueta"><span className="obj-hbarra-emoji" aria-hidden="true">{ANIMO_EMOJI[r.nivel - 1]}</span> {r.texto}</span>
-                  <div className="obj-hbarra-pista">
-                    <div className={`obj-hbarra-relleno obj-nivel--${r.nivel}`} style={{ width: `${(r.total / maxReparto) * 100}%` }} />
-                  </div>
-                  <span className="obj-hbarra-valor">
-                    {r.total}
-                    <small>{Math.round((r.total / a.totalConAnimo) * 100)} %</small>
-                  </span>
-                </div>
-              ))}
+              <div className="obj-filas-barra">
+                {a.reparto.slice().reverse().map((r) => (
+                  <FilaBarra
+                    key={r.nivel}
+                    emoji={ANIMO_EMOJI[r.nivel - 1]}
+                    etiqueta={r.texto}
+                    pct={(r.total / maxReparto) * 100}
+                    relleno={`obj-nivel--${r.nivel}`}
+                    valor={String(r.total)}
+                    detalle={`${Math.round((r.total / a.totalConAnimo) * 100)} %`}
+                  />
+                ))}
+              </div>
             </figure>
 
             <figure className="obj-grafica">
               <figcaption className="obj-grafica-titulo">Ánimo medio por mes</figcaption>
               <div className="obj-meses">
                 {a.meses.map((m) => (
-                  <div key={m.mes} className="obj-meses-col" data-tip={m.valor === null ? "sin notas" : `${cifra(m.valor)} en ${m.notas} nota${m.notas === 1 ? "" : "s"}`}>
-                    <span className="obj-meses-valor">{m.valor === null ? "—" : cifra(m.valor)}</span>
+                  <div
+                    key={m.mes}
+                    className={`obj-meses-col${m.valor === null ? " obj-meses-col--vacio" : ""}`}
+                    data-tip={m.valor === null ? "sin notas" : `${emojiAnimo(m.valor)} ${textoAnimo(m.valor)} · ${cifra(m.valor)}/5 en ${m.notas} nota${m.notas === 1 ? "" : "s"}`}
+                  >
                     <div className="obj-meses-pista">
-                      {m.valor !== null && (
-                        <div className={`obj-meses-barra obj-nivel--${Math.round(m.valor)}`} style={{ height: `${(m.valor / 5) * 100}%` }} />
+                      {m.valor !== null ? (
+                        <div className={`obj-meses-barra obj-nivel--${Math.round(m.valor)}`} style={{ height: `${(m.valor / 5) * 100}%` }}>
+                          <span className="obj-meses-valor">
+                            <span aria-hidden="true">{emojiAnimo(m.valor)}</span> {cifra(m.valor)}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="obj-meses-nada">—</span>
                       )}
                     </div>
                     <span className="obj-meses-nombre">{nombreMes(m.mes, true)}</span>
@@ -425,42 +479,63 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
             </figure>
           </div>
 
+          {a.porArea.length > 0 && (
+            <figure className="obj-grafica">
+              <figcaption className="obj-grafica-titulo">Cómo te sientes en cada parte de tu vida</figcaption>
+              <div className="obj-filas-barra">
+                {a.porArea.map((e) => (
+                  <FilaBarra
+                    key={e.etiqueta}
+                    emoji={ETIQUETAS[e.etiqueta].emoji}
+                    etiqueta={ETIQUETAS[e.etiqueta].texto}
+                    pct={((e.animo as number) / 5) * 100}
+                    relleno={`obj-nivel--${Math.round(e.animo as number)}`}
+                    valor={`${emojiAnimo(e.animo as number)} ${textoAnimo(e.animo as number)}`}
+                    detalle={`${cifra(e.animo as number)}/5 · ${e.notas} nota${e.notas === 1 ? "" : "s"}`}
+                  />
+                ))}
+              </div>
+            </figure>
+          )}
+
           <div className="obj-graficas-fila">
             <figure className="obj-grafica">
               <figcaption className="obj-grafica-titulo">Con qué ánimo escribes de cada objetivo</figcaption>
               {a.porObjetivo.length === 0 ? (
                 <p className="obj-conclusion">Enlaza tus notas a un objetivo al escribirlas y aquí verás cómo te sientes con cada uno.</p>
               ) : (
-                a.porObjetivo.map((o) => (
-                  <div key={o.id} className="obj-hbarra">
-                    <span className="obj-hbarra-etiqueta" title={o.titulo}><span className="obj-hbarra-emoji" aria-hidden="true">{emojiAnimo(o.animo as number)}</span> {o.titulo}</span>
-                    <div className="obj-hbarra-pista">
-                      <div className={`obj-hbarra-relleno obj-nivel--${Math.round(o.animo as number)}`} style={{ width: `${((o.animo as number) / 5) * 100}%` }} />
-                    </div>
-                    <span className="obj-hbarra-valor">
-                      {cifra(o.animo as number)}
-                      <small>{o.notas} nota{o.notas === 1 ? "" : "s"}</small>
-                    </span>
-                  </div>
-                ))
+                <div className="obj-filas-barra">
+                  {a.porObjetivo.map((o) => (
+                    <FilaBarra
+                      key={o.id}
+                      emoji={emojiAnimo(o.animo as number)}
+                      etiqueta={o.titulo}
+                      pct={((o.animo as number) / 5) * 100}
+                      relleno={`obj-nivel--${Math.round(o.animo as number)}`}
+                      valor={textoAnimo(o.animo as number)}
+                      detalle={`${cifra(o.animo as number)}/5 · ${o.notas} nota${o.notas === 1 ? "" : "s"}`}
+                    />
+                  ))}
+                </div>
               )}
             </figure>
 
             {a.emociones.length > 0 && (
               <figure className="obj-grafica">
                 <figcaption className="obj-grafica-titulo">Emociones que más se repiten, y el ánimo con que aparecen</figcaption>
-                {a.emociones.map((e) => (
-                  <div key={e.emocion} className="obj-hbarra">
-                    <span className="obj-hbarra-etiqueta"><span className="obj-hbarra-emoji" aria-hidden="true">{EMOCION_EMOJI[e.emocion]}</span> {EMOCIONES[e.emocion]}</span>
-                    <div className="obj-hbarra-pista">
-                      <div className="obj-hbarra-relleno obj-hbarra-relleno--neutro" style={{ width: `${(e.total / maxEmocion) * 100}%` }} />
-                    </div>
-                    <span className="obj-hbarra-valor">
-                      {e.total}
-                      <small>{e.animo !== null ? `${emojiAnimo(e.animo)} ${cifra(e.animo)}` : "sin ánimo"}</small>
-                    </span>
-                  </div>
-                ))}
+                <div className="obj-filas-barra">
+                  {a.emociones.map((e) => (
+                    <FilaBarra
+                      key={e.emocion}
+                      emoji={EMOCION_EMOJI[e.emocion]}
+                      etiqueta={EMOCIONES[e.emocion]}
+                      pct={(e.total / maxEmocion) * 100}
+                      relleno="obj-hbarra-relleno--neutro"
+                      valor={`${e.total} nota${e.total === 1 ? "" : "s"}`}
+                      detalle={e.animo !== null ? `${emojiAnimo(e.animo)} ${textoAnimo(e.animo)}` : "sin ánimo"}
+                    />
+                  ))}
+                </div>
               </figure>
             )}
           </div>
@@ -472,7 +547,7 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
         <>
           <h2 className="obj-titulo-seccion obj-titulo-seccion--espacio">📌 Fijadas</h2>
           <div className="obj-notas">
-            {anclas.map((n) => <TarjetaNota key={n.id} n={n} objetivos={objetivos} onEditar={() => editor.editarNota(n)} />)}
+            {anclas.map((n) => <TarjetaNota key={n.id} n={n} objetivos={objetivos} urlsFotos={urlsFotos} onEditar={() => editor.editarNota(n)} />)}
           </div>
         </>
       )}
@@ -508,15 +583,38 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
         </div>
       </div>
 
+      <div className="obj-areas" role="radiogroup" aria-label="Filtrar por área">
+        {[["", "🗂️", "Todo"] as const, ...(Object.keys(ETIQUETAS) as Etiqueta[]).map((e) => [e, ETIQUETAS[e].emoji, ETIQUETAS[e].texto] as const)].map(
+          ([valor, emoji, texto]) => {
+            const n = valor ? notas.filter((x) => !x.ancla && x.etiqueta === valor).length : notas.filter((x) => !x.ancla).length;
+            if (valor && !n) return null;
+            return (
+              <button
+                key={valor || "todo"}
+                role="radio"
+                aria-checked={area === valor}
+                className={`obj-area${area === valor ? " obj-area--activa" : ""}`}
+                onClick={() => {
+                  setArea(valor);
+                  setPagina(1);
+                }}
+              >
+                <span aria-hidden="true">{emoji}</span> {texto} <small>{n}</small>
+              </button>
+            );
+          }
+        )}
+      </div>
+
       {visibles.length === 0 ? (
         <p className="obj-vacio">
-          {q || filtro ? "🔎 No hay notas que coincidan." : "✍️ Todavía no has escrito nada. Empieza por cómo te sientes hoy con el proyecto."}
+          {q || filtro || area ? "🔎 No hay notas que coincidan." : "✍️ Todavía no has escrito nada. Empieza por cómo te sientes hoy con el proyecto."}
         </p>
       ) : (
         <>
-          {(q || filtro) && <p className="obj-ayuda">{filtradas.length} nota{filtradas.length === 1 ? "" : "s"} encontrada{filtradas.length === 1 ? "" : "s"}</p>}
+          {(q || filtro || area) && <p className="obj-ayuda">{filtradas.length} nota{filtradas.length === 1 ? "" : "s"} encontrada{filtradas.length === 1 ? "" : "s"}</p>}
           <div className="obj-notas">
-            {visibles.map((n) => <TarjetaNota key={n.id} n={n} objetivos={objetivos} onEditar={() => editor.editarNota(n)} />)}
+            {visibles.map((n) => <TarjetaNota key={n.id} n={n} objetivos={objetivos} urlsFotos={urlsFotos} onEditar={() => editor.editarNota(n)} />)}
           </div>
           {totalPaginas > 1 && (
             <nav className="cp-paginacion" aria-label="Páginas de notas">
@@ -529,17 +627,24 @@ export default function SeccionDiario({ hoy, objetivos, notas, publicaciones }: 
       )}
 
       {editor.modal}
+      {cierre.modal}
     </>
   );
 }
 
-function TarjetaNota({ n, objetivos, onEditar }: { n: Nota; objetivos: ObjetivoConProgreso[]; onEditar: () => void }) {
+function TarjetaNota({ n, objetivos, urlsFotos, onEditar }: {
+  n: Nota;
+  objetivos: ObjetivoConProgreso[];
+  urlsFotos: Record<string, string>;
+  onEditar: () => void;
+}) {
   const objetivo = n.objetivo_id ? objetivos.find((o) => o.id === n.objetivo_id) : null;
+  const fotos = (n.fotos ?? []).filter((f) => urlsFotos[f]);
   return (
     <button className={`obj-nota${n.ancla ? " obj-nota--ancla" : ""}${n.animo !== null ? ` obj-nota--animo-${n.animo}` : ""}`} onClick={onEditar}>
       <div className="obj-nota-top">
         {n.animo !== null ? (
-          <span className="obj-nota-animo" title={ANIMOS[n.animo - 1]}>
+          <span className="obj-nota-animo" title={`${ANIMOS[n.animo - 1]} (${n.animo}/5)`}>
             <span className="obj-nota-animo-emoji" aria-hidden="true">{ANIMO_EMOJI[n.animo - 1]}</span>
             <small>{ANIMOS[n.animo - 1]}</small>
           </span>
@@ -550,13 +655,61 @@ function TarjetaNota({ n, objetivos, onEditar }: { n: Nota; objetivos: ObjetivoC
         )}
         <span className="obj-nota-fecha">{n.ancla ? "📌 Fijada · " : ""}{fechaCorta(n.fecha)}</span>
       </div>
+
+      {fotos.length > 0 && (
+        <span className={`obj-nota-fotos obj-nota-fotos--${Math.min(fotos.length, 3)}`}>
+          {fotos.slice(0, 3).map((f, i) => (
+            <span key={f} className="obj-nota-foto">
+              {/* eslint-disable-next-line @next/next/no-img-element -- enlace firmado y privado: no pasa por el optimizador de Next */}
+              <img src={urlsFotos[f]} alt="" loading="lazy" />
+              {i === 2 && fotos.length > 3 && <span className="obj-nota-foto-mas">+{fotos.length - 3}</span>}
+            </span>
+          ))}
+        </span>
+      )}
+
       <p className="obj-nota-texto">{n.texto}</p>
-      {(n.emocion || objetivo) && (
+      {(n.etiqueta || n.emocion || objetivo || n.lugar || n.lat !== null) && (
         <div className="obj-nota-pie">
+          {n.etiqueta && <span className="obj-chip obj-chip--area"><span aria-hidden="true">{ETIQUETAS[n.etiqueta].emoji}</span> {ETIQUETAS[n.etiqueta].texto}</span>}
           {n.emocion && <span className="obj-chip"><span aria-hidden="true">{EMOCION_EMOJI[n.emocion]}</span> {EMOCIONES[n.emocion]}</span>}
+          {(n.lugar || n.lat !== null) && <span className="obj-chip obj-chip--lugar"><span aria-hidden="true">📍</span> {n.lugar || "Ubicación guardada"}</span>}
           {objetivo && <span className="obj-chip obj-chip--objetivo"><span aria-hidden="true">{METRICAS[objetivo.metrica].emoji}</span> {objetivo.titulo}</span>}
         </div>
       )}
     </button>
+  );
+}
+
+/**
+ * Una fila de gráfica de barras: etiqueta y cifra arriba, en la misma línea, y
+ * la barra debajo a todo el ancho. Así nada se apila ni se descuadra, quepa la
+ * etiqueta que quepa. Las filas a cero se atenúan y no pintan barra.
+ */
+function FilaBarra({ emoji, etiqueta, pct, relleno, valor, detalle }: {
+  emoji: string;
+  etiqueta: string;
+  pct: number;
+  relleno: string;
+  valor: string;
+  detalle?: string;
+}) {
+  const cero = pct <= 0;
+  return (
+    <div className={`obj-fila-barra${cero ? " obj-fila-barra--cero" : ""}`}>
+      <div className="obj-fila-barra-linea">
+        <span className="obj-fila-barra-etiqueta" title={etiqueta}>
+          <span className="obj-fila-barra-emoji" aria-hidden="true">{emoji}</span>
+          <span className="obj-fila-barra-texto">{etiqueta}</span>
+        </span>
+        <span className="obj-fila-barra-valor">
+          <strong>{valor}</strong>
+          {detalle && <small>{detalle}</small>}
+        </span>
+      </div>
+      <div className="obj-fila-barra-pista">
+        {!cero && <div className={`obj-fila-barra-relleno ${relleno}`} style={{ width: `${Math.max(pct, 2)}%` }} />}
+      </div>
+    </div>
   );
 }

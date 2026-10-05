@@ -1,5 +1,9 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
-import { ANIMOS, CANALES, EMOCIONES, ESTADOS, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
+import { AMBITOS, ANIMOS, CANALES, EMOCIONES, ESTADOS, ETIQUETAS, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
+
+/** Nombre de una foto del diario tal como lo pone /api/admin/plan/foto: uuid + extensión. */
+export const NOMBRE_FOTO = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpg|png)$/;
+export const MAX_FOTOS = 6;
 
 /**
  * Lo que entra en las tablas de /admin/objetivos pasa por aquí.
@@ -38,6 +42,7 @@ function objetivo(b: Record<string, unknown>): Resultado {
   const titulo = texto(b.titulo);
   const metrica = texto(b.metrica);
   const repeticion = texto(b.repeticion) || "no";
+  const ambito = texto(b.ambito) || "negocio";
   const meta = Number(b.meta);
   const desde = texto(b.desde);
   const hasta = texto(b.hasta);
@@ -45,6 +50,7 @@ function objetivo(b: Record<string, unknown>): Resultado {
   if (!titulo) return { error: "Ponle un nombre al objetivo." };
   if (!(metrica in METRICAS)) return { error: "Elige cómo se mide." };
   if (!(repeticion in REPETICIONES)) return { error: "Repetición desconocida." };
+  if (!(ambito in AMBITOS)) return { error: "Ámbito desconocido." };
   if (!Number.isFinite(meta) || meta <= 0) return { error: "La meta tiene que ser un número mayor que cero." };
   if (!esFecha(desde)) return { error: "Falta la fecha de inicio." };
   if (repeticion === "no" && !hasta) return { error: "Un objetivo de una sola vez necesita fecha de fin." };
@@ -55,6 +61,7 @@ function objetivo(b: Record<string, unknown>): Resultado {
     datos: {
       titulo,
       metrica,
+      ambito,
       repeticion,
       meta,
       desde,
@@ -106,6 +113,11 @@ function nota(b: Record<string, unknown>): Resultado {
   const animo = b.animo === null || b.animo === undefined || b.animo === "" ? null : Number(b.animo);
   const objetivoId = opcional(b.objetivo_id);
   const emocion = opcional(b.emocion);
+  const etiqueta = opcional(b.etiqueta);
+  const lugar = opcional(b.lugar);
+  const lat = b.lat === "" || b.lat === null || b.lat === undefined ? null : Number(b.lat);
+  const lng = b.lng === "" || b.lng === null || b.lng === undefined ? null : Number(b.lng);
+  const fotos = Array.isArray(b.fotos) ? b.fotos.filter((f): f is string => typeof f === "string") : [];
 
   if (!textoNota) return { error: "La nota está vacía." };
   if (textoNota.length > 20000) return { error: "La nota es demasiado larga." };
@@ -115,6 +127,12 @@ function nota(b: Record<string, unknown>): Resultado {
   }
   if (objetivoId && !/^[0-9a-f-]{36}$/i.test(objetivoId)) return { error: "Objetivo desconocido." };
   if (emocion && !(emocion in EMOCIONES)) return { error: "Emoción desconocida." };
+  if (etiqueta && !(etiqueta in ETIQUETAS)) return { error: "Etiqueta desconocida." };
+  if (lugar && lugar.length > 120) return { error: "El nombre del sitio es demasiado largo." };
+  if ((lat === null) !== (lng === null)) return { error: "Ubicación incompleta." };
+  if (lat !== null && lng !== null && !(Math.abs(lat) <= 90 && Math.abs(lng) <= 180)) return { error: "Ubicación no válida." };
+  if (fotos.length > MAX_FOTOS) return { error: `Como mucho ${MAX_FOTOS} fotos por nota.` };
+  if (fotos.some((f) => !NOMBRE_FOTO.test(f))) return { error: "Foto no válida." };
 
   return {
     datos: {
@@ -122,6 +140,11 @@ function nota(b: Record<string, unknown>): Resultado {
       ...(fecha ? { fecha } : {}),
       animo,
       emocion,
+      etiqueta,
+      lugar,
+      lat,
+      lng,
+      fotos,
       objetivo_id: objetivoId,
       ancla: b.ancla === true,
       updated_at: new Date().toISOString(),

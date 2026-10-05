@@ -4,6 +4,7 @@ import { getChannelId, getChannelMemberCount, getFreeChannelId } from "@/lib/tel
 import { getSubscriberCount } from "@/lib/youtube";
 import { hoyISO, medianocheRumania, sumarDiasISO } from "@/lib/objetivos";
 import { contarCuotas, type Perfil } from "@/lib/objetivosServidor";
+import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
 
 /**
  * Pestaña Crecimiento de /admin/objetivos: Telegram, YouTube y dinero de
@@ -45,12 +46,10 @@ function serie(fotos: Punto[], desde: string | null, hoy: string, enVivo: number
 
 async function fotosTelegram(admin: Admin, chatId: string | null): Promise<Punto[]> {
   if (!chatId) return [];
-  const { data } = await admin
-    .from("telegram_channel_stats")
-    .select("fecha, miembros")
-    .eq("chat_id", chatId)
-    .order("fecha");
-  return (data ?? []).map((f) => ({ fecha: String(f.fecha), valor: Number(f.miembros) }));
+  const data = await todasLasFilas((a, b) =>
+    admin.from("telegram_channel_stats").select("fecha, miembros").eq("chat_id", chatId).order("fecha").range(a, b)
+  );
+  return data.map((f) => ({ fecha: String(f.fecha), valor: Number(f.miembros) }));
 }
 
 function canalPremium(): string | null {
@@ -105,7 +104,9 @@ export async function cargarCrecimiento(admin: Admin, rango: Rango): Promise<Dat
   const [free, premium, fotosYoutube, perfilesRes, enVivoFree, enVivoPremium, enVivoYoutube] = await Promise.all([
     fotosTelegram(admin, getFreeChannelId()),
     fotosTelegram(admin, premiumId),
-    admin.from("metricas_diarias").select("fecha, valor").eq("clave", "suscriptores_youtube").order("fecha"),
+    todasLasFilas((a, b) =>
+      admin.from("metricas_diarias").select("fecha, valor").eq("clave", "suscriptores_youtube").order("fecha").range(a, b)
+    ),
     admin
       .from("profiles")
       .select("role, premium_since, subscription_current_period_end, subscription_cancel_at_period_end")
@@ -144,7 +145,7 @@ export async function cargarCrecimiento(admin: Admin, rango: Rango): Promise<Dat
     activosPorDia.push({ fecha: d, valor });
   }
 
-  const youtube = (fotosYoutube.data ?? []).map((f) => ({ fecha: String(f.fecha), valor: Number(f.valor) }));
+  const youtube = fotosYoutube.map((f) => ({ fecha: String(f.fecha), valor: Number(f.valor) }));
 
   return {
     hoy,

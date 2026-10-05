@@ -91,7 +91,7 @@ Esa segunda barrera es la que importa de verdad: **la clave anónima va en el na
 
 # Objetivos y diario del negocio (/admin/objetivos): solo el admin, ni para leer
 
-Desde el 04-10-2026. Cinco tablas —`objetivos`, `objetivo_registros`, `contenido_plan`, `diario_notas` y `metricas_diarias`— con **RLS activado y cero policies**, creadas por `scripts/create-objetivos.sql`. A diferencia del portfolio, aquí **ni siquiera se lee** con la clave anónima: el diario guarda cómo se siente el admin con su negocio, y no lo ve nadie más.
+Desde el 04-10-2026. Ocho tablas —`objetivos`, `objetivo_registros`, `objetivo_marcas`, `contenido_plan`, `diario_notas`, `metricas_diarias`, `dias_balance` e `ingresos_dia`— con **RLS activado y cero policies**, más el bucket **privado** `diario` para las fotos (se sirven con URLs firmadas de una hora). Todo lo crea `scripts/create-objetivos.sql`, que es idempotente: se puede volver a ejecutar entero. A diferencia del portfolio, aquí **ni siquiera se lee** con la clave anónima: el diario guarda cómo se siente el admin con su negocio, y no lo ve nadie más.
 
 - **Leer:** la página de servidor, con `createAdminClient()`, detrás del layout de `/admin` que exige rol admin.
 - **Escribir:** `/api/admin/plan/[recurso]` y `/api/admin/plan/[recurso]/[id]`, con `requireAdmin()` y los validadores de `src/lib/objetivosValidar.ts`, que solo dejan pasar las columnas que conocen.
@@ -99,6 +99,8 @@ Desde el 04-10-2026. Cinco tablas —`objetivos`, `objetivo_registros`, `conteni
 - **El progreso manual sí se guarda, uno por periodo** en `objetivo_registros`: es lo que da historial a los objetivos que se repiten cada semana o cada mes. `objetivos.progreso_manual` queda por compatibilidad y ya no se lee.
 - **Suscriptores de YouTube**: necesitan `YOUTUBE_API_KEY`. El cron de las 04:00 (`telegram-sync`) guarda una foto diaria en `metricas_diarias`; sin clave no guarda nada y el objetivo se queda en 0.
 - **No añadas una policy** «para que el admin pueda». Mismo error que en el portfolio, y aquí con datos más personales.
+- **Cierre del día** (`/api/admin/plan/dia`): productividad (1-3), una nota que sale como aviso en el calendario y el dinero por fuente. Guardar el cierre completo **sustituye el día entero**; el marcado rápido del calendario manda `parcial: true` y **no toca el dinero**. Si quitas `parcial`, marcar ✅ desde el calendario borra lo ganado ese día.
+- **Series largas, siempre con `todasLasFilas()`** (`src/lib/supabase/todasLasFilas.ts`). Supabase corta en 1.000 filas sin dar error, y en una serie ordenada de antigua a reciente lo que se pierde es lo último: la gráfica se congela. Las fotos diarias, el dinero y el diario ya pasan por ahí.
 - **Pestaña Crecimiento** (`/admin/objetivos/crecimiento`, lógica en `src/lib/crecimiento.ts`): miembros de Telegram (fotos de `telegram_channel_stats` + dato en vivo), suscriptores de YouTube (`metricas_diarias` + API) e ingresos de Premium. Los ingresos usan `contarCuotas()` de `objetivosServidor.ts`, la misma cuenta que los objetivos de ingresos: no dupliques la estimación. El canal Premium solo aparece donde existe `TELEGRAM_CHANNEL_ID` (Vercel).
 
 ---

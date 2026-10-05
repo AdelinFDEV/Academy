@@ -62,6 +62,14 @@ const nextConfig: NextConfig = {
         source: "/(.*)",
         headers: securityHeaders,
       },
+      // La ÚNICA excepción a geolocation=(): el diario privado del admin, que
+      // guarda dónde se escribió cada nota con «Usar mi ubicación». Va detrás
+      // de la regla general porque, con la misma cabecera, Next aplica la
+      // última. Cámara y micrófono siguen cerrados también aquí.
+      {
+        source: "/admin/objetivos/:path*",
+        headers: [{ key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" }],
+      },
     ];
   },
   // Rutas retiradas que aún pueden recibir tráfico desde Google o enlaces

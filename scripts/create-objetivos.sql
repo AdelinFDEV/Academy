@@ -170,3 +170,88 @@ create table if not exists public.metricas_diarias (
 );
 
 alter table public.metricas_diarias enable row level security;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 05-10-2026 · Avances personales (gimnasio, salud, hábitos)
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- `ambito`: los objetivos del negocio salen en la pestaña Objetivos, el
+-- calendario y el resumen del diario; los personales, en «Avances personales»
+-- dentro del diario. Mismo motor, distinto sitio.
+alter table public.objetivos
+  add column if not exists ambito text not null default 'negocio';
+
+alter table public.objetivos drop constraint if exists objetivos_ambito_check;
+alter table public.objetivos
+  add constraint objetivos_ambito_check check (ambito in ('negocio', 'personal'));
+
+-- `marca`: un valor que se apunta cada vez (80 kg en press banca, 82 kg de
+-- peso…) y se quiere llevar a la meta. Puede ser hacia arriba o hacia abajo:
+-- si la meta es menor que el punto de partida, el objetivo es bajar.
+alter table public.objetivos drop constraint if exists objetivos_metrica_check;
+alter table public.objetivos
+  add constraint objetivos_metrica_check check (metrica in (
+    'manual', 'marca', 'entradas', 'videos', 'registros', 'premium', 'ingresos',
+    'miembros_telegram', 'suscriptores_youtube'
+  ));
+
+-- Las marcas apuntadas, una por objetivo y día (apuntar dos veces el mismo
+-- día corrige la anterior). Es el historial que se dibuja en la tarjeta.
+create table if not exists public.objetivo_marcas (
+  objetivo_id  uuid not null references public.objetivos (id) on delete cascade,
+  fecha        date not null,
+  valor        numeric(12, 2) not null,
+  created_at   timestamptz not null default now(),
+  primary key (objetivo_id, fecha)
+);
+
+alter table public.objetivo_marcas enable row level security;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 05-10-2026 · Un solo diario para todo: etiqueta, fotos y ubicación
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- `etiqueta`: de qué va la nota (negocio, gimnasio, salud…); la lista vive en
+-- src/lib/objetivos.ts. `fotos`: rutas dentro del bucket privado `diario`.
+-- `lugar`: lo que escribe el admin («Gimnasio»); `lat`/`lng`: si pulsó
+-- «Usar mi ubicación».
+alter table public.diario_notas add column if not exists etiqueta text;
+alter table public.diario_notas add column if not exists fotos text[] not null default '{}';
+alter table public.diario_notas add column if not exists lugar text;
+alter table public.diario_notas add column if not exists lat numeric(9, 6);
+alter table public.diario_notas add column if not exists lng numeric(9, 6);
+
+-- Bucket PRIVADO para las fotos del diario. Sin políticas en storage.objects:
+-- nadie con la clave anónima puede ni subir ni ver nada. Las sube el servidor
+-- con la clave de servicio tras comprobar que es el admin, y las enseña con
+-- enlaces firmados que caducan en una hora. Nunca el bucket público `media`.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('diario', 'diario', false, 4194304, array['image/webp', 'image/jpeg', 'image/png'])
+on conflict (id) do update set public = false;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 05-10-2026 · Cierre del día: productividad y dinero ganado
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Un día = una fila. `productividad`: 1 poco productivo · 2 normal · 3 muy
+-- productivo. `nota`: una frase opcional de cómo fue.
+create table if not exists public.dias_balance (
+  fecha          date primary key,
+  productividad  smallint check (productividad between 1 and 3),
+  nota           text,
+  updated_at     timestamptz not null default now()
+);
+
+alter table public.dias_balance enable row level security;
+
+-- Lo ganado cada día, por fuente (premium, youtube, trading, asesorias,
+-- otros; la lista vive en src/lib/objetivos.ts). Una fila por día y fuente:
+-- volver a guardar el día sustituye sus cifras.
+create table if not exists public.ingresos_dia (
+  fecha    date not null,
+  fuente   text not null,
+  importe  numeric(12, 2) not null check (importe >= 0),
+  primary key (fecha, fuente)
+);
+
+alter table public.ingresos_dia enable row level security;

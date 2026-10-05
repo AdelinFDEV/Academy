@@ -1,13 +1,18 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
+import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import { getFreeChannelId } from "@/lib/telegram";
 import { getSubscriberCount } from "@/lib/youtube";
 import {
   METRICAS,
   calcularRitmo,
+  cumpleMeta,
   hoyISO,
   instantes,
+  medianocheRumania,
   periodosDe,
+  type Balance,
+  type Fuente,
   type Objetivo,
   type ObjetivoConProgreso,
   type Periodo,
@@ -37,6 +42,8 @@ class Contexto {
   private perfiles: Promise<Perfil[]> | null = null;
   private fotos = new Map<string, Promise<Foto[]>>();
   registros = new Map<string, number>();
+  /** Marcas apuntadas por objetivo, de la más antigua a la más reciente. */
+  marcas = new Map<string, Foto[]>();
 
   constructor(readonly admin: Admin, readonly ahora: number) {}
 
@@ -58,19 +65,20 @@ class Contexto {
     if (guardada) return guardada;
     const nueva = (async (): Promise<Foto[]> => {
       if (metrica === "miembros_telegram") {
-        const { data } = await this.admin
-          .from("telegram_channel_stats")
-          .select("fecha, miembros")
-          .eq("chat_id", String(getFreeChannelId() ?? ""))
-          .order("fecha");
-        return (data ?? []).map((f) => ({ fecha: String(f.fecha), valor: Number(f.miembros) }));
+        const data = await todasLasFilas((a, b) =>
+          this.admin
+            .from("telegram_channel_stats")
+            .select("fecha, miembros")
+            .eq("chat_id", String(getFreeChannelId() ?? ""))
+            .order("fecha")
+            .range(a, b)
+        );
+        return data.map((f) => ({ fecha: String(f.fecha), valor: Number(f.miembros) }));
       }
-      const { data } = await this.admin
-        .from("metricas_diarias")
-        .select("fecha, valor")
-        .eq("clave", "suscriptores_youtube")
-        .order("fecha");
-      return (data ?? []).map((f) => ({ fecha: String(f.fecha), valor: Number(f.valor) }));
+      const data = await todasLasFilas((a, b) =>
+        this.admin.from("metricas_diarias").select("fecha, valor").eq("clave", "suscriptores_youtube").order("fecha").range(a, b)
+      );
+      return data.map((f) => ({ fecha: String(f.fecha), valor: Number(f.valor) }));
     })();
     this.fotos.set(metrica, nueva);
     return nueva;
@@ -114,7 +122,15 @@ async function ingresos(ctx: Contexto, p: Periodo): Promise<number> {
  * Si no hay foto anterior al periodo, la base es la primera foto dentro de él.
  */
 async function nivel(ctx: Contexto, metrica: "miembros_telegram" | "suscriptores_youtube", p: Periodo) {
-  const fotos = await ctx.fotosDe(metrica);
+  return nivelDe(await ctx.fotosDe(metrica), p);
+}
+
+/**
+ * Valor al final del periodo y valor con que empezó. Sirve para las fotos de
+ * los canales y para las marcas personales: si no hay nada antes del periodo,
+ * el punto de partida es lo primero apuntado dentro de él.
+ */
+function nivelDe(fotos: Foto[], p: Periodo) {
   const hasta = fotos.filter((f) => f.fecha <= p.hasta);
   const antes = fotos.filter((f) => f.fecha < p.desde);
   const dentro = fotos.filter((f) => f.fecha >= p.desde && f.fecha <= p.hasta);
@@ -130,6 +146,8 @@ async function medir(ctx: Contexto, o: Objetivo, p: Periodo): Promise<{ valor: n
   switch (o.metrica) {
     case "manual":
       return { valor: ctx.registros.get(`${o.id}|${p.desde}`) ?? 0, base: 0 };
+    case "marca":
+      return nivelDe(ctx.marcas.get(o.id) ?? [], p);
     case "entradas":
       return {
         valor: await contar(a.from("posts").select("id", { count: "exact", head: true }).eq("published", true).gte("created_at", ini).lt("created_at", fin)),
@@ -177,6 +195,20 @@ export async function cargarObjetivos(admin: Admin): Promise<{ objetivos: Objeti
   const ctx = new Contexto(admin, Date.now());
   const hoy = hoyISO(ctx.ahora);
 
+  const conMarcas = objetivos.filter((o) => o.metrica === "marca").map((o) => o.id);
+  if (conMarcas.length) {
+    const { data: marcas } = await admin
+      .from("objetivo_marcas")
+      .select("objetivo_id, fecha, valor")
+      .in("objetivo_id", conMarcas)
+      .order("fecha");
+    for (const m of marcas ?? []) {
+      const lista = ctx.marcas.get(m.objetivo_id) ?? [];
+      lista.push({ fecha: String(m.fecha), valor: Number(m.valor) });
+      ctx.marcas.set(m.objetivo_id, lista);
+    }
+  }
+
   const manuales = objetivos.filter((o) => o.metrica === "manual").map((o) => o.id);
   if (manuales.length) {
     const { data: regs, error: regErr } = await admin
@@ -192,14 +224,21 @@ export async function cargarObjetivos(admin: Admin): Promise<{ objetivos: Objeti
       const { actual: periodo, anteriores } = periodosDe(o, hoy);
       const [ahora, ...pasados] = await Promise.all([periodo, ...anteriores].map((p) => medir(ctx, o, p)));
       const meta = Number(o.meta);
+      const esNivel = METRICAS[o.metrica].tipo === "nivel";
       return {
         ...o,
+        ambito: o.ambito ?? "negocio",
         meta,
         periodo,
         actual: ahora.valor,
         base: ahora.base,
-        ...calcularRitmo(meta, METRICAS[o.metrica].tipo === "nivel" ? ahora.base : 0, ahora.valor, periodo, ctx.ahora),
-        historial: anteriores.map((p, i) => ({ ...p, valor: pasados[i].valor, cumplido: pasados[i].valor >= meta })),
+        ...calcularRitmo(meta, esNivel ? ahora.base : 0, ahora.valor, periodo, ctx.ahora),
+        historial: anteriores.map((p, i) => ({
+          ...p,
+          valor: pasados[i].valor,
+          cumplido: cumpleMeta(meta, esNivel ? pasados[i].base : 0, pasados[i].valor),
+        })),
+        marcas: ctx.marcas.get(o.id) ?? [],
       };
     })
   );
@@ -272,4 +311,80 @@ export async function cerrarPiezaPlaneada(
   } catch (err) {
     console.error("[objetivos] No se pudo cerrar la pieza planeada:", err);
   }
+}
+
+/**
+ * Los cierres de día (productividad, nota y dinero por fuente) entre dos
+ * fechas, incluidas, por fecha. Si las tablas aún no existen, nada.
+ */
+export async function cargarBalances(admin: Admin, desde: string, hasta: string): Promise<Record<string, Balance>> {
+  const [dias, ingresos] = await Promise.all([
+    admin.from("dias_balance").select("fecha, productividad, nota").gte("fecha", desde).lte("fecha", hasta),
+    admin.from("ingresos_dia").select("fecha, fuente, importe").gte("fecha", desde).lte("fecha", hasta),
+  ]);
+  const balances: Record<string, Balance> = {};
+  const de = (fecha: string) =>
+    (balances[fecha] ??= { fecha, productividad: null, nota: null, ingresos: {}, total: 0 });
+  for (const d of dias.data ?? []) {
+    const b = de(String(d.fecha));
+    b.productividad = (d.productividad as Balance["productividad"]) ?? null;
+    b.nota = d.nota ?? null;
+  }
+  for (const i of ingresos.data ?? []) {
+    const b = de(String(i.fecha));
+    const importe = Number(i.importe);
+    b.ingresos[i.fuente as Fuente] = importe;
+    b.total = Math.round((b.total + importe) * 100) / 100;
+  }
+  return balances;
+}
+
+/**
+ * Lo que Premium habría cobrado cada día entre dos fechas, con la misma
+ * estimación de siempre (contarCuotas). Se propone al rellenar el cierre del
+ * día, sin apuntarlo solo: el admin decide si lo da por bueno.
+ */
+export async function premiumEstimadoPorDia(admin: Admin, desde: string, hasta: string): Promise<Record<string, number>> {
+  const { data } = await admin
+    .from("profiles")
+    .select("role, premium_since, subscription_current_period_end")
+    .neq("role", "admin")
+    .not("premium_since", "is", null);
+  const perfiles = (data ?? []) as Perfil[];
+  const ahora = Date.now();
+  const resultado: Record<string, number> = {};
+  if (!perfiles.length) return resultado;
+  for (let d = desde; d <= hasta; d = new Date(Date.parse(`${d}T00:00:00Z`) + DIA).toISOString().slice(0, 10)) {
+    const ini = medianocheRumania(d).getTime();
+    const fin = ini + DIA;
+    const cuotas = contarCuotas(perfiles, ini, fin, ahora);
+    if (cuotas) resultado[d] = Math.round(cuotas * PREMIUM_PRICE_EUR * 100) / 100;
+  }
+  return resultado;
+}
+
+export type DineroMes = { mes: string; total: number; porFuente: Partial<Record<Fuente, number>>; dias: number };
+
+/**
+ * Todo lo ganado (apuntado en el cierre del día), sumado por mes y por fuente,
+ * del mes más antiguo al más reciente. Es la base del resumen de dinero: el
+ * mes récord, la media y la comparación con el mes en curso.
+ */
+export async function cargarDineroPorMes(admin: Admin): Promise<DineroMes[]> {
+  const data = await todasLasFilas((a, b) =>
+    admin.from("ingresos_dia").select("fecha, fuente, importe").order("fecha").order("fuente").range(a, b)
+  );
+  const meses = new Map<string, DineroMes & { diasSet: Set<string> }>();
+  for (const fila of data) {
+    const fecha = String(fila.fecha);
+    const mes = fecha.slice(0, 7);
+    const m = meses.get(mes) ?? { mes, total: 0, porFuente: {}, dias: 0, diasSet: new Set<string>() };
+    const importe = Number(fila.importe);
+    m.total = Math.round((m.total + importe) * 100) / 100;
+    const f = fila.fuente as Fuente;
+    m.porFuente[f] = Math.round(((m.porFuente[f] ?? 0) + importe) * 100) / 100;
+    m.diasSet.add(fecha);
+    meses.set(mes, m);
+  }
+  return [...meses.values()].map(({ diasSet, ...m }) => ({ ...m, dias: diasSet.size }));
 }
