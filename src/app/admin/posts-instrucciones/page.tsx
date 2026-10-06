@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function PostsInstruccionesPage() {
   return (
     <div className="admin-guide-instructions">
@@ -388,7 +390,7 @@ const webp = await sharp(original)
             <li><strong>Si no cabe dentro de los 4, no se crea el término.</strong> Un término sin enlaces entrantes nace huérfano. Antes que eso, se reformula la frase para no usar la palabra: en la entrada de Injective se cambió <em>oráculo</em> por «la fuente de precios», que además se entiende mejor.</li>
           </ol>
           <p className="agi-note">
-            ⚠️ <strong>El aviso de «mencionado sin enlazar» de <code>check:contenido</code> no siempre tiene razón</strong>, y por eso no bloquea. Busca la palabra, no el significado. En la entrada de Injective marcó <em>liquidación</em> porque el texto habla de <em>liquidar</em> unas opciones —cerrarlas y pagar—, que no tiene nada que ver con la <a href="/glosario/liquidacion">liquidación</a> del diccionario, que es que te cierren una posición apalancada. Enlazarlo habría mandado al lector a leer algo que no venía a cuento. <strong>Léelo entero, pero decide tú.</strong>
+            ⚠️ <strong>El aviso de «mencionado sin enlazar» de <code>check:contenido</code> no siempre tiene razón</strong>, y por eso no bloquea. Busca la palabra, no el significado. En la entrada de Injective marcó <em>liquidación</em> porque el texto habla de <em>liquidar</em> unas opciones —cerrarlas y pagar—, que no tiene nada que ver con la <Link href="/glosario/liquidacion">liquidación</Link> del diccionario, que es que te cierren una posición apalancada. Enlazarlo habría mandado al lector a leer algo que no venía a cuento. <strong>Léelo entero, pero decide tú.</strong>
           </p>
         </div>
       </section>

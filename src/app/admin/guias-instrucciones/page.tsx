@@ -468,7 +468,7 @@ export default function GuiasInstruccionesPage() {
             </pre>
           </div>
           <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (<code>"registro"</code>, <code>"premium"</code> o <code>null</code> si se lee entera sin cuenta), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
+            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (<code>{`"registro"`}</code>, <code>{`"premium"`}</code> o <code>null</code> si se lee entera sin cuenta), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
             <p>El nombre que sale en las migas lo saca de <code>GUIDES</code>, no del <code>title</code> de la metadata — que es más corto a propósito. Es intencionado: el de <code>GUIDES</code> es el que se ve en <code>/guias</code>, y el dato estructurado <strong>tiene que coincidir con lo visible</strong> o Google lo trata como spam.</p>
           </div>
         </div>
