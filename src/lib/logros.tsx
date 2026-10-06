@@ -29,6 +29,8 @@ export interface BadgeDef {
   special?: boolean;
   guideSlug?: string;
   guideTitle?: string;
+  /** Logro de un curso: se gana al aprobar su examen final. Sale de `curso_certificados`. */
+  cursoSlug?: string;
   /** Hito del Diario de Trading: se guarda un logro por nivel ("diario-racha-2"). */
   diario?: { family: string; levels: number };
   /** Logro de actividad: qué contador mide y cuánto hace falta. /api/badges decide con esto. */

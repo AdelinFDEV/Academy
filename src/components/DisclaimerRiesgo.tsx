@@ -25,7 +25,8 @@ import { AlertTriangle } from "lucide-react";
  * quien se dirige la comunicación.
  */
 
-type Variante = "portfolio" | "directo" | "diario" | "general";
+export type VarianteAviso = "portfolio" | "directo" | "diario" | "general" | "fiscal";
+type Variante = VarianteAviso;
 
 /**
  * El bloque que va en TODAS las variantes, sin excepción.
@@ -135,6 +136,37 @@ const TEXTO: Record<Variante, { titulo: string; cuerpo: React.ReactNode }> = {
           Un ratio de acierto alto en veinte operaciones puede ser suerte, y una
           racha buena no es una ventaja demostrada. Sirven para detectar
           patrones en lo que ya hiciste, no para dar por seguro lo que viene.
+        </p>
+      </>
+    ),
+  },
+
+  // Para los cursos y contenidos de fiscalidad (añadida el 06-10-2026 con el
+  // curso de fiscalidad cripto). La normativa es española y cambia cada año:
+  // por eso insiste en la fecha de revisión y en el asesor para casos propios.
+  fiscal: {
+    titulo: "Formación fiscal, no asesoramiento fiscal",
+    cuerpo: (
+      <>
+        <p>
+          Este contenido es <strong>formativo</strong>: explica cómo funciona la
+          tributación de las criptomonedas en España con carácter general. No es
+          asesoramiento fiscal ni jurídico personalizado, y{" "}
+          <strong>no sustituye a un asesor fiscal</strong> que conozca tu
+          situación concreta: residencia, el resto de tus rentas, tu historial
+          de operaciones y tus obligaciones anteriores.
+        </p>
+        <p>
+          <strong>La normativa cambia, y cada año.</strong> Los tipos, los
+          umbrales, los plazos y los criterios de la Agencia Tributaria se
+          revisan con frecuencia. El contenido indica la fecha de su última
+          revisión: si ha pasado una campaña de la renta desde entonces,
+          compruébalo en las fuentes oficiales antes de declarar.
+        </p>
+        <p>
+          <strong>AdelinBTC Academy no presta asesoramiento fiscal.</strong>{" "}
+          Ante un caso dudoso, una inspección o un requerimiento de Hacienda,
+          acude a un profesional.
         </p>
       </>
     ),

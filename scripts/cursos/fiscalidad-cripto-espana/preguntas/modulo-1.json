@@ -1,0 +1,122 @@
+[
+  {
+    "clave": "m1-01",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "¿Qué decide si una persona tributa por el IRPF español?",
+    "opciones": ["Su nacionalidad", "Su residencia fiscal", "El país donde está su exchange", "La moneda en la que cobra"],
+    "correcta": 1,
+    "explicacion": "Lo decide la residencia fiscal, según los criterios del artículo 9 de la Ley del IRPF: días en España, centro de intereses económicos y presunción familiar."
+  },
+  {
+    "clave": "m1-02",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "¿Cuántos días hay que pasar en España durante el año natural para ser residente fiscal por el criterio de permanencia?",
+    "opciones": ["Más de 90", "Más de 120", "Más de 183", "Los 365"],
+    "correcta": 2,
+    "explicacion": "Más de 183 días del año natural. Las ausencias esporádicas cuentan como días en España salvo que se acredite la residencia fiscal en otro país."
+  },
+  {
+    "clave": "m1-03",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "Un residente fiscal en España tiene sus criptomonedas en un exchange de otro país. ¿Qué pasa con las ganancias que obtiene allí?",
+    "opciones": ["Solo tributan si las transfiere a un banco español", "Tributan en España, porque un residente tributa por su renta mundial", "Tributan solo en el país del exchange", "No tributan en ningún sitio"],
+    "correcta": 1,
+    "explicacion": "Un residente fiscal en España tributa aquí por toda su renta, obtenga donde la obtenga."
+  },
+  {
+    "clave": "m1-04",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "¿Cuándo se pone de manifiesto una ganancia patrimonial según el artículo 33 de la Ley del IRPF?",
+    "opciones": ["Cuando el activo sube de precio", "Cuando se retiran euros a una cuenta bancaria", "Con ocasión de una alteración en la composición del patrimonio", "Al final de cada trimestre"],
+    "correcta": 2,
+    "explicacion": "La ganancia o pérdida aflora con la alteración del patrimonio: vender, permutar, pagar con cripto. La subida sin operación y la retirada al banco no son lo que dispara el impuesto."
+  },
+  {
+    "clave": "m1-05",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "Compraste bitcoin hace dos años y hoy vale el triple. No has hecho ninguna operación. ¿Qué declaras en el IRPF por esa revalorización?",
+    "opciones": ["Una ganancia patrimonial por la diferencia", "Un rendimiento del capital mobiliario", "Nada: la plusvalía latente no tributa en el IRPF", "Un 1 % del valor actual"],
+    "correcta": 2,
+    "explicacion": "Mientras no haya alteración patrimonial, la ganancia es latente y no tributa en el IRPF. Otra cosa es el Impuesto sobre el Patrimonio, que mira el valor a 31 de diciembre."
+  },
+  {
+    "clave": "m1-06",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "Una permuta de ether por otra criptomoneda el 30 de diciembre de 2026, ¿a qué declaración va?",
+    "opciones": ["A la de 2026, que se presenta en 2027", "A la de 2027, porque se cobra en euros después", "A ninguna hasta que se retire a euros", "A la del año en que se compró el ether"],
+    "correcta": 0,
+    "explicacion": "El IRPF va por años naturales: la renta se imputa al año en que se produce y se declara en la campaña de la primavera siguiente."
+  },
+  {
+    "clave": "m1-07",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "¿A qué base del IRPF va la ganancia por vender criptomonedas por euros?",
+    "opciones": ["A la base general", "A la base del ahorro", "A una base especial para criptoactivos", "A la base del trabajo"],
+    "correcta": 1,
+    "explicacion": "Las ganancias y pérdidas derivadas de transmisiones, como vender o permutar, se integran en la base del ahorro."
+  },
+  {
+    "clave": "m1-08",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "Con la escala vigente desde 2025, ¿cuánto se paga por una base del ahorro de 10.000 €?",
+    "opciones": ["1.900 €", "1.980 €", "2.100 €", "2.300 €"],
+    "correcta": 1,
+    "explicacion": "Los primeros 6.000 € al 19 % (1.140 €) y los 4.000 € siguientes al 21 % (840 €): 1.980 € en total."
+  },
+  {
+    "clave": "m1-09",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "Tu base del ahorro es de 60.000 €. ¿Qué afirmación es correcta?",
+    "opciones": ["Pagas el 23 % de los 60.000 €", "Pagas el 23 % solo de la parte que supera los 50.000 €", "Pagas el 21 % de todo", "Pagas el 19 % de todo, porque es cripto"],
+    "correcta": 1,
+    "explicacion": "Los tramos son marginales: cada tipo se aplica solo a la parte de la base que cae dentro de su tramo."
+  },
+  {
+    "clave": "m1-10",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "¿Cuál es el tipo máximo de la escala del ahorro desde 2025 y a partir de qué cantidad se aplica?",
+    "opciones": ["28 % a partir de 200.000 €", "30 % a partir de 300.000 €", "26 % a partir de 200.000 €", "45 % a partir de 300.000 €"],
+    "correcta": 1,
+    "explicacion": "La Ley 7/2024 subió el último tramo del 28 % al 30 %, aplicable a la base del ahorro que supere los 300.000 €."
+  },
+  {
+    "clave": "m1-11",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "Tienes una pérdida de 2.000 € por vender una criptomoneda y has recibido un airdrop valorado en 2.000 €. ¿Puedes compensar una cosa con la otra?",
+    "opciones": ["Sí, se anulan y no declaras nada", "No, porque van a bases distintas: la pérdida a la del ahorro y el airdrop a la general", "Sí, pero solo hasta el 25 %", "Solo si es la misma criptomoneda"],
+    "correcta": 1,
+    "explicacion": "La pérdida por transmisión va a la base del ahorro y el airdrop, a la general. Lo que pasa en una caja no se compensa con lo que pasa en la otra."
+  },
+  {
+    "clave": "m1-12",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "¿Qué diferencia hay entre el tipo marginal y el tipo efectivo?",
+    "opciones": ["Son lo mismo", "El marginal es el del último euro; el efectivo, lo pagado dividido entre todo lo ganado", "El efectivo siempre es más alto que el marginal", "El marginal solo se aplica en la base general"],
+    "correcta": 1,
+    "explicacion": "Como la escala sube por tramos, el tipo efectivo queda por debajo del marginal: los primeros euros pagan menos que los últimos."
+  },
+  {
+    "clave": "m1-13",
+    "leccion": "lo-que-hacienda-ya-sabe",
+    "enunciado": "¿Quién presenta los modelos 172 y 173?",
+    "opciones": ["El inversor, junto con su Renta", "Los proveedores de servicios de criptomonedas con presencia en España", "El Banco de España", "La CNMV"],
+    "correcta": 1,
+    "explicacion": "Son declaraciones informativas que presentan las plataformas sobre sus clientes: el 172 con los saldos a 31 de diciembre y el 173 con las operaciones del año."
+  },
+  {
+    "clave": "m1-14",
+    "leccion": "lo-que-hacienda-ya-sabe",
+    "enunciado": "¿Qué cambia DAC8 para un residente en España con cuenta en un exchange de otro país de la Unión Europea?",
+    "opciones": ["Nada, solo afecta a exchanges españoles", "Que deja de tener que declarar sus ganancias", "Que la información de sus operaciones llega a la Agencia Tributaria española por intercambio automático", "Que tiene que pagar un impuesto europeo adicional"],
+    "correcta": 2,
+    "explicacion": "DAC8 extiende el intercambio automático de información a los criptoactivos: los datos se envían a la administración del país de residencia del cliente. Se aplica desde 2026 y los primeros intercambios son en 2027."
+  },
+  {
+    "clave": "m1-15",
+    "leccion": "lo-que-hacienda-ya-sabe",
+    "enunciado": "Con los modelos informativos y DAC8, ¿cómo se comprueban cada vez más las declaraciones con criptomonedas?",
+    "opciones": ["Solo si un inspector elige tu expediente al azar", "Por cruce automático entre lo que declaras y lo que informan las plataformas", "No se comprueban", "Solo si retiras más de 10.000 € a un banco"],
+    "correcta": 1,
+    "explicacion": "Como Hacienda recibe saldos y operaciones de las plataformas, una discrepancia con tu declaración aparece por cruce de datos, igual que con una nómina."
+  }
+]

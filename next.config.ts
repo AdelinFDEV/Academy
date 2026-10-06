@@ -83,12 +83,10 @@ const nextConfig: NextConfig = {
         destination: "/guias",
         permanent: true,
       },
-      // Los cursos se retiraron: su hueco lo ocupa Trading en Directo.
-      {
-        source: "/cursos",
-        destination: "/trading-en-directo",
-        permanent: true,
-      },
+      // `/cursos` estuvo aquí redirigiendo a /trading-en-directo desde el
+      // 12-08-2026, cuando se retiraron los cursos de entonces. Se quitó el
+      // 06-10-2026 porque vuelve a ser una página de verdad (src/app/cursos).
+      // No la vuelvas a redirigir: taparía la página sin avisar.
     ];
   },
 };

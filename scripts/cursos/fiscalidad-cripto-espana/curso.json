@@ -1,0 +1,112 @@
+{
+  "slug": "fiscalidad-cripto-espana",
+  "titulo": "Fiscalidad cripto en España",
+  "subtitulo": "De la primera compra a la declaración, sin sustos con Hacienda.",
+  "descripcion": "Un curso completo para declarar tus criptomonedas en España con criterio: qué tributa y qué no, cómo calcular cada ganancia con FIFO, dónde va el staking, los airdrops o el DeFi, cómo aprovechar las pérdidas, cómo rellenar la Renta casilla a casilla y qué hacer si Hacienda te escribe. Con casos reales, calculadoras y minijuegos en cada módulo.",
+  "objetivos": [
+    "Distinguir qué operaciones tributan y cuáles no, también las permutas entre criptomonedas y el paso a stablecoins.",
+    "Calcular la ganancia o pérdida de cualquier venta con el método FIFO, incluidas las comisiones.",
+    "Saber en qué base del IRPF va el staking, el lending, un airdrop, la minería o una pool de liquidez.",
+    "Compensar pérdidas con cabeza y no caer en la regla de la recompra.",
+    "Declarar tus criptomonedas en Renta Web y saber cuándo toca el modelo 721 o el Impuesto sobre el Patrimonio.",
+    "Regularizar un error a tiempo y responder a un requerimiento de Hacienda sin entrar en pánico."
+  ],
+  "nivel": "intermedio",
+  "portada": null,
+  "color": "#e6b455",
+  "aviso": "fiscal",
+  "logro": "Contribuyente Blindado",
+  "preguntas_final": 20,
+  "revisado": "2026-10-06",
+  "orden": 1,
+  "published": false,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Las reglas del juego",
+      "descripcion": "Quién tributa en España, las dos bases del IRPF y todo lo que Hacienda ya sabe de tus criptomonedas antes de que declares.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-grava-el-irpf", "titulo": "Qué grava el IRPF y por qué te afecta", "resumen": "Residencia fiscal, alteración patrimonial y la idea que desmonta casi todos los mitos: el impuesto no espera a que saques euros al banco.", "minutos": 12, "archivo": "01-01-que-grava-el-irpf.html" },
+        { "slug": "base-general-y-base-del-ahorro", "titulo": "Base general y base del ahorro: dos cajas, dos escalas", "resumen": "Por qué la misma ganancia puede pagar un 19 % o más de un 40 % según la caja en la que caiga.", "minutos": 15, "archivo": "01-02-base-general-y-base-del-ahorro.html" },
+        { "slug": "lo-que-hacienda-ya-sabe", "titulo": "Lo que Hacienda ya sabe de ti", "resumen": "Los modelos 172 y 173, el 721, MiCA y DAC8: cómo llegan tus datos a la Agencia Tributaria y por qué ya no se trata de si te pillan, sino de si cuadra.", "minutos": 13, "archivo": "01-03-lo-que-hacienda-ya-sabe.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Ganancias y pérdidas al vender o permutar",
+      "descripcion": "El corazón de la fiscalidad cripto: cuándo hay hecho imponible, cómo se valora cada operación y por qué el FIFO decide cuánto pagas.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "cuando-hay-que-tributar", "titulo": "Cuándo hay que tributar (y cuándo no)", "resumen": "Comprar, mantener, mover entre wallets, vender, permutar, pagar con cripto o pasarse a stablecoins: operación por operación.", "minutos": 14, "archivo": "02-01-cuando-hay-que-tributar.html" },
+        { "slug": "valor-de-adquisicion-y-transmision", "titulo": "Valor de adquisición y de transmisión", "resumen": "Los dos números de toda ganancia, cómo se valora una permuta sin euros de por medio y qué comisiones cuentan.", "minutos": 14, "archivo": "02-02-valor-de-adquisicion-y-transmision.html" },
+        { "slug": "el-metodo-fifo", "titulo": "El método FIFO, paso a paso", "resumen": "Por qué se venden primero las monedas que compraste primero, por qué se cuenta por moneda y no por exchange, y qué dijo el TSJ del País Vasco.", "minutos": 16, "archivo": "02-03-el-metodo-fifo.html" },
+        { "slug": "caso-practico-un-ano-de-operaciones", "titulo": "Caso práctico: un año de operaciones", "resumen": "Doce meses de compras, ventas y permutas de una inversora, calculados de principio a fin hasta el número que va a la Renta.", "minutos": 18, "archivo": "02-04-caso-practico-un-ano-de-operaciones.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Rentas que no son ventas",
+      "descripcion": "Staking, lending, airdrops, minería, donaciones y herencias: cada renta tiene su base, su valoración y su momento.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "staking-y-lending", "titulo": "Staking y lending: rendimientos del capital mobiliario", "resumen": "Tributan al recibirlos, valorados ese día, aunque no vendas nada. Y el riesgo de pagar por un valor que luego se desploma.", "minutos": 14, "archivo": "03-01-staking-y-lending.html" },
+        { "slug": "airdrops-y-recompensas", "titulo": "Airdrops y recompensas promocionales", "resumen": "Por qué un airdrop va a la base general y no puede compensarse con tus pérdidas de trading.", "minutos": 12, "archivo": "03-02-airdrops-y-recompensas.html" },
+        { "slug": "mineria-y-actividad-economica", "titulo": "Minería, trading intensivo y actividad económica", "resumen": "Cuándo minar es una actividad económica, y por qué operar mucho con tu dinero no lo es.", "minutos": 12, "archivo": "03-03-mineria-y-actividad-economica.html" },
+        { "slug": "donaciones-y-herencias", "titulo": "Donaciones y herencias de criptomonedas", "resumen": "Quién paga qué cuando las criptomonedas cambian de manos sin venta: el donante, el que recibe y el heredero.", "minutos": 12, "archivo": "03-04-donaciones-y-herencias.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Los casos difíciles",
+      "descripcion": "DeFi, NFT, robos, estafas y exchanges quebrados: donde hay criterio de Hacienda y donde todavía no.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "defi-pools-y-tokens-envueltos", "titulo": "DeFi: pools de liquidez, préstamos y tokens envueltos", "resumen": "Lo que dijo la Dirección General de Tributos en 2024 y lo que sigue sin decir.", "minutos": 15, "archivo": "04-01-defi-pools-y-tokens-envueltos.html" },
+        { "slug": "nft-comprar-vender-y-crear", "titulo": "NFT: comprar, vender y crear", "resumen": "Coleccionista, revendedor y artista no tributan igual por el mismo NFT.", "minutos": 12, "archivo": "04-02-nft-comprar-vender-y-crear.html" },
+        { "slug": "robos-estafas-y-exchanges-quebrados", "titulo": "Robos, estafas y exchanges quebrados", "resumen": "Cuándo una pérdida que no elegiste cuenta para Hacienda, en qué base va y qué pruebas necesitas.", "minutos": 14, "archivo": "04-03-robos-estafas-y-exchanges-quebrados.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Pérdidas y planificación",
+      "descripcion": "Las pérdidas también cuentan: cómo compensarlas, la regla de la recompra que casi todos aplican mal y qué revisar antes del 31 de diciembre.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "como-se-compensan-las-perdidas", "titulo": "Cómo se compensan las pérdidas", "resumen": "El orden exacto, el tope del 25 % y los cuatro años para aprovecharlas.", "minutos": 14, "archivo": "05-01-como-se-compensan-las-perdidas.html" },
+        { "slug": "la-regla-de-la-recompra", "titulo": "La regla de la recompra: un año, no dos meses", "resumen": "Vender con pérdida y volver a comprar: cuándo la pérdida se aplaza y cuándo puedes usarla.", "minutos": 12, "archivo": "05-02-la-regla-de-la-recompra.html" },
+        { "slug": "planificar-antes-del-31-de-diciembre", "titulo": "Planificar antes del 31 de diciembre", "resumen": "La revisión de fin de año que separa a quien decide su factura de quien se la encuentra en abril.", "minutos": 14, "archivo": "05-03-planificar-antes-del-31-de-diciembre.html" }
+      ]
+    },
+    {
+      "orden": 6,
+      "titulo": "Declarar, paso a paso",
+      "descripcion": "Quién está obligado, cómo se rellena Renta Web, qué documentación guardar y cuándo tocan el modelo 721 y el Impuesto sobre el Patrimonio.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "obligacion-de-declarar-y-calendario", "titulo": "Quién está obligado a declarar y cuándo", "resumen": "Los umbrales que de verdad importan con criptomonedas y el calendario fiscal del año.", "minutos": 12, "archivo": "06-01-obligacion-de-declarar-y-calendario.html" },
+        { "slug": "renta-web-monedas-virtuales", "titulo": "Renta Web: el apartado de monedas virtuales", "resumen": "Cómo se rellena operación a operación, qué se pone en cada campo y los errores que más se repiten.", "minutos": 16, "archivo": "06-02-renta-web-monedas-virtuales.html" },
+        { "slug": "documentacion-y-herramientas", "titulo": "Documentación y herramientas de cálculo", "resumen": "Qué guardar, cómo consolidar varias plataformas y qué puede y qué no puede hacer por ti un programa de cálculo.", "minutos": 13, "archivo": "06-03-documentacion-y-herramientas.html" },
+        { "slug": "modelo-721-y-patrimonio", "titulo": "Modelo 721, Patrimonio y grandes fortunas", "resumen": "Las obligaciones que no dependen de ganar dinero, sino de tenerlo.", "minutos": 15, "archivo": "06-04-modelo-721-y-patrimonio.html" }
+      ]
+    },
+    {
+      "orden": 7,
+      "titulo": "Cuando algo sale mal",
+      "descripcion": "Errores, declaraciones fuera de plazo, cartas de Hacienda e inspecciones: cómo se arregla cada cosa y cuánto cuesta.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "declaracion-complementaria-y-recargos", "titulo": "Declaración complementaria y recargos", "resumen": "Arreglarlo antes de que te escriban sale mucho más barato. Cuánto, exactamente.", "minutos": 13, "archivo": "07-01-declaracion-complementaria-y-recargos.html" },
+        { "slug": "requerimientos-de-hacienda", "titulo": "Si Hacienda te escribe: requerimientos y comprobaciones", "resumen": "Qué tipo de carta es, qué plazo tienes y cómo se contesta sin empeorar las cosas.", "minutos": 14, "archivo": "07-02-requerimientos-de-hacienda.html" },
+        { "slug": "sanciones-y-prescripcion", "titulo": "Sanciones, inspección y prescripción", "resumen": "Cuánto puede costar no declarar, cuándo deja de poder reclamarte Hacienda y por qué guardar el histórico te protege.", "minutos": 13, "archivo": "07-03-sanciones-y-prescripcion.html" }
+      ]
+    }
+  ]
+}

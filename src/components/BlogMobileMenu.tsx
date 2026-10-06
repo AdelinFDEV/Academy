@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { destinoPorRuta } from "@/lib/herramientas";
 import {
   FileText, Folder, BookOpen, GraduationCap, LayoutGrid, Radio,
-  TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar,
+  TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar, BookOpenCheck,
 } from "lucide-react";
 
 interface Category {
@@ -126,6 +126,11 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Guías Interactivas
                 <span className="mobile-featured-badge">★ Destacado</span>
               </Link>
+              <Link href="/cursos" className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/cursos")}`} onClick={close}>
+                <BookOpenCheck size={15} aria-hidden="true" />
+                Cursos
+                <span className="mobile-featured-badge">★ Destacado</span>
+              </Link>
             </div>
 
             <div className="blog-mobile-section">
@@ -142,10 +147,10 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 Ver todas las herramientas
               </Link>
 
-              <Link href={destino("/dashboard/trading")} className={`blog-mobile-tool-link${a("/dashboard/trading")}`} onClick={close}>
+              <Link href={destino("/dashboard/trading")} className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/dashboard/trading")}`} onClick={close}>
                 <TrendingUp size={15} aria-hidden="true" />
                 Diario de Trading
-                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
+                <span className="mobile-featured-badge">★ Destacado</span>
               </Link>
 
               <Link href={destino("/dashboard/watchlist")} className={`blog-mobile-tool-link${a("/dashboard/watchlist")}`} onClick={close}>
@@ -173,10 +178,10 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 {!user && <span className="mobile-free-badge">FREE · Sin registro</span>}
               </Link>
 
-              <Link href={destino("/portfolio")} className={`blog-mobile-tool-link${a("/portfolio")}`} onClick={close}>
+              <Link href={destino("/portfolio")} className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/portfolio")}`} onClick={close}>
                 <PieChart size={15} aria-hidden="true" />
                 Portfolio Adelin
-                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
+                <span className="mobile-featured-badge">★ Destacado</span>
               </Link>
 
               <Link href={destino("/herramientas/liberaciones")} className={`blog-mobile-tool-link${a("/herramientas/liberaciones")}`} onClick={close}>

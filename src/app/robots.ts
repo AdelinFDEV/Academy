@@ -24,6 +24,9 @@ export default function robots(): MetadataRoute.Robots {
           "/admin",
           "/dashboard",
           "/cuenta",
+          // El aula de los cursos: de pago, personal y con `noindex`. Las fichas
+          // públicas van en /cursos/<slug>, que NO empieza igual.
+          "/aula",
           "/api/",
 
           // Autenticación con tokens de un solo uso en la URL.

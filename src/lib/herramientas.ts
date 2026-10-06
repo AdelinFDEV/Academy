@@ -17,12 +17,13 @@
  *  · "gratis"        → se usa sin registrarse.
  *  · "cuenta"        → basta una cuenta gratuita.
  *  · "premium"       → requiere suscripción.
- *  · "proximamente"  → todavía no existe; no se enlaza.
+ *  · "proximamente"  → todavía no existe; no se enlaza. Si ya tiene ficha
+ *                      pública (`paginaPublica`), los enlaces van a la ficha.
  */
 import {
   NotebookPen, Radio, Unlock, Wallet, Target, Scale, Eye, Radar, PieChart, Medal,
   Trophy, ClipboardCheck, BadgeCheck, Sparkles, CalendarDays, CandlestickChart,
-  type LucideIcon,
+  GraduationCap, type LucideIcon,
 } from "lucide-react";
 
 export type Acceso = "gratis" | "cuenta" | "premium" | "proximamente";
@@ -255,7 +256,38 @@ export const HERRAMIENTAS: Herramienta[] = [
     ],
     premiumHref: "/logros",
   },
+  {
+    id: "cursos",
+    icon: GraduationCap,
+    label: "Cursos",
+    tag: "Próximamente",
+    color: "#e6b455",
+    desc: "Cursos por módulos, a tu ritmo, con examen en cada módulo y certificado al aprobar el final.",
+    resumen:
+      "Cursos completos de principio a fin, divididos en módulos y lecciones con su tiempo estimado. Cada alumno va a su ritmo con su propio cronograma, cada módulo se cierra con un examen que abre el siguiente, y el examen final da una nota de 0 a 10 y un certificado. Todavía no hay ningún curso publicado: el primero está en preparación.",
+    // "proximamente" mientras no haya ningún curso publicado. Al publicar el
+    // primero pasa a "premium" —y con él cambian el `tag` y la última frase
+    // del `resumen`—. Hasta entonces no entra en el número de herramientas
+    // que se anuncia: ver `HERRAMIENTAS_DISPONIBLES`.
+    acceso: "proximamente",
+    chips: [
+      { icon: ClipboardCheck, label: "Examen por módulo" },
+      { icon: BadgeCheck, label: "Certificado" },
+    ],
+    premiumHref: "/cursos",
+    paginaPublica: "/cursos",
+  },
 ];
+
+/**
+ * Las que ya se pueden usar: todas menos las "proximamente".
+ *
+ * Es la lista con la que se **cuenta**. «Las 11 herramientas» en la tarjeta de
+ * Premium, con una que aún no existe, sería prometer lo que el producto no
+ * hace. Para pintar el catálogo entero —con su etiqueta «En preparación»— se
+ * sigue usando `HERRAMIENTAS`.
+ */
+export const HERRAMIENTAS_DISPONIBLES = HERRAMIENTAS.filter((h) => h.acceso !== "proximamente");
 
 /** Busca una herramienta por su id. Lanza si no existe: sería un fallo de código. */
 export function herramienta(id: string): Herramienta {

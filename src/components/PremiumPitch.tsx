@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Crown, Gem, Check, Send, Infinity as InfinityIcon, Radio } from "lucide-react";
 import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
-import { HERRAMIENTAS } from "@/lib/herramientas";
+import { HERRAMIENTAS, HERRAMIENTAS_DISPONIBLES } from "@/lib/herramientas";
 
 /**
  * La tarjeta de Premium de la portada (y su variante de sección).
@@ -82,7 +82,7 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
       <span className="premium-pitch-badge">
         <Crown size={13} aria-hidden="true" /> Premium
       </span>
-      <span className="premium-pitch-count">{HERRAMIENTAS.length} herramientas</span>
+      <span className="premium-pitch-count">{HERRAMIENTAS_DISPONIBLES.length} herramientas</span>
     </div>
   );
 

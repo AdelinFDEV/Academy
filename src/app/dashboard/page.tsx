@@ -97,6 +97,8 @@ export default async function DashboardPage() {
         // solo NASDAQ en 5 minutos.
         { href: "/trading-en-directo", icon: "radio", name: "Trading en Directo",   desc: "Solo NASDAQ en 5 min · martes y jueves", locked: false, soon: false },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
+        // "Pronto" hasta que se publique el primer curso; entonces, soon: false.
+        { href: "/cursos",   icon: "graduationcap", name: "Cursos",               desc: "Por módulos, con examen y certificado", locked: false, soon: true },
       ],
     },
     {

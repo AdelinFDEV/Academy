@@ -77,6 +77,7 @@ export default function SidebarTools({ isLoggedIn, isPremium }: Props) {
   }
 
   function getBadge(tool: ToolDef) {
+    if (tool.soon) return <span className="sidebar-tool-badge--soon">PRONTO</span>;
     if (tool.requiresPremium) return <span className="sidebar-tool-badge--premium">PREMIUM</span>;
     if (!isLoggedIn) return <span className="sidebar-tool-badge--free">GRATIS</span>;
     return null;

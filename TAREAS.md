@@ -30,6 +30,19 @@ Hecho entre el 04 y el 05-10-2026, en `/admin/objetivos`: objetivos (repetibles,
 - [ ] **Suscriptores de YouTube exactos.** La YouTube Data API pública REDONDEA la cifra a tres cifras significativas (el 05-10-2026 daba 17.200 con 17.224 reales), así que la pestaña Crecimiento y los objetivos de suscriptores solo se mueven de 100 en 100. La solución es la **YouTube Analytics API**: con OAuth de la cuenta del canal da los suscriptores ganados y perdidos de cada día, exactos. Partir de un total exacto conocido (17.224 el 05-10-2026) y sumar el neto diario en el cron de las 04:00, guardándolo en `metricas_diarias`. Necesita: credenciales OAuth en Google Cloud, conectar la cuenta una vez y guardar el refresh token en Vercel.
 - [ ] **Fase 3:** balance del domingo por el bot e ideas sugeridas a partir de las consultas de Search Console sin contenido.
 
+### 0b. Cursos para Premium — el primero: fiscalidad cripto en España
+
+La plataforma está hecha (06-10-2026): catálogo `/cursos`, ficha `/cursos/<slug>`, aula `/aula/<curso>` con ritmo y cronograma, lecciones con bloques interactivos, exámenes sorteados y corregidos en el servidor con bloqueo entre módulos, certificado verificable y logro en `/dashboard/logros`. El contenido se escribe en `scripts/cursos/<slug>/` y se sube con `scripts/subir-curso.mjs`. **Sin editor en /admin**, decisión del admin. Nota mínima 5; certificado = 40 % media de módulos + 60 % final; suspenso = 24 h de espera.
+
+Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borrador**; escritos el módulo 1 entero (3 lecciones + 15 preguntas) y la lección 2.1. Falta, en orden:
+
+- [ ] **Escribir el resto**: lecciones 2.2 a 7.3, los bancos de preguntas de los módulos 2 a 7 (15 cada uno) y el del examen final (30). Cada dato fiscal, contrastado con la AEAT, la DGT o el BOE.
+- [ ] **Crear en el diccionario** los términos fiscales que el curso necesita enlazar y que aún no existen: FIFO, permuta, ganancia patrimonial, base del ahorro, airdrop, lending, modelo 721… (regla del diccionario: antes de publicar).
+- [ ] **Imágenes**: portada y las ilustraciones que hagan falta, con prompts de Gemini, en WebP.
+- [ ] **Comprobar DAC8 en el BOE** antes de publicar: en octubre de 2026 la orden de los modelos 042, 172, 175 y 721 seguía en tramitación (lección «Lo que Hacienda ya sabe de ti»).
+- [ ] **Escribir `CURSOS.md`** con el diseño definitivo: estructura de archivos, catálogo de bloques, reglas de examen y cómo se publica.
+- [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json` y volver a subir; `cursos` pasa a `acceso: "premium"` en `src/lib/herramientas.ts` (con su `tag` y su `resumen`), `soon: false` en el rail de `src/app/dashboard/page.tsx`, y ofrecer la auditoría SEO de la ficha.
+
 ### 1. Foro de preguntas y respuestas
 
 Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin arbitrando.

@@ -1,0 +1,168 @@
+/* El certificado de un curso. Lo importa su componente (`Certificado.tsx`),
+   así que llega a las tres páginas que lo pintan: la del alumno en el aula,
+   la de verificación pública y la ficha del curso, donde sale como muestra.
+
+   Es papel, no pantalla: fondo crema, tinta oscura y un marco dorado, y está
+   pensado para imprimirse en A4 apaisado. El color del curso entra por
+   `--cert-acento`. */
+
+.cert {
+  --cert-acento: #e6b455;
+  --cert-oro: color-mix(in srgb, var(--cert-acento) 82%, #6b4a0e);
+  position: relative;
+  padding: 12px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--cert-acento) 55%, #fff) 0%,
+      var(--cert-acento) 35%,
+      color-mix(in srgb, var(--cert-acento) 70%, #000) 65%,
+      color-mix(in srgb, var(--cert-acento) 60%, #fff) 100%);
+  aspect-ratio: 1.414;
+  max-width: 900px;
+  /* Todo lo de dentro se mide en cqw —por ciento del ancho del certificado—,
+     así se ve igual de proporcionado como muestra pequeña que impreso en A4. */
+  container-type: inline-size;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+}
+
+.cert-marco {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 3.4cqw 4.6cqw;
+  border-radius: 10px;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 45% at 50% 0%, color-mix(in srgb, var(--cert-acento) 13%, transparent), transparent),
+    radial-gradient(40% 40% at 100% 100%, color-mix(in srgb, var(--cert-acento) 9%, transparent), transparent),
+    #fbf8f1;
+  color: #1b2333;
+  text-align: center;
+  font-family: var(--font-family);
+}
+
+/* Filete interior: el doble marco de los diplomas. */
+.cert-marco::before {
+  content: "";
+  position: absolute;
+  inset: 1.2cqw;
+  border: 1px solid color-mix(in srgb, var(--cert-oro) 45%, transparent);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.cert-cab { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.cert-marca {
+  font: 800 1.6cqw var(--font-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1b2333;
+}
+
+/* El sello: un disco dorado con el icono, como un lacre. */
+.cert-sello {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 7cqw;
+  height: 7cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--cert-acento) 55%, #fff), var(--cert-oro));
+  color: #fffaf0;
+  box-shadow: 0 0 0 3px #fbf8f1, 0 0 0 4px color-mix(in srgb, var(--cert-oro) 60%, transparent), 0 8px 20px -8px rgba(107, 74, 14, 0.7);
+}
+.cert-sello svg { width: 55%; height: 55%; }
+
+.cert-kicker {
+  position: relative;
+  margin: 0;
+  font-size: 1.35cqw;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--cert-oro);
+}
+.cert-otorga { position: relative; margin: 0; font-size: 1.7cqw; color: #5b6474; }
+.cert-nombre {
+  position: relative;
+  margin: 0;
+  padding-bottom: 0.2em;
+  border-bottom: 1px solid color-mix(in srgb, var(--cert-oro) 40%, transparent);
+  font: 700 5cqw/1.1 var(--font-display);
+  color: #0f1726;
+}
+.cert-curso { position: relative; margin: 0; font: 700 2.7cqw/1.25 var(--font-display); color: #0f1726; max-width: 80%; }
+
+.cert-notas { position: relative; display: flex; align-items: center; gap: 4cqw; }
+.cert-nota-final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.9cqw 2.2cqw;
+  border: 0.25cqw solid var(--cert-oro);
+  border-radius: 1.6cqw;
+  background: color-mix(in srgb, var(--cert-acento) 8%, #fff);
+}
+.cert-nota-final span { font-size: 1.15cqw; color: #5b6474; text-transform: uppercase; letter-spacing: 0.08em; }
+.cert-nota-final strong { font: 800 4.4cqw/1.1 var(--font-display); color: #0f1726; }
+.cert-desglose { display: grid; gap: 0.4cqw; text-align: left; font-size: 1.5cqw; }
+.cert-desglose div { display: flex; justify-content: space-between; gap: 2.4cqw; white-space: nowrap; }
+.cert-desglose span { color: #5b6474; }
+.cert-desglose strong { color: #0f1726; }
+
+.cert-pie {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+  width: 100%;
+  padding-top: 1.1cqw;
+  border-top: 1px solid rgba(15, 23, 38, 0.12);
+  text-align: left;
+}
+.cert-pie > div { display: flex; flex-direction: column; gap: 0.1rem; }
+.cert-pie > div:last-child { text-align: right; }
+.cert-pie span { font-size: 1.15cqw; color: #5b6474; }
+.cert-pie strong { font-size: 1.55cqw; color: #0f1726; }
+.cert-codigo { letter-spacing: 0.14em; font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; }
+.cert-url { word-break: break-all; }
+
+/* Muestra: la que se enseña en la ficha del curso antes de aprobarlo. La
+   marca de agua deja claro que no es un certificado de nadie. */
+.cert--muestra .cert-marco::after {
+  content: "Muestra";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  font: 800 11cqw var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--cert-oro) 13%, transparent);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Impresión: solo el certificado, en A4 apaisado ────────────────────── */
+
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body * { visibility: hidden !important; }
+  .cert, .cert * { visibility: visible !important; }
+  .cert {
+    position: fixed;
+    inset: 0;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

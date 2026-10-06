@@ -5,7 +5,7 @@ import { ArrowRight, Lock } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { HERRAMIENTAS, ETIQUETA_ACCESO, detalleDe, sinSalida, type Herramienta } from "@/lib/herramientas";
+import { HERRAMIENTAS, HERRAMIENTAS_DISPONIBLES, ETIQUETA_ACCESO, detalleDe, sinSalida, type Herramienta } from "@/lib/herramientas";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import "./detalle.css";
 import "./herramientas.css";
@@ -59,7 +59,7 @@ const GRUPOS: { num: string; titulo: string; sub: string; ids: string[] }[] = [
     num: "03",
     titulo: "Después: llevar tus cuentas y aprender",
     sub: "La parte que casi nadie hace, y la que separa a quien mejora de quien repite los mismos errores.",
-    ids: ["diario", "mi-portfolio", "logros"],
+    ids: ["diario", "mi-portfolio", "logros", "cursos"],
   },
   {
     num: "04",
@@ -146,12 +146,16 @@ export default async function HerramientasPage() {
   function destino(h: Herramienta): string {
     if (h.acceso === "gratis") return h.href ?? "/herramientas";
     if (h.acceso === "cuenta") return user ? h.premiumHref ?? "/dashboard" : "/register";
+    // Lo que aún no existe no se vende: «Ver Premium» llevaría a pagar por
+    // algo que no hay. Va a su ficha, que dice en qué punto está.
+    if (h.acceso === "proximamente") return detalleDe(h);
     return isPremium ? h.premiumHref ?? "/dashboard" : "/premium";
   }
 
   function etiquetaCta(h: Herramienta): string {
     if (h.acceso === "gratis") return "Abrir";
     if (h.acceso === "cuenta") return user ? "Abrir" : "Crear cuenta gratis";
+    if (h.acceso === "proximamente") return "Ver en qué punto está";
     return isPremium ? "Abrir" : "Ver Premium";
   }
 
@@ -200,7 +204,7 @@ export default async function HerramientasPage() {
 
         {/* ── Hero ── */}
         <header className="det-hero">
-          <span className="det-hero-watermark" aria-hidden="true">{HERRAMIENTAS.length}</span>
+          <span className="det-hero-watermark" aria-hidden="true">{HERRAMIENTAS_DISPONIBLES.length}</span>
 
           <span className="det-eyebrow">
             <span className="det-eyebrow-dot" aria-hidden="true" />
@@ -222,7 +226,7 @@ export default async function HerramientasPage() {
 
           <div className="det-stats">
             <div className="det-stat">
-              <span className="det-stat-value">{HERRAMIENTAS.length}</span>
+              <span className="det-stat-value">{HERRAMIENTAS_DISPONIBLES.length}</span>
               <span className="det-stat-label">Herramientas</span>
             </div>
             <div className="det-stat">
@@ -292,9 +296,12 @@ export default async function HerramientasPage() {
                         {etiquetaCta(h)}
                         <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
                       </Link>
-                      <Link href={detalleDe(h)} className="herr-btn herr-btn--ghost">
-                        Ver detalles
-                      </Link>
+                      {/* Si los dos botones irían al mismo sitio, sobra uno. */}
+                      {destino(h) !== detalleDe(h) && (
+                        <Link href={detalleDe(h)} className="herr-btn herr-btn--ghost">
+                          Ver detalles
+                        </Link>
+                      )}
                     </div>
                   </li>
                 );
@@ -376,7 +383,7 @@ export default async function HerramientasPage() {
 
         {/* ── Cierre ── */}
         <section className="det-final">
-          <span className="det-final-watermark" aria-hidden="true">{HERRAMIENTAS.length}</span>
+          <span className="det-final-watermark" aria-hidden="true">{HERRAMIENTAS_DISPONIBLES.length}</span>
           <h2 className="det-final-title">Empieza por lo que no cuesta nada</h2>
           <p className="det-final-sub">
             La calculadora de precio objetivo se usa sin registrarse. Si después

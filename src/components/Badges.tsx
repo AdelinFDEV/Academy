@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Flame, Star, Trophy, Check, Lock, Target, ArrowRight, Zap, BookOpen, NotebookPen } from "lucide-react";
+import { Flame, Star, Trophy, Check, Lock, Target, ArrowRight, Zap, BookOpen, NotebookPen, GraduationCap } from "lucide-react";
 import {
   BADGE_DEFS, DIARIO_BADGE_DEFS, GUIDE_BADGE_DEFS, diarioLevel, isEarned,
   type BadgeDef, type BadgeStats,
@@ -20,7 +20,18 @@ export function FeaturedStar() {
 /** Logros guardados: id → fecha. null = concedido en esta visita, aún sin fecha leída. */
 type Earned = Map<string, string | null>;
 
-type CategoryId = "actividad" | "guias" | "diario";
+type CategoryId = "actividad" | "guias" | "cursos" | "diario";
+
+/** Un curso publicado y, si lo aprobó, cuándo y con qué nota. Lo calcula el servidor. */
+export interface LogroCurso {
+  slug: string;
+  titulo: string;
+  logro: string;
+  color: string;
+  conseguido: { fecha: string; nota: number } | null;
+}
+
+const notaTexto = (n: number) => n.toFixed(2).replace(/\.?0+$/, "").replace(".", ",");
 
 const dateStr = (iso: string) =>
   new Date(iso).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" });
@@ -60,12 +71,14 @@ function ProgressRing({ pct }: { pct: number }) {
   );
 }
 
-function LogroCard({ badge, earned, ids, stats, isPremium }: {
+function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
   badge: BadgeDef;
   earned: Earned;
   ids: Set<string>;
   stats: BadgeStats | null;
   isPremium: boolean;
+  /** Solo en los logros de curso: la nota final con la que se aprobó. */
+  notaCurso?: number;
 }) {
   const got = isEarned(ids, badge);
   const level = diarioLevel(ids, badge);
@@ -88,6 +101,7 @@ function LogroCard({ badge, earned, ids, stats, isPremium }: {
     foot = (
       <span className="lg-got">
         <Check size={11} strokeWidth={3.2} aria-hidden="true" /> Conseguido{date ? ` · ${dateStr(date)}` : " ahora"}
+        {notaCurso !== undefined && ` · nota ${notaTexto(notaCurso)}`}
       </span>
     );
   } else if (prog) {
@@ -99,6 +113,8 @@ function LogroCard({ badge, earned, ids, stats, isPremium }: {
     );
   } else if (badge.guideSlug) {
     foot = <span className="lg-foot-text">Hacer el quiz de la guía <ArrowRight size={12} aria-hidden="true" /></span>;
+  } else if (badge.cursoSlug) {
+    foot = <span className="lg-foot-text">{isPremium ? "Hacer el curso" : "Ver el curso"} <ArrowRight size={12} aria-hidden="true" /></span>;
   } else if (badge.id === "first-premium" && !isPremium) {
     foot = <Link href="/premium" className="lg-cta">Ver Premium <ArrowRight size={12} aria-hidden="true" /></Link>;
   } else {
@@ -122,6 +138,7 @@ function LogroCard({ badge, earned, ids, stats, isPremium }: {
   );
 
   if (badge.guideSlug) return <Link href={`/guias/${badge.guideSlug}`} className="lg-link">{card}</Link>;
+  if (badge.cursoSlug) return <Link href={`/cursos/${badge.cursoSlug}`} className="lg-link">{card}</Link>;
   if (badge.diario) return <Link href="/dashboard/trading#hitos" className="lg-link">{card}</Link>;
   return card;
 }
@@ -133,13 +150,32 @@ interface Props {
   initialEarned: { badge_id: string; unlocked_at: string }[];
   /** Premium: ve los hitos del diario aunque aún no tenga ninguno. */
   showDiario: boolean;
+  /** Un logro por curso publicado. Vacío si no hay cursos: la categoría no sale. */
+  cursos?: LogroCurso[];
 }
 
-export default function Badges({ initialStreak, initialMax, initialFeatured, initialEarned, showDiario }: Props) {
+export default function Badges({ initialStreak, initialMax, initialFeatured, initialEarned, showDiario, cursos = [] }: Props) {
   const [streak, setStreak] = useState(initialStreak);
   const [maxStreak, setMaxStreak] = useState(initialMax);
   const [featured, setFeatured] = useState(initialFeatured);
-  const [earned, setEarned] = useState<Earned>(() => new Map(initialEarned.map(b => [b.badge_id, b.unlocked_at])));
+  // Los logros de curso entran en el mismo mapa con el id `curso-<slug>`. No
+  // vienen de `user_badges` sino del certificado, que solo emite el servidor.
+  const [earned, setEarned] = useState<Earned>(() => new Map([
+    ...initialEarned.map((b): [string, string] => [b.badge_id, b.unlocked_at]),
+    ...cursos.filter(c => c.conseguido).map((c): [string, string] => [`curso-${c.slug}`, c.conseguido!.fecha]),
+  ]));
+  const cursoDefs = useMemo<BadgeDef[]>(() => cursos.map(c => ({
+    id: `curso-${c.slug}`,
+    label: c.logro,
+    condition: `Aprueba el examen final del curso «${c.titulo}»`,
+    icon: <GraduationCap size={24} aria-hidden="true" />,
+    bigIcon: <GraduationCap size={48} aria-hidden="true" />,
+    cursoSlug: c.slug,
+  })), [cursos]);
+  const notaPorCurso = useMemo(
+    () => new Map(cursos.filter(c => c.conseguido).map(c => [c.slug, c.conseguido!.nota])),
+    [cursos],
+  );
   const [stats, setStats] = useState<BadgeStats | null>(null);
 
   useEffect(() => {
@@ -187,7 +223,12 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
       defs: GUIDE_BADGE_DEFS,
     },
     {
-      id: "diario", num: "03", title: "Diario de Trading", icon: <NotebookPen size={15} />,
+      id: "cursos", num: "03", title: "Cursos", icon: <GraduationCap size={15} />,
+      sub: "Aprueba el examen final de un curso y gana su logro, con la nota que sacaste.",
+      defs: cursoDefs,
+    },
+    {
+      id: "diario", num: "04", title: "Diario de Trading", icon: <NotebookPen size={15} />,
       sub: "Hitos que premian la disciplina al operar. Cada uno tiene varios niveles.",
       defs: diarioDefs,
     },
@@ -315,7 +356,10 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
           </header>
           <div className="lg-grid">
             {c.defs.map(b => (
-              <LogroCard key={b.id} badge={b} earned={earned} ids={ids} stats={stats} isPremium={showDiario} />
+              <LogroCard
+                key={b.id} badge={b} earned={earned} ids={ids} stats={stats} isPremium={showDiario}
+                notaCurso={b.cursoSlug ? notaPorCurso.get(b.cursoSlug) : undefined}
+              />
             ))}
           </div>
         </section>

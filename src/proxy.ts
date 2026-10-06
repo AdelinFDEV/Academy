@@ -3,7 +3,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { esPrefetchDe, ipDe, registrar, tramoDe } from "@/lib/rate-limit";
 
 // Routes that require an authenticated session.
-const protectedRoutes = ["/dashboard", "/cuenta", "/logros", "/portfolio"];
+// `/aula`: el aula de los cursos. La ficha pública de cada curso vive en
+// `/cursos/<slug>` precisamente para que este prefijo no la tape.
+const protectedRoutes = ["/dashboard", "/cuenta", "/logros", "/portfolio", "/aula"];
 // Routes that require admin role.
 const adminRoutes = ["/admin"];
 // Routes that logged-in users should not visit (they're already in).

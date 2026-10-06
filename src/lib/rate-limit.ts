@@ -138,6 +138,8 @@ const RUTAS_ESCRITURA = [
   "/api/likes",
   "/api/shares",
   "/api/user-posts",
+  // El aula: progreso, exámenes y ritmo. Escrituras propias, sin terceros.
+  "/api/cursos",
 ];
 
 /**

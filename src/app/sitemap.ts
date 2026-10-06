@@ -100,8 +100,32 @@ async function fetchPosts(): Promise<SitemapPost[]> {
   return data as SitemapPost[];
 }
 
+/**
+ * Los cursos publicados, con su fecha de última edición. Sin ninguno, `/cursos`
+ * sale con `noindex` y no entra aquí: un sitemap no debe apuntar a una página
+ * que pide no indexarse. La policy de `cursos` deja leer los publicados con la
+ * clave anónima. Si la tabla aún no existe, cuenta como que no hay ninguno.
+ *
+ * El aula (`/aula/**`) no entra nunca: exige sesión y está en robots.txt.
+ */
+async function fetchCursos(): Promise<{ slug: string; updated_at: string }[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return [];
+
+  const supabase = createClient(url, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { data, error } = await supabase
+    .from("cursos")
+    .select("slug, updated_at")
+    .eq("published", true);
+
+  return error || !data ? [] : data;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await fetchPosts();
+  const [posts, cursos] = await Promise.all([fetchPosts(), fetchCursos()]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
     ({ path, priority, changeFrequency }) => ({
@@ -153,5 +177,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
   );
 
-  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...postEntries, ...categoryEntries];
+  // El catálogo de cursos entra solo en cuanto hay uno publicado, y con él la
+  // ficha pública de cada curso, con su fecha real de edición.
+  const cursoEntries: MetadataRoute.Sitemap = cursos.length
+    ? [
+        { url: `${SITE_URL}/cursos`, changeFrequency: "weekly", priority: 0.8 },
+        ...cursos.map((c) => ({
+          url: `${SITE_URL}/cursos/${c.slug}`,
+          lastModified: new Date(c.updated_at),
+          changeFrequency: "monthly" as const,
+          priority: 0.8,
+        })),
+      ]
+    : [];
+
+  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...postEntries, ...categoryEntries, ...cursoEntries];
 }

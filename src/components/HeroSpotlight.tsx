@@ -9,7 +9,7 @@ import {
   LayoutDashboard, Check, Scale,
 } from "lucide-react";
 import { DefiLlamaGlyph } from "@/components/BrandMarks";
-import { HERRAMIENTAS, herramienta, detalleDe } from "@/lib/herramientas";
+import { HERRAMIENTAS, HERRAMIENTAS_DISPONIBLES, herramienta, detalleDe } from "@/lib/herramientas";
 
 /** Cifras reales de la cartera, calculadas en el servidor. `null` si fallan. */
 export type ResumenHero = {
@@ -466,7 +466,7 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
                   })}
                 </span>
                 <Link href="/herramientas" className="hero-band-tools-link">
-                  Ver las {HERRAMIENTAS.length} herramientas
+                  Ver las {HERRAMIENTAS_DISPONIBLES.length} herramientas
                   <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
                 </Link>
               </div>
@@ -490,7 +490,7 @@ export default function HeroSpotlight({ isLoggedIn, isPremium, guidesCount, port
                     Diario de trading con estadísticas, liberaciones de tokens en tiempo real y todas las herramientas exclusivas de la academia.
                   </p>
                   <ul className="hero-premium-band-list">
-                    <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Las {HERRAMIENTAS.length} herramientas</li>
+                    <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Las {HERRAMIENTAS_DISPONIBLES.length} herramientas</li>
                     <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Trading en directo</li>
                     <li><Check size={14} strokeWidth={2.6} aria-hidden="true" /> Comunidad privada</li>
                   </ul>

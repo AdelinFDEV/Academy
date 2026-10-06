@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet,
   ListOrdered, MessagesSquare, Network, Unlock, Map,
-  LayoutGrid, X, ChevronUp, Radio, Files, Trophy, Target, PieChart, Award, Shield, Radar, Lock,
+  LayoutGrid, X, ChevronUp, Radio, Files, Trophy, Target, PieChart, Award, Shield, Radar, Lock, GraduationCap,
 } from "lucide-react";
 
 const ICON_MAP = {
@@ -16,7 +16,7 @@ const ICON_MAP = {
   network: Network, unlock: Unlock, map: Map,
   radio: Radio, files: Files,
   trophy: Trophy, target: Target, piechart: PieChart, award: Award,
-  shield: Shield, radar: Radar,
+  shield: Shield, radar: Radar, graduationcap: GraduationCap,
 } as const;
 
 export type ToolItem = {
