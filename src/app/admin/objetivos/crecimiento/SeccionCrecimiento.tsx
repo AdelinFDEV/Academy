@@ -5,6 +5,8 @@ import { RANGOS, type DatosCrecimiento, type Punto, type Rango, type Serie } fro
 import { GraficaBarras, GraficaLinea, type Tono } from "./Graficas";
 import TuDinero from "./TuDinero";
 import ActividadMes from "./ActividadMes";
+import Finanzas from "./Finanzas";
+import type { Gasto } from "@/lib/objetivos";
 import type { ActividadMes as DatosActividad } from "@/lib/actividadMes";
 import type { DineroMes } from "@/lib/objetivosServidor";
 import { fechaCorta, nombreMes } from "../editor";
@@ -58,7 +60,13 @@ function Tarjetas({ s, unidad, tono, emoji }: { s: Serie; unidad: string; tono: 
   );
 }
 
-export default function SeccionCrecimiento({ datos, rango, dineroMeses, actividad }: { datos: DatosCrecimiento; rango: Rango; dineroMeses: DineroMes[]; actividad: DatosActividad }) {
+export default function SeccionCrecimiento({ datos, rango, dineroMeses, actividad, finanzas }: {
+  datos: DatosCrecimiento;
+  rango: Rango;
+  dineroMeses: DineroMes[];
+  actividad: DatosActividad;
+  finanzas: { gastos: Gasto[]; falta: boolean };
+}) {
   // Los enlaces conservan el otro filtro: cambiar el periodo no cambia el mes, y al revés.
   const mesActual = datos.hoy.slice(0, 7);
   const href = (r: Rango, mes: string) => {
@@ -71,9 +79,9 @@ export default function SeccionCrecimiento({ datos, rango, dineroMeses, activida
     <>
       <div className="obj-barra-seccion">
         <div>
-          <h2 className="obj-titulo-seccion">📈 Cómo crece el proyecto</h2>
+          <h2 className="obj-titulo-seccion">📈 Crecimiento y gastos</h2>
           <p className="obj-sub-seccion">
-            Tus canales y lo que deja Premium. Los miembros salen de la foto diaria de las 04:00 y del dato en vivo de hoy.
+            Lo que ganas, lo que gastas y cómo crecen tus canales. Los miembros salen de la foto diaria de las 04:00 y del dato en vivo de hoy.
           </p>
         </div>
         <nav className="crec-rangos" aria-label="Periodo">
@@ -92,6 +100,9 @@ export default function SeccionCrecimiento({ datos, rango, dineroMeses, activida
 
       {/* ── Tu dinero: lo primero, es la base de todo ─────────────── */}
       <TuDinero meses={dineroMeses} hoy={datos.hoy} />
+
+      {/* ── Lo que entra frente a lo que sale ────────────────────── */}
+      <Finanzas hoy={datos.hoy} dineroMeses={dineroMeses} gastos={finanzas.gastos} falta={finanzas.falta} />
 
       {/* ── Lo publicado en el mes ───────────────────────────────── */}
       <ActividadMes datos={actividad} hoy={datos.hoy} hrefMes={(m) => href(rango, m)} />

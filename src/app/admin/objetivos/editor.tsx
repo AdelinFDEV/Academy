@@ -119,7 +119,7 @@ export function siguienteEstado(estado: Estado): Estado | null {
 }
 
 /** Manda una ficha a la API. Devuelve el mensaje de error, o null si fue bien. */
-export async function enviar(recurso: Recurso | "intencion" | "idea", id: string | null, datos: Datos | null): Promise<string | null> {
+export async function enviar(recurso: Recurso | "intencion" | "idea" | "gasto", id: string | null, datos: Datos | null): Promise<string | null> {
   try {
     const url = `/api/admin/plan/${recurso}${id ? `/${id}` : ""}`;
     const res = await fetch(url, {

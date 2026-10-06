@@ -1,5 +1,5 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
-import { AMBITOS, ANIMOS, CANALES, EMOCIONES, ESTADOS, ETIQUETAS, FACTORES_MOTIVOS, FACTORES_NEGATIVOS, HORIZONTES, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
+import { AMBITOS, ANIMOS, CANALES, CATEGORIAS_GASTO, EMOCIONES, ESTADOS, ETIQUETAS, FACTORES_MOTIVOS, FACTORES_NEGATIVOS, HORIZONTES, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
 
 /** Nombre de una foto del diario tal como lo pone /api/admin/plan/foto: uuid + extensión. */
 export const NOMBRE_FOTO = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpg|png)$/;
@@ -20,6 +20,7 @@ export const RECURSOS = {
   nota: "diario_notas",
   intencion: "diario_intenciones",
   idea: "ideas",
+  gasto: "gastos",
 } as const;
 export type Recurso = keyof typeof RECURSOS;
 
@@ -183,7 +184,36 @@ function idea(b: Record<string, unknown>): Resultado {
   return { datos: { texto: textoIdea, canal, hecha: b.hecha === true, updated_at: new Date().toISOString() } };
 }
 
-export const VALIDAR: Record<Recurso, (b: Record<string, unknown>) => Resultado> = { objetivo, pieza, nota, intencion, idea };
+function gasto(b: Record<string, unknown>): Resultado {
+  const concepto = texto(b.concepto);
+  const categoria = texto(b.categoria) || "otros";
+  const fecha = texto(b.fecha);
+  const hasta = texto(b.hasta);
+  const importe = Number(String(b.importe ?? "").replace(",", "."));
+  const recurrente = b.recurrente === true;
+
+  if (!concepto) return { error: "¿En qué se ha gastado?" };
+  if (concepto.length > 120) return { error: "El concepto es demasiado largo." };
+  if (!(categoria in CATEGORIAS_GASTO)) return { error: "Categoría desconocida." };
+  if (!esFecha(fecha)) return { error: "Falta la fecha." };
+  if (!Number.isFinite(importe) || importe <= 0 || importe > 1e8) return { error: "El importe tiene que ser un número mayor que cero." };
+  if (hasta && !esFecha(hasta)) return { error: "La fecha de fin no es válida." };
+  if (hasta && hasta < fecha) return { error: "La fecha de fin es anterior a la de inicio." };
+
+  return {
+    datos: {
+      concepto,
+      categoria,
+      fecha,
+      importe: Math.round(importe * 100) / 100,
+      recurrente,
+      hasta: recurrente && hasta ? hasta : null,
+      updated_at: new Date().toISOString(),
+    },
+  };
+}
+
+export const VALIDAR: Record<Recurso, (b: Record<string, unknown>) => Resultado> = { objetivo, pieza, nota, intencion, idea, gasto };
 
 export function esRecurso(v: string): v is Recurso {
   return v in RECURSOS;

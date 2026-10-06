@@ -321,3 +321,27 @@ delete from public.contenido_plan where fecha is null;
 -- pesa más y cruzarlo con el ánimo.
 alter table public.diario_notas add column if not exists negativos text[] not null default '{}';
 alter table public.diario_notas add column if not exists motivos text[] not null default '{}';
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 06-10-2026 · Gastos de la empresa
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Lo que cuesta el proyecto. Con `recurrente`, el gasto cuenta todos los
+-- meses desde el de `fecha` hasta el de `hasta` (vacío = sigue). Las
+-- categorías viven en src/lib/objetivos.ts (CATEGORIAS_GASTO).
+create table if not exists public.gastos (
+  id          uuid primary key default gen_random_uuid(),
+  fecha       date not null,
+  concepto    text not null check (length(trim(concepto)) between 1 and 120),
+  categoria   text not null default 'otros',
+  importe     numeric(12, 2) not null check (importe > 0),
+  recurrente  boolean not null default false,
+  hasta       date,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  check (hasta is null or hasta >= fecha)
+);
+
+alter table public.gastos enable row level security;
+
+create index if not exists gastos_fecha_idx on public.gastos (fecha desc);

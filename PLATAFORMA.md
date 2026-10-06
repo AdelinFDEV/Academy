@@ -91,7 +91,7 @@ Esa segunda barrera es la que importa de verdad: **la clave anónima va en el na
 
 # Objetivos y diario del negocio (/admin/objetivos): solo el admin, ni para leer
 
-Desde el 04-10-2026. Nueve tablas —`objetivos`, `objetivo_registros`, `objetivo_marcas`, `contenido_plan`, `diario_notas`, `diario_intenciones`, `metricas_diarias`, `dias_balance` e `ingresos_dia`— con **RLS activado y cero policies**, más el bucket **privado** `diario` para las fotos (se sirven con URLs firmadas de una hora). Todo lo crea `scripts/create-objetivos.sql`, que es idempotente: se puede volver a ejecutar entero. A diferencia del portfolio, aquí **ni siquiera se lee** con la clave anónima: el diario guarda cómo se siente el admin con su negocio, y no lo ve nadie más.
+Desde el 04-10-2026. Once tablas —`objetivos`, `objetivo_registros`, `objetivo_marcas`, `contenido_plan`, `ideas`, `diario_notas`, `diario_intenciones`, `metricas_diarias`, `dias_balance`, `ingresos_dia` y `gastos`— con **RLS activado y cero policies**, más el bucket **privado** `diario` para las fotos (se sirven con URLs firmadas de una hora). Todo lo crea `scripts/create-objetivos.sql`, que es idempotente: se puede volver a ejecutar entero. A diferencia del portfolio, aquí **ni siquiera se lee** con la clave anónima: el diario guarda cómo se siente el admin con su negocio, y no lo ve nadie más.
 
 - **Leer:** la página de servidor, con `createAdminClient()`, detrás del layout de `/admin` que exige rol admin.
 - **Escribir:** `/api/admin/plan/[recurso]` y `/api/admin/plan/[recurso]/[id]`, con `requireAdmin()` y los validadores de `src/lib/objetivosValidar.ts`, que solo dejan pasar las columnas que conocen.

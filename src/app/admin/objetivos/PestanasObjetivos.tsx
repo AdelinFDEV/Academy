@@ -8,7 +8,7 @@ const PESTANAS = [
   { href: "/admin/objetivos/calendario", emoji: "🗓️", texto: "Calendario", detalle: "Qué publicas y cuándo" },
   { href: "/admin/objetivos/ideas", emoji: "💡", texto: "Ideas", detalle: "Notas sueltas" },
   { href: "/admin/objetivos/diario", emoji: "📓", texto: "Diario", detalle: "Cómo te sientes" },
-  { href: "/admin/objetivos/crecimiento", emoji: "📈", texto: "Crecimiento", detalle: "Canales y dinero" },
+  { href: "/admin/objetivos/crecimiento", emoji: "📈", texto: "Crecimiento / Gastos", detalle: "Canales, ganancias y gastos" },
 ];
 
 export default function PestanasObjetivos() {
@@ -23,12 +23,10 @@ export default function PestanasObjetivos() {
             href={p.href}
             className={`obj-pestana${activa ? " obj-pestana--activa" : ""}`}
             aria-current={activa ? "page" : undefined}
+            title={p.detalle}
           >
             <span className="obj-pestana-emoji" aria-hidden="true">{p.emoji}</span>
-            <span className="obj-pestana-textos">
-              <span className="obj-pestana-texto">{p.texto}</span>
-              <span className="obj-pestana-detalle">{p.detalle}</span>
-            </span>
+            <span className="obj-pestana-texto">{p.texto}</span>
           </Link>
         );
       })}

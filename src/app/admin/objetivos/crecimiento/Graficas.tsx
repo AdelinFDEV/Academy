@@ -89,7 +89,8 @@ export function GraficaLinea({ puntos, euros = false, vacio, tono = "telegram" }
   const linea = puntos.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.valor).toFixed(1)}`).join(" ");
   const area = `${linea} L${x(puntos.length - 1).toFixed(1)},${y(0)} L${x(0).toFixed(1)},${y(0)} Z`;
   // En estrecho, solo principio y final: la del medio se pisaría.
-  const etiquetasX = estrecho ? [0, puntos.length - 1] : [0, Math.floor((puntos.length - 1) / 2), puntos.length - 1];
+  // Sin repetidos: con 2 o 3 puntos, «el del medio» coincide con un extremo.
+  const etiquetasX = [...new Set(estrecho ? [0, puntos.length - 1] : [0, Math.floor((puntos.length - 1) / 2), puntos.length - 1])];
   const p = activo !== null ? puntos[activo] : null;
 
   function mover(e: React.PointerEvent<SVGSVGElement>) {
@@ -204,6 +205,164 @@ export function GraficaBarras({ puntos, euros = false, vacio, tono = "dinero", d
         <div className="crec-tip" style={posicionTip(IZQ + hueco * activo + hueco / 2, ANCHO)}>
           <strong>{formatear(puntos[activo].valor, euros)}</strong>
           <span>{puntos[activo].etiqueta}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export type MesFinanzas = { etiqueta: string; ingresos: number; gastos: number };
+
+/**
+ * Ingresos frente a gastos, mes a mes: dos barras por mes (verde y roja) sobre
+ * un solo eje en euros. Leyenda arriba; el detalle exacto, con el beneficio,
+ * al pasar el ratón o tocar.
+ */
+export function GraficaIngresosGastos({ meses }: { meses: MesFinanzas[] }) {
+  const [activo, setActivo] = useState<number | null>(null);
+  const { caja, ancho: ANCHO } = useAncho();
+  if (!meses.length || meses.every((m) => !m.ingresos && !m.gastos)) {
+    return <p className="obj-vacio obj-vacio--grafica">📭 Aún no hay ingresos ni gastos apuntados.</p>;
+  }
+
+  const estrecho = ANCHO < 480;
+  const IZQ = estrecho ? 46 : 54;
+  const marcas = marcasY(Math.max(...meses.map((m) => Math.max(m.ingresos, m.gastos))));
+  const maxY = marcas[marcas.length - 1] || 1;
+  const anchoUtil = ANCHO - IZQ - DCHA;
+  const altoUtil = ALTO - ABAJO - ARRIBA;
+  const hueco = anchoUtil / meses.length;
+  const barra = Math.max(3, Math.min(18, (hueco - 8) / 2));
+  const y = (v: number) => ARRIBA + altoUtil - (v / maxY) * altoUtil;
+  const cada = Math.max(1, Math.ceil(34 / hueco));
+  const m = activo !== null ? meses[activo] : null;
+
+  return (
+    <div ref={caja} className="crec-grafica crec-grafica--dinero">
+      <div className="fin-leyenda">
+        <span><i className="fin-leyenda-ingresos" /> Ingresos</span>
+        <span><i className="fin-leyenda-gastos" /> Gastos</span>
+      </div>
+      <svg
+        width={ANCHO}
+        height={ALTO}
+        viewBox={`0 0 ${ANCHO} ${ALTO}`}
+        className="crec-svg"
+        onPointerLeave={(e) => e.pointerType === "mouse" && setActivo(null)}
+        role="img"
+        aria-label="Ingresos y gastos por mes"
+      >
+        {marcas.map((v) => (
+          <g key={v}>
+            <line x1={IZQ} x2={ANCHO - DCHA} y1={y(v)} y2={y(v)} className="crec-rejilla" />
+            <text x={IZQ - 8} y={y(v) + 4} className="crec-eje" textAnchor="end">{formatearEje(v, true, estrecho)}</text>
+          </g>
+        ))}
+        {meses.map((mes, i) => {
+          const cx = IZQ + hueco * i + hueco / 2;
+          return (
+            <g key={`${mes.etiqueta}-${i}`} onPointerEnter={() => setActivo(i)} onPointerDown={() => setActivo(i)}>
+              <rect x={IZQ + hueco * i} y={ARRIBA} width={hueco} height={altoUtil} fill="transparent" />
+              <rect x={cx - barra - 1} y={y(mes.ingresos)} width={barra} height={Math.max(0, y(0) - y(mes.ingresos))} rx={3} className={`fin-barra fin-barra--ingresos${activo === i ? " fin-barra--activa" : ""}`} />
+              <rect x={cx + 1} y={y(mes.gastos)} width={barra} height={Math.max(0, y(0) - y(mes.gastos))} rx={3} className={`fin-barra fin-barra--gastos${activo === i ? " fin-barra--activa" : ""}`} />
+              {(i === meses.length - 1 || (meses.length - 1 - i) % cada === 0) && (
+                <text x={cx} y={ALTO - 6} className="crec-eje" textAnchor="middle">{mes.etiqueta}</text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      {m && activo !== null && (
+        <div className="crec-tip fin-tip" style={posicionTip(IZQ + hueco * activo + hueco / 2, ANCHO)}>
+          <span>{m.etiqueta}</span>
+          <span>Ingresos <strong>{formatear(m.ingresos, true)}</strong></span>
+          <span>Gastos <strong>{formatear(m.gastos, true)}</strong></span>
+          <span>Beneficio <strong className={m.ingresos - m.gastos >= 0 ? "fin-pos" : "fin-neg"}>{formatear(m.ingresos - m.gastos, true)}</strong></span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Beneficio neto de cada mes (ingresos − gastos): barras hacia arriba en
+ * verde si ganas y hacia abajo en rojo si pierdes, desde una línea en cero.
+ */
+export function GraficaBeneficio({ meses }: { meses: { etiqueta: string; valor: number }[] }) {
+  const [activo, setActivo] = useState<number | null>(null);
+  const { caja, ancho: ANCHO } = useAncho();
+  if (!meses.length || meses.every((m) => m.valor === 0)) {
+    return <p className="obj-vacio obj-vacio--grafica">📭 Sin beneficios ni pérdidas que enseñar todavía.</p>;
+  }
+
+  const estrecho = ANCHO < 480;
+  const IZQ = estrecho ? 52 : 60;
+  // Cada lado de la escala solo existe si hay meses en ese lado: sin pérdidas
+  // no hay parte negativa (marcasY(0) daría [0, 1] y pintaría un «-1 €»).
+  const maxPos = Math.max(0, ...meses.map((m) => m.valor));
+  const maxNeg = Math.max(0, ...meses.map((m) => -m.valor));
+  const arriba = maxPos > 0 ? marcasY(maxPos) : [0];
+  const abajo = maxNeg > 0 ? marcasY(maxNeg) : [0];
+  const tope = arriba[arriba.length - 1];
+  const fondo = abajo[abajo.length - 1];
+  const rango = tope + fondo || 1;
+  const anchoUtil = ANCHO - IZQ - DCHA;
+  const altoUtil = ALTO - ABAJO - ARRIBA;
+  const hueco = anchoUtil / meses.length;
+  const barra = Math.max(4, Math.min(34, hueco - 8));
+  const y = (v: number) => ARRIBA + ((tope - v) / rango) * altoUtil;
+  const cada = Math.max(1, Math.ceil(34 / hueco));
+  // Las marcas, sin ninguna pegada a otra: una etiqueta a menos de 14 px del cero se salta.
+  const marcas = [...arriba.filter((v) => v > 0), 0, ...abajo.filter((v) => v > 0).map((v) => -v)].filter(
+    (v) => v === 0 || Math.abs(y(v) - y(0)) >= 14
+  );
+  const m = activo !== null ? meses[activo] : null;
+
+  return (
+    <div ref={caja} className="crec-grafica crec-grafica--dinero">
+      <svg
+        width={ANCHO}
+        height={ALTO}
+        viewBox={`0 0 ${ANCHO} ${ALTO}`}
+        className="crec-svg"
+        onPointerLeave={(e) => e.pointerType === "mouse" && setActivo(null)}
+        role="img"
+        aria-label="Beneficio o pérdida de cada mes"
+      >
+        {marcas.map((v) => (
+          <g key={v}>
+            <line x1={IZQ} x2={ANCHO - DCHA} y1={y(v)} y2={y(v)} className={v === 0 ? "fin-cero" : "crec-rejilla"} />
+            <text x={IZQ - 8} y={y(v) + 4} className="crec-eje" textAnchor="end">{formatearEje(v, true, estrecho)}</text>
+          </g>
+        ))}
+        {meses.map((mes, i) => {
+          const cx = IZQ + hueco * i + hueco / 2;
+          const yv = y(mes.valor);
+          const y0 = y(0);
+          return (
+            <g key={`${mes.etiqueta}-${i}`} onPointerEnter={() => setActivo(i)} onPointerDown={() => setActivo(i)}>
+              <rect x={IZQ + hueco * i} y={ARRIBA} width={hueco} height={altoUtil} fill="transparent" />
+              {mes.valor !== 0 && (
+                <rect
+                  x={cx - barra / 2}
+                  y={Math.min(yv, y0)}
+                  width={barra}
+                  height={Math.max(2, Math.abs(y0 - yv))}
+                  rx={3}
+                  className={`fin-barra ${mes.valor > 0 ? "fin-barra--ingresos" : "fin-barra--gastos"}${activo === i ? " fin-barra--activa" : ""}`}
+                />
+              )}
+              {(i === meses.length - 1 || (meses.length - 1 - i) % cada === 0) && (
+                <text x={cx} y={ALTO - 6} className="crec-eje" textAnchor="middle">{mes.etiqueta}</text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      {m && activo !== null && (
+        <div className="crec-tip" style={posicionTip(IZQ + hueco * activo + hueco / 2, ANCHO)}>
+          <strong className={m.valor >= 0 ? "fin-pos" : "fin-neg"}>{m.valor >= 0 ? "+" : ""}{formatear(m.valor, true)}</strong>
+          <span>{m.etiqueta} · {m.valor >= 0 ? "beneficio" : "pérdida"}</span>
         </div>
       )}
     </div>

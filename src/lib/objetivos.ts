@@ -191,6 +191,39 @@ export type Nota = {
   created_at: string;
 };
 
+/** De qué es cada gasto de la empresa. Las claves se guardan en la base: no se renombran. */
+export const CATEGORIAS_GASTO = {
+  herramientas: { texto: "Herramientas y software", emoji: "🧰" },
+  hosting: { texto: "Hosting y servidores", emoji: "🖥️" },
+  publicidad: { texto: "Publicidad", emoji: "📣" },
+  equipo: { texto: "Equipo", emoji: "🎙️" },
+  formacion: { texto: "Formación", emoji: "📚" },
+  colaboradores: { texto: "Colaboradores", emoji: "🤝" },
+  impuestos: { texto: "Impuestos y gestoría", emoji: "🧾" },
+  otros: { texto: "Otros", emoji: "📦" },
+} as const;
+export type CategoriaGasto = keyof typeof CATEGORIAS_GASTO;
+
+export type Gasto = {
+  id: string;
+  fecha: string;
+  concepto: string;
+  categoria: CategoriaGasto;
+  importe: number;
+  /** Cuenta cada mes desde `fecha` hasta `hasta` (null = sigue). */
+  recurrente: boolean;
+  hasta: string | null;
+};
+
+/** Lo que suma un gasto en un mes "AAAA-MM": su importe si cae (o se repite) ese mes, 0 si no. */
+export function gastoEnMes(g: Gasto, mes: string): number {
+  const inicio = g.fecha.slice(0, 7);
+  if (!g.recurrente) return inicio === mes ? g.importe : 0;
+  if (mes < inicio) return 0;
+  if (g.hasta && mes > g.hasta.slice(0, 7)) return 0;
+  return g.importe;
+}
+
 /** Una idea: texto y canal, con un tick de hecha. Sin día ni estado. */
 export type Idea = { id: string; texto: string; canal: Canal; hecha: boolean; created_at: string };
 
