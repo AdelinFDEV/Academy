@@ -4,6 +4,7 @@ import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import { getFreeChannelId } from "@/lib/telegram";
 import { getSubscriberCount } from "@/lib/youtube";
 import {
+  FUENTES,
   METRICAS,
   calcularRitmo,
   cumpleMeta,
@@ -313,18 +314,27 @@ export async function cerrarPiezaPlaneada(
   }
 }
 
+const redondear = (n: number) => Math.round(n * 100) / 100;
+
 /**
- * Los cierres de día (productividad, nota y dinero por fuente) entre dos
- * fechas, incluidas, por fecha. Si las tablas aún no existen, nada.
+ * Los días entre dos fechas, incluidas: productividad y nota (dias_balance) y
+ * lo ingresado (movimientos de tipo ingreso, del cierre y apuntados a mano).
+ * Los ingresos fijos de cada mes no tienen día: cuentan en los meses, no aquí.
  */
 export async function cargarBalances(admin: Admin, desde: string, hasta: string): Promise<Record<string, Balance>> {
   const [dias, ingresos] = await Promise.all([
     admin.from("dias_balance").select("fecha, productividad, nota").gte("fecha", desde).lte("fecha", hasta),
-    admin.from("ingresos_dia").select("fecha, fuente, importe").gte("fecha", desde).lte("fecha", hasta),
+    admin
+      .from("movimientos")
+      .select("fecha, concepto, categoria, importe, origen")
+      .eq("tipo", "ingreso")
+      .eq("recurrente", false)
+      .gte("fecha", desde)
+      .lte("fecha", hasta),
   ]);
   const balances: Record<string, Balance> = {};
   const de = (fecha: string) =>
-    (balances[fecha] ??= { fecha, productividad: null, nota: null, ingresos: {}, total: 0 });
+    (balances[fecha] ??= { fecha, productividad: null, nota: null, ingresos: {}, ingresosCierre: {}, manuales: [], total: 0 });
   for (const d of dias.data ?? []) {
     const b = de(String(d.fecha));
     b.productividad = (d.productividad as Balance["productividad"]) ?? null;
@@ -333,8 +343,11 @@ export async function cargarBalances(admin: Admin, desde: string, hasta: string)
   for (const i of ingresos.data ?? []) {
     const b = de(String(i.fecha));
     const importe = Number(i.importe);
-    b.ingresos[i.fuente as Fuente] = importe;
-    b.total = Math.round((b.total + importe) * 100) / 100;
+    const fuente = i.categoria as Fuente;
+    b.ingresos[fuente] = redondear((b.ingresos[fuente] ?? 0) + importe);
+    if (i.origen === "cierre") b.ingresosCierre[fuente] = importe;
+    else b.manuales.push({ concepto: i.concepto ?? FUENTES[fuente]?.texto ?? "Ingreso", fuente, importe });
+    b.total = redondear(b.total + importe);
   }
   return balances;
 }
@@ -366,25 +379,48 @@ export async function premiumEstimadoPorDia(admin: Admin, desde: string, hasta: 
 export type DineroMes = { mes: string; total: number; porFuente: Partial<Record<Fuente, number>>; dias: number };
 
 /**
- * Todo lo ganado (apuntado en el cierre del día), sumado por mes y por fuente,
- * del mes más antiguo al más reciente. Es la base del resumen de dinero: el
- * mes récord, la media y la comparación con el mes en curso.
+ * Todo lo ingresado, sumado por mes y por fuente, del mes más antiguo al más
+ * reciente: lo del cierre del día, lo apuntado a mano y los ingresos fijos
+ * de cada mes (hasta el mes actual). Es la base de «Tu dinero», del resumen
+ * del mes y de «Ganancias y gastos».
  */
 export async function cargarDineroPorMes(admin: Admin): Promise<DineroMes[]> {
   const data = await todasLasFilas((a, b) =>
-    admin.from("ingresos_dia").select("fecha, fuente, importe").order("fecha").order("fuente").range(a, b)
+    admin
+      .from("movimientos")
+      .select("id, fecha, categoria, importe, recurrente, hasta")
+      .eq("tipo", "ingreso")
+      .order("fecha")
+      .order("id")
+      .range(a, b)
   );
+  const mesActual = hoyISO().slice(0, 7);
   const meses = new Map<string, DineroMes & { diasSet: Set<string> }>();
+  const sumar = (mes: string, fuente: Fuente, importe: number, dia: string | null) => {
+    const m = meses.get(mes) ?? { mes, total: 0, porFuente: {}, dias: 0, diasSet: new Set<string>() };
+    m.total = redondear(m.total + importe);
+    m.porFuente[fuente] = redondear((m.porFuente[fuente] ?? 0) + importe);
+    if (dia) m.diasSet.add(dia);
+    meses.set(mes, m);
+  };
   for (const fila of data) {
     const fecha = String(fila.fecha);
-    const mes = fecha.slice(0, 7);
-    const m = meses.get(mes) ?? { mes, total: 0, porFuente: {}, dias: 0, diasSet: new Set<string>() };
     const importe = Number(fila.importe);
-    m.total = Math.round((m.total + importe) * 100) / 100;
-    const f = fila.fuente as Fuente;
-    m.porFuente[f] = Math.round(((m.porFuente[f] ?? 0) + importe) * 100) / 100;
-    m.diasSet.add(fecha);
-    meses.set(mes, m);
+    const fuente = fila.categoria as Fuente;
+    if (!fila.recurrente) {
+      sumar(fecha.slice(0, 7), fuente, importe, fecha);
+      continue;
+    }
+    // Fijo: cada mes desde el suyo hasta su fin o hasta el mes actual.
+    const ultimo = fila.hasta && fila.hasta.slice(0, 7) < mesActual ? fila.hasta.slice(0, 7) : mesActual;
+    for (let mes = fecha.slice(0, 7); mes <= ultimo; mes = mesSiguiente(mes)) sumar(mes, fuente, importe, null);
   }
-  return [...meses.values()].map(({ diasSet, ...m }) => ({ ...m, dias: diasSet.size }));
+  return [...meses.values()]
+    .map(({ diasSet, ...m }) => ({ ...m, dias: diasSet.size }))
+    .sort((a, b) => a.mes.localeCompare(b.mes));
+}
+
+function mesSiguiente(mes: string): string {
+  const [a, m] = mes.split("-").map(Number);
+  return new Date(Date.UTC(a, m, 1)).toISOString().slice(0, 7);
 }

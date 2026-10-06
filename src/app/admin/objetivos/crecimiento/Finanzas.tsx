@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIAS_GASTO, gastoEnMes, type CategoriaGasto, type Gasto } from "@/lib/objetivos";
+import { CATEGORIAS_GASTO, FUENTES, importeEnMes, type CategoriaGasto, type Fuente, type Movimiento } from "@/lib/objetivos";
 import type { DineroMes } from "@/lib/objetivosServidor";
 import { Interruptor, Opciones, enviar, fechaCorta, nombreMes } from "../editor";
 import { GraficaBeneficio, GraficaIngresosGastos } from "./Graficas";
 
 /**
- * «Ganancias y gastos»: lo que entra (lo apuntado en el cierre del día, la
- * misma fuente que «Tu dinero») frente a lo que sale (los gastos de aquí),
- * mes a mes, con el beneficio o la pérdida de cada uno.
+ * «Ganancias y gastos», sobre un solo libro de movimientos.
+ *
+ * - Los ingresos de cada mes salen de `dineroMeses`: todo lo ingresado, venga
+ *   del cierre del día o de aquí (y los fijos de cada mes). Una sola cuenta.
+ * - Los gastos, de los movimientos de tipo gasto.
+ * - Aquí se apunta a mano, con concepto: un gasto o un ingreso, puntual o fijo
+ *   cada mes. Lo del cierre del día se edita en el cierre, no aquí.
  */
 
 function euros(n: number, decimales = 0): string {
@@ -22,17 +26,26 @@ function mesDe(mesActual: string, salto: number): string {
   return new Date(Date.UTC(a, m - 1 + salto, 1)).toISOString().slice(0, 7);
 }
 
-type Props = { hoy: string; dineroMeses: DineroMes[]; gastos: Gasto[]; falta: boolean };
+/** Emoji y nombre de la categoría de un movimiento, sea ingreso o gasto. */
+function etiquetaDe(m: Pick<Movimiento, "tipo" | "categoria">): { emoji: string; texto: string } {
+  if (m.tipo === "ingreso") return FUENTES[m.categoria as Fuente] ?? { emoji: "💶", texto: "Ingreso" };
+  return CATEGORIAS_GASTO[m.categoria as CategoriaGasto] ?? { emoji: "📦", texto: "Gasto" };
+}
 
-export default function Finanzas({ hoy, dineroMeses, gastos, falta }: Props) {
+type Filtro = "todo" | "ingreso" | "gasto";
+type Props = { hoy: string; dineroMeses: DineroMes[]; movimientos: Movimiento[]; falta: boolean };
+
+export default function Finanzas({ hoy, dineroMeses, movimientos, falta }: Props) {
   const mesActual = hoy.slice(0, 7);
   const [verTodos, setVerTodos] = useState(false);
+  const [filtro, setFiltro] = useState<Filtro>("todo");
+  const gastos = movimientos.filter((m) => m.tipo === "gasto");
 
   // Los últimos 12 meses, con huecos a cero.
   const meses = Array.from({ length: 12 }, (_, i) => {
     const mes = mesDe(mesActual, i - 11);
     const ingresos = dineroMeses.find((d) => d.mes === mes)?.total ?? 0;
-    const gasto = gastos.reduce((s, g) => s + gastoEnMes(g, mes), 0);
+    const gasto = gastos.reduce((s, g) => s + importeEnMes(g, mes), 0);
     return { mes, etiqueta: nombreMes(mes, true), ingresos, gastos: Math.round(gasto * 100) / 100 };
   });
   const este = meses[meses.length - 1];
@@ -48,27 +61,29 @@ export default function Finanzas({ hoy, dineroMeses, gastos, falta }: Props) {
 
   // Dónde se va el dinero este mes.
   const porCategoria = (Object.keys(CATEGORIAS_GASTO) as CategoriaGasto[])
-    .map((c) => ({ c, total: gastos.filter((g) => g.categoria === c).reduce((s, g) => s + gastoEnMes(g, mesActual), 0) }))
+    .map((c) => ({ c, total: gastos.filter((g) => g.categoria === c).reduce((s, g) => s + importeEnMes(g, mesActual), 0) }))
     .filter((x) => x.total > 0)
     .sort((a, b) => b.total - a.total);
-  const fijos = gastos.filter((g) => g.recurrente && gastoEnMes(g, mesActual) > 0);
-  const fijosMes = fijos.reduce((s, g) => s + g.importe, 0);
+  const fijosMes = gastos.filter((g) => g.recurrente).reduce((s, g) => s + importeEnMes(g, mesActual), 0);
+  const ingresosFijosMes = movimientos.filter((m) => m.tipo === "ingreso" && m.recurrente).reduce((s, m) => s + importeEnMes(m, mesActual), 0);
 
-  const lista = verTodos ? gastos : gastos.slice(0, 8);
+  // Lo apuntado aquí (lo del cierre del día se ve y se edita en el cierre).
+  const apuntados = movimientos.filter((m) => m.origen === "manual" && (filtro === "todo" || m.tipo === filtro));
+  const lista = verTodos ? apuntados : apuntados.slice(0, 8);
 
   return (
     <section className="crec-bloque fin">
       <h3 className="crec-bloque-titulo"><span aria-hidden="true">⚖️</span> Ganancias y gastos</h3>
 
       {falta ? (
-        <p className="obj-vacio">Falta crear la tabla de gastos: ejecuta <code>scripts/create-objetivos.sql</code> en el SQL Editor de Supabase.</p>
+        <p className="obj-vacio">Falta actualizar la base de datos: ejecuta <code>scripts/create-objetivos.sql</code> en el SQL Editor de Supabase.</p>
       ) : (
         <>
           <div className="fin-cifras">
             <div className="fin-cifra">
               <span>Ingresos · {nombreMes(mesActual, true)}</span>
               <strong className="fin-pos">{euros(este.ingresos)}</strong>
-              <small>En el año: {euros(ingresosAno)}</small>
+              <small>{ingresosFijosMes > 0 ? `${euros(ingresosFijosMes)} son fijos cada mes` : `En el año: ${euros(ingresosAno)}`}</small>
             </div>
             <div className="fin-cifra">
               <span>Gastos · {nombreMes(mesActual, true)}</span>
@@ -103,7 +118,7 @@ export default function Finanzas({ hoy, dineroMeses, gastos, falta }: Props) {
           </div>
 
           <div className="fin-abajo">
-            <NuevoGasto hoy={hoy} />
+            <NuevoMovimiento hoy={hoy} />
 
             <div className="fin-lista-bloque">
               {porCategoria.length > 0 && (
@@ -119,19 +134,31 @@ export default function Finanzas({ hoy, dineroMeses, gastos, falta }: Props) {
                 </div>
               )}
 
-              <span className="fin-subtitulo">Gastos apuntados</span>
-              {gastos.length ? (
+              <div className="fin-lista-cabeza">
+                <span className="fin-subtitulo">Apuntado aquí</span>
+                <div className="fin-filtro" role="radiogroup" aria-label="Filtrar movimientos">
+                  {([["todo", "Todo"], ["ingreso", "Ingresos"], ["gasto", "Gastos"]] as const).map(([v, t]) => (
+                    <button key={v} type="button" role="radio" aria-checked={filtro === v} className={filtro === v ? "fin-filtro--activo" : ""} onClick={() => setFiltro(v)}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {apuntados.length ? (
                 <ul className="fin-lista">
-                  {lista.map((g) => <FilaGasto key={g.id} g={g} hoy={hoy} />)}
+                  {lista.map((m) => <FilaMovimiento key={m.id} m={m} hoy={hoy} />)}
                 </ul>
               ) : (
-                <p className="obj-vacio">Aún no has apuntado ningún gasto.</p>
+                <p className="obj-vacio">
+                  {filtro === "ingreso" ? "Ningún ingreso apuntado aquí. Lo del cierre del día ya cuenta solo." : filtro === "gasto" ? "Aún no has apuntado ningún gasto." : "Aún no has apuntado nada aquí."}
+                </p>
               )}
-              {gastos.length > 8 && (
+              {apuntados.length > 8 && (
                 <button type="button" className="fin-ver" onClick={() => setVerTodos((v) => !v)}>
-                  {verTodos ? "Ver menos" : `Ver los ${gastos.length}`}
+                  {verTodos ? "Ver menos" : `Ver los ${apuntados.length}`}
                 </button>
               )}
+              <p className="fin-nota">Los ingresos que apuntas al cerrar cada día ya cuentan solos: aquí apunta lo que tenga nombre propio, sin repetirlo en el cierre.</p>
             </div>
           </div>
         </>
@@ -140,40 +167,54 @@ export default function Finanzas({ hoy, dineroMeses, gastos, falta }: Props) {
   );
 }
 
-function NuevoGasto({ hoy }: { hoy: string }) {
+function NuevoMovimiento({ hoy }: { hoy: string }) {
   const router = useRouter();
-  const vacio = { concepto: "", categoria: "herramientas", importe: "", fecha: hoy, recurrente: false, hasta: "" };
+  const vacio = { tipo: "gasto", concepto: "", categoria: "herramientas", importe: "", fecha: hoy, recurrente: false, hasta: "" };
   const [d, setD] = useState(vacio);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
+  const esIngreso = d.tipo === "ingreso";
 
   async function guardar(e: React.FormEvent) {
     e.preventDefault();
     setGuardando(true);
     setError("");
-    const fallo = await enviar("gasto", null, d);
+    const fallo = await enviar("movimiento", null, d);
     setGuardando(false);
     if (fallo) return setError(fallo);
-    setD({ ...vacio, categoria: d.categoria });
+    setD({ ...vacio, tipo: d.tipo, categoria: d.categoria });
     router.refresh();
   }
 
+  const opciones = esIngreso
+    ? (Object.keys(FUENTES) as Fuente[]).map((k) => ({ valor: k, emoji: FUENTES[k].emoji, texto: FUENTES[k].texto }))
+    : (Object.keys(CATEGORIAS_GASTO) as CategoriaGasto[]).map((k) => ({ valor: k, emoji: CATEGORIAS_GASTO[k].emoji, texto: CATEGORIAS_GASTO[k].texto }));
+
   return (
-    <form className="fin-form" onSubmit={guardar}>
-      <span className="fin-subtitulo">Apuntar un gasto</span>
+    <form className={`fin-form fin-form--${d.tipo}`} onSubmit={guardar}>
+      <div className="fin-tipo" role="radiogroup" aria-label="Qué apuntas">
+        <button type="button" role="radio" aria-checked={!esIngreso} className={!esIngreso ? "fin-tipo--activo" : ""} onClick={() => setD({ ...d, tipo: "gasto", categoria: "herramientas" })}>
+          − Gasto
+        </button>
+        <button type="button" role="radio" aria-checked={esIngreso} className={esIngreso ? "fin-tipo--activo" : ""} onClick={() => setD({ ...d, tipo: "ingreso", categoria: "asesorias" })}>
+          ＋ Ingreso
+        </button>
+      </div>
       <div className="fin-form-fila">
-        <input className="obj-input" value={d.concepto} onChange={(e) => setD({ ...d, concepto: e.target.value })} placeholder="Concepto: Vercel Pro, micrófono…" maxLength={120} required />
+        <input
+          className="obj-input"
+          value={d.concepto}
+          onChange={(e) => setD({ ...d, concepto: e.target.value })}
+          placeholder={esIngreso ? "Concepto: asesoría a Juan, patrocinio…" : "Concepto: Vercel Pro, micrófono…"}
+          maxLength={120}
+          required
+        />
         <span className="fin-importe">
           <input className="obj-input" type="number" min="0.01" step="0.01" inputMode="decimal" value={d.importe} onChange={(e) => setD({ ...d, importe: e.target.value })} placeholder="0" required />
           <span aria-hidden="true">€</span>
         </span>
       </div>
-      <Opciones
-        etiqueta=""
-        opciones={(Object.keys(CATEGORIAS_GASTO) as CategoriaGasto[]).map((k) => ({ valor: k, emoji: CATEGORIAS_GASTO[k].emoji, texto: CATEGORIAS_GASTO[k].texto }))}
-        valor={d.categoria}
-        onCambio={(v) => setD({ ...d, categoria: v || "otros" })}
-      />
+      <Opciones etiqueta="" opciones={opciones} valor={d.categoria} onCambio={(v) => setD({ ...d, categoria: v || "otros" })} />
       <div className="fin-form-fila fin-form-fila--abajo">
         <label className="fin-campo">
           <span>{d.recurrente ? "Desde" : "Fecha"}</span>
@@ -188,48 +229,54 @@ function NuevoGasto({ hoy }: { hoy: string }) {
         <Interruptor activo={d.recurrente} onCambio={(v) => setD({ ...d, recurrente: v })}>🔁 Se repite cada mes</Interruptor>
       </div>
       {error && <p className="obj-error">⚠️ {error}</p>}
-      <button type="submit" className="obj-boton obj-boton--principal" disabled={guardando}>{guardando ? "Guardando…" : "＋ Apuntar gasto"}</button>
+      <button type="submit" className="obj-boton obj-boton--principal" disabled={guardando}>
+        {guardando ? "Guardando…" : esIngreso ? "＋ Apuntar ingreso" : "− Apuntar gasto"}
+      </button>
     </form>
   );
 }
 
-function FilaGasto({ g, hoy }: { g: Gasto; hoy: string }) {
+function FilaMovimiento({ m, hoy }: { m: Movimiento; hoy: string }) {
   const router = useRouter();
   const [ocupado, setOcupado] = useState(false);
-  const activo = g.recurrente && (!g.hasta || g.hasta >= hoy);
+  const activo = m.recurrente && (!m.hasta || m.hasta >= hoy);
+  const etiqueta = etiquetaDe(m);
 
   async function cambiar(datos: Record<string, string | boolean> | null) {
     setOcupado(true);
-    const fallo = await enviar("gasto", g.id, datos);
+    const fallo = await enviar("movimiento", m.id, datos);
     setOcupado(false);
     if (fallo) alert(fallo);
     else router.refresh();
   }
 
   return (
-    <li className="fin-fila">
-      <span className="fin-fila-emoji" aria-hidden="true">{CATEGORIAS_GASTO[g.categoria]?.emoji ?? "📦"}</span>
+    <li className={`fin-fila fin-fila--${m.tipo}`}>
+      <span className="fin-fila-emoji" aria-hidden="true">{etiqueta.emoji}</span>
       <span className="fin-fila-textos">
-        <strong>{g.concepto}</strong>
+        <strong>{m.concepto ?? etiqueta.texto}</strong>
         <small>
-          {g.recurrente
-            ? `🔁 Cada mes desde ${fechaCorta(g.fecha)}${g.hasta ? ` hasta ${fechaCorta(g.hasta)}` : ""}`
-            : fechaCorta(g.fecha)}
+          {etiqueta.texto} ·{" "}
+          {m.recurrente ? `🔁 cada mes desde ${fechaCorta(m.fecha)}${m.hasta ? ` hasta ${fechaCorta(m.hasta)}` : ""}` : fechaCorta(m.fecha)}
         </small>
       </span>
-      <span className="fin-fila-importe">{euros(g.importe, g.importe % 1 ? 2 : 0)}{g.recurrente && <small>/mes</small>}</span>
+      <span className="fin-fila-importe">
+        {m.tipo === "ingreso" ? "+" : "−"}{euros(m.importe, m.importe % 1 ? 2 : 0)}{m.recurrente && <small>/mes</small>}
+      </span>
       <span className="fin-fila-acciones">
         {activo && (
           <button
             type="button"
-            onClick={() => cambiar({ concepto: g.concepto, categoria: g.categoria, importe: String(g.importe), fecha: g.fecha, recurrente: true, hasta: hoy < g.fecha ? g.fecha : hoy })}
+            onClick={() =>
+              cambiar({ tipo: m.tipo, concepto: m.concepto ?? "", categoria: m.categoria, importe: String(m.importe), fecha: m.fecha, recurrente: true, hasta: hoy < m.fecha ? m.fecha : hoy })
+            }
             disabled={ocupado}
             title="Deja de contar a partir del mes que viene"
           >
             Terminar
           </button>
         )}
-        <button type="button" onClick={() => confirm(`¿Borrar «${g.concepto}»?`) && cambiar(null)} disabled={ocupado} aria-label={`Borrar ${g.concepto}`} title="Borrar">✕</button>
+        <button type="button" onClick={() => confirm(`¿Borrar «${m.concepto ?? etiqueta.texto}»?`) && cambiar(null)} disabled={ocupado} aria-label={`Borrar ${m.concepto ?? etiqueta.texto}`} title="Borrar">✕</button>
       </span>
     </li>
   );

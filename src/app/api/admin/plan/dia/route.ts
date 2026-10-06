@@ -2,24 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { FUENTES, type Fuente } from "@/lib/objetivos";
+import { mensajeError } from "@/lib/objetivosValidar";
 
 export const dynamic = "force-dynamic";
 
 const FECHA = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Si falta la tabla (PGRST205), dice qué hacer en vez del error de PostgREST. */
 function fallo(e: { code?: string; message: string }) {
-  const mensaje = e.code === "PGRST205"
-    ? "Falta crear las tablas del cierre del día: ejecuta scripts/create-objetivos.sql en el SQL Editor de Supabase."
-    : e.message;
-  return NextResponse.json({ error: mensaje }, { status: 500 });
+  return NextResponse.json({ error: mensajeError(e) }, { status: 500 });
 }
 
 /**
- * Guarda el cierre de un día: productividad, nota y lo ganado por fuente.
- * Volver a guardar el mismo día lo sustituye entero, salvo con `parcial`
- * (el marcado rápido del calendario), que deja el dinero como estaba. Solo admin; las dos
- * tablas no tienen policies (scripts/create-objetivos.sql).
+ * Guarda el cierre de un día: productividad y nota (dias_balance) y lo
+ * ganado por fuente (movimientos con origen «cierre», uno por fuente).
+ *
+ * Volver a guardar sustituye SOLO lo que es del cierre de ese día: lo
+ * apuntado a mano en Crecimiento / Gastos ese mismo día no se toca, así nada
+ * se cuenta dos veces ni se borra sin querer. Con `parcial` (el marcado
+ * rápido del calendario) el dinero no se toca en absoluto.
+ *
+ * Solo admin; las tablas no tienen policies (scripts/create-objetivos.sql).
  */
 export async function POST(req: NextRequest) {
   const { error } = await requireAdmin();
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
   const nota = typeof b.nota === "string" && b.nota.trim() ? b.nota.trim().slice(0, 500) : null;
 
   const entrada = (b.ingresos && typeof b.ingresos === "object" ? b.ingresos : {}) as Record<string, unknown>;
-  const filas: { fecha: string; fuente: Fuente; importe: number }[] = [];
+  const filas: { tipo: "ingreso"; fecha: string; categoria: Fuente; importe: number; origen: "cierre" }[] = [];
   for (const [fuente, valor] of Object.entries(entrada)) {
     if (!(fuente in FUENTES)) return NextResponse.json({ error: "Fuente desconocida." }, { status: 400 });
     if (valor === "" || valor === null || valor === undefined) continue;
@@ -46,49 +48,31 @@ export async function POST(req: NextRequest) {
     if (!Number.isFinite(importe) || importe < 0 || importe > 1e8) {
       return NextResponse.json({ error: `Cantidad no válida en ${FUENTES[fuente as Fuente].texto}.` }, { status: 400 });
     }
-    if (importe > 0) filas.push({ fecha, fuente: fuente as Fuente, importe: Math.round(importe * 100) / 100 });
+    if (importe > 0) filas.push({ tipo: "ingreso", fecha, categoria: fuente as Fuente, importe: Math.round(importe * 100) / 100, origen: "cierre" });
   }
 
   const admin = createAdminClient();
 
-  // Parcial: desde el calendario solo se marca productividad y nota; el dinero no se toca.
-  if (b.parcial === true) {
-    if (productividad === null && !nota) {
-      const { count, error: e0 } = await admin.from("ingresos_dia").select("fecha", { count: "exact", head: true }).eq("fecha", fecha);
-      if (e0) return fallo(e0);
-      if (!count) {
-        const { error: e1 } = await admin.from("dias_balance").delete().eq("fecha", fecha);
-        if (e1) return fallo(e1);
-        return NextResponse.json({ ok: true, borrado: true });
-      }
-    }
-    const { error: e2 } = await admin
+  // Productividad y nota: una fila por día, o ninguna si no hay nada.
+  if (productividad === null && !nota) {
+    const { error: e1 } = await admin.from("dias_balance").delete().eq("fecha", fecha);
+    if (e1) return fallo(e1);
+  } else {
+    const { error: e1 } = await admin
       .from("dias_balance")
       .upsert({ fecha, productividad, nota, updated_at: new Date().toISOString() }, { onConflict: "fecha" });
-    if (e2) return fallo(e2);
-    return NextResponse.json({ ok: true });
+    if (e1) return fallo(e1);
   }
 
-  const vacio = productividad === null && !nota && !filas.length;
+  // Parcial: desde el calendario solo se marca productividad y nota.
+  if (b.parcial === true) return NextResponse.json({ ok: true });
 
-  // Sustituye el día entero: lo que se haya quitado en el formulario se borra.
-  const { error: e1 } = await admin.from("ingresos_dia").delete().eq("fecha", fecha);
-  if (e1) return fallo(e1);
-
-  if (vacio) {
-    const { error: e2 } = await admin.from("dias_balance").delete().eq("fecha", fecha);
-    if (e2) return fallo(e2);
-    return NextResponse.json({ ok: true, borrado: true });
-  }
-
-  const { error: e3 } = await admin
-    .from("dias_balance")
-    .upsert({ fecha, productividad, nota, updated_at: new Date().toISOString() }, { onConflict: "fecha" });
-  if (e3) return fallo(e3);
-
+  // El dinero del cierre de ese día se sustituye entero; lo manual se queda.
+  const { error: e2 } = await admin.from("movimientos").delete().eq("fecha", fecha).eq("origen", "cierre");
+  if (e2) return fallo(e2);
   if (filas.length) {
-    const { error: e4 } = await admin.from("ingresos_dia").insert(filas);
-    if (e4) return fallo(e4);
+    const { error: e3 } = await admin.from("movimientos").insert(filas);
+    if (e3) return fallo(e3);
   }
   return NextResponse.json({ ok: true });
 }

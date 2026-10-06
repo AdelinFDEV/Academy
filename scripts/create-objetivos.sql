@@ -345,3 +345,49 @@ create table if not exists public.gastos (
 alter table public.gastos enable row level security;
 
 create index if not exists gastos_fecha_idx on public.gastos (fecha desc);
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 06-10-2026 · Un solo libro de movimientos: ingresos y gastos
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Todo el dinero de la empresa, una fila por movimiento. Escriben aquí el
+-- cierre del día (origen 'cierre': una fila por fuente y día, que el cierre
+-- sustituye al guardar) y el formulario de Crecimiento / Gastos (origen
+-- 'manual': con concepto, y puntual o fijo cada mes). Así nada se cuenta dos
+-- veces: hay una sola fuente de verdad.
+--
+-- `categoria`: la fuente si es ingreso (FUENTES) o la categoría si es gasto
+-- (CATEGORIAS_GASTO), en src/lib/objetivos.ts.
+create table if not exists public.movimientos (
+  id          uuid primary key default gen_random_uuid(),
+  tipo        text not null check (tipo in ('ingreso', 'gasto')),
+  fecha       date not null,
+  concepto    text check (concepto is null or length(trim(concepto)) between 1 and 120),
+  categoria   text not null,
+  importe     numeric(12, 2) not null check (importe > 0),
+  recurrente  boolean not null default false,
+  hasta       date,
+  origen      text not null default 'manual' check (origen in ('cierre', 'manual')),
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now(),
+  check (hasta is null or hasta >= fecha),
+  -- Lo del cierre es por fuente y día, sin repetirse ni ser fijo.
+  check (origen = 'manual' or (tipo = 'ingreso' and not recurrente))
+);
+
+alter table public.movimientos enable row level security;
+
+create index if not exists movimientos_fecha_idx on public.movimientos (fecha desc);
+create unique index if not exists movimientos_cierre_dia_fuente
+  on public.movimientos (fecha, categoria) where origen = 'cierre';
+
+-- Traspaso, idempotente: lo apuntado en los cierres y los gastos ya creados.
+-- Las tablas viejas (ingresos_dia, gastos) se quedan como copia y ya no se
+-- leen ni se escriben; se pueden borrar cuando se compruebe que todo cuadra.
+insert into public.movimientos (tipo, fecha, categoria, importe, origen)
+select 'ingreso', fecha, fuente, importe, 'cierre' from public.ingresos_dia
+on conflict (fecha, categoria) where origen = 'cierre' do nothing;
+
+insert into public.movimientos (id, tipo, fecha, concepto, categoria, importe, recurrente, hasta, origen, created_at)
+select id, 'gasto', fecha, concepto, categoria, importe, recurrente, hasta, 'manual', created_at from public.gastos
+on conflict (id) do nothing;

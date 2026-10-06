@@ -6,7 +6,7 @@ import { GraficaBarras, GraficaLinea, type Tono } from "./Graficas";
 import TuDinero from "./TuDinero";
 import ActividadMes from "./ActividadMes";
 import Finanzas from "./Finanzas";
-import type { Gasto } from "@/lib/objetivos";
+import type { Movimiento } from "@/lib/objetivos";
 import type { ActividadMes as DatosActividad } from "@/lib/actividadMes";
 import type { DineroMes } from "@/lib/objetivosServidor";
 import { fechaCorta, nombreMes } from "../editor";
@@ -65,7 +65,7 @@ export default function SeccionCrecimiento({ datos, rango, dineroMeses, activida
   rango: Rango;
   dineroMeses: DineroMes[];
   actividad: DatosActividad;
-  finanzas: { gastos: Gasto[]; falta: boolean };
+  finanzas: { movimientos: Movimiento[]; falta: boolean };
 }) {
   // Los enlaces conservan el otro filtro: cambiar el periodo no cambia el mes, y al revés.
   const mesActual = datos.hoy.slice(0, 7);
@@ -102,7 +102,7 @@ export default function SeccionCrecimiento({ datos, rango, dineroMeses, activida
       <TuDinero meses={dineroMeses} hoy={datos.hoy} />
 
       {/* ── Lo que entra frente a lo que sale ────────────────────── */}
-      <Finanzas hoy={datos.hoy} dineroMeses={dineroMeses} gastos={finanzas.gastos} falta={finanzas.falta} />
+      <Finanzas hoy={datos.hoy} dineroMeses={dineroMeses} movimientos={finanzas.movimientos} falta={finanzas.falta} />
 
       {/* ── Lo publicado en el mes ───────────────────────────────── */}
       <ActividadMes datos={actividad} hoy={datos.hoy} hrefMes={(m) => href(rango, m)} />

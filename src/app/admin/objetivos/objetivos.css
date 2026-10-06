@@ -2307,3 +2307,49 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
   .fin-cifra strong { font-size: 21px; }
   .fin-importe { flex: 1 1 100%; }
 }
+
+/* Cierre del día: lo apuntado a mano ese día, para no repetirlo */
+.obj-cierre-manuales { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border: 1px dashed var(--o-borde-2); border-radius: 12px; }
+.obj-cierre-manuales > span { font-size: 12px; font-weight: 700; color: var(--o-texto-3); }
+.obj-cierre-manuales div { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--o-texto-2); }
+.obj-cierre-manuales strong { color: var(--o-texto); font-variant-numeric: tabular-nums; }
+
+/* Finanzas: gasto o ingreso, y la lista con filtro */
+.fin-tipo { display: inline-flex; align-self: flex-start; padding: 3px; border-radius: 11px; background: rgba(255, 255, 255, 0.05); }
+
+.fin-tipo button {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--o-texto-3);
+  cursor: pointer;
+}
+
+.fin-form--gasto .fin-tipo--activo { background: rgba(239, 68, 68, 0.2); color: #fecaca; }
+.fin-form--ingreso .fin-tipo--activo { background: rgba(34, 197, 94, 0.2); color: #bbf7d0; }
+.fin-form--ingreso { border-color: rgba(34, 197, 94, 0.3); }
+
+.fin-lista-cabeza { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+
+.fin-filtro { display: inline-flex; gap: 2px; padding: 2px; border-radius: 9px; background: rgba(255, 255, 255, 0.05); }
+
+.fin-filtro button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--o-texto-3);
+  cursor: pointer;
+}
+
+.fin-filtro .fin-filtro--activo { background: rgba(255, 255, 255, 0.1); color: var(--o-texto); }
+
+.fin-fila--ingreso .fin-fila-importe { color: #86efac; }
+.fin-nota { margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--o-texto-3); }

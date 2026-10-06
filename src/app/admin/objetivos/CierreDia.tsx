@@ -13,7 +13,15 @@ import { FUENTES, PRODUCTIVIDAD, type Balance, type Fuente, type Productividad }
  *   {cierre.modal}
  */
 
-type Estado = { fecha: string; productividad: Productividad | null; nota: string; ingresos: Record<Fuente, string>; premiumEstimado: number };
+type Estado = {
+  fecha: string;
+  productividad: Productividad | null;
+  nota: string;
+  ingresos: Record<Fuente, string>;
+  premiumEstimado: number;
+  /** Lo apuntado a mano ese día en Crecimiento / Gastos: se enseña, no se edita aquí. */
+  manuales: Balance["manuales"];
+};
 
 const VACIO: Record<Fuente, string> = { premium: "", youtube: "", trading: "", asesorias: "", otros: "" };
 
@@ -43,8 +51,9 @@ export function useCierreDia() {
   function abrir(fecha: string, balance?: Balance, premiumEstimado = 0) {
     setError("");
     const ingresos = { ...VACIO };
-    for (const [f, v] of Object.entries(balance?.ingresos ?? {})) ingresos[f as Fuente] = String(v);
-    setEstado({ fecha, productividad: balance?.productividad ?? null, nota: balance?.nota ?? "", ingresos, premiumEstimado });
+    // Solo lo del cierre: lo apuntado a mano ese día se enseña aparte y no se toca.
+    for (const [f, v] of Object.entries(balance?.ingresosCierre ?? {})) ingresos[f as Fuente] = String(v);
+    setEstado({ fecha, productividad: balance?.productividad ?? null, nota: balance?.nota ?? "", ingresos, premiumEstimado, manuales: balance?.manuales ?? [] });
   }
 
   async function guardar(e: React.FormEvent) {
@@ -152,9 +161,20 @@ export function useCierreDia() {
                 </label>
               ))}
             </div>
+            {estado.manuales.length > 0 && (
+              <div className="obj-cierre-manuales">
+                <span>También apuntado ese día en Crecimiento / Gastos</span>
+                {estado.manuales.map((m, i) => (
+                  <div key={i}>
+                    <span>{FUENTES[m.fuente]?.emoji ?? "💶"} {m.concepto}</span>
+                    <strong>{euros(m.importe)}</strong>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="obj-ingresos-total">
               <span>Total del día</span>
-              <strong>{euros(total)}</strong>
+              <strong>{euros(total + estado.manuales.reduce((s, m) => s + m.importe, 0))}</strong>
             </div>
           </div>
 

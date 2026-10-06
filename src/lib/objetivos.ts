@@ -204,19 +204,28 @@ export const CATEGORIAS_GASTO = {
 } as const;
 export type CategoriaGasto = keyof typeof CATEGORIAS_GASTO;
 
-export type Gasto = {
+/**
+ * Un movimiento del libro de dinero (tabla `movimientos`): un ingreso o un
+ * gasto. El cierre del día escribe los suyos (origen "cierre": uno por fuente
+ * y día) y el formulario de Crecimiento / Gastos, los apuntados a mano
+ * (origen "manual", con concepto, puntuales o fijos cada mes).
+ */
+export type Movimiento = {
   id: string;
+  tipo: "ingreso" | "gasto";
   fecha: string;
-  concepto: string;
-  categoria: CategoriaGasto;
+  concepto: string | null;
+  /** La fuente si es ingreso (FUENTES); la categoría si es gasto (CATEGORIAS_GASTO). */
+  categoria: string;
   importe: number;
   /** Cuenta cada mes desde `fecha` hasta `hasta` (null = sigue). */
   recurrente: boolean;
   hasta: string | null;
+  origen: "cierre" | "manual";
 };
 
-/** Lo que suma un gasto en un mes "AAAA-MM": su importe si cae (o se repite) ese mes, 0 si no. */
-export function gastoEnMes(g: Gasto, mes: string): number {
+/** Lo que suma un movimiento en un mes "AAAA-MM": su importe si cae (o se repite) ese mes, 0 si no. */
+export function importeEnMes(g: Pick<Movimiento, "fecha" | "importe" | "recurrente" | "hasta">, mes: string): number {
   const inicio = g.fecha.slice(0, 7);
   if (!g.recurrente) return inicio === mes ? g.importe : 0;
   if (mes < inicio) return 0;
@@ -476,6 +485,11 @@ export type Balance = {
   fecha: string;
   productividad: Productividad | null;
   nota: string | null;
+  /** Todo lo ingresado ese día, por fuente: lo del cierre más lo apuntado a mano. */
   ingresos: Partial<Record<Fuente, number>>;
+  /** Solo lo del cierre del día: es lo que su formulario enseña y sustituye. */
+  ingresosCierre: Partial<Record<Fuente, number>>;
+  /** Lo apuntado a mano ese día en Crecimiento / Gastos, para verlo al cerrar el día. */
+  manuales: { concepto: string; fuente: Fuente; importe: number }[];
   total: number;
 };
