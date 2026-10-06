@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment, type ReactNode } from "react";
 import {
   ANIMOS, ANIMO_EMOJI, CANALES, EMOCIONES, EMOCION_EMOJI, FUENTES, estadoPieza, periodosEnRango,
   type Balance, type Canal, type Emocion, type Fuente, type ObjetivoConProgreso, type Pieza,
@@ -151,29 +152,37 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
   const pocosDatos = diasConDatos < 3;
 
   const veredicto = esFuturo
-    ? { emoji: "🗓️", titulo: "Mes por llegar", tono: "off" }
+    ? { emoji: "🗓️", titulo: "Mes por llegar", tono: "off", lema: "Un mes en blanco es la mejor oportunidad: déjalo planeado antes de que empiece." }
     : nota === null
-      ? { emoji: "🌱", titulo: "Mes por estrenar", tono: "off" }
+      ? { emoji: "🌱", titulo: "Mes por estrenar", tono: "off", lema: "Todo mes grande empieza con un primer día cerrado. Apunta el de hoy y arranca." }
       : nota >= 0.7
-        ? { emoji: "🔥", titulo: "Gran mes", tono: "ok" }
+        ? { emoji: "🔥", titulo: "Gran mes", tono: "ok", lema: "Estás en racha. Lo difícil ahora es no soltarla: protege lo que te está funcionando." }
         : nota >= 0.5
-          ? { emoji: "👍", titulo: "Buen mes", tono: "ok" }
+          ? { emoji: "👍", titulo: "Buen mes", tono: "ok", lema: "Vas por buen camino. Un empujón más y este mes se convierte en uno grande." }
           : nota >= 0.35
-            ? { emoji: "⚖️", titulo: "Mes irregular", tono: "warn" }
-            : { emoji: "🫂", titulo: "Mes difícil", tono: "bad" };
+            ? { emoji: "⚖️", titulo: "Mes irregular", tono: "warn", lema: "Hay días buenos y días flojos. Quédate con lo que funcionó y repítelo mañana." }
+            : { emoji: "🫂", titulo: "Mes difícil", tono: "bad", lema: "Los meses duros también cuentan. Basta un buen día para cambiar la tendencia." };
 
   // Una frase que cuenta el mes con sus cifras
-  const piezasFrase = [
-    `${esPasado ? "En" : "En lo que va de"} ${nombreMes(mes, true)} ${totalMes > 0 ? `has ganado ${euros(totalMes)}` : "aún no has apuntado dinero"}`,
-    cerrados ? `${productivos} de ${cerrados} días cerrados fueron productivos` : "",
-    publicadas ? `has publicado ${publicadas} pieza${publicadas === 1 ? "" : "s"}` : "",
-    animoMes !== null ? `tu ánimo medio es «${textoAnimo(animoMes).toLowerCase()}»` : "",
+  // Las cifras van resaltadas: es lo primero que se lee
+  const piezasFrase: ReactNode[] = [
+    <>{esPasado ? "En" : "En lo que va de"} {nombreMes(mes, true)} {totalMes > 0 ? <>has ganado <strong className="rm-frase-dinero">{euros(totalMes)}</strong></> : "aún no has apuntado dinero"}</>,
+    cerrados ? <><strong>{productivos} de {cerrados}</strong> días cerrados fueron productivos</> : null,
+    publicadas ? <>has publicado <strong>{publicadas} pieza{publicadas === 1 ? "" : "s"}</strong></> : null,
+    animoMes !== null ? <>tu ánimo medio es <strong>«{textoAnimo(animoMes).toLowerCase()}»</strong></> : null,
   ].filter(Boolean);
-  const frase = esFuturo
+  const frase: ReactNode = esFuturo
     ? `${nombreMes(mes)} aún no ha empezado. Puedes ir planeando contenido y objetivos.`
-    : piezasFrase.length > 1
-      ? `${piezasFrase.slice(0, -1).join(", ")} y ${piezasFrase[piezasFrase.length - 1]}.`
-      : `${piezasFrase[0]}.`;
+    : (
+      <>
+        {piezasFrase.map((trozo, i) => (
+          <Fragment key={i}>
+            {i > 0 && (i === piezasFrase.length - 1 ? " y " : ", ")}
+            {trozo}
+          </Fragment>
+        ))}.
+      </>
+    );
 
   // ── Lo que dicen tus datos
   const ideas: { emoji: string; texto: string }[] = [];
@@ -216,28 +225,30 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
             {veredicto.titulo}
             {pocosDatos && !esFuturo && nota !== null && <span className="rm-aviso">con pocos datos todavía</span>}
           </h2>
+          <p className="rm-lema">{veredicto.lema}</p>
           <p className="rm-frase">{frase}</p>
         </div>
         {!esFuturo && (
           <div className="rm-avance" title={`${diasTranscurridos} de ${totalDias} días`}>
-            <span>{esPasado ? "Mes cerrado" : `Día ${diasTranscurridos} de ${totalDias}`}</span>
+            <span>{esPasado ? "Mes cerrado" : <>Día <strong>{diasTranscurridos}</strong> de {totalDias}</>}</span>
             <div className="rm-avance-pista"><div style={{ width: `${avanceMes}%` }} /></div>
+            {!esPasado && <small>{totalDias === diasTranscurridos ? "Último día: ciérralo bien" : `Quedan ${totalDias - diasTranscurridos} días por delante`}</small>}
           </div>
         )}
       </header>
 
       {/* ── Las cuatro cifras ── */}
       <div className="rm-kpis">
-        <Kpi etiqueta="Dinero ganado" valor={euros(totalMes, totalMes % 1 ? 2 : 0)} variacion={vDinero} pie={esRecord ? "🏆 Mes récord" : record && record.total > 0 ? `Récord: ${euros(record.total)}` : "Apúntalo al cerrar el día"} tono="dinero" />
-        <Kpi etiqueta="Días productivos" valor={cerrados ? `${productivos}/${cerrados}` : "—"} variacion={vProd} pie={cerrados ? `${Math.round((productivos / cerrados) * 100)} % · ${noProductivos} no productivo${noProductivos === 1 ? "" : "s"}` : "Ningún día cerrado aún"} tono="ok" />
-        <Kpi etiqueta="Publicado" valor={String(publicadas)} pie={piezas.length ? `${planPct} % del plan · ${piezas.length} planeadas` : "Sin plan este mes"} tono="contenido" />
-        <Kpi etiqueta="Ánimo medio" valor={animoMes !== null ? `${emojiAnimo(animoMes)} ${textoAnimo(animoMes)}` : "—"} variacion={vAnimo} pie={animoMes !== null ? `${cifra(animoMes)}/5 · ${conAnimo.length} nota${conAnimo.length === 1 ? "" : "s"}` : "Escribe en el Diario"} tono="animo" />
+        <Kpi icono="💶" etiqueta="Dinero ganado" valor={euros(totalMes, totalMes % 1 ? 2 : 0)} variacion={vDinero} progreso={record && record.total > 0 ? (totalMes / record.total) * 100 : null} pie={esRecord ? "🏆 Tu mejor mes hasta ahora" : record && record.total > 0 ? `Récord a batir: ${euros(record.total)}` : "Apúntalo al cerrar el día"} tono="dinero" />
+        <Kpi icono="⚡" etiqueta="Días productivos" valor={cerrados ? `${productivos}/${cerrados}` : "—"} variacion={vProd} progreso={cerrados ? (productivos / cerrados) * 100 : null} pie={cerrados ? `${Math.round((productivos / cerrados) * 100)} % de acierto · ${noProductivos} no productivo${noProductivos === 1 ? "" : "s"}` : "Cierra tu primer día"} tono="ok" />
+        <Kpi icono="🚀" etiqueta="Publicado" valor={`${publicadas} pieza${publicadas === 1 ? "" : "s"}`} progreso={planPct} pie={piezas.length ? `${planPct} % del plan · ${piezas.length} planeadas` : "Sin plan: planéalo y suma más"} tono="contenido" />
+        <Kpi icono="💭" etiqueta="Ánimo medio" valor={animoMes !== null ? `${emojiAnimo(animoMes)} ${textoAnimo(animoMes)}` : "—"} variacion={vAnimo} progreso={animoMes !== null ? (animoMes / 5) * 100 : null} pie={animoMes !== null ? `${cifra(animoMes)}/5 · ${conAnimo.length} nota${conAnimo.length === 1 ? "" : "s"}` : "Escribe en el Diario"} tono="animo" />
       </div>
 
       {/* ── Detalle: cuatro bloques en dos columnas; vacíos, una sola línea ── */}
       <div className="rm-detalle">
         <article className="rm-bloque">
-          <h3>Dinero</h3>
+          <h3><span className="rm-h3-icono" aria-hidden="true">💶</span>Dinero</h3>
           {fuentes.length ? (
             <>
               {record && record.total > 0 && (
@@ -269,7 +280,7 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
         </article>
 
         <article className="rm-bloque">
-          <h3>Ánimo</h3>
+          <h3><span className="rm-h3-icono" aria-hidden="true">💭</span>Ánimo</h3>
           {conAnimo.length ? (
             <>
               {/* Una barra repartida por niveles: rojo · gris · verde */}
@@ -294,7 +305,7 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
         </article>
 
         <article className="rm-bloque">
-          <h3>Objetivos</h3>
+          <h3><span className="rm-h3-icono" aria-hidden="true">🎯</span>Objetivos</h3>
           {resultados.length ? (
             <>
               <p className="rm-linea">
@@ -318,7 +329,7 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
         </article>
 
         <article className="rm-bloque">
-          <h3>Contenido</h3>
+          <h3><span className="rm-h3-icono" aria-hidden="true">🚀</span>Contenido</h3>
           <p className="rm-linea rm-linea--canales">
             {porCanal.map((c) => (
               <span key={c.canal}><i className={`rm-punto rm-punto--${c.canal}`} /> {CANALES[c.canal]} <strong>{c.total}</strong></span>
@@ -342,7 +353,7 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
       {/* ── Lo que dicen tus datos ── */}
       {ideas.length > 0 && (
         <div className="rm-ideas">
-          <h3>Lo que dicen tus datos</h3>
+          <h3><span className="rm-h3-icono" aria-hidden="true">✨</span>Lo que dicen tus datos</h3>
           <ul>
             {ideas.slice(0, 5).map((i, n) => (
               <li key={n}>
@@ -357,16 +368,20 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
   );
 }
 
-function Kpi({ etiqueta, valor, pie, variacion, tono }: {
+function Kpi({ icono, etiqueta, valor, pie, variacion, progreso, tono }: {
+  icono: string;
   etiqueta: string;
   valor: string;
   pie: string;
   variacion?: { texto: string; sube: boolean } | null;
+  /** 0-100: la barrita bajo la cifra. Sin dato, no se pinta. */
+  progreso?: number | null;
   tono: "dinero" | "ok" | "contenido" | "animo";
 }) {
   return (
     <div className={`rm-kpi rm-kpi--${tono}`}>
       <div className="rm-kpi-cabeza">
+        <span className="rm-kpi-icono" aria-hidden="true">{icono}</span>
         <span className="rm-kpi-etiqueta">{etiqueta}</span>
         {variacion && (
           <span className={`rm-var ${variacion.sube ? "rm-var--sube" : "rm-var--baja"}`} title="Frente al mes anterior">
@@ -375,6 +390,9 @@ function Kpi({ etiqueta, valor, pie, variacion, tono }: {
         )}
       </div>
       <strong className="rm-kpi-valor">{valor}</strong>
+      {progreso !== null && progreso !== undefined && (
+        <div className="rm-kpi-pista" aria-hidden="true"><div style={{ width: `${Math.max(3, Math.min(100, progreso))}%` }} /></div>
+      )}
       <span className="rm-kpi-pie">{pie}</span>
     </div>
   );
