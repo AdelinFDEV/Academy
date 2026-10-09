@@ -1,6 +1,8 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_URL } from "@/lib/site";
-import { cargarBalances, cargarDineroPorMes, cargarObjetivos, premiumEstimadoPorDia } from "@/lib/objetivosServidor";
+import { cargarBalances, cargarDineroPorMes, cargarObjetivos, cerrarPiezaPlaneada, premiumEstimadoPorDia } from "@/lib/objetivosServidor";
+import { esShort, subidasEntre } from "@/lib/actividadMes";
+import type { VideoSubido } from "@/lib/youtube";
 import { diaRumania, hoyISO, medianocheRumania, sumarDiasISO, type Pieza } from "@/lib/objetivos";
 import SeccionCalendario, { type Animo, type Hecho } from "./SeccionCalendario";
 import FaltaSql from "../FaltaSql";
@@ -22,6 +24,30 @@ function lunesDe(fecha: string): string {
 function semanaPedida(semana: string | undefined, hoy: string): string {
   if (semana && /^\d{4}-\d{2}-\d{2}$/.test(semana) && !Number.isNaN(Date.parse(`${semana}T00:00:00Z`))) return lunesDe(semana);
   return lunesDe(hoy);
+}
+
+/**
+ * Da por hecha la pieza planeada de cada subida que aún no tenga una. El bot
+ * ya lo hace con los vídeos largos al anunciarlos, pero los Shorts no se
+ * anuncian, y un vídeo largo sale aquí antes de que el bot lo anuncie.
+ */
+async function cerrarSubidasPlaneadas(admin: ReturnType<typeof createAdminClient>, videos: VideoSubido[]) {
+  if (!videos.length) return;
+  const enlaces = videos.map((v) => `https://youtu.be/${v.id}`);
+  const { data } = await admin.from("contenido_plan").select("enlace").in("enlace", enlaces);
+  const cerradas = new Set((data ?? []).map((p) => p.enlace));
+  await Promise.all(
+    videos
+      .filter((v) => !cerradas.has(`https://youtu.be/${v.id}`))
+      .map((v) =>
+        cerrarPiezaPlaneada(admin, {
+          canal: "youtube",
+          tipos: [esShort(v) ? "short" : "video"],
+          cuando: new Date(v.publishedAt),
+          enlace: `https://youtu.be/${v.id}`,
+        })
+      )
+  );
 }
 
 /**
@@ -63,14 +89,17 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
   const [a, m] = mes.split("-").map(Number);
   const iniAnterior = vista === "mes" ? new Date(Date.UTC(a, m - 2, 1)).toISOString().slice(0, 10) : ini;
 
-  const [{ objetivos, faltaSql }, piezasRes, entradasRes, videosRes, animosRes, balances, premiumEstimado, dineroMeses] = await Promise.all([
+  // Lo subido a YouTube, con su día real y Shorts incluidos. Va antes que las
+  // piezas porque puede cerrar alguna planeada (y moverla al día real).
+  const subidas = await subidasEntre(admin, new Date(desdeInstante), new Date(hastaInstante));
+  if (subidas.fuente === "api") await cerrarSubidasPlaneadas(admin, subidas.videos);
+
+  const [{ objetivos, faltaSql }, piezasRes, entradasRes, animosRes, balances, premiumEstimado, dineroMeses] = await Promise.all([
     cargarObjetivos(admin),
     admin.from("contenido_plan").select("*").gte("fecha", ini).lt("fecha", fin).order("fecha"),
     // Lo que de verdad salió, aunque no estuviera en el plan.
     admin.from("posts").select("slug, title, created_at").eq("published", true)
       .gte("created_at", desdeInstante).lt("created_at", hastaInstante),
-    admin.from("content_announcements").select("ref, announced_at").eq("kind", "video")
-      .gte("announced_at", desdeInstante).lt("announced_at", hastaInstante),
     // El ánimo del diario. Solo las columnas que hacen falta: el texto de las
     // notas no sale del diario.
     admin.from("diario_notas").select("id, fecha, animo, emocion, etiqueta").order("created_at")
@@ -89,11 +118,11 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
       titulo: p.title,
       enlace: `${SITE_URL}/post/${p.slug}`,
     })),
-    ...(videosRes.data ?? []).map((v) => ({
-      fecha: diaRumania(v.announced_at),
-      tipo: "video" as const,
-      titulo: "Vídeo publicado en YouTube",
-      enlace: `https://youtu.be/${v.ref}`,
+    ...subidas.videos.map((v) => ({
+      fecha: diaRumania(v.publishedAt),
+      tipo: esShort(v) ? ("short" as const) : ("video" as const),
+      titulo: subidas.fuente === "api" ? v.title : "Vídeo publicado en YouTube",
+      enlace: `https://youtu.be/${v.id}`,
     })),
   ];
 

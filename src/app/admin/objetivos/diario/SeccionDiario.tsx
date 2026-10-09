@@ -8,7 +8,7 @@ import {
 } from "@/lib/objetivos";
 import { useCierreDia } from "../CierreDia";
 import {
-  type Datos, Campo, Factores, FotosNota, Interruptor, Opciones, TONO_AREA, UbicacionNota,
+  type Datos, Factores, FotosNota, Interruptor, Opciones, TONO_AREA, UbicacionNota,
   cifra, enviar, fechaCorta, finDeMes, nombreMes, notaVacia, sumarDias, useEditor,
 } from "../editor";
 import { GraficaAnimo, MapaFactores, type FilaMapa, type PuntoAnimo } from "./GraficasSentir";
@@ -217,7 +217,7 @@ function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, premiumHoy, in
   const fotos = Array.isArray(borrador.fotos) ? borrador.fotos : [];
   const cuantosDetalles = [
     borrador.etiqueta, borrador.emocion, borrador.objetivo_id, borrador.lugar || borrador.lat,
-    fotos.length ? "fotos" : "", borrador.ancla === true ? "si" : "", borrador.fecha !== hoy ? "fecha" : "",
+    fotos.length ? "fotos" : "", borrador.ancla === true ? "si" : "",
   ].filter(Boolean).length;
   const animo = String(borrador.animo);
   const palabras = String(borrador.texto).trim() ? String(borrador.texto).trim().split(/s+/).length : 0;
@@ -270,7 +270,17 @@ function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, premiumHoy, in
         }}
       >
         <div className="dia-hoja-cabeza">
-          <span className="dia-fecha">Página de hoy</span>
+          <label className="dia-fecha">
+            {borrador.fecha === hoy ? "Página de hoy" : `Página del ${fechaLarga(String(borrador.fecha))}`}
+            <input
+              className="dia-fecha-input"
+              type="date"
+              value={String(borrador.fecha)}
+              max={hoy}
+              onChange={(e) => e.target.value && cambiar("fecha", e.target.value)}
+              aria-label="Día de esta página"
+            />
+          </label>
           {(guardando || guardada || palabras > 0 || escritoHoy > 0) && (
             <span className={`dia-estado${guardada ? " dia-estado--ok" : ""}`}>
               {guardando ? "Guardando…" : guardada ? "✓ Guardado en tu diario" : palabras ? "● Borrador a salvo en este navegador" : `Hoy ya has escrito ${escritoHoy} vez${escritoHoy === 1 ? "" : "es"}`}
@@ -343,12 +353,7 @@ function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, premiumHoy, in
               permitirVacio
             />
             <FotosNota fotos={fotos} urls={urlsFotos} onCambio={(f) => cambiar("fotos", f)} />
-            <div className="dia-detalles-dos">
-              <UbicacionNota d={borrador} cambiar={cambiar} />
-              <Campo etiqueta="📅 Fecha">
-                <input className="obj-input" type="date" value={String(borrador.fecha)} max={hoy} onChange={(e) => cambiar("fecha", e.target.value)} />
-              </Campo>
-            </div>
+            <UbicacionNota d={borrador} cambiar={cambiar} />
             {activos.length > 0 && (
               <Opciones
                 etiqueta="¿Va sobre algún objetivo?"
@@ -396,6 +401,7 @@ function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, premiumHoy, in
             <span className="dia-cierre-flecha" aria-hidden="true">›</span>
           </button>
           {balanceHoy?.nota && <p className="dia-cierre-nota">📌 {balanceHoy.nota}</p>}
+          <p className="dia-nota">Para cerrar otro día, pulsa su icono en el calendario.</p>
         </section>
 
         <section className="dia-bloque">

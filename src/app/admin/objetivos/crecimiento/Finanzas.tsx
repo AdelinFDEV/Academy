@@ -33,11 +33,14 @@ function etiquetaDe(m: Pick<Movimiento, "tipo" | "categoria">): { emoji: string;
 }
 
 type Filtro = "todo" | "ingreso" | "gasto";
+
+/** Filas de «Apuntado aquí» por página: la lista crece cada día y no puede estirar la página. */
+const POR_PAGINA = 5;
 type Props = { hoy: string; dineroMeses: DineroMes[]; movimientos: Movimiento[]; falta: boolean };
 
 export default function Finanzas({ hoy, dineroMeses, movimientos, falta }: Props) {
   const mesActual = hoy.slice(0, 7);
-  const [verTodos, setVerTodos] = useState(false);
+  const [pagina, setPagina] = useState(1);
   const [filtro, setFiltro] = useState<Filtro>("todo");
   const gastos = movimientos.filter((m) => m.tipo === "gasto");
 
@@ -69,7 +72,10 @@ export default function Finanzas({ hoy, dineroMeses, movimientos, falta }: Props
 
   // Lo apuntado aquí (lo del cierre del día se ve y se edita en el cierre).
   const apuntados = movimientos.filter((m) => m.origen === "manual" && (filtro === "todo" || m.tipo === filtro));
-  const lista = verTodos ? apuntados : apuntados.slice(0, 8);
+  const paginas = Math.max(1, Math.ceil(apuntados.length / POR_PAGINA));
+  // Si se borra la última fila de la última página, se queda en la que aún existe.
+  const paginaVista = Math.min(pagina, paginas);
+  const lista = apuntados.slice((paginaVista - 1) * POR_PAGINA, paginaVista * POR_PAGINA);
 
   return (
     <section className="crec-bloque fin">
@@ -138,7 +144,7 @@ export default function Finanzas({ hoy, dineroMeses, movimientos, falta }: Props
                 <span className="fin-subtitulo">Apuntado aquí</span>
                 <div className="fin-filtro" role="radiogroup" aria-label="Filtrar movimientos">
                   {([["todo", "Todo"], ["ingreso", "Ingresos"], ["gasto", "Gastos"]] as const).map(([v, t]) => (
-                    <button key={v} type="button" role="radio" aria-checked={filtro === v} className={filtro === v ? "fin-filtro--activo" : ""} onClick={() => setFiltro(v)}>
+                    <button key={v} type="button" role="radio" aria-checked={filtro === v} className={filtro === v ? "fin-filtro--activo" : ""} onClick={() => { setFiltro(v); setPagina(1); }}>
                       {t}
                     </button>
                   ))}
@@ -153,10 +159,12 @@ export default function Finanzas({ hoy, dineroMeses, movimientos, falta }: Props
                   {filtro === "ingreso" ? "Ningún ingreso apuntado aquí. Lo del cierre del día ya cuenta solo." : filtro === "gasto" ? "Aún no has apuntado ningún gasto." : "Aún no has apuntado nada aquí."}
                 </p>
               )}
-              {apuntados.length > 8 && (
-                <button type="button" className="fin-ver" onClick={() => setVerTodos((v) => !v)}>
-                  {verTodos ? "Ver menos" : `Ver los ${apuntados.length}`}
-                </button>
+              {paginas > 1 && (
+                <nav className="fin-paginas" aria-label="Páginas de movimientos">
+                  <button type="button" onClick={() => setPagina(paginaVista - 1)} disabled={paginaVista === 1} aria-label="Página anterior">‹</button>
+                  <span>{paginaVista} de {paginas} · {apuntados.length} apuntes</span>
+                  <button type="button" onClick={() => setPagina(paginaVista + 1)} disabled={paginaVista === paginas} aria-label="Página siguiente">›</button>
+                </nav>
               )}
               <p className="fin-nota">Los ingresos que apuntas al cerrar cada día ya cuentan solos: aquí apunta lo que tenga nombre propio, sin repetirlo en el cierre.</p>
             </div>

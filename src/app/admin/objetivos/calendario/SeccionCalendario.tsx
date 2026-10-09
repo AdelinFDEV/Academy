@@ -22,7 +22,7 @@ import "./calendario.css";
  */
 
 /** Algo que de verdad salió, aunque no estuviera planeado: entradas y vídeos. */
-export type Hecho = { fecha: string; tipo: "entrada" | "video"; titulo: string; enlace: string };
+export type Hecho = { fecha: string; tipo: "entrada" | "video" | "short"; titulo: string; enlace: string };
 
 /** Lo que el calendario necesita de cada nota del diario: nunca el texto. El id, para llevar a ella. */
 export type Animo = { id: string; fecha: string; animo: number | null; emocion: Emocion | null; etiqueta: Etiqueta | null };
@@ -165,7 +165,7 @@ type InfoDia = {
   piezas: Pieza[];
   salidos: Hecho[];
   balance?: Balance;
-  animo: { valor: number; notas: Animo[] } | null;
+  animo: { valor: number | null; notas: Animo[] } | null;
 };
 
 export default function SeccionCalendario(props: Props) {
@@ -208,14 +208,13 @@ export default function SeccionCalendario(props: Props) {
     else router.refresh();
   }
 
-  // El ánimo de cada día, sacado del diario: la media si ese día hay varias notas.
-  const animoDelDia = new Map<string, { valor: number; notas: Animo[] }>();
+  // Las notas del diario de cada día y su ánimo: la media de las que lo tienen,
+  // o null si ninguna lo marcó (la nota sale igual: se escribió ese día).
+  const animoDelDia = new Map<string, { valor: number | null; notas: Animo[] }>();
   for (const n of animos) {
-    if (n.animo === null) continue;
-    const previo = animoDelDia.get(n.fecha);
-    const notas = [...(previo?.notas ?? []), n];
-    const valores = notas.map((x) => x.animo as number);
-    animoDelDia.set(n.fecha, { valor: valores.reduce((s, v) => s + v, 0) / valores.length, notas });
+    const notas = [...(animoDelDia.get(n.fecha)?.notas ?? []), n];
+    const valores = notas.map((x) => x.animo).filter((v): v is number => v !== null);
+    animoDelDia.set(n.fecha, { valor: valores.length ? valores.reduce((s, v) => s + v, 0) / valores.length : null, notas });
   }
   const info = (dia: string): InfoDia => ({
     dia,
@@ -445,12 +444,12 @@ function Salido({ h, completa = false }: { h: Hecho; completa?: boolean }) {
       href={h.enlace}
       target="_blank"
       rel="noopener noreferrer"
-      className={`cal-pieza cal-pieza--salido cal-pieza--${h.tipo === "video" ? "youtube" : "web"}${completa ? " cal-pieza--completa" : ""}`}
-      title={`Publicado: ${h.titulo}`}
+      className={`cal-pieza cal-pieza--salido cal-pieza--${h.tipo === "entrada" ? "web" : "youtube"}${completa ? " cal-pieza--completa" : ""}`}
+      title={`Publicado: ${TIPOS[h.tipo]} · ${h.titulo}`}
     >
       <span className="cal-pieza-abrir">
         <i className="cal-pieza-punto" aria-hidden="true" />
-        <span className="cal-pieza-titulo">{h.titulo}</span>
+        <span className="cal-pieza-titulo">{h.tipo === "entrada" ? "" : `${TIPO_EMOJI[h.tipo]} `}{h.titulo}</span>
         <span className="cal-pieza-estado" aria-hidden="true">✓</span>
       </span>
     </a>
@@ -459,7 +458,7 @@ function Salido({ h, completa = false }: { h: Hecho; completa?: boolean }) {
 
 function BolaAnimo({ animo }: { animo: InfoDia["animo"] }) {
   if (!animo) return null;
-  const nivel = Math.min(5, Math.max(1, Math.round(animo.valor)));
+  const nivel = animo.valor === null ? null : Math.min(5, Math.max(1, Math.round(animo.valor)));
   const detalle = animo.notas
     .map((n) => [n.etiqueta ? ETIQUETAS[n.etiqueta].emoji : "", n.emocion ? `${EMOCION_EMOJI[n.emocion]} ${EMOCIONES[n.emocion]}` : ""].filter(Boolean).join(" "))
     .filter(Boolean)
@@ -469,10 +468,10 @@ function BolaAnimo({ animo }: { animo: InfoDia["animo"] }) {
     <Link
       href={urlNota(animo)}
       className="cal-animo"
-      title={`Ánimo del día: ${ANIMOS[nivel - 1]} (${animo.valor.toFixed(1)}/5) · ${animo.notas.length} nota${varias ? "s" : ""}${detalle ? ` · ${detalle}` : ""}. Pulsa para leer ${varias ? "las notas" : "la nota"} del diario.`}
+      title={`${nivel !== null && animo.valor !== null ? `Ánimo del día: ${ANIMOS[nivel - 1]} (${animo.valor.toFixed(1)}/5) · ` : "Sin ánimo marcado · "}${animo.notas.length} nota${varias ? "s" : ""}${detalle ? ` · ${detalle}` : ""}. Pulsa para leer ${varias ? "las notas" : "la nota"} del diario.`}
       aria-label={`Leer ${varias ? "las notas" : "la nota"} del diario de este día`}
     >
-      {ANIMO_EMOJI[nivel - 1]}
+      {nivel !== null ? ANIMO_EMOJI[nivel - 1] : "📓"}
     </Link>
   );
 }
@@ -691,7 +690,7 @@ function PanelDia({ d, hoy, objetivos, tarjeta, onCerrar, onCerrarDia, onNuevaPi
   // Los objetivos que cubren este día, con cómo van.
   const activos = objetivos.filter((o) => !o.archivado && periodosEnRango(o, d.dia, d.dia).length > 0);
   const fuentes = b ? (Object.keys(FUENTES) as Fuente[]).filter((f) => (b.ingresos[f] ?? 0) > 0) : [];
-  const nivel = d.animo ? Math.min(5, Math.max(1, Math.round(d.animo.valor))) : null;
+  const nivel = d.animo?.valor != null ? Math.min(5, Math.max(1, Math.round(d.animo.valor))) : null;
   const emociones = d.animo ? [...new Set(d.animo.notas.map((n) => n.emocion).filter((e): e is Emocion => !!e))] : [];
 
   return (
@@ -715,9 +714,9 @@ function PanelDia({ d, hoy, objetivos, tarjeta, onCerrar, onCerrarDia, onNuevaPi
                 ) : (
                   <span className="cal-panel-nada">Sin cerrar</span>
                 )}
-                {nivel && d.animo && (
+                {d.animo && (
                   <Link href={urlNota(d.animo)} className="cal-panel-animo" title="Leer en el diario">
-                    {ANIMO_EMOJI[nivel - 1]} {ANIMOS[nivel - 1]}
+                    {nivel ? `${ANIMO_EMOJI[nivel - 1]} ${ANIMOS[nivel - 1]}` : "📓 Escrito en el diario"}
                     <small>{d.animo.notas.length === 1 ? "Leer la nota del diario ›" : `Leer las ${d.animo.notas.length} notas del diario ›`}</small>
                   </Link>
                 )}

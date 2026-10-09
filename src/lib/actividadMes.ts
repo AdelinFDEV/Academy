@@ -41,8 +41,18 @@ export function esShort(v: VideoSubido): boolean {
   return v.segundos !== null && v.segundos <= SEGUNDOS_SHORT;
 }
 
-async function videosDe(admin: Admin, mes: string): Promise<{ videos: VideoSubido[]; fuente: "api" | "anuncios" }> {
+function videosDe(admin: Admin, mes: string): Promise<{ videos: VideoSubido[]; fuente: "api" | "anuncios" }> {
   const { desde, hasta } = limites(mes);
+  return subidasEntre(admin, desde, hasta);
+}
+
+/**
+ * Lo subido a YouTube entre dos instantes, del más nuevo al más antiguo. Con
+ * la API, todo (largos y Shorts) con su fecha real de publicación; sin ella,
+ * lo que anunció el bot, con la fecha del anuncio. Lo usan este resumen y el
+ * calendario.
+ */
+export async function subidasEntre(admin: Admin, desde: Date, hasta: Date): Promise<{ videos: VideoSubido[]; fuente: "api" | "anuncios" }> {
   const api = await getSubidasEntre(desde, hasta);
   if (api) return { videos: api, fuente: "api" };
   const { data } = await admin

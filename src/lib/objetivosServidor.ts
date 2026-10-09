@@ -270,22 +270,33 @@ const MARGEN_CIERRE_DIAS = 7;
 /**
  * Cierra la pieza del calendario que corresponde a algo recién publicado: la
  * del mismo canal y tipo, aún sin publicar, con la fecha más cercana dentro de
- * una semana arriba o abajo. Le pone el enlace real.
+ * una semana arriba o abajo. Le pone el enlace real y la lleva al día en que
+ * salió de verdad.
  *
- * Lo llama el anunciador (src/lib/announce.ts) al publicar una entrada o un
- * vídeo. Sin esto, una entrada planeada salía dos veces en el calendario: la
- * pieza azul planeada y la verde detectada.
+ * Solo cuenta lo planeado ANTES de publicarse: una pieza que apuntas mañana
+ * para el viernes no es la de un vídeo subido ayer.
  *
- * Nunca lanza: un fallo aquí no puede impedir que se anuncie nada.
+ * Lo llaman el anunciador (src/lib/announce.ts), al publicar una entrada o un
+ * vídeo, y el calendario, con lo que encuentra subido en YouTube (Shorts
+ * incluidos, que no se anuncian). Sin esto, lo planeado salía dos veces en el
+ * calendario: la pieza azul planeada y la verde detectada.
+ *
+ * Nunca lanza: un fallo aquí no puede impedir que se anuncie nada. Devuelve si
+ * cerró alguna pieza.
  */
 export async function cerrarPiezaPlaneada(
   admin: Admin,
   publicado: { canal: "web" | "youtube"; tipos: string[]; cuando: Date; enlace: string }
-): Promise<void> {
+): Promise<boolean> {
   try {
     const dia = hoyISO(publicado.cuando.getTime());
     const desde = new Date(Date.parse(`${dia}T00:00:00Z`) - MARGEN_CIERRE_DIAS * DIA).toISOString().slice(0, 10);
     const hasta = new Date(Date.parse(`${dia}T00:00:00Z`) + MARGEN_CIERRE_DIAS * DIA).toISOString().slice(0, 10);
+
+    // Ya cerrada por otra vía (el calendario o un anuncio anterior): si no se
+    // mirara, se daría por hecha otra pieza planeada cercana con el mismo enlace.
+    const { data: ya } = await admin.from("contenido_plan").select("id").eq("enlace", publicado.enlace).limit(1);
+    if (ya?.length) return false;
 
     const { data } = await admin
       .from("contenido_plan")
@@ -294,23 +305,28 @@ export async function cerrarPiezaPlaneada(
       .in("tipo", publicado.tipos)
       .neq("estado", "publicado")
       .gte("fecha", desde)
-      .lte("fecha", hasta);
-    if (!data?.length) return;
+      .lte("fecha", hasta)
+      .lte("created_at", publicado.cuando.toISOString());
+    if (!data?.length) return false;
 
     const distancia = (f: string) => Math.abs(Date.parse(`${f}T00:00:00Z`) - Date.parse(`${dia}T00:00:00Z`));
     const pieza = [...data].sort((a, b) => distancia(String(a.fecha)) - distancia(String(b.fecha)))[0];
 
-    await admin
+    const { error } = await admin
       .from("contenido_plan")
       .update({
+        fecha: dia,
         estado: "publicado",
         publicado_en: publicado.cuando.toISOString(),
         enlace: publicado.enlace,
         updated_at: new Date().toISOString(),
       })
       .eq("id", pieza.id);
+    if (error) throw new Error(error.message);
+    return true;
   } catch (err) {
     console.error("[objetivos] No se pudo cerrar la pieza planeada:", err);
+    return false;
   }
 }
 
