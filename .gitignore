@@ -62,3 +62,6 @@ scripts/anuncio-manual.mensaje*.txt
 # node_modules y se borran al terminar. Si alguno sobrevive, que no acabe
 # en un commit (ya paso una vez con .rss.mjs).
 .*.mjs
+
+# Copias locales antes de borrar datos (llevan ids de usuarios: nunca al repo)
+backups/

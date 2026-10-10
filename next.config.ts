@@ -83,6 +83,14 @@ const nextConfig: NextConfig = {
         destination: "/guias",
         permanent: true,
       },
+      // 10-10-2026: la web deja de publicar noticias. Las entradas que tenían
+      // una guía equivalente le pasan lo ganado; las demás responden 410
+      // (src/lib/retiradas.ts). `/articulos` ya no existe: la academia son las guías.
+      { source: "/articulos", destination: "/guias", permanent: true },
+      { source: "/post/metodo-fifo-criptomonedas", destination: "/guias/fiscalidad-cripto-espana", permanent: true },
+      { source: "/post/modelo-721-criptomonedas", destination: "/guias/fiscalidad-cripto-espana", permanent: true },
+      { source: "/post/staking-airdrops-impuestos-espana", destination: "/guias/fiscalidad-cripto-espana", permanent: true },
+      { source: "/post/actualizacion-xrp-ledger-2026", destination: "/guias/xrp", permanent: true },
       // `/cursos` estuvo aquí redirigiendo a /trading-en-directo desde el
       // 12-08-2026, cuando se retiraron los cursos de entonces. Se quitó el
       // 06-10-2026 porque vuelve a ser una página de verdad (src/app/cursos).

@@ -217,9 +217,8 @@ export default async function HerramientasPage() {
           </h1>
 
           <p className="det-lead">
-            La academia tiene tres patas: las <Link href="/articulos">entradas</Link>{" "}
-            explican, las <Link href="/guias">guías</Link> enseñan y estas
-            herramientas son con las que se trabaja el día a día. Ninguna te dice
+            Las <Link href="/guias">guías</Link> enseñan y estas herramientas son
+            con las que se trabaja el día a día. Ninguna te dice
             qué comprar — todas sirven para que lo decidas tú con más
             información.
           </p>

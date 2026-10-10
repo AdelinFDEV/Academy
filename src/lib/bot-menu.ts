@@ -499,7 +499,6 @@ function pantallaGratis(perfil: PerfilBot | null): Pantalla {
     texto:
       "🎁 Lo que tienes sin pagar nada\n\n" +
       "La Academy no es un muro de pago con una demo detrás. Gratis ya tienes:\n\n" +
-      "📰 Artículos y análisis semanales\n" +
       "📚 Las guías básicas, con quiz y logros\n" +
       "👀 Watchlist y predicción de precio\n" +
       "🧮 Calculadora de riesgo\n" +
@@ -510,7 +509,6 @@ function pantallaGratis(perfil: PerfilBot | null): Pantalla {
     botones: [
       [
         { text: "📚 Guías", url: url("/guias") },
-        { text: "📰 Artículos", url: url("/articulos") },
       ],
       [
         { text: "🧮 Calculadora", url: url("/calculadora") },
@@ -704,7 +702,6 @@ function pantallaWeb(): Pantalla {
     texto:
       "🧭 La Academy por dentro\n\n" +
       "📚 Guías — interactivas, con quiz y logros\n" +
-      "📰 Artículos — análisis y noticias, sin humo\n" +
       "🧮 Calculadora de riesgo — cuánto arriesgar en cada entrada\n" +
       "📖 Glosario — el vocabulario cripto explicado en cristiano\n" +
       "📊 Dashboard — tu watchlist, tus logros y tus herramientas\n" +
@@ -713,7 +710,6 @@ function pantallaWeb(): Pantalla {
     botones: [
       [
         { text: "📚 Guías", url: url("/guias") },
-        { text: "📰 Artículos", url: url("/articulos") },
       ],
       [
         { text: "🧮 Calculadora", url: url("/calculadora") },

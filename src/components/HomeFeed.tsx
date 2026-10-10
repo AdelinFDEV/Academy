@@ -280,7 +280,7 @@ export function HeroPost({ post, isLoggedIn }: { post: Post; isLoggedIn: boolean
   );
 }
 
-export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero = true, totalPosts }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode; showHero?: boolean; totalPosts?: number }) {
+export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero = true }: { posts: Post[]; isLoggedIn: boolean; youtubeSection?: ReactNode; showHero?: boolean }) {
   // Find the first featured post to show as Hero
   const mainPost = posts.find(p => p.is_featured);
 
@@ -313,27 +313,6 @@ export default function HomeFeed({ posts, isLoggedIn, youtubeSection, showHero =
           ))
         )}
       </div>
-
-      {/* El paso al archivo. Era un boton gris centrado que decia «Ver todas
-          las entradas»: cerraba el feed en vez de invitar a seguir. Ahora dice
-          cuantas entradas hay esperando, que es el argumento de verdad. */}
-      {regularPosts.length > 0 && (
-        <Link href="/articulos" className="feed-seeall">
-          <span className="feed-seeall-texto">
-            <span className="feed-seeall-titulo">
-              {totalPosts && totalPosts > 3
-                ? `Hay ${totalPosts - 3} artículos más`
-                : "Sigue leyendo"}
-            </span>
-            <span className="feed-seeall-sub">
-              Actualizaciones de red, movimientos de mercado y fiscalidad cripto en España
-            </span>
-          </span>
-          <span className="feed-seeall-flecha" aria-hidden="true">
-            <ArrowRight size={18} strokeWidth={2.5} />
-          </span>
-        </Link>
-      )}
 
       {/* Último contenido en YouTube — se resuelve en un Suspense aparte */}
       {youtubeSection}

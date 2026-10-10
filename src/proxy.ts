@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { esPrefetchDe, ipDe, registrar, tramoDe } from "@/lib/rate-limit";
+import { PAGINA_RETIRADA, RETIRADAS } from "@/lib/retiradas";
 
 // Routes that require an authenticated session.
 // `/aula`: el aula de los cursos. La ficha pública de cada curso vive en
@@ -53,6 +54,15 @@ export async function proxy(request: NextRequest) {
         { status: 429, headers: cabeceras }
       );
     }
+  }
+
+  // URLs retiradas para siempre (src/lib/retiradas.ts): 410 Gone para que
+  // Google las quite del índice. Antes de la sesión: no hace falta para nada.
+  if (RETIRADAS.has(pathname)) {
+    return new NextResponse(PAGINA_RETIRADA, {
+      status: 410,
+      headers: { "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex" },
+    });
   }
 
   let supabaseResponse = NextResponse.next({ request });

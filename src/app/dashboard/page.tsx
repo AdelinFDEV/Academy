@@ -302,11 +302,11 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Últimos artículos publicados ── */}
+      {/* ── Últimas entradas publicadas: solo si hay alguna ── */}
+      {allPosts.length > 0 && (
       <div className="dash-section">
         <div className="dash-section-head">
-          <h2 className="dash-section-title">Últimos artículos publicados</h2>
-          <Link href="/articulos" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
+          <h2 className="dash-section-title">Últimas entradas publicadas</h2>
         </div>
         <div className="dash-continue-list">
           {allPosts.slice(0, 3).map((post) => (
@@ -328,13 +328,13 @@ export default async function DashboardPage() {
           ))}
         </div>
       </div>
+      )}
 
       {/* ── Continúa leyendo ── */}
       {continueReading.length > 0 && (
         <div className="dash-section">
           <div className="dash-section-head">
             <h2 className="dash-section-title">Continúa leyendo</h2>
-            <Link href="/articulos" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
           </div>
           <div className="dash-continue-list">
             {continueReading.map((post) => (

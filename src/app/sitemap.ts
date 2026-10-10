@@ -34,7 +34,6 @@ export const revalidate = 3600;
  */
 const STATIC_ROUTES: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
   { path: "", priority: 1.0, changeFrequency: "daily" },
-  { path: "/articulos", priority: 0.9, changeFrequency: "daily" },
   { path: "/guias", priority: 0.9, changeFrequency: "weekly" },
   { path: "/glosario", priority: 0.8, changeFrequency: "monthly" },
   // Punto 13: el tercer pilar por fin tiene URL indexable. La landing es

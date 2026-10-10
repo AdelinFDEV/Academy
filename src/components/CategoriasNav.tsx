@@ -58,7 +58,7 @@ export default async function CategoriasNav({
    *  separación y pegada al encabezado. `pie` es la del final. */
   variant?: "pie" | "cabecera";
 }) {
-  const { conEntradas, conteo, total } = await leerTematicas();
+  const { conEntradas, conteo } = await leerTematicas();
 
   if (conEntradas.length === 0) return null;
 
@@ -69,10 +69,6 @@ export default async function CategoriasNav({
     <nav className={`cat-nav cat-nav--${variant}`} aria-label={titulo}>
       <span className="cat-nav-titulo">{titulo}</span>
       <div className="cat-nav-lista">
-        <Link href="/articulos" className="cat-nav-chip">
-          Todas
-          <span className="cat-nav-cifra">{total}</span>
-        </Link>
         {conEntradas.map((cat) => {
           const esActiva = cat.slug === activa;
           return (

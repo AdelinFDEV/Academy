@@ -345,7 +345,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           }),
           breadcrumbSchema([
             { name: "Inicio", path: "/" },
-            { name: "Artículos", path: "/articulos" },
             ...((post.categories as PostCategoryRef | null)?.name
               ? [{
                   name: (post.categories as PostCategoryRef).name,
@@ -362,8 +361,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {/* Breadcrumb */}
         <nav className="post-breadcrumb" aria-label="Breadcrumb">
           <Link href="/">Inicio</Link>
-          <span className="post-breadcrumb-sep">›</span>
-          <Link href="/articulos">Artículos</Link>
           {(post.categories as PostCategoryRef | null)?.name && (
             <>
               <span className="post-breadcrumb-sep">›</span>
@@ -584,8 +581,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
         {/* Botones volver */}
         <div className="post-back-row">
-          <Link href="/articulos" className="post-back-btn">
-            ← Ver todos los artículos
+          <Link href="/guias" className="post-back-btn">
+            ← Ver las guías
           </Link>
           {user && (
             <Link href="/dashboard" className="post-back-btn">

@@ -37,7 +37,6 @@ export default function Footer() {
         <div className="footer-links-group">
           <span className="footer-links-title">Academia</span>
           <Link href="/dashboard">Mi dashboard</Link>
-          <Link href="/articulos">Artículos</Link>
           <Link href="/premium" className="footer-premium-link">
             <Crown size={14} strokeWidth={2.4} aria-hidden="true" />
             Hazte Premium

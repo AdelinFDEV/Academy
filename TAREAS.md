@@ -23,6 +23,17 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00. La web pasa a ser solo guías y actualizaciones — paso a paso (empezado el 10-10-2026)
+
+Decidido por el admin el 10-10-2026: **no más noticias ni entradas genéricas**. La academia serán **guías ultra detalladas de criptomonedas**, y las entradas pasan a ser solo **actualizaciones de las 12 que se siguen**: Solana, XRP, Ethereum, Cardano, Chainlink, Hyperliquid, Ondo, Hedera, Stellar, Bittensor, Render y Worldcoin (la lista viva está en la skill `actualizaciones` del proyecto del canal, `Primario/seguimiento/proyectos.md`). Las únicas categorías serán esas 12. Se va paso a paso: es un cambio grande.
+
+- [ ] **Paso 1 — borrar las 12 entradas, limpio.** El código ya está: `/articulos` redirige a `/guias`; 4 entradas redirigen a su guía (`next.config.ts`) y las otras 8 y las 5 categorías viejas responden **410** (`src/lib/retiradas.ts`, desde `src/proxy.ts`); ningún enlace interno apunta a ellas; una categoría sin entradas da 404. Falta: desplegar, **después** ejecutar el SQL de borrado (posts y categorías `bitcoin`, `regulacion`, `altcoins`, `bnb`, `fiscalidad`), borrar las 12 portadas del bucket `media` desde el panel de Supabase, comprobar en producción que cada URL responde 308 o 410, y reenviar el sitemap en Search Console. Copia de todo en `backups/` (local, fuera de git).
+- [ ] **Paso 2 — las 12 categorías:** crearlas en `categories` (ya existen `solana`, `xrp`, `ethereum`, `ondo-finance`; decidir si `ondo-finance` pasa a `ondo` **antes** de publicar nada en ella, porque cambiar el slug después es otra URL).
+- [ ] **Paso 3 — reescribir `/admin/posts-instrucciones`** para el nuevo tipo de entrada «actualización»: siempre de una de las 12, enlazada a su guía.
+- [ ] **Paso 4 — plantilla común de guía de criptomoneda**, para que cada guía nueva sea contenido y no código, con «última revisión» que actualicen las entradas.
+- [ ] **Paso 5 — la portada:** hoy está pensada para un feed de entradas.
+- [ ] Limpieza menor: los estilos `.articulos-*` de `src/app/globals.css` ya no los usa nada (están mezclados con los de `.cat-nav-*`, que sí se usan).
+
 ### 0. Objetivos y diario: fases 2 y 3
 
 Hecho entre el 04 y el 05-10-2026, en `/admin/objetivos`: objetivos (repetibles, con historial, +1 y métricas automáticas) con el gran objetivo de 1.000 €/mes arriba; calendario de mes y de semana con panel del día y cierre del día; ideas por canal con tick; diario con intenciones, lo que afecta y motiva, y análisis por periodos largos; y Crecimiento con la actividad del mes. El admin eligió canales **YouTube, Web y Telegram** y **usar el bot**. Falta:

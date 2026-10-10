@@ -72,6 +72,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     .order("created_at", { ascending: false });
 
   const list = posts ?? [];
+  // Una categoría sin entradas es una página vacía: para Google, contenido
+  // pobre. Hasta que tenga la primera, no existe (404) y no sale en el sitemap.
+  if (list.length === 0) notFound();
 
   const commentCountMap: Record<string, number> = {};
   if (list.length > 0) {

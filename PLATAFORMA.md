@@ -36,7 +36,7 @@ Contenido de pago perfectamente protegido y perfectamente invisible.
 const lector = createAdminClientOpcional() ?? supabase;
 ```
 
-Está en `/post/[slug]` (metadata y página), `/articulos`, la portada, `/categoria/[slug]`, `sitemap.ts` y `rss.xml`.
+Está en `/post/[slug]` (metadata y página), la portada, `/categoria/[slug]`, `sitemap.ts` y `rss.xml`.
 
 Tres reglas al tocar esto:
 
@@ -57,7 +57,7 @@ Añadida el 07-09-2026. Una entrada con `published = false` daba **404 para todo
 
 El rol se lee de la **base de datos** a partir de la sesión, nunca de la petición. La lógica y su porqué viven en `src/lib/borradores.ts`.
 
-**Un borrador sigue sin aparecer en ningún sitio**: el sitemap, el RSS, `/articulos`, la portada y las categorías mantienen su filtro y no se tocaron. Se ve escribiendo su URL, y solo siendo admin. Además la página sale con `noindex, nofollow` y **sin canónica** — una canónica en un borrador le diría a Google que esa URL es la buena versión de algo que todavía no existe.
+**Un borrador sigue sin aparecer en ningún sitio**: el sitemap, el RSS, la portada y las categorías mantienen su filtro y no se tocaron. Se ve escribiendo su URL, y solo siendo admin. Además la página sale con `noindex, nofollow` y **sin canónica** — una canónica en un borrador le diría a Google que esa URL es la buena versión de algo que todavía no existe.
 
 **Cómo comprobar que sigue bien**, sin sesión y con un borrador cualquiera:
 

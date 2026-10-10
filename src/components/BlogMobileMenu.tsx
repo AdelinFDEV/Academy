@@ -7,7 +7,7 @@ import LogoutButton from "./LogoutButton";
 import { createClient } from "@/lib/supabase/client";
 import { destinoPorRuta } from "@/lib/herramientas";
 import {
-  FileText, Folder, BookOpen, GraduationCap, LayoutGrid, Radio,
+  Folder, BookOpen, GraduationCap, LayoutGrid, Radio,
   TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar, BookOpenCheck,
 } from "lucide-react";
 
@@ -29,13 +29,22 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
   const pathname = usePathname();
   const a = (href: string) => pathname === href || pathname.startsWith(href + "/") ? " active" : "";
 
+  // Solo las categorías con alguna entrada publicada: una vacía responde 404
+  // (src/app/categoria/[slug]/page.tsx) y no se enlaza.
   useEffect(() => {
     const supabase = createClient();
     supabase
-      .from("categories")
-      .select("name, slug")
-      .order("name")
-      .then(({ data }) => { if (data) setCategories(data); });
+      .from("posts")
+      .select("categories(name, slug)")
+      .eq("published", true)
+      .then(({ data }) => {
+        const vistas = new Map<string, Category>();
+        for (const fila of (data ?? []) as { categories: Category | Category[] | null }[]) {
+          const cat = Array.isArray(fila.categories) ? fila.categories[0] : fila.categories;
+          if (cat) vistas.set(cat.slug, cat);
+        }
+        setCategories([...vistas.values()].sort((x, y) => x.name.localeCompare(y.name, "es")));
+      });
   }, []);
 
   useEffect(() => {
@@ -80,12 +89,9 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
       {open && (
         <div className="blog-mobile-menu">
           <nav className="blog-mobile-menu-nav">
+            {categories.length > 0 && (
             <div className="blog-mobile-section">
-              <span className="blog-mobile-section-label">Artículos</span>
-              <Link href="/articulos" className={`blog-mobile-tool-link${a("/articulos")}`} onClick={close}>
-                <FileText size={15} aria-hidden="true" />
-                Todos los artículos
-              </Link>
+              <span className="blog-mobile-section-label">Criptomonedas</span>
               {categories.map((cat) => (
                 <Link key={cat.slug} href={`/categoria/${cat.slug}`} className={`blog-mobile-tool-link${a("/categoria/" + cat.slug)}`} onClick={close}>
                   <Folder size={15} aria-hidden="true" />
@@ -93,6 +99,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 </Link>
               ))}
             </div>
+            )}
 
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Educación</span>

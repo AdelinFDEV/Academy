@@ -291,7 +291,6 @@ export default async function HomePage() {
           posts={enrichedPosts}
           isLoggedIn={!!user}
           showHero={false}
-          totalPosts={allPosts.length}
           youtubeSection={
             <Suspense key="yt-latest" fallback={null}>
               <YouTubeLatestSection />

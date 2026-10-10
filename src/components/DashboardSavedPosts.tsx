@@ -44,7 +44,7 @@ export default function DashboardSavedPosts({
       <div className="dash-empty">
         <div className="dash-empty-icon"><Icon name="bookmark" size={22} /></div>
         <p>No tienes artículos guardados aún.</p>
-        <Link href="/articulos" className="dash-link-orange">Explorar artículos →</Link>
+        <Link href="/guias" className="dash-link-orange">Explorar las guías →</Link>
       </div>
     );
   }

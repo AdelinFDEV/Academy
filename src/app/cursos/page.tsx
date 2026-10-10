@@ -108,8 +108,7 @@ export default async function CursosPage() {
           </h1>
 
           <p className="det-lead">
-            Las <Link href="/articulos">entradas</Link> explican una noticia y las{" "}
-            <Link href="/guias">guías</Link> un tema. Un curso te lleva de principio a fin
+            Las <Link href="/guias">guías</Link> explican un tema a fondo. Un curso te lleva de principio a fin
             por una materia entera, módulo a módulo, con un examen que comprueba que lo
             has entendido antes de seguir.
           </p>
