@@ -1,17 +1,20 @@
 "use client";
 
-import { FUENTES, type Fuente } from "@/lib/objetivos";
+import { FUENTES, type Fuente, formatoES } from "@/lib/objetivos";
 import type { DineroMes } from "@/lib/objetivosServidor";
-import { GraficaBarras } from "./Graficas";
 import { nombreMes } from "../editor";
 
 /**
- * «Tu dinero»: todo lo apuntado en el cierre del día, por meses. El primer
- * bloque de Crecimiento porque el dinero es la base de todo lo demás.
+ * «Tu dinero»: todo lo ingresado, por meses (cierre del día, Stripe, lo
+ * apuntado a mano y los fijos). El primer bloque de la pestaña Dinero.
+ *
+ * Sin gráfica de ingresos por mes: la de «Ganancias y gastos», justo debajo,
+ * ya los enseña junto a los gastos, y tener dos con los mismos datos solo
+ * hacía la pestaña más larga.
  */
 
 function euros(n: number): string {
-  return n.toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
+  return formatoES(n, { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 }
 
 const MEDALLAS = ["🥇", "🥈", "🥉"];
@@ -29,8 +32,8 @@ export default function TuDinero({ meses, hoy }: { meses: DineroMes[]; hoy: stri
           <span className="obj-vacio-emoji" aria-hidden="true">💶</span>
           <strong>Empieza a apuntar lo que ganas</strong>
           <p>
-            En el Calendario, pulsa el número de un día y ciérralo: productividad y dinero por fuente. Aquí verás tu
-            mes récord, tu media y de dónde viene cada euro.
+            En el Calendario, pulsa el número de un día y ciérralo: productividad y dinero por fuente. Premium llega
+            solo desde Stripe. Aquí verás tu mes récord, tu media y de dónde viene cada euro.
           </p>
         </div>
       </section>
@@ -48,14 +51,6 @@ export default function TuDinero({ meses, hoy }: { meses: DineroMes[]; hoy: stri
     .map((f) => ({ f, total: meses.reduce((s, x) => s + (x.porFuente[f] ?? 0), 0) }))
     .filter((x) => x.total > 0)
     .sort((x, y) => y.total - x.total);
-
-  // Los últimos 12 meses, con huecos a cero para que la gráfica no salte meses.
-  const ultimos: { etiqueta: string; valor: number; mes: string }[] = [];
-  for (let i = 11; i >= 0; i--) {
-    const mes = new Date(Date.UTC(a, m - 1 - i, 1)).toISOString().slice(0, 7);
-    ultimos.push({ mes, etiqueta: nombreMes(mes, true), valor: meses.find((x) => x.mes === mes)?.total ?? 0 });
-  }
-  const indiceRecord = ultimos.findIndex((x) => x.mes === record.mes);
 
   return (
     <section className="crec-bloque crec-bloque--dinero">
@@ -94,11 +89,6 @@ export default function TuDinero({ meses, hoy }: { meses: DineroMes[]; hoy: stri
           <span className="cp-card-foot">desde {nombreMes(meses[0].mes)}</span>
         </div>
       </div>
-
-      <figure className="obj-grafica">
-        <figcaption className="obj-grafica-titulo">Lo que has ganado cada mes · el récord, en dorado</figcaption>
-        <GraficaBarras puntos={ultimos} euros tono="dinero" destacar={indiceRecord} vacio="Aún no hay meses con dinero apuntado." />
-      </figure>
 
       <div className="obj-graficas-fila">
         <figure className="obj-grafica">

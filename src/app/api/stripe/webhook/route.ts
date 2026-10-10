@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { getStripe, statusGrantsPremium } from "@/lib/stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revokeChannelAccess } from "@/lib/telegram";
+import { sincronizarCobrosStripe } from "@/lib/cobrosStripe";
 
 // El webhook necesita el cuerpo SIN procesar para validar la firma y debe
 // ejecutarse siempre en el runtime de Node y en cada petición.
@@ -259,6 +260,13 @@ export async function POST(request: NextRequest) {
       default:
         // Otros eventos no nos interesan.
         break;
+    }
+
+    // Un alta o una renovación traen un cobro: se copia al libro de dinero de
+    // /admin/objetivos en el momento, sin esperar al cron. Solo los últimos
+    // días, y sin que un fallo aquí afecte a la suscripción ya guardada.
+    if (event.type === "checkout.session.completed" || event.type === "customer.subscription.updated") {
+      await sincronizarCobrosStripe(admin, 3);
     }
   } catch (err) {
     console.error("[stripe-webhook] Error procesando", event.type, err);

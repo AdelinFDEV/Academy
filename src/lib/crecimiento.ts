@@ -1,14 +1,14 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
-import { getChannelId, getChannelMemberCount, getFreeChannelId } from "@/lib/telegram";
+import { getChannelAdminCount, getChannelId, getChannelMemberCount, getFreeChannelId } from "@/lib/telegram";
 import { getSubscriberCount } from "@/lib/youtube";
 import { hoyISO, medianocheRumania, sumarDiasISO } from "@/lib/objetivos";
-import { contarCuotas, type Perfil } from "@/lib/objetivosServidor";
+import type { Perfil } from "@/lib/objetivosServidor";
 import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
 
 /**
- * Pestaña Crecimiento de /admin/objetivos: Telegram, YouTube y dinero de
- * Premium, con su evolución. Solo servidor.
+ * Datos de dos pestañas de /admin/objetivos: Crecimiento (Telegram y YouTube,
+ * con su evolución) y la parte de Premium de Dinero. Solo servidor.
  */
 
 type Admin = ReturnType<typeof createAdminClient>;
@@ -44,12 +44,27 @@ function serie(fotos: Punto[], desde: string | null, hoy: string, enVivo: number
   return { ahora: ultima?.valor ?? null, fuente: ultima ? "última foto" : null, puntos };
 }
 
-async function fotosTelegram(admin: Admin, chatId: string | null): Promise<Punto[]> {
-  if (!chatId) return [];
-  const data = await todasLasFilas((a, b) =>
-    admin.from("telegram_channel_stats").select("fecha, miembros").eq("chat_id", chatId).order("fecha").range(a, b)
-  );
-  return data.map((f) => ({ fecha: String(f.fecha), valor: Number(f.miembros) }));
+/**
+ * Las fotos diarias y la cifra en vivo de un canal, SIN sus administradores:
+ * Telegram cuenta al dueño y al bot como miembros, y en el canal Premium eso
+ * hacía que saliera 2 sin un solo suscriptor. Se resta el número de
+ * administradores de hoy a todas las fotos, también a las antiguas, que se
+ * guardaron con ellos dentro: así la curva no da un salto falso.
+ */
+async function miembrosTelegram(admin: Admin, chatId: string | null): Promise<{ fotos: Punto[]; enVivo: number | null }> {
+  if (!chatId) return { fotos: [], enVivo: null };
+  const [data, total, admins] = await Promise.all([
+    todasLasFilas((a, b) =>
+      admin.from("telegram_channel_stats").select("fecha, miembros").eq("chat_id", chatId).order("fecha").range(a, b)
+    ),
+    getChannelMemberCount(chatId).catch(() => null),
+    getChannelAdminCount(chatId).catch(() => null),
+  ]);
+  const sinAdmins = (n: number) => Math.max(0, n - (admins ?? 0));
+  return {
+    fotos: data.map((f) => ({ fecha: String(f.fecha), valor: sinAdmins(Number(f.miembros)) })),
+    enVivo: total === null ? null : sinAdmins(total),
+  };
 }
 
 function canalPremium(): string | null {
@@ -83,53 +98,86 @@ export type DatosCrecimiento = {
   telegramPremium: Serie | null;
   youtube: Serie;
   youtubeConClave: boolean;
-  dinero: {
-    precio: number;
-    activos: number;
-    cancelan: number;
-    mrr: number;
-    ingresosRango: number;
-    ingresosTotales: number;
-    porMes: { mes: string; valor: number }[];
-    activosPorDia: Punto[];
-  };
 };
 
+/** La pestaña Crecimiento: cómo crecen los canales (Telegram y YouTube). */
 export async function cargarCrecimiento(admin: Admin, rango: Rango): Promise<DatosCrecimiento> {
-  const ahora = Date.now();
-  const hoy = hoyISO(ahora);
+  const hoy = hoyISO();
   const desde = inicioRango(rango, hoy);
   const premiumId = canalPremium();
 
-  const [free, premium, fotosYoutube, perfilesRes, enVivoFree, enVivoPremium, enVivoYoutube] = await Promise.all([
-    fotosTelegram(admin, getFreeChannelId()),
-    fotosTelegram(admin, premiumId),
+  const [free, premium, fotosYoutube, enVivoYoutube] = await Promise.all([
+    miembrosTelegram(admin, getFreeChannelId()),
+    miembrosTelegram(admin, premiumId),
     todasLasFilas((a, b) =>
       admin.from("metricas_diarias").select("fecha, valor").eq("clave", "suscriptores_youtube").order("fecha").range(a, b)
     ),
+    getSubscriberCount(),
+  ]);
+  const youtube = fotosYoutube.map((f) => ({ fecha: String(f.fecha), valor: Number(f.valor) }));
+
+  return {
+    hoy,
+    desde,
+    telegramFree: serie(free.fotos, desde, hoy, free.enVivo),
+    telegramPremium: premiumId ? serie(premium.fotos, desde, hoy, premium.enVivo) : null,
+    youtube: serie(youtube, desde, hoy, enVivoYoutube),
+    youtubeConClave: !!process.env.YOUTUBE_API_KEY,
+  };
+}
+
+export type DatosPremium = {
+  hoy: string;
+  desde: string | null;
+  precio: number;
+  activos: number;
+  cancelan: number;
+  mrr: number;
+  /** Cobrado de verdad por Stripe (bruto) en el rango, y lo que Stripe se quedó (comisiones y devoluciones). */
+  ingresosRango: number;
+  descuentosRango: number;
+  ingresosTotales: number;
+  porMes: { mes: string; valor: number }[];
+  activosPorDia: Punto[];
+};
+
+/**
+ * La parte de Premium de la pestaña Dinero. Activos y MRR: suscripciones de
+ * hoy × precio (lo que se va a cobrar). Lo ingresado: los cobros reales que
+ * copia Stripe (src/lib/cobrosStripe.ts), con lo que Stripe se queda aparte.
+ */
+export async function cargarPremium(admin: Admin, rango: Rango): Promise<DatosPremium> {
+  const ahora = Date.now();
+  const hoy = hoyISO(ahora);
+  const desde = inicioRango(rango, hoy);
+
+  const [perfilesRes, cobros] = await Promise.all([
     admin
       .from("profiles")
       .select("role, premium_since, subscription_current_period_end, subscription_cancel_at_period_end")
       .neq("role", "admin")
       .not("premium_since", "is", null),
-    getChannelMemberCount(getFreeChannelId() ?? undefined).catch(() => null),
-    premiumId ? getChannelMemberCount(premiumId).catch(() => null) : Promise.resolve(null),
-    getSubscriberCount(),
+    todasLasFilas((a, b) =>
+      admin.from("movimientos").select("id, tipo, fecha, categoria, importe").eq("origen", "stripe").order("fecha").order("id").range(a, b)
+    ),
   ]);
 
-  // ── Dinero: la misma estimación que /admin/premium ──────────────────────
   const perfiles = (perfilesRes.data ?? []) as (Perfil & { subscription_cancel_at_period_end: boolean | null })[];
   const activosHoy = perfiles.filter((f) => f.role === "premium");
   const cancelan = activosHoy.filter((f) => f.subscription_cancel_at_period_end).length;
-  const euros = (cuotas: number) => Math.round(cuotas * PREMIUM_PRICE_EUR * 100) / 100;
+  const redondear = (n: number) => Math.round(n * 100) / 100;
+  const cobrado = cobros.filter((c) => c.tipo === "ingreso" && c.categoria === "premium").map((c) => ({ fecha: String(c.fecha), importe: Number(c.importe) }));
+  const descuentos = cobros.filter((c) => c.tipo === "gasto").map((c) => ({ fecha: String(c.fecha), importe: Number(c.importe) }));
+  const suma = (filas: { fecha: string; importe: number }[], cumple: (fecha: string) => boolean) =>
+    redondear(filas.filter((f) => cumple(f.fecha)).reduce((t, f) => t + f.importe, 0));
+  const enRango = (fecha: string) => !desde || fecha >= desde;
 
   const primeraAlta = perfiles.map((f) => f.premium_since as string).sort()[0] ?? null;
-  const porMes = mesesDelRango(desde, hoy, primeraAlta ? hoyISO(Date.parse(primeraAlta)) : null).map((mes) => {
-    const [a, m] = mes.split("-").map(Number);
-    const siguiente = new Date(Date.UTC(a, m, 1)).toISOString().slice(0, 10);
-    const cuotas = contarCuotas(perfiles, medianocheRumania(`${mes}-01`).getTime(), medianocheRumania(siguiente).getTime(), ahora);
-    return { mes, valor: euros(cuotas) };
-  });
+  const primerCobro = cobrado[0]?.fecha ?? null;
+  const porMes = mesesDelRango(desde, hoy, primerCobro ?? (primeraAlta ? hoyISO(Date.parse(primeraAlta)) : null)).map((mes) => ({
+    mes,
+    valor: suma(cobrado, (f) => f.startsWith(mes)),
+  }));
 
   // Premium activos cada día del rango (o desde la primera alta, si es «todo»).
   const inicioActivos = desde ?? (primeraAlta ? hoyISO(Date.parse(primeraAlta)) : hoy);
@@ -145,24 +193,17 @@ export async function cargarCrecimiento(admin: Admin, rango: Rango): Promise<Dat
     activosPorDia.push({ fecha: d, valor });
   }
 
-  const youtube = fotosYoutube.map((f) => ({ fecha: String(f.fecha), valor: Number(f.valor) }));
-
   return {
     hoy,
     desde,
-    telegramFree: serie(free, desde, hoy, enVivoFree),
-    telegramPremium: premiumId ? serie(premium, desde, hoy, enVivoPremium) : null,
-    youtube: serie(youtube, desde, hoy, enVivoYoutube),
-    youtubeConClave: !!process.env.YOUTUBE_API_KEY,
-    dinero: {
-      precio: PREMIUM_PRICE_EUR,
-      activos: activosHoy.length,
-      cancelan,
-      mrr: euros(activosHoy.length - cancelan),
-      ingresosRango: euros(contarCuotas(perfiles, desde ? medianocheRumania(desde).getTime() : 0, ahora + DIA, ahora)),
-      ingresosTotales: euros(contarCuotas(perfiles, 0, ahora + DIA, ahora)),
-      porMes,
-      activosPorDia,
-    },
+    precio: PREMIUM_PRICE_EUR,
+    activos: activosHoy.length,
+    cancelan,
+    mrr: redondear((activosHoy.length - cancelan) * PREMIUM_PRICE_EUR),
+    ingresosRango: suma(cobrado, enRango),
+    descuentosRango: suma(descuentos, enRango),
+    ingresosTotales: suma(cobrado, () => true),
+    porMes,
+    activosPorDia,
   };
 }

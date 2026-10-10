@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ANIMOS, ANIMO_EMOJI, EMOCIONES, EMOCION_EMOJI, ETIQUETAS, FACTORES_MOTIVOS, FACTORES_NEGATIVOS, HORIZONTES, METRICAS, PRODUCTIVIDAD,
-  type Balance, type Emocion, type Etiqueta, type Horizonte, type Intencion, type Nota, type ObjetivoConProgreso,
+  type Balance, type Emocion, type Etiqueta, type Horizonte, type Intencion, type Nota, type ObjetivoConProgreso, type Productividad,
 } from "@/lib/objetivos";
 import { useCierreDia } from "../CierreDia";
 import {
@@ -12,6 +12,7 @@ import {
   cifra, enviar, fechaCorta, finDeMes, nombreMes, notaVacia, sumarDias, useEditor,
 } from "../editor";
 import { GraficaAnimo, MapaFactores, type FilaMapa, type PuntoAnimo } from "./GraficasSentir";
+import { AnimoYProductividad, EstadoInterior, MedidorFactores } from "./EstadoInterior";
 import "./diario.css";
 
 /**
@@ -30,13 +31,14 @@ type Props = {
   notas: Nota[];
   /** Enlaces firmados (1 h) de las fotos del bucket privado, por ruta. */
   urlsFotos: Record<string, string>;
-  /** El cierre de hoy, si ya se hizo, y lo que Premium habría cobrado hoy. */
+  /** El cierre de hoy, si ya se hizo. */
   balanceHoy?: Balance;
-  premiumHoy: number;
   intenciones: Intencion[];
   /** La tabla de intenciones aún no existe: falta lanzar el SQL. */
   faltaIntenciones: boolean;
   lunes: string;
+  /** La productividad de cada día cerrado, para cruzarla con el ánimo. */
+  productividad: Record<string, Productividad>;
   /** Llegas desde el calendario (?nota=…): se abre «Releer» en esa nota. */
   notaInicial?: string;
 };
@@ -184,7 +186,7 @@ export default function SeccionDiario(props: Props) {
 
 // ── Escribir ─────────────────────────────────────────────────────────────────
 
-function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, premiumHoy, intenciones, faltaIntenciones, lunes, onReleer }: Props & { onReleer: () => void }) {
+function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, intenciones, faltaIntenciones, lunes, onReleer }: Props & { onReleer: () => void }) {
   const router = useRouter();
   const cierre = useCierreDia();
   const [borrador, setBorrador] = useState<Datos>(() => notaVacia(hoy));
@@ -386,7 +388,7 @@ function Escribir({ hoy, objetivos, notas, urlsFotos, balanceHoy, premiumHoy, in
 
         <section className="dia-bloque">
           <h3 className="dia-bloque-titulo">🌙 Hoy</h3>
-          <button type="button" className="dia-cierre" onClick={() => cierre.abrir(hoy, balanceHoy, premiumHoy)}>
+          <button type="button" className="dia-cierre" onClick={() => cierre.abrir(hoy, balanceHoy)}>
             {balanceHoy?.productividad ? (
               <>
                 <span aria-hidden="true">{PRODUCTIVIDAD[balanceHoy.productividad].emoji}</span>
@@ -852,6 +854,9 @@ function analizar(notas: Nota[], hoy: string, rango: Rango) {
   return {
     tramos,
     puntos,
+    enRango,
+    /** Días del periodo hasta hoy (o desde la primera nota, si es más reciente). */
+    diasPeriodo: Math.round((Date.parse(`${hoy}T00:00:00Z`) - Date.parse(`${desde > primera ? desde : primera}T00:00:00Z`)) / 86400000) + 1,
     notas: enRango.length,
     conAnimo: conAnimo.length,
     animo: media(conAnimo.map((n) => n.animo)),
@@ -947,7 +952,7 @@ function pct(v: number): string {
   return `${Math.round(v * 100)} %`;
 }
 
-function Sentir({ hoy, notas }: Props) {
+function Sentir({ hoy, notas, productividad }: Props) {
   const historia = notas.length
     ? Math.round((Date.parse(`${hoy}T00:00:00Z`) - Date.parse(`${notas[notas.length - 1].fecha}T00:00:00Z`)) / 86400000)
     : 0;
@@ -958,6 +963,7 @@ function Sentir({ hoy, notas }: Props) {
   const maxEmocion = Math.max(1, ...a.emociones.map((e) => e.total));
   const delta = a.animo !== null && a.animoPrevio !== null ? a.animo - a.animoPrevio : null;
   const porTramo = rango === "3m" || rango === "6m" ? "semana" : "mes";
+  const diasEscritos = new Set(a.enRango.map((n) => n.fecha)).size;
 
   if (!notas.length) {
     return (
@@ -992,6 +998,8 @@ function Sentir({ hoy, notas }: Props) {
 
   return (
     <div className="dia-sentir-vista">
+      <EstadoInterior notas={notas} hoy={hoy} />
+
       <div className="sen-barra">
         <div className="sen-rangos" role="radiogroup" aria-label="Periodo">
           {(Object.keys(RANGOS) as Rango[]).map((r) => (
@@ -1019,19 +1027,24 @@ function Sentir({ hoy, notas }: Props) {
           <strong className="cp-card-value">{a.notas}</strong>
           <span className="cp-card-foot">{a.conAnimo} con ánimo marcado</span>
         </div>
+        {/* Lo que más te afecta y te motiva ya lo cuentan el estado interior, el medidor y las listas de abajo. */}
         <div className="obj-tile">
-          <span className="obj-tile-emoji" aria-hidden="true">{a.negativos[0]?.emoji ?? "😣"}</span>
-          <span className="cp-card-label">Lo que más te afecta</span>
-          <strong className="cp-card-value obj-valor-texto">{a.negativos[0]?.texto ?? "—"}</strong>
-          <span className="cp-card-foot">{a.negativos[0] ? `${a.negativos[0].veces} nota${a.negativos[0].veces === 1 ? "" : "s"}` : "nada marcado aún"}</span>
+          <span className="obj-tile-emoji" aria-hidden="true">📅</span>
+          <span className="cp-card-label">Días escritos</span>
+          <strong className="cp-card-value">{diasEscritos}</strong>
+          <span className="cp-card-foot">de {a.diasPeriodo} en el periodo</span>
         </div>
         <div className="obj-tile">
-          <span className="obj-tile-emoji" aria-hidden="true">{a.motivos[0]?.emoji ?? "🚀"}</span>
-          <span className="cp-card-label">Lo que más te motiva</span>
-          <strong className="cp-card-value obj-valor-texto">{a.motivos[0]?.texto ?? "—"}</strong>
-          <span className="cp-card-foot">{a.motivos[0] ? `${a.motivos[0].veces} nota${a.motivos[0].veces === 1 ? "" : "s"}` : "nada marcado aún"}</span>
+          <span className="obj-tile-emoji" aria-hidden="true">{a.emociones[0] ? EMOCION_EMOJI[a.emociones[0].emocion] : "🫥"}</span>
+          <span className="cp-card-label">Emoción más repetida</span>
+          <strong className="cp-card-value obj-valor-texto">{a.emociones[0] ? EMOCIONES[a.emociones[0].emocion] : "—"}</strong>
+          <span className="cp-card-foot">{a.emociones[0] ? `${a.emociones[0].total} nota${a.emociones[0].total === 1 ? "" : "s"}` : "elige una en los detalles al escribir"}</span>
         </div>
       </div>
+
+      <MedidorFactores notas={a.enRango} periodo={RANGOS[rango].toLowerCase()} />
+
+      <AnimoYProductividad notas={a.enRango} productividad={productividad} periodo={RANGOS[rango].toLowerCase()} />
 
       <figure className="obj-grafica">
         <figcaption className="obj-grafica-titulo">📈 Cómo ha evolucionado tu ánimo · media por {porTramo}</figcaption>

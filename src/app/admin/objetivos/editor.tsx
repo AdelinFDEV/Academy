@@ -26,6 +26,7 @@ import {
   type ObjetivoConProgreso,
   type Pieza,
   type Ritmo,
+  formatoES,
 } from "@/lib/objetivos";
 
 /**
@@ -81,8 +82,9 @@ export function fechaCorta(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("es-ES", { day: "numeric", month: "short", timeZone: "UTC" });
 }
 
+/** Una cifra en español: «2,8», «1.250». Como mucho un decimal. */
 export function cifra(n: number): string {
-  return Number.isInteger(n) ? String(n) : n.toFixed(1);
+  return formatoES(n, { maximumFractionDigits: 1 });
 }
 
 // ── Fichas en blanco y helpers de piezas ─────────────────────────────────────

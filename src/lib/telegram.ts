@@ -591,6 +591,24 @@ export async function getChannelMemberCount(chatId?: string | number): Promise<n
 }
 
 /**
+ * Cuántos administradores tiene el canal: el dueño y el bot (en un canal, un
+ * bot solo puede estar como administrador), y los que se añadan. Ninguno es
+ * audiencia, y `getChannelMemberCount` los cuenta: quien quiera la gente real
+ * se los resta. Si falla, null — mejor restar nada que restar mal.
+ */
+export async function getChannelAdminCount(chatId?: string | number): Promise<number | null> {
+  try {
+    const admins = await callTelegramApi<unknown[]>("getChatAdministrators", {
+      chat_id: chatId ?? getChannelId(),
+    });
+    return admins.length;
+  } catch (err) {
+    console.warn("[telegram] No se pudo contar los administradores:", (err as Error).message);
+    return null;
+  }
+}
+
+/**
  * Publica en el canal privado. Si hay imagen va como foto con pie de texto,
  * que es lo que hace que el aviso se vea en el feed en lugar de pasar
  * desapercibido entre mensajes.

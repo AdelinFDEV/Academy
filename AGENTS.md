@@ -100,6 +100,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | Regla | Detalle |
 |---|---|
 | **Al cerrar una tarea, bórrala de `TAREAS.md` en el MISMO commit.** No se marca la casilla: se borra, porque el historial ya lo guarda `git log -- TAREAS.md` y una tarea cerrada compite por la atención con las abiertas. Dejarlo «para luego» es no hacerlo | [`TAREAS.md`](./TAREAS.md) |
+| **El SQL para Supabase se da COMPLETO, en un solo bloque en el chat**, listo para copiar y ejecutar entero. Nunca «ejecuta los bloques X e Y de tal archivo»: el admin copia y ejecuta siempre todo lo que se le da. Por eso ese SQL tiene que poder lanzarse entero y más de una vez sin romper nada (`if not exists`, `drop … if exists` antes de `add`, `on conflict do nothing`). Al script del repo se añade igual, como historial | — |
 | **`TAREAS.md` es el estado real del proyecto, no un archivo de solo lectura.** Si está desactualizado manda a trabajar en cosas ya hechas — pasó el 07-09-2026 con la ficha de `exchange`, ya escrita y aún listada como «Primero» | [`TAREAS.md`](./TAREAS.md) |
 
 ---

@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { cargarObjetivos } from "@/lib/objetivosServidor";
+import { cargarDineroPorMes, cargarObjetivos } from "@/lib/objetivosServidor";
 import { hoyISO } from "@/lib/objetivos";
 import SeccionObjetivos from "./SeccionObjetivos";
 import MetaIngresos from "./MetaIngresos";
@@ -12,19 +12,17 @@ export const dynamic = "force-dynamic";
  * tienen ninguna policy (scripts/create-objetivos.sql), y quien llega aquí ya
  * pasó por el layout de /admin, que exige rol admin.
  *
- * Arriba, la meta de ingresos recurrentes (MRR), que antes abría /admin.
+ * Arriba, la meta de 1.000 € al mes, con todo lo ingresado según el libro de
+ * dinero (no solo Premium).
  */
 export default async function ObjetivosPage() {
   const admin = createAdminClient();
-  const [{ objetivos, faltaSql }, registrados, premium] = await Promise.all([
-    cargarObjetivos(admin),
-    admin.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin"),
-    admin.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
-  ]);
+  const hoy = hoyISO();
+  const [{ objetivos, faltaSql }, dineroMeses] = await Promise.all([cargarObjetivos(admin), cargarDineroPorMes(admin)]);
   return (
     <>
-      <MetaIngresos registrados={registrados.count ?? 0} premium={premium.count ?? 0} />
-      {faltaSql ? <FaltaSql /> : <SeccionObjetivos hoy={hoyISO()} objetivos={objetivos} />}
+      <MetaIngresos meses={dineroMeses} hoy={hoy} />
+      {faltaSql ? <FaltaSql /> : <SeccionObjetivos hoy={hoy} objetivos={objetivos} />}
     </>
   );
 }

@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CATEGORIAS_GASTO, FUENTES, importeEnMes, type CategoriaGasto, type Fuente, type Movimiento } from "@/lib/objetivos";
+import { CATEGORIAS_GASTO, FUENTES, GASTOS_DE_STRIPE, importeEnMes, type CategoriaGasto, type Fuente, type Movimiento, formatoES } from "@/lib/objetivos";
 import type { DineroMes } from "@/lib/objetivosServidor";
 import { Interruptor, Opciones, enviar, fechaCorta, nombreMes } from "../editor";
-import { GraficaBeneficio, GraficaIngresosGastos } from "./Graficas";
+import { GraficaBeneficio, GraficaIngresosGastos } from "../crecimiento/Graficas";
 
 /**
  * «Ganancias y gastos», sobre un solo libro de movimientos.
@@ -18,7 +18,7 @@ import { GraficaBeneficio, GraficaIngresosGastos } from "./Graficas";
  */
 
 function euros(n: number, decimales = 0): string {
-  return n.toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: decimales, minimumFractionDigits: decimales });
+  return formatoES(n, { style: "currency", currency: "EUR", maximumFractionDigits: decimales, minimumFractionDigits: decimales });
 }
 
 function mesDe(mesActual: string, salto: number): string {
@@ -166,7 +166,7 @@ export default function Finanzas({ hoy, dineroMeses, movimientos, falta }: Props
                   <button type="button" onClick={() => setPagina(paginaVista + 1)} disabled={paginaVista === paginas} aria-label="Página siguiente">›</button>
                 </nav>
               )}
-              <p className="fin-nota">Los ingresos que apuntas al cerrar cada día ya cuentan solos: aquí apunta lo que tenga nombre propio, sin repetirlo en el cierre.</p>
+              <p className="fin-nota">Los ingresos que apuntas al cerrar cada día ya cuentan solos, y Premium llega solo desde Stripe con sus comisiones: aquí apunta lo que tenga nombre propio, sin repetirlo en el cierre.</p>
             </div>
           </div>
         </>
@@ -194,9 +194,10 @@ function NuevoMovimiento({ hoy }: { hoy: string }) {
     router.refresh();
   }
 
+  // Premium, sus comisiones y sus devoluciones llegan solos desde Stripe.
   const opciones = esIngreso
-    ? (Object.keys(FUENTES) as Fuente[]).map((k) => ({ valor: k, emoji: FUENTES[k].emoji, texto: FUENTES[k].texto }))
-    : (Object.keys(CATEGORIAS_GASTO) as CategoriaGasto[]).map((k) => ({ valor: k, emoji: CATEGORIAS_GASTO[k].emoji, texto: CATEGORIAS_GASTO[k].texto }));
+    ? (Object.keys(FUENTES) as Fuente[]).filter((k) => k !== "premium").map((k) => ({ valor: k, emoji: FUENTES[k].emoji, texto: FUENTES[k].texto }))
+    : (Object.keys(CATEGORIAS_GASTO) as CategoriaGasto[]).filter((k) => !GASTOS_DE_STRIPE.includes(k)).map((k) => ({ valor: k, emoji: CATEGORIAS_GASTO[k].emoji, texto: CATEGORIAS_GASTO[k].texto }));
 
   return (
     <form className={`fin-form fin-form--${d.tipo}`} onSubmit={guardar}>
@@ -264,7 +265,8 @@ function FilaMovimiento({ m, hoy }: { m: Movimiento; hoy: string }) {
       <span className="fin-fila-textos">
         <strong>{m.concepto ?? etiqueta.texto}</strong>
         <small>
-          {etiqueta.texto} ·{" "}
+          {/* La categoría solo si no es ya el título («Trabajo · Trabajo»). */}
+          {m.concepto && m.concepto.trim().toLowerCase() !== etiqueta.texto.toLowerCase() && <>{etiqueta.texto} · </>}
           {m.recurrente ? `🔁 cada mes desde ${fechaCorta(m.fecha)}${m.hasta ? ` hasta ${fechaCorta(m.hasta)}` : ""}` : fechaCorta(m.fecha)}
         </small>
       </span>

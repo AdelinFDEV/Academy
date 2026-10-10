@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { formatoES } from "@/lib/objetivos";
 
 /**
  * Las dos gráficas de la pestaña Crecimiento. SVG a mano y sin librería: son
@@ -37,15 +38,37 @@ function marcasY(max: number): number[] {
   return marcas;
 }
 
+/**
+ * Marcas del eje Y para una serie de NIVEL (miembros, suscriptores) que vive
+ * lejos de cero: si siempre empezaran en 0, 18 → 19 miembros o 17.200 → 17.250
+ * suscriptores serían una línea plana. Cuando el mínimo pasa de la mitad del
+ * máximo, el eje arranca en una marca redonda por debajo del mínimo.
+ */
+function marcasNivel(min: number, max: number, enteros: boolean): number[] {
+  if (min <= 0 || min < max / 2) return marcasY(max);
+  // Un margen mínimo (el 5 % del valor, o 4 unidades) para que un miembro de
+  // más no parezca un salto enorme.
+  const rango = Math.max(max - min, max * 0.05, 4);
+  const paso0 = Math.pow(10, Math.floor(Math.log10(rango / 4)));
+  const candidato = [1, 2, 2.5, 5, 10].map((m) => m * paso0).find((x) => rango / x <= 4) ?? paso0 * 10;
+  // Contando personas no hay 18,5 miembros: con datos enteros, marcas enteras.
+  const paso = enteros ? Math.max(1, Math.round(candidato)) : candidato;
+  const bajo = Math.max(0, Math.floor(min / paso) * paso - (min % paso === 0 ? paso : 0));
+  const alto = Math.ceil(max / paso) * paso + (max % paso === 0 ? paso : 0);
+  const marcas: number[] = [];
+  for (let v = bajo; v <= alto + 1e-9; v += paso) marcas.push(Math.round(v * 100) / 100);
+  return marcas;
+}
+
 function formatear(v: number, euros: boolean): string {
-  const n = v.toLocaleString("es-ES", { maximumFractionDigits: euros ? 0 : 1 });
+  const n = formatoES(v, { maximumFractionDigits: euros ? 0 : 1 });
   return euros ? `${n} €` : n;
 }
 
 /** El eje Y, en compacto si no cabe: 12.500 → 12,5 mil. */
 function formatearEje(v: number, euros: boolean, estrecho: boolean): string {
   if (!estrecho || v < 10000) return formatear(v, euros);
-  const n = (v / 1000).toLocaleString("es-ES", { maximumFractionDigits: 1 });
+  const n = formatoES((v / 1000), { maximumFractionDigits: 1 });
   return `${n} mil${euros ? " €" : ""}`;
 }
 
@@ -79,15 +102,17 @@ export function GraficaLinea({ puntos, euros = false, vacio, tono = "telegram" }
 
   const estrecho = ANCHO < 480;
   const IZQ = estrecho ? 46 : 54;
-  const marcas = marcasY(Math.max(...puntos.map((p) => p.valor)));
-  const maxY = marcas[marcas.length - 1] || 1;
+  const valores = puntos.map((p) => p.valor);
+  const marcas = marcasNivel(Math.min(...valores), Math.max(...valores), valores.every(Number.isInteger));
+  const minY = marcas[0];
+  const maxY = marcas[marcas.length - 1] > minY ? marcas[marcas.length - 1] : minY + 1;
   const anchoUtil = ANCHO - IZQ - DCHA;
   const altoUtil = ALTO - ABAJO - ARRIBA;
   const x = (i: number) => IZQ + (i / (puntos.length - 1)) * anchoUtil;
-  const y = (v: number) => ARRIBA + altoUtil - (v / maxY) * altoUtil;
+  const y = (v: number) => ARRIBA + altoUtil - ((v - minY) / (maxY - minY)) * altoUtil;
 
   const linea = puntos.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.valor).toFixed(1)}`).join(" ");
-  const area = `${linea} L${x(puntos.length - 1).toFixed(1)},${y(0)} L${x(0).toFixed(1)},${y(0)} Z`;
+  const area = `${linea} L${x(puntos.length - 1).toFixed(1)},${y(minY)} L${x(0).toFixed(1)},${y(minY)} Z`;
   // En estrecho, solo principio y final: la del medio se pisaría.
   // Sin repetidos: con 2 o 3 puntos, «el del medio» coincide con un extremo.
   const etiquetasX = [...new Set(estrecho ? [0, puntos.length - 1] : [0, Math.floor((puntos.length - 1) / 2), puntos.length - 1])];
@@ -129,7 +154,7 @@ export function GraficaLinea({ puntos, euros = false, vacio, tono = "telegram" }
         <circle cx={x(puntos.length - 1)} cy={y(puntos[puntos.length - 1].valor)} r={4.5} className="crec-punto" />
         {activo !== null && p && (
           <g>
-            <line x1={x(activo)} x2={x(activo)} y1={ARRIBA} y2={y(0)} className="crec-guia" />
+            <line x1={x(activo)} x2={x(activo)} y1={ARRIBA} y2={y(minY)} className="crec-guia" />
             <circle cx={x(activo)} cy={y(p.valor)} r={5} className="crec-punto crec-punto--activo" />
           </g>
         )}

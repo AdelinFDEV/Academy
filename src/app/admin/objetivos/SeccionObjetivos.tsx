@@ -95,10 +95,15 @@ export default function SeccionObjetivos({ hoy, objetivos }: { hoy: string; obje
 }
 
 /** «octubre 2026», «semana del 5 oct» o «5 oct – 31 oct», según cómo se repita. */
+/** El nombre del periodo, con mayúscula inicial («Semana del 12 oct», «Octubre»). */
 function nombrePeriodo(o: ObjetivoConProgreso, p: { desde: string; hasta: string }, corto = false): string {
-  if (o.repeticion === "mensual") return nombreMes(p.desde.slice(0, 7), corto);
-  if (o.repeticion === "semanal") return corto ? fechaCorta(p.desde) : `semana del ${fechaCorta(p.desde)}`;
-  return `${fechaCorta(p.desde)} – ${fechaCorta(p.hasta)}`;
+  const t =
+    o.repeticion === "mensual"
+      ? nombreMes(p.desde.slice(0, 7), corto)
+      : o.repeticion === "semanal"
+        ? corto ? fechaCorta(p.desde) : `semana del ${fechaCorta(p.desde)}`
+        : `${fechaCorta(p.desde)} – ${fechaCorta(p.hasta)}`;
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
 /** Anillo de progreso. El porcentaje va escrito dentro: el color nunca va solo. */
@@ -132,7 +137,7 @@ export function TarjetaObjetivo({ o, hoy, onEditar }: { o: ObjetivoConProgreso; 
   const quedan = diasEntre(hoy, o.periodo.hasta);
   const r = RITMO[o.ritmo];
   const tono = TONO[o.ritmo];
-  const euros = o.metrica === "ingresos";
+  const euros = o.metrica === "ingresos" || o.metrica === "beneficio";
   const valor = (n: number) => (euros ? `${cifra(n)} €` : cifra(n));
   const falta = cumpleMeta(o.meta, base, o.actual) ? 0 : Math.abs(o.meta - o.actual);
 

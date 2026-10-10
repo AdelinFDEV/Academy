@@ -71,6 +71,8 @@ export async function subidasEntre(admin: Admin, desde: Date, hasta: Date): Prom
       thumbnail: `https://i.ytimg.com/vi/${v.ref}/mqdefault.jpg`,
       url: `https://www.youtube.com/watch?v=${v.ref}`,
       segundos: null,
+      vistas: null,
+      likes: null,
     })),
   };
 }

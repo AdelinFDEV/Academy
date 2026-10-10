@@ -2,14 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CANALES, CANAL_EMOJI, type Canal, type Idea } from "@/lib/objetivos";
-import { enviar } from "../editor";
+import Link from "next/link";
+import { CANALES, CANAL_EMOJI, TIPOS, TIPOS_POR_CANAL, TIPO_EMOJI, hoyISO, type Canal, type Idea, type Tipo } from "@/lib/objetivos";
+import { enviar, fechaCorta } from "../editor";
 import "./ideas.css";
 
 /**
  * Ideas: una columna por canal. En cada una, un campo para apuntar y la lista
- * de ideas con un tick para tacharlas cuando ya están hechas. Nada más: sin
- * día, sin estado y sin relación con el calendario.
+ * de ideas con un tick para tacharlas cuando ya están hechas. Sin día ni
+ * estado: eso es del calendario.
+ *
+ * El paso de una a otro es «📅 Planificar»: elige el día y el tipo, crea la
+ * pieza en el calendario (en estado «idea») y tacha la idea. La idea
+ * tachada se queda en «Hechas» por si se quiere recuperar.
  */
 
 const AYUDA: Record<Canal, string> = {
@@ -64,6 +69,7 @@ function Columna({ canal, ideas, buscando }: { canal: Canal; ideas: Idea[]; busc
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
   const [verHechas, setVerHechas] = useState(false);
+  const [planificada, setPlanificada] = useState<string | null>(null);
 
   const pendientes = ideas.filter((i) => !i.hecha);
   const hechas = ideas.filter((i) => i.hecha);
@@ -119,12 +125,18 @@ function Columna({ canal, ideas, buscando }: { canal: Canal; ideas: Idea[]; busc
         )}
       </form>
       {error && <p className="ide-error">⚠️ {error}</p>}
+      {planificada && (
+        <p className="ide-planificada">
+          📅 Planificada para el {fechaCorta(planificada)}.{" "}
+          <Link href={`/admin/objetivos/calendario?vista=semana&semana=${planificada}`}>Verla en el calendario ›</Link>
+        </p>
+      )}
 
       {pendientes.length === 0 && hechas.length === 0 ? (
         <p className="ide-vacio">{buscando ? "Nada coincide aquí." : "Aún no hay ideas."}</p>
       ) : (
         <ul className="ide-lista">
-          {pendientes.map((i) => <FilaIdea key={`${i.id}-${i.texto.length}`} idea={i} />)}
+          {pendientes.map((i) => <FilaIdea key={`${i.id}-${i.texto.length}`} idea={i} onPlanificada={setPlanificada} />)}
         </ul>
       )}
 
@@ -144,13 +156,14 @@ function Columna({ canal, ideas, buscando }: { canal: Canal; ideas: Idea[]; busc
   );
 }
 
-function FilaIdea({ idea }: { idea: Idea }) {
+function FilaIdea({ idea, onPlanificada }: { idea: Idea; onPlanificada?: (fecha: string) => void }) {
   const router = useRouter();
   const [hecha, setHecha] = useState(idea.hecha);
   const [editando, setEditando] = useState(false);
   const [texto, setTexto] = useState(idea.texto);
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState("");
+  const [planificando, setPlanificando] = useState(false);
 
   async function guardar(cambios: { texto?: string; hecha?: boolean }) {
     setOcupado(true);
@@ -235,7 +248,87 @@ function FilaIdea({ idea }: { idea: Idea }) {
       <button type="button" className="ide-fila-texto" onClick={() => setEditando(true)} title="Pulsa para editarla">
         {idea.texto}
       </button>
+      {!hecha && onPlanificada && (
+        <button type="button" className="ide-planificar" onClick={() => setPlanificando((v) => !v)} aria-expanded={planificando} title="Llevarla al calendario">
+          📅<span> Planificar</span>
+        </button>
+      )}
       {error && <span className="ide-error">⚠️ {error}</span>}
+      {planificando && onPlanificada && (
+        <Planificar
+          idea={idea}
+          onCancelar={() => setPlanificando(false)}
+          onHecho={(fecha) => {
+            setPlanificando(false);
+            setHecha(true);
+            onPlanificada(fecha);
+            router.refresh();
+          }}
+        />
+      )}
     </li>
+  );
+}
+
+/**
+ * Convierte una idea en pieza del calendario. El título es la primera línea
+ * (recortada); si la idea es más larga, entera va a las notas de la pieza
+ * para no perder nada.
+ */
+function Planificar({ idea, onCancelar, onHecho }: { idea: Idea; onCancelar: () => void; onHecho: (fecha: string) => void }) {
+  const tipos = TIPOS_POR_CANAL[idea.canal];
+  const [fecha, setFecha] = useState(() => hoyISO());
+  const [tipo, setTipo] = useState<Tipo>(tipos[0]);
+  const [ocupado, setOcupado] = useState(false);
+  const [error, setError] = useState("");
+
+  async function planificar() {
+    if (!fecha || ocupado) return;
+    setOcupado(true);
+    setError("");
+    const primera = idea.texto.trim().split("\n")[0].trim();
+    const titulo = primera.length > 120 ? `${primera.slice(0, 117).trimEnd()}…` : primera;
+    const fallo = await enviar("pieza", null, {
+      titulo,
+      canal: idea.canal,
+      tipo,
+      estado: "idea",
+      fecha,
+      enlace: "",
+      notas: titulo === idea.texto.trim() ? "" : idea.texto.trim(),
+    });
+    if (fallo) {
+      setOcupado(false);
+      return setError(fallo);
+    }
+    // La pieza ya existe: si tachar la idea fallara, lo peor es verla aún en la lista.
+    await enviar("idea", idea.id, { texto: idea.texto, canal: idea.canal, hecha: true });
+    setOcupado(false);
+    onHecho(fecha);
+  }
+
+  return (
+    <div className="ide-plan" role="group" aria-label="Planificar en el calendario">
+      <label className="ide-plan-campo">
+        <span>Día</span>
+        <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} disabled={ocupado} />
+      </label>
+      {tipos.length > 1 && (
+        <div className="ide-plan-tipos" role="radiogroup" aria-label="Tipo de pieza">
+          {tipos.map((t) => (
+            <button key={t} type="button" role="radio" aria-checked={tipo === t} className={tipo === t ? "ide-plan-tipo--activo" : ""} onClick={() => setTipo(t)} disabled={ocupado}>
+              {TIPO_EMOJI[t]} {TIPOS[t]}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="ide-fila-acciones">
+        <button type="button" className="ide-enlace" onClick={onCancelar} disabled={ocupado}>Cancelar</button>
+        <button type="button" className="ide-anadir" onClick={planificar} disabled={ocupado || !fecha}>
+          {ocupado ? "…" : "📅 Al calendario"}
+        </button>
+      </div>
+      {error && <span className="ide-error">⚠️ {error}</span>}
+    </div>
   );
 }

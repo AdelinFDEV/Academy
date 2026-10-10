@@ -128,7 +128,11 @@ alter table public.objetivos
 alter table public.objetivos drop constraint if exists objetivos_metrica_check;
 alter table public.objetivos
   add constraint objetivos_metrica_check check (metrica in (
-    'manual', 'entradas', 'videos', 'registros', 'premium', 'ingresos',
+    -- Lista COMPLETA a propósito, también en los bloques antiguos: al volver a
+    -- ejecutar el script entero, una lista más corta chocaría con los objetivos
+    -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
+    -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
+    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
     'miembros_telegram', 'suscriptores_youtube'
   ));
 
@@ -191,7 +195,11 @@ alter table public.objetivos
 alter table public.objetivos drop constraint if exists objetivos_metrica_check;
 alter table public.objetivos
   add constraint objetivos_metrica_check check (metrica in (
-    'manual', 'marca', 'entradas', 'videos', 'registros', 'premium', 'ingresos',
+    -- Lista COMPLETA a propósito, también en los bloques antiguos: al volver a
+    -- ejecutar el script entero, una lista más corta chocaría con los objetivos
+    -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
+    -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
+    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
     'miembros_telegram', 'suscriptores_youtube'
   ));
 
@@ -391,3 +399,72 @@ on conflict (fecha, categoria) where origen = 'cierre' do nothing;
 insert into public.movimientos (id, tipo, fecha, concepto, categoria, importe, recurrente, hasta, origen, created_at)
 select id, 'gasto', fecha, concepto, categoria, importe, recurrente, hasta, 'manual', created_at from public.gastos
 on conflict (id) do nothing;
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 10-10-2026 · Métrica «Shorts»
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Los objetivos de YouTube se cuentan ya con la API (fecha real de subida):
+-- `videos` son los largos y `shorts` los de 3 minutos o menos, que el bot no
+-- anuncia y antes no contaban en ningún sitio.
+alter table public.objetivos drop constraint if exists objetivos_metrica_check;
+alter table public.objetivos
+  add constraint objetivos_metrica_check check (metrica in (
+    -- Lista COMPLETA a propósito, también en los bloques antiguos: al volver a
+    -- ejecutar el script entero, una lista más corta chocaría con los objetivos
+    -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
+    -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
+    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'miembros_telegram', 'suscriptores_youtube'
+  ));
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 10-10-2026 · Los cobros de Premium salen de Stripe, no se apuntan a mano
+-- ════════════════════════════════════════════════════════════════════════════
+
+-- Antes Premium se apuntaba en el cierre del día y en paralelo se estimaba
+-- (suscriptores × precio): dos cifras que no tenían por qué coincidir. Ahora
+-- src/lib/cobrosStripe.ts copia aquí cada movimiento real del saldo de Stripe:
+--   · cobro       → ingreso, fuente «premium» (importe bruto)
+--   · comisión    → gasto, categoría «comisiones»
+--   · devolución  → gasto, categoría «devoluciones»
+-- `externo` es el id del movimiento en Stripe (con «:comision» para la
+-- comisión): es lo que hace que sincronizar dos veces no duplique nada.
+alter table public.movimientos add column if not exists externo text;
+alter table public.movimientos drop constraint if exists movimientos_externo_key;
+alter table public.movimientos add constraint movimientos_externo_key unique (externo);
+
+-- Las reglas de `origen` se crearon sin nombre: se buscan por su definición.
+do $$
+declare r record;
+begin
+  for r in
+    select conname from pg_constraint
+    where conrelid = 'public.movimientos'::regclass and contype = 'c' and pg_get_constraintdef(oid) ilike '%origen%'
+  loop
+    execute format('alter table public.movimientos drop constraint %I', r.conname);
+  end loop;
+end $$;
+
+alter table public.movimientos
+  add constraint movimientos_origen_check check (origen in ('cierre', 'manual', 'stripe')),
+  -- Solo lo apuntado a mano puede repetirse cada mes; el cierre solo apunta ingresos.
+  add constraint movimientos_origen_reglas check (
+    (origen = 'manual' or not recurrente) and (origen <> 'cierre' or tipo = 'ingreso')
+  ),
+  -- Lo de Stripe siempre lleva su id, y nada más lo lleva.
+  add constraint movimientos_externo_stripe check ((origen = 'stripe') = (externo is not null));
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- 10-10-2026 · Métrica «Beneficio» (ingresos − gastos del libro de dinero)
+-- ════════════════════════════════════════════════════════════════════════════
+alter table public.objetivos drop constraint if exists objetivos_metrica_check;
+alter table public.objetivos
+  add constraint objetivos_metrica_check check (metrica in (
+    -- Lista COMPLETA a propósito, también en los bloques antiguos: al volver a
+    -- ejecutar el script entero, una lista más corta chocaría con los objetivos
+    -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
+    -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
+    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'miembros_telegram', 'suscriptores_youtube'
+  ));

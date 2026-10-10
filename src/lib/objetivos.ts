@@ -18,10 +18,12 @@ export const METRICAS = {
   manual: { texto: "Lo cuento yo", emoji: "✍️", grupo: "yo", tipo: "flujo", ayuda: "Veces que haces algo: grabar, escribir un guion, cerrar una colaboración… Lo sumas tú con el botón +1." },
   marca: { texto: "Una cifra que apunto yo", emoji: "📏", grupo: "yo", tipo: "nivel", ayuda: "Un número que apuntas cada vez: seguidores en X, saldo de la cuenta de trading, visitas del mes… Si la meta es menor que donde empiezas, el objetivo es bajar." },
   entradas: { texto: "Entradas publicadas", emoji: "📝", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las entradas que publicas en la web dentro del periodo." },
-  videos: { texto: "Vídeos de YouTube", emoji: "🎬", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los vídeos largos que el bot anuncia en el canal." },
+  videos: { texto: "Vídeos de YouTube", emoji: "🎬", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los vídeos largos (más de 3 minutos) que subes a YouTube, el día en que los publicas." },
+  shorts: { texto: "Shorts de YouTube", emoji: "⚡", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los Shorts (3 minutos o menos) que subes a YouTube, el día en que los publicas." },
   registros: { texto: "Registros nuevos", emoji: "👤", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las cuentas nuevas en la web, sin administradores." },
   premium: { texto: "Altas Premium", emoji: "👑", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola la gente que se hace Premium dentro del periodo." },
-  ingresos: { texto: "Ingresos Premium", emoji: "💶", grupo: "auto", tipo: "flujo", ayuda: "Euros estimados como en la pestaña Premium: una cuota mensual por suscriptor." },
+  beneficio: { texto: "Beneficio", emoji: "⚖️", grupo: "auto", tipo: "flujo", ayuda: "Todo lo que ingresas menos todo lo que gastas en el periodo, como en la pestaña Dinero. Los fijos de cada mes cuentan en proporción a los días." },
+  ingresos: { texto: "Ingresos Premium", emoji: "💶", grupo: "auto", tipo: "flujo", ayuda: "Lo que Stripe cobra de verdad por Premium dentro del periodo, antes de comisiones." },
   miembros_telegram: { texto: "Miembros en Telegram", emoji: "📣", grupo: "auto", tipo: "nivel", ayuda: "Un total a alcanzar en el canal gratuito. Sale de la foto diaria de las 04:00." },
   suscriptores_youtube: { texto: "Suscriptores de YouTube", emoji: "▶️", grupo: "auto", tipo: "nivel", ayuda: "Un total a alcanzar. Se fotografía cada día a las 04:00 con la clave de YouTube." },
 } as const;
@@ -52,6 +54,13 @@ export const TIPOS = {
 } as const;
 export type Tipo = keyof typeof TIPOS;
 export const TIPO_EMOJI = { video: "🎬", short: "⚡", entrada: "📝", guia: "📚", publicacion: "📣" } as const;
+
+/** Qué tipos de pieza tienen sentido en cada canal; el primero es el habitual. Lo usa «Planificar» en Ideas. */
+export const TIPOS_POR_CANAL: Record<Canal, Tipo[]> = {
+  youtube: ["video", "short"],
+  web: ["entrada", "guia"],
+  telegram: ["publicacion"],
+};
 
 /** En orden: es el camino que recorre una pieza hasta salir. */
 export const ESTADOS = {
@@ -94,7 +103,7 @@ export const FACTORES_NEGATIVOS = {
   mercado_bajista: { texto: "Mercado bajista", emoji: "🐻" },
   criticas: { texto: "Críticas o comentarios", emoji: "💬" },
   tecnico: { texto: "Problemas técnicos", emoji: "🛠️" },
-  incertidumbre: { texto: "Incertidumbre", emoji: "🌫️" },
+  incertidumbre: { texto: "Incertidumbre", emoji: "🌀" },
   apariencia: { texto: "Apariencia personal", emoji: "🪞" },
   familia: { texto: "Familia", emoji: "👨‍👩‍👧" },
   amor: { texto: "Vida amorosa", emoji: "❤️" },
@@ -201,14 +210,21 @@ export const CATEGORIAS_GASTO = {
   colaboradores: { texto: "Colaboradores", emoji: "🤝" },
   impuestos: { texto: "Impuestos y gestoría", emoji: "🧾" },
   otros: { texto: "Otros", emoji: "📦" },
+  comisiones: { texto: "Comisiones de Stripe", emoji: "💳" },
+  devoluciones: { texto: "Devoluciones", emoji: "↩️" },
 } as const;
 export type CategoriaGasto = keyof typeof CATEGORIAS_GASTO;
+
+/** Las que solo escribe la sincronización con Stripe (src/lib/cobrosStripe.ts): no se apuntan a mano. */
+export const GASTOS_DE_STRIPE: readonly CategoriaGasto[] = ["comisiones", "devoluciones"];
 
 /**
  * Un movimiento del libro de dinero (tabla `movimientos`): un ingreso o un
  * gasto. El cierre del día escribe los suyos (origen "cierre": uno por fuente
- * y día) y el formulario de Crecimiento / Gastos, los apuntados a mano
- * (origen "manual", con concepto, puntuales o fijos cada mes).
+ * y día), el formulario de la pestaña Dinero, los apuntados a mano
+ * (origen "manual", con concepto, puntuales o fijos cada mes), y la
+ * sincronización con Stripe, los cobros de Premium con sus comisiones y
+ * devoluciones (origen "stripe", src/lib/cobrosStripe.ts).
  */
 export type Movimiento = {
   id: string;
@@ -221,7 +237,7 @@ export type Movimiento = {
   /** Cuenta cada mes desde `fecha` hasta `hasta` (null = sigue). */
   recurrente: boolean;
   hasta: string | null;
-  origen: "cierre" | "manual";
+  origen: "cierre" | "manual" | "stripe";
 };
 
 /** Lo que suma un movimiento en un mes "AAAA-MM": su importe si cae (o se repite) ese mes, 0 si no. */
@@ -324,6 +340,15 @@ export function medianocheRumania(fecha: string): Date {
     .find((p) => p.type === "timeZoneName")?.value ?? "GMT+2";
   const horas = Number(desfase.replace("GMT", "") || "0");
   return new Date(aprox - horas * 60 * 60 * 1000);
+}
+
+/**
+ * Un número en español, SIEMPRE con punto de miles. El formato español de
+ * serie no separa los de cuatro cifras («1000 €», «1727 visitas») y en un
+ * panel lleno de cifras se lee peor que «1.000 €». Todo el panel pasa por aquí.
+ */
+export function formatoES(n: number, opciones: Intl.NumberFormatOptions = {}): string {
+  return new Intl.NumberFormat("es-ES", { ...opciones, useGrouping: "always" } as Intl.NumberFormatOptions).format(n);
 }
 
 /** "AAAA-MM-DD" de hoy, en la hora de Rumanía. */
@@ -471,15 +496,26 @@ export const PRODUCTIVIDAD = {
 } as const;
 export type Productividad = keyof typeof PRODUCTIVIDAD;
 
-/** De dónde viene el dinero de cada día. */
+/**
+ * De dónde viene el dinero de cada día. Las claves se guardan en la base: no
+ * se renombran.
+ *
+ * `trabajo` es el sueldo del trabajo actual: sale en el calendario, en el
+ * cierre y en la pestaña Dinero como cualquier ingreso, pero NO cuenta para
+ * la meta de 1.000 €/mes (MetaIngresos.tsx), porque esa meta es poder dejarlo.
+ */
 export const FUENTES = {
   premium: { texto: "Premium", emoji: "👑" },
   youtube: { texto: "YouTube", emoji: "▶️" },
   trading: { texto: "Trading", emoji: "📈" },
   asesorias: { texto: "Asesorías", emoji: "🤝" },
+  trabajo: { texto: "Trabajo", emoji: "💼" },
   otros: { texto: "Otros", emoji: "💶" },
 } as const;
 export type Fuente = keyof typeof FUENTES;
+
+/** Lo que no cuenta para la meta de vivir de esto: el sueldo del trabajo actual. */
+export const FUENTES_FUERA_DE_META: readonly Fuente[] = ["trabajo"];
 
 export type Balance = {
   fecha: string;
@@ -489,7 +525,7 @@ export type Balance = {
   ingresos: Partial<Record<Fuente, number>>;
   /** Solo lo del cierre del día: es lo que su formulario enseña y sustituye. */
   ingresosCierre: Partial<Record<Fuente, number>>;
-  /** Lo apuntado a mano ese día en Crecimiento / Gastos, para verlo al cerrar el día. */
+  /** Lo apuntado a mano ese día en la pestaña Dinero, para verlo al cerrar el día. */
   manuales: { concepto: string; fuente: Fuente; importe: number }[];
   total: number;
 };

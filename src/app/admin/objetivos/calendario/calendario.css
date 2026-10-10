@@ -156,6 +156,14 @@
 .cal-pieza--salido .cal-pieza-estado { color: #86efac; font-weight: 800; }
 .cal-pieza--arrastrando { opacity: 0.35; }
 
+/* En el mes no cabe nada: el canal pasa del punto a una franja a la izquierda,
+   y lo publicado ya se ve por el fondo verde, sin la marca. Todo para el título. */
+.cal-pieza:not(.cal-pieza--completa) { box-shadow: inset 3px 0 0 var(--canal); }
+.cal-pieza:not(.cal-pieza--completa) .cal-pieza-punto { display: none; }
+.cal-pieza:not(.cal-pieza--completa) .cal-pieza-abrir { gap: 5px; padding-left: 8px; }
+.cal-pieza--salido:not(.cal-pieza--completa) .cal-pieza-estado { display: none; }
+.cal-pieza.cal-pieza--en-riesgo { box-shadow: inset 3px 0 0 #f59e0b; }
+
 /* Completa (semana y panel): el título entero y el tipo debajo */
 .cal-pieza--completa .cal-pieza-abrir { flex-wrap: wrap; padding: 7px 9px; }
 .cal-pieza--completa .cal-pieza-titulo { flex-basis: calc(100% - 14px); white-space: normal; line-height: 1.35; font-size: 12.5px; }
@@ -587,7 +595,7 @@
 
 .cal-panel-cabeza { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 22px 22px 14px; }
 .cal-panel-ey { font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-hoy); }
-.cal-panel-titulo { margin: 4px 0 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--c-tinta); text-transform: capitalize; }
+.cal-panel-titulo { margin: 4px 0 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; color: var(--c-tinta); }
 
 .cal-panel-cerrar {
   display: grid;
@@ -880,3 +888,5 @@
   .cal-pieza-avanzar { display: block; }
 }
 
+/* Mayúscula solo en la primera letra («Viernes, 9 de octubre»), no en cada palabra. */
+.cal-panel-titulo::first-letter { text-transform: uppercase; }

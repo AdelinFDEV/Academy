@@ -1,19 +1,20 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
 import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
-import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
-import { getFreeChannelId } from "@/lib/telegram";
+import { getChannelAdminCount, getFreeChannelId } from "@/lib/telegram";
 import { getSubscriberCount } from "@/lib/youtube";
+import { esShort, subidasEntre } from "@/lib/actividadMes";
 import {
   FUENTES,
   METRICAS,
   calcularRitmo,
   cumpleMeta,
   hoyISO,
+  importeEnMes,
   instantes,
-  medianocheRumania,
   periodosDe,
   type Balance,
   type Fuente,
+  type Movimiento,
   type Objetivo,
   type ObjetivoConProgreso,
   type Periodo,
@@ -27,20 +28,19 @@ import {
 type Admin = ReturnType<typeof createAdminClient>;
 
 const DIA = 24 * 60 * 60 * 1000;
-/** El mismo mes medio que usa /admin/premium para estimar lo cobrado. */
-const MES_MEDIO = 30.44 * DIA;
 
 type Foto = { fecha: string; valor: number };
+
+export type Perfil = { role: string; premium_since: string | null; subscription_current_period_end: string | null };
 
 /**
  * Lo que se lee una sola vez por petición y comparten todos los objetivos:
  * con seis periodos de historial por objetivo, repetir estas consultas en cada
  * uno sería multiplicar las idas a Supabase sin necesidad.
  */
-export type Perfil = { role: string; premium_since: string | null; subscription_current_period_end: string | null };
-
 class Contexto {
-  private perfiles: Promise<Perfil[]> | null = null;
+  private cobros: Promise<{ fecha: string; importe: number }[]> | null = null;
+  private libro: Promise<Pick<Movimiento, "tipo" | "fecha" | "importe" | "recurrente" | "hasta">[]> | null = null;
   private fotos = new Map<string, Promise<Foto[]>>();
   registros = new Map<string, number>();
   /** Marcas apuntadas por objetivo, de la más antigua a la más reciente. */
@@ -48,16 +48,40 @@ class Contexto {
 
   constructor(readonly admin: Admin, readonly ahora: number) {}
 
-  perfilesDePago(): Promise<Perfil[]> {
-    this.perfiles ??= (async () => {
-      const { data } = await this.admin
-        .from("profiles")
-        .select("role, premium_since, subscription_current_period_end")
-        .neq("role", "admin")
-        .not("premium_since", "is", null);
-      return (data ?? []) as Perfil[];
+  /** Los cobros de Premium que copió Stripe al libro de dinero. */
+  cobrosPremium(): Promise<{ fecha: string; importe: number }[]> {
+    this.cobros ??= (async () => {
+      const data = await todasLasFilas((a, b) =>
+        this.admin
+          .from("movimientos")
+          .select("id, fecha, importe")
+          .eq("origen", "stripe")
+          .eq("tipo", "ingreso")
+          .eq("categoria", "premium")
+          .order("fecha")
+          .order("id")
+          .range(a, b)
+      );
+      return data.map((c) => ({ fecha: String(c.fecha), importe: Number(c.importe) }));
     })();
-    return this.perfiles;
+    return this.cobros;
+  }
+
+  /** Todo el libro de dinero, ingresos y gastos: para el beneficio. */
+  movimientos(): Promise<Pick<Movimiento, "tipo" | "fecha" | "importe" | "recurrente" | "hasta">[]> {
+    this.libro ??= (async () => {
+      const data = await todasLasFilas((a, b) =>
+        this.admin.from("movimientos").select("id, tipo, fecha, importe, recurrente, hasta").order("fecha").order("id").range(a, b)
+      );
+      return data.map((m) => ({
+        tipo: m.tipo as Movimiento["tipo"],
+        fecha: String(m.fecha),
+        importe: Number(m.importe),
+        recurrente: !!m.recurrente,
+        hasta: (m.hasta as string | null) ?? null,
+      }));
+    })();
+    return this.libro;
   }
 
   /** Fotos diarias de una métrica de nivel, de la más antigua a la más reciente. */
@@ -66,15 +90,20 @@ class Contexto {
     if (guardada) return guardada;
     const nueva = (async (): Promise<Foto[]> => {
       if (metrica === "miembros_telegram") {
-        const data = await todasLasFilas((a, b) =>
-          this.admin
-            .from("telegram_channel_stats")
-            .select("fecha, miembros")
-            .eq("chat_id", String(getFreeChannelId() ?? ""))
-            .order("fecha")
-            .range(a, b)
-        );
-        return data.map((f) => ({ fecha: String(f.fecha), valor: Number(f.miembros) }));
+        const canal = getFreeChannelId();
+        const [data, admins] = await Promise.all([
+          todasLasFilas((a, b) =>
+            this.admin
+              .from("telegram_channel_stats")
+              .select("fecha, miembros")
+              .eq("chat_id", String(canal ?? ""))
+              .order("fecha")
+              .range(a, b)
+          ),
+          // Sin el dueño ni el bot, como en la pestaña Crecimiento (src/lib/crecimiento.ts).
+          canal ? getChannelAdminCount(canal) : Promise.resolve(null),
+        ]);
+        return data.map((f) => ({ fecha: String(f.fecha), valor: Math.max(0, Number(f.miembros) - (admins ?? 0)) }));
       }
       const data = await todasLasFilas((a, b) =>
         this.admin.from("metricas_diarias").select("fecha, valor").eq("clave", "suscriptores_youtube").order("fecha").range(a, b)
@@ -91,31 +120,44 @@ async function contar(consulta: PromiseLike<{ count: number | null }>): Promise<
 }
 
 /**
- * Cuotas cobradas entre `desde` y `hasta` (instantes en ms), con la misma
- * estimación que /admin/premium: una cuota al darse de alta y otra cada mes
- * medio, hasta hoy si sigue siendo Premium o hasta el fin de su último periodo
- * pagado si se dio de baja. La usan los objetivos de ingresos y la pestaña
- * Crecimiento: una sola cuenta para que nunca den cifras distintas.
+ * Lo cobrado de verdad por Premium en el periodo: los cobros que copia Stripe
+ * al libro de dinero (src/lib/cobrosStripe.ts), en bruto. Antes era una
+ * estimación (suscriptores × precio), que no tenía por qué coincidir.
  */
-export function contarCuotas(perfiles: Perfil[], desde: number, hasta: number, ahora: number): number {
-  let cuotas = 0;
-  const tope = Math.min(hasta, ahora);
-  for (const f of perfiles) {
-    if (!f.premium_since) continue;
-    const alta = Date.parse(f.premium_since);
-    const limite =
-      f.role === "premium" ? ahora : f.subscription_current_period_end ? Date.parse(f.subscription_current_period_end) : alta + 1;
-    for (let cobro = alta; cobro < limite && cobro < tope; cobro += MES_MEDIO) {
-      if (cobro >= desde) cuotas++;
-    }
-  }
-  return cuotas;
+async function ingresos(ctx: Contexto, p: Periodo): Promise<number> {
+  const total = (await ctx.cobrosPremium())
+    .filter((c) => c.fecha >= p.desde && c.fecha <= p.hasta)
+    .reduce((t, c) => t + c.importe, 0);
+  return Math.round(total * 100) / 100;
 }
 
-async function ingresos(ctx: Contexto, p: Periodo): Promise<number> {
-  const { ini, fin } = instantes(p);
-  const cuotas = contarCuotas(await ctx.perfilesDePago(), Date.parse(ini), Date.parse(fin), ctx.ahora);
-  return Math.round(cuotas * PREMIUM_PRICE_EUR * 100) / 100;
+const DIAS = (desde: string, hasta: string) => Math.round((Date.parse(`${hasta}T00:00:00Z`) - Date.parse(`${desde}T00:00:00Z`)) / DIA) + 1;
+
+/**
+ * Beneficio del periodo: todo lo ingresado menos todo lo gastado, del libro de
+ * dinero (como «Ganancias y gastos»). Lo puntual cuenta el día en que cae; lo
+ * fijo de cada mes, en proporción a los días del mes que caen en el periodo
+ * (un objetivo semanal se lleva una cuarta parte del alquiler, no entero).
+ */
+async function beneficio(ctx: Contexto, p: Periodo): Promise<number> {
+  let total = 0;
+  for (const m of await ctx.movimientos()) {
+    const signo = m.tipo === "ingreso" ? 1 : -1;
+    if (!m.recurrente) {
+      if (m.fecha >= p.desde && m.fecha <= p.hasta) total += signo * m.importe;
+      continue;
+    }
+    for (let mes = p.desde.slice(0, 7); mes <= p.hasta.slice(0, 7); mes = mesSiguiente(mes)) {
+      const importe = importeEnMes(m, mes);
+      if (!importe) continue;
+      const [a, n] = mes.split("-").map(Number);
+      const finMes = new Date(Date.UTC(a, n, 0)).toISOString().slice(0, 10);
+      const desde = p.desde > `${mes}-01` ? p.desde : `${mes}-01`;
+      const hasta = p.hasta < finMes ? p.hasta : finMes;
+      total += signo * importe * (DIAS(desde, hasta) / DIAS(`${mes}-01`, finMes));
+    }
+  }
+  return Math.round(total * 100) / 100;
 }
 
 /**
@@ -155,11 +197,14 @@ async function medir(ctx: Contexto, o: Objetivo, p: Periodo): Promise<{ valor: n
         base: 0,
       };
     case "videos":
-      // Los vídeos que el bot detectó y anunció: solo los largos.
-      return {
-        valor: await contar(a.from("content_announcements").select("id", { count: "exact", head: true }).eq("kind", "video").gte("announced_at", ini).lt("announced_at", fin)),
-        base: 0,
-      };
+    case "shorts": {
+      // Lo subido a YouTube, por su fecha real de publicación: la misma fuente
+      // que el calendario. Antes se contaban los avisos del bot, que van por
+      // el día del aviso, sin Shorts y sin los vídeos que el bot no anunció.
+      // Sin API, la función cae a esos avisos (y ahí no hay Shorts).
+      const { videos } = await subidasEntre(a, new Date(ini), new Date(fin));
+      return { valor: videos.filter((v) => esShort(v) === (o.metrica === "shorts")).length, base: 0 };
+    }
     case "registros":
       return {
         valor: await contar(a.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", ini).lt("created_at", fin)),
@@ -172,6 +217,8 @@ async function medir(ctx: Contexto, o: Objetivo, p: Periodo): Promise<{ valor: n
       };
     case "ingresos":
       return { valor: await ingresos(ctx, p), base: 0 };
+    case "beneficio":
+      return { valor: await beneficio(ctx, p), base: 0 };
     case "miembros_telegram":
     case "suscriptores_youtube":
       return nivel(ctx, o.metrica, p);
@@ -368,31 +415,15 @@ export async function cargarBalances(admin: Admin, desde: string, hasta: string)
   return balances;
 }
 
-/**
- * Lo que Premium habría cobrado cada día entre dos fechas, con la misma
- * estimación de siempre (contarCuotas). Se propone al rellenar el cierre del
- * día, sin apuntarlo solo: el admin decide si lo da por bueno.
- */
-export async function premiumEstimadoPorDia(admin: Admin, desde: string, hasta: string): Promise<Record<string, number>> {
-  const { data } = await admin
-    .from("profiles")
-    .select("role, premium_since, subscription_current_period_end")
-    .neq("role", "admin")
-    .not("premium_since", "is", null);
-  const perfiles = (data ?? []) as Perfil[];
-  const ahora = Date.now();
-  const resultado: Record<string, number> = {};
-  if (!perfiles.length) return resultado;
-  for (let d = desde; d <= hasta; d = new Date(Date.parse(`${d}T00:00:00Z`) + DIA).toISOString().slice(0, 10)) {
-    const ini = medianocheRumania(d).getTime();
-    const fin = ini + DIA;
-    const cuotas = contarCuotas(perfiles, ini, fin, ahora);
-    if (cuotas) resultado[d] = Math.round(cuotas * PREMIUM_PRICE_EUR * 100) / 100;
-  }
-  return resultado;
-}
-
-export type DineroMes = { mes: string; total: number; porFuente: Partial<Record<Fuente, number>>; dias: number };
+/** `fijos`: la parte del total que son ingresos fijos de cada mes (no tienen día), y de qué fuente es. */
+export type DineroMes = {
+  mes: string;
+  total: number;
+  fijos: number;
+  porFuente: Partial<Record<Fuente, number>>;
+  fijosPorFuente: Partial<Record<Fuente, number>>;
+  dias: number;
+};
 
 /**
  * Todo lo ingresado, sumado por mes y por fuente, del mes más antiguo al más
@@ -413,10 +444,14 @@ export async function cargarDineroPorMes(admin: Admin): Promise<DineroMes[]> {
   const mesActual = hoyISO().slice(0, 7);
   const meses = new Map<string, DineroMes & { diasSet: Set<string> }>();
   const sumar = (mes: string, fuente: Fuente, importe: number, dia: string | null) => {
-    const m = meses.get(mes) ?? { mes, total: 0, porFuente: {}, dias: 0, diasSet: new Set<string>() };
+    const m = meses.get(mes) ?? { mes, total: 0, fijos: 0, porFuente: {}, fijosPorFuente: {}, dias: 0, diasSet: new Set<string>() };
     m.total = redondear(m.total + importe);
     m.porFuente[fuente] = redondear((m.porFuente[fuente] ?? 0) + importe);
     if (dia) m.diasSet.add(dia);
+    else {
+      m.fijos = redondear(m.fijos + importe);
+      m.fijosPorFuente[fuente] = redondear((m.fijosPorFuente[fuente] ?? 0) + importe);
+    }
     meses.set(mes, m);
   };
   for (const fila of data) {

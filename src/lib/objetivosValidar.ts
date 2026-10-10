@@ -1,5 +1,5 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
-import { AMBITOS, ANIMOS, CANALES, CATEGORIAS_GASTO, EMOCIONES, FUENTES, ESTADOS, ETIQUETAS, FACTORES_MOTIVOS, FACTORES_NEGATIVOS, HORIZONTES, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
+import { AMBITOS, ANIMOS, CANALES, CATEGORIAS_GASTO, EMOCIONES, GASTOS_DE_STRIPE, FUENTES, ESTADOS, ETIQUETAS, FACTORES_MOTIVOS, FACTORES_NEGATIVOS, HORIZONTES, METRICAS, REPETICIONES, TIPOS, hoyISO, periodosDe, type Objetivo } from "@/lib/objetivos";
 
 /** Nombre de una foto del diario tal como lo pone /api/admin/plan/foto: uuid + extensión. */
 export const NOMBRE_FOTO = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(webp|jpg|png)$/;
@@ -185,7 +185,7 @@ function idea(b: Record<string, unknown>): Resultado {
 }
 
 /**
- * Un movimiento apuntado a mano en Crecimiento / Gastos: un ingreso (con su
+ * Un movimiento apuntado a mano en la pestaña Dinero: un ingreso (con su
  * fuente) o un gasto (con su categoría). El origen no se acepta del cliente:
  * todo lo que entra por aquí es «manual»; lo del cierre lo escribe su API.
  */
@@ -201,6 +201,9 @@ function movimiento(b: Record<string, unknown>): Resultado {
   if (!concepto) return { error: tipo === "ingreso" ? "¿De dónde viene el ingreso?" : "¿En qué se ha gastado?" };
   if (concepto.length > 120) return { error: "El concepto es demasiado largo." };
   if (!(categoria in (tipo === "ingreso" ? FUENTES : CATEGORIAS_GASTO))) return { error: "Categoría desconocida." };
+  // Lo de Premium, sus comisiones y sus devoluciones los apunta Stripe solo.
+  if (tipo === "ingreso" && categoria === "premium") return { error: "Los cobros de Premium llegan solos desde Stripe." };
+  if (tipo === "gasto" && (GASTOS_DE_STRIPE as readonly string[]).includes(categoria)) return { error: "Las comisiones y devoluciones llegan solas desde Stripe." };
   if (!esFecha(fecha)) return { error: "Falta la fecha." };
   if (!Number.isFinite(importe) || importe <= 0 || importe > 1e8) return { error: "El importe tiene que ser un número mayor que cero." };
   if (hasta && !esFecha(hasta)) return { error: "La fecha de fin no es válida." };

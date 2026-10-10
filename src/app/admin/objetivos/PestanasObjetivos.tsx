@@ -8,7 +8,8 @@ const PESTANAS = [
   { href: "/admin/objetivos/calendario", emoji: "🗓️", texto: "Calendario", detalle: "Qué publicas y cuándo" },
   { href: "/admin/objetivos/ideas", emoji: "💡", texto: "Ideas", detalle: "Notas sueltas" },
   { href: "/admin/objetivos/diario", emoji: "📓", texto: "Diario", detalle: "Cómo te sientes" },
-  { href: "/admin/objetivos/crecimiento", emoji: "📈", texto: "Crecimiento / Gastos", detalle: "Canales, ganancias y gastos" },
+  { href: "/admin/objetivos/dinero", emoji: "💶", texto: "Dinero", detalle: "Ganancias, gastos y Premium" },
+  { href: "/admin/objetivos/crecimiento", emoji: "📈", texto: "Crecimiento", detalle: "Canales y lo publicado" },
 ];
 
 export default function PestanasObjetivos() {

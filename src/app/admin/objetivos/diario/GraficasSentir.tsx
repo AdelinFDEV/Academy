@@ -152,7 +152,7 @@ export function MapaFactores({ columnas, filas, tono }: { columnas: string[]; fi
   const cada = Math.max(1, Math.ceil(columnas.length / 12));
   return (
     <div className={`sen-mapa sen-mapa--${tono}`}>
-      <div className="sen-mapa-rejilla" style={{ gridTemplateColumns: `minmax(120px, 170px) repeat(${columnas.length}, minmax(18px, 1fr))` }}>
+      <div className="sen-mapa-rejilla" style={{ gridTemplateColumns: `minmax(110px, 160px) repeat(${columnas.length}, minmax(6px, 1fr))` }}>
         {filas.map((f) => (
           <div key={f.clave} className="sen-mapa-fila">
             <span className="sen-mapa-nombre" title={f.texto}><span aria-hidden="true">{f.emoji}</span> {f.texto}</span>

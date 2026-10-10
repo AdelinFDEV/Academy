@@ -210,3 +210,87 @@
   .ide-nueva textarea, .ide-fila--editando textarea { font-size: 16px; }
   .ide-tick { width: 26px; height: 26px; }
 }
+
+/* ── Planificar: de idea a pieza del calendario ──────────────────────────
+   El botón aparece al pasar por la fila (siempre en pantallas táctiles) y
+   abre debajo el día y el tipo. */
+
+.ide-fila { flex-wrap: wrap; }
+
+.ide-planificar {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--o-texto-3);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ide-planificar span { display: none; }
+.ide-fila:hover .ide-planificar,
+.ide-planificar:focus-visible,
+.ide-planificar[aria-expanded="true"] { opacity: 1; }
+.ide-planificar:hover,
+.ide-planificar[aria-expanded="true"] { border-color: color-mix(in srgb, var(--c) 45%, transparent); color: var(--o-texto); }
+.ide-planificar:hover span,
+.ide-planificar[aria-expanded="true"] span { display: inline; }
+
+.ide-plan {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 4px 0 2px 32px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--c) 6%, rgba(0, 0, 0, 0.25));
+}
+
+.ide-plan-campo { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--o-texto-3); }
+
+.ide-plan-campo input {
+  padding: 5px 8px;
+  border: 1px solid var(--o-borde-2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  font: inherit;
+  font-size: 13px;
+  color: var(--o-texto);
+  color-scheme: dark;
+}
+
+.ide-plan-tipos { display: flex; gap: 6px; }
+
+.ide-plan-tipos button {
+  padding: 5px 10px;
+  border: 1px solid var(--o-borde);
+  border-radius: 100px;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--o-texto-2);
+  cursor: pointer;
+}
+
+.ide-plan-tipos .ide-plan-tipo--activo { border-color: var(--c); background: color-mix(in srgb, var(--c) 18%, transparent); color: var(--o-texto); }
+.ide-plan .ide-fila-acciones { margin-left: auto; }
+
+.ide-planificada { margin: 0; padding: 8px 12px; border-radius: 10px; background: rgba(74, 222, 128, 0.1); font-size: 13px; color: #bbf7d0; }
+.ide-planificada a { color: #86efac; font-weight: 700; }
+
+@media (hover: none) {
+  .ide-planificar { opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .ide-plan { margin-left: 0; }
+}

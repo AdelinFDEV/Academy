@@ -3,8 +3,7 @@
 import { Fragment, type ReactNode } from "react";
 import {
   ANIMOS, ANIMO_EMOJI, CANALES, EMOCIONES, EMOCION_EMOJI, FUENTES, estadoPieza, periodosEnRango,
-  type Balance, type Canal, type Emocion, type Fuente, type ObjetivoConProgreso, type Pieza,
-} from "@/lib/objetivos";
+  type Balance, type Canal, type Emocion, type Fuente, type ObjetivoConProgreso, type Pieza, formatoES } from "@/lib/objetivos";
 import type { DineroMes } from "@/lib/objetivosServidor";
 import { cifra, fechaCorta, finDeMes, nombreMes } from "../editor";
 import type { Animo, Hecho } from "./SeccionCalendario";
@@ -35,7 +34,7 @@ function media(v: number[]): number | null {
 }
 
 function euros(n: number, decimales = 0): string {
-  return n.toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: decimales, minimumFractionDigits: decimales });
+  return formatoES(n, { style: "currency", currency: "EUR", maximumFractionDigits: decimales, minimumFractionDigits: decimales });
 }
 
 function dias(desde: string, hasta: string): number {
@@ -309,7 +308,7 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
           {resultados.length ? (
             <>
               <p className="rm-linea">
-                <span><i className="rm-punto rm-punto--si" /> {cuenta("si")} cumplidos</span>
+                <span><i className="rm-punto rm-punto--si" /> {cuenta("si")} cumplido{cuenta("si") === 1 ? "" : "s"}</span>
                 <span><i className="rm-punto rm-punto--curso" /> {cuenta("curso")} en curso</span>
                 <span><i className="rm-punto rm-punto--no" /> {cuenta("no")} sin cumplir</span>
               </p>

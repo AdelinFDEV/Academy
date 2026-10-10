@@ -17,7 +17,7 @@ function fallo(e: { code?: string; message: string }) {
  * ganado por fuente (movimientos con origen «cierre», uno por fuente).
  *
  * Volver a guardar sustituye SOLO lo que es del cierre de ese día: lo
- * apuntado a mano en Crecimiento / Gastos ese mismo día no se toca, así nada
+ * apuntado a mano en la pestaña Dinero ese mismo día no se toca, así nada
  * se cuenta dos veces ni se borra sin querer. Con `parcial` (el marcado
  * rápido del calendario) el dinero no se toca en absoluto.
  *
@@ -43,6 +43,9 @@ export async function POST(req: NextRequest) {
   const filas: { tipo: "ingreso"; fecha: string; categoria: Fuente; importe: number; origen: "cierre" }[] = [];
   for (const [fuente, valor] of Object.entries(entrada)) {
     if (!(fuente in FUENTES)) return NextResponse.json({ error: "Fuente desconocida." }, { status: 400 });
+    // Premium llega solo desde Stripe (src/lib/cobrosStripe.ts): apuntarlo
+    // aquí lo contaría dos veces.
+    if (fuente === "premium") continue;
     if (valor === "" || valor === null || valor === undefined) continue;
     const importe = Number(String(valor).replace(",", "."));
     if (!Number.isFinite(importe) || importe < 0 || importe > 1e8) {

@@ -17,6 +17,7 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 ## 🔴 Bloqueante — está mal en producción ahora mismo
 
 - [ ] **Datos del titular en `src/lib/legal.ts`.** Siguen con texto de relleno (`[Nombre y apellidos del titular]`, `[PFA o SRL…]`, `[CUI…]`, `[Domicilio…]`) y **se publican tal cual** en `/aviso-legal` y `/privacidad`. Identificar al prestador es una obligación legal, no un adorno. Lo tiene que dar el admin.
+- [ ] **El bot se saltó un vídeo largo sin anunciarlo.** «¿Qué es Ondo Finance?» (`j9dd3d38fY0`, 10:38, subido el 07-10-2026 a las 15:00 UTC) no tiene fila en `content_announcements` ni salió en el canal gratuito, mientras que el anterior (`TBzOukSkW2g`, del 06-10) sí se anunció en el cron del 07-10 a las 04:54 UTC. El cron del 08-10 debía cogerlo y no lo hizo, y nada avisó. Mirar en los logs de Vercel la ejecución de `/api/cron/telegram-sync` del 08-10 y, en `anunciarVideos` (`src/lib/announce.ts`), qué lo descartó: `getLatestVideos(3)` (feed con caché, duración por API o raspando, corte en `MIN_DURATION_SECONDS`), la ventana de `esReciente` o un fallo al enviar. Para ver qué vídeos faltan por anunciar, comparar `select ref, announced_at from content_announcements where kind = 'video' order by announced_at desc limit 10;` con la lista de subidas del canal. Ya no afecta a los objetivos ni al calendario, que desde el 10-10-2026 cuentan desde la API de YouTube: solo al aviso en Telegram.
 
 ---
 

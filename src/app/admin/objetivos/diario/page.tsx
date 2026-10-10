@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
-import { cargarBalances, cargarObjetivos, premiumEstimadoPorDia } from "@/lib/objetivosServidor";
-import { hoyISO, sumarDiasISO, type Intencion, type Nota } from "@/lib/objetivos";
+import { cargarBalances, cargarObjetivos } from "@/lib/objetivosServidor";
+import { hoyISO, sumarDiasISO, type Intencion, type Nota, type Productividad } from "@/lib/objetivos";
 import SeccionDiario from "./SeccionDiario";
 import FaltaSql from "../FaltaSql";
 
@@ -20,19 +20,22 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
   const hoy = hoyISO();
   const lunes = sumarDiasISO(hoy, -((new Date(`${hoy}T00:00:00Z`).getUTCDay() + 6) % 7));
   const primeroMes = `${hoy.slice(0, 7)}-01`;
-  const [{ objetivos, faltaSql }, notasRes, balancesHoy, premiumHoy, intencionesRes] = await Promise.all([
+  const [{ objetivos, faltaSql }, notasRes, balancesHoy, intencionesRes, diasRes] = await Promise.all([
     cargarObjetivos(admin),
     todasLasFilas((a, b) =>
       admin.from("diario_notas").select("*").order("fecha", { ascending: false }).order("created_at", { ascending: false }).order("id").range(a, b)
     ),
     cargarBalances(admin, hoy, hoy),
-    premiumEstimadoPorDia(admin, hoy, hoy),
     // Las de esta semana y las de este mes. Sin la tabla (SQL sin lanzar), lista vacía.
     admin
       .from("diario_intenciones")
       .select("id, texto, horizonte, desde, hecha")
       .or(`and(horizonte.eq.semana,desde.eq.${lunes}),and(horizonte.eq.mes,desde.eq.${primeroMes})`)
       .order("created_at"),
+    // Cómo fue cada día (el cierre), para cruzarlo con el ánimo en «Cómo me siento».
+    todasLasFilas((a, b) =>
+      admin.from("dias_balance").select("fecha, productividad").not("productividad", "is", null).order("fecha").range(a, b)
+    ),
   ]);
   if (faltaSql) return <FaltaSql />;
 
@@ -46,6 +49,9 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
     for (const f of firmadas ?? []) if (f.path && f.signedUrl) urlsFotos[f.path] = f.signedUrl;
   }
 
+  const productividad: Record<string, Productividad> = {};
+  for (const d of diasRes) productividad[String(d.fecha)] = d.productividad as Productividad;
+
   return (
     <SeccionDiario
       hoy={hoy}
@@ -56,7 +62,7 @@ export default async function DiarioPage({ searchParams }: { searchParams: Promi
       intenciones={(intencionesRes.data ?? []) as Intencion[]}
       faltaIntenciones={intencionesRes.error?.code === "PGRST205"}
       lunes={lunes}
-      premiumHoy={premiumHoy[hoy] ?? 0}
+      productividad={productividad}
       notaInicial={notas.some((n) => n.id === notaPedida) ? notaPedida : undefined}
     />
   );

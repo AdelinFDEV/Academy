@@ -275,6 +275,43 @@ export async function getSubscriberCount(): Promise<number | null> {
 export interface VideoSubido extends YouTubeVideo {
   /** Duración en segundos; null si no se pudo leer. */
   segundos: number | null;
+  /** Visitas y «me gusta» de ahora mismo (YouTube no da el histórico); null sin API. */
+  vistas: number | null;
+  likes: number | null;
+}
+
+type Detalle = { segundos: number | null; vistas: number | null; likes: number | null };
+
+/**
+ * Duración, visitas y «me gusta» de hasta 50 vídeos en una sola consulta
+ * (1 unidad de cuota). Las visitas cambian: caché de una hora, no de un día
+ * como la duración sola.
+ */
+async function detallesPorApi(ids: string[]): Promise<Map<string, Detalle> | null> {
+  const key = process.env.YOUTUBE_API_KEY;
+  if (!key || !ids.length) return null;
+  try {
+    const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails,statistics&id=${ids.join(",")}&key=${key}`, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as {
+      items?: { id: string; contentDetails?: { duration?: string }; statistics?: { viewCount?: string; likeCount?: string } }[];
+    };
+    const numero = (v: string | undefined) => (v !== undefined && Number.isFinite(Number(v)) ? Number(v) : null);
+    const mapa = new Map<string, Detalle>();
+    for (const item of json.items ?? []) {
+      mapa.set(item.id, {
+        segundos: iso8601ASegundos(item.contentDetails?.duration ?? ""),
+        vistas: numero(item.statistics?.viewCount),
+        likes: numero(item.statistics?.likeCount),
+      });
+    }
+    return mapa;
+  } catch {
+    return null;
+  }
 }
 
 /** Hasta este tamaño cuenta como Short (YouTube los admite de hasta 3 minutos). */
@@ -339,13 +376,13 @@ export async function getSubidasEntre(desde: Date, hasta: Date): Promise<VideoSu
       if (pasado || !pagina) break;
     }
 
-    const duraciones = new Map<string, number>();
+    const detalles = new Map<string, Detalle>();
     for (let i = 0; i < encontrados.length; i += 50) {
-      const lote = await duracionesPorApi(encontrados.slice(i, i + 50).map((v) => v.id));
-      for (const [id, s] of lote ?? []) duraciones.set(id, s);
+      const lote = await detallesPorApi(encontrados.slice(i, i + 50).map((v) => v.id));
+      for (const [id, d] of lote ?? []) detalles.set(id, d);
     }
     return encontrados
-      .map((v) => ({ ...v, segundos: duraciones.get(v.id) ?? null }))
+      .map((v) => ({ ...v, segundos: null, vistas: null, likes: null, ...detalles.get(v.id) }))
       .sort((a, b) => Date.parse(b.publishedAt) - Date.parse(a.publishedAt));
   } catch {
     return null;

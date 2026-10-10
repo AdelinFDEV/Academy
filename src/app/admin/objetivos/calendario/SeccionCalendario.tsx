@@ -155,7 +155,6 @@ type Props = {
   animos: Animo[];
   /** Cierre de cada día (productividad, nota y dinero). */
   balances: Record<string, Balance>;
-  premiumEstimado: Record<string, number>;
   dineroMeses: DineroMes[];
 };
 
@@ -169,7 +168,7 @@ type InfoDia = {
 };
 
 export default function SeccionCalendario(props: Props) {
-  const { hoy, vista, vistaExplicita, mes, lunes, objetivos, piezas, hechos, animos, balances, premiumEstimado, dineroMeses } = props;
+  const { hoy, vista, vistaExplicita, mes, lunes, objetivos, piezas, hechos, animos, balances, dineroMeses } = props;
   const editor = useEditor(objetivos);
   const cierre = useCierreDia();
   const router = useRouter();
@@ -338,7 +337,7 @@ export default function SeccionCalendario(props: Props) {
           onAbrirDia={setDiaAbierto}
           onNuevaPieza={editor.nuevaPieza}
           onEditarObjetivo={editor.editarObjetivo}
-          onCerrarDia={(dia) => cierre.abrir(dia, balances[dia], premiumEstimado[dia] ?? 0)}
+          onCerrarDia={(dia) => cierre.abrir(dia, balances[dia])}
         />
       )}
 
@@ -363,7 +362,7 @@ export default function SeccionCalendario(props: Props) {
           objetivos={objetivos}
           tarjeta={tarjeta}
           onCerrar={() => setDiaAbierto(null)}
-          onCerrarDia={() => cierre.abrir(diaAbierto, balances[diaAbierto], premiumEstimado[diaAbierto] ?? 0)}
+          onCerrarDia={() => cierre.abrir(diaAbierto, balances[diaAbierto])}
           onNuevaPieza={() => editor.nuevaPieza(diaAbierto)}
           onEditarObjetivo={editor.editarObjetivo}
           zonaSoltar={zonaSoltar(diaAbierto)}

@@ -1,17 +1,15 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { RANGOS, cargarCrecimiento, type Rango } from "@/lib/crecimiento";
-import { cargarDineroPorMes } from "@/lib/objetivosServidor";
 import { cargarActividadMes } from "@/lib/actividadMes";
-import { hoyISO, type Movimiento } from "@/lib/objetivos";
-import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
+import { hoyISO } from "@/lib/objetivos";
 import SeccionCrecimiento from "./SeccionCrecimiento";
 
 export const dynamic = "force-dynamic";
 
 /**
- * Pestaña Crecimiento / Gastos: miembros de Telegram, suscriptores de YouTube
- * y dinero de Premium, con su evolución; las ganancias frente a los gastos de
- * la empresa; y la actividad de un mes (lo publicado).
+ * Pestaña Crecimiento: lo publicado en un mes y cómo crecen los canales
+ * (miembros de Telegram y suscriptores de YouTube). El dinero tiene su propia
+ * pestaña desde el 10-10-2026 (/admin/objetivos/dinero).
  * Abre en 30 días y en el mes actual. Lee con la clave de servicio, detrás del
  * layout de /admin, que exige rol admin.
  */
@@ -22,27 +20,6 @@ export default async function CrecimientoPage({ searchParams }: { searchParams: 
   // Un mes válido y no futuro; si no, el actual.
   const mes = mesUrl && /^\d{4}-(0[1-9]|1[0-2])$/.test(mesUrl) && mesUrl <= mesHoy ? mesUrl : mesHoy;
   const admin = createAdminClient();
-  const [datos, dineroMeses, actividad, movimientos, prueba] = await Promise.all([
-    cargarCrecimiento(admin, rango),
-    cargarDineroPorMes(admin),
-    cargarActividadMes(admin, mes),
-    // Los gastos (todos son manuales) y los ingresos apuntados a mano; los del
-    // cierre del día ya van sumados en dineroMeses.
-    todasLasFilas<Movimiento>((a, b) =>
-      admin
-        .from("movimientos")
-        .select("id, tipo, fecha, concepto, categoria, importe, recurrente, hasta, origen")
-        .eq("origen", "manual")
-        .order("fecha", { ascending: false })
-        .order("id")
-        .range(a, b)
-    ),
-    // Sin la tabla (SQL sin lanzar), el bloque lo dice en vez de salir vacío.
-    admin.from("movimientos").select("id", { count: "exact", head: true }),
-  ]);
-  const finanzas = {
-    movimientos: movimientos.map((m) => ({ ...m, importe: Number(m.importe) })),
-    falta: prueba.error?.code === "PGRST205",
-  };
-  return <SeccionCrecimiento datos={datos} rango={rango} dineroMeses={dineroMeses} actividad={actividad} finanzas={finanzas} />;
+  const [datos, actividad] = await Promise.all([cargarCrecimiento(admin, rango), cargarActividadMes(admin, mes)]);
+  return <SeccionCrecimiento datos={datos} rango={rango} actividad={actividad} />;
 }

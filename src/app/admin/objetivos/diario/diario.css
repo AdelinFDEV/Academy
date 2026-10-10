@@ -81,7 +81,6 @@
   font-style: italic;
   line-height: 1.15;
   color: var(--d-tinta);
-  text-transform: capitalize;
 }
 
 .dia-hero-sub { margin: 0; max-width: 52ch; font-size: 14px; line-height: 1.55; color: var(--d-tinta-2); }
@@ -620,7 +619,6 @@
   font-weight: 400;
   font-style: italic;
   color: var(--d-tinta);
-  text-transform: capitalize;
 }
 
 .dia-dia-fecha::before {
@@ -943,10 +941,11 @@
 }
 
 /* Mapa de calor: factores × tramos */
-.sen-mapa { --m: 251, 113, 133; display: flex; flex-direction: column; gap: 10px; overflow-x: auto; }
+.sen-mapa { --m: 251, 113, 133; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
 .sen-mapa--bien { --m: 74, 222, 128; }
 
-.sen-mapa-rejilla { display: grid; gap: 4px; min-width: max-content; }
+/* Cabe en la caja: las fechas no ensanchan su columna (ancho 0, se desbordan a la vista). */
+.sen-mapa-rejilla { display: grid; gap: 4px; min-width: 100%; padding-right: 22px; }
 .sen-mapa-fila { display: contents; }
 
 .sen-mapa-nombre {
@@ -965,7 +964,7 @@
 }
 
 .sen-mapa-celda {
-  min-width: 18px;
+  min-width: 6px;
   height: 22px;
   border-radius: 5px;
   background: rgba(var(--m), var(--p));
@@ -974,6 +973,7 @@
 .sen-mapa-celda--nada { background: rgba(255, 255, 255, 0.03); }
 
 .sen-mapa-col {
+  width: 0;
   overflow: visible;
   font-size: 10.5px;
   color: var(--d-tinta-3);
@@ -1000,3 +1000,176 @@
   border-color: rgba(246, 178, 107, 0.7);
   box-shadow: 0 0 0 3px rgba(246, 178, 107, 0.25), 0 12px 30px -14px rgba(246, 178, 107, 0.6);
 }
+
+/* ── Tu estado interior ────────────────────────────────────────────────────
+   La frase de cómo estás por dentro: el orbe toma el color de tu ánimo
+   (--ei) y el resto se queda tranquilo para que lo que se lea sea la frase. */
+
+.ei {
+  --ei: var(--d-violeta);
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 26px 28px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ei) 32%, transparent);
+  border-radius: 24px;
+  background:
+    radial-gradient(55% 140% at 0% 0%, color-mix(in srgb, var(--ei) 22%, transparent), transparent 65%),
+    radial-gradient(50% 120% at 100% 100%, rgba(184, 164, 255, 0.14), transparent 60%),
+    linear-gradient(135deg, #131c2e, #0d1524);
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
+}
+
+.ei--1 { --ei: var(--d-animo-1); }
+.ei--2 { --ei: var(--d-animo-2); }
+.ei--3 { --ei: var(--d-ambar); }
+.ei--4 { --ei: var(--d-animo-4); }
+.ei--5 { --ei: var(--d-animo-5); }
+
+.ei-orbe {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--ei) 45%, transparent), color-mix(in srgb, var(--ei) 12%, transparent) 70%);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ei) 40%, transparent), 0 0 38px -4px color-mix(in srgb, var(--ei) 55%, transparent);
+  font-size: 38px;
+  animation: ei-latido 4.5s ease-in-out infinite;
+}
+
+@keyframes ei-latido {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ei-orbe { animation: none; }
+  .med-aguja { transition: none !important; }
+}
+
+.ei-textos { display: flex; flex: 1; flex-direction: column; gap: 6px; min-width: 0; }
+.ei-ey { font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: color-mix(in srgb, var(--ei) 70%, var(--d-tinta)); }
+
+.ei-titular {
+  margin: 0;
+  font-family: var(--d-letra);
+  font-size: clamp(21px, 2.6vw, 28px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--d-tinta);
+  text-wrap: balance;
+}
+
+.ei-pie { margin: 0; font-size: 13px; color: var(--d-tinta-3); font-variant-numeric: tabular-nums; }
+
+.ei-ideas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+
+.ei-idea {
+  --t: var(--d-tinta-3);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid color-mix(in srgb, var(--t) 28%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--t) 8%, rgba(6, 13, 26, 0.5));
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--d-tinta-2);
+}
+
+.ei-idea--bien { --t: #4ade80; }
+.ei-idea--mal { --t: #fb7185; }
+.ei-idea-emoji { flex-shrink: 0; font-size: 17px; line-height: 1.3; }
+
+/* ── El medidor ────────────────────────────────────────────────────────── */
+
+.med { display: flex; flex-direction: column; gap: 14px; padding: 20px; border: 1px solid var(--d-linea); border-radius: 20px; background: var(--d-tarjeta); }
+.med-cabeza { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.med-cabeza-nota { font-size: 12.5px; color: var(--d-tinta-3); }
+.med-cuerpo { display: grid; grid-template-columns: minmax(240px, 0.8fr) minmax(0, 1.6fr); gap: 20px; align-items: center; }
+
+.med-reloj { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.med-svg { width: 100%; max-width: 280px; overflow: visible; }
+.med-pista { fill: none; stroke: rgba(255, 255, 255, 0.07); stroke-width: 18; stroke-linecap: round; }
+.med-arco { fill: none; stroke-width: 12; stroke-linecap: round; opacity: 0.9; }
+.med-marca { stroke: rgba(255, 255, 255, 0.25); stroke-width: 2; stroke-linecap: round; }
+.med-aguja { transition: transform 1.1s cubic-bezier(0.34, 1.4, 0.64, 1); }
+.med-aguja path { fill: var(--d-tinta); filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6)); }
+.med-eje { fill: #0d1524; stroke: var(--d-tinta); stroke-width: 3; }
+
+.med-extremos { display: flex; justify-content: space-between; width: 100%; max-width: 280px; margin-top: -4px; font-size: 12px; font-weight: 700; color: var(--d-tinta-3); }
+.med-veredicto { margin: 6px 0 0; font-family: var(--d-letra); font-size: 17px; font-weight: 600; line-height: 1.35; color: var(--d-tinta); text-wrap: balance; }
+.med-cuentas { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 2px 0 0; }
+.med-cuenta { padding: 3px 10px; border-radius: 100px; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.med-cuenta--mal { background: rgba(251, 113, 133, 0.12); color: #fda4af; }
+.med-cuenta--bien { background: rgba(74, 222, 128, 0.12); color: #86efac; }
+
+.med-listas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.med-lista { --f: #fb7185; display: flex; flex-direction: column; gap: 10px; padding: 14px; border: 1px solid color-mix(in srgb, var(--f) 22%, transparent); border-radius: 16px; background: color-mix(in srgb, var(--f) 5%, rgba(6, 13, 26, 0.45)); }
+.med-lista--bien { --f: #4ade80; }
+.med-lista-titulo { margin: 0; font-size: 13.5px; font-weight: 800; color: var(--d-tinta); }
+.med-lista ol { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+
+.med-fila { display: flex; align-items: flex-start; gap: 10px; }
+.med-puesto { display: grid; flex-shrink: 0; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: color-mix(in srgb, var(--f) 20%, transparent); font-size: 12px; font-weight: 800; color: var(--f); }
+.med-fila-cuerpo { display: flex; flex: 1; flex-direction: column; gap: 5px; min-width: 0; }
+.med-fila-linea { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.med-fila-nombre { overflow: hidden; font-size: 13.5px; font-weight: 700; color: var(--d-tinta); white-space: nowrap; text-overflow: ellipsis; }
+.med-fila-valor { flex-shrink: 0; font-size: 15px; font-weight: 800; color: var(--f); font-variant-numeric: tabular-nums; }
+.med-fila-pista { height: 6px; border-radius: 100px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.med-fila-pista > span { display: block; height: 100%; border-radius: 100px; background: linear-gradient(90deg, color-mix(in srgb, var(--f) 55%, transparent), var(--f)); }
+.med-fila small { font-size: 11.5px; color: var(--d-tinta-3); font-variant-numeric: tabular-nums; }
+.med-nada { margin: 0; font-size: 13px; line-height: 1.55; color: var(--d-tinta-3); }
+
+@media (max-width: 1100px) {
+  .med-cuerpo { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .ei { flex-direction: column; gap: 14px; padding: 20px; }
+  .ei-orbe { width: 60px; height: 60px; font-size: 30px; }
+  .med { padding: 16px; }
+  .med-listas { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Ánimo y productividad ─────────────────────────────────────────────── */
+
+.ayp { display: flex; flex-direction: column; gap: 12px; padding: 20px; border: 1px solid var(--d-linea); border-radius: 20px; background: var(--d-tarjeta); }
+.ayp-frase { margin: 0; font-family: var(--d-letra); font-size: 17px; font-weight: 600; line-height: 1.45; color: var(--d-tinta); text-wrap: balance; }
+.ayp-filas { display: flex; flex-direction: column; gap: 10px; }
+
+.ayp-fila {
+  --f: #94a3b8;
+  display: grid;
+  grid-template-columns: minmax(130px, 0.9fr) minmax(0, 2fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--d-tinta-2);
+}
+
+.ayp-fila--max { --f: #22c55e; }
+.ayp-fila--prod { --f: #4ade80; }
+.ayp-fila--no { --f: #fb7185; }
+.ayp-fila--poca { opacity: 0.5; }
+.ayp-nombre { font-weight: 700; color: var(--d-tinta); white-space: nowrap; }
+.ayp-pista { height: 8px; border-radius: 100px; background: rgba(255, 255, 255, 0.06); overflow: hidden; }
+.ayp-pista > span { display: block; height: 100%; border-radius: 100px; background: linear-gradient(90deg, color-mix(in srgb, var(--f) 50%, transparent), var(--f)); }
+.ayp-valor { font-size: 14.5px; font-weight: 800; color: var(--d-tinta); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ayp-fila small { font-size: 12px; color: var(--d-tinta-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 760px) {
+  .ayp { padding: 16px; }
+  .ayp-fila { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
+  .ayp-pista { grid-column: 1 / -1; grid-row: 2; }
+  .ayp-fila small { display: none; }
+}
+
+/* Mayúscula solo en la primera letra («Viernes, 9 de octubre»), no en cada palabra. */
+.dia-hero-titulo::first-letter,
+.dia-dia-fecha::first-letter { text-transform: uppercase; }

@@ -11,6 +11,7 @@ import {
   revokeChannelAccess,
 } from "@/lib/telegram";
 import { anunciarPendientes } from "@/lib/announce";
+import { sincronizarCobrosStripe } from "@/lib/cobrosStripe";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -231,5 +232,10 @@ export async function GET(request: NextRequest) {
     return null;
   });
 
-  return NextResponse.json({ expulsiones, avisos, limpieza, novedades, fotos, youtube });
+  // Los cobros reales de Stripe al libro de dinero. El webhook ya los copia al
+  // momento; esto recoge lo que se le escapara (un webhook fallido, un
+  // reembolso hecho desde el panel de Stripe) en el último mes.
+  const cobros = await sincronizarCobrosStripe(admin);
+
+  return NextResponse.json({ expulsiones, avisos, limpieza, novedades, fotos, youtube, cobros });
 }

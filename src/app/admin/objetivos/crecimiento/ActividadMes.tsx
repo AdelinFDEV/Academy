@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import type { ActividadMes as Datos, Publicacion } from "@/lib/actividadMes";
 import { mesVecino, nombreMes } from "../editor";
+import { formatoES } from "@/lib/objetivos";
 
 /**
  * «Actividad del mes»: todo lo publicado en un mes —vídeos de YouTube,
@@ -19,6 +21,19 @@ function duracion(segundos: number | null): string {
   const m = Math.floor((segundos % 3600) / 60);
   const s = segundos % 60;
   return h ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` : `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function miles(n: number): string {
+  return formatoES(n);
+}
+
+/**
+ * Visitas al día desde que salió. Con las visitas de ahora (YouTube no da el
+ * histórico) es la forma justa de comparar un vídeo de hace tres semanas con
+ * uno de ayer: el total favorece siempre al más antiguo.
+ */
+function alDia(vistas: number, publicado: string, ahora: number): number {
+  return vistas / Math.max(1, (ahora - Date.parse(publicado)) / 86400000);
 }
 
 /** «▲ 2» / «▼ 1» / «=» frente al mes anterior. */
@@ -38,6 +53,13 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
   const total = datos.videos.length + datos.entradas.length + datos.guias.length;
   const totalAnt = anterior.largos + anterior.shorts + anterior.entradas + anterior.guias;
   const mesActual = hoy.slice(0, 7);
+  // El que mejor funciona: el de más visitas al día, para no premiar solo al más antiguo.
+  const [ahora] = useState(() => Date.now());
+  const conVistas = datos.videos.filter((v) => v.vistas !== null);
+  const vistasMes = conVistas.reduce((t, v) => t + (v.vistas as number), 0);
+  const mejor = conVistas.length > 1
+    ? conVistas.reduce((x, y) => (alDia(y.vistas as number, y.publishedAt, ahora) > alDia(x.vistas as number, x.publishedAt, ahora) ? y : x))
+    : null;
 
   return (
     <section className="crec-bloque act">
@@ -58,6 +80,7 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
         {total
           ? <>En {nombreMes(mes, true)} publicaste <strong>{total} pieza{total === 1 ? "" : "s"}</strong>{totalAnt ? `, frente a ${totalAnt} en ${nombreMes(anterior.mes, true)}` : ""}.</>
           : <>En {nombreMes(mes, true)} aún no hay nada publicado.</>}
+        {vistasMes > 0 && <> Los vídeos del mes suman <strong>{miles(vistasMes)} visitas</strong> hasta hoy.</>}
       </p>
 
       <div className="act-cifras">
@@ -105,7 +128,14 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
                       <span className="act-meta">
                         {dia(v.publishedAt)}
                         {v.short && <span className="act-etiqueta act-etiqueta--short">⚡ Short</span>}
+                        {mejor?.id === v.id && <span className="act-etiqueta act-etiqueta--top">🏆 El que mejor va</span>}
                       </span>
+                      {v.vistas !== null && (
+                        <span className="act-vistas">
+                          👁 {miles(v.vistas)} visitas · {miles(Math.round(alDia(v.vistas, v.publishedAt, ahora)))}/día
+                          {v.likes !== null && v.likes > 0 && ` · 👍 ${miles(v.likes)}`}
+                        </span>
+                      )}
                     </span>
                   </a>
                 </li>

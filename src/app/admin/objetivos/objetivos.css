@@ -102,7 +102,7 @@
 
 .obj-pestanas {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
   margin-bottom: 22px;
 }
@@ -559,7 +559,6 @@
   color: var(--o-texto-3);
 }
 
-.obj-card-pie > span:first-child { text-transform: capitalize; }
 .obj-card-pie-dato { font-weight: 600; color: var(--o-texto-2); }
 
 .obj-card-notas {
@@ -636,7 +635,6 @@
 
 .obj-historial-punto--si { background: rgba(34, 197, 94, 0.18); color: var(--o-verde-2); }
 .obj-historial-punto--no { background: rgba(239, 68, 68, 0.15); color: var(--o-rojo-2); }
-.obj-historial-etiqueta { text-transform: capitalize; }
 
 /* ── Calendario ───────────────────────────────────────────────────────── */
 
@@ -1206,6 +1204,8 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 
 /* ── Crecimiento ──────────────────────────────────────────────────────── */
 
+/* La cabecera de los canales, separada de la actividad del mes que va encima. */
+.crec-canales-cabeza { margin-top: 14px; padding-top: 22px; border-top: 1px solid var(--o-borde); }
 .crec-rangos {
   display: flex;
   gap: 4px;
@@ -1322,7 +1322,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 /* ── Móvil ────────────────────────────────────────────────────────────── */
 
 @media (max-width: 1100px) {
-  .obj-pestanas { grid-template-columns: repeat(5, minmax(150px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
+  .obj-pestanas { grid-template-columns: repeat(6, minmax(150px, 1fr)); overflow-x: auto; padding-bottom: 4px; }
 }
 
 @media (max-width: 760px) {
@@ -1560,7 +1560,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 /* ── Cierre del día ───────────────────────────────────────────────────── */
 
 .obj-cierre-titulos { flex: 1; display: flex; flex-direction: column; }
-.obj-cierre-fecha { font-size: 13px; font-weight: 600; color: var(--o-texto-3); text-transform: capitalize; }
+.obj-cierre-fecha { font-size: 13px; font-weight: 600; color: var(--o-texto-3); }
 
 .obj-productividad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 
@@ -1711,7 +1711,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 }
 
 .crec-podio-medalla { font-size: 22px; }
-.crec-podio-mes { font-size: 14px; font-weight: 700; color: var(--o-texto); text-transform: capitalize; }
+.crec-podio-mes { font-size: 14px; font-weight: 700; color: var(--o-texto); }
 .crec-podio-puesto strong { font-size: 16px; font-weight: 800; color: var(--o-verde-2); }
 
 /* ── Calendario: marcar el día, en el pie de la celda ─────────────────── */
@@ -1873,9 +1873,9 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 .obj-mrr-embudo > div { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 58px; }
 .obj-mrr-embudo strong { font-size: 24px; font-weight: 800; line-height: 1.1; color: var(--o-texto); }
 .obj-mrr-embudo span { font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--o-texto-3); }
-.obj-mrr-embudo-premium strong { color: #fcd34d; }
-.obj-mrr-flecha { font-size: 20px !important; color: var(--o-texto-3); }
-.obj-mrr-conversion { padding-left: 16px; border-left: 1px solid var(--o-borde-2); }
+/* Lo que se ve pero no suma a la meta (el trabajo): apagado y separado. */
+.obj-mrr-fuera { padding-left: 14px; border-left: 1px dashed var(--o-borde-2); opacity: 0.55; }
+.obj-mrr-fuera strong { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.35); }
 
 /* El camino: barra gruesa con las etapas encima */
 .obj-mrr-camino { display: flex; flex-direction: column; gap: 10px; padding: 18px 4px 0; }
@@ -1907,7 +1907,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
   background: #172133;
   font-size: 19px;
   transform: translate(-50%, -50%);
-  filter: grayscale(0.85);
+  opacity: 0.55;
   transition: transform 0.2s ease;
 }
 
@@ -1916,18 +1916,18 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 .obj-mrr-parada--siguiente {
   border-color: #facc15;
   filter: none;
+  opacity: 1;
   box-shadow: 0 0 0 5px rgba(250, 204, 21, 0.18), 0 0 20px rgba(250, 204, 21, 0.5);
   animation: obj-mrr-latido 2.4s ease-in-out infinite;
 }
 
-.obj-mrr-parada--hecha { border-color: #4ade80; background: #14532d; filter: none; }
+.obj-mrr-parada--hecha { border-color: #4ade80; background: #14532d; filter: none; opacity: 1; }
 
 @keyframes obj-mrr-latido {
   50% { box-shadow: 0 0 0 9px rgba(250, 204, 21, 0.08), 0 0 26px rgba(250, 204, 21, 0.6); }
 }
 
 .obj-mrr-camino-pie { display: flex; justify-content: space-between; gap: 10px; padding-top: 8px; font-size: 12px; color: var(--o-texto-3); }
-.obj-mrr-camino-pie span:nth-child(2) { font-weight: 700; color: var(--o-texto-2); }
 
 /* Qué falta */
 .obj-mrr-falta {
@@ -1942,6 +1942,22 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 }
 
 .obj-mrr-falta strong { color: var(--o-texto); }
+
+/* A este paso: la tendencia de los últimos meses. Verde si llega, gris si no. */
+.obj-mrr-ritmo {
+  margin: -6px 0 0;
+  padding: 12px 18px;
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  border-radius: 14px;
+  background: rgba(74, 222, 128, 0.07);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--o-texto-2);
+}
+
+.obj-mrr-ritmo strong { color: #bbf7d0; }
+.obj-mrr-ritmo--plano { border-color: var(--o-borde-2); background: rgba(255, 255, 255, 0.03); }
+.obj-mrr-ritmo--plano strong { color: var(--o-texto); }
 
 /* Las tres etapas */
 .obj-mrr-etapas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
@@ -1975,8 +1991,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.05);
   font-size: 24px;
-  filter: grayscale(0.7);
-  opacity: 0.8;
+  opacity: 0.5;
 }
 
 .obj-mrr-etapa-cuerpo { display: flex; flex: 1; flex-direction: column; gap: 5px; min-width: 0; }
@@ -2030,7 +2045,6 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
   .obj-mrr-embudo { width: 100%; justify-content: space-between; gap: 4px; padding: 12px; }
   .obj-mrr-embudo > div { min-width: 0; }
   .obj-mrr-embudo strong { font-size: 19px; }
-  .obj-mrr-conversion { padding-left: 8px; }
   .obj-mrr-parada { width: 32px; height: 32px; font-size: 16px; }
 }
 
@@ -2096,7 +2110,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 .act-cabeza .crec-bloque-titulo { margin: 0; }
 
 .act-nav { display: flex; align-items: center; gap: 10px; }
-.act-nav strong { min-width: 150px; font-size: 15px; font-weight: 800; color: var(--o-texto); text-align: center; text-transform: capitalize; }
+.act-nav strong { min-width: 150px; font-size: 15px; font-weight: 800; color: var(--o-texto); text-align: center; }
 .act-nav-off { opacity: 0.3; pointer-events: none; }
 
 .act-resumen { margin: 0; font-size: 14px; color: var(--o-texto-2); }
@@ -2197,6 +2211,8 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 
 .act-etiqueta { padding: 1px 7px; border-radius: 100px; background: rgba(255, 255, 255, 0.07); font-size: 11px; font-weight: 700; color: var(--o-texto-2); }
 .act-etiqueta--short { background: rgba(244, 114, 182, 0.18); color: #fbcfe8; }
+.act-etiqueta--top { background: rgba(250, 204, 21, 0.16); color: #fde68a; }
+.act-vistas { font-size: 12px; color: var(--o-texto-3); font-variant-numeric: tabular-nums; }
 .act-etiqueta--premium { background: rgba(250, 204, 21, 0.16); color: #fde68a; }
 
 .act-vacio { margin: 0; font-size: 13px; color: var(--o-texto-3); }
@@ -2370,3 +2386,8 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 
 .fin-fila--ingreso .fin-fila-importe { color: #86efac; }
 .fin-nota { margin: 4px 0 0; font-size: 12px; line-height: 1.5; color: var(--o-texto-3); }
+
+/* Mayúscula solo en la primera letra («Viernes, 9 de octubre»), no en cada palabra. */
+.obj-cierre-fecha::first-letter,
+.crec-podio-mes::first-letter,
+.act-nav strong::first-letter { text-transform: uppercase; }

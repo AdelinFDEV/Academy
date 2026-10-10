@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_URL } from "@/lib/site";
-import { cargarBalances, cargarDineroPorMes, cargarObjetivos, cerrarPiezaPlaneada, premiumEstimadoPorDia } from "@/lib/objetivosServidor";
+import { cargarBalances, cargarDineroPorMes, cargarObjetivos, cerrarPiezaPlaneada } from "@/lib/objetivosServidor";
 import { esShort, subidasEntre } from "@/lib/actividadMes";
 import type { VideoSubido } from "@/lib/youtube";
 import { diaRumania, hoyISO, medianocheRumania, sumarDiasISO, type Pieza } from "@/lib/objetivos";
@@ -94,7 +94,7 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
   const subidas = await subidasEntre(admin, new Date(desdeInstante), new Date(hastaInstante));
   if (subidas.fuente === "api") await cerrarSubidasPlaneadas(admin, subidas.videos);
 
-  const [{ objetivos, faltaSql }, piezasRes, entradasRes, animosRes, balances, premiumEstimado, dineroMeses] = await Promise.all([
+  const [{ objetivos, faltaSql }, piezasRes, entradasRes, animosRes, balances, dineroMeses] = await Promise.all([
     cargarObjetivos(admin),
     admin.from("contenido_plan").select("*").gte("fecha", ini).lt("fecha", fin).order("fecha"),
     // Lo que de verdad salió, aunque no estuviera en el plan.
@@ -106,7 +106,6 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
       .gte("fecha", iniAnterior).lt("fecha", fin),
     // Cierre del día: productividad, nota y dinero.
     cargarBalances(admin, iniAnterior, finIncluido),
-    premiumEstimadoPorDia(admin, ini, finIncluido),
     cargarDineroPorMes(admin),
   ]);
   if (faltaSql) return <FaltaSql />;
@@ -144,7 +143,6 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
       hechos={sueltos}
       animos={(animosRes.data ?? []) as Animo[]}
       balances={balances}
-      premiumEstimado={premiumEstimado}
       dineroMeses={dineroMeses}
     />
   );

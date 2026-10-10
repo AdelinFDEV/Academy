@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FUENTES, PRODUCTIVIDAD, type Balance, type Fuente, type Productividad } from "@/lib/objetivos";
+import { FUENTES, PRODUCTIVIDAD, type Balance, type Fuente, type Productividad, formatoES } from "@/lib/objetivos";
 
 /**
  * «Cierre del día»: cómo de productivo fue y cuánto ganaste, por fuente.
  * Se abre desde el número de cualquier día del calendario y desde el diario.
  *
  *   const cierre = useCierreDia();
- *   …onClick={() => cierre.abrir(fecha, balance, premiumEstimado)}
+ *   …onClick={() => cierre.abrir(fecha, balance)}
+ *
+ * Premium no se apunta aquí: lo cobrado llega solo desde Stripe
+ * (src/lib/cobrosStripe.ts) y se enseña con lo apuntado a mano ese día.
  *   {cierre.modal}
  */
 
@@ -18,19 +21,21 @@ type Estado = {
   productividad: Productividad | null;
   nota: string;
   ingresos: Record<Fuente, string>;
-  premiumEstimado: number;
-  /** Lo apuntado a mano ese día en Crecimiento / Gastos: se enseña, no se edita aquí. */
+  /** Lo apuntado a mano ese día en la pestaña Dinero y lo cobrado por Stripe: se enseña, no se edita aquí. */
   manuales: Balance["manuales"];
 };
 
-const VACIO: Record<Fuente, string> = { premium: "", youtube: "", trading: "", asesorias: "", otros: "" };
+const VACIO: Record<Fuente, string> = { premium: "", youtube: "", trading: "", asesorias: "", trabajo: "", otros: "" };
+
+/** Lo que se apunta al cerrar el día: todo menos Premium, que llega de Stripe. */
+const FUENTES_CIERRE = (Object.keys(FUENTES) as Fuente[]).filter((f) => f !== "premium");
 
 function fechaLarga(iso: string): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
 }
 
 function euros(n: number): string {
-  return n.toLocaleString("es-ES", { style: "currency", currency: "EUR", maximumFractionDigits: 2 });
+  return formatoES(n, { style: "currency", currency: "EUR", maximumFractionDigits: 2 });
 }
 
 export function useCierreDia() {
@@ -48,12 +53,12 @@ export function useCierreDia() {
     return () => window.removeEventListener("keydown", alPulsar);
   }, [estado, guardando]);
 
-  function abrir(fecha: string, balance?: Balance, premiumEstimado = 0) {
+  function abrir(fecha: string, balance?: Balance) {
     setError("");
     const ingresos = { ...VACIO };
     // Solo lo del cierre: lo apuntado a mano ese día se enseña aparte y no se toca.
     for (const [f, v] of Object.entries(balance?.ingresosCierre ?? {})) ingresos[f as Fuente] = String(v);
-    setEstado({ fecha, productividad: balance?.productividad ?? null, nota: balance?.nota ?? "", ingresos, premiumEstimado, manuales: balance?.manuales ?? [] });
+    setEstado({ fecha, productividad: balance?.productividad ?? null, nota: balance?.nota ?? "", ingresos, manuales: balance?.manuales ?? [] });
   }
 
   async function guardar(e: React.FormEvent) {
@@ -133,7 +138,7 @@ export function useCierreDia() {
           <div className="obj-opciones-bloque">
             <span className="obj-etiqueta">💶 ¿Cuánto has ganado hoy?</span>
             <div className="obj-ingresos">
-              {(Object.keys(FUENTES) as Fuente[]).map((f) => (
+              {FUENTES_CIERRE.map((f) => (
                 <label key={f} className="obj-ingreso">
                   <span className="obj-ingreso-fuente"><span aria-hidden="true">{FUENTES[f].emoji}</span> {FUENTES[f].texto}</span>
                   <span className="obj-ingreso-campo">
@@ -149,21 +154,12 @@ export function useCierreDia() {
                     />
                     <span aria-hidden="true">€</span>
                   </span>
-                  {f === "premium" && estado.premiumEstimado > 0 && estado.ingresos.premium === "" && (
-                    <button
-                      type="button"
-                      className="obj-ingreso-sugerencia"
-                      onClick={() => setEstado({ ...estado, ingresos: { ...estado.ingresos, premium: String(estado.premiumEstimado) } })}
-                    >
-                      ✨ Usar la estimación: {euros(estado.premiumEstimado)}
-                    </button>
-                  )}
                 </label>
               ))}
             </div>
             {estado.manuales.length > 0 && (
               <div className="obj-cierre-manuales">
-                <span>También apuntado ese día en Crecimiento / Gastos</span>
+                <span>También ese día: lo cobrado por Stripe y lo apuntado en Gastos</span>
                 {estado.manuales.map((m, i) => (
                   <div key={i}>
                     <span>{FUENTES[m.fuente]?.emoji ?? "💶"} {m.concepto}</span>
