@@ -70,7 +70,7 @@ export default function ToolAccessModal({ open, reason, toolName, onClose }: Too
             {isLogin ? (
               <>
                 <li><Sparkles size={14} /> Acceso a herramientas gratuitas</li>
-                <li><Sparkles size={14} /> Artículos y análisis de mercado</li>
+                <li><Sparkles size={14} /> Guías interactivas con quiz y logros</li>
                 <li><Sparkles size={14} /> Sin tarjeta de crédito</li>
               </>
             ) : (

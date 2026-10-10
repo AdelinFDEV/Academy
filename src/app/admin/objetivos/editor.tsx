@@ -248,7 +248,7 @@ export function useEditor(objetivos: ObjetivoConProgreso[], urlsFotos: Record<st
     nuevaPieza: (fecha: string, canal?: Canal) =>
       abrir("pieza", null, {
         ...piezaVacia(fecha),
-        ...(canal ? { canal, tipo: canal === "web" ? "entrada" : canal === "telegram" ? "publicacion" : "video" } : {}),
+        ...(canal ? { canal, tipo: canal === "web" ? "guia" : canal === "telegram" ? "publicacion" : "video" } : {}),
       }),
     editarObjetivo: (o: ObjetivoConProgreso) =>
       abrir("objetivo", o.id, {

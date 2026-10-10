@@ -22,7 +22,7 @@ const RED = "\x1b[31m", GREEN = "\x1b[32m", YELLOW = "\x1b[33m", DIM = "\x1b[2m"
  */
 const ZERO_TOLERANCE = {
   "@typescript-eslint/no-explicit-any":
-    "Usa un tipo concreto. Para los joins de Supabase tienes PostCategoryRef, CommentProfileRef y AdminComment en src/lib/types.ts.",
+    "Usa un tipo concreto. Para un join de Supabase, describe con un alias los campos que de verdad lees.",
   "@typescript-eslint/no-unused-vars":
     "Borra el import, la variable o el parámetro. Si es un estado del que solo usas el setter: const [, setX] = useState(...).",
 };

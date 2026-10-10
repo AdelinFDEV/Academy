@@ -38,18 +38,17 @@ Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **si
 
 > **Antes de la asesoría eran otras tres.** Entre las interacciones y el footer iba `<AsesoriaBand variant="guide" />`, retirada el 04-09-2026 de toda la web. El 03-10-2026 el admin confirmó que la asesoría **no vuelve**: la ruta `/asesoria` se borró y da 404. No la añadas a ninguna guía.
 
-## «Componente independiente» significa cosas distintas para guías y entradas
+## Cada guía es un componente independiente
 
 - **Guía nueva → SIEMPRE un componente React nuevo e independiente** (`src/app/guias/[slug]/page.tsx` + su propio `[slug].css`, nunca compartido).
-- **Entrada nueva → NUNCA un componente de código.** Es una fila en la tabla `posts` (título + HTML + metadatos), renderizada por la plantilla genérica `post/[slug]/page.tsx` con el vocabulario `.prose-*` de `globals.css`. No se crean archivos `.tsx` ni `.css` por entrada.
 
-Son intencionalmente distintos porque son sistemas distintos: la guía es una experiencia interactiva a medida, la entrada se lee y se publica sin desplegar código. **Decisión confirmada expresamente por el admin**, y por dos motivos: cero código nuevo por entrada es cero riesgo de que `globals.css` vuelva a crecer sin control, y el texto de cientos de entradas pesa unos pocos MB — muy lejos del límite gratuito de Supabase.
+Hasta el 10-10-2026 había también entradas, que eran filas en `posts` pintadas por una plantilla genérica. Se retiraron con todo su sistema: la web es solo guías. No hay plantilla de entrada ni tabla `posts`.
 
 ---
 
 # Reglas de tipado que evitan volver atrás
 
-- **Nunca `any`.** Si Supabase no infiere la forma de un join, usa los tipos de **`src/lib/types.ts`** (`PostCategoryRef`, `CommentProfileRef`, `AdminComment`) o añade ahí el que falte. No repartas afirmaciones sueltas por las páginas.
+- **Nunca `any`.** Si Supabase no infiere la forma de un join, describe con un alias los campos que de verdad lees. No repartas afirmaciones sueltas por las páginas.
 - **`catch (err)`, nunca `catch (err: any)`.** Lo lanzado es `unknown`: pásalo por un helper del tipo `err instanceof Error ? err.message : "…"`. Si asumes que siempre es un `Error`, el día que no lo sea el usuario ve un mensaje en blanco.
 - **Estado del que solo usas el setter:** `const [, setX] = useState(...)`.
 - **Callbacks de Recharts:** su tipado público es demasiado laxo. Declara la forma mínima que consumes, como `DotRenderProps` / `TooltipRenderProps<T>` en `TradingJournal.tsx`. Ojo: Recharts declara las coordenadas como `string | number`.
@@ -64,40 +63,28 @@ Antes de usar cualquier API de Next.js que no reconozcas, verifícala en la docu
 
 # Comprobación antes de dar algo por terminado
 
-Hay **cuatro** guardarraíles, y comprueban cosas distintas porque el contenido de este sitio no vive en el código, y porque lo que Google ve no es ni el código ni la base de datos, sino el HTML servido.
+Hay **tres** guardarraíles, y comprueban cosas distintas, porque lo que Google ve no es el código sino el HTML servido.
 
 | Comando | Qué revisa | Cuándo |
 |---|---|---|
 | `npm run check` | El **código**: `src/**`. Reglas de ESLint a cero, límites de `title` y `description` en la metadata, fechas releídas desde texto | Antes de cerrar cualquier tarea. Lo corre solo el hook de `pre-push` |
-| `npm run check:contenido` | El **contenido**: las entradas en Supabase. Longitud, SEO, gráfico, enlaces internos, etiquetas, portada | **Antes de publicar una entrada.** A mano |
 | `npm run check:seo` | La **página servida**: metadatos, encabezados, densidad con suelo y techo, enlaces salientes y **entrantes**, esquemas, imágenes, rastreo | En la **Fase 16 de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md)**. Necesita `npm run dev` levantado |
 | `npm run check:glosario` | El **texto de las fichas ampliadas** del diccionario, a partir de 450 palabras | Al ampliar un término |
 
 Los dos últimos necesitan la red o el servidor, así que tampoco están en el hook.
 
 ```bash
-npm run check:seo -- post/mi-slug "focus keyword"
-npm run check:seo -- guias/xrp
+npm run check:seo -- guias/xrp "palabra clave"
 npm run check:seo -- glosario/exchange
 ```
 
-**En una entrada se le pasa siempre el `focus_keyword` de la fila**: sin él deduce la clave del slug, y en una noticia el slug y la consulta objetivo casi nunca coinciden. El resto —qué mide, qué no puede medir y por qué va al final y no al principio— está en [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md).
+**Se le pasa siempre la palabra clave objetivo**: sin ella la deduce del slug, y el slug y la consulta que se quiere ganar rara vez coinciden. El resto —qué mide, qué no puede medir y por qué va al final y no al principio— está en [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md).
 
 ```bash
 npm run check && npx tsc --noEmit     # el código
-npm run check:contenido               # las entradas publicadas
-npm run check:contenido -- mi-slug    # una sola, aunque esté en borrador
 ```
 
-Los cuatro **salen con código 1 si algo falla**, y dicen exactamente qué y dónde.
-
-`check:contenido` existe porque una entrada es una fila en Supabase, no un archivo: hasta el 31-08-2026 **no la comprobaba nadie**, y todas las reglas del plan SEO dependían de que quien escribiera se acordase. Al estrenarlo encontró dos entradas por debajo del mínimo de palabras que llevaban meses publicadas.
-
-**No está en el hook de `pre-push` a propósito:** necesita credenciales de Supabase y salir a la red. En CI no hay secretos, así que el hook se rompería en cualquier clon sin `.env.local`.
-
-**Deuda conocida.** `check-contenido.mjs` tiene un mapa `DEUDA_CONOCIDA` con las entradas anteriores a que una regla existiera y que el admin ha decidido dejar como están — hoy, `solana-alpenglow-2026` (390 palabras) y `ethereum-glamsterdam-2026` (418), las dos por debajo del mínimo de 500. Salen como **aviso** en vez de como fallo.
-
-Existe por una razón concreta: **un validador que siempre sale en rojo acaba ignorándose**, y entonces no sirve para nada. Pero **no es una puerta de atrás**: una entrada nueva que no cumpla se arregla, no se añade al mapa. Y solo perdona la regla concreta que se le indique, no la entrada entera — esas dos siguen comprobándose para todo lo demás.
+Los tres **salen con código 1 si algo falla**, y dicen exactamente qué y dónde.
 
 ## Se ejecuta solo — dos capas
 
@@ -105,7 +92,7 @@ No hace falta acordarse: hay dos redes, y **la primera bloquea antes de que nada
 
 | Cuándo | Qué | Dónde |
 |---|---|---|
-| **Antes de cada `git push`** | `npm run check` + `tsc --noEmit`. Si falla, **cancela el push**. No incluye `check:contenido`, que necesita credenciales | `.githooks/pre-push` |
+| **Antes de cada `git push`** | `npm run check` + `tsc --noEmit`. Si falla, **cancela el push** | `.githooks/pre-push` |
 | **Al llegar a GitHub** | lo mismo, y esto no se puede saltar | `.github/workflows/check.yml` |
 
 El hook está **versionado** en `.githooks/` — git lo encuentra por `core.hooksPath`, que configura sola la primera `npm install` gracias al script `prepare` de `package.json`. **No hay dependencia de husky ni de nada.** En un clon nuevo basta con `npm install`.

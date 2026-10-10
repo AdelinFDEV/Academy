@@ -423,7 +423,7 @@ export default function GuiasInstruccionesPage() {
             <li>El desbloqueo se persiste en <code>user_badges</code> vía <code>/api/guide-badge</code>, que valida el <code>badgeId</code> contra <code>GUIDES</code></li>
             <li>El quiz llama a <code>saveGuideBadge(badgeId)</code> de <code>src/lib/guideBadge.ts</code>, que además dispara el popup de desbloqueo</li>
             <li>Convención de <code>badgeId</code>: <code>guide-[tema]</code> (ej. <code>guide-fiscalidad-cripto</code>)</li>
-            <li>Los logros por racha de lectura de artículos son independientes y coexisten en la misma tabla</li>
+            <li>Los logros de racha (días seguidos en la academia) y los de cursos y diario coexisten en la misma tabla</li>
           </ul>
         </div>
       </section>

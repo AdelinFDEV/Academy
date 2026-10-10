@@ -2,7 +2,7 @@
  * Auditoría SEO de una página publicada, contra el HTML que se sirve de verdad.
  *
  *   npm run dev                              (en otra terminal)
- *   npm run check:seo -- /post/mi-slug
+ *   npm run check:seo -- /guias/mi-slug
  *   npm run check:seo -- /guias/xrp
  *   npm run check:seo -- /glosario/exchange
  *
@@ -33,7 +33,7 @@ const BASE = process.env.SEO_BASE || "http://localhost:3000";
 
 /**
  * Se acepta con barra inicial y sin ella, y no es un capricho: Git Bash en
- * Windows convierte `/post/mi-slug` en `C:/Program Files/post/mi-slug` antes de
+ * Windows convierte `/guias/mi-slug` en `C:/Program Files/guias/mi-slug` antes de
  * que el script lo vea. Escribiéndolo sin la barra no lo toca.
  */
 let ruta = (process.argv[2] ?? "").trim();
@@ -44,7 +44,7 @@ if (ruta && !ruta.startsWith("/")) ruta = "/" + ruta;
 
 if (!ruta || !/^\/(post|guias|glosario)\/[a-z0-9-]+$/.test(ruta)) {
   console.log(`
-Uso:  npm run check:seo -- post/mi-slug
+Uso:  npm run check:seo -- guias/mi-slug
       npm run check:seo -- guias/xrp
       npm run check:seo -- glosario/exchange
 
@@ -295,7 +295,7 @@ ok(n <= P.max, `≤ ${P.max} palabras`, `${n}`);
  * Y siempre manda la que se imponga a mano — obligatorio cuando el slug y la
  * consulta objetivo no coinciden, que es lo normal en una entrada de noticia:
  *
- *   npm run check:seo -- post/mi-slug "market cap"
+ *   npm run check:seo -- guias/mi-slug "market cap"
  */
 const VACIAS = new Set(["el", "la", "los", "las", "un", "una", "de", "del", "y", "o", "en",
   "que", "es", "como", "para", "por", "con", "sin", "su", "sus", "al", "lo"]);
@@ -313,7 +313,7 @@ const cuenta = (k) => (k ? (t.match(new RegExp(`\\b${plano(k).replace(/[.*+?^${}
  * Todo lo que venga después de la ruta es la palabra clave, junto.
  *
  * No es `argv[3]` a secas porque **npm se come las comillas**: al escribir
- *   npm run check:seo -- post/mi-slug "market cap"
+ *   npm run check:seo -- guias/mi-slug "market cap"
  * el script recibe «market» y «cap» como dos argumentos sueltos, y medía solo
  * el primero. Con el join da igual cómo sobrevivan las comillas.
  */

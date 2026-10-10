@@ -187,7 +187,6 @@ export function textoInicio(perfil: PerfilBot | null, nombre?: string | null): s
       "Bienvenido a AdelinBTC Academy 🚀\n\n" +
       "Aquí se aprende cripto sin humo:\n" +
       "📚 Guías interactivas\n" +
-      "📈 Análisis y noticias que importan\n" +
       "🛠 Herramientas de trading de verdad\n\n" +
       "Vincula tu cuenta y me encargo de todo: te abro el canal privado en cuanto seas Premium 🔓\n\n" +
       "Echa un vistazo, sin prisa 👇"
@@ -243,7 +242,7 @@ export function fichaEstado(perfil: PerfilBot | null): string {
   if (!tienePremium(perfil)) {
     return (
       "🆓 Estás en el plan gratuito\n\n" +
-      "Tienes los artículos, las guías básicas, la watchlist, la calculadora de riesgo y los logros.\n\n" +
+      "Tienes las guías básicas, la watchlist, la calculadora de riesgo y los logros.\n\n" +
       `Con Premium 💎 (${precioMes()}/mes) se abren el canal privado, el diario de trading, ` +
       "el portfolio en tiempo real, las liberaciones de tokens y todas las guías.\n\n" +
       "Mira el detalle, una por una 👇"
@@ -504,7 +503,7 @@ function pantallaGratis(perfil: PerfilBot | null): Pantalla {
       "🧮 Calculadora de riesgo\n" +
       "🏆 Logros y rachas\n" +
       "📖 Glosario cripto de la A a la Z\n" +
-      "📣 Canal gratuito de Telegram, con noticias y vídeos\n\n" +
+      "📣 Canal gratuito de Telegram, con las guías y vídeos nuevos\n\n" +
       "Para la watchlist, la calculadora y los logros necesitas una cuenta gratuita — nada más.",
     botones: [
       [

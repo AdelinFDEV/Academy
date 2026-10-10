@@ -3,20 +3,30 @@
  * es como se le dice a Google «esto se ha ido y no va a volver»: las quita del
  * índice antes que con un 404 y no lo cuenta como un error de la web.
  *
- * El 10-10-2026 la web dejó de publicar noticias: se borraron las 12 entradas
- * y las categorías que no son de las 12 criptomonedas que se siguen. Las que
- * tenían una página equivalente no están aquí: se redirigen en next.config.ts
- * (redirección permanente, que traspasa lo ganado). Copia de lo borrado, en
- * local: backups/entradas-2026-10-10.json.
+ * El 10-10-2026 la web dejó de publicar noticias y, el mismo día, retiró todo
+ * el sistema de entradas: la academia es solo guías. Por eso no hay solo una
+ * lista de URLs: **cualquier** `/post/…` o `/categoria/…`, y el RSS, responden
+ * 410 (PREFIJOS_RETIRADOS). Las 4 entradas que tenían una guía equivalente se
+ * redirigen en next.config.ts, que Next aplica ANTES que el middleware.
+ * Copia de lo borrado, en local: backups/.
  *
  * Reglas:
  * - Solo rutas exactas, sin barra final (Next ya la quita con una redirección).
- * - No metas aquí una URL que pueda volver a existir: si mañana se publica
- *   algo en ella, seguiría respondiendo 410 y Google no la indexaría.
+ * - No metas aquí una URL ni un prefijo que pueda volver a existir: si mañana
+ *   se publica algo en él, seguiría respondiendo 410 y Google no lo indexaría.
  * - Nunca mandes una retirada al inicio «para no perder tráfico»: Google lo
  *   trata como un 404 encubierto (soft 404).
  */
+/** Secciones enteras retiradas: todo lo que empiece así responde 410. */
+export const PREFIJOS_RETIRADOS: readonly string[] = ["/post/", "/categoria/"];
+
+/** ¿Está retirada esta ruta? */
+export function estaRetirada(pathname: string): boolean {
+  return RETIRADAS.has(pathname) || PREFIJOS_RETIRADOS.some((p) => pathname.startsWith(p));
+}
+
 export const RETIRADAS: ReadonlySet<string> = new Set([
+  "/rss.xml",
   // Entradas sin página equivalente
   "/post/injective-hackeo-2026",
   "/post/zcash-ironwood-etf-zcsh-2026",

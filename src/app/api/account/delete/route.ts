@@ -10,16 +10,13 @@ import { revokeChannelAccess } from "@/lib/telegram";
 // verificar remotamente si tienen esa cascada configurada — así el borrado
 // funciona siempre, tenga o no cascada la base de datos.
 const OWNED_TABLES = [
-  "comments",
   "guide_likes",
   "guide_saves",
   "guide_quiz_completions",
   "saved_terms",
-  "user_posts",
   "trades",
   "watchlist",
   "user_badges",
-  "post_likes",
 ] as const;
 // Nota: `portfolio_positions` NO va aquí — es el portfolio-escaparate
 // compartido del admin (no tiene `user_id`, lo gestiona solo el admin), así que
@@ -31,7 +28,6 @@ const OWNED_TABLES = [
 const ANONYMIZE_TABLES = [
   "guide_visits",
   "guide_shares",
-  "post_shares",
   "site_visits",
   "subscription_log",
 ] as const;

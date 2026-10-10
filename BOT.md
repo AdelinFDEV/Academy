@@ -19,7 +19,7 @@ Son ~3.500 líneas repartidas en cinco piezas, y ninguna estaba documentada hast
 | `src/app/api/telegram/webhook/route.ts` | **1.353** | El cerebro. Recibe **todo** lo que Telegram manda: mensajes, pulsaciones de botón, solicitudes de entrada al canal |
 | `src/lib/bot-menu.ts` | 838 | Las pantallas y los menús. Decide qué ve cada quien según su rol |
 | `src/lib/telegram.ts` | 800 | La capa de API: enviar, editar, expulsar, aprobar, resolver chats |
-| `src/lib/announce.ts` | 320 | Anuncia entradas, guías y vídeos nuevos |
+| `src/lib/announce.ts` | — | Anuncia guías y vídeos nuevos |
 | `src/app/api/telegram/{link,status,unlink}` | — | Unir y desunir la cuenta de la web con la de Telegram |
 
 Y fuera de la web, una sola herramienta:
@@ -67,17 +67,14 @@ Vive en `telegram_link_tokens`. `/api/telegram/status` dice si la cuenta está v
 
 El bot lee `profiles` para saber si quien escribe es free, premium o admin, y `menuPara()` en `bot-menu.ts` monta una pantalla distinta para cada uno. **El rol se lee de la base de datos, nunca de lo que llegue en el mensaje.**
 
-### 3 · Publicar en la web dispara un aviso
+### 3 · Publicar una guía dispara un aviso
 
-`anunciarPendientes()` (`src/lib/announce.ts`) recoge lo publicado y lo anuncia en el grupo, leyendo `posts` y `content_announcements`.
+`anunciarPendientes()` (`src/lib/announce.ts`) recoge las guías nuevas de `GUIDES` y los vídeos de YouTube y los anuncia en el canal, apuntando cada uno en `content_announcements` para no repetirlo.
 
-> 🔴 **Por eso `published = true` no es solo un flag de visibilidad: manda un mensaje a la comunidad del admin.** Si no ha aprobado, se inserta con `published = false`.
+> 🔴 **Por eso dar de alta una guía en `GUIDES` y desplegar no es solo publicarla en la web: el cron diario la anuncia a la comunidad.** Sin la aprobación del admin, no se despliega. Para anunciarla sin esperar al cron está el botón de anunciar del panel (`POST /api/admin/announce`).
 
-> 🔴 **Y al revés: `published = true` escrito a mano en Supabase NO anuncia nada.** El aviso lo dispara la ruta `PATCH /api/admin/posts/[id]`, no la fila. Cambiar la columna por SQL publica la entrada en la web y deja a la comunidad sin enterarse, sin error ni registro.
->
-> **Publica siempre desde el interruptor Borrador → Publicado de la tabla de `/admin`.** Pasó el 07-09-2026 con `injective-hackeo-2026`: se publicó por SQL, el aviso no salió, y hubo que esperar al barrido del cron de las 04:00. El bot estaba perfecto —`telegram-doctor` en verde de punta a punta—, que es lo que hace que se pierda una hora buscando donde no es.
->
-> Si por lo que sea hay que publicar fuera del panel, el aviso se dispara después con el botón de anunciar (`POST /api/admin/announce`), y se comprueba en `content_announcements`.
+Desde el 10-10-2026 la web no tiene entradas ni noticias (se retiró todo su sistema), así que el bot ya no las anuncia ni las propone.
+
 
 Para un anuncio con copy propio en vez de la plantilla fija, el procedimiento está en [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md).
 
@@ -98,13 +95,12 @@ Declarados en `vercel.json` y protegidos por `CRON_SECRET`:
 |---|---|---|
 | `telegram-sync` | 04:00 diario | **Expulsa del canal a quien ya no es premium**, avisa a quien está a punto de caducar y limpia los `telegram_events` viejos |
 | `promo-premium` | 13:00 dom · mié · vie | Manda la promoción de Premium al canal gratuito |
-| `noticias` | a diario, 07:00 UTC | Propone noticias al admin para que las apruebe. **En el plan Hobby ningún cron puede correr más de una vez al día**: si no, Vercel rechaza el despliegue sin construir |
 
 `telegram-sync` es el que más cuidado pide: **expulsa gente**. Antes de echar a nadie comprueba si está realmente dentro del canal, y no es un detalle de eficiencia — sin esa comprobación, cada usuario gratuito que vinculó Telegram pero nunca entró al canal generaría una llamada de expulsión y un registro, todos los días, para siempre.
 
 ---
 
-## Las once tablas
+## Las nueve tablas
 
 | Tabla | Para qué |
 |---|---|
@@ -113,9 +109,9 @@ Declarados en `vercel.json` y protegidos por `CRON_SECRET`:
 | `telegram_access_log` | Quién entró y quién fue expulsado del canal, y por qué |
 | `telegram_support_threads` | Los hilos de soporte: el usuario escribe al bot, el admin contesta |
 | `telegram_channel_events` · `telegram_channel_stats` | Altas, bajas y recuento del canal |
-| `bot_ajustes` | Interruptores del bot: `avisos_pausados` (`/stop`, calla todos los avisos automáticos) y `noticias_pausadas` (solo el cron de noticias; **en pausa desde el 04-10-2026**, se reactiva poniendo la fila a `"0"`) |
+| `bot_ajustes` | Interruptores del bot: `avisos_pausados` (`/stop`, calla todos los avisos automáticos) |
 | `content_announcements` | Qué se ha anunciado ya, para no repetirlo |
-| `posts` · `profiles` · `noticias` | Las de la web, en solo lectura desde el bot |
+| `profiles` | La de la web, en solo lectura desde el bot |
 
 ---
 
@@ -135,12 +131,12 @@ CRON_SECRET                     NEXT_PUBLIC_SITE_URL
 
 ---
 
-## Los 27 comandos
+## Los 25 comandos
 
 ```
 /start  /arrancar  /menu  /ayuda  /help  /stop  /cancelar  /estado
 /web  /dashboard  /premium  /precio  /gratis  /canal  /video
-/articulos  /guias  /glosario  /calculadora  /portfolio  /noticias
+/guias  /glosario  /calculadora  /portfolio
 /faq  /terminos  /privacidad  /usuarios  /chatid  /gombos
 ```
 

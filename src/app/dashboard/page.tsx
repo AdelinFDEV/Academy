@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Icon from "@/components/Icon";
-import DashboardSavedPosts from "@/components/DashboardSavedPosts";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
 import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, Lock } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
@@ -12,7 +11,6 @@ import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
-import type { PostCategoryRef } from "@/lib/types";
 import SiguientePasoTelegram from "@/components/SiguientePasoTelegram";
 
 export default async function DashboardPage() {
@@ -33,16 +31,7 @@ export default async function DashboardPage() {
   const isPremium = role === "premium" || role === "admin";
   const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
 
-  const [{ data: posts }, { data: userPostsData }, { data: savedTermsData }, { data: savedGuidesData }, { data: userBadgesData }] = await Promise.all([
-    supabase
-      .from("posts")
-      .select("id, title, slug, cover_image, is_premium, created_at, categories(name, slug)")
-      .eq("published", true)
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("user_posts")
-      .select("post_id, saved, read_at")
-      .eq("user_id", user.id),
+  const [{ data: savedTermsData }, { data: savedGuidesData }, { data: userBadgesData }] = await Promise.all([
     supabase
       .from("saved_terms")
       .select("term, definition, category")
@@ -59,8 +48,6 @@ export default async function DashboardPage() {
       .eq("user_id", user.id),
   ]);
 
-  const allPosts = posts ?? [];
-  const userPosts = userPostsData ?? [];
   const savedTermsList = savedTermsData ?? [];
   const savedGuidesList = (savedGuidesData ?? [])
     .map((sg) => ({ slug: sg.guide_slug, savedAt: sg.saved_at, meta: GUIDES.find((g) => g.slug === sg.guide_slug) }))
@@ -74,18 +61,6 @@ export default async function DashboardPage() {
   // ninguno de antes) no se le enseñan siete logros imposibles.
   const DASH_BADGES = LOGROS.filter((b) => !b.diario || isPremium || isEarned(earnedBadgeIds, b));
   const badgesUnlockedCount = DASH_BADGES.filter((b) => isEarned(earnedBadgeIds, b)).length;
-
-  const readIds = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
-  const savedIds = new Set(userPosts.filter((up) => up.saved).map((up) => up.post_id));
-  const savedPosts = allPosts.filter((p) => savedIds.has(p.id));
-
-  const savedUnread = allPosts.filter((p) => {
-    const up = userPosts.find((u) => u.post_id === p.id);
-    return up?.saved && !up.read_at;
-  });
-  const continueReading = savedUnread.length > 0
-    ? savedUnread.slice(0, 3)
-    : allPosts.filter((p) => !readIds.has(p.id)).slice(0, 3);
 
   const TOOL_SECTIONS: ToolSection[] = [
     {
@@ -300,86 +275,6 @@ export default async function DashboardPage() {
             </Link>
           ))}
         </div>
-      </div>
-
-      {/* ── Últimas entradas publicadas: solo si hay alguna ── */}
-      {allPosts.length > 0 && (
-      <div className="dash-section">
-        <div className="dash-section-head">
-          <h2 className="dash-section-title">Últimas entradas publicadas</h2>
-        </div>
-        <div className="dash-continue-list">
-          {allPosts.slice(0, 3).map((post) => (
-            <Link key={post.id} href={`/post/${post.slug}`} className="dash-continue-card">
-              <div
-                className="dash-continue-thumb"
-                style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
-              >
-                {!post.cover_image && <Icon name="chart" size={26} />}
-                {post.is_premium && <span className="dash-mini-badge">PREMIUM</span>}
-              </div>
-              <div className="dash-continue-body">
-                {(post.categories as PostCategoryRef | null)?.name && (
-                  <span className="dash-continue-cat">{(post.categories as PostCategoryRef).name}</span>
-                )}
-                <h3 className="dash-continue-title">{post.title}</h3>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-      )}
-
-      {/* ── Continúa leyendo ── */}
-      {continueReading.length > 0 && (
-        <div className="dash-section">
-          <div className="dash-section-head">
-            <h2 className="dash-section-title">Continúa leyendo</h2>
-          </div>
-          <div className="dash-continue-list">
-            {continueReading.map((post) => (
-              <Link key={post.id} href={`/post/${post.slug}`} className="dash-continue-card">
-                <div
-                  className="dash-continue-thumb"
-                  style={post.cover_image ? { backgroundImage: `url(${post.cover_image})` } : undefined}
-                >
-                  {!post.cover_image && <Icon name="chart" size={26} />}
-                  {post.is_premium && <span className="dash-mini-badge">PREMIUM</span>}
-                </div>
-                <div className="dash-continue-body">
-                  {(post.categories as PostCategoryRef | null)?.name && (
-                    <span className="dash-continue-cat">{(post.categories as PostCategoryRef).name}</span>
-                  )}
-                  <h3 className="dash-continue-title">{post.title}</h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ── Artículos guardados ── */}
-      <div className="dash-section">
-        <div className="dash-section-head">
-          <h2 className="dash-section-title">
-            Artículos guardados
-            {savedPosts.length > 0 && (
-              <span className="dash-count-pill">{savedPosts.length}</span>
-            )}
-          </h2>
-        </div>
-        <DashboardSavedPosts
-          isPremium={isPremium}
-          initialPosts={savedPosts.map((p) => ({
-            id: p.id,
-            slug: p.slug,
-            title: p.title,
-            cover_image: p.cover_image,
-            is_premium: p.is_premium,
-            isRead: readIds.has(p.id),
-            categoryName: (p.categories as PostCategoryRef | null)?.name ?? null,
-          }))}
-        />
       </div>
 
       {/* ── Guías guardadas ── */}

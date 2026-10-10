@@ -191,11 +191,6 @@ async function medir(ctx: Contexto, o: Objetivo, p: Periodo): Promise<{ valor: n
       return { valor: ctx.registros.get(`${o.id}|${p.desde}`) ?? 0, base: 0 };
     case "marca":
       return nivelDe(ctx.marcas.get(o.id) ?? [], p);
-    case "entradas":
-      return {
-        valor: await contar(a.from("posts").select("id", { count: "exact", head: true }).eq("published", true).gte("created_at", ini).lt("created_at", fin)),
-        base: 0,
-      };
     case "videos":
     case "shorts": {
       // Lo subido a YouTube, por su fecha real de publicación: la misma fuente

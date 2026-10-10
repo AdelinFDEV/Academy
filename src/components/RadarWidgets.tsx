@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { TrendingUp, TrendingDown, Gauge, ArrowRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Gauge } from "lucide-react";
 
 /**
  * Los dos widgets del Radar Diario —Bitcoin 24h y Miedo y Codicia—, extraídos
@@ -146,58 +144,6 @@ export function RadarFngCard({ fng, loaded }: { fng: RadarFng | null; loaded: bo
         </div>
         <span className="rd-fng-label" style={{ color: meta.color }}>{meta.label}</span>
         <span className="rd-fng-note">Sentimiento del mercado cripto</span>
-      </div>
-    </section>
-  );
-}
-
-/**
- * Bloque de la portada: los dos widgets en vivo más la salida al Radar.
- *
- * Va tras el hero y antes del contenido editorial. Se pide en cliente igual
- * que en el radar, así que el dato es el mismo y se refresca al entrar.
- */
-export default function RadarWidgetsHome() {
-  const [btc, setBtc] = useState<RadarBtc | null>(null);
-  const [fng, setFng] = useState<RadarFng | null>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    let vivo = true;
-    fetch("/api/radar")
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
-      .then((d: { btc: RadarBtc | null; fng: RadarFng | null }) => {
-        if (!vivo) return;
-        setBtc(d.btc);
-        setFng(d.fng);
-      })
-      .catch(() => { /* sin datos: las tarjetas lo dicen solas */ })
-      .finally(() => { if (vivo) setLoaded(true); });
-    return () => { vivo = false; };
-  }, []);
-
-  return (
-    <section className="rdh" aria-label="El mercado hoy">
-      <div className="rdh-head">
-        <div>
-          <span className="rdh-eyebrow">
-            <span className="rdh-dot" aria-hidden="true" />
-            En vivo
-          </span>
-          <h2 className="rdh-title">El mercado, ahora mismo</h2>
-        </div>
-        {/* Directo a la herramienta, no a la ficha (decisión del admin,
-            04-10-2026). Quien no tiene sesión pasa por el login y vuelve aquí
-            al entrar; quien no es premium acaba en /premium. */}
-        <Link href="/herramientas/radar" className="rdh-cta">
-          Ver el Radar Diario
-          <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
-        </Link>
-      </div>
-
-      <div className="rdh-grid">
-        <RadarBtcCard btc={btc} loaded={loaded} />
-        <RadarFngCard fng={fng} loaded={loaded} />
       </div>
     </section>
   );

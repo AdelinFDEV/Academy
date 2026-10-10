@@ -12,7 +12,7 @@ La regla que las gobierna a todas: **si vas a cambiar algo de aquí, primero ent
 
 | Vas a tocar… | Lee |
 |---|---|
-| Entradas premium, la RLS de `posts`, por qué una premium no da 404 | [El muro de pago](#el-muro-de-pago-de-las-entradas-dónde-está-de-verdad) |
+| Por qué no hay entradas, `/post/` y `/categoria/` en 410, lo de pago de los cursos | [Solo guías](#desde-el-10-10-2026-la-web-es-solo-guías) |
 | `portfolio_positions`, `dca_compras`, `/api/portfolio`, `/api/dca` | [Portfolio Adelin](#portfolio-adelin-solo-el-admin-escribe-y-hay-dos-barreras) |
 | Aviso legal, privacidad, cookies, `src/lib/legal.ts` | [El marco legal es rumano](#el-marco-legal-es-rumano--no-vuelvas-a-escribir-normativa-española) |
 | Cualquier script de terceros, el banner de cookies, GA4 | [Analítica y consentimiento](#analítica-dos-capas-y-el-banner-manda-sobre-una-de-ellas) |
@@ -22,49 +22,14 @@ La regla que las gobierna a todas: **si vas a cambiar algo de aquí, primero ent
 
 ---
 
-# El muro de pago de las entradas: dónde está de verdad
+# Desde el 10-10-2026 la web es solo guías
 
-Comprobado el 06-09-2026 creando una entrada premium real y consultándola con cada rol, no leyendo el código.
+El admin decidió retirar **todo el sistema de entradas**: la página de cada entrada, `/articulos`, las categorías, los comentarios, los «me gusta», los guardados y lecturas, el RSS, el panel de admin para escribirlas, el sistema de noticias del bot y sus tablas (`posts`, `categories`, `comments`, `post_likes`, `post_shares`, `user_posts`, `noticias`, `noticia_votos`). También los 5 logros de leer y guardar artículos. Copia de todo, en local: `backups/` (fuera de git).
 
-**La policy de `posts` en Supabase esconde la fila entera** de una entrada premium a quien no lo sea. Eso suena a lo correcto, y protege de verdad: con la clave anónima —la que va en el navegador de cualquiera— no se puede sacar el texto de pago. Pero tenía un efecto que nadie había visto porque **todavía no hay ninguna entrada premium publicada**: la entrada era un **404** para Google y para cualquier usuario free que recibiera el enlace, no entraba en el sitemap, ni en el RSS, ni en los listados. El muro de pago de `/post/[slug]` y el badge «Premium» de los listados eran **código inalcanzable**.
+- **`/post/…`, `/categoria/…` y `/rss.xml` responden 410** desde `src/proxy.ts` (`src/lib/retiradas.ts`): así Google los da por retirados. Las 4 entradas que tenían una guía equivalente redirigen a ella (`next.config.ts`), y Next aplica esas redirecciones antes que el middleware.
+- **No lo vuelvas a crear sin que el admin lo pida.** Si algún día vuelve algo parecido, que use otro prefijo: `/post/` y `/categoria/` quedan retirados para siempre.
 
-Contenido de pago perfectamente protegido y perfectamente invisible.
-
-**La solución: las páginas públicas leen las entradas con `createAdminClientOpcional()`**, que devuelve el cliente de servicio si hay clave y `null` si no. El patrón, en las cinco:
-
-```ts
-const lector = createAdminClientOpcional() ?? supabase;
-```
-
-Está en `/post/[slug]` (metadata y página), la portada, `/categoria/[slug]`, `sitemap.ts` y `rss.xml`.
-
-Tres reglas al tocar esto:
-
-1. **`.eq("published", true)` no se quita nunca.** Es lo único que separa un borrador de una publicación, y saltando RLS ya no hay red debajo.
-2. **En los listados no se pide `content`.** Solo título, extracto, portada y categoría — lo que ya se enseña. El RSS tampoco lleva cuerpo, por eso anunciar una entrada premium ahí no abre nada.
-3. **En `/post/[slug]` el contenido se retira en cuanto se sabe que no toca** (`if (!hasAccess) post.content = null`), antes de renderizar. Al ser un componente de servidor, lo que no se pinta no llega al navegador.
-
-**Cómo comprobar que sigue bien.** Crear una entrada con `is_premium: true, published: true`, pedir su URL sin sesión y verificar: **200**, con título y extracto, **sin** el cuerpo; y que aparece en `/articulos`, la portada, el sitemap y el RSS. Borrarla después.
-
-## La vista previa de un borrador
-
-Añadida el 07-09-2026. Una entrada con `published = false` daba **404 para todo el mundo, admin incluido**, así que no había forma de ver cómo quedaba antes de publicarla. Y publicar para mirarla no es una opción: `published = true` **manda un aviso al grupo de Telegram**.
-
-**Lo que NO se tocó: `.eq("published", true)` sigue en su sitio, intacto, en todas las consultas.** La vista previa solo añade un **segundo intento**, cuando la primera consulta no devuelve nada **y** quien mira es admin. Dos ventajas sobre quitar el filtro y decidir después:
-
-1. **El camino normal no cambia ni cuesta una consulta.** La segunda solo ocurre sobre lo que iba a ser un 404 de todas formas.
-2. **Si esto se rompe, se rompe hacia el lado seguro.** Un fallo aquí devuelve 404 — lo que pasaba antes. Quitando el filtro, un fallo enseñaría borradores a cualquiera.
-
-El rol se lee de la **base de datos** a partir de la sesión, nunca de la petición. La lógica y su porqué viven en `src/lib/borradores.ts`.
-
-**Un borrador sigue sin aparecer en ningún sitio**: el sitemap, el RSS, la portada y las categorías mantienen su filtro y no se tocaron. Se ve escribiendo su URL, y solo siendo admin. Además la página sale con `noindex, nofollow` y **sin canónica** — una canónica en un borrador le diría a Google que esa URL es la buena versión de algo que todavía no existe.
-
-**Cómo comprobar que sigue bien**, sin sesión y con un borrador cualquiera:
-
-```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://adelinacademy.com/post/SLUG   # tiene que dar 404
-curl -s https://adelinacademy.com/sitemap.xml | grep -c "SLUG"                 # tiene que dar 0
-```
+**Lo que sigue en pie del patrón de lectura:** el catálogo y el temario públicos de los **cursos** se leen con `createAdminClientOpcional()` (`src/lib/cursos.ts`), que devuelve el cliente de servicio si hay clave y `null` si no. Con la clave anónima, la policy esconde lo de pago y la ficha de un curso Premium daría 404, para Google y para los listados. No lo «arregles» cambiándolo por el cliente normal.
 
 ---
 
@@ -95,7 +60,7 @@ Desde el 04-10-2026. Las tablas —`objetivos`, `objetivo_registros`, `objetivo_
 
 - **Leer:** la página de servidor, con `createAdminClient()`, detrás del layout de `/admin` que exige rol admin.
 - **Escribir:** `/api/admin/plan/[recurso]` y `/api/admin/plan/[recurso]/[id]`, con `requireAdmin()` y los validadores de `src/lib/objetivosValidar.ts`, que solo dejan pasar las columnas que conocen.
-- **El progreso de los objetivos automáticos no se guarda**: se calcula al leer en `src/lib/objetivosServidor.ts` (`src/lib/objetivos.ts` es la parte pura, que también importa el cliente). Sale de `posts`, la API de YouTube, `profiles` (sin administradores), `movimientos`, `telegram_channel_stats` y `metricas_diarias`. Los vídeos y los Shorts se cuentan con `subidasEntre()` (`src/lib/actividadMes.ts`), por su fecha real de subida, la misma fuente que el calendario; sin API caen a los avisos del bot (`content_announcements`). Los ingresos Premium son **lo cobrado de verdad** (filas `stripe` de `movimientos`), no una estimación. Telegram se cuenta **sin administradores** (el dueño y el bot), restados con `getChannelAdminCount()`.
+- **El progreso de los objetivos automáticos no se guarda**: se calcula al leer en `src/lib/objetivosServidor.ts` (`src/lib/objetivos.ts` es la parte pura, que también importa el cliente). Sale de la API de YouTube, `profiles` (sin administradores), `movimientos`, `telegram_channel_stats` y `metricas_diarias`. Los vídeos y los Shorts se cuentan con `subidasEntre()` (`src/lib/actividadMes.ts`), por su fecha real de subida, la misma fuente que el calendario; sin API caen a los avisos del bot (`content_announcements`). Los ingresos Premium son **lo cobrado de verdad** (filas `stripe` de `movimientos`), no una estimación. Telegram se cuenta **sin administradores** (el dueño y el bot), restados con `getChannelAdminCount()`.
 - **El progreso manual sí se guarda, uno por periodo** en `objetivo_registros`: es lo que da historial a los objetivos que se repiten cada semana o cada mes. `objetivos.progreso_manual` queda por compatibilidad y ya no se lee.
 - **Suscriptores de YouTube**: necesitan `YOUTUBE_API_KEY`. El cron de las 04:00 (`telegram-sync`) guarda una foto diaria en `metricas_diarias`; sin clave no guarda nada y el objetivo se queda en 0.
 - **No añadas una policy** «para que el admin pueda». Mismo error que en el portfolio, y aquí con datos más personales.
@@ -181,9 +146,8 @@ Cómo llega Google a una página y qué la hace desaparecer. Lo que hay que **ha
 
 ### Lo que ya es automático — no hay que hacer nada
 
-- **`/sitemap.xml`** (`src/app/sitemap.ts`) se genera solo y **revalida cada hora**. Lee las entradas de Supabase, así que **una entrada nueva aparece sola en menos de 1 h desde que se publica**. No hay lista que mantener a mano.
+- **`/sitemap.xml`** (`src/app/sitemap.ts`) se genera solo y **revalida cada hora**: las rutas estáticas, las guías de `GUIDES`, los términos del diccionario con página y los cursos publicados.
 - **`/robots.txt`** (`src/app/robots.ts`) declara el sitemap y bloquea el rastreo de lo privado.
-- **Las categorías** entran solas, con la fecha de su entrada más reciente. Una categoría **sin ninguna entrada publicada no entra**, a propósito: su página saldría vacía.
 
 ### Cada ruta pública declara su canónica — y hay que mantenerlo
 
@@ -193,8 +157,6 @@ Desde el 31-08-2026 **todas las rutas públicas** emiten `<link rel="canonical">
 
 | Creas… | Qué hace falta |
 |---|---|
-| **Entrada** | Nada. `/post/[slug]` la genera sola en su `generateMetadata`. |
-| **Categoría** | Nada. `/categoria/[slug]` la genera sola. |
 | **Guía** | **Añadir `alternates: { canonical: "/guias/<slug>" }` a su `metadata`**, además de darla de alta en `GUIDES`. No hay plantilla que lo haga por ti: cada guía es un componente propio. |
 | **Página pública nueva** | Añadir su `alternates.canonical` a mano, además de meterla en `STATIC_ROUTES`. |
 
@@ -213,7 +175,6 @@ Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constr
 | Dónde | Qué emite | ¿Hay que hacer algo? |
 |---|---|---|
 | **Todas las rutas** | `Organization` + `WebSite` | No. Van en el layout raíz, una sola vez |
-| **Entrada** | `Article` + `BreadcrumbList` | No. `/post/[slug]` los genera solos |
 | **Guía** | `Article` (con su muro) + `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>`, y rellenar `muro` en `GUIDES` |
 | **Página pública nueva** | Nada por defecto | Solo si el tipo aporta algo real. Una página sin tipo propio no necesita ninguno |
 
@@ -223,26 +184,24 @@ Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constr
 
 Dos consecuencias prácticas al tocar contenido:
 
-- **Las migas de pan del JSON-LD replican las visibles.** En una entrada son Inicio › Artículos › Categoría › Título, y están escritas dos veces en `/post/[slug]`: en el `<nav className="post-breadcrumb">` y en el `breadcrumbSchema`. Si cambias una, cambia la otra.
+- **Las migas de pan del JSON-LD replican las visibles.** Si cambias las que se ven, cambia las del esquema.
 - **El nombre de la guía en las migas sale de `GUIDES`**, no del `title` de su metadata — que es más corto a propósito por el límite de 48. Es intencionado: el de `GUIDES` es el que se ve en `/guias`, y es con lo visible con lo que tiene que coincidir.
 
-`isAccessibleForFree` sale de `is_premium` en una entrada, y del campo `muro` de `GUIDES` en una guía (`null` = se lee entera sin cuenta). Es lo que evita que Google interprete el muro de pago como *cloaking* — enseñarle a él una cosa y al visitante otra.
+`isAccessibleForFree` sale del campo `muro` de `GUIDES` en una guía (`null` = se lee entera sin cuenta). Es lo que evita que Google interprete el muro de pago como *cloaking* — enseñarle a él una cosa y al visitante otra.
 
 ### Lo que SÍ hay que hacer al crear algo nuevo
 
 | Creas… | Qué hace falta para que entre en el sitemap |
 |---|---|
-| **Entrada** | Nada. Basta con `published = true`. Con `published = false` no entra — que es lo correcto. |
 | **Guía** | **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** El sitemap recorre ese array, no la carpeta `src/app/guias/`. Una guía con su `page.tsx` pero sin su entrada en `GUIDES` **es invisible para Google**. |
 | **Página pública nueva** | Añadirla a mano a `STATIC_ROUTES` en `src/app/sitemap.ts`, con su `priority` y su `changeFrequency`. |
 | **Término del diccionario** | Nada, en cuanto tenga `extended` en `src/lib/glosario.ts`. Sin ese campo no existe como URL. |
-| **Categoría** | Nada, en cuanto tenga una entrada publicada. |
 
 ### Tres reglas que ya se rompieron una vez
 
 1. **Antes de meter una ruta en el sitemap, comprueba que devuelve 200 sin sesión.** No basta con mirar su `page.tsx`: **la protección de rutas vive en el middleware `src/proxy.ts`** (array `protectedRoutes`), y desde el `page.tsx` no se ve. Así se coló `/logros`, que redirige a login. Lo que está protegido va a `robots.txt`, no al sitemap.
 2. **Nunca metas en el sitemap una ruta que redirige.** Va el destino, jamás el salto. Así se coló `/terminos`, que es un stub hacia `/aviso-legal`. Un sitemap con 307 dentro es señal negativa para Google.
-3. **Nunca inventes un `lastModified`.** Solo se pone donde hay fecha real (`updated_at` de la entrada; en categorías, la de su entrada más reciente). Las páginas estáticas y las guías van **sin** él: es opcional en el estándar, y una fecha de build que miente hace más daño que una ausente.
+3. **Nunca inventes un `lastModified`.** Solo se pone donde hay fecha real (el `updated_at` de un curso). Las páginas estáticas y las guías van **sin** él: es opcional en el estándar, y una fecha de build que miente hace más daño que una ausente.
 
 ### Detalles de implementación que evitan romper cosas
 
@@ -258,7 +217,7 @@ Dos consecuencias prácticas al tocar contenido:
   ```bash
   curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"
   ```
-- **Al publicar una entrada no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
+- **Al publicar una guía no hay que tocar Search Console.** El sitemap la recoge sola en menos de 1 h y Google lo relee por su cuenta. Solo tiene sentido usar «Inspección de URLs → Solicitar indexación» para algo puntual e importante, y la cuota es de unas 10 al día.
 - **Los datos de Rendimiento empiezan el 30-08-2026.** No hay histórico anterior; si el admin pregunta por la evolución previa, no existe.
 - Si aparece **«Descubierta / Rastreada: actualmente sin indexar»**, es normal en un sitio nuevo, no un error. Ver `/auth/` y compañía como **bloqueadas por robots.txt es intencionado** — lo pusimos nosotros.
 - **Para sacar una página del índice, `noindex` y NO `disallow`.** Con la ruta bloqueada en `robots.txt` Google no entra, no ve el `noindex` y la indexa igual si alguien la enlaza: pasó con `/login` y `/forgot-password` en septiembre de 2026. Desde el 03-10-2026 esas dos y `/register` llevan `noindex` en su `layout.tsx` y ya no están en el `disallow`.

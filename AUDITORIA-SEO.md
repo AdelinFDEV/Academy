@@ -1,22 +1,24 @@
-# AUDITORÍA SEO — el protocolo que se ejecuta al terminar CADA entrada y CADA guía
+# AUDITORÍA SEO — el protocolo que se ejecuta al terminar CADA guía
 
-Esto no es documentación de consulta. Es un **procedimiento que Claude ejecuta paso a paso**, leyéndolo línea por línea, sobre la entrada o la guía que acaba de montar.
+> **Desde el 10-10-2026 la web es solo guías:** no hay entradas, ni tabla `posts`, ni `check:contenido`. Si en algún paso queda la palabra «entrada», léela como «guía». Las fichas del diccionario siguen su propio protocolo en [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md).
+
+Esto no es documentación de consulta. Es un **procedimiento que Claude ejecuta paso a paso**, leyéndolo línea por línea, sobre la guía que acaba de montar.
 
 Está escrito desde un puesto concreto: el de alguien cuyo trabajo es que estas páginas compitan de tú a tú con Binance Academy, Bit2Me Academy, Coinbase Learn y los medios cripto en español. Esas webs tienen dominios con años de autoridad y equipos detrás. Contra eso no se gana escribiendo «bastante bien»: se gana **cumpliendo mejor que ellos lo que Google premia** y **cubriendo lo que ellos no pueden cubrir**.
 
-Hay un motivo extra para que esta auditoría sea más severa que la de una web normal. Google clasifica el contenido sobre dinero, inversión e impuestos como **YMYL** (*Your Money or Your Life*), y a esas páginas les aplica el listón más alto de todo su sistema de evaluación. Cada entrada y cada guía de esta academia es YMYL. **Aquí no hay contenido menor.**
+Hay un motivo extra para que esta auditoría sea más severa que la de una web normal. Google clasifica el contenido sobre dinero, inversión e impuestos como **YMYL** (*Your Money or Your Life*), y a esas páginas les aplica el listón más alto de todo su sistema de evaluación. Cada guía de esta academia es YMYL. **Aquí no hay contenido menor.**
 
 ---
 
 ## CÓMO SE DISPARA — esto es lo primero, y no depende de que nadie lo recuerde
 
-**Al terminar de montar una entrada o una guía nueva, Claude pregunta, siempre, con estas palabras o equivalentes:**
+**Al terminar de montar una guía nueva, Claude pregunta, siempre, con estas palabras o equivalentes:**
 
-> ¿Empiezo la auditoría SEO de la entrada / de la guía?
+> ¿Empiezo la auditoría SEO de la guía?
 
 Reglas del disparador:
 
-1. Se pregunta **siempre**, aunque la entrada parezca corta, urgente o evidente. Una noticia de 500 palabras compite en Google exactamente igual que una guía de 3.000.
+1. Se pregunta **siempre**, aunque la guía parezca corta, urgente o evidente. Una guía corta compite en Google exactamente igual que una de 3.000 palabras.
 2. Se pregunta **después** de tener el contenido montado y **antes** de pedir la aprobación para publicar. El orden importa: auditar después de publicar es corregir en caliente, delante de los lectores y de Google.
 3. **En cuanto el admin diga que sí, se ejecuta esto entero**, de la Fase 0 a la Fase 17, en orden, sin saltarse fases y sin resumirlas.
 4. Si dice que no, se anota en el mensaje de cierre que la entrada **queda sin auditar**, para que conste.
@@ -32,7 +34,6 @@ Las correcciones se aplican en sitios distintos según el tipo, y confundirlos c
 
 | Tipo | Dónde vive el texto | Cómo se corrige |
 |---|---|---|
-| **Entrada** | Una **fila de la tabla `posts`** en Supabase: `content`, `title`, `excerpt`, `seo_title`, `meta_description`, `focus_keyword` | Con un script de Node contra Supabase usando `SUPABASE_SERVICE_ROLE_KEY` de `.env.local` — el mismo patrón que `scripts/check-contenido.mjs`. **Nunca** se crea un `.tsx` para una entrada |
 | **Guía** | `src/app/guias/<slug>/page.tsx` y su `<slug>.css` | Editando el componente |
 | **Ficha del diccionario** | El campo `extended` del término en `src/lib/glosario.ts` | Editando el archivo. Tiene su protocolo propio en [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 
@@ -54,14 +55,13 @@ npm run dev
 
 **0.2 — Ten a mano estos tres datos**, y escríbelos en el informe:
 
-- La **ruta** exacta: `/post/<slug>` o `/guias/<slug>`.
-- El **tipo**: entrada o guía. Los umbrales cambian.
-- La **consulta objetivo**: en una entrada es el `focus_keyword` de su fila; en una guía, la consulta por la que se creó.
+- La **ruta** exacta: `/guias/<slug>`.
+- La **consulta objetivo**: la consulta por la que se creó la guía.
 
 **0.3 — Comprueba que la página responde 200 sin sesión.**
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/post/<slug>
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/guias/<slug>
 ```
 
 Si da **404** siendo una entrada premium, para: es el fallo que describe AGENTS.md —contenido de pago protegido y a la vez invisible— y hay que resolverlo antes de auditar nada. Si da **307**, la ruta está protegida por `src/proxy.ts` y no la va a indexar nadie.
@@ -146,8 +146,8 @@ Es lo único que ve el 100 % de quien nos encuentra. Una página excelente con u
 
 ```
 adelinacademy.com › post › <slug>
-<seo_title> | AdelinBTC
-<meta_description>
+<title> | AdelinBTC
+<description>
 ```
 
 **3.2 — Title. Cuatro comprobaciones, todas obligatorias:**
@@ -159,7 +159,7 @@ adelinacademy.com › post › <slug>
 | Sin coletillas | 0 | «y por qué importa» ocupaba 18 caracteres en cuatro entradas y no aportaba ni una búsqueda |
 | Promete algo concreto | — | «Qué es el staking» informa; «Staking: cuánto se gana y qué paga Hacienda» se pulsa |
 
-`npm run check` vigila el límite de 48 **solo en la metadata escrita en los `page.tsx`**. El `seo_title` de una entrada vive en Supabase: ahí el límite lo aplicas tú, y lo verifica después `check:seo` contra la página servida.
+`npm run check` vigila el límite de 48 en la metadata escrita en los `page.tsx`, que es donde vive el título de cada guía.
 
 **3.3 — Description. Tres comprobaciones:**
 
@@ -205,7 +205,6 @@ Los encabezados no son decoración tipográfica: son **el índice con el que Goo
 
 | Tipo | Mínimo |
 |---|---|
-| Entrada | **3** |
 | Guía | **4** |
 | Ficha del diccionario | **4** (la plantilla fija 5) |
 
@@ -234,10 +233,10 @@ Aquí se cometen los dos errores opuestos, y **el que más se comete es el que m
 **6.1 — Mide la densidad.**
 
 ```bash
-npm run check:seo -- post/<slug> "<focus_keyword>"
+npm run check:seo -- guias/<slug> "<consulta objetivo>"
 ```
 
-El tercer argumento es opcional pero **en una entrada se pone siempre**: sin él, el auditor deduce la clave del slug, y en una noticia el slug y la consulta objetivo casi nunca coinciden. Con el `focus_keyword` de la fila se mide lo que de verdad se persigue.
+El tercer argumento es opcional pero **se pone siempre**: sin él, el auditor deduce la clave del slug, y el slug y la consulta que se quiere ganar rara vez coinciden.
 
 **6.2 — El suelo: ≥ 0,4 %.** Es el fallo real y documentado de esta web: en la primera ficha auditada la palabra clave aparecía **una vez en 1.419 palabras** — un 0,07 %— por evitar sonar a relleno. Google necesita ver el término. Se corrige usándolo **donde pertenece de verdad**: en los `<h2>`, al presentar cada apartado, y al describir los casos concretos. Nunca metiéndolo con calzador en frases que no lo pedían.
 
@@ -251,7 +250,6 @@ El tercer argumento es opcional pero **en una entrada se pone siempre**: sin él
 
 | Tipo | Rango | Nota |
 |---|---|---|
-| Entrada | **500-1.500** palabras | El rango es amplio a propósito: **manda el tema, no la cifra** |
 | Guía | **800+** | Lo que se mide es lo renderizado en el servidor, ver 6.7 |
 | Ficha | **1.200-2.200** | Para competir con Binance y Bit2Me |
 
@@ -316,7 +314,6 @@ Esto es lo que Google mira en contenido YMYL, y es donde una web pequeña puede 
 
 | Tipo | Enlaces internos en el cuerpo |
 |---|---|
-| Entrada | **2-4** |
 | Guía | **≥ 2** |
 | Ficha | **≥ 5** |
 
@@ -337,11 +334,7 @@ El procedimiento, en este orden:
 
 Esto no es cosmético y hace tres cosas a la vez: quien empieza entiende lo que lee sin salir del sitio, cada término gana enlaces internos que lo posicionan —el diccionario son 50 URLs indexables, el bloque más grande de la web— y el texto deja de asumir un vocabulario que el lector objetivo no tiene.
 
-```bash
-npm run check:contenido -- <slug>
-```
-
-Avisa de los términos del diccionario que la entrada menciona sin enlazar. El aviso no bloquea —hay menciones que no son la primera, o que van dentro de una cita— pero **se mira entero**.
+No hay script que lo compruebe en una guía: se repasa a mano, término por término, buscando la primera aparición de cada uno.
 
 **9.5 — Enlaces externos en el cuerpo: cero.** Es regla de la casa y el auditor la comprueba.
 
@@ -379,7 +372,6 @@ Publicar una tercera página sobre lo mismo **nunca** es la salida.
 
 | Tipo | Esquema | ¿Automático? |
 |---|---|---|
-| Entrada | `Article` + `BreadcrumbList` | Sí, los genera `/post/[slug]` |
 | Guía | `Article` (con su muro) + `BreadcrumbList` | **No: hay que añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** y rellenar `muro` en `GUIDES` |
 | Ficha | `DefinedTerm` + `BreadcrumbList` (+ `FAQPage` si hay FAQ) | Sí |
 | Todas | `Organization` + `WebSite` | Sí, en el layout raíz, una sola vez |
@@ -388,9 +380,9 @@ Publicar una tercera página sobre lo mismo **nunca** es la salida.
 
 **11.3 — LA REGLA QUE NO SE PUEDE ROMPER: no declares nada que el visitante no pueda ver.** Google lo llama spam de datos estructurados y lo penaliza. Nada de valoraciones inventadas, autores falsos ni preguntas que solo existen en el esquema. Si emites `FAQPage`, **las preguntas tienen que estar visibles en la página**, y el auditor compara los dos recuentos.
 
-**11.4 — Las migas de pan del esquema replican las visibles.** Están escritas dos veces en `/post/[slug]`: en el `<nav className="post-breadcrumb">` y en el `breadcrumbSchema`. Si cambias una, cambia la otra.
+**11.4 — Las migas de pan del esquema replican las visibles.** Las de una guía salen de `GUIDES` (`<GuideBreadcrumbJsonLd>`): si cambias el título visible, cambia el de `GUIDES`.
 
-**11.5 — `isAccessibleForFree` sale de `is_premium`.** Es lo que evita que Google interprete el muro de pago como *cloaking*.
+**11.5 — `isAccessibleForFree` sale del campo `muro` de `GUIDES`.** Es lo que evita que Google interprete el muro de pago como *cloaking*.
 
 **Sobre el resultado enriquecido de FAQ, sin humo:** desde 2023 Google solo lo muestra a webs oficiales de administración y salud. **Aquí no va a salir.** Se emite igual porque no cuesta nada y porque lo leen los asistentes de IA, pero el valor está en el contenido visible, no en el adorno del buscador.
 
@@ -426,7 +418,6 @@ De poco sirve todo lo anterior si Google no puede llegar, o llega y ve dos pági
 
 | Tipo | Qué hace falta |
 |---|---|
-| Entrada | Nada: la genera `/post/[slug]` |
 | Guía | **Añadir `alternates: { canonical: "/guias/<slug>" }`** a su `metadata` |
 | Página pública nueva | A mano, además de meterla en `STATIC_ROUTES` |
 
@@ -436,7 +427,6 @@ De poco sirve todo lo anterior si Google no puede llegar, o llega y ve dos pági
 
 | Tipo | Cómo entra |
 |---|---|
-| Entrada | Sola, con `published = true`. Tarda menos de 1 h |
 | Guía | **Solo si está en el array `GUIDES` de `src/lib/guides.ts`.** El sitemap recorre ese array, no la carpeta |
 | Ficha | Sola, en cuanto tiene `extended` |
 
@@ -458,11 +448,10 @@ Sin fotos que rompan el texto, son lo único que impide que mil palabras parezca
 
 | Tipo | Bloques visuales |
 |---|---|
-| Entrada | **≥ 1 `.prose-chart`**, obligatorio |
 | Guía | ≥ 1 |
 | Ficha | **≥ 5 tipos distintos**, uno cada menos de 300 palabras |
 
-**14.2 — El vocabulario disponible**, con el marcado listo para copiar en `/admin/posts-instrucciones`, bloque 08:
+**14.2 — El vocabulario disponible**, con el marcado listo para copiar en el anexo de [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md):
 
 `prose-resumen` · `prose-vs` · `prose-chart` · `prose-dato` · `prose-hitos` · `prose-pasos` · `prose-callout` · `prose-table`
 
@@ -499,8 +488,7 @@ Una entrada tiene que convertir, pero **hay un orden que no se negocia**: primer
 Ahora, y no antes. Los scripts confirman lo que ya has arreglado; no lo encuentran por ti.
 
 ```bash
-npm run check:seo -- post/<slug> "<focus_keyword>"   # la página servida
-npm run check:contenido -- <slug>                     # la fila en Supabase
+npm run check:seo -- guias/<slug> "<consulta objetivo>"   # la página servida
 npm run check && npx tsc --noEmit                     # el código
 ```
 
@@ -531,7 +519,7 @@ Corregido
 Sin tocar, y por qué
   · <hallazgo> → <motivo>
 
-Guardarraíles       check:seo ✓   check:contenido ✓   check + tsc ✓
+Guardarraíles       check:seo ✓   check + tsc ✓
 Pendiente de ti     <lo que requiere una decisión del admin>
 ```
 
@@ -554,7 +542,7 @@ La auditoría no acaba en el `publish`. Estos son los únicos datos reales que v
 
 | Lo que ves | Lo que significa | Qué se hace |
 |---|---|---|
-| Impresiones sí, clics no | El snippet no invita | Reescribir `seo_title` y `meta_description` |
+| Impresiones sí, clics no | El snippet no invita | Reescribir el `title` y la `description` de su metadata |
 | Posición 8-20 | Estás cerca | Ampliar la sección que responde a la consulta que ya trae impresiones |
 | Consultas inesperadas | Google te ha entendido mejor que tú | **Escuchar**: es la mejor pista para la siguiente entrada |
 

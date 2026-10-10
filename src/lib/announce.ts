@@ -6,7 +6,7 @@ import { cerrarPiezaPlaneada } from "@/lib/objetivosServidor";
 
 type Admin = ReturnType<typeof createAdminClient>;
 
-type Tipo = "guia" | "entrada" | "video";
+type Tipo = "guia" | "video";
 
 /**
  * Cuánto hacia atrás se mira. Es la red de seguridad contra el aviso masivo:
@@ -74,21 +74,15 @@ function plantillaGuia(guia: (typeof GUIDES_NEWEST_FIRST)[number]) {
   );
 }
 
-function plantillaEntrada(post: { title: string; excerpt: string | null; is_premium: boolean | null }) {
-  const candado = post.is_premium ? " 🔒" : "";
-  const extracto = post.excerpt ? `\n\n${recortar(post.excerpt, 350)}` : "";
-  return `📝 NUEVA ENTRADA${candado}\n\n${post.title}${extracto}`;
-}
-
 function plantillaVideo(video: { title: string }) {
   return `🎥 NUEVO VÍDEO EN YOUTUBE\n\n${video.title}`;
 }
 
 /** Versión para el canal gratuito de algo que solo está dentro de Premium.
  *  No lleva el contenido, lleva el motivo para suscribirse. */
-function plantillaAnzuelo(tipo: "guía" | "entrada", titulo: string) {
+function plantillaAnzuelo(titulo: string) {
   return (
-    `🔒 NUEVA ${tipo === "guía" ? "GUÍA" : "ENTRADA"} PREMIUM\n\n` +
+    "🔒 NUEVA GUÍA PREMIUM\n\n" +
     `${titulo}\n\n` +
     "Está dentro de Premium, junto al canal privado y el resto de herramientas."
   );
@@ -107,7 +101,6 @@ function plantillaAnzuelo(tipo: "guía" | "entrada", titulo: string) {
  */
 async function publicarSegunPlan(opciones: {
   esPremium: boolean;
-  tipo: "guía" | "entrada";
   titulo: string;
   texto: string;
   imagen?: string | null;
@@ -137,7 +130,7 @@ async function publicarSegunPlan(opciones: {
   // perdido: el importante, el de los que pagan, ya salió.
   if (canalFree) {
     try {
-      await sendChannelPost(plantillaAnzuelo(opciones.tipo, opciones.titulo), {
+      await sendChannelPost(plantillaAnzuelo(opciones.titulo), {
         imagen: opciones.imagen,
         botones: [{ text: "💎 Ver qué incluye Premium", url: `${getSiteUrl()}/premium` }],
         chatId: canalFree,
@@ -161,7 +154,6 @@ async function anunciarGuias(admin: Admin): Promise<string[]> {
     try {
       await publicarSegunPlan({
         esPremium: guia.type === "premium",
-        tipo: "guía",
         titulo: guia.title,
         texto: plantillaGuia(guia),
         url: `${getSiteUrl()}/guias/${guia.slug}`,
@@ -170,58 +162,6 @@ async function anunciarGuias(admin: Admin): Promise<string[]> {
       anunciadas.push(guia.slug);
     } catch (err) {
       console.error(`[announce] Falló el aviso de la guía ${guia.slug}:`, err);
-    }
-  }
-
-  return anunciadas;
-}
-
-async function anunciarEntradas(admin: Admin, soloSlug?: string): Promise<string[]> {
-  let consulta = admin
-    .from("posts")
-    .select("slug, title, excerpt, cover_image, is_premium, created_at")
-    .eq("published", true)
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  if (soloSlug) consulta = consulta.eq("slug", soloSlug);
-
-  const { data: posts, error } = await consulta;
-  if (error) {
-    console.error("[announce] Error leyendo entradas:", error.message);
-    return [];
-  }
-
-  const anunciadas: string[] = [];
-  for (const post of posts ?? []) {
-    if (anunciadas.length >= MAXIMO_POR_EJECUCION) break;
-    // Al publicar desde el panel se pide una entrada concreta y se anuncia sin
-    // mirar la fecha: puede ser un borrador viejo que se publica hoy.
-    if (!soloSlug && !esReciente(post.created_at)) continue;
-    if (await yaAnunciado(admin, "entrada", post.slug)) continue;
-    if (!(await marcar(admin, "entrada", post.slug))) continue;
-
-    // Cierra en /admin/objetivos la entrada que estuviera planeada.
-    await cerrarPiezaPlaneada(admin, {
-      canal: "web",
-      tipos: ["entrada"],
-      cuando: new Date(),
-      enlace: `${getSiteUrl()}/post/${post.slug}`,
-    });
-
-    try {
-      await publicarSegunPlan({
-        esPremium: !!post.is_premium,
-        tipo: "entrada",
-        titulo: post.title,
-        texto: plantillaEntrada(post),
-        imagen: post.cover_image,
-        url: `${getSiteUrl()}/post/${post.slug}`,
-        etiquetaBoton: "📰 Leer ahora",
-      });
-      anunciadas.push(post.slug);
-    } catch (err) {
-      console.error(`[announce] Falló el aviso de la entrada ${post.slug}:`, err);
     }
   }
 
@@ -305,25 +245,17 @@ async function anunciarVideos(admin: Admin, sinCache: boolean): Promise<string[]
  * Publica en el canal todo lo que sea nuevo y no se haya anunciado ya.
  *
  * Es idempotente por diseño, así que se puede llamar desde donde haga falta
- * sin coordinar nada: el cron diario, el momento de publicar una entrada, o el
- * botón del panel. Cada tipo va por su cuenta — que YouTube no responda no
- * puede impedir que se anuncie una entrada.
+ * sin coordinar nada: el cron diario o el botón del panel. Cada tipo va por su
+ * cuenta — que YouTube no responda no puede impedir que se anuncie una guía.
+ * (Las entradas se retiraron el 10-10-2026: la web es solo guías.)
  */
 export async function anunciarPendientes(
   admin: Admin,
-  opciones?: { soloEntrada?: string; sinCache?: boolean }
+  opciones?: { sinCache?: boolean }
 ) {
-  if (opciones?.soloEntrada) {
-    return { entradas: await anunciarEntradas(admin, opciones.soloEntrada) };
-  }
-
-  const [guias, entradas, videos] = await Promise.all([
+  const [guias, videos] = await Promise.all([
     anunciarGuias(admin).catch((err) => {
       console.error("[announce] Guías:", err);
-      return [] as string[];
-    }),
-    anunciarEntradas(admin).catch((err) => {
-      console.error("[announce] Entradas:", err);
       return [] as string[];
     }),
     anunciarVideos(admin, !!opciones?.sinCache).catch((err) => {
@@ -332,5 +264,5 @@ export async function anunciarPendientes(
     }),
   ]);
 
-  return { guias, entradas, videos };
+  return { guias, videos };
 }

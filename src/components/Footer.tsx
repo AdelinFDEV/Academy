@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="footer-links-group">
           <span className="footer-links-title">Navegación</span>
           <Link href="/">Inicio</Link>
-          <Link href="/#contenido">Artículos</Link>
+          <Link href="/guias">Guías</Link>
           <Link href="/dashboard">Mi academia</Link>
         </div>
 

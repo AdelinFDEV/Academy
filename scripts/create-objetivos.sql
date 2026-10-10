@@ -19,7 +19,6 @@
 --
 -- `metrica` dice de dónde sale el progreso:
 --   · manual     → lo apunta el admin en `progreso_manual`
---   · entradas   → entradas publicadas en `posts` dentro del periodo
 --   · videos     → vídeos de YouTube que el bot anunció (`content_announcements`)
 --   · registros  → cuentas nuevas en `profiles`, sin administradores
 --   · premium    → altas Premium (`profiles.premium_since`) dentro del periodo
@@ -29,7 +28,7 @@ create table if not exists public.objetivos (
   id               uuid primary key default gen_random_uuid(),
   titulo           text not null check (length(trim(titulo)) > 0),
   metrica          text not null default 'manual'
-                     check (metrica in ('manual', 'entradas', 'videos', 'registros', 'premium')),
+                     check (metrica in ('manual', 'videos', 'registros', 'premium')),
   meta             numeric(12, 2) not null check (meta > 0),
   progreso_manual  numeric(12, 2) not null default 0 check (progreso_manual >= 0),
   desde            date not null,
@@ -45,14 +44,14 @@ alter table public.objetivos enable row level security;
 
 -- ── 2. Plan de contenido ────────────────────────────────────────────────────
 --
--- Una fila por pieza: un vídeo, un short, una entrada, una guía o una
+-- Una fila por pieza: un vídeo, un short, una guía o una
 -- publicación en Telegram. Sin `fecha` es una idea todavía sin día.
 create table if not exists public.contenido_plan (
   id            uuid primary key default gen_random_uuid(),
   fecha         date,
   canal         text not null check (canal in ('youtube', 'web', 'telegram')),
   tipo          text not null
-                  check (tipo in ('video', 'short', 'entrada', 'guia', 'publicacion')),
+                  check (tipo in ('video', 'short', 'guia', 'publicacion')),
   titulo        text not null check (length(trim(titulo)) > 0),
   estado        text not null default 'idea'
                   check (estado in ('idea', 'guion', 'grabado', 'editado', 'programado', 'publicado')),
@@ -122,7 +121,7 @@ alter table public.objetivos
 
 -- ── Métricas nuevas ─────────────────────────────────────────────────────────
 --
--- Se cuentan en el periodo:     entradas, videos, registros, premium, ingresos
+-- Se cuentan en el periodo:     videos, registros, premium, ingresos
 -- Se leen como nivel alcanzado: miembros_telegram (canal gratuito),
 --                               suscriptores_youtube
 alter table public.objetivos drop constraint if exists objetivos_metrica_check;
@@ -132,7 +131,7 @@ alter table public.objetivos
     -- ejecutar el script entero, una lista más corta chocaría con los objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
-    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
     'miembros_telegram', 'suscriptores_youtube'
   ));
 
@@ -199,7 +198,7 @@ alter table public.objetivos
     -- ejecutar el script entero, una lista más corta chocaría con los objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
-    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
     'miembros_telegram', 'suscriptores_youtube'
   ));
 
@@ -414,7 +413,7 @@ alter table public.objetivos
     -- ejecutar el script entero, una lista más corta chocaría con los objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
-    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
     'miembros_telegram', 'suscriptores_youtube'
   ));
 
@@ -465,6 +464,63 @@ alter table public.objetivos
     -- ejecutar el script entero, una lista más corta chocaría con los objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
-    'manual', 'marca', 'entradas', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
     'miembros_telegram', 'suscriptores_youtube'
   ));
+
+-- ── La web es solo guías (10-10-2026) ───────────────────────────────────────
+--
+-- Se retiró todo el sistema de entradas: la página, el admin, comentarios,
+-- «me gusta», compartidos, guardados y leídos, las categorías, el RSS y las
+-- noticias del bot. Esto borra sus tablas y lo que colgaba de ellas. Copia de
+-- todo en backups/ (local). Ejecutar DESPUÉS de desplegar el código que ya no
+-- las lee. Idempotente: relanzarlo no rompe nada.
+
+-- Los 5 logros de leer y guardar entradas ya no existen en BADGE_DEFS.
+delete from public.user_badges
+where badge_id in ('first-read', 'reader', 'scholar', 'collector', 'explorer');
+
+-- Avisos de entradas ya enviados y el interruptor de las noticias del bot.
+delete from public.content_announcements where kind = 'entrada';
+delete from public.bot_ajustes where clave = 'noticias_pausadas';
+
+-- El trigger anti-spam de comentarios cae con su tabla; la función, no.
+drop function if exists public.enforce_one_pending_comment() cascade;
+
+-- Las tablas. cascade se lleva sus políticas, índices, triggers y claves
+-- ajenas; ninguna tabla viva apunta a ellas.
+drop table if exists public.noticia_votos cascade;
+drop table if exists public.noticias      cascade;
+drop table if exists public.comments      cascade;
+drop table if exists public.post_likes    cascade;
+drop table if exists public.post_shares   cascade;
+drop table if exists public.user_posts    cascade;
+drop table if exists public.posts         cascade;
+drop table if exists public.categories    cascade;
+
+-- Objetivos: sin la métrica «entradas» (ningún objetivo la usaba).
+alter table public.objetivos drop constraint if exists objetivos_metrica_check;
+alter table public.objetivos
+  add constraint objetivos_metrica_check check (metrica in (
+    -- Lista COMPLETA, igual que en los bloques de arriba.
+    'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'miembros_telegram', 'suscriptores_youtube'
+  ));
+
+-- Plan de contenido: sin el tipo «entrada» (ninguna pieza lo usaba). El
+-- nombre de la restricción lo puso Postgres, así que se busca en el catálogo.
+do $$
+declare r record;
+begin
+  for r in
+    select conname from pg_constraint
+    where conrelid = 'public.contenido_plan'::regclass
+      and contype = 'c'
+      and pg_get_constraintdef(oid) ilike '%tipo%'
+  loop
+    execute format('alter table public.contenido_plan drop constraint %I', r.conname);
+  end loop;
+end $$;
+alter table public.contenido_plan
+  add constraint contenido_plan_tipo_check
+  check (tipo in ('video', 'short', 'guia', 'publicacion'));

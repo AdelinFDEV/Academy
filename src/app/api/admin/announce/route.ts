@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
  *
  * Existe sobre todo por las guías: llegan con un despliegue de código, así que
  * no hay ningún evento en base de datos que las dispare. Publicas la guía y
- * llamas aquí. Las entradas ya se anuncian solas al publicarlas.
+ * llamas aquí.
  *
  * Es idempotente: llamarlo dos veces no repite ningún aviso.
  */
@@ -25,7 +25,6 @@ export async function POST() {
 
   const total =
     (resultado.guias?.length ?? 0) +
-    (resultado.entradas?.length ?? 0) +
     (resultado.videos?.length ?? 0);
 
   return NextResponse.json({ ok: true, total, ...resultado });

@@ -17,7 +17,6 @@ export const metadata: Metadata = {
 };
 
 const COMPARE: { label: string; free: boolean | string; premium: boolean | string }[] = [
-  { label: "Artículos y análisis semanales", free: true, premium: true },
   { label: "Guías interactivas con quiz y logros", free: "Básicas", premium: "Todas" },
   { label: "Watchlist y predicción de precio", free: true, premium: true },
   { label: "Logros y rachas", free: true, premium: true },

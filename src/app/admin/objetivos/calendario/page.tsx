@@ -1,5 +1,4 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { SITE_URL } from "@/lib/site";
 import { cargarBalances, cargarDineroPorMes, cargarObjetivos, cerrarPiezaPlaneada } from "@/lib/objetivosServidor";
 import { esShort, subidasEntre } from "@/lib/actividadMes";
 import type { VideoSubido } from "@/lib/youtube";
@@ -94,12 +93,9 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
   const subidas = await subidasEntre(admin, new Date(desdeInstante), new Date(hastaInstante));
   if (subidas.fuente === "api") await cerrarSubidasPlaneadas(admin, subidas.videos);
 
-  const [{ objetivos, faltaSql }, piezasRes, entradasRes, animosRes, balances, dineroMeses] = await Promise.all([
+  const [{ objetivos, faltaSql }, piezasRes, animosRes, balances, dineroMeses] = await Promise.all([
     cargarObjetivos(admin),
     admin.from("contenido_plan").select("*").gte("fecha", ini).lt("fecha", fin).order("fecha"),
-    // Lo que de verdad salió, aunque no estuviera en el plan.
-    admin.from("posts").select("slug, title, created_at").eq("published", true)
-      .gte("created_at", desdeInstante).lt("created_at", hastaInstante),
     // El ánimo del diario. Solo las columnas que hacen falta: el texto de las
     // notas no sale del diario.
     admin.from("diario_notas").select("id, fecha, animo, emocion, etiqueta").order("created_at")
@@ -110,13 +106,9 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
   ]);
   if (faltaSql) return <FaltaSql />;
 
+  // Lo que de verdad salió, aunque no estuviera en el plan: los vídeos y
+  // Shorts de YouTube. (Las entradas de la web se retiraron el 10-10-2026.)
   const hechos: Hecho[] = [
-    ...(entradasRes.data ?? []).map((p) => ({
-      fecha: diaRumania(p.created_at),
-      tipo: "entrada" as const,
-      titulo: p.title,
-      enlace: `${SITE_URL}/post/${p.slug}`,
-    })),
     ...subidas.videos.map((v) => ({
       fecha: diaRumania(v.publishedAt),
       tipo: esShort(v) ? ("short" as const) : ("video" as const),

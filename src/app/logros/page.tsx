@@ -8,7 +8,7 @@ import SiteNav from "@/components/SiteNav";
 
 export const metadata: Metadata = {
   title: "Logros",
-  description: "Desbloquea logros y rachas completando artículos en la academia.",
+  description: "Desbloquea logros completando las guías de la academia y manteniendo tu racha.",
 };
 
 export default async function LogrosPage() {
@@ -35,7 +35,7 @@ export default async function LogrosPage() {
           </div>
           <h1 className="logros-gate-title">Sistema de Logros</h1>
           <p className="logros-gate-sub">
-            Completa artículos, mantén rachas y desbloquea recompensas únicas.<br/>
+            Completa guías, mantén rachas y desbloquea recompensas únicas.<br/>
             Regístrate gratis para empezar a acumular tu progreso.
           </p>
           <div className="logros-gate-actions">

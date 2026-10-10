@@ -58,7 +58,7 @@ export const TRAMOS = {
   externo: { nombre: "externo", max: 40, ventanaMs: 60 * 1000 },
 
   /**
-   * Escritura pública: comentarios, likes, contadores de visitas. Escriben en
+   * Escritura pública: likes y guardados de guías, contadores de visitas. Escriben en
    * la base de datos sin que haga falta ser nadie, que es justo lo que atrae al
    * spam. Generoso para el uso normal, corto para un bucle.
    */
@@ -113,7 +113,6 @@ const EXENTAS = [
   "/api/cron/",
   "/robots.txt",
   "/sitemap.xml",
-  "/rss.xml",
 ];
 
 const RUTAS_PAGO = ["/api/checkout", "/api/stripe/portal", "/api/account/delete"];
@@ -134,10 +133,6 @@ const RUTAS_ESCRITURA = [
   "/api/guide-saves",
   "/api/guide-quiz-completion",
   "/api/guide-badge",
-  "/api/comments",
-  "/api/likes",
-  "/api/shares",
-  "/api/user-posts",
   // El aula: progreso, exámenes y ritmo. Escrituras propias, sin terceros.
   "/api/cursos",
 ];

@@ -144,7 +144,7 @@ if (process.argv.includes("--set-webhook")) {
       // Esta lista tiene que ir a la par de COMANDOS_PUBLICOS en
       // src/lib/bot-menu.ts: allí se decide qué pantalla abre cada uno. Aquí
       // solo se declaran para que Telegram los ofrezca en el botón "/".
-      // (Los de admin, como /noticias, NO se publican a propósito.)
+      // (Los de admin, como /video, NO se publican a propósito.)
       commands: [
         { command: "menu", description: "Menú principal" },
         { command: "premium", description: "Qué incluye Premium, ventaja a ventaja" },
@@ -164,7 +164,7 @@ if (process.argv.includes("--set-webhook")) {
   }
 
   // Los de admin van SOLO en tu chat privado, con scope "chat": si se
-  // publicaran con el scope por defecto, cualquiera vería /noticias o /video
+  // publicaran con el scope por defecto, cualquiera vería /video o /stop
   // en su propio botón "/" — precisamente lo que el código evita a propósito
   // (mira COMANDOS_DE_ADMIN en el webhook: a quien no es admin ni se le
   // insinúa que existen).
@@ -187,13 +187,12 @@ if (process.argv.includes("--set-webhook")) {
         await api("setMyCommands", {
           scope: { type: "chat", chat_id: chatId },
           commands: [
-            { command: "noticias", description: "Buscar noticias nuevas" },
             { command: "video", description: "Último vídeo de YouTube" },
             { command: "stop", description: "Parar los avisos" },
             { command: "arrancar", description: "Reanudar los avisos" },
           ],
         });
-        ok("Comandos de admin publicados en tu chat", "5 comandos · nadie más los ve");
+        ok("Comandos de admin publicados en tu chat", "3 comandos · nadie más los ve");
       }
     }
   } catch (err) {
@@ -379,43 +378,7 @@ for (const [donde, etiqueta] of [["la web", "web"], ["Instagram", "ig"], ["YouTu
 }
 console.log(`  ${GRIS}La etiqueta final es libre: queda registrada y dice de dónde viene cada uno.${FIN}`);
 
-// — 7. Reacciones de los canales —
-//
-// Las noticias se publican con 🔥 y 💩 para que la gente opine. El bot NO
-// puede activarlas (setChatAvailableReactions no existe en la API de bots):
-// se hace a mano en Telegram, ajustes del canal → Reacciones. Si no están, el
-// bot lo detecta y publica con botones, pero conviene saber en qué modo va.
-const REACCIONES = ["🔥", "💩"];
-for (const [nombre, id] of [["free", env.TELEGRAM_FREE_CHANNEL_ID || "-1003785109253"],
-                            ["Premium", CANAL]]) {
-  try {
-    const chat = await api("getChat", { chat_id: id });
-    const permitidas = chat.available_reactions;
-
-    if (permitidas === undefined) {
-      ok(`Canal ${nombre}: reacciones abiertas`, "valen todas las de Telegram");
-      continue;
-    }
-    const emojis = permitidas.filter((r) => r.type === "emoji").map((r) => r.emoji);
-    const faltan = REACCIONES.filter((e) => !emojis.includes(e));
-
-    if (emojis.length === 0) {
-      const soloPago = permitidas.some((r) => r.type === "paid");
-      aviso(`Canal ${nombre}: sin reacciones de emoji`,
-        soloPago ? "solo está la de pago (estrellas), que no sirve para votar" : "desactivadas");
-      console.log(`  ${GRIS}Actívalas en Telegram: ajustes del canal → Reacciones → ${REACCIONES.join(" ")}${FIN}`);
-      console.log(`  ${GRIS}Mientras tanto las noticias salen con botones de voto.${FIN}`);
-    } else if (faltan.length) {
-      aviso(`Canal ${nombre}: faltan reacciones`, `permitidas: ${emojis.join(" ")} · faltan: ${faltan.join(" ")}`);
-    } else {
-      ok(`Canal ${nombre}: ${REACCIONES.join(" ")} activas`, "las noticias saldrán sin botones");
-    }
-  } catch (err) {
-    mal(`No se pudieron consultar las reacciones del canal ${nombre}`, err.message);
-  }
-}
-
-// — 8. El interruptor de avisos —
+// — 7. El interruptor de avisos —
 //
 // Merece una comprobación propia porque su fallo es SILENCIOSO: si el
 // interruptor está en pausa (se pulsó /stop y se olvidó), el bot deja de

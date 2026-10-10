@@ -1,6 +1,6 @@
 # Aviso manual en Telegram, con copy propio
 
-El aviso **automático** de guías/entradas/vídeos nuevos ya existe y no necesita nada de esto: lo hace `anunciarPendientes()` en `src/lib/announce.ts` con una plantilla fija (`📚 NUEVA GUÍA INTERACTIVA` / `📝 NUEVA ENTRADA`), y se dispara solo desde el cron diario o al publicar desde el panel.
+El aviso **automático** de guías y vídeos nuevos ya existe y no necesita nada de esto: lo hace `anunciarPendientes()` en `src/lib/announce.ts` con una plantilla fija (`📚 NUEVA GUÍA INTERACTIVA` / `🎥 NUEVO VÍDEO EN YOUTUBE`), y se dispara solo desde el cron diario o con el botón de anunciar del panel.
 
 Esto otro es distinto: para cuando el admin pide un mensaje **con copy propio** — por ejemplo, un gancho concreto tipo "completa el quiz y desbloquea el badge X" en vez del texto genérico — con imagen propia si la da, y **con aprobación antes de publicar**. Es `scripts/anuncio-manual.mjs`, y el proceso son siempre estos pasos, en este orden:
 

@@ -56,7 +56,7 @@ export default function PrivacidadPage() {
             <tr>
               <td>Nombre (opcional)</td>
               <td>Registro o edición del perfil</td>
-              <td>Personalizar la experiencia y firmar tus comentarios públicos</td>
+              <td>Personalizar la experiencia</td>
             </tr>
             <tr>
               <td>Contraseña</td>
@@ -81,17 +81,12 @@ export default function PrivacidadPage() {
             <tr>
               <td>Progreso y gamificación</td>
               <td>Uso de la academia</td>
-              <td>Racha de actividad, logros, artículos y guías leídos o guardados</td>
+              <td>Racha de actividad, logros y guías leídas o guardadas</td>
             </tr>
             <tr>
               <td>Contenido que tú creas</td>
               <td>Al usar las herramientas</td>
               <td>Diario de Trading (operaciones, notas, capital), watchlist, portfolio y términos guardados. Son <strong>privados</strong>: solo tú puedes verlos</td>
-            </tr>
-            <tr>
-              <td>Comentarios</td>
-              <td>Al comentar un contenido</td>
-              <td>Contenido y nombre asociados; se moderan antes de publicarse y son visibles públicamente</td>
             </tr>
             <tr>
               <td>Datos de uso agregados</td>

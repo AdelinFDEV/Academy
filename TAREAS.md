@@ -23,16 +23,15 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
-### 00. La web pasa a ser solo guías y actualizaciones — paso a paso (empezado el 10-10-2026)
+### 00. La web es solo guías (empezado el 10-10-2026)
 
-Decidido por el admin el 10-10-2026: **no más noticias ni entradas genéricas**. La academia serán **guías ultra detalladas de criptomonedas**, y las entradas pasan a ser solo **actualizaciones de las 12 que se siguen**: Solana, XRP, Ethereum, Cardano, Chainlink, Hyperliquid, Ondo, Hedera, Stellar, Bittensor, Render y Worldcoin (la lista viva está en la skill `actualizaciones` del proyecto del canal, `Primario/seguimiento/proyectos.md`). Las únicas categorías serán esas 12. Se va paso a paso: es un cambio grande.
+Decidido por el admin el 10-10-2026: **no hay noticias, ni entradas, ni categorías, ni comentarios**. La academia son **guías ultra detalladas de criptomonedas**. Ya está hecho en el código: retirado todo el sistema de entradas (páginas, admin, comentarios, «me gusta», guardados, RSS, avisos, noticias del bot, la métrica de Objetivos y los 5 logros de leer y guardar); `/post/…`, `/categoria/…` y `/rss.xml` responden 410 (`src/lib/retiradas.ts`) y 4 entradas redirigen a su guía (`next.config.ts`). Copia de todo en `backups/` (local, fuera de git). Falta:
 
-- [ ] **Paso 1 — borrar las 12 entradas, limpio.** El código ya está: `/articulos` redirige a `/guias`; 4 entradas redirigen a su guía (`next.config.ts`) y las otras 8 y las 5 categorías viejas responden **410** (`src/lib/retiradas.ts`, desde `src/proxy.ts`); ningún enlace interno apunta a ellas; una categoría sin entradas da 404. Falta: desplegar, **después** ejecutar el SQL de borrado (posts y categorías `bitcoin`, `regulacion`, `altcoins`, `bnb`, `fiscalidad`), borrar las 12 portadas del bucket `media` desde el panel de Supabase, comprobar en producción que cada URL responde 308 o 410, y reenviar el sitemap en Search Console. Copia de todo en `backups/` (local, fuera de git).
-- [ ] **Paso 2 — las 12 categorías:** crearlas en `categories` (ya existen `solana`, `xrp`, `ethereum`, `ondo-finance`; decidir si `ondo-finance` pasa a `ondo` **antes** de publicar nada en ella, porque cambiar el slug después es otra URL).
-- [ ] **Paso 3 — reescribir `/admin/posts-instrucciones`** para el nuevo tipo de entrada «actualización»: siempre de una de las 12, enlazada a su guía.
-- [ ] **Paso 4 — plantilla común de guía de criptomoneda**, para que cada guía nueva sea contenido y no código, con «última revisión» que actualicen las entradas.
-- [ ] **Paso 5 — la portada:** hoy está pensada para un feed de entradas.
-- [ ] Limpieza menor: los estilos `.articulos-*` de `src/app/globals.css` ya no los usa nada (están mezclados con los de `.cat-nav-*`, que sí se usan).
+- [ ] **Ejecutar el SQL que borra las tablas** de entradas y noticias y los logros retirados, **después** de desplegar el código (el admin lo tiene en el chat del 10-10-2026; está también al final de `scripts/create-objetivos.sql`).
+- [ ] **Borrar las 12 portadas** de las entradas del bucket `media` de Supabase (empiezan por `17882…`; la lista exacta, en `backups/entradas-2026-10-10.json`).
+- [ ] **Reenviar el sitemap en Search Console** y comprobar en producción que `/post/<cualquiera>`, `/categoria/<cualquiera>` y `/rss.xml` dan 410.
+- [ ] **Plantilla común de guía de criptomoneda**, para que cada guía nueva sea contenido y no código: mismas secciones y diseño, y una «última revisión» visible.
+- [ ] **CSS muerto en `src/app/globals.css`**: los estilos de la página de entrada (`.post-*`), el feed (`.feed-*`, `.hero-post-*`), los comentarios, la barra de categorías (`.cat-nav-*`), `/articulos` (`.articulos-*`), el índice y la barra de lectura (`.toc-*`, `.reading-progress*`) y lo del admin (`.admin-top-post*`, `.admin-donut*`, `.admin-bar-*`, `.users-reads`). No se pinta nada, pero pesa. Quitarlo con cuidado: algunos bloques comparten reglas con cosas vivas.
 
 ### 0. Objetivos y diario: fases 2 y 3
 
@@ -62,7 +61,7 @@ Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin
 **Por qué interesa, más allá de la comunidad:** es el único tipo de contenido que **crece sin que nadie lo escriba**. Cada pregunta bien titulada es una URL que responde a una búsqueda real, y Google tiene un tipo de dato estructurado propio para esto (`QAPage`). Es la vía más barata de multiplicar las URLs indexables del sitio (el recuento actual: `curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"`).
 
 **Con qué se conecta:**
-- Los comentarios ya resuelven media infraestructura: aprobación por el admin, el trigger anti-spam de «un pendiente por persona» (`scripts/comments-one-pending.sql`) y las políticas de RLS. Conviene leerlo antes de empezar de cero.
+- Los comentarios de las entradas (retirados el 10-10-2026) resolvían media infraestructura, y su script sigue en el repo como referencia: aprobación por el admin, el trigger anti-spam de «un pendiente por persona» (`scripts/comments-one-pending.sql`) y las políticas de RLS. Conviene leerlo antes de empezar de cero.
 - El rate limiting del tramo `escritura` ya cubriría los envíos (`src/lib/rate-limit.ts`).
 
 **Preguntas para el admin, antes de escribir código:**
@@ -143,7 +142,7 @@ Están **verificadas por `npm run check:glosario`**, que se niega a dar por buen
 | **Estructura** | ≥ 3 `<h2>` | Un muro de párrafos no lo lee nadie, y Google no sabe de qué va cada parte |
 | **Números** | al menos un dato o ejemplo con cifras | Cualquiera define «apalancamiento»; pocos ponen la cuenta. Es lo que no tiene el texto genérico |
 | **Enlaces internos** | ≥ 3 | Es lo que convierte fichas sueltas en un cuerpo |
-| **Apoyo visual** | 1 `.prose-chart`, tabla o `.prose-callout` | La misma exigencia que ya tienen las entradas |
+| **Apoyo visual** | 1 `.prose-chart`, tabla o `.prose-callout` | La misma exigencia que el resto del contenido |
 | **Sin repetir la definición corta** | literal prohibida | La página ya muestra las dos: repetirla es duplicado interno |
 | **Densidad del término** | < 2,5 % | Repetirlo en cada frase es la señal de relleno más vieja, y hoy penaliza |
 | **Sin frases calcadas** | 0 entre fichas y 0 dentro | Reciclar párrafos al ampliar cincuenta es el atajo evidente, y es duplicado bajo tu propio dominio |
@@ -163,7 +162,7 @@ El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de l
 
 ## 5. El muro de registro es lo que Google ve de las guías
 
-El protocolo de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) se ejecuta a partir de ahora en **cada entrada y cada guía nueva**, y se ofrece solo. El contenido anterior no lo había pasado nunca. La primera pasada fue el 07-09-2026; la segunda, el 10-09-2026, encontró la causa de fondo.
+El protocolo de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) se ejecuta a partir de ahora en **cada guía nueva**, y se ofrece solo. El contenido anterior no lo había pasado nunca. La primera pasada fue el 07-09-2026; la segunda, el 10-09-2026, encontró la causa de fondo.
 
 **El diagnóstico de la primera pasada era erróneo y conviene decirlo:** se apuntó a los componentes de cliente —quiz, gráficos, minijuegos— como lo que Google no ve. Las siete guías son **componentes de servidor**, así que eso se renderiza. Lo que Googlebot no ve es lo que hay **detrás del muro de registro**, porque entra siempre sin sesión.
 

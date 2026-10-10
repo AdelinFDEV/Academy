@@ -1,17 +1,17 @@
 -- Ejecutar en Supabase SQL Editor
 --
--- Avisos automáticos al canal cuando hay guía, entrada o vídeo nuevo.
+-- Avisos automáticos al canal cuando hay guía o vídeo nuevo.
 --
 -- Esta tabla es lo que evita que el mismo contenido se anuncie dos veces: el
 -- anunciador no lleva la cuenta de "por dónde iba", sino que pregunta si algo
--- ya se anunció. Así da igual cuántas veces se dispare (cron diario, al
--- publicar una entrada, o a mano desde el panel): el aviso sale una sola vez.
+-- ya se anunció. Así da igual cuántas veces se dispare (cron diario o a mano
+-- desde el panel): el aviso sale una sola vez.
 
 create table if not exists public.content_announcements (
   id bigserial primary key,
-  -- 'guia' | 'entrada' | 'video'
+  -- 'guia' | 'video' (hasta el 10-10-2026 también 'entrada')
   kind text not null,
-  -- Identificador estable dentro de su tipo: slug de la guía o la entrada,
+  -- Identificador estable dentro de su tipo: slug de la guía,
   -- id del vídeo de YouTube.
   ref text not null,
   announced_at timestamptz not null default now(),
@@ -32,11 +32,4 @@ insert into public.content_announcements (kind, ref) values
   ('guia', 'hyperliquid'),
   ('guia', 'xrp'),
   ('guia', 'fiscalidad-cripto-espana')
-on conflict (kind, ref) do nothing;
-
--- Lo mismo con las entradas ya publicadas. Las entradas y los vídeos tienen
--- además una ventana de recencia en el código (solo se anuncia lo de los
--- últimos días), pero sembrar aquí lo deja atado del todo.
-insert into public.content_announcements (kind, ref)
-select 'entrada', slug from public.posts where published = true
 on conflict (kind, ref) do nothing;

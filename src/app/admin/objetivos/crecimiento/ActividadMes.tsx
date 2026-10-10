@@ -8,7 +8,7 @@ import { formatoES } from "@/lib/objetivos";
 
 /**
  * «Actividad del mes»: todo lo publicado en un mes —vídeos de YouTube,
- * entradas y guías—, con su comparación con el mes anterior.
+ * y guías—, con su comparación con el mes anterior.
  */
 
 function dia(instante: string): string {
@@ -50,8 +50,8 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
   const { mes, anterior } = datos;
   const largos = datos.videos.filter((v) => !v.short);
   const shorts = datos.videos.filter((v) => v.short);
-  const total = datos.videos.length + datos.entradas.length + datos.guias.length;
-  const totalAnt = anterior.largos + anterior.shorts + anterior.entradas + anterior.guias;
+  const total = datos.videos.length + datos.guias.length;
+  const totalAnt = anterior.largos + anterior.shorts + anterior.guias;
   const mesActual = hoy.slice(0, 7);
   // El que mejor funciona: el de más visitas al día, para no premiar solo al más antiguo.
   const [ahora] = useState(() => Date.now());
@@ -95,12 +95,6 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
           <strong>{shorts.length}</strong>
           <span>short{shorts.length === 1 ? "" : "s"}</span>
           <Variacion ahora={shorts.length} antes={anterior.shorts} />
-        </div>
-        <div className="act-cifra act-cifra--web">
-          <span className="act-cifra-emoji" aria-hidden="true">📝</span>
-          <strong>{datos.entradas.length}</strong>
-          <span>entrada{datos.entradas.length === 1 ? "" : "s"}</span>
-          <Variacion ahora={datos.entradas.length} antes={anterior.entradas} />
         </div>
         <div className="act-cifra act-cifra--guia">
           <span className="act-cifra-emoji" aria-hidden="true">📚</span>
@@ -150,9 +144,7 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
         </div>
 
         <div className="act-col">
-          <h4>📝 Entradas de la web</h4>
-          <Lista items={datos.entradas} vacio="Sin entradas este mes." />
-          <h4 className="act-h4-guias">📚 Guías</h4>
+          <h4>📚 Guías</h4>
           <Lista items={datos.guias} vacio="Sin guías nuevas este mes." />
         </div>
       </div>

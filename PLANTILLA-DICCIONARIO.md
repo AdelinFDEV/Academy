@@ -63,7 +63,7 @@ No es una sugerencia de estilo: cada regla sale de un fallo real o de un dato de
 Y antes de escribir una línea, **comprobar los destinos que vas a enlazar**:
 
 ```bash
-for d in /glosario/dex /guias/fiscalidad-cripto-espana /post/metodo-fifo-criptomonedas; do
+for d in /glosario/dex /guias/fiscalidad-cripto-espana /guias/xrp; do
   printf "%-46s %s\n" "$d" "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3000$d)"
 done
 ```
@@ -143,7 +143,7 @@ Cuatro que casi siempre aplican:
 
 ## 5 · Las piezas visuales
 
-El vocabulario completo está en `/admin/posts-instrucciones`, bloque 08, con el marcado listo para copiar. Sirve igual en las entradas del blog.
+El vocabulario completo, con el marcado listo para copiar, está en el **anexo** al final de este archivo. Vivía en `/admin/posts-instrucciones`, retirada con las entradas el 10-10-2026; los estilos `.prose-*` siguen en `globals.css`.
 
 `prose-resumen` · `prose-vs` · `prose-chart` · `prose-dato` · `prose-hitos` · `prose-pasos` · `prose-callout` · `prose-table`
 
@@ -214,3 +214,88 @@ npm run check && npx tsc --noEmit
 ```
 
 Los tres en verde. Y mirar la página de verdad: hay cosas que solo se ven ahí — el icono de un callout que faltaba, un gráfico que no se entendía, una etiqueta recortada.
+
+---
+
+## Anexo · El marcado de las piezas visuales
+
+Todo va dentro del HTML de `extended`. Los estilos viven en `globals.css` (`.prose-content` y las clases `.prose-*`); cualquier otra etiqueta se pinta, pero sin estilo propio garantizado. **La regla:** si el bloque no dice nada que el párrafo no diga ya, sobra. Sirven para estructurar, no para decorar.
+
+### Gráfico de barras
+
+```html
+<div class="prose-chart">
+  <div class="prose-chart-title">Dominancia de mercado</div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">Bitcoin</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:100%"></div></div>
+    <span class="prose-chart-value">54%</span>
+  </div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">Ethereum</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:33%"></div></div>
+    <span class="prose-chart-value">18%</span>
+  </div>
+</div>
+```
+
+- El `width` de `.prose-chart-fill` se calcula a mano: `(valor / valor_más_alto) × 100`.
+- Barras horizontales y estáticas: sin JavaScript ni dependencias.
+- **Grafica la diferencia, no el total.** En la ficha de `exchange`, el primer gráfico comparaba «lo que queda de 1.000 €» con comisiones del 1,5 %, 0,5 % y 0,1 %: las tres barras salían casi iguales (98,5 / 99,5 / 99,9) y escondían lo que se quería enseñar. Graficando el *coste* (15 € / 5 € / 1 €) la diferencia se ve de un vistazo.
+
+### Piezas para textos largos
+
+```html
+<!-- Resumen: lo que se lleva quien no sigue leyendo -->
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En veinte segundos</span>
+  <p>…</p>
+</div>
+
+<!-- Comparación a dos columnas. data-tono: "favor" (verde) o "contra" (rojo) -->
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Centralizado</p>
+    <p class="prose-vs-sub">CEX · custodia una empresa</p>
+    <ul>
+      <li data-tono="favor">Pagas con tarjeta</li>
+      <li data-tono="contra">Te pide el DNI</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">…</div>
+</div>
+
+<!-- Una cifra que pare el ojo -->
+<div class="prose-dato">
+  <span class="prose-dato-cifra">504 €</span>
+  <span class="prose-dato-texto">Lo que cuesta la diferencia en 36 aportaciones.</span>
+</div>
+
+<!-- Línea temporal -->
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">2014 · Mt. Gox</span>
+    <p>Desapareció con 850.000 BTC de sus clientes.</p>
+  </div>
+</div>
+
+<!-- Pasos numerados (la numeración la pone el CSS) -->
+<ol class="prose-pasos">
+  <li><strong>Comprueba que puedes sacar el dinero.</strong> …</li>
+</ol>
+```
+
+### Avisos (callouts)
+
+```html
+<div class="prose-callout prose-callout--tip">
+  <span class="prose-callout-icon">✅</span>
+  <div class="prose-callout-body">Texto del aviso o dato destacado.</div>
+</div>
+```
+
+Variantes: `--info` (💡), `--tip` (✅), `--warning` (⚠️) y `--danger` (🚨). Se cambian la clase y el emoji del icono según el caso.
+
+### Tablas e imágenes
+
+`<table class="prose-table">` para tablas e `<img class="prose-img">` para imágenes, con el resto de etiquetas normales (`h2`–`h4`, `p`, `ul`/`ol`, `blockquote`, `code`).

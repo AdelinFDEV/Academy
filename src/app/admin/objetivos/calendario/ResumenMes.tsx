@@ -116,7 +116,7 @@ export default function ResumenMes({ hoy, mes, objetivos, piezas, hechos, animos
     canal: c,
     total:
       piezas.filter((p) => p.canal === c && p.estado === "publicado").length +
-      hechos.filter((h) => (c === "youtube" ? h.tipo !== "entrada" : c === "web" ? h.tipo === "entrada" : false)).length,
+      (c === "youtube" ? hechos.length : 0),
   }));
 
   // ── Objetivos

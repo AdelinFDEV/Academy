@@ -3,14 +3,14 @@ import { createClient } from "@supabase/supabase-js";
 import { GUIDES } from "@/lib/guides";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 import { SITE_URL } from "@/lib/site";
-import type { PostCategoryRef } from "@/lib/types";
 
 /**
  * Sitemap del sitio — punto 1 del plan SEO (ver SEO-PLAN.md).
  *
  * Next.js sirve este archivo como `/sitemap.xml`. Se regenera cada hora, que es
- * de sobra para un ritmo de una entrada cada 1-3 días y evita pegarle a Supabase
- * en cada rastreo de Google.
+ * de sobra para el ritmo de las guías y los cursos, y evita pegarle a Supabase
+ * en cada rastreo de Google. Desde el 10-10-2026 no hay entradas ni categorías:
+ * la web es solo guías.
  *
  * Deliberadamente NO usa `@/lib/supabase/server`: ese cliente lee cookies, lo
  * que volvería la ruta dinámica y la ataría a una petición concreta. Aquí no hay
@@ -58,47 +58,6 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "/cookies", priority: 0.2, changeFrequency: "yearly" },
 ];
 
-type SitemapPost = {
-  slug: string;
-  created_at: string | null;
-  updated_at: string | null;
-  categories: PostCategoryRef | PostCategoryRef[] | null;
-};
-
-/** El join `categories(slug)` llega como objeto o como array según la consulta. */
-function categorySlug(categories: SitemapPost["categories"]): string | null {
-  const ref = Array.isArray(categories) ? categories[0] : categories;
-  return ref?.slug ?? null;
-}
-
-async function fetchPosts(): Promise<SitemapPost[]> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // Sin credenciales no se cae el build: se sirve el sitemap con las rutas
-  // estáticas y las guías, que es mejor que devolver un 500.
-  if (!url || !anonKey) return [];
-
-  // Se prefiere la clave de servicio, y no por comodidad: la policy de `posts`
-  // esconde las entradas premium a cualquiera que no lo sea, así que con la
-  // clave anónima **el contenido de pago no entraría nunca en el sitemap** y
-  // Google no llegaría a saber que existe. Aquí solo se piden slug y fechas
-  // —nada de `content`—, y esto sigue sin leer cookies, que es lo que permite
-  // a Next servir el sitemap estático.
-  const supabase = createClient(url, process.env.SUPABASE_SERVICE_ROLE_KEY || anonKey, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-
-  const { data, error } = await supabase
-    .from("posts")
-    .select("slug, created_at, updated_at, categories(slug)")
-    .eq("published", true)
-    .order("created_at", { ascending: false });
-
-  if (error || !data) return [];
-  return data as SitemapPost[];
-}
-
 /**
  * Los cursos publicados, con su fecha de última edición. Sin ninguno, `/cursos`
  * sale con `noindex` y no entra aquí: un sitemap no debe apuntar a una página
@@ -124,7 +83,7 @@ async function fetchCursos(): Promise<{ slug: string; updated_at: string }[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [posts, cursos] = await Promise.all([fetchPosts(), fetchCursos()]);
+  const cursos = await fetchCursos();
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
     ({ path, priority, changeFrequency }) => ({
@@ -149,33 +108,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${SITE_URL}/post/${post.slug}`,
-    lastModified: new Date(post.updated_at ?? post.created_at ?? Date.now()),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
-
-  // Una categoría se "actualiza" cuando publica una entrada nueva, así que su
-  // lastModified es la fecha de su entrada más reciente. Las categorías sin
-  // ninguna entrada publicada no entran: su página saldría vacía.
-  const categoryDates = new Map<string, number>();
-  for (const post of posts) {
-    const slug = categorySlug(post.categories);
-    if (!slug) continue;
-    const fecha = new Date(post.updated_at ?? post.created_at ?? Date.now()).getTime();
-    categoryDates.set(slug, Math.max(categoryDates.get(slug) ?? 0, fecha));
-  }
-
-  const categoryEntries: MetadataRoute.Sitemap = [...categoryDates].map(
-    ([slug, fecha]) => ({
-      url: `${SITE_URL}/categoria/${slug}`,
-      lastModified: new Date(fecha),
-      changeFrequency: "weekly",
-      priority: 0.6,
-    })
-  );
-
   // El catálogo de cursos entra solo en cuanto hay uno publicado, y con él la
   // ficha pública de cada curso, con su fecha real de edición.
   const cursoEntries: MetadataRoute.Sitemap = cursos.length
@@ -190,5 +122,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ]
     : [];
 
-  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...postEntries, ...categoryEntries, ...cursoEntries];
+  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...cursoEntries];
 }

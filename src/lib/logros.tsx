@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Footprints, BookOpen, GraduationCap, Flame, Zap, Gem, Bookmark, Compass, Trophy,
+  Flame, Zap, Gem, Trophy,
   ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, type LucideIcon,
 } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
@@ -37,11 +37,12 @@ export interface BadgeDef {
   progress?: { stat: keyof BadgeStats; target: number; unit: string };
 }
 
-/** Los contadores de actividad que calcula /api/badges. */
+/**
+ * Los contadores de actividad que calcula /api/badges. Solo la racha: los
+ * logros de leer y guardar entradas se retiraron el 10-10-2026 con el sistema
+ * de entradas (la web es solo guías).
+ */
 export interface BadgeStats {
-  readCount: number;
-  savedCount: number;
-  categoriesRead: number;
   maxStreak: number;
 }
 function PremiumCrownIcon({ size = 24 }: { size?: number }) {
@@ -156,30 +157,6 @@ export const BADGE_DEFS: BadgeDef[] = [
     special: true,
   },
   {
-    id: "first-read",
-    label: "Primer paso",
-    condition: "Lee tu primer artículo de la academia",
-    icon: <Footprints size={24} aria-hidden="true" />,
-    bigIcon: <Footprints size={48} aria-hidden="true" />,
-    progress: { stat: "readCount", target: 1, unit: "artículos leídos" },
-  },
-  {
-    id: "reader",
-    label: "Lector",
-    condition: "Completa 5 artículos leídos",
-    icon: <BookOpen size={24} aria-hidden="true" />,
-    bigIcon: <BookOpen size={48} aria-hidden="true" />,
-    progress: { stat: "readCount", target: 5, unit: "artículos leídos" },
-  },
-  {
-    id: "scholar",
-    label: "Estudioso",
-    condition: "Alcanza 10 artículos leídos",
-    icon: <GraduationCap size={24} aria-hidden="true" />,
-    bigIcon: <GraduationCap size={48} aria-hidden="true" />,
-    progress: { stat: "readCount", target: 10, unit: "artículos leídos" },
-  },
-  {
     id: "streak3",
     label: "Constante",
     condition: "Entra 3 días seguidos a la academia",
@@ -199,27 +176,11 @@ export const BADGE_DEFS: BadgeDef[] = [
     id: "streak30",
     label: "Imparable",
     condition: "Consigue 30 días consecutivos en la academia",
-    reward: "Tu perfil lucirá una ★ dorada visible en todos tus comentarios",
+    reward: "Tu perfil lucirá una ★ dorada junto a tu nombre en tu academia",
     icon: <Gem size={24} aria-hidden="true" />,
     bigIcon: <Gem size={48} aria-hidden="true" />,
     special: true,
     progress: { stat: "maxStreak", target: 30, unit: "días seguidos" },
-  },
-  {
-    id: "collector",
-    label: "Coleccionista",
-    condition: "Guarda 5 artículos en tu lista",
-    icon: <Bookmark size={24} aria-hidden="true" />,
-    bigIcon: <Bookmark size={48} aria-hidden="true" />,
-    progress: { stat: "savedCount", target: 5, unit: "artículos guardados" },
-  },
-  {
-    id: "explorer",
-    label: "Explorador",
-    condition: "Lee artículos de al menos 3 categorías distintas",
-    icon: <Compass size={24} aria-hidden="true" />,
-    bigIcon: <Compass size={48} aria-hidden="true" />,
-    progress: { stat: "categoriesRead", target: 3, unit: "categorías leídas" },
   },
 ];
 

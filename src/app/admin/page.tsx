@@ -1,8 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import Link from "next/link";
 import Icon from "@/components/Icon";
-import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
-import type { AdminComment } from "@/lib/types";
+import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 
 // ── Helpers ──────────────────────────────────────────────
 function buildDayBuckets(n: number) {
@@ -17,21 +15,6 @@ function buildDayBuckets(n: number) {
     });
   }
   return days;
-}
-
-function buildMonthBuckets(n: number) {
-  const months: { key: string; label: string; count: number }[] = [];
-  for (let i = n - 1; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(1);
-    d.setMonth(d.getMonth() - i);
-    months.push({
-      key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`,
-      label: d.toLocaleDateString("es-ES", { month: "short" }),
-      count: 0,
-    });
-  }
-  return months;
 }
 
 // ── SVG line chart ────────────────────────────────────────
@@ -87,28 +70,6 @@ function MultiLineChart({ series }: { series: Series[]; labels: string[] }) {
 }
 
 // ── SVG donut ─────────────────────────────────────────────
-function Donut({ pct, color }: { pct: number; color: string }) {
-  const r = 18, cx = 22, cy = 22;
-  const circ = 2 * Math.PI * r;
-  const dash = pct * circ;
-
-  return (
-    <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(240,244,255,0.06)" strokeWidth="5" />
-      <circle
-        cx={cx} cy={cy} r={r}
-        fill="none"
-        stroke={color}
-        strokeWidth="5"
-        strokeDasharray={`${dash.toFixed(1)} ${(circ - dash).toFixed(1)}`}
-        strokeDashoffset={circ * 0.25}
-        strokeLinecap="round"
-        style={{ transform: "rotate(-90deg)", transformOrigin: "22px 22px" }}
-      />
-    </svg>
-  );
-}
-
 // ── Page ──────────────────────────────────────────────────
 export default async function AdminPage() {
   const supabase = await createClient();
@@ -118,51 +79,27 @@ export default async function AdminPage() {
   const d60 = new Date(now); d60.setDate(d60.getDate() - 60);
   const d7  = new Date(now); d7.setDate(d7.getDate() - 7);
   const d14 = new Date(now); d14.setDate(d14.getDate() - 14);
-  const m6  = new Date(now); m6.setMonth(m6.getMonth() - 6); m6.setDate(1);
 
   const [
-    { count: postsCount },
-    { count: commentsCount },
     { count: usersCount },
     { count: premiumCount },
-    { count: publishedCount },
     { count: newUsersThisWeek },
     { count: newUsersLastWeek },
     { count: newUsersThisMonth },
     { count: newUsersLastMonth },
     { data: userSignups },
-    { data: postsMonthly },
-    { data: publishedPosts },
-    { data: recentComments },
     { data: recentSignups },
-    { data: allReads },
-    { data: likes30 },
-    { data: comments30 },
-    { data: shares30 },
   ] = await Promise.all([
-    supabase.from("posts").select("id", { count: "exact", head: true }),
-    supabase.from("comments").select("id", { count: "exact", head: true }).eq("approved", false),
     // Usuarios sin administradores en todas las cifras, igual que en /admin/premium
     // y /admin/comunidad: el admin no es un usuario que llega ni que paga.
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin"),
     supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
-    supabase.from("posts").select("id", { count: "exact", head: true }).eq("published", true),
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d7.toISOString()),
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d14.toISOString()).lt("created_at", d7.toISOString()),
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d30.toISOString()),
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d60.toISOString()).lt("created_at", d30.toISOString()),
     supabase.from("profiles").select("created_at").neq("role", "admin").gte("created_at", d30.toISOString()).order("created_at"),
-    supabase.from("posts").select("created_at, published").gte("created_at", m6.toISOString()),
-    supabase.from("posts").select("is_premium").eq("published", true),
-    supabase.from("comments")
-      .select("id, content, approved, created_at, profiles(full_name), posts(title, slug)")
-      .order("created_at", { ascending: false })
-      .limit(6),
     supabase.from("profiles").select("id, full_name, role, created_at").neq("role", "admin").order("created_at", { ascending: false }).limit(5),
-    supabase.from("user_posts").select("post_id, posts(title, slug)").not("read_at", "is", null),
-    supabase.from("post_likes").select("created_at").gte("created_at", d30.toISOString()),
-    supabase.from("comments").select("created_at").gte("created_at", d30.toISOString()),
-    supabase.from("post_shares").select("created_at").gte("created_at", d30.toISOString()),
   ]);
 
   const [
@@ -188,44 +125,6 @@ export default async function AdminPage() {
     const b = dayBuckets.find((d) => d.key === key);
     if (b) b.count++;
   });
-
-  // ── Posts per month chart (6 months) ──
-  const monthBuckets = buildMonthBuckets(6);
-  (postsMonthly ?? []).filter((p) => p.published).forEach((p) => {
-    const key = p.created_at.slice(0, 7);
-    const b = monthBuckets.find((m) => m.key === key);
-    if (b) b.count++;
-  });
-  const maxPosts = Math.max(...monthBuckets.map((m) => m.count), 1);
-
-  // ── Free vs premium donut ──
-  const totalPublished = publishedPosts?.length ?? 0;
-  const premiumPosts = (publishedPosts ?? []).filter((p) => p.is_premium).length;
-  const freePosts = totalPublished - premiumPosts;
-  const premiumPct = totalPublished > 0 ? premiumPosts / totalPublished : 0;
-
-  // ── Top posts by reads ──
-  const readMap: Record<string, { title: string; slug: string; count: number }> = {};
-  (allReads ?? []).forEach((r) => {
-    const post = r.posts as unknown as { title: string; slug: string } | null;
-    if (!post || !r.post_id) return;
-    if (!readMap[r.post_id]) readMap[r.post_id] = { title: post.title, slug: post.slug, count: 0 };
-    readMap[r.post_id].count++;
-  });
-  const topPosts = Object.values(readMap).sort((a, b) => b.count - a.count).slice(0, 5);
-
-  // ── Community interaction (30 days) ──
-  const likesBuckets   = buildDayBuckets(30);
-  const commentBuckets = buildDayBuckets(30);
-  const sharesBuckets  = buildDayBuckets(30);
-
-  (likes30   ?? []).forEach((r) => { const b = likesBuckets.find((d) => d.key === r.created_at.slice(0, 10));   if (b) b.count++; });
-  (comments30 ?? []).forEach((r) => { const b = commentBuckets.find((d) => d.key === r.created_at.slice(0, 10)); if (b) b.count++; });
-  (shares30  ?? []).forEach((r) => { const b = sharesBuckets.find((d) => d.key === r.created_at.slice(0, 10));  if (b) b.count++; });
-
-  const totalLikes30    = likesBuckets.reduce((s, d) => s + d.count, 0);
-  const totalComments30 = commentBuckets.reduce((s, d) => s + d.count, 0);
-  const totalShares30   = sharesBuckets.reduce((s, d) => s + d.count, 0);
 
   // ── Guide analytics ──
   const allGuideVisits     = guideVisitsData     ?? [];
@@ -290,12 +189,6 @@ export default async function AdminPage() {
     { label: "Compartidos",      color: "#a78bfa",              data: gShareBuckets },
   ];
 
-  const interactionSeries: Series[] = [
-    { label: "Me gustas",    color: "var(--accent-orange)", data: likesBuckets },
-    { label: "Comentarios",  color: "#60a5fa",              data: commentBuckets },
-    { label: "Compartidos",  color: "#a78bfa",              data: sharesBuckets },
-  ];
-  const interactionLabels = [likesBuckets[0].label, likesBuckets[14].label, likesBuckets[29].label];
 
   // ── Trend helpers ──
   function trend(curr: number | null, prev: number | null) {
@@ -341,20 +234,6 @@ export default async function AdminPage() {
               </div>
             </div>
           ))}
-          {((recentComments ?? []) as unknown as AdminComment[]).slice(0, 3).map((c) => (
-            <div key={c.id} className="admin-activity-item">
-              <div className={`admin-activity-dot ${c.approved ? "comment" : "comment-pending"}`} />
-              <div className="admin-activity-body">
-                <span className="admin-activity-text">
-                  <strong>{c.profiles?.full_name ?? "Usuario"}</strong> comentó en <em>{c.posts?.title ?? "—"}</em>
-                </span>
-                <span className="admin-activity-meta">
-                  {!c.approved && <span className="admin-activity-badge">Pendiente</span>}
-                  · {new Date(c.created_at).toLocaleDateString("es-ES", { day: "2-digit", month: "short" })}
-                </span>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
 
@@ -365,9 +244,9 @@ export default async function AdminPage() {
             <Icon name="list" size={18} />
           </div>
           <div className="admin-stat-v2-body">
-            <span className="admin-stat-v2-value">{postsCount ?? 0}</span>
-            <span className="admin-stat-v2-label">Entradas totales</span>
-            <span className="admin-stat-v2-sub">{publishedCount ?? 0} publicadas</span>
+            <span className="admin-stat-v2-value">{GUIDES.length}</span>
+            <span className="admin-stat-v2-label">Guías publicadas</span>
+            <span className="admin-stat-v2-sub">la única vía de contenido</span>
           </div>
         </div>
 
@@ -400,15 +279,13 @@ export default async function AdminPage() {
         </div>
 
         <div className="admin-stat-v2">
-          <div className="admin-stat-v2-icon" style={{ "--stat-color": "#f87171" } as React.CSSProperties}>
-            <Icon name="chat" size={18} />
+          <div className="admin-stat-v2-icon" style={{ "--stat-color": "#4ade80" } as React.CSSProperties}>
+            <Icon name="eye" size={18} />
           </div>
           <div className="admin-stat-v2-body">
-            <span className="admin-stat-v2-value" style={commentsCount ? { color: "#f87171" } : undefined}>{commentsCount ?? 0}</span>
-            <span className="admin-stat-v2-label">Comentarios pendientes</span>
-            {(commentsCount ?? 0) > 0 && (
-              <Link href="/admin/comments" className="admin-stat-v2-action">Revisar →</Link>
-            )}
+            <span className="admin-stat-v2-value">{totalGuideVisits}</span>
+            <span className="admin-stat-v2-label">Visitas a las guías</span>
+            <span className="admin-stat-v2-sub">{totalQuizAttempts} quiz completados</span>
           </div>
         </div>
       </div>
@@ -441,87 +318,6 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        {/* Posts per month bar chart */}
-        <div className="admin-chart-card">
-          <div className="admin-chart-head">
-            <div>
-              <h2 className="admin-chart-title">Publicaciones</h2>
-              <p className="admin-chart-sub">Últimos 6 meses</p>
-            </div>
-          </div>
-          <div className="admin-bar-chart">
-            {monthBuckets.map((m) => (
-              <div key={m.key} className="admin-bar-col">
-                <span className="admin-bar-val">{m.count > 0 ? m.count : ""}</span>
-                <div className="admin-bar-track">
-                  <div
-                    className="admin-bar-fill"
-                    style={{ height: `${maxPosts > 0 ? Math.max((m.count / maxPosts) * 100, m.count > 0 ? 8 : 0) : 0}%` }}
-                  />
-                </div>
-                <span className="admin-bar-label">{m.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Content split donut */}
-        <div className="admin-chart-card">
-          <div className="admin-chart-head">
-            <div>
-              <h2 className="admin-chart-title">Contenido</h2>
-              <p className="admin-chart-sub">Free vs Premium</p>
-            </div>
-          </div>
-          <div className="admin-donut-wrap">
-            <div className="admin-donut-ring">
-              <Donut pct={premiumPct} color="var(--accent-orange)" />
-              <span className="admin-donut-pct">{Math.round(premiumPct * 100)}%</span>
-            </div>
-            <div className="admin-donut-legend">
-              <div className="admin-donut-row">
-                <span className="admin-donut-dot" style={{ background: "var(--accent-orange)" }} />
-                <span>Premium</span>
-                <strong>{premiumPosts}</strong>
-              </div>
-              <div className="admin-donut-row">
-                <span className="admin-donut-dot" style={{ background: "#60a5fa" }} />
-                <span>Free</span>
-                <strong>{freePosts}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Community interaction chart */}
-      <div className="admin-chart-card admin-interaction-card">
-        <div className="admin-chart-head">
-          <div>
-            <h2 className="admin-chart-title">Interacción de la comunidad</h2>
-            <p className="admin-chart-sub">Últimos 30 días</p>
-          </div>
-          <div className="admin-interaction-kpis">
-            <span className="admin-interaction-kpi" style={{ color: "var(--accent-orange)" }}>
-              <span className="admin-interaction-kpi-dot" style={{ background: "var(--accent-orange)" }} />
-              {totalLikes30} me gustas
-            </span>
-            <span className="admin-interaction-kpi" style={{ color: "#60a5fa" }}>
-              <span className="admin-interaction-kpi-dot" style={{ background: "#60a5fa" }} />
-              {totalComments30} comentarios
-            </span>
-            <span className="admin-interaction-kpi" style={{ color: "#a78bfa" }}>
-              <span className="admin-interaction-kpi-dot" style={{ background: "#a78bfa" }} />
-              {totalShares30} compartidos
-            </span>
-          </div>
-        </div>
-        <div className="admin-line-chart-wrap">
-          <MultiLineChart series={interactionSeries} labels={interactionLabels} />
-          <div className="admin-line-chart-labels">
-            {interactionLabels.map((l) => <span key={l}>{l}</span>)}
-          </div>
-        </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────── */}
@@ -809,28 +605,6 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      {/* Top posts by reads */}
-      <div className="admin-card">
-        <div className="admin-card-head">
-          <h2 className="admin-card-title">
-            <Icon name="eye" size={16} />
-            Artículos más leídos
-          </h2>
-        </div>
-        {topPosts.length === 0 ? (
-          <p className="admin-empty">Sin datos de lectura todavía</p>
-        ) : (
-          <div className="admin-top-posts">
-            {topPosts.map((p, i) => (
-              <div key={p.slug} className="admin-top-post-row">
-                <span className="admin-top-post-rank">{i + 1}</span>
-                <span className="admin-top-post-title">{p.title}</span>
-                <span className="admin-top-post-reads">{p.count} lecturas</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

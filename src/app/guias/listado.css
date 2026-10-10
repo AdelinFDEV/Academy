@@ -1,15 +1,6 @@
 /* Solo el listado /guias (src/app/guias/page.tsx). Separado de guias.css el
    03-10-2026: las guías no lo necesitan y el listado no necesita lo de ellas. */
 
-.guides-access-badge--premium {
-  background: var(--gold-soft);
-  border-color: var(--gold-border);
-  color: var(--gold);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
 .guias-page {
   min-height: 80vh;
 }

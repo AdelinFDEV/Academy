@@ -74,7 +74,7 @@ export default function TelegramBanner() {
 
           <p className="tg-banner-text">
             <strong>Únete a la comunidad</strong>
-            <span>Noticias y análisis en el canal gratuito de Telegram</span>
+            <span>Guías y vídeos nuevos, en el canal gratuito de Telegram</span>
           </p>
 
           <a

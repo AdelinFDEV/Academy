@@ -94,7 +94,7 @@ export function getLogChatId(): string | null {
  *
  * Es distinto de "ser admin" a propósito: el rol se puede dar a más gente el
  * día de mañana (soporte, un socio), y eso son privilegios de gestión —
- * publicar noticias, publicar un vídeo. Esto es otra cosa: comandos que solo
+ * publicar un vídeo, parar los avisos. Esto es otra cosa: comandos que solo
  * tienen sentido para quien mantiene el código, y que no deberían aparecer ni
  * insinuarse a nadie más, admin o no.
  *
@@ -424,7 +424,7 @@ const CLAVE_PAUSA = "avisos_pausados";
  * ¿Están los avisos automáticos en pausa?
  *
  * Solo afecta a lo que el bot manda por su cuenta —altas en los canales,
- * propuestas de noticias, entradas y vídeos nuevos—. NUNCA silencia los que
+ * guías y vídeos nuevos—. NUNCA silencia los que
  * escribe una persona: el relé de soporte no pasa por aquí a propósito, porque
  * perder el mensaje de un cliente es mucho peor que recibir un aviso de más.
  *
@@ -440,32 +440,6 @@ export async function avisosPausados(admin: SupabaseAdmin): Promise<boolean> {
 
   if (error) {
     console.warn("[telegram] No se pudo leer el interruptor de avisos:", error.message);
-    return false;
-  }
-  return data?.valor === "1";
-}
-
-/**
- * ¿Está en pausa la revisión diaria de noticias?
- *
- * Interruptor propio, separado de `avisos_pausados`: aquel calla TODO lo que
- * el bot manda por su cuenta (altas, entradas nuevas…), y aquí solo se quiere
- * parar el cron de noticias. Pausado desde el 04-10-2026 a petición del admin.
- * Para reactivarlo, la fila `noticias_pausadas` de `bot_ajustes` a "0".
- *
- * Mismo criterio ante un error que `avisosPausados`: se responde "no
- * pausadas", porque las noticias solo se PROPONEN al admin y nunca se
- * publican solas, así que un fallo no puede sacar nada al canal.
- */
-export async function noticiasPausadas(admin: SupabaseAdmin): Promise<boolean> {
-  const { data, error } = await admin
-    .from("bot_ajustes")
-    .select("valor")
-    .eq("clave", "noticias_pausadas")
-    .maybeSingle();
-
-  if (error) {
-    console.warn("[telegram] No se pudo leer el interruptor de noticias:", error.message);
     return false;
   }
   return data?.valor === "1";
@@ -633,102 +607,6 @@ export function mencionar(texto: string, nombre: string, userId: number) {
   return [{ type: "text_mention", offset, length: nombre.length, user: { id: userId } }];
 }
 
-/**
- * Convierte **negrita** en estilo Markdown a entidades de Telegram y quita
- * los asteriscos del texto.
- *
- * Mismo motivo que mencionar(): entidades en vez de parse_mode. El texto en
- * negrita aquí lo escribe Gemini a partir de un artículo de fuera, y no hay
- * forma de garantizar que venga bien escapado para MarkdownV2 — un paréntesis
- * o un guion sueltos (normalísimos en una noticia) bastarían para que
- * Telegram rechace el mensaje entero. Con entidades no hay nada que escapar:
- * se calcula el hueco exacto y se manda como dato estructurado, no como texto
- * que Telegram tenga que interpretar.
- */
-export function entidadesDeMarkdown(
-  texto: string
-): { texto: string; entidades: Array<{ type: string; offset: number; length: number }> } {
-  const entidades: Array<{ type: string; offset: number; length: number }> = [];
-  const regex = /\*\*([\s\S]+?)\*\*/g;
-  let limpio = "";
-  let ultimoIndice = 0;
-  let match: RegExpExecArray | null;
-
-  while ((match = regex.exec(texto)) !== null) {
-    limpio += texto.slice(ultimoIndice, match.index);
-    // El offset se mide sobre el texto YA limpio (sin asteriscos): es el que
-    // Telegram va a recibir y sobre el que tienen que calzar las entidades.
-    entidades.push({ type: "bold", offset: limpio.length, length: match[1].length });
-    limpio += match[1];
-    ultimoIndice = match.index + match[0].length;
-  }
-  limpio += texto.slice(ultimoIndice);
-
-  return { texto: limpio, entidades };
-}
-
-/**
- * ¿Admite este chat estas reacciones de emoji?
- *
- * Hace falta porque las reacciones NO se pueden configurar desde la API de
- * bots —`setChatAvailableReactions` no existe— así que el bot no puede darlas
- * por hechas: tiene que mirar cómo está el canal y adaptarse.
- *
- * Los tres estados que devuelve Telegram en `available_reactions`:
- *   · undefined            → están todas las de por defecto, así que sí.
- *   · []                   → reacciones desactivadas.
- *   · [{type:"paid"}, …]   → solo la de estrellas, que no sirve para votar.
- *   · [{type:"emoji", …}]  → la lista concreta que el dueño ha permitido.
- */
-export async function admiteReacciones(
-  chatId: string | number,
-  emojis: string[]
-): Promise<boolean> {
-  try {
-    const chat = await callTelegramApi<{
-      available_reactions?: { type: string; emoji?: string }[];
-    }>("getChat", { chat_id: chatId });
-
-    const permitidas = chat.available_reactions;
-    if (permitidas === undefined) return true; // todas las de por defecto
-
-    const deEmoji = permitidas.filter((r) => r.type === "emoji").map((r) => r.emoji);
-    return emojis.every((e) => deEmoji.includes(e));
-  } catch (err) {
-    // Ante la duda, no: se publica con los botones, que funcionan siempre.
-    console.warn("[telegram] No se pudieron consultar las reacciones:", (err as Error).message);
-    return false;
-  }
-}
-
-/**
- * Cambia solo los botones de un mensaje ya publicado, sin tocar el texto.
- *
- * Es lo que hace falta para los votos de las noticias: al pulsar "alcista" hay
- * que repintar el marcador, y reescribir el mensaje entero volvería a mandar
- * el pie de foto (que Telegram rechaza si el mensaje es una foto).
- */
-export async function editarBotones(
-  chatId: string | number,
-  messageId: number,
-  botones: Boton[] | Boton[][]
-): Promise<boolean> {
-  try {
-    await callTelegramApi("editMessageReplyMarkup", {
-      chat_id: chatId,
-      message_id: messageId,
-      reply_markup: construirTeclado(botones),
-    });
-    return true;
-  } catch (err) {
-    const motivo = (err as Error).message;
-    // Dos personas votando a la vez pueden dejar el teclado idéntico.
-    if (motivo.includes("message is not modified")) return true;
-    console.warn("[telegram] No se pudieron cambiar los botones:", motivo);
-    return false;
-  }
-}
-
 export async function sendChannelPost(
   texto: string,
   opciones?: {
@@ -789,9 +667,8 @@ export async function sendChannelPost(
 /**
  * Reescribe un mensaje ya enviado y le quita los botones.
  *
- * Se usa al decidir sobre una noticia: sin esto, el mensaje se quedaría con
- * «Publicar / Descartar» puestos para siempre y no habría forma de saber, al
- * repasar el chat, cuáles ya se atendieron.
+ * La usan los menús del bot, que se repintan en el mismo mensaje en vez de
+ * mandar uno nuevo por cada pulsación.
  */
 export async function editarMensaje(
   chatId: number,
@@ -805,8 +682,7 @@ export async function editarMensaje(
       message_id: messageId,
       text: texto,
       // Sin botones no se manda reply_markup, y Telegram elimina el teclado
-      // del mensaje: es justo lo que quieren los avisos de noticias, que se
-      // reescriben para dejar constancia de lo ya decidido.
+      // del mensaje.
       reply_markup: construirTeclado(botones),
       link_preview_options: { is_disabled: true },
     });

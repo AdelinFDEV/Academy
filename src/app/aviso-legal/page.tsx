@@ -113,7 +113,7 @@ export default function AvisoLegalPage() {
         <h2>8. Advertencia de riesgo y ausencia de asesoramiento financiero</h2>
         <div className="legal-disclaimer-box">
           <p>
-            <strong>Importante.</strong> Todo el contenido de {LEGAL.marca} —artículos, análisis, guías,
+            <strong>Importante.</strong> Todo el contenido de {LEGAL.marca} —guías, análisis,
             sesiones de trading en directo, herramientas, el Diario de Trading y cualquier otro
             material— tiene carácter
             <strong> exclusivamente educativo e informativo</strong>.

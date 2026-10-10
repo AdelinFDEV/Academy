@@ -10,7 +10,6 @@ import { SEGUNDOS_SHORT, getSubidasEntre, type VideoSubido } from "@/lib/youtube
  * - Vídeos: de la API de YouTube, todos los subidos (largos y Shorts), con
  *   título y duración. Sin clave o si falla, los que anunció el bot (solo
  *   largos y sin título).
- * - Entradas: las filas de `posts` publicadas ese mes.
  * - Guías: las que anunció el bot ese mes (`content_announcements`), con su
  *   ficha de GUIDES. Las guías son código, no filas: no tienen otra fecha.
  */
@@ -25,9 +24,8 @@ export type ActividadMes = {
   videos: (VideoSubido & { short: boolean })[];
   /** De dónde salen los vídeos: la API (completos) o los anuncios del bot (solo largos, sin título). */
   fuenteVideos: "api" | "anuncios";
-  entradas: Publicacion[];
   guias: Publicacion[];
-  anterior: { mes: string; largos: number; shorts: number; entradas: number; guias: number };
+  anterior: { mes: string; largos: number; shorts: number; guias: number };
 };
 
 /** Primer instante del mes y del siguiente, en Rumanía. */
@@ -77,18 +75,6 @@ export async function subidasEntre(admin: Admin, desde: Date, hasta: Date): Prom
   };
 }
 
-async function entradasDe(admin: Admin, mes: string): Promise<Publicacion[]> {
-  const { desde, hasta } = limites(mes);
-  const { data } = await admin
-    .from("posts")
-    .select("title, slug, is_premium, created_at")
-    .eq("published", true)
-    .gte("created_at", desde.toISOString())
-    .lt("created_at", hasta.toISOString())
-    .order("created_at", { ascending: false });
-  return (data ?? []).map((p) => ({ titulo: p.title, enlace: `/post/${p.slug}`, fecha: p.created_at, premium: !!p.is_premium }));
-}
-
 async function guiasDe(admin: Admin, mes: string): Promise<Publicacion[]> {
   const { desde, hasta } = limites(mes);
   const { data } = await admin
@@ -107,25 +93,21 @@ async function guiasDe(admin: Admin, mes: string): Promise<Publicacion[]> {
 export async function cargarActividadMes(admin: Admin, mes: string): Promise<ActividadMes> {
   const [a, m] = mes.split("-").map(Number);
   const mesAnterior = new Date(Date.UTC(a, m - 2, 1)).toISOString().slice(0, 7);
-  const [videos, entradas, guias, videosAnt, entradasAnt, guiasAnt] = await Promise.all([
+  const [videos, guias, videosAnt, guiasAnt] = await Promise.all([
     videosDe(admin, mes),
-    entradasDe(admin, mes),
     guiasDe(admin, mes),
     videosDe(admin, mesAnterior),
-    entradasDe(admin, mesAnterior),
     guiasDe(admin, mesAnterior),
   ]);
   return {
     mes,
     videos: videos.videos.map((v) => ({ ...v, short: esShort(v) })),
     fuenteVideos: videos.fuente,
-    entradas,
     guias,
     anterior: {
       mes: mesAnterior,
       largos: videosAnt.videos.filter((v) => !esShort(v)).length,
       shorts: videosAnt.videos.filter(esShort).length,
-      entradas: entradasAnt.length,
       guias: guiasAnt.length,
     },
   };

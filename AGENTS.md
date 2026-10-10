@@ -13,7 +13,6 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 
 | Vas a hacer… | Lee **antes** de empezar |
 |---|---|
-| Una **entrada** del blog | `/admin/posts-instrucciones` (`src/app/admin/posts-instrucciones/page.tsx`) |
 | Una **guía** interactiva | `/admin/guias-instrucciones` |
 | Una **liberación** de tokens | `/admin/liberaciones-instrucciones` |
 | Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
@@ -25,25 +24,25 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Un **anuncio de Telegram con copy propio** | [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 
-Las tres primeras filas son **la fuente de verdad** de su tipo de contenido: lo que diga el panel manda, y este archivo no las repite a propósito — repetirlas es cómo se desincronizan.
+Las dos primeras filas son **la fuente de verdad** de su tipo de contenido: lo que diga el panel manda, y este archivo no las repite a propósito — repetirlas es cómo se desincronizan.
 
-**Esto ya falló una vez** (agosto de 2026, las entradas de Bitcoin Core y Zcash): se redactaron enteras sin abrir `/admin/posts-instrucciones`, y hubo que rehacerlas por faltarles el gráfico obligatorio y doblar la longitud máxima. Abrir la página cuesta treinta segundos.
+**Desde el 10-10-2026 la web es solo guías.** No hay entradas, noticias, categorías ni comentarios: se retiró todo el sistema, con sus tablas. `/post/…` y `/categoria/…` responden **410** (`src/lib/retiradas.ts`). No lo vuelvas a crear sin que el admin lo pida.
 
 ---
 
 ## 2 · 🔴 LA AUDITORÍA SEO SE OFRECE SIEMPRE
 
-**No hay que recordárselo a nadie. Es parte de montar una entrada o una guía, igual que las tres preguntas del principio.**
+**No hay que recordárselo a nadie. Es parte de montar una guía, igual que las preguntas del principio.**
 
 Al terminar de montar el contenido, **antes** de pedir la aprobación para publicar, se pregunta con estas palabras o equivalentes:
 
-> ¿Empiezo la auditoría SEO de la entrada / de la guía?
+> ¿Empiezo la auditoría SEO de la guía?
 
-En cuanto el admin diga que sí, se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa entrada o esa guía. Son 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba del todo, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales y conversión— y **cada fase se corrige antes de pasar a la siguiente**.
+En cuanto el admin diga que sí, se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa guía. Son 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba del todo, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales y conversión— y **cada fase se corrige antes de pasar a la siguiente**.
 
 Cuatro reglas del disparador:
 
-1. **Se pregunta siempre**, aunque la entrada sea corta o urgente. Una noticia de 500 palabras compite en Google igual que una guía de 3.000.
+1. **Se pregunta siempre**, aunque la guía sea corta o urgente. Una guía corta compite en Google igual que una de 3.000 palabras.
 2. Si el admin dice que no, **se anota en el cierre que queda sin auditar**, para que conste.
 3. Aplica también a **contenido existente que se reescriba a fondo**: cambiar la mitad del cuerpo es publicar otra página en la misma URL.
 4. Los scripts van **al final** de la auditoría, no al principio. Confirman lo que ya has arreglado; **no lo descubren por ti**.
@@ -60,17 +59,16 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 
 | Regla | Detalle |
 |---|---|
-| **Nunca publiques sin aprobación explícita.** `published = true` **manda un mensaje al grupo de Telegram del admin**. Sin su «sí», se inserta con `published = false` — y cuando lo dé, **publica él desde el interruptor de `/admin`**: por SQL la fila cambia pero el aviso NO sale | [`BOT.md`](./BOT.md) |
-| **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda entrada y toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
+| **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**, y el cron diario **la anuncia en el canal de Telegram**: no hay paso intermedio para echarse atrás | [`BOT.md`](./BOT.md) |
+| **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **Comprueba el destino antes de enlazarlo.** Un término sin `extended` da **404** y una guía que no esté en `GUIDES` no existe | paneles de `/admin` |
-| **Toda portada se convierte a WebP** —1.600 px, calidad 82— antes de subirla. El panel admite 5 MB: que entre no significa que valga | `/admin/posts-instrucciones` |
 
 ### Plataforma
 
 | Regla | Detalle |
 |---|---|
-| **Las páginas públicas leen las entradas con `createAdminClientOpcional()`.** Si alguien lo «arregla», las entradas premium vuelven a ser **404 e invisibles** para Google y para los listados | [`PLATAFORMA.md`](./PLATAFORMA.md) |
+| **El catálogo y el temario públicos de los cursos se leen con `createAdminClientOpcional()`.** Si alguien lo «arregla», lo de pago vuelve a ser **404 e invisible** para Google y para los listados | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **En `portfolio_positions` y `dca_compras` no se añade ninguna policy de escritura.** El admin escribe con la clave de servicio desde la API. La clave anónima va en el navegador de cualquiera | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **El marco legal es RUMANO**, no español. El RGPD no cambia; las leyes nacionales sí | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **Ningún script de terceros con cookies fuera de `src/lib/consent.ts`.** Nada de Google se carga hasta que el visitante acepta | [`PLATAFORMA.md`](./PLATAFORMA.md) |
@@ -92,7 +90,6 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | **Nunca `new Date(x.toLocaleString(…))`** — relee la fecha en la zona de la máquina y la desplaza. Traicionero porque en UTC da bien | [`CODIGO.md`](./CODIGO.md) |
 | **CSS por módulo.** Si una clase solo la usa una sección, va en el `.css` de esa sección, no en `globals.css` | [`CODIGO.md`](./CODIGO.md) |
 | **Cada guía nueva, su propio `[slug].css`** — y su alta en `GUIDES`, o es invisible para Google | [`CODIGO.md`](./CODIGO.md) |
-| **Una entrada NUNCA es un componente de código**: es una fila en `posts` | [`CODIGO.md`](./CODIGO.md) |
 | Antes de usar una API de Next que no reconozcas, verifícala en https://nextjs.org/docs — **no en `node_modules`** | — |
 
 ### Proceso
@@ -105,20 +102,19 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 
 ---
 
-## 4 · LOS CUATRO GUARDARRAÍLES
+## 4 · LOS TRES GUARDARRAÍLES
 
 ```bash
 npm run check && npx tsc --noEmit        # el código. Lo corre solo el hook de pre-push
-npm run check:contenido -- <slug>        # la fila en Supabase. Antes de publicar una entrada
-npm run check:seo -- post/<slug> "<kw>"  # la página servida. Fase 16 de la auditoría
+npm run check:seo -- guias/<slug> "<kw>" # la página servida. Fase 16 de la auditoría
 npm run check:glosario                   # el texto de las fichas ampliadas
 ```
 
-Los cuatro salen con código 1 si algo falla, y dicen qué y dónde. **Solo el primero está en el hook**: los otros necesitan credenciales o el servidor levantado, y en CI no hay secretos.
+Los tres salen con código 1 si algo falla, y dicen qué y dónde. **Solo el primero está en el hook**: los otros necesitan credenciales o el servidor levantado, y en CI no hay secretos.
 
 Dos advertencias que valen por todo lo demás:
 
-- **En una entrada, pásale a `check:seo` el `focus_keyword` de la fila.** Sin él deduce la clave del slug, y en una noticia el slug y la consulta objetivo casi nunca coinciden.
+- **Pásale a `check:seo` la palabra clave objetivo de la guía.** Sin ella la deduce del slug, y el slug y la consulta que se quiere ganar rara vez coinciden.
 - **Salir en verde no es haber acabado.** `check:seo` mide lo que se puede contar, y **aprueba una página que cumple todas las métricas y no responde a nada**. El criterio está en las fases de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md).
 
 Lo que está hecho y cómo se hizo: [`SEO-PLAN.md`](./SEO-PLAN.md) — los 13 puntos, cerrados y verificados en producción. No hace falta abrirlo para trabajar.

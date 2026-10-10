@@ -2,20 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import {
-  FUENTE,
-  MAXIMO_POR_TANDA,
-  guardarNuevas,
-  noticiaEsperandoTexto,
-  pedirTextoAlAdmin,
-  pendientesSinProponer,
-  proponerNoticia,
-  publicarNoticia,
-  publicarTextoPropio,
-  redactarResumen,
-  votarNoticia,
-  type Voto,
-} from "@/lib/noticias";
-import {
   CAMPOS_PERFIL_BOT,
   COMANDOS_PUBLICOS,
   menuPara,
@@ -54,8 +40,8 @@ import {
 // El webhook lo llama Telegram directamente: siempre en Node y sin caché.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// Publicar una noticia lee el artículo entero y lo pasa por Gemini, y eso son
-// decenas de segundos. El resto de updates responden en milisegundos.
+// Margen para /video, que consulta YouTube antes de responder. El resto de
+// updates responden en milisegundos.
 export const maxDuration = 60;
 
 type Admin = ReturnType<typeof createAdminClient>;
@@ -101,7 +87,7 @@ const LIMITE_MENSAJES_HORA = 10;
 /** Comandos reservados al admin. Al añadir uno nuevo, basta con listarlo aquí
  *  para que quede protegido: a quien no sea admin se le responde con el menú
  *  normal, sin darle ninguna pista de que el comando existe. */
-const COMANDOS_DE_ADMIN = ["/noticias", "/stop", "/arrancar", "/video"];
+const COMANDOS_DE_ADMIN = ["/stop", "/arrancar", "/video"];
 
 /**
  * ¿Es admin quien escribe?
@@ -224,35 +210,10 @@ async function enviarBienvenida(admin: Admin, from: TelegramUser) {
 async function handleCallback(admin: Admin, query: CallbackQuery) {
   const data = query.data ?? "";
 
-  // Voto toro/oso en una noticia del canal. Abierto a cualquiera: es el canal
-  // gratuito y de eso se trata. Lo único que hace es contar.
-  const voto = data.match(/^nv:(\d+):(toro|oso)$/);
-  if (voto) {
-    const resultado = await votarNoticia(admin, Number(voto[1]), query.from.id, voto[2] as Voto);
-    // El aviso emergente es toda la confirmación que recibe quien vota desde
-    // un canal, donde el marcador tarda un instante en repintarse.
-    await answerCallbackQuery(query.id, resultado?.aviso ?? "Esa noticia ya no está");
-    return;
-  }
-
   // Corta el reloj de carga del botón en el móvil.
   await answerCallbackQuery(query.id);
 
   const chatId = query.message?.chat.id ?? query.from.id;
-
-  // Decisiones sobre noticias: son del admin y no pintan menú.
-  const noticia = data.match(/^n:(ok|no):(\d+)$/);
-  if (noticia) {
-    await decidirNoticia(admin, query, noticia[1] === "ok", Number(noticia[2]));
-    return;
-  }
-
-  // "La escribo yo": el bot le pasa el enlace y se queda esperando su texto.
-  const aMano = data.match(/^n:mio:(\d+)$/);
-  if (aMano) {
-    await handleEscribirloYo(admin, query, Number(aMano[1]));
-    return;
-  }
 
   // Botón de "Publicar en el canal" de /video: solo del admin.
   const video = data.match(/^v:pub:([\w-]{11})$/);
@@ -322,8 +283,7 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
       chatId,
       "🔕 Avisos en pausa\n\n" +
         "A partir de ahora no te mando nada por mi cuenta:\n\n" +
-        "🔇 Altas y bajas en los canales\n" +
-        "🔇 Propuestas de noticias\n\n" +
+        "🔇 Altas y bajas en los canales\n\n" +
         "Lo que SÍ te sigue llegando:\n\n" +
         "💬 Los mensajes de los usuarios Premium — eso no lo paro nunca, no quiero " +
         "que pierdas a nadie por un interruptor.\n\n" +
@@ -339,8 +299,7 @@ async function cambiarAvisos(admin: Admin, chatId: number, pausar: boolean) {
     chatId,
     "🔔 Avisos activados\n\n" +
       "Ya te vuelvo a contar todo:\n\n" +
-      "🔊 Altas y bajas en los canales\n" +
-      "🔊 Propuestas de noticias\n\n" +
+      "🔊 Altas y bajas en los canales\n\n" +
       "Lo que pasó mientras estabas en silencio no se recupera — no te lo voy a " +
       "amontonar de golpe. Empezamos desde ahora.\n\n" +
       "Para volver a pararlos, /stop 👇",
@@ -392,7 +351,6 @@ async function bienvenidaDesdeEnlace(admin: Admin, from: TelegramUser, origen: s
     `¡Hola${nombre ? `, ${nombre}` : ""}! 👋\n\n` +
       "Bienvenido a AdelinBTC Academy 🚀\n\n" +
       "Aquí se aprende cripto sin humo:\n" +
-      "📰 Las noticias que de verdad mueven el mercado\n" +
       "🎥 Mis vídeos nada más salir\n" +
       "📚 Guías interactivas y herramientas gratuitas\n\n" +
       "Empieza por el canal gratuito — se entra en un toque y no cuesta nada 👇",
@@ -628,84 +586,6 @@ async function handleJoinRequest(admin: Admin, req: ChatJoinRequest) {
 
 
 /**
- * El admin quiere escribir él la noticia.
- *
- * Solo para admins, como el resto de lo que toca noticias: quien pulse esto
- * sin serlo no recibe nada, ni siquiera un error.
- */
-async function handleEscribirloYo(admin: Admin, query: CallbackQuery, id: number) {
-  if (!(await esAdmin(admin, query.from.id))) return;
-
-  const chatId = query.message?.chat.id ?? query.from.id;
-
-  const { data: noticia } = await admin
-    .from("noticias")
-    .select("id, titulo, enlace, estado")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (!noticia) {
-    await sendTelegramMessage(chatId, "No encuentro esa noticia.");
-    return;
-  }
-  if (noticia.estado !== "pendiente") {
-    await sendTelegramMessage(chatId, `Esa noticia ya estaba ${noticia.estado}.`);
-    return;
-  }
-
-  await pedirTextoAlAdmin(admin, chatId, noticia);
-}
-
-/**
- * El admin responde con el texto de una noticia que pidió escribir él.
- *
- * Devuelve true si la respuesta era eso, para que quien llama no siga tratando
- * el mensaje como una contestación de soporte.
- */
-async function handleTextoDeNoticia(admin: Admin, message: TelegramMessage): Promise<boolean> {
-  const citado = message.reply_to_message?.message_id;
-  if (!citado || !message.text) return false;
-
-  const noticia = await noticiaEsperandoTexto(admin, citado);
-  if (!noticia) return false;
-
-  const chatId = message.chat.id;
-
-  if (noticia.estado !== "pendiente") {
-    await sendTelegramMessage(chatId, `Esa noticia ya estaba ${noticia.estado}, no la he tocado.`);
-    return true;
-  }
-
-  const canal = getFreeChannelId();
-  if (!canal) {
-    await sendTelegramMessage(chatId, "⚠️ No hay canal gratuito configurado, no puedo publicar.");
-    return true;
-  }
-
-  try {
-    const { conImagen } = await publicarTextoPropio(
-      admin,
-      noticia,
-      message.text,
-      message.entities,
-      canal
-    );
-    await sendTelegramMessage(
-      chatId,
-      `✅ Publicada con tu texto${conImagen ? " y una imagen" : " (sin imagen: no cabía en el pie de foto)"}.`
-    );
-  } catch (err) {
-    console.error("[telegram-webhook] No se pudo publicar el texto propio:", err);
-    await sendTelegramMessage(
-      chatId,
-      `⚠️ No he podido publicarla.\n\n${err instanceof Error ? err.message : "Error desconocido"}\n\n` +
-        "Tu texto sigue ahí arriba: vuelve a responder al mismo mensaje y lo reintento."
-    );
-  }
-  return true;
-}
-
-/**
  * /gombos — lista los comandos de admin que existen ahora mismo.
  *
  * Lee COMANDOS_DE_ADMIN en vez de traer la lista escrita a mano: así nunca se
@@ -714,7 +594,6 @@ async function handleTextoDeNoticia(admin: Admin, message: TelegramMessage): Pro
  */
 async function handleGombos(chatId: number) {
   const descripciones: Record<string, string> = {
-    "/noticias": "Buscar noticias nuevas y proponerlas",
     "/video": "Ver el último vídeo de YouTube y publicarlo",
     "/stop": "Parar todos los avisos automáticos",
     "/arrancar": "Reanudarlos",
@@ -845,81 +724,6 @@ async function handleVideoPublicar(admin: Admin, query: CallbackQuery, id: strin
       ? `✅ Publicado en el canal free.\n\n${video.title}`
       : `⚠️ No se ha publicado.\n\n${resultado.motivo}`
   );
-}
-
-/** El admin ha decidido sobre una noticia. */
-async function decidirNoticia(
-  admin: Admin,
-  query: CallbackQuery,
-  aceptada: boolean,
-  id: number
-) {
-  const chatId = query.message?.chat.id ?? query.from.id;
-
-  const { data: noticia } = await admin
-    .from("noticias")
-    .select("id, titulo, resumen, enlace, estado, imagen, texto_canal")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (!noticia) {
-    await sendTelegramMessage(chatId, "No encuentro esa noticia.");
-    return;
-  }
-
-  // Doble pulsación (o el mensaje viejo de otra tanda): no se vuelve a publicar.
-  if (noticia.estado !== "pendiente") {
-    if (query.message) {
-      await editarMensaje(
-        chatId,
-        query.message.message_id,
-        `📰 ${FUENTE.toUpperCase()} · ya estaba ${noticia.estado}\n\n${noticia.titulo}`
-      );
-    }
-    return;
-  }
-
-  let resultado = "❌ Descartada";
-
-  if (aceptada) {
-    const canal = getFreeChannelId();
-    try {
-      if (!canal) throw new Error("Sin canal free configurado");
-      // Aquí, y solo aquí, se llama a Gemini: la vista previa de proponerla
-      // fue gratis (recorte extractivo), así que solo la noticia que de
-      // verdad se aprueba gasta una petición.
-      const { texto } = await redactarResumen(admin, noticia);
-      await publicarNoticia(admin, { ...noticia, texto_canal: texto }, canal);
-      resultado = "✅ Publicada en el canal";
-    } catch (err) {
-      console.error("[telegram-webhook] No se pudo publicar la noticia:", err);
-      // No se marca como publicada si no salió: así se puede reintentar.
-      if (query.message) {
-        await editarMensaje(
-          chatId,
-          query.message.message_id,
-          `📰 ${FUENTE.toUpperCase()} · ⚠️ no se pudo publicar\n\n${noticia.titulo}`
-        );
-      }
-      return;
-    }
-  }
-
-  await admin
-    .from("noticias")
-    .update({
-      estado: aceptada ? "publicada" : "descartada",
-      decidida_en: new Date().toISOString(),
-    })
-    .eq("id", id);
-
-  if (query.message) {
-    await editarMensaje(
-      chatId,
-      query.message.message_id,
-      `📰 ${FUENTE.toUpperCase()} · ${resultado}\n\n${noticia.titulo}`
-    );
-  }
 }
 
 /**
@@ -1149,11 +953,6 @@ async function handleAdminReply(admin: Admin, message: TelegramMessage) {
   const citado = message.reply_to_message?.message_id;
   if (!citado || !message.text) return;
 
-  // Antes que nada: ¿es el texto de una noticia que pidió escribir él? Va
-  // primero porque si no, ese texto acabaría en el relé de soporte intentando
-  // enviarse a un usuario que no existe.
-  if (await handleTextoDeNoticia(admin, message)) return;
-
   const { data: hilo } = await admin
     .from("telegram_support_threads")
     .select("telegram_user_id")
@@ -1286,29 +1085,6 @@ export async function POST(request: NextRequest) {
       // de que existen.
       if (!(await esAdmin(admin, message.from.id))) {
         await enviarMenu(admin, message.chat.id, message.from);
-      } else if (comando === "/noticias") {
-        // Con su propio catch: el de más abajo registra y devuelve 200, así
-        // que un fallo aquí dejaba el comando sin responder absolutamente
-        // nada y no había forma de saber por qué desde Telegram.
-        try {
-          await guardarNuevas(admin);
-          // Se leen de la tabla, no del retorno de guardarNuevas: así entran
-          // también las que se quedaron sin proponer en una tanda anterior.
-          const nuevas = await pendientesSinProponer(admin, MAXIMO_POR_TANDA);
-          if (nuevas.length === 0) {
-            await sendTelegramMessage(message.chat.id, "📰 Sin noticias nuevas por ahora.");
-          } else {
-            for (let i = 0; i < nuevas.length; i++) {
-              await proponerNoticia(admin, message.chat.id, nuevas[i], { n: i + 1, total: nuevas.length });
-            }
-          }
-        } catch (err) {
-          console.error("[telegram-webhook] /noticias falló:", err);
-          await sendTelegramMessage(
-            message.chat.id,
-            `⚠️ No he podido traer las noticias.\n\n${err instanceof Error ? err.message : "Error desconocido"}`
-          );
-        }
       } else if (comando === "/video") {
         await handleVideoUltimo(admin, message.chat.id);
       } else if (comando === "/stop" || comando === "/arrancar") {

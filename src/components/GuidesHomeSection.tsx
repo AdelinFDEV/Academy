@@ -1,67 +1,105 @@
 import Link from "next/link";
-import { ArrowRight, Zap, BookOpen, Trophy, BarChart2 } from "lucide-react";
-import { GUIDES } from "@/lib/guides";
+import { ArrowRight, Zap, Clock, BookOpen, Lock } from "lucide-react";
+import { GUIDES, GUIDES_NEWEST_FIRST, type GuideMeta } from "@/lib/guides";
 import FeaturedGuideCard from "@/components/FeaturedGuideCard";
 
+const DIFF_CLASS: Record<string, string> = {
+  "básico": "guides-diff--basic",
+  "intermedio": "guides-diff--intermediate",
+  "avanzado": "guides-diff--advanced",
+};
+const DIFF_LABEL: Record<string, string> = {
+  "básico": "Básico",
+  "intermedio": "Intermedio",
+  "avanzado": "Avanzado",
+};
+
+/** Cuántas guías se enseñan bajo la destacada. */
+const RECIENTES = 3;
+
+/**
+ * Las guías en la portada. Desde el 10-10-2026 son la única vía de
+ * información de la web (no hay noticias), así que van justo tras el hero:
+ *
+ * 1. La guía más reciente, grande.
+ * 2. Las tres anteriores, en tarjetas.
+ * 3. El paso al catálogo entero.
+ *
+ * Todo sale de src/lib/guides.ts: al añadir una guía allí, la portada se
+ * actualiza sola (la nueva pasa a destacada y empuja a las demás).
+ */
 export default function GuidesHomeSection() {
-  // Siempre la última guía creada — se actualiza sola con cada guía nueva añadida a src/lib/guides.ts
-  const g = GUIDES[GUIDES.length - 1];
+  const [destacada, ...resto] = GUIDES_NEWEST_FIRST;
+  const recientes = resto.slice(0, RECIENTES);
 
   return (
-    <section id="guias-premium" className="guides-home-section">
-      {/* Ambient glow */}
+    <section id="guias" className="guides-home-section">
       <div className="guides-home-glow" aria-hidden="true" />
 
       <div className="guides-home-inner">
 
-        {/* Header */}
         <div className="guides-home-header">
           <span className="guides-home-eyebrow">
             <Zap size={13} aria-hidden="true" />
-            Guías Interactivas
+            Guías interactivas
           </span>
           <h2 className="guides-home-title">
             Aprende crypto de verdad.<br />
             <span className="guides-home-title-gold">Paso a paso. Con criterio.</span>
           </h2>
           <p className="guides-home-subtitle">
-            No listas de bullets. Guías reales con gráficas, quizzes, flashcards y ejercicios
-            que te hacen entender — no solo leer.
+            Cada guía explica un tema a fondo, con gráficas, ejercicios y un quiz al final que
+            comprueba que lo has entendido — no solo leído.
           </p>
         </div>
 
-        {/* Featured guide card */}
-        <div className="guides-home-feature">
+        {destacada && <FeaturedGuideCard guide={destacada} />}
 
-          <FeaturedGuideCard guide={g} />
-
-          {/* Stats column */}
-          <div className="guides-home-stats">
-            <div className="guides-stat-card">
-              <span className="guides-stat-icon"><BookOpen size={15} aria-hidden="true" /></span>
-              <span className="guides-stat-num">{g.sections}</span>
-              <span className="guides-stat-label">Secciones</span>
-            </div>
-            <div className="guides-stat-card">
-              <span className="guides-stat-icon"><BarChart2 size={15} aria-hidden="true" /></span>
-              <span className="guides-stat-num">10</span>
-              <span className="guides-stat-label">Puntos máx.</span>
-            </div>
-            <div className="guides-stat-card">
-              <span className="guides-stat-icon"><Trophy size={15} aria-hidden="true" /></span>
-              <span className="guides-stat-num">1</span>
-              <span className="guides-stat-label">Logro exclusivo</span>
-            </div>
-            <div className="guides-stat-card guides-stat-card--cta">
-              <span className="guides-stat-cta-text">Todas las guías</span>
-              <Link href="/guias" className="guides-stat-link">
-                Ver catálogo <ArrowRight size={13} />
-              </Link>
-            </div>
+        {recientes.length > 0 && (
+          <div className="guides-recientes">
+            <h3 className="guides-recientes-titulo">Últimas guías</h3>
+            <ul className="guides-recientes-lista">
+              {recientes.map((g) => <TarjetaGuia key={g.slug} guia={g} />)}
+            </ul>
           </div>
+        )}
 
-        </div>
+        <Link href="/guias" className="guides-home-todas">
+          Ver todas las guías
+          <span className="guides-home-todas-cifra">{GUIDES.length}</span>
+          <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
+        </Link>
+
       </div>
     </section>
+  );
+}
+
+function TarjetaGuia({ guia: g }: { guia: GuideMeta }) {
+  return (
+    <li>
+      <Link href={`/guias/${g.slug}`} className="guides-mini">
+        <div className="guides-mini-top">
+          <span className={`guides-diff-badge ${DIFF_CLASS[g.difficulty]}`}>{DIFF_LABEL[g.difficulty]}</span>
+          {g.type === "premium" && (
+            <span className="guides-access-badge guides-access-badge--premium">
+              <Lock size={11} aria-hidden="true" /> Premium
+            </span>
+          )}
+        </div>
+        <h4 className="guides-mini-titulo">{g.title}</h4>
+        <p className="guides-mini-desc">{g.description}</p>
+        <div className="guides-mini-pie">
+          <span className="guides-mini-meta">
+            <Clock size={13} aria-hidden="true" /> {g.readTime}
+            <span aria-hidden="true">·</span>
+            <BookOpen size={13} aria-hidden="true" /> {g.sections} secciones
+          </span>
+          <span className="guides-mini-leer">
+            Leer <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
+          </span>
+        </div>
+      </Link>
+    </li>
   );
 }

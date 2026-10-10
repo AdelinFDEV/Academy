@@ -21,8 +21,8 @@ import "./calendario.css";
  * con el color solo donde significa algo: el canal, el estado y el día.
  */
 
-/** Algo que de verdad salió, aunque no estuviera planeado: entradas y vídeos. */
-export type Hecho = { fecha: string; tipo: "entrada" | "video" | "short"; titulo: string; enlace: string };
+/** Algo que de verdad salió, aunque no estuviera planeado: vídeos y Shorts de YouTube. */
+export type Hecho = { fecha: string; tipo: "video" | "short"; titulo: string; enlace: string };
 
 /** Lo que el calendario necesita de cada nota del diario: nunca el texto. El id, para llevar a ella. */
 export type Animo = { id: string; fecha: string; animo: number | null; emocion: Emocion | null; etiqueta: Etiqueta | null };
@@ -443,12 +443,12 @@ function Salido({ h, completa = false }: { h: Hecho; completa?: boolean }) {
       href={h.enlace}
       target="_blank"
       rel="noopener noreferrer"
-      className={`cal-pieza cal-pieza--salido cal-pieza--${h.tipo === "entrada" ? "web" : "youtube"}${completa ? " cal-pieza--completa" : ""}`}
+      className={`cal-pieza cal-pieza--salido cal-pieza--youtube${completa ? " cal-pieza--completa" : ""}`}
       title={`Publicado: ${TIPOS[h.tipo]} · ${h.titulo}`}
     >
       <span className="cal-pieza-abrir">
         <i className="cal-pieza-punto" aria-hidden="true" />
-        <span className="cal-pieza-titulo">{h.tipo === "entrada" ? "" : `${TIPO_EMOJI[h.tipo]} `}{h.titulo}</span>
+        <span className="cal-pieza-titulo">{TIPO_EMOJI[h.tipo]} {h.titulo}</span>
         <span className="cal-pieza-estado" aria-hidden="true">✓</span>
       </span>
     </a>

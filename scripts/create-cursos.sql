@@ -63,7 +63,7 @@ create table if not exists public.cursos (
   revisado     date,
   -- Posición en el catálogo, de menor a mayor.
   orden        integer not null default 0,
-  -- Como en `posts`: lo único que separa un borrador de un curso visible.
+  -- Lo único que separa un borrador de un curso visible.
   published    boolean not null default false,
   created_at   timestamptz not null default now(),
   updated_at   timestamptz not null default now()

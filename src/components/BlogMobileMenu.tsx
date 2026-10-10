@@ -4,17 +4,11 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
-import { createClient } from "@/lib/supabase/client";
 import { destinoPorRuta } from "@/lib/herramientas";
 import {
-  Folder, BookOpen, GraduationCap, LayoutGrid, Radio,
+  BookOpen, GraduationCap, LayoutGrid, Radio,
   TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar, BookOpenCheck,
 } from "lucide-react";
-
-interface Category {
-  name: string;
-  slug: string;
-}
 
 interface Props {
   user: boolean;
@@ -25,27 +19,8 @@ interface Props {
 
 export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false }: Props) {
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
   const pathname = usePathname();
   const a = (href: string) => pathname === href || pathname.startsWith(href + "/") ? " active" : "";
-
-  // Solo las categorías con alguna entrada publicada: una vacía responde 404
-  // (src/app/categoria/[slug]/page.tsx) y no se enlaza.
-  useEffect(() => {
-    const supabase = createClient();
-    supabase
-      .from("posts")
-      .select("categories(name, slug)")
-      .eq("published", true)
-      .then(({ data }) => {
-        const vistas = new Map<string, Category>();
-        for (const fila of (data ?? []) as { categories: Category | Category[] | null }[]) {
-          const cat = Array.isArray(fila.categories) ? fila.categories[0] : fila.categories;
-          if (cat) vistas.set(cat.slug, cat);
-        }
-        setCategories([...vistas.values()].sort((x, y) => x.name.localeCompare(y.name, "es")));
-      });
-  }, []);
 
   useEffect(() => {
     if (open) {
@@ -89,18 +64,6 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
       {open && (
         <div className="blog-mobile-menu">
           <nav className="blog-mobile-menu-nav">
-            {categories.length > 0 && (
-            <div className="blog-mobile-section">
-              <span className="blog-mobile-section-label">Criptomonedas</span>
-              {categories.map((cat) => (
-                <Link key={cat.slug} href={`/categoria/${cat.slug}`} className={`blog-mobile-tool-link${a("/categoria/" + cat.slug)}`} onClick={close}>
-                  <Folder size={15} aria-hidden="true" />
-                  {cat.name}
-                </Link>
-              ))}
-            </div>
-            )}
-
             <div className="blog-mobile-section">
               <span className="blog-mobile-section-label">Educación</span>
               <Link

@@ -10,10 +10,6 @@ const links = [
   { href: "/admin/premium",              label: "Premium",     icon: "crown" as const,     priority: true },
   { href: "/admin/comunidad",            label: "Canal free",  icon: "globe" as const,     priority: true },
   { href: "/admin/objetivos",            label: "Objetivos",   icon: "target" as const,    priority: true },
-  { href: "/admin/comments",             label: "Comentarios", icon: "chat" as const },
-  { href: "/admin/posts",                label: "Entradas",    icon: "list" as const },
-  { href: "/admin/categories",           label: "Categorías",  icon: "folder" as const },
-  { href: "/admin/posts-instrucciones",        label: "Entradas · Ref",     icon: "pen" as const },
   { href: "/admin/guias-instrucciones",        label: "Guías · Ref",        icon: "book" as const },
   { href: "/admin/liberaciones-instrucciones", label: "Liberaciones · Ref", icon: "list" as const },
 ];

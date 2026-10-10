@@ -1,4 +1,6 @@
--- Ejecutar en Supabase SQL Editor
+-- ⚠️  RETIRADO el 10-10-2026: la tabla `comments` ya no existe y este script
+--     FALLA si se ejecuta. Se conserva solo como referencia para el día que
+--     haya comentarios en las guías (ver TAREAS.md).
 -- ============================================================================
 --  ANTI-SPAM DE COMENTARIOS  —  un único comentario pendiente por usuario
 --  (global: en toda la web, no por artículo).

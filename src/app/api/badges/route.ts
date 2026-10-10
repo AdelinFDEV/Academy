@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import type { PostCategoryRef } from "@/lib/types";
 import { syncDiarioLogros } from "@/lib/diarioLogros";
 import { BADGE_DEFS, type BadgeStats } from "@/lib/logros";
 
@@ -19,31 +18,15 @@ export async function POST() {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   // Fetch all needed data in parallel
-  const [
-    { data: profile },
-    { data: userPostsData },
-    { data: postsData },
-    { data: existingBadges },
-  ] = await Promise.all([
+  const [{ data: profile }, { data: existingBadges }] = await Promise.all([
     supabase.from("profiles").select("max_streak").eq("id", user.id).single(),
-    supabase.from("user_posts").select("post_id, saved, read_at").eq("user_id", user.id),
-    supabase.from("posts").select("id, categories(slug)").eq("published", true),
     supabase.from("user_badges").select("badge_id").eq("user_id", user.id),
   ]);
 
-  const userPosts  = userPostsData ?? [];
-  const allPosts   = postsData ?? [];
   const savedBadgeIds = new Set((existingBadges ?? []).map((b) => b.badge_id));
+  const maxStreak = profile?.max_streak ?? 0;
 
-  // Compute stats
-  const readIds      = new Set(userPosts.filter((up) => up.read_at).map((up) => up.post_id));
-  const readCount    = readIds.size;
-  const savedCount   = userPosts.filter((up) => up.saved).length;
-  const readPosts    = allPosts.filter((p) => readIds.has(p.id));
-  const categoriesRead = new Set(readPosts.map((p) => (p.categories as PostCategoryRef | null)?.slug).filter(Boolean)).size;
-  const maxStreak    = profile?.max_streak ?? 0;
-
-  const earnedNow = computeEarned({ readCount, savedCount, categoriesRead, maxStreak });
+  const earnedNow = computeEarned({ maxStreak });
 
   // Find newly unlocked badges (earned now but not yet in DB)
   const newlyUnlocked = earnedNow.filter((id) => !savedBadgeIds.has(id));
@@ -66,6 +49,6 @@ export async function POST() {
   return NextResponse.json({
     earned: allEarned,
     newlyUnlocked,
-    stats: { readCount, savedCount, categoriesRead, maxStreak },
+    stats: { maxStreak },
   });
 }

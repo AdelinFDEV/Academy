@@ -70,49 +70,6 @@ export function websiteSchema(description: string): JsonLdNode {
   };
 }
 
-export type ArticleInput = {
-  slug: string;
-  title: string;
-  description?: string | null;
-  coverImage?: string | null;
-  createdAt: string;
-  updatedAt?: string | null;
-  isPremium?: boolean;
-};
-
-/**
- * Una entrada del blog.
- *
- * `author` es la organización y no una persona porque la tabla `posts` no
- * guarda autor: inventar un nombre por entrada sería exactamente el tipo de
- * dato que no se puede verificar en la página.
- *
- * `isAccessibleForFree` en las premium es lo que evita que Google interprete
- * el muro de pago como cloaking — mostrarle a él un contenido y al visitante
- * otro. Declararlo es la forma admitida de decir «esto está detrás de un muro,
- * y lo sé».
- */
-export function articleSchema(post: ArticleInput): JsonLdNode {
-  const url = `${SITE_URL}/post/${post.slug}`;
-  return {
-    "@type": "Article",
-    "@id": `${url}#article`,
-    headline: post.title,
-    ...(post.description ? { description: post.description } : {}),
-    // Sin portada propia cae en la imagen genérica del sitio, que existe de
-    // verdad (`src/app/opengraph-image.tsx`).
-    image: post.coverImage || `${SITE_URL}/opengraph-image`,
-    datePublished: post.createdAt,
-    dateModified: post.updatedAt || post.createdAt,
-    author: { "@id": ORG_ID },
-    publisher: { "@id": ORG_ID },
-    isPartOf: { "@id": WEBSITE_ID },
-    mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    inLanguage: "es-ES",
-    isAccessibleForFree: !post.isPremium,
-  };
-}
-
 /**
  * Una guía.
  *

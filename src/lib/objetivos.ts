@@ -17,7 +17,6 @@
 export const METRICAS = {
   manual: { texto: "Lo cuento yo", emoji: "✍️", grupo: "yo", tipo: "flujo", ayuda: "Veces que haces algo: grabar, escribir un guion, cerrar una colaboración… Lo sumas tú con el botón +1." },
   marca: { texto: "Una cifra que apunto yo", emoji: "📏", grupo: "yo", tipo: "nivel", ayuda: "Un número que apuntas cada vez: seguidores en X, saldo de la cuenta de trading, visitas del mes… Si la meta es menor que donde empiezas, el objetivo es bajar." },
-  entradas: { texto: "Entradas publicadas", emoji: "📝", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las entradas que publicas en la web dentro del periodo." },
   videos: { texto: "Vídeos de YouTube", emoji: "🎬", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los vídeos largos (más de 3 minutos) que subes a YouTube, el día en que los publicas." },
   shorts: { texto: "Shorts de YouTube", emoji: "⚡", grupo: "auto", tipo: "flujo", ayuda: "Cuenta solos los Shorts (3 minutos o menos) que subes a YouTube, el día en que los publicas." },
   registros: { texto: "Registros nuevos", emoji: "👤", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola las cuentas nuevas en la web, sin administradores." },
@@ -48,17 +47,16 @@ export const CANAL_EMOJI = { youtube: "▶️", web: "🌐", telegram: "✈️" 
 export const TIPOS = {
   video: "Vídeo",
   short: "Short",
-  entrada: "Entrada",
   guia: "Guía",
   publicacion: "Publicación",
 } as const;
 export type Tipo = keyof typeof TIPOS;
-export const TIPO_EMOJI = { video: "🎬", short: "⚡", entrada: "📝", guia: "📚", publicacion: "📣" } as const;
+export const TIPO_EMOJI = { video: "🎬", short: "⚡", guia: "📚", publicacion: "📣" } as const;
 
 /** Qué tipos de pieza tienen sentido en cada canal; el primero es el habitual. Lo usa «Planificar» en Ideas. */
 export const TIPOS_POR_CANAL: Record<Canal, Tipo[]> = {
   youtube: ["video", "short"],
-  web: ["entrada", "guia"],
+  web: ["guia"],
   telegram: ["publicacion"],
 };
 

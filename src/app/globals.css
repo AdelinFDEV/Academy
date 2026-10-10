@@ -9528,6 +9528,16 @@ select {
   color: var(--text-muted);
 }
 
+/* Premium: la usan el catálogo /guias y las tarjetas de la portada. */
+.guides-access-badge--premium {
+  background: var(--gold-soft);
+  border-color: var(--gold-border);
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HOME â€” Guides section
    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
