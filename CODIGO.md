@@ -32,7 +32,7 @@ Cada guía es un componente React independiente (ver `/admin/guias-instrucciones
 
 Las tres últimas piezas de `src/app/guias/[slug]/page.tsx` son fijas y van **siempre** en este orden, sin excepción:
 
-1. `<GuiasRelacionadas slug={SLUG} />` — **fuera del muro de registro**, o Googlebot, que entra sin sesión, no ve los enlaces. Lo vigila `npm run check`.
+1. `<GuiasRelacionadas slug={SLUG} />` — **a la vista sin sesión**, o Googlebot, que entra sin ella, no ve los enlaces. Lo vigila `npm run check`.
 2. `<section className="gbc-section gbc-interactions-section">` con `<GuideInteractions />`
 3. `<Footer />`
 

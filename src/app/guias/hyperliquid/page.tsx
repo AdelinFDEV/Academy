@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -12,6 +11,7 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideHyperliquidOrderBook from "./GuideHyperliquidOrderBook";
 import GuideHyperliquidQuiz from "./GuideHyperliquidQuiz";
 import "./hyperliquid.css";
@@ -281,177 +281,146 @@ export default async function HyperliquidPage() {
         </div>
       </section>
 
-      {/* ── PAYWALL si no registrado ── */}
-      {!isRegistered ? (
-        <section id="estado-actual" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
-            <h2 className="gbc-title">Estado 2026, casos de uso, el token HYPE y los riesgos</h2>
-            <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado de Hyperliquid en 2026 y sus casos de uso reales.
-              También el glosario interactivo con los términos clave, cómo funciona el token HYPE y su famoso
-              airdrop sin inversores, los riesgos del proyecto y el quiz con badge de logro.</p>
-            </div>
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>
-              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 6 secciones restantes: el estado de Hyperliquid en 2026, sus casos de uso, el
-                glosario interactivo, cómo funciona el token HYPE y su airdrop sin VCs, los riesgos reales del
-                proyecto y el quiz con tu badge <strong>Maestro del Libro de Órdenes</strong>. Sin tarjeta, en
-                30 segundos.
-              </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
-              </div>
+      {/* ── SECCIÓN 3: ESTADO 2026 ── */}
+      <section id="estado-actual" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 3</div>
+          <h2 className="gbc-title">Hyperliquid en 2026: del airdrop de HYPE a líder de los perpetuos</h2>
+          <div className="gbc-body">
+            <p>
+              Hyperliquid pasó de proyecto de nicho a nombre propio del sector en muy poco tiempo. El punto
+              de inflexión fue el <strong>29 de noviembre de 2024</strong>: el lanzamiento de su token
+              <strong> HYPE</strong> con un airdrop que repartió una gran parte del suministro entre los
+              usuarios que habían operado en la plataforma. Fue uno de los airdrops más comentados de la
+              historia reciente, tanto por su tamaño como por una decisión poco habitual: el proyecto no
+              había vendido tokens a fondos de capital riesgo.
+            </p>
+            <p>
+              Desde entonces se ha consolidado como el <strong>mayor DEX de perpetuos por volumen</strong>,
+              capturando una porción enorme del trading descentralizado de derivados. En 2025 amplió su
+              alcance con el lanzamiento de <strong>HyperEVM</strong>, abriendo la puerta a un ecosistema de
+              aplicaciones DeFi construidas sobre su liquidez.
+            </p>
+          </div>
+
+          <div className="gbc-stats">
+            <GuideAnimatedStat end={2024} decimals={0} label="Año del airdrop de HYPE (29 nov)" source="Hyperliquid" />
+            <GuideAnimatedStat end={1} suffix="º" decimals={0} label="DEX de perpetuos por volumen" source="Narrativa de mercado 2025–2026" />
+            <GuideAnimatedStat end={2025} decimals={0} label="Lanzamiento de la capa HyperEVM" source="Hyperliquid" />
+            <GuideAnimatedStat end={0} decimals={0} label="Rondas de financiación con VCs" source="Hyperliquid Labs" />
+          </div>
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Autofinanciado, sin inversores externos</div>
+            <div className="gbc-box-body">
+              <p>A diferencia de casi todos los grandes proyectos cripto, Hyperliquid no levantó rondas con
+              fondos de capital riesgo a cambio de una parte del token. El equipo, <em>Hyperliquid Labs</em>,
+              se autofinanció, y eso le permitió repartir una porción del suministro mucho mayor entre la
+              comunidad. Es parte de por qué su airdrop generó tanto entusiasmo.</p>
             </div>
           </div>
-        </section>
-      ) : (
-        <>
-          {/* ── SECCIÓN 3: ESTADO 2026 ── */}
-          <section id="estado-actual" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">Hyperliquid en 2026: del airdrop de HYPE a líder de los perpetuos</h2>
-              <div className="gbc-body">
-                <p>
-                  Hyperliquid pasó de proyecto de nicho a nombre propio del sector en muy poco tiempo. El punto
-                  de inflexión fue el <strong>29 de noviembre de 2024</strong>: el lanzamiento de su token
-                  <strong> HYPE</strong> con un airdrop que repartió una gran parte del suministro entre los
-                  usuarios que habían operado en la plataforma. Fue uno de los airdrops más comentados de la
-                  historia reciente, tanto por su tamaño como por una decisión poco habitual: el proyecto no
-                  había vendido tokens a fondos de capital riesgo.
-                </p>
-                <p>
-                  Desde entonces se ha consolidado como el <strong>mayor DEX de perpetuos por volumen</strong>,
-                  capturando una porción enorme del trading descentralizado de derivados. En 2025 amplió su
-                  alcance con el lanzamiento de <strong>HyperEVM</strong>, abriendo la puerta a un ecosistema de
-                  aplicaciones DeFi construidas sobre su liquidez.
-                </p>
-              </div>
+        </div>
+      </section>
 
-              <div className="gbc-stats">
-                <GuideAnimatedStat end={2024} decimals={0} label="Año del airdrop de HYPE (29 nov)" source="Hyperliquid" />
-                <GuideAnimatedStat end={1} suffix="º" decimals={0} label="DEX de perpetuos por volumen" source="Narrativa de mercado 2025–2026" />
-                <GuideAnimatedStat end={2025} decimals={0} label="Lanzamiento de la capa HyperEVM" source="Hyperliquid" />
-                <GuideAnimatedStat end={0} decimals={0} label="Rondas de financiación con VCs" source="Hyperliquid Labs" />
-              </div>
+      {/* ── SECCIÓN 4: CASOS DE USO ── */}
+      <section id="casos-de-uso" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 4</div>
+          <h2 className="gbc-title">Para qué se usa Hyperliquid</h2>
+          <div className="gbc-body">
+            <p>
+              Aunque nació como un exchange de perpetuos, Hyperliquid se ha ido convirtiendo en una pequeña
+              plataforma con varias capas. Estos son sus usos principales.
+            </p>
+          </div>
+          <GuideSpotlightCards uses={USES} />
+        </div>
+      </section>
 
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Autofinanciado, sin inversores externos</div>
-                <div className="gbc-box-body">
-                  <p>A diferencia de casi todos los grandes proyectos cripto, Hyperliquid no levantó rondas con
-                  fondos de capital riesgo a cambio de una parte del token. El equipo, <em>Hyperliquid Labs</em>,
-                  se autofinanció, y eso le permitió repartir una porción del suministro mucho mayor entre la
-                  comunidad. Es parte de por qué su airdrop generó tanto entusiasmo.</p>
-                </div>
-              </div>
+      {/* ── GLOSARIO: FLASHCARDS ── */}
+      <section id="glosario" className="gbc-fc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Glosario</div>
+          <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
+          <GuideFlipCards cards={GLOSSARY_CARDS} />
+        </div>
+      </section>
+
+      {/* ── SECCIÓN 5: TOKENOMICS HYPE ── */}
+      <section id="tokenomics" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 5</div>
+          <h2 className="gbc-title">El token HYPE: comisiones, buybacks y gobernanza</h2>
+          <div className="gbc-body">
+            <p>
+              HYPE es el token nativo del ecosistema y cumple varias funciones a la vez. Es el
+              <strong> gas</strong> que se paga por usar las aplicaciones de HyperEVM, se puede
+              <strong> stakear</strong> para participar en la seguridad de la red, y está pensado como pieza
+              central de la gobernanza del protocolo.
+            </p>
+            <p>
+              Pero lo que más atención ha recibido es su relación con las <strong>comisiones</strong>. El
+              enorme volumen de trading de Hyperliquid genera muchos ingresos, y una parte se destina a
+              <strong> recomprar HYPE en el mercado</strong> a través del llamado <em>Assistance Fund</em>.
+              La idea es que, cuanto más se usa el exchange, más presión de compra recibe el token, atando su
+              valor a la actividad real de la plataforma.
+            </p>
+          </div>
+
+          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">El airdrop que marcó la diferencia</div>
+            <div className="gbc-box-body">
+              <p>En noviembre de 2024, Hyperliquid repartió una porción muy grande del suministro de HYPE
+              entre sus usuarios reales, premiando a quienes habían operado en la plataforma. Al no haber
+              vendido tokens a inversores privados, esa distribución hacia la comunidad fue mucho mayor de lo
+              habitual — un gesto que reforzó la narrativa de un proyecto «de los usuarios».</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── SECCIÓN 4: CASOS DE USO ── */}
-          <section id="casos-de-uso" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Para qué se usa Hyperliquid</h2>
-              <div className="gbc-body">
-                <p>
-                  Aunque nació como un exchange de perpetuos, Hyperliquid se ha ido convirtiendo en una pequeña
-                  plataforma con varias capas. Estos son sus usos principales.
-                </p>
-              </div>
-              <GuideSpotlightCards uses={USES} />
+      {/* ── SECCIÓN 6: RIESGOS ── */}
+      <section id="riesgos" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 6 · Riesgos reales</div>
+          <h2 className="gbc-title">Lo que puede salir mal: centralización, intervención y regulación</h2>
+          <div className="gbc-body">
+            <p>
+              Hyperliquid es uno de los proyectos más impresionantes a nivel técnico, pero eso no lo hace
+              inmune a los riesgos. Antes de sacar conclusiones, conviene mirar las cuatro tensiones que más
+              se le señalan.
+            </p>
+          </div>
+
+          <div className="gbc-fc-section" style={{ padding: 0 }}>
+            <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar de riesgos — haz clic en cada tarjeta</h3>
+            <GuideFlipCards cards={RISK_CARDS} />
+          </div>
+
+          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">La tensión que define su futuro</div>
+            <div className="gbc-box-body">
+              <p>Todo se resume en un equilibrio difícil: Hyperliquid ofrece una experiencia de trading
+              excepcional, pero para lograr esa velocidad ha sacrificado —de momento— parte de la
+              descentralización que promete el mundo cripto. Su reto es abrir el consenso y demostrar que
+              puede ser rápido <em>y</em> resistente a la censura a la vez. Esta guía es educativa y no es
+              consejo de inversión: infórmate y decide por ti mismo.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── GLOSARIO: FLASHCARDS ── */}
-          <section id="glosario" className="gbc-fc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Glosario</div>
-              <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
-              <GuideFlipCards cards={GLOSSARY_CARDS} />
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 5: TOKENOMICS HYPE ── */}
-          <section id="tokenomics" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 5</div>
-              <h2 className="gbc-title">El token HYPE: comisiones, buybacks y gobernanza</h2>
-              <div className="gbc-body">
-                <p>
-                  HYPE es el token nativo del ecosistema y cumple varias funciones a la vez. Es el
-                  <strong> gas</strong> que se paga por usar las aplicaciones de HyperEVM, se puede
-                  <strong> stakear</strong> para participar en la seguridad de la red, y está pensado como pieza
-                  central de la gobernanza del protocolo.
-                </p>
-                <p>
-                  Pero lo que más atención ha recibido es su relación con las <strong>comisiones</strong>. El
-                  enorme volumen de trading de Hyperliquid genera muchos ingresos, y una parte se destina a
-                  <strong> recomprar HYPE en el mercado</strong> a través del llamado <em>Assistance Fund</em>.
-                  La idea es que, cuanto más se usa el exchange, más presión de compra recibe el token, atando su
-                  valor a la actividad real de la plataforma.
-                </p>
-              </div>
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">El airdrop que marcó la diferencia</div>
-                <div className="gbc-box-body">
-                  <p>En noviembre de 2024, Hyperliquid repartió una porción muy grande del suministro de HYPE
-                  entre sus usuarios reales, premiando a quienes habían operado en la plataforma. Al no haber
-                  vendido tokens a inversores privados, esa distribución hacia la comunidad fue mucho mayor de lo
-                  habitual — un gesto que reforzó la narrativa de un proyecto «de los usuarios».</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 6: RIESGOS ── */}
-          <section id="riesgos" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 6 · Riesgos reales</div>
-              <h2 className="gbc-title">Lo que puede salir mal: centralización, intervención y regulación</h2>
-              <div className="gbc-body">
-                <p>
-                  Hyperliquid es uno de los proyectos más impresionantes a nivel técnico, pero eso no lo hace
-                  inmune a los riesgos. Antes de sacar conclusiones, conviene mirar las cuatro tensiones que más
-                  se le señalan.
-                </p>
-              </div>
-
-              <div className="gbc-fc-section" style={{ padding: 0 }}>
-                <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar de riesgos — haz clic en cada tarjeta</h3>
-                <GuideFlipCards cards={RISK_CARDS} />
-              </div>
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La tensión que define su futuro</div>
-                <div className="gbc-box-body">
-                  <p>Todo se resume en un equilibrio difícil: Hyperliquid ofrece una experiencia de trading
-                  excepcional, pero para lograr esa velocidad ha sacrificado —de momento— parte de la
-                  descentralización que promete el mundo cripto. Su reto es abrir el consenso y demostrar que
-                  puede ser rápido <em>y</em> resistente a la censura a la vez. Esta guía es educativa y no es
-                  consejo de inversión: infórmate y decide por ti mismo.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Maestro del Libro de Órdenes</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
-              </div>
-              <GuideHyperliquidQuiz />
-            </div>
-          </section>
-        </>
-      )}
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Maestro del Libro de Órdenes</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+          </div>
+          {isRegistered ? <GuideHyperliquidQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

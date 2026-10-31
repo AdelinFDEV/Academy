@@ -7,6 +7,7 @@ import { organizationSchema, websiteSchema } from "@/lib/schema";
 import JsonLd from "@/components/JsonLd";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
+import DudasInstagram from "@/components/DudasInstagram";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
 import StreakTracker from "@/components/StreakTracker";
@@ -88,6 +89,7 @@ export default function RootLayout({
         {children}
         <BadgeNotifier />
         <CookieBanner />
+        <DudasInstagram />
         <SiteVisitTracker />
         <StreakTracker />
         {/* Cloudflare Web Analytics: sin cookies, así que no depende del

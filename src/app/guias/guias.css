@@ -61,8 +61,6 @@
 
 .gbc-free-pill { display: inline-block; background: rgba(95,211,154,0.12); color: #5fd39a; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; margin-left: 10px; vertical-align: middle; }
 
-.gbc-lock-pill { display: inline-block; background: var(--gold-soft); color: var(--gold); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; margin-left: 10px; vertical-align: middle; }
-
 .gbc-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 16px; margin-top: 32px; }
 
 .gbc-quote { border-left: 3px solid var(--gold); padding: 16px 20px; margin: 26px 0; background: var(--gold-soft); border-radius: 0 10px 10px 0; }

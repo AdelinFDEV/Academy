@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -18,6 +17,7 @@ import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import "./que-es-la-blockchain.css";
 
 export const metadata: Metadata = {
@@ -246,247 +246,216 @@ export default async function QueEsLaBlockchainPage() {
         </div>
       </section>
 
-      {/* ── SECTION 3+: PAYWALL si no registrado ── */}
-      {!isRegistered ? (
-        <section id="estado-actual" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
-            <h2 className="gbc-title">Estado 2026, usos reales, potencial y computación cuántica</h2>
-            <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado actual del mercado con datos verificados de 2026 y los 8
-              casos de uso más importantes. También el potencial futuro de la blockchain y la amenaza real que
-              representa la computación cuántica, con quiz interactivo y badge de logro.</p>
+      {/* ── SECTION 3: ESTADO ACTUAL 2026 ── */}
+      <section id="estado-actual" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 3</div>
+          <h2 className="gbc-title">El estado de la blockchain en 2026: los números reales</h2>
+          <div className="gbc-body">
+            <p>
+              La blockchain ya no es un experimento marginal. En junio de 2026, la capitalización total del mercado crypto supera los $2.17 billones (trillion), con Bitcoin representando el 52% y Ethereum el 18%. Más de 350 millones de personas tienen algún tipo de exposición a activos digitales.
+            </p>
+            <p>
+              Los gobiernos de más de 130 países están desarrollando activamente CBDCs (monedas digitales de banco central). El Banco Central Europeo tiene el Digital Euro en fase piloto. China ya tiene 260 millones de usuarios en el e-CNY.
+            </p>
+          </div>
+
+          <div className="gbc-stats">
+            <GuideAnimatedStat end={2.17} prefix="$" suffix="T" decimals={2} label="Market cap crypto global" source="CoinMarketCap, Jun 2026" />
+            <GuideAnimatedStat end={71.77} prefix="$" suffix="B" decimals={2} label="TVL en DeFi" source="DeFiLlama, Jun 2026" />
+            <GuideAnimatedStat end={32} prefix="$" suffix="B+" decimals={0} label="RWA tokenizados" source="RWA.xyz, Jun 2026" />
+            <GuideAnimatedStat end={350} suffix="M+" decimals={0} label="Usuarios activos estimados" source="Chainalysis, Triple-A" />
+            <GuideAnimatedStat end={130} suffix="+" decimals={0} label="Países con CBDC en desarrollo" source="Atlantic Council CBDC Tracker" />
+            <GuideAnimatedStat end={10} prefix="$" suffix="B+" decimals={0} label="ETFs Bitcoin spot (primeras semanas)" source="Bloomberg, ene 2024" />
+          </div>
+
+          <GuideCharts chart="adoption" />
+          <GuideCharts chart="market" />
+          <GuideDefiChart />
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Institucionalización acelerada</div>
+            <div className="gbc-box-body">
+              <p>BlackRock, el mayor gestor de activos del mundo, lanzó su ETF de Bitcoin (IBIT) en enero de 2024. En 2026 gestiona más de $18B en Bitcoin. Fidelity, ARK y Franklin Templeton también operan ETFs spot. JPMorgan procesa pagos en blockchain mediante JPM Coin. El mundo institucional ya no ignora la blockchain — la integra.</p>
             </div>
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>
-              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 6 secciones restantes: el estado del mercado en 2026,
-                8 casos de uso reales, el potencial a futuro, la amenaza cuántica,
-                el quiz interactivo y tu badge <strong>Arquitecto de Cadenas</strong>.
-                Sin tarjeta, en 30 segundos.
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 4: USOS REALES ── */}
+      <section id="para-que-sirve" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 4</div>
+          <h2 className="gbc-title">Para qué sirve realmente: 8 casos de uso que ya existen</h2>
+          <div className="gbc-body">
+            <p>
+              Más allá del precio de Bitcoin, la blockchain resuelve problemas concretos en industrias reales. Estos no son casos hipotéticos — están en producción hoy, con millones de usuarios y miles de millones en valor.
+            </p>
+          </div>
+          <GuideSpotlightCards uses={USES} />
+
+          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">El caso Ethereum: el ordenador mundial</div>
+            <div className="gbc-box-body">
+              <p>Ethereum es la segunda blockchain por capitalización y la primera en actividad de desarrolladores. Su propuesta es ser un ordenador global descentralizado donde cualquiera puede desplegar código que se ejecuta exactamente como está programado, sin downtime, sin censura, sin intermediarios. En 2026 procesa más de 1.2 millones de transacciones diarias y tiene más de 4,000 aplicaciones desplegadas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FLASHCARDS ── */}
+      <section id="flashcards" className="gbc-fc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Flashcards</div>
+          <h2 className="gbc-title">Terminos clave — haz click para ver la definición</h2>
+          <GuideFlashcards />
+        </div>
+      </section>
+
+      {/* ── SECTION 5: POTENCIAL ── */}
+      <section id="potencial" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 5</div>
+          <h2 className="gbc-title">El potencial: lo que todavía no hemos visto</h2>
+          <div className="gbc-body">
+            <p>
+              Todo lo que existe hoy — $2 billones en cripto, $71B en DeFi, $32B en RWA — es la fase 0. La blockchain aún no ha alcanzado ni el 5% de su potencial de disrupción. Las estimaciones más conservadoras sitúan el mercado total addressable en $16 billones para 2030.
+            </p>
+          </div>
+
+          <div className="gbc-cards" style={{ marginTop: 28 }}>
+            <div className="gbc-card">
+              <div className="gbc-card-title">Tokenización de todo</div>
+              <div className="gbc-card-text">
+                <p>El mercado inmobiliario global vale $330 billones. Las acciones privadas, $13 billones. La deuda global, $300 billones. La tokenización de estos activos significaría liquidez instantánea, fraccionalización y acceso global para inversores de cualquier tamaño.</p>
+                <p>BlackRock estima que el mercado de activos tokenizados alcanzará los $10 billones en 2030.</p>
               </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
+            </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">Internet del Valor (Web3)</div>
+              <div className="gbc-card-text">
+                <p>Internet movió información. La blockchain mueve valor. En la Web3, cada interacción digital puede llevar micropagos, derechos de propiedad o recompensas — sin que una plataforma intermedie y se quede el 30%.</p>
+                <p>Imagina un creador de contenido que recibe pagos directos de sus seguidores en fracciones de centavo por cada visualización.</p>
+              </div>
+            </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">Identidad soberana global</div>
+              <div className="gbc-card-text">
+                <p>1.100 millones de personas en el mundo no tienen documentación legal. Sin DNI, no pueden abrir cuentas bancarias, acceder a servicios o demostrar su identidad. Una blockchain de identidad podría resolver esto con un móvil básico.</p>
+                <p>La ONU, el Banco Mundial y Microsoft ya tienen proyectos activos en esta dirección.</p>
+              </div>
+            </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">Automatización de contratos</div>
+              <div className="gbc-card-text">
+                <p>Los contratos inteligentes podrían automatizar seguros (pago automático si el vuelo se retrasa), hipotecas (liberación automática del título al último pago), herencias y cualquier acuerdo con condiciones verificables objetivamente.</p>
+                <p>El mercado global de gestión de contratos vale $2.7 billones anuales — una fracción de lo que los smart contracts podrían capturar.</p>
               </div>
             </div>
           </div>
-        </section>
-      ) : (
-        <>
-          {/* ── SECTION 3: ESTADO ACTUAL 2026 ── */}
-          <section id="estado-actual" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">El estado de la blockchain en 2026: los números reales</h2>
-              <div className="gbc-body">
-                <p>
-                  La blockchain ya no es un experimento marginal. En junio de 2026, la capitalización total del mercado crypto supera los $2.17 billones (trillion), con Bitcoin representando el 52% y Ethereum el 18%. Más de 350 millones de personas tienen algún tipo de exposición a activos digitales.
-                </p>
-                <p>
-                  Los gobiernos de más de 130 países están desarrollando activamente CBDCs (monedas digitales de banco central). El Banco Central Europeo tiene el Digital Euro en fase piloto. China ya tiene 260 millones de usuarios en el e-CNY.
-                </p>
-              </div>
 
-              <div className="gbc-stats">
-                <GuideAnimatedStat end={2.17} prefix="$" suffix="T" decimals={2} label="Market cap crypto global" source="CoinMarketCap, Jun 2026" />
-                <GuideAnimatedStat end={71.77} prefix="$" suffix="B" decimals={2} label="TVL en DeFi" source="DeFiLlama, Jun 2026" />
-                <GuideAnimatedStat end={32} prefix="$" suffix="B+" decimals={0} label="RWA tokenizados" source="RWA.xyz, Jun 2026" />
-                <GuideAnimatedStat end={350} suffix="M+" decimals={0} label="Usuarios activos estimados" source="Chainalysis, Triple-A" />
-                <GuideAnimatedStat end={130} suffix="+" decimals={0} label="Países con CBDC en desarrollo" source="Atlantic Council CBDC Tracker" />
-                <GuideAnimatedStat end={10} prefix="$" suffix="B+" decimals={0} label="ETFs Bitcoin spot (primeras semanas)" source="Bloomberg, ene 2024" />
-              </div>
+          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">La curva S de la adopción tecnológica</div>
+            <div className="gbc-box-body">
+              <p>Internet tardó 15 años en pasar de 1 millón a 1.000 millones de usuarios (1993-2008). El móvil tardó 12 años. La blockchain lleva 15 años y está en ~350 millones de usuarios — exactamente donde estaba internet en 2000, justo antes de la explosión masiva. La infraestructura (wallets, on-ramps, regulación) está llegando a la madurez necesaria para la adopción masiva.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <GuideCharts chart="adoption" />
-              <GuideCharts chart="market" />
-              <GuideDefiChart />
+      {/* ── SECTION 6: QUANTUM ── */}
+      <section id="computacion-cuantica" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 6 · Estado actual y futuro</div>
+          <h2 className="gbc-title">La amenaza cuántica: ¿puede un ordenador cuántico romper Bitcoin?</h2>
+          <div className="gbc-body">
+            <p>
+              En diciembre de 2024, Google presentó Willow, un chip cuántico de 105 qubits capaz de resolver en 5 minutos un cálculo que los mejores superordenadores clásicos tardarían 10 septillones de años. La noticia sacudió el mundo de la blockchain: ¿es esto el fin de la criptografía actual?
+            </p>
+            <p>
+              La respuesta es matizada: la amenaza es real, pero está lejos — y la industria ya está preparando la defensa.
+            </p>
+          </div>
 
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Institucionalización acelerada</div>
-                <div className="gbc-box-body">
-                  <p>BlackRock, el mayor gestor de activos del mundo, lanzó su ETF de Bitcoin (IBIT) en enero de 2024. En 2026 gestiona más de $18B en Bitcoin. Fidelity, ARK y Franklin Templeton también operan ETFs spot. JPMorgan procesa pagos en blockchain mediante JPM Coin. El mundo institucional ya no ignora la blockchain — la integra.</p>
-                </div>
+          <div className="gbc-cards" style={{ marginTop: 28 }}>
+            <div className="gbc-card">
+              <div className="gbc-card-title">Qué es la computación cuántica</div>
+              <div className="gbc-card-text">
+                <p>Los ordenadores clásicos usan bits: 0 o 1. Los ordenadores cuánticos usan qubits, que pueden ser 0 y 1 simultáneamente (superposición) y correlacionarse entre sí (entrelazamiento). Esto les permite explorar millones de soluciones en paralelo.</p>
+                <p>Para ciertos problemas matemáticos específicos — como factorizar números enormes o resolver logaritmos discretos — un ordenador cuántico es exponencialmente más rápido.</p>
               </div>
             </div>
-          </section>
-
-          {/* ── SECTION 4: USOS REALES ── */}
-          <section id="para-que-sirve" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Para qué sirve realmente: 8 casos de uso que ya existen</h2>
-              <div className="gbc-body">
-                <p>
-                  Más allá del precio de Bitcoin, la blockchain resuelve problemas concretos en industrias reales. Estos no son casos hipotéticos — están en producción hoy, con millones de usuarios y miles de millones en valor.
-                </p>
-              </div>
-              <GuideSpotlightCards uses={USES} />
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">El caso Ethereum: el ordenador mundial</div>
-                <div className="gbc-box-body">
-                  <p>Ethereum es la segunda blockchain por capitalización y la primera en actividad de desarrolladores. Su propuesta es ser un ordenador global descentralizado donde cualquiera puede desplegar código que se ejecuta exactamente como está programado, sin downtime, sin censura, sin intermediarios. En 2026 procesa más de 1.2 millones de transacciones diarias y tiene más de 4,000 aplicaciones desplegadas.</p>
-                </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">La vulnerabilidad real</div>
+              <div className="gbc-card-text">
+                <p>Bitcoin y la mayoría de blockchains usan ECDSA (Elliptic Curve Digital Signature Algorithm) para las firmas. El algoritmo de Shor, ejecutado en un ordenador cuántico suficientemente potente, podría derivar la clave privada desde la clave pública.</p>
+                <p>El problema: si tu dirección ha recibido pero no enviado, la clave pública no está expuesta. Pero si has reutilizado direcciones o has enviado transacciones, tu clave pública es pública — y vulnerable.</p>
               </div>
             </div>
-          </section>
-
-          {/* ── FLASHCARDS ── */}
-          <section id="flashcards" className="gbc-fc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Flashcards</div>
-              <h2 className="gbc-title">Terminos clave — haz click para ver la definición</h2>
-              <GuideFlashcards />
-            </div>
-          </section>
-
-          {/* ── SECTION 5: POTENCIAL ── */}
-          <section id="potencial" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 5</div>
-              <h2 className="gbc-title">El potencial: lo que todavía no hemos visto</h2>
-              <div className="gbc-body">
-                <p>
-                  Todo lo que existe hoy — $2 billones en cripto, $71B en DeFi, $32B en RWA — es la fase 0. La blockchain aún no ha alcanzado ni el 5% de su potencial de disrupción. Las estimaciones más conservadoras sitúan el mercado total addressable en $16 billones para 2030.
-                </p>
-              </div>
-
-              <div className="gbc-cards" style={{ marginTop: 28 }}>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Tokenización de todo</div>
-                  <div className="gbc-card-text">
-                    <p>El mercado inmobiliario global vale $330 billones. Las acciones privadas, $13 billones. La deuda global, $300 billones. La tokenización de estos activos significaría liquidez instantánea, fraccionalización y acceso global para inversores de cualquier tamaño.</p>
-                    <p>BlackRock estima que el mercado de activos tokenizados alcanzará los $10 billones en 2030.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Internet del Valor (Web3)</div>
-                  <div className="gbc-card-text">
-                    <p>Internet movió información. La blockchain mueve valor. En la Web3, cada interacción digital puede llevar micropagos, derechos de propiedad o recompensas — sin que una plataforma intermedie y se quede el 30%.</p>
-                    <p>Imagina un creador de contenido que recibe pagos directos de sus seguidores en fracciones de centavo por cada visualización.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Identidad soberana global</div>
-                  <div className="gbc-card-text">
-                    <p>1.100 millones de personas en el mundo no tienen documentación legal. Sin DNI, no pueden abrir cuentas bancarias, acceder a servicios o demostrar su identidad. Una blockchain de identidad podría resolver esto con un móvil básico.</p>
-                    <p>La ONU, el Banco Mundial y Microsoft ya tienen proyectos activos en esta dirección.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Automatización de contratos</div>
-                  <div className="gbc-card-text">
-                    <p>Los contratos inteligentes podrían automatizar seguros (pago automático si el vuelo se retrasa), hipotecas (liberación automática del título al último pago), herencias y cualquier acuerdo con condiciones verificables objetivamente.</p>
-                    <p>El mercado global de gestión de contratos vale $2.7 billones anuales — una fracción de lo que los smart contracts podrían capturar.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La curva S de la adopción tecnológica</div>
-                <div className="gbc-box-body">
-                  <p>Internet tardó 15 años en pasar de 1 millón a 1.000 millones de usuarios (1993-2008). El móvil tardó 12 años. La blockchain lleva 15 años y está en ~350 millones de usuarios — exactamente donde estaba internet en 2000, justo antes de la explosión masiva. La infraestructura (wallets, on-ramps, regulación) está llegando a la madurez necesaria para la adopción masiva.</p>
-                </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">La escala del problema</div>
+              <div className="gbc-card-text">
+                <p>Romper ECDSA-256 requeriría un ordenador cuántico con ~4.000 qubits lógicos tolerantes a fallos (no qubits físicos ruidosos). Willow tiene 105 qubits físicos con alta tasa de error. La estimación más optimista habla de 10-20 años para alcanzar esa capacidad.</p>
+                <p>El SHA-256 (usado para el mining de Bitcoin) es mucho más resistente al cuántico — requeriría ~2.500 veces más qubits que el ataque a ECDSA.</p>
               </div>
             </div>
-          </section>
-
-          {/* ── SECTION 6: QUANTUM ── */}
-          <section id="computacion-cuantica" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 6 · Estado actual y futuro</div>
-              <h2 className="gbc-title">La amenaza cuántica: ¿puede un ordenador cuántico romper Bitcoin?</h2>
-              <div className="gbc-body">
-                <p>
-                  En diciembre de 2024, Google presentó Willow, un chip cuántico de 105 qubits capaz de resolver en 5 minutos un cálculo que los mejores superordenadores clásicos tardarían 10 septillones de años. La noticia sacudió el mundo de la blockchain: ¿es esto el fin de la criptografía actual?
-                </p>
-                <p>
-                  La respuesta es matizada: la amenaza es real, pero está lejos — y la industria ya está preparando la defensa.
-                </p>
-              </div>
-
-              <div className="gbc-cards" style={{ marginTop: 28 }}>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">Qué es la computación cuántica</div>
-                  <div className="gbc-card-text">
-                    <p>Los ordenadores clásicos usan bits: 0 o 1. Los ordenadores cuánticos usan qubits, que pueden ser 0 y 1 simultáneamente (superposición) y correlacionarse entre sí (entrelazamiento). Esto les permite explorar millones de soluciones en paralelo.</p>
-                    <p>Para ciertos problemas matemáticos específicos — como factorizar números enormes o resolver logaritmos discretos — un ordenador cuántico es exponencialmente más rápido.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">La vulnerabilidad real</div>
-                  <div className="gbc-card-text">
-                    <p>Bitcoin y la mayoría de blockchains usan ECDSA (Elliptic Curve Digital Signature Algorithm) para las firmas. El algoritmo de Shor, ejecutado en un ordenador cuántico suficientemente potente, podría derivar la clave privada desde la clave pública.</p>
-                    <p>El problema: si tu dirección ha recibido pero no enviado, la clave pública no está expuesta. Pero si has reutilizado direcciones o has enviado transacciones, tu clave pública es pública — y vulnerable.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">La escala del problema</div>
-                  <div className="gbc-card-text">
-                    <p>Romper ECDSA-256 requeriría un ordenador cuántico con ~4.000 qubits lógicos tolerantes a fallos (no qubits físicos ruidosos). Willow tiene 105 qubits físicos con alta tasa de error. La estimación más optimista habla de 10-20 años para alcanzar esa capacidad.</p>
-                    <p>El SHA-256 (usado para el mining de Bitcoin) es mucho más resistente al cuántico — requeriría ~2.500 veces más qubits que el ataque a ECDSA.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">La solución: criptografía post-cuántica</div>
-                  <div className="gbc-card-text">
-                    <p>El NIST (Instituto Nacional de Estándares de EE.UU.) publicó en 2024 los primeros estándares de criptografía post-cuántica (PQC): CRYSTALS-Kyber, CRYSTALS-Dilithium y SPHINCS+. Estos algoritmos son resistentes a ataques cuánticos.</p>
-                    <p>Ethereum ya tiene una propuesta activa (EIP) para migrar a firmas post-cuánticas. Bitcoin también tiene desarrolladores trabajando en esto. La transición será gradual — pero está en marcha.</p>
-                  </div>
-                </div>
-              </div>
-
-              <GuideQuantumGame />
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">El riesgo más inmediato: «harvest now, decrypt later»</div>
-                <div className="gbc-box-body">
-                  <p>Los actores más peligrosos — estados-nación — no esperarán a tener un ordenador cuántico para actuar. Ya están recopilando tráfico cifrado hoy para descifrarlo cuando tengan la capacidad cuántica. Para transacciones financieras con datos sensibles a largo plazo, la migración a PQC no puede esperar. Para Bitcoin, el riesgo es más lejano pero igualmente real.</p>
-                </div>
-              </div>
-
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 16 }}>
-                <div className="gbc-box-title">Conclusión: la blockchain sobrevivirá al cuántico</div>
-                <div className="gbc-box-body">
-                  <p>La blockchain no es un protocolo fijo — es software que se puede actualizar. La transición a criptografía post-cuántica es un problema técnico con soluciones conocidas. El verdadero riesgo es la complacencia: asumir que la amenaza está lejos y no prepararse. Las blockchains que sobrevivan serán las que migren antes.</p>
-                </div>
-              </div>
-
-              <div className="gbc-stats" style={{ marginTop: 28 }}>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">105</div>
-                  <div className="gbc-stat-lbl">Qubits físicos<br />Google Willow (2024)</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">~4.000</div>
-                  <div className="gbc-stat-lbl">Qubits lógicos<br />necesarios para romper ECDSA</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">10-20</div>
-                  <div className="gbc-stat-lbl">Años estimados<br />para alcanzar esa capacidad</div>
-                </div>
-                <div className="gbc-stat-c">
-                  <div className="gbc-stat-num">3</div>
-                  <div className="gbc-stat-lbl">Estándares PQC publicados<br />por NIST en 2024</div>
-                </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">La solución: criptografía post-cuántica</div>
+              <div className="gbc-card-text">
+                <p>El NIST (Instituto Nacional de Estándares de EE.UU.) publicó en 2024 los primeros estándares de criptografía post-cuántica (PQC): CRYSTALS-Kyber, CRYSTALS-Dilithium y SPHINCS+. Estos algoritmos son resistentes a ataques cuánticos.</p>
+                <p>Ethereum ya tiene una propuesta activa (EIP) para migrar a firmas post-cuánticas. Bitcoin también tiene desarrolladores trabajando en esto. La transición será gradual — pero está en marcha.</p>
               </div>
             </div>
-          </section>
+          </div>
 
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Arquitecto de Cadenas</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
-              </div>
-              <GuideQuiz />
+          <GuideQuantumGame />
+
+          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">El riesgo más inmediato: «harvest now, decrypt later»</div>
+            <div className="gbc-box-body">
+              <p>Los actores más peligrosos — estados-nación — no esperarán a tener un ordenador cuántico para actuar. Ya están recopilando tráfico cifrado hoy para descifrarlo cuando tengan la capacidad cuántica. Para transacciones financieras con datos sensibles a largo plazo, la migración a PQC no puede esperar. Para Bitcoin, el riesgo es más lejano pero igualmente real.</p>
             </div>
-          </section>
-        </>
-      )}
+          </div>
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 16 }}>
+            <div className="gbc-box-title">Conclusión: la blockchain sobrevivirá al cuántico</div>
+            <div className="gbc-box-body">
+              <p>La blockchain no es un protocolo fijo — es software que se puede actualizar. La transición a criptografía post-cuántica es un problema técnico con soluciones conocidas. El verdadero riesgo es la complacencia: asumir que la amenaza está lejos y no prepararse. Las blockchains que sobrevivan serán las que migren antes.</p>
+            </div>
+          </div>
+
+          <div className="gbc-stats" style={{ marginTop: 28 }}>
+            <div className="gbc-stat-c">
+              <div className="gbc-stat-num">105</div>
+              <div className="gbc-stat-lbl">Qubits físicos<br />Google Willow (2024)</div>
+            </div>
+            <div className="gbc-stat-c">
+              <div className="gbc-stat-num">~4.000</div>
+              <div className="gbc-stat-lbl">Qubits lógicos<br />necesarios para romper ECDSA</div>
+            </div>
+            <div className="gbc-stat-c">
+              <div className="gbc-stat-num">10-20</div>
+              <div className="gbc-stat-lbl">Años estimados<br />para alcanzar esa capacidad</div>
+            </div>
+            <div className="gbc-stat-c">
+              <div className="gbc-stat-num">3</div>
+              <div className="gbc-stat-lbl">Estándares PQC publicados<br />por NIST en 2024</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Arquitecto de Cadenas</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+          </div>
+          {isRegistered ? <GuideQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

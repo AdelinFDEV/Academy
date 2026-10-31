@@ -3,7 +3,7 @@ import { breadcrumbSchema, guideSchema } from "@/lib/schema";
 import { GUIDES } from "@/lib/guides";
 
 /**
- * El JSON-LD de una guía: el `Article` con su muro declarado y las migas de
+ * El JSON-LD de una guía: el `Article` y las migas de
  * pan Inicio › Guías › la guía.
  *
  * Conserva el nombre de cuando solo emitía las migas porque es el que buscan
@@ -12,7 +12,7 @@ import { GUIDES } from "@/lib/guides";
  * Existe como componente y no copiado en cada guía porque todo sale de
  * `GUIDES` (`src/lib/guides.ts`), que ya es la fuente de verdad del listado y
  * del sitemap. Así el título del dato estructurado no puede desincronizarse
- * del que se ve en `/guias`, y el muro se declara en un solo sitio (`muro`).
+ * del que se ve en `/guias`.
  *
  * Si el slug no está en `GUIDES` no emite nada. No es un descuido: una guía que
  * falta en ese array **ya está rota** para el SEO — no aparece en el sitemap ni
@@ -30,7 +30,6 @@ export default function GuideBreadcrumbJsonLd({ slug }: { slug: string }) {
           slug: guia.slug,
           title: guia.title,
           description: guia.description,
-          abierta: guia.muro === null,
           imagenPropia: guia.imagenPropia,
         }),
         breadcrumbSchema([

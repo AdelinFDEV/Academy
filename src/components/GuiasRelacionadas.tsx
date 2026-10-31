@@ -12,7 +12,7 @@ const CUANTAS = 3;
  * guía enlazaba a otra, y cuatro solo recibían el enlace de `/guias`. Google
  * trata una página sin enlaces entrantes como periférica por buena que sea.
  *
- * Va FUERA del muro de registro a propósito: Googlebot entra sin sesión, y un
+ * Va al final de la guía y a la vista de todos: Googlebot entra sin sesión, y un
  * enlace que solo ve el registrado para Google no existe.
  *
  * Sin `<h2>` a propósito: no es una sección de la guía, y contarlo como una

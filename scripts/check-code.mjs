@@ -238,8 +238,8 @@ function checkGuideCss() {
 // hay que ponerlas a mano en cada una y nada las cazaba:
 //
 //   · su `alternates.canonical` (punto 4 del plan),
-//   · su `<GuideBreadcrumbJsonLd>` (punto 6): el Article con su muro y las migas,
-//   · su `<GuiasRelacionadas>`, fuera del muro: sin él la guía no recibe más
+//   · su `<GuideBreadcrumbJsonLd>` (punto 6): el Article y las migas,
+//   · su `<GuiasRelacionadas>`, a la vista sin sesión: sin él la guía no recibe más
 //     enlace interno que el de `/guias`, y Google la trata como periférica,
 //   · y su alta en el array `GUIDES`, sin la cual **es invisible para Google**
 //     porque el sitemap recorre ese array y no la carpeta.
@@ -270,7 +270,7 @@ function checkGuiasSeo() {
       problemas.push("falta <GuideBreadcrumbJsonLd slug={SLUG} />");
     }
     if (!src.includes("<GuiasRelacionadas")) {
-      problemas.push("falta <GuiasRelacionadas slug={SLUG} />, antes de las interacciones y fuera del muro");
+      problemas.push("falta <GuiasRelacionadas slug={SLUG} />, antes de las interacciones");
     }
     if (!registradas.has(entry)) {
       problemas.push("no está en el array GUIDES de src/lib/guides.ts, así que no entra en el sitemap");

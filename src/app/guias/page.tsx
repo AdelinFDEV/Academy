@@ -7,6 +7,7 @@ import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Star } from "lucide-react
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import JsonLd from "@/components/JsonLd";
 import GuiaPortada from "@/components/GuiaPortada";
+import GuideSearch from "@/components/GuideSearch";
 import { itemListSchema } from "@/lib/schema";
 import "./listado.css";
 
@@ -87,6 +88,9 @@ export default async function GuiasPage() {
               gráficas animadas, flashcards, quizzes con puntuación y badges de logro que
               demuestran lo que sabes.
             </p>
+            <div className="guias-hero-buscar">
+              <GuideSearch />
+            </div>
             <div className="guias-hero-pills">
               <span className="guias-hero-pill"><BarChart2 size={13} aria-hidden="true" /> Gráficas animadas</span>
               <span className="guias-hero-pill"><BookOpen size={13} aria-hidden="true" /> Flashcards</span>
@@ -105,8 +109,8 @@ export default async function GuiasPage() {
           <h2 className="guias-pilar-title">Aprende criptomonedas gratis, empezando desde cero</h2>
           <p>
             Estas guías son el itinerario de formación gratuita de la academia. No hacen falta
-            conocimientos previos, ni tener dinero invertido, ni comprar nada: solo una cuenta
-            gratuita para que se guarde tu progreso.
+            conocimientos previos, ni tener dinero invertido, ni comprar nada: se leen enteras sin
+            registrarte. La cuenta gratuita solo la pide el quiz final, que guarda tu resultado.
           </p>
           <p>
             Están pensadas para leerse <strong>en orden</strong>, aunque cada una funciona por su
@@ -203,8 +207,9 @@ export default async function GuiasPage() {
           <dl className="guias-faq">
             <dt>¿Es gratis de verdad?</dt>
             <dd>
-              Sí. Todas las guías son gratuitas y solo piden una cuenta —también gratuita— para
-              guardar tu progreso y tus badges.
+              Sí. Todas las guías se leen enteras gratis y sin registrarte. Solo el quiz final de
+              cada una pide una cuenta —también gratuita—, porque guarda tu resultado y te da su
+              badge.
             </dd>
 
             <dt>¿Necesito saber algo antes de empezar?</dt>

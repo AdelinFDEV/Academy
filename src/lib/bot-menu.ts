@@ -449,7 +449,7 @@ function pantallaGratis(perfil: PerfilBot | null): Pantalla {
       "🏆 Logros y rachas\n" +
       "📖 Glosario cripto de la A a la Z\n" +
       "📣 Canal gratuito de Telegram, con las guías y vídeos nuevos\n\n" +
-      "Para las guías completas y los logros necesitas una cuenta gratuita — nada más.",
+      "Las guías se leen sin registrarte. Para sus quiz y los logros, una cuenta gratuita — nada más.",
     botones: [
       [
         { text: "📚 Guías", url: url("/guias") },

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cache } from "react";
-import GuideSearch from "@/components/GuideSearch";
+import NavPrincipal from "@/components/NavPrincipal";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavSaludo from "@/components/NavSaludo";
 import { createClient } from "@/lib/supabase/server";
@@ -12,9 +12,8 @@ interface Props {
   isAdmin?: boolean;
 }
 
-// Nav compartido por todas las páginas del sitio (marca, buscador de guías
-// y menú). Antes estaba duplicado línea por
-// línea en 20 archivos distintos.
+// Nav compartido por todas las páginas del sitio (marca, las tres piezas de
+// pago y menú). Antes estaba duplicado línea por línea en 20 archivos.
 /**
  * El nombre del usuario, resuelto una sola vez por petición.
  *
@@ -47,7 +46,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
         adelin<span>btc</span>
       </Link>
       <div className="blog-nav-center">
-        <GuideSearch />
+        <NavPrincipal logueado={user} premium={!!isPremium} />
       </div>
       <div className="blog-nav-end">
         {/* Identidad y accesos personales, en un solo sitio. Pulsando el

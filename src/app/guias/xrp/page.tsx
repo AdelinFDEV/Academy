@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -12,6 +11,7 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideXrpConsensus from "./GuideXrpConsensus";
 import GuideXrpQuiz from "./GuideXrpQuiz";
 import "./xrp.css";
@@ -284,177 +284,146 @@ export default async function XrpPage() {
         </div>
       </section>
 
-      {/* ── PAYWALL si no registrado ── */}
-      {!isRegistered ? (
-        <section id="estado-actual" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
-            <h2 className="gbc-title">El caso SEC, casos de uso, tokenomics y riesgos</h2>
-            <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado de XRP en 2026 tras el juicio con la SEC y sus casos
-              de uso reales. También el glosario técnico interactivo, cómo funciona su tokenomics con el escrow,
-              los riesgos de centralización y el quiz con badge de logro.</p>
-            </div>
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>
-              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 6 secciones restantes: el desenlace del caso SEC, los casos de uso de XRP, el
-                glosario interactivo (RPCA, UNL, escrow…), su tokenomics con las liberaciones del escrow, los
-                riesgos de centralización y el quiz con tu badge <strong>Validador de Confianza</strong>. Sin
-                tarjeta, en 30 segundos.
-              </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
-              </div>
+      {/* ── SECCIÓN 3: ESTADO 2026 (SEC) ── */}
+      <section id="estado-actual" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 3</div>
+          <h2 className="gbc-title">XRP en 2026: la larga sombra del caso SEC</h2>
+          <div className="gbc-body">
+            <p>
+              No se puede entender XRP sin su batalla legal. A finales de <strong>2020</strong>, la
+              <strong> SEC</strong> (el regulador de valores de EE. UU.) demandó a Ripple alegando que había
+              vendido XRP como un <strong>valor no registrado</strong> (una <em>security</em>). La noticia
+              hundió el precio y provocó que varios exchanges estadounidenses suspendieran XRP.
+            </p>
+            <p>
+              En <strong>julio de 2023</strong>, la jueza <strong>Analisa Torres</strong> emitió un fallo
+              matizado y muy comentado: las <strong>ventas programáticas</strong> de XRP en exchanges (a
+              compradores anónimos) <strong>no</strong> constituyeron una oferta de valores, mientras que
+              ciertas <strong>ventas institucionales</strong> directas <strong>sí</strong>. Fue interpretado
+              como una victoria parcial clave para Ripple, y XRP recuperó protagonismo. En los años
+              siguientes el caso fue resolviéndose (sanciones y fin de los recursos), despejando parte de la
+              incertidumbre.
+            </p>
+          </div>
+
+          <div className="gbc-stats">
+            <GuideAnimatedStat end={2020} decimals={0} label="Año de la demanda de la SEC" source="SEC vs. Ripple" />
+            <GuideAnimatedStat end={2023} decimals={0} label="Fallo parcial de la jueza Torres" source="Tribunal del Distrito Sur de Nueva York" />
+            <GuideAnimatedStat end={2012} decimals={0} label="Lanzamiento del XRP Ledger" source="XRP Ledger" />
+            <GuideAnimatedStat end={100} suffix="B" decimals={0} label="XRP creados al inicio (preminados)" source="XRP Ledger" />
+          </div>
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Por qué fue tan relevante ese fallo</div>
+            <div className="gbc-box-body">
+              <p>Más allá de XRP, la distinción entre venta programática e institucional se siguió muy de
+              cerca en toda la industria, porque tocaba la gran pregunta: ¿cuándo un criptoactivo es un
+              valor? Esta guía es educativa y no es asesoramiento legal ni financiero.</p>
             </div>
           </div>
-        </section>
-      ) : (
-        <>
-          {/* ── SECCIÓN 3: ESTADO 2026 (SEC) ── */}
-          <section id="estado-actual" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">XRP en 2026: la larga sombra del caso SEC</h2>
-              <div className="gbc-body">
-                <p>
-                  No se puede entender XRP sin su batalla legal. A finales de <strong>2020</strong>, la
-                  <strong> SEC</strong> (el regulador de valores de EE. UU.) demandó a Ripple alegando que había
-                  vendido XRP como un <strong>valor no registrado</strong> (una <em>security</em>). La noticia
-                  hundió el precio y provocó que varios exchanges estadounidenses suspendieran XRP.
-                </p>
-                <p>
-                  En <strong>julio de 2023</strong>, la jueza <strong>Analisa Torres</strong> emitió un fallo
-                  matizado y muy comentado: las <strong>ventas programáticas</strong> de XRP en exchanges (a
-                  compradores anónimos) <strong>no</strong> constituyeron una oferta de valores, mientras que
-                  ciertas <strong>ventas institucionales</strong> directas <strong>sí</strong>. Fue interpretado
-                  como una victoria parcial clave para Ripple, y XRP recuperó protagonismo. En los años
-                  siguientes el caso fue resolviéndose (sanciones y fin de los recursos), despejando parte de la
-                  incertidumbre.
-                </p>
-              </div>
+        </div>
+      </section>
 
-              <div className="gbc-stats">
-                <GuideAnimatedStat end={2020} decimals={0} label="Año de la demanda de la SEC" source="SEC vs. Ripple" />
-                <GuideAnimatedStat end={2023} decimals={0} label="Fallo parcial de la jueza Torres" source="Tribunal del Distrito Sur de Nueva York" />
-                <GuideAnimatedStat end={2012} decimals={0} label="Lanzamiento del XRP Ledger" source="XRP Ledger" />
-                <GuideAnimatedStat end={100} suffix="B" decimals={0} label="XRP creados al inicio (preminados)" source="XRP Ledger" />
-              </div>
+      {/* ── SECCIÓN 4: CASOS DE USO ── */}
+      <section id="casos-de-uso" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 4</div>
+          <h2 className="gbc-title">Para qué se usa XRP y el XRP Ledger</h2>
+          <div className="gbc-body">
+            <p>
+              El foco de XRP siempre han sido los pagos y las instituciones financieras, pero el XRP Ledger
+              ha ido sumando capacidades. Estos son sus usos principales.
+            </p>
+          </div>
+          <GuideSpotlightCards uses={USES} />
+        </div>
+      </section>
 
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Por qué fue tan relevante ese fallo</div>
-                <div className="gbc-box-body">
-                  <p>Más allá de XRP, la distinción entre venta programática e institucional se siguió muy de
-                  cerca en toda la industria, porque tocaba la gran pregunta: ¿cuándo un criptoactivo es un
-                  valor? Esta guía es educativa y no es asesoramiento legal ni financiero.</p>
-                </div>
-              </div>
+      {/* ── GLOSARIO: FLASHCARDS ── */}
+      <section id="glosario" className="gbc-fc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Glosario</div>
+          <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
+          <GuideFlipCards cards={GLOSSARY_CARDS} />
+        </div>
+      </section>
+
+      {/* ── SECCIÓN 5: TOKENOMICS ── */}
+      <section id="tokenomics" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 5</div>
+          <h2 className="gbc-title">Tokenomics: 100.000 millones preminados y el escrow</h2>
+          <div className="gbc-body">
+            <p>
+              A diferencia de Bitcoin, XRP <strong>no se mina</strong>: los <strong>100.000 millones</strong>
+              de XRP se crearon de golpe al inicio, en 2012. Una gran parte se entregó a la empresa Ripple
+              para financiar el desarrollo y la adopción del ecosistema. Esto es, a la vez, su mayor
+              eficiencia y su mayor polémica.
+            </p>
+            <p>
+              Para dar previsibilidad y calmar el miedo a que Ripple vendiera todo de golpe, en 2017 la
+              empresa bloqueó la mayor parte de su XRP en un <strong>escrow</strong> dentro del propio XRPL.
+              El mecanismo libera un tramo cada mes; lo que no se usa se vuelve a bloquear. Así el mercado
+              sabe, más o menos, cuánto XRP puede entrar en circulación. Además, como cada transacción
+              <strong> quema</strong> una fracción de XRP, la oferta total desciende muy lentamente con el
+              tiempo.
+            </p>
+          </div>
+
+          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">La otra cara del preminado</div>
+            <div className="gbc-box-body">
+              <p>El preminado hizo a XRP eficiente y sin coste energético, pero también concentró una parte
+              enorme del suministro en una sola empresa. El escrow aporta transparencia sobre el calendario
+              de liberación, aunque no elimina la crítica de fondo: buena parte del XRP depende de las
+              decisiones de Ripple.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── SECCIÓN 4: CASOS DE USO ── */}
-          <section id="casos-de-uso" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Para qué se usa XRP y el XRP Ledger</h2>
-              <div className="gbc-body">
-                <p>
-                  El foco de XRP siempre han sido los pagos y las instituciones financieras, pero el XRP Ledger
-                  ha ido sumando capacidades. Estos son sus usos principales.
-                </p>
-              </div>
-              <GuideSpotlightCards uses={USES} />
+      {/* ── SECCIÓN 6: RIESGOS ── */}
+      <section id="riesgos" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 6 · Riesgos reales</div>
+          <h2 className="gbc-title">Lo que puede salir mal: centralización, escrow y regulación</h2>
+          <div className="gbc-body">
+            <p>
+              XRP resuelve un problema real y tiene una tecnología sólida, pero arrastra tensiones que llevan
+              años en el centro del debate. Estas son las cuatro que más se le señalan.
+            </p>
+          </div>
+
+          <div className="gbc-fc-section" style={{ padding: 0 }}>
+            <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar de riesgos — haz clic en cada tarjeta</h3>
+            <GuideFlipCards cards={RISK_CARDS} />
+          </div>
+
+          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">La pregunta de fondo</div>
+            <div className="gbc-box-body">
+              <p>Todo se reduce a una tensión: XRP ofrece una solución rapidísima y barata para los pagos
+              globales, pero lo hace apoyándose en un modelo mucho más ligado a una empresa y a un conjunto de
+              validadores de lo que muchos consideran «descentralizado». Su futuro depende de ganar adopción
+              real y de que la red siga abriéndose. Esta guía es educativa y no es consejo de inversión:
+              infórmate y decide por ti mismo.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── GLOSARIO: FLASHCARDS ── */}
-          <section id="glosario" className="gbc-fc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Glosario</div>
-              <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
-              <GuideFlipCards cards={GLOSSARY_CARDS} />
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 5: TOKENOMICS ── */}
-          <section id="tokenomics" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 5</div>
-              <h2 className="gbc-title">Tokenomics: 100.000 millones preminados y el escrow</h2>
-              <div className="gbc-body">
-                <p>
-                  A diferencia de Bitcoin, XRP <strong>no se mina</strong>: los <strong>100.000 millones</strong>
-                  de XRP se crearon de golpe al inicio, en 2012. Una gran parte se entregó a la empresa Ripple
-                  para financiar el desarrollo y la adopción del ecosistema. Esto es, a la vez, su mayor
-                  eficiencia y su mayor polémica.
-                </p>
-                <p>
-                  Para dar previsibilidad y calmar el miedo a que Ripple vendiera todo de golpe, en 2017 la
-                  empresa bloqueó la mayor parte de su XRP en un <strong>escrow</strong> dentro del propio XRPL.
-                  El mecanismo libera un tramo cada mes; lo que no se usa se vuelve a bloquear. Así el mercado
-                  sabe, más o menos, cuánto XRP puede entrar en circulación. Además, como cada transacción
-                  <strong> quema</strong> una fracción de XRP, la oferta total desciende muy lentamente con el
-                  tiempo.
-                </p>
-              </div>
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La otra cara del preminado</div>
-                <div className="gbc-box-body">
-                  <p>El preminado hizo a XRP eficiente y sin coste energético, pero también concentró una parte
-                  enorme del suministro en una sola empresa. El escrow aporta transparencia sobre el calendario
-                  de liberación, aunque no elimina la crítica de fondo: buena parte del XRP depende de las
-                  decisiones de Ripple.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 6: RIESGOS ── */}
-          <section id="riesgos" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 6 · Riesgos reales</div>
-              <h2 className="gbc-title">Lo que puede salir mal: centralización, escrow y regulación</h2>
-              <div className="gbc-body">
-                <p>
-                  XRP resuelve un problema real y tiene una tecnología sólida, pero arrastra tensiones que llevan
-                  años en el centro del debate. Estas son las cuatro que más se le señalan.
-                </p>
-              </div>
-
-              <div className="gbc-fc-section" style={{ padding: 0 }}>
-                <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar de riesgos — haz clic en cada tarjeta</h3>
-                <GuideFlipCards cards={RISK_CARDS} />
-              </div>
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La pregunta de fondo</div>
-                <div className="gbc-box-body">
-                  <p>Todo se reduce a una tensión: XRP ofrece una solución rapidísima y barata para los pagos
-                  globales, pero lo hace apoyándose en un modelo mucho más ligado a una empresa y a un conjunto de
-                  validadores de lo que muchos consideran «descentralizado». Su futuro depende de ganar adopción
-                  real y de que la red siga abriéndose. Esta guía es educativa y no es consejo de inversión:
-                  infórmate y decide por ti mismo.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Validador de Confianza</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
-              </div>
-              <GuideXrpQuiz />
-            </div>
-          </section>
-        </>
-      )}
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Validador de Confianza</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+          </div>
+          {isRegistered ? <GuideXrpQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

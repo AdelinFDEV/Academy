@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -12,6 +11,7 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideVideoEmbed from "@/components/GuideVideoEmbed";
 import GuideOrbScanner from "./GuideOrbScanner";
 import GuideWorldTokenomics from "./GuideWorldTokenomics";
@@ -269,183 +269,153 @@ export default async function WorldcoinPage() {
         </div>
       </section>
 
-      {/* ── PAYWALL si no registrado ── */}
-      {!isRegistered ? (
-        <section id="estado-actual" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
-            <h2 className="gbc-title">Estado 2026, casos de uso, tokenomics y controversias</h2>
-            <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado actual de Worldcoin, sus casos de uso reales y cómo se
-              reparte el token WLD. También las prohibiciones y controversias regulatorias en distintos países,
-              el vídeo del canal explicándolo todo y el quiz interactivo con badge de logro.</p>
-            </div>
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>
-              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 6 secciones restantes: cifras reales de adopción, casos de uso, tokenomics
-                de WLD, el mapa de países que lo han prohibido, el vídeo explicativo, el quiz interactivo
-                y tu badge <strong>Prueba de Humanidad</strong>. Sin tarjeta, en 30 segundos.
-              </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
-              </div>
+      {/* ── SECCIÓN 3: ESTADO 2026 ── */}
+      <section id="estado-actual" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 3</div>
+          <h2 className="gbc-title">Worldcoin en 2026: de experimento a red global</h2>
+          <div className="gbc-body">
+            <p>
+              Lo que empezó como un proyecto experimental con un puñado de Orbs en San Francisco y Nairobi
+              se ha convertido en una de las redes de identidad digital más grandes del mundo. Más de 26
+              millones de personas han pasado por un Orb, y la compañía sigue desplegando dispositivos —
+              ahora también en tiendas, quioscos y puntos de venta en más de 160 países.
+            </p>
+            <p>
+              World Chain, la Layer 2 de Ethereum del proyecto, prioriza el tráfico de usuarios verificados
+              con World ID frente al de bots — una propuesta directa contra el problema del spam y el MEV
+              (extracción de valor por bots) que afecta a otras redes.
+            </p>
+          </div>
+
+          <div className="gbc-stats">
+            <GuideAnimatedStat end={26} suffix="M+" decimals={0} label="Humanos verificados con el Orb" source="Tools for Humanity, 2026" />
+            <GuideAnimatedStat end={160} suffix="+" decimals={0} label="Países con Orbs activos" source="World Network, 2026" />
+            <GuideAnimatedStat end={250} prefix="$" suffix="M+" decimals={0} label="Financiación recaudada" source="Crunchbase, rondas acumuladas" />
+            <GuideAnimatedStat end={10} suffix="B" decimals={0} label="Tope máximo de tokens WLD" source="Worldcoin Foundation" />
+          </div>
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">De Worldcoin a World</div>
+            <div className="gbc-box-body">
+              <p>En 2025 la marca «Worldcoin» pasó a un segundo plano y la compañía adoptó «World» como
+              nombre paraguas de todo el ecosistema: World ID (identidad), World App (la super-app/wallet)
+              y World Chain (la red). El token conserva el ticker WLD. El cambio refleja la ambición del
+              proyecto: dejar de ser «una cripto más» para convertirse en la capa de identidad de internet.</p>
             </div>
           </div>
-        </section>
-      ) : (
-        <>
-          {/* ── SECCIÓN 3: ESTADO 2026 ── */}
-          <section id="estado-actual" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">Worldcoin en 2026: de experimento a red global</h2>
-              <div className="gbc-body">
-                <p>
-                  Lo que empezó como un proyecto experimental con un puñado de Orbs en San Francisco y Nairobi
-                  se ha convertido en una de las redes de identidad digital más grandes del mundo. Más de 26
-                  millones de personas han pasado por un Orb, y la compañía sigue desplegando dispositivos —
-                  ahora también en tiendas, quioscos y puntos de venta en más de 160 países.
-                </p>
-                <p>
-                  World Chain, la Layer 2 de Ethereum del proyecto, prioriza el tráfico de usuarios verificados
-                  con World ID frente al de bots — una propuesta directa contra el problema del spam y el MEV
-                  (extracción de valor por bots) que afecta a otras redes.
-                </p>
-              </div>
+        </div>
+      </section>
 
-              <div className="gbc-stats">
-                <GuideAnimatedStat end={26} suffix="M+" decimals={0} label="Humanos verificados con el Orb" source="Tools for Humanity, 2026" />
-                <GuideAnimatedStat end={160} suffix="+" decimals={0} label="Países con Orbs activos" source="World Network, 2026" />
-                <GuideAnimatedStat end={250} prefix="$" suffix="M+" decimals={0} label="Financiación recaudada" source="Crunchbase, rondas acumuladas" />
-                <GuideAnimatedStat end={10} suffix="B" decimals={0} label="Tope máximo de tokens WLD" source="Worldcoin Foundation" />
-              </div>
+      {/* ── SECCIÓN 4: CASOS DE USO ── */}
+      <section id="casos-de-uso" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 4</div>
+          <h2 className="gbc-title">Para qué sirve World ID más allá de cobrar tokens</h2>
+          <div className="gbc-body">
+            <p>
+              El reparto de WLD es solo el gancho inicial. El verdadero producto es World ID, y ya se está
+              usando — o probando — para resolver problemas muy concretos de la era digital.
+            </p>
+          </div>
+          <GuideSpotlightCards uses={USES} />
+        </div>
+      </section>
 
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">De Worldcoin a World</div>
-                <div className="gbc-box-body">
-                  <p>En 2025 la marca «Worldcoin» pasó a un segundo plano y la compañía adoptó «World» como
-                  nombre paraguas de todo el ecosistema: World ID (identidad), World App (la super-app/wallet)
-                  y World Chain (la red). El token conserva el ticker WLD. El cambio refleja la ambición del
-                  proyecto: dejar de ser «una cripto más» para convertirse en la capa de identidad de internet.</p>
-                </div>
-              </div>
+      {/* ── FLASHCARDS: GLOSARIO ── */}
+      <section id="flashcards" className="gbc-fc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Glosario</div>
+          <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
+          <GuideFlipCards cards={GLOSSARY_CARDS} />
+        </div>
+      </section>
+
+      {/* ── SECCIÓN 5: TOKENOMICS ── */}
+      <section id="tokenomics" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 5</div>
+          <h2 className="gbc-title">Tokenomics: cómo se reparten los 10.000 millones de WLD</h2>
+          <div className="gbc-body">
+            <p>
+              El suministro de WLD tiene un tope máximo de 10.000 millones de tokens. La mayor parte —
+              tres de cada cuatro tokens — está reservada para repartirse entre los humanos verificados a
+              lo largo de unos 15 años, en forma de grants periódicos. El resto se divide entre el equipo
+              de Tools for Humanity, los inversores que financiaron el proyecto antes del lanzamiento, y
+              una reserva gestionada por la Worldcoin Foundation.
+            </p>
+          </div>
+          <GuideWorldTokenomics />
+          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Por qué importa el reparto a 15 años</div>
+            <div className="gbc-box-body">
+              <p>Repartir el 75% del suministro tan lentamente busca dos cosas: evitar que la entrada masiva
+              de tokens dispare la inflación de golpe, y dar tiempo a que la red crezca — cuantos más humanos
+              se verifiquen con el tiempo, más «tarta» queda por repartir entre los que llegan tarde. Los
+              tokens del equipo e inversores, como en la mayoría de proyectos cripto, están sujetos a
+              periodos de bloqueo (vesting) para evitar ventas masivas nada más salir a bolsa.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── SECCIÓN 4: CASOS DE USO ── */}
-          <section id="casos-de-uso" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Para qué sirve World ID más allá de cobrar tokens</h2>
-              <div className="gbc-body">
-                <p>
-                  El reparto de WLD es solo el gancho inicial. El verdadero producto es World ID, y ya se está
-                  usando — o probando — para resolver problemas muy concretos de la era digital.
-                </p>
-              </div>
-              <GuideSpotlightCards uses={USES} />
+      {/* ── SECCIÓN 6: CONTROVERSIAS ── */}
+      <section id="controversias" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 6 · Riesgos reales</div>
+          <h2 className="gbc-title">Las controversias: privacidad, ética y prohibiciones</h2>
+          <div className="gbc-body">
+            <p>
+              Worldcoin no ha sido bien recibido en todas partes. Pedir a millones de personas que entreguen
+              su dato biométrico más único e irremplazable — el iris no se puede «cambiar» como una
+              contraseña si se filtra — ha puesto al proyecto bajo la lupa de reguladores de todo el mundo.
+            </p>
+            <p>
+              Hay dos críticas centrales. La <strong>de privacidad</strong>: ¿qué pasa si esa base de datos
+              biométrica se filtra o se usa para algo distinto a lo prometido? Y la <strong>ética</strong>:
+              varios de los primeros despliegues del Orb se hicieron en países con ingresos bajos —
+              Kenia, Indonesia — pagando cantidades pequeñas a cambio del escaneo, lo que generó dudas
+              sobre si el consentimiento era realmente libre o si se estaba explotando la necesidad económica
+              de la gente.
+            </p>
+          </div>
+
+          <div className="gbc-fc-section" style={{ padding: 0 }}>
+            <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar regulatorio — haz clic en cada país</h3>
+            <GuideFlipCards cards={COUNTRY_CARDS} />
+          </div>
+
+          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">El riesgo que no tiene marcha atrás</div>
+            <div className="gbc-box-body">
+              <p>Una contraseña filtrada se puede cambiar. Una tarjeta de crédito robada se puede cancelar.
+              Un iris filtrado es para siempre — es la razón por la que los reguladores tratan los datos
+              biométricos con un estándar de protección mucho más alto que cualquier otro dato personal.
+              Tools for Humanity insiste en que no almacena imágenes y en que el sistema está diseñado para
+              minimizar ese riesgo, pero la discusión sobre si es suficiente sigue abierta en varios países.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── FLASHCARDS: GLOSARIO ── */}
-          <section id="flashcards" className="gbc-fc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Glosario</div>
-              <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
-              <GuideFlipCards cards={GLOSSARY_CARDS} />
-            </div>
-          </section>
+      {/* ── VÍDEO ── */}
+      <section id="video" className="gbc-section">
+        <div className="gbc-gc">
+          <GuideVideoEmbed youtubeId="SXYGxTEcP_w" title="¿Qué es Worldcoin? Explicado" />
+        </div>
+      </section>
 
-          {/* ── SECCIÓN 5: TOKENOMICS ── */}
-          <section id="tokenomics" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 5</div>
-              <h2 className="gbc-title">Tokenomics: cómo se reparten los 10.000 millones de WLD</h2>
-              <div className="gbc-body">
-                <p>
-                  El suministro de WLD tiene un tope máximo de 10.000 millones de tokens. La mayor parte —
-                  tres de cada cuatro tokens — está reservada para repartirse entre los humanos verificados a
-                  lo largo de unos 15 años, en forma de grants periódicos. El resto se divide entre el equipo
-                  de Tools for Humanity, los inversores que financiaron el proyecto antes del lanzamiento, y
-                  una reserva gestionada por la Worldcoin Foundation.
-                </p>
-              </div>
-              <GuideWorldTokenomics />
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Por qué importa el reparto a 15 años</div>
-                <div className="gbc-box-body">
-                  <p>Repartir el 75% del suministro tan lentamente busca dos cosas: evitar que la entrada masiva
-                  de tokens dispare la inflación de golpe, y dar tiempo a que la red crezca — cuantos más humanos
-                  se verifiquen con el tiempo, más «tarta» queda por repartir entre los que llegan tarde. Los
-                  tokens del equipo e inversores, como en la mayoría de proyectos cripto, están sujetos a
-                  periodos de bloqueo (vesting) para evitar ventas masivas nada más salir a bolsa.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 6: CONTROVERSIAS ── */}
-          <section id="controversias" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 6 · Riesgos reales</div>
-              <h2 className="gbc-title">Las controversias: privacidad, ética y prohibiciones</h2>
-              <div className="gbc-body">
-                <p>
-                  Worldcoin no ha sido bien recibido en todas partes. Pedir a millones de personas que entreguen
-                  su dato biométrico más único e irremplazable — el iris no se puede «cambiar» como una
-                  contraseña si se filtra — ha puesto al proyecto bajo la lupa de reguladores de todo el mundo.
-                </p>
-                <p>
-                  Hay dos críticas centrales. La <strong>de privacidad</strong>: ¿qué pasa si esa base de datos
-                  biométrica se filtra o se usa para algo distinto a lo prometido? Y la <strong>ética</strong>:
-                  varios de los primeros despliegues del Orb se hicieron en países con ingresos bajos —
-                  Kenia, Indonesia — pagando cantidades pequeñas a cambio del escaneo, lo que generó dudas
-                  sobre si el consentimiento era realmente libre o si se estaba explotando la necesidad económica
-                  de la gente.
-                </p>
-              </div>
-
-              <div className="gbc-fc-section" style={{ padding: 0 }}>
-                <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar regulatorio — haz clic en cada país</h3>
-                <GuideFlipCards cards={COUNTRY_CARDS} />
-              </div>
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">El riesgo que no tiene marcha atrás</div>
-                <div className="gbc-box-body">
-                  <p>Una contraseña filtrada se puede cambiar. Una tarjeta de crédito robada se puede cancelar.
-                  Un iris filtrado es para siempre — es la razón por la que los reguladores tratan los datos
-                  biométricos con un estándar de protección mucho más alto que cualquier otro dato personal.
-                  Tools for Humanity insiste en que no almacena imágenes y en que el sistema está diseñado para
-                  minimizar ese riesgo, pero la discusión sobre si es suficiente sigue abierta en varios países.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── VÍDEO ── */}
-          <section id="video" className="gbc-section">
-            <div className="gbc-gc">
-              <GuideVideoEmbed youtubeId="SXYGxTEcP_w" title="¿Qué es Worldcoin? Explicado" />
-            </div>
-          </section>
-
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Prueba de Humanidad</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
-              </div>
-              <GuideWorldQuiz />
-            </div>
-          </section>
-        </>
-      )}
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Prueba de Humanidad</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+          </div>
+          {isRegistered ? <GuideWorldQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

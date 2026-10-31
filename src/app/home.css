@@ -23,10 +23,15 @@
   background-attachment: fixed;
 }
 
+/* Ocupa toda la pantalla bajo la barra: sin eso quedaba una franja de la
+   sección siguiente asomando abajo. `svh` es el alto visible con las barras
+   del navegador del móvil desplegadas; el `vh` de antes es para navegadores
+   que no lo entienden. Nunca por debajo de lo que necesita el contenido. */
 .hero {
   position: relative;
   overflow: hidden;
-  min-height: 640px;
+  min-height: max(640px, calc(100vh - var(--nav-h, 68px)));
+  min-height: max(640px, calc(100svh - var(--nav-h, 68px)));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,7 +113,8 @@
 
 @media (min-width: 900px) {
   .hero {
-    min-height: 700px;
+    min-height: max(700px, calc(100vh - var(--nav-h, 68px)));
+    min-height: max(700px, calc(100svh - var(--nav-h, 68px)));
     padding: 4.5rem 0 4rem;
   }
 
@@ -128,47 +134,6 @@
     min-height: 0;
     padding: 3.5rem 0 2.75rem;
   }
-
-  .hero-search-bar {
-    margin-bottom: 2.4rem;
-  }
-}
-
-/* ── Buscador — solo visible en móvil/tablet (el nav lo oculta) ── */
-
-.hero-search-bar {
-  display: none;
-  position: relative;
-  z-index: 20;
-}
-
-@media (max-width: 1200px) {
-  .hero-search-bar {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 360px;
-    margin: 0 auto 0.9rem;
-  }
-
-  .hero-search-bar .guide-search,
-  .hero-search-bar .guide-search-box {
-    width: 100%;
-  }
-
-  /* En el hero el buscador NO encoge al enfocar/escribir: mantiene su ancho.
-     (Sin este override ganaría .guide-search-box:focus-within { width: 260px }
-     y el campo se encogía de golpe de ~360px a 260px). */
-  .hero-search-bar .guide-search-box:focus-within {
-    width: 100%;
-  }
-
-  .hero-search-bar .guide-search-dropdown {
-    width: 100%;
-    background: #182a4d;
-    border-color: rgba(240, 244, 255, 0.18);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(240, 244, 255, 0.05);
-  }
 }
 
 /* ── Entrada escalonada ── */
@@ -182,8 +147,6 @@
   opacity: 0;
   animation: heroFadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
-.hero-anim-1 { animation-delay: 0.05s; }
 .hero-anim-4 { animation-delay: 0.5s; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -320,82 +283,6 @@
 .home-featured-row > .hero-post-card {
   margin: 0;
   min-width: 0;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PREMIUM COMO SECCIÓN — solo desktop (≥900px).
-   En móvil el pitch se muestra como tarjeta arriba
-   (.premium-pitch-mobile-only), así que esta sección se oculta.
-   ═══════════════════════════════════════════════════════════ */
-
-.premium-section {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .premium-section {
-    display: block;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0.5rem 2rem 2.5rem;
-  }
-}
-
-/* Pitch en modo sección: 2 columnas (izq pitch, der beneficios) */
-.premium-pitch--section {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 3rem;
-  align-items: center;
-  padding: 2.5rem 3rem;
-}
-
-.premium-pitch-col {
-  position: relative;
-  min-width: 0;
-}
-
-/* Izquierda: título + sub + precio + CTA + nota */
-.premium-pitch--section .premium-pitch-title {
-  font-size: 1.85rem;
-}
-
-.premium-pitch--section .premium-pitch-sub {
-  font-size: 0.98rem;
-  margin-bottom: 1.75rem;
-}
-
-.premium-pitch--section .premium-pitch-price-wrapper {
-  margin-bottom: 1.1rem;
-}
-
-/* Derecha: los 4 beneficios en cuadrícula 2x2 */
-.premium-pitch--section .premium-pitch-features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem 1.25rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Nº impar de beneficios: el último ocupa el ancho completo (sin hueco) */
-.premium-pitch--section .premium-pitch-features > li:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
-}
-
-/* Bajo la cuadrícula, partners + "incluido" ocupan el ancho de la columna */
-.premium-pitch--section .premium-pitch-included {
-  margin-top: 0.25rem;
-}
-
-/* En pantallas medianas, si aprieta, apila las 2 columnas del pitch */
-@media (min-width: 900px) and (max-width: 1080px) {
-  .premium-pitch--section {
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-  }
-  .premium-pitch--section .premium-pitch-features {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1310,25 +1197,58 @@
 
 .gh {
   position: relative;
-  padding: 3.2rem 1.25rem 3.6rem;
+  padding: 2.4rem 1.25rem 3.2rem;
 }
 
-/* Un filete de oro que se desvanece hacia los lados separa la sección del
-   hero sin pintar una raya. */
-.gh::before {
+/* La sección entera va sobre un panel propio: sin él, el titular quedaba
+   flotando sobre el fondo de la página. Oro arriba a la izquierda, donde
+   empieza la lectura, y un rastro naranja abajo a la derecha. */
+/* Sin overflow: hidden a propósito: cortaría la lista de resultados del
+   buscador, que cae por fuera del panel. */
+.gh-inner {
+  position: relative;
+  isolation: isolate;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem 1.4rem;
+  border: 1px solid rgba(230, 180, 85, 0.16);
+  border-radius: 28px;
+  background:
+    radial-gradient(70% 90% at 0% 0%, rgba(230, 180, 85, 0.13) 0%, transparent 60%),
+    radial-gradient(55% 70% at 100% 100%, rgba(255, 107, 43, 0.07) 0%, transparent 60%),
+    linear-gradient(160deg, #0e1931 0%, #070d1a 100%);
+  box-shadow:
+    0 40px 90px -50px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Retícula fina, solo detrás de la cabecera. */
+.gh-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 244, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(60% 55% at 15% 0%, #000 0%, transparent 75%);
+}
+
+/* Filete de oro en el borde superior, que se desvanece hacia los lados. */
+.gh-inner::after {
   content: "";
   position: absolute;
   top: 0;
-  left: 50%;
-  width: min(900px, 80%);
+  left: 8%;
+  right: 8%;
   height: 1px;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg, transparent, rgba(230, 180, 85, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(230, 180, 85, 0.6), transparent);
 }
 
-.gh-inner {
-  max-width: 1240px;
-  margin: 0 auto;
+@media (min-width: 960px) {
+  .gh-inner { padding: 2.6rem 2.4rem 2.2rem; }
 }
 
 /* ── Cabecera ──────────────────────────────────────────────────────────── */
@@ -1381,7 +1301,7 @@
 
 .gh-sub {
   max-width: 34rem;
-  margin: 0;
+  margin: 0 0 1.2rem;
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(226, 232, 246, 0.62);
@@ -1731,5 +1651,947 @@
   .gh-fila:hover,
   .gh-fila:hover .gh-fila-flecha {
     transform: none;
+  }
+}
+
+/* El buscador, bajo el titular de la sección: lo que se busca son guías. */
+.gh-buscar {
+  position: relative;
+  z-index: 20;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PREMIUM (PremiumHome.tsx)
+   ══════════════════════════════════════════════════════════════════════════
+
+   Rehecha desde cero el 31-10-2026. Una sola sección para todos los anchos:
+   arriba el argumento; en medio las tres piezas, cada una con su color del
+   catálogo, su dato y lo que trae dentro; abajo lo que se suma y el precio.
+   El oro es el color de Premium en toda la web. */
+
+.ph {
+  padding: 1rem 1.25rem 4rem;
+}
+
+.ph-marco {
+  position: relative;
+  isolation: isolate;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 2.4rem 1.2rem 1.4rem;
+  border-radius: 32px;
+  background:
+    radial-gradient(60% 70% at 50% -10%, rgba(230, 180, 85, 0.18) 0%, transparent 65%),
+    radial-gradient(40% 50% at 100% 100%, rgba(255, 107, 43, 0.08) 0%, transparent 60%),
+    linear-gradient(170deg, #121a2c 0%, #080d18 100%);
+  box-shadow: 0 50px 110px -60px rgba(0, 0, 0, 0.95);
+}
+
+/* Borde con degradado: oro arriba que se apaga hacia abajo. Se pinta con una
+   máscara para que el borde sea solo borde y el fondo siga siendo el suyo. */
+.ph-marco::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(230, 180, 85, 0.6) 0%, rgba(230, 180, 85, 0.12) 45%, rgba(240, 244, 255, 0.06) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@media (min-width: 960px) {
+  .ph-marco { padding: 2.6rem 2.4rem 1.8rem; }
+}
+
+/* ── Cabecera ──────────────────────────────────────────────────────────── */
+
+.ph-cabecera {
+  max-width: 680px;
+  margin: 0 auto 1.7rem;
+  text-align: center;
+}
+
+.ph-sello {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid rgba(230, 180, 85, 0.45);
+  border-radius: 999px;
+  background: rgba(230, 180, 85, 0.08);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--premium-gold);
+}
+
+.ph-titulo {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  color: #fff;
+}
+
+.ph-titulo span {
+  display: block;
+  background: linear-gradient(100deg, #f7dc9c 0%, var(--premium-gold) 50%, #ff9a4d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ph-sub {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(226, 232, 246, 0.66);
+  text-wrap: pretty;
+}
+
+/* ── Cierre: lo que se suma y el precio ────────────────────────────────── */
+
+.ph-cierre {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.2rem;
+  padding: 1.4rem;
+  border: 1px solid rgba(230, 180, 85, 0.18);
+  border-radius: 22px;
+  background: rgba(230, 180, 85, 0.04);
+}
+
+@media (min-width: 900px) {
+  .ph-cierre {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 1.6rem 1.8rem;
+  }
+}
+
+.ph-precio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .ph-precio {
+    min-width: 300px;
+    padding-left: 2.5rem;
+    border-left: 1px solid rgba(240, 244, 255, 0.08);
+  }
+}
+
+.ph-precio-cifra {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+
+.ph-precio-cifra small {
+  margin-left: 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.ph-precio-nota {
+  margin: 0 0 0.4rem;
+  font-size: 0.78rem;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.ph-cta {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 52px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: #1a1204;
+  background: linear-gradient(180deg, #f5d38a 0%, var(--premium-gold) 100%);
+  box-shadow: 0 16px 36px -14px var(--premium-gold), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+
+/* Un destello que cruza el botón de vez en cuando: llama la atención sin
+   moverse todo el rato. */
+.ph-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  animation: ph-destello 5s ease-in-out infinite;
+}
+
+@keyframes ph-destello {
+  0%, 70% { left: -60%; }
+  100% { left: 130%; }
+}
+
+.ph-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 44px -14px var(--premium-gold), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.ph-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.ph-cta:hover svg {
+  transform: translateX(3px);
+}
+
+.ph-garantia {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.76rem;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.ph-garantia svg {
+  color: #4ade80;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-cta::after { animation: none; display: none; }
+  .ph-cta:hover { transform: none; }
+}
+
+/* Lo que se suma a las tres piezas: un título corto y tres pastillas. */
+.ph-incluye {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ph-incluye-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.ph-incluye-texto {
+  max-width: 36rem;
+  margin: -0.35rem 0 0.15rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 246, 0.68);
+}
+
+.ph-incluye-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ph-incluye-lista li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid rgba(230, 180, 85, 0.22);
+  border-radius: 999px;
+  background: rgba(230, 180, 85, 0.06);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.88);
+}
+
+.ph-incluye-lista svg {
+  flex-shrink: 0;
+  color: var(--premium-gold);
+}
+
+/* ── Las tres piezas (PremiumPiezas.tsx) ───────────────────────────────────
+   Cada tarjeta es una pequeña escena de su producto: arriba la ilustración,
+   abajo el argumento. Se inclina hacia el ratón (framer-motion) y un foco de
+   luz lo sigue (--mx/--my desde el componente). El color de cada pieza entra
+   por --c desde el catálogo. */
+
+.pz-lista {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 900px) {
+  .pz-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.1rem; }
+}
+
+.pz {
+  perspective: 900px;
+}
+
+.pz-tarjeta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #111a2e 0%, #0a1020 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 244, 255, 0.07),
+    0 24px 50px -30px rgba(0, 0, 0, 0.9);
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: box-shadow 0.35s ease;
+}
+
+.pz-tarjeta:hover {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent),
+    0 30px 60px -28px color-mix(in srgb, var(--c) 45%, rgba(0, 0, 0, 0.9));
+}
+
+/* El foco que sigue al ratón: un círculo del color de la pieza, muy suave. */
+.pz-foco {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%),
+    color-mix(in srgb, var(--c) 16%, transparent) 0%, transparent 70%);
+  transition: opacity 0.3s ease;
+}
+
+.pz-tarjeta:hover .pz-foco {
+  opacity: 1;
+}
+
+/* ── La escena de arriba ───────────────────────────────────────────────── */
+
+.pz-escena {
+  position: relative;
+  height: 128px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.06);
+  background:
+    radial-gradient(80% 120% at 50% 110%, color-mix(in srgb, var(--c) 24%, transparent) 0%, transparent 70%),
+    linear-gradient(rgba(240, 244, 255, 0.04) 1px, transparent 1px) 0 0 / 100% 21px,
+    linear-gradient(90deg, rgba(240, 244, 255, 0.03) 1px, transparent 1px) 0 0 / 27px 100%,
+    #0b1222;
+}
+
+.pz-icono {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--c) 70%, #fff) 0%, var(--c) 100%);
+  color: #070c18;
+  box-shadow: 0 10px 24px -10px var(--c);
+}
+
+.pz-pronto {
+  position: absolute;
+  top: 1rem;
+  right: 0.9rem;
+  z-index: 1;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(240, 244, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(7, 12, 24, 0.7);
+  backdrop-filter: blur(6px);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.75);
+}
+
+/* Diario: velas y curva de resultados. */
+.pz-svg {
+  position: absolute;
+  inset: 34px 0 0;
+  width: 100%;
+  height: calc(100% - 34px);
+}
+
+.pz-vela line {
+  stroke: rgba(248, 113, 113, 0.45);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.pz-vela rect {
+  fill: rgba(248, 113, 113, 0.45);
+}
+
+.pz-vela.is-sube line { stroke: rgba(74, 222, 128, 0.45); }
+.pz-vela.is-sube rect { fill: rgba(74, 222, 128, 0.45); }
+
+.pz-curva {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--c) 70%, transparent));
+}
+
+.pz-punta {
+  fill: #fff;
+  stroke: var(--c);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.pz-tarjeta:hover .pz-curva {
+  animation: pz-trazar 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes pz-trazar {
+  from { stroke-dashoffset: 1; }
+}
+
+/* Portfolio: barras que crecen, una por posición. */
+.pz-barras {
+  position: absolute;
+  inset: 40px 1.2rem 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.pz-barras span {
+  flex: 1;
+  height: var(--alto);
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, var(--c) 0%, color-mix(in srgb, var(--c) 15%, transparent) 100%);
+  opacity: 0.85;
+  transform-origin: bottom;
+}
+
+.pz-tarjeta:hover .pz-barras span {
+  animation: pz-crecer 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i) * 0.04s);
+}
+
+@keyframes pz-crecer {
+  from { transform: scaleY(0.2); opacity: 0.3; }
+}
+
+/* Cursos: módulos aprobados hasta el sello del certificado. */
+.pz-ruta {
+  position: absolute;
+  inset: 52px 1.2rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.pz-ruta-tramo {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.pz-ruta-nodo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 22%, #0b1222);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 55%, transparent);
+  color: var(--c);
+}
+
+.pz-ruta-linea {
+  flex: 1;
+  height: 2px;
+  margin: 0 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--c) 60%, transparent), color-mix(in srgb, var(--c) 20%, transparent));
+}
+
+.pz-sello {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 60%, #fff) 0%, var(--c) 60%);
+  color: #1a1204;
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--c) 18%, transparent), 0 12px 30px -10px var(--c);
+}
+
+.pz-tarjeta:hover .pz-sello {
+  animation: pz-sello 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes pz-sello {
+  0% { transform: scale(1) rotate(0); }
+  40% { transform: scale(1.12) rotate(-10deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* ── El cuerpo ─────────────────────────────────────────────────────────── */
+
+.pz-cuerpo {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.15rem 1.2rem 1.2rem;
+}
+
+.pz-titulo {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.pz-linea {
+  margin: 0 0 0.9rem;
+  font-size: 0.86rem;
+  color: rgba(226, 232, 246, 0.6);
+}
+
+.pz-dato {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0 0 0.9rem;
+}
+
+.pz-dato strong {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--c);
+}
+
+.pz-dato span {
+  font-size: 0.76rem;
+  color: rgba(240, 244, 255, 0.55);
+}
+
+.pz-puntos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.pz-puntos li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: rgba(240, 244, 255, 0.78);
+}
+
+.pz-puntos svg {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--c);
+}
+
+.pz-mas {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding: 0.42rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: color-mix(in srgb, var(--c) 75%, #fff);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.pz-mas:hover {
+  border-color: var(--c);
+  background: var(--c);
+  color: #070c18;
+}
+
+.pz-mas svg {
+  transition: transform 0.2s ease;
+}
+
+.pz-mas:hover svg {
+  transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pz-tarjeta:hover .pz-curva,
+  .pz-tarjeta:hover .pz-barras span,
+  .pz-tarjeta:hover .pz-sello {
+    animation: none;
+  }
+}
+
+/* ── Móvil estrecho (≤ 400 px) ─────────────────────────────────────────────
+   Repaso del 31-10-2026: a 320 px las tres cifras de la ventana del Diario
+   tenían ~31 px por casilla y «58 %» no cabía. Menos relleno en el marco y en
+   las casillas, y cifras un poco más pequeñas. */
+@media (max-width: 400px) {
+  .hs-marco {
+    padding: 1.6rem 1rem 1.3rem;
+  }
+
+  .hs-app-cuerpo {
+    padding: 1.1rem 0.9rem 1.2rem;
+  }
+
+  .hs-fichas {
+    gap: 0.4rem;
+  }
+
+  .hs-ficha {
+    padding: 0.6rem 0.55rem;
+  }
+
+  .hs-fichas--tres .hs-ficha b {
+    font-size: 1rem;
+  }
+
+  .hs-ficha span {
+    font-size: 0.64rem;
+  }
+}
+
+/* ── Móvil (≤ 640 px): slider del hero compacto ────────────────────────────
+   Repaso del 31-10-2026: en el teléfono cada diapositiva medía más que la
+   pantalla. Se queda con lo que vende —icono, título, una descripción corta,
+   el botón y la ventana con el dato— y suelta lo accesorio. */
+@media (max-width: 640px) {
+  .hs-marco {
+    gap: 1.2rem;
+    padding: 1.5rem 1.1rem 1.2rem;
+  }
+
+  .hs-indice,
+  .hs-puntos-fuertes,
+  .hs-operaciones,
+  .hs-posiciones {
+    display: none;
+  }
+
+  .hs-sello {
+    margin-bottom: 0.8rem;
+  }
+
+  .hs-sello-icono {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .hs-titulo {
+    margin-bottom: 0.5rem;
+    font-size: 1.85rem;
+  }
+
+  .hs-claim {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-bottom: 1.1rem;
+    font-size: 0.9rem;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+  .hs-accion {
+    min-height: 46px;
+  }
+
+  .hs-app-barra {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .hs-app-cuerpo {
+    gap: 0.8rem;
+    padding: 1rem 0.9rem 1.1rem;
+  }
+
+  .hs-grafico svg {
+    height: 72px;
+  }
+
+  .hs-kpi-num {
+    font-size: 2.6rem;
+  }
+
+  .hs-modulo {
+    padding: 0.55rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .hs-certificado {
+    padding: 0.7rem 0.85rem;
+  }
+}
+
+/* ── Móvil (≤ 760 px): la sección Premium, en carrusel ─────────────────────
+   Apiladas, las tres tarjetas hacían la sección larguísima. En fila con
+   desplazamiento horizontal se ven de una en una, con el borde de la
+   siguiente asomando para que se entienda que se desliza. */
+@media (max-width: 760px) {
+  .ph {
+    padding: 0.5rem 1rem 3rem;
+  }
+
+  .ph-marco {
+    padding: 1.8rem 1.1rem 1.1rem;
+    border-radius: 26px;
+  }
+
+  .ph-cabecera {
+    margin-bottom: 1.3rem;
+  }
+
+  .ph-titulo {
+    font-size: 1.55rem;
+  }
+
+  .ph-sub {
+    font-size: 0.88rem;
+  }
+
+  .pz-lista {
+    display: flex;
+    gap: 0.75rem;
+    margin: 0 -1.1rem 1rem;
+    padding: 0 1.1rem 0.3rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 1.1rem;
+    scrollbar-width: none;
+  }
+
+  .pz-lista::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pz {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+  }
+
+  .pz-escena {
+    height: 104px;
+  }
+
+  .pz-cuerpo {
+    padding: 1rem 1rem 1.05rem;
+  }
+
+  .ph-cierre {
+    gap: 1rem;
+    padding: 1.1rem;
+  }
+
+  .ph-incluye-titulo {
+    font-size: 1.15rem;
+  }
+
+  .ph-incluye-texto {
+    font-size: 0.84rem;
+  }
+
+  .ph-incluye-lista li {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .ph-precio-cifra {
+    font-size: 2rem;
+  }
+}
+
+/* ── Puntos del carrusel de Premium ────────────────────────────────────────
+   Solo en el móvil, donde la lista se desliza: marcan la tarjeta que se ve
+   (el activo se alarga y toma el color de su pieza). */
+.pz-puntos-nav {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .pz-puntos-nav {
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: -0.3rem 0 1.1rem;
+  }
+
+  .pz-punto {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(240, 244, 255, 0.2);
+    cursor: pointer;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
+  .pz-punto.is-activo {
+    width: 22px;
+    background: var(--c);
+  }
+}
+
+/* ── Móvil (≤ 640 px): segundo repaso de las tarjetas ──────────────────── */
+@media (max-width: 640px) {
+  /* Slider: la ventana sin la dirección web, que en el teléfono solo ocupa
+     sitio; quedan los tres puntos y la etiqueta (Ejemplo / En vivo). */
+  .hs-app-ruta {
+    visibility: hidden;
+  }
+
+  .hs-app {
+    border-radius: 16px;
+  }
+
+  .hs-diapo,
+  .hs-ventana {
+    border-radius: 24px;
+  }
+
+  .hs-marco {
+    border-radius: 23px;
+  }
+
+  .hs-ficha b {
+    font-size: 1.15rem;
+  }
+
+  /* Guías: la grande más baja y las filas con la miniatura más pequeña. */
+  .gh {
+    padding: 1.6rem 1rem 2.4rem;
+  }
+
+  .gh-inner {
+    padding: 1.6rem 1rem 1.1rem;
+    border-radius: 24px;
+  }
+
+  .gh-titulo {
+    font-size: 1.55rem;
+  }
+
+  .gh-sub {
+    font-size: 0.88rem;
+  }
+
+  .gh-grande {
+    min-height: 330px;
+    border-radius: 18px;
+  }
+
+  .gh-grande-cuerpo {
+    padding: 1.2rem 1.1rem 1.1rem;
+  }
+
+  .gh-grande-titulo {
+    font-size: 1.25rem;
+  }
+
+  .gh-grande-desc {
+    font-size: 0.85rem;
+  }
+
+  .gh-grande-pie {
+    gap: 0.8rem;
+  }
+
+  .gh-empezar {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .gh-fila {
+    grid-template-columns: 84px minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+    border-radius: 14px;
+  }
+
+  .gh-fila-portada {
+    border-radius: 10px;
+  }
+
+  .gh-fila-titulo {
+    font-size: 1rem;
+  }
+
+  .gh-fila-flecha {
+    width: 30px;
+    height: 30px;
+  }
+
+  .gh-todas {
+    width: 100%;
+    justify-content: center;
   }
 }

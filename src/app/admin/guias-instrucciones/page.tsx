@@ -272,7 +272,7 @@ export default function GuiasInstruccionesPage() {
               Una guía sin ellas está incompleta:
             </p>
             <ul className="agi-list">
-              <li><strong>1. Guías relacionadas</strong> — <code>&lt;GuiasRelacionadas slug={"{"}SLUG{"}"} /&gt;</code>, <strong>fuera del muro de registro</strong>: Googlebot entra sin sesión, y es el único enlace que reciben unas guías de otras</li>
+              <li><strong>1. Guías relacionadas</strong> — <code>&lt;GuiasRelacionadas slug={"{"}SLUG{"}"} /&gt;</code>, <strong>a la vista de todos</strong>: Googlebot entra sin sesión, y es el único enlace que reciben unas guías de otras</li>
               <li><strong>2. Interacciones</strong> — <code>&lt;GuideInteractions /&gt;</code> dentro de <code>section.gbc-section.gbc-interactions-section</code> (me gusta, guardar, compartir)</li>
               <li><strong>3. Footer</strong> — <code>&lt;Footer /&gt;</code></li>
             </ul>
@@ -372,15 +372,14 @@ export default function GuiasInstruccionesPage() {
       <section className="agi-section">
         <h2 className="agi-section-title">
           <span className="agi-section-num">06</span>
-          Sistema de acceso y paywall
+          Acceso: la guía abierta, el quiz con cuenta
         </h2>
         <div className="agi-card">
-          <p><strong>Todas las guías son gratuitas</strong> (desde el 31-10-2026 no hay guías Premium):</p>
+          <p><strong>Desde el 31-10-2026 toda guía se lee entera, sin cuenta ni pago</strong>, herramientas interactivas incluidas. Es lo mismo que ve Googlebot, que entra sin sesión.</p>
           <ul className="agi-list">
-            <li>Primeras 1–2 secciones visibles para cualquier visitante (sin sesión)</li>
-            <li>Para continuar: el usuario debe <strong>registrarse gratis</strong></li>
-            <li>Paywall muestra CTA «Crea tu cuenta gratis para continuar»</li>
-            <li>Una vez registrado, acceso completo a toda la guía, herramientas y quiz incluidos</li>
+            <li><strong>Lo único que pide cuenta gratuita es el quiz</strong>: guarda el resultado y desbloquea el logro de la guía, y eso necesita saber de quién es</li>
+            <li>En el <code>page.tsx</code>: <code>{"{isRegistered ? <GuideXxxQuiz /> : <GuideQuizCuenta slug={SLUG} />}"}</code> dentro de <code>section#quiz</code>. Nada más va condicionado a la sesión</li>
+            <li><code>GuideQuizCuenta</code> pinta la invitación a registrarse con el nombre del logro y vuelve a la guía tras el registro</li>
           </ul>
         </div>
         <div className="agi-card" style={{ marginTop: '1rem' }}>
@@ -457,7 +456,7 @@ export default function GuiasInstruccionesPage() {
             </pre>
           </div>
           <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (<code>{`"registro"`}</code> o <code>null</code> si se lee entera sin cuenta; desde el 31-10-2026 ninguna guía va tras Premium), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
+            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (siempre <code>true</code>: toda guía se lee entera sin cuenta), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
             <p>El nombre que sale en las migas lo saca de <code>GUIDES</code>, no del <code>title</code> de la metadata — que es más corto a propósito. Es intencionado: el de <code>GUIDES</code> es el que se ve en <code>/guias</code>, y el dato estructurado <strong>tiene que coincidir con lo visible</strong> o Google lo trata como spam.</p>
           </div>
         </div>
@@ -499,7 +498,7 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Foto de portada</strong> en <code>public/guias/[slug].webp</code> (WebP, 1.600 px, calidad 82) y su ruta en el campo <code>portada</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir slug SEO-friendly: <code>/guias/[tema-especifico]</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Establecer dificultad: Básico / Intermedio / Avanzado</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Aplicar el muro de registro gratuito (ver bloque 06)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Envolver el quiz con <code>GuideQuizCuenta</code> para quien no tiene sesión (ver bloque 06)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Identificar qué componentes interactivos son pertinentes para el tema</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear <code>src/app/guias/[slug]/[slug].css</code> propio — nunca añadir a <code>guias.css</code> ni a <code>globals.css</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido completo (no esqueletos, no placeholders)</span></label>
@@ -515,7 +514,7 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><code>title</code> de <strong>48 caracteres o menos</strong> y <code>description</code> de 160 o menos, con la keyword delante (bloque 08)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir la entrada de la guía al final del array <code>GUIDES</code> en <code>src/lib/guides.ts</code></strong> — es lo único que hace falta para publicarla. <strong>Supabase no se toca</strong></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Comprobar que <code>badgeId</code> sigue la convención <code>guide-[tema]</code> y que el <code>badge</code> tiene nombre</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar que el muro funciona para usuarios sin sesión y con cuenta</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar sin sesión que la guía se lee entera y el quiz pide cuenta, y con sesión que el quiz funciona</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npm run check &amp;&amp; npx tsc --noEmit</code> — el <code>check</code> verifica la canónica, las migas y el alta en <code>GUIDES</code> — y comprobar la guía en el navegador antes de dar por cerrada</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Ofrecer la auditoría SEO</strong> — «¿empiezo la auditoría SEO de la guía?» — y si el admin dice que sí, ejecutar <code>AUDITORIA-SEO.md</code> entero sobre ella. Ojo en las guías: lo que Google ve es <strong>solo lo renderizado en el servidor</strong>, no lo que vive dentro de los componentes interactivos</span></label>
         </div>

@@ -73,16 +73,9 @@ export function websiteSchema(description: string): JsonLdNode {
 /**
  * Una guía.
  *
- * Es lo que le dice a Google que la guía tiene una parte cerrada a propósito:
- * `isAccessibleForFree: false` cuando hay muro, sea de registro o de Premium.
- * Googlebot entra siempre sin sesión y solo ve las secciones abiertas; sin
- * esta declaración, la guía no le parece cerrada, le parece corta.
- *
- * Sin `hasPart` + `cssSelector`, y es deliberado: esa pareja señala en el HTML
- * qué bloque es el de pago, y existe para quien SÍ le sirve el texto cerrado a
- * Google y lo oculta al visitante. Aquí el texto cerrado no llega al HTML de
- * quien no tiene sesión, así que no hay ningún bloque que señalar; apuntar el
- * selector al reclamo de registro sería declarar algo que no es.
+ * `isAccessibleForFree: true` siempre: desde el 31-10-2026 toda guía se lee
+ * entera sin cuenta, y es lo mismo que ve Googlebot. El quiz pide cuenta, pero
+ * el quiz no es el texto de la guía.
  *
  * Sin fechas: `GUIDES` no las guarda, y una fecha inventada hace más daño que
  * una ausente (la misma regla que el sitemap).
@@ -91,7 +84,6 @@ export function guideSchema(guia: {
   slug: string;
   title: string;
   description: string;
-  abierta: boolean;
   /** La guía tiene su propio `opengraph-image.tsx`; si no, la genérica del sitio. */
   imagenPropia?: boolean;
 }): JsonLdNode {
@@ -107,7 +99,7 @@ export function guideSchema(guia: {
     isPartOf: { "@id": WEBSITE_ID },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
     inLanguage: "es-ES",
-    isAccessibleForFree: guia.abierta,
+    isAccessibleForFree: true,
   };
 }
 

@@ -11,6 +11,13 @@
  */
 
 export const INSTAGRAM_URL = "https://www.instagram.com/adelinbtc/";
+
+/**
+ * Los mensajes directos de Instagram. `ig.me/m/…` es el enlace oficial de
+ * Meta para abrir una conversación: en el móvil abre la app de Instagram si
+ * está instalada, y en el ordenador la bandeja de entrada de la web.
+ */
+export const INSTAGRAM_DM_URL = "https://ig.me/m/adelinbtc";
 export const YOUTUBE_URL = "https://www.youtube.com/@AdelinBTC";
 
 /**

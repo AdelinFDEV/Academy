@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -12,6 +11,7 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideVideoEmbed from "@/components/GuideVideoEmbed";
 import GuideRenderNetwork from "./GuideRenderNetwork";
 import GuideRenderTokenomics from "./GuideRenderTokenomics";
@@ -275,187 +275,156 @@ export default async function RenderPage() {
         </div>
       </section>
 
-      {/* ── PAYWALL si no registrado ── */}
-      {!isRegistered ? (
-        <section id="estado-actual" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">Sección 3–8 <span className="gbc-lock-pill">Registro gratuito</span></div>
-            <h2 className="gbc-title">Estado 2026, casos de uso, tokenomics y riesgos</h2>
-            <div className="gbc-body">
-              <p>Las secciones siguientes cubren el estado actual de Render, sus casos de uso reales y la migración
-              a Solana. También el glosario de términos clave, cómo funciona su tokenomics Burn-and-Mint de
-              forma interactiva, los riesgos del proyecto, el vídeo explicativo y el quiz con badge de logro.</p>
-            </div>
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge">🔓 Has leído 2 de 8 secciones</div>
-              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 6 secciones restantes: el estado de Render en 2026, sus casos de uso, el
-                glosario interactivo, el simulador de tokenomics Burn-and-Mint, los riesgos reales del
-                proyecto, el vídeo y el quiz con tu badge <strong>Nodo Verificado</strong>. Sin tarjeta, en
-                30 segundos.
-              </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
-              </div>
+      {/* ── SECCIÓN 3: ESTADO 2026 ── */}
+      <section id="estado-actual" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 3</div>
+          <h2 className="gbc-title">Render en 2026: de RNDR en Ethereum a RENDER en Solana</h2>
+          <div className="gbc-body">
+            <p>
+              Render no ha dejado de moverse. Nació con un ICO en 2017 impulsado por OTOY y lanzó su
+              mainnet sobre Ethereum en 2020, con el token bajo el ticker <strong>RNDR</strong>. Pero las
+              comisiones altas y la congestión de Ethereum lastraban una red que necesita liquidar muchos
+              micropagos entre artistas y nodos.
+            </p>
+            <p>
+              La respuesta llegó a finales de <strong>2023</strong>: la comunidad aprobó migrar la red a
+              <strong> Solana</strong>, una blockchain mucho más rápida y barata, y aprovechó para renombrar
+              el token de <strong>RNDR a RENDER</strong>. Desde entonces, el proyecto ha surfeado la
+              narrativa que lo cambió todo en 2024: la unión de <strong>IA y DePIN</strong>. Las mismas GPUs
+              que renderizan gráficos sirven para entrenar y ejecutar modelos de inteligencia artificial, y
+              eso colocó a Render en el centro de una de las tesis de inversión más calientes del sector.
+            </p>
+          </div>
+
+          <div className="gbc-stats">
+            <GuideAnimatedStat end={537} suffix="M" decimals={0} label="Suministro máximo de tokens RENDER" source="Render Network Foundation" />
+            <GuideAnimatedStat end={2017} decimals={0} label="Año del ICO fundacional (OTOY)" source="Render Network" />
+            <GuideAnimatedStat end={2023} decimals={0} label="Migración de Ethereum a Solana" source="Render Network Foundation" />
+            <GuideAnimatedStat end={1} suffix="º" decimals={0} label="Referente del sector DePIN de GPU" source="Narrativa de mercado 2024–2026" />
+          </div>
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Gobernanza por propuestas: las RNP</div>
+            <div className="gbc-box-body">
+              <p>Los grandes cambios de Render —incluida la migración a Solana o su modelo económico— no
+              los decide una sola empresa a puerta cerrada, sino que se discuten y votan como
+              <em> Render Network Proposals</em> (RNP), al estilo de otras comunidades cripto. Es el intento
+              del proyecto de gobernarse de forma cada vez más descentralizada, aunque, como veremos en los
+              riesgos, el peso de OTOY sigue siendo grande.</p>
             </div>
           </div>
-        </section>
-      ) : (
-        <>
-          {/* ── SECCIÓN 3: ESTADO 2026 ── */}
-          <section id="estado-actual" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">Render en 2026: de RNDR en Ethereum a RENDER en Solana</h2>
-              <div className="gbc-body">
-                <p>
-                  Render no ha dejado de moverse. Nació con un ICO en 2017 impulsado por OTOY y lanzó su
-                  mainnet sobre Ethereum en 2020, con el token bajo el ticker <strong>RNDR</strong>. Pero las
-                  comisiones altas y la congestión de Ethereum lastraban una red que necesita liquidar muchos
-                  micropagos entre artistas y nodos.
-                </p>
-                <p>
-                  La respuesta llegó a finales de <strong>2023</strong>: la comunidad aprobó migrar la red a
-                  <strong> Solana</strong>, una blockchain mucho más rápida y barata, y aprovechó para renombrar
-                  el token de <strong>RNDR a RENDER</strong>. Desde entonces, el proyecto ha surfeado la
-                  narrativa que lo cambió todo en 2024: la unión de <strong>IA y DePIN</strong>. Las mismas GPUs
-                  que renderizan gráficos sirven para entrenar y ejecutar modelos de inteligencia artificial, y
-                  eso colocó a Render en el centro de una de las tesis de inversión más calientes del sector.
-                </p>
-              </div>
+        </div>
+      </section>
 
-              <div className="gbc-stats">
-                <GuideAnimatedStat end={537} suffix="M" decimals={0} label="Suministro máximo de tokens RENDER" source="Render Network Foundation" />
-                <GuideAnimatedStat end={2017} decimals={0} label="Año del ICO fundacional (OTOY)" source="Render Network" />
-                <GuideAnimatedStat end={2023} decimals={0} label="Migración de Ethereum a Solana" source="Render Network Foundation" />
-                <GuideAnimatedStat end={1} suffix="º" decimals={0} label="Referente del sector DePIN de GPU" source="Narrativa de mercado 2024–2026" />
-              </div>
+      {/* ── SECCIÓN 4: CASOS DE USO ── */}
+      <section id="casos-de-uso" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 4</div>
+          <h2 className="gbc-title">Para qué se usa Render de verdad</h2>
+          <div className="gbc-body">
+            <p>
+              Render no es una idea abstracta: mueve trabajo real. Empezó centrado en el renderizado 3D y
+              los efectos visuales, y con el tiempo se ha ido abriendo a la computación de IA y a mundos
+              inmersivos. Estos son sus usos principales.
+            </p>
+          </div>
+          <GuideSpotlightCards uses={USES} />
+        </div>
+      </section>
 
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Gobernanza por propuestas: las RNP</div>
-                <div className="gbc-box-body">
-                  <p>Los grandes cambios de Render —incluida la migración a Solana o su modelo económico— no
-                  los decide una sola empresa a puerta cerrada, sino que se discuten y votan como
-                  <em> Render Network Proposals</em> (RNP), al estilo de otras comunidades cripto. Es el intento
-                  del proyecto de gobernarse de forma cada vez más descentralizada, aunque, como veremos en los
-                  riesgos, el peso de OTOY sigue siendo grande.</p>
-                </div>
-              </div>
+      {/* ── FLASHCARDS: GLOSARIO ── */}
+      <section id="flashcards" className="gbc-fc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Glosario</div>
+          <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
+          <GuideFlipCards cards={GLOSSARY_CARDS} />
+        </div>
+      </section>
+
+      {/* ── SECCIÓN 5: TOKENOMICS ── */}
+      <section id="tokenomics" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 5</div>
+          <h2 className="gbc-title">Tokenomics: cómo el token RENDER conecta pagos y recompensas</h2>
+          <div className="gbc-body">
+            <p>
+              El token RENDER es el que engrasa toda la máquina. Los artistas pagan sus trabajos en RENDER
+              y los node operators cobran en RENDER. Pero lo interesante es <strong>cómo</strong> se conecta
+              lo uno con lo otro: mediante un modelo llamado <strong>Burn-and-Mint Equilibrium</strong> (BME).
+            </p>
+            <p>
+              La idea es sencilla: cuando un artista paga un trabajo, esos tokens se <strong>queman</strong>
+              (burn) — desaparecen de circulación. A la vez, la red <strong>emite</strong> (mint) tokens
+              nuevos para pagar a los nodos que hicieron el trabajo. Si se quema más de lo que se emite, la
+              oferta baja (deflacionario); si se emite más de lo que se quema, sube (inflacionario). Prueba
+              a mover la demanda y observa el efecto:
+            </p>
+          </div>
+
+          <GuideRenderTokenomics />
+
+          <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Por qué importa el equilibrio</div>
+            <div className="gbc-box-body">
+              <p>El BME ata el valor del token a la <strong>utilidad real</strong> de la red: cuanto más
+              renderizado de verdad se paga, más RENDER se quema. En teoría, una red muy usada tiende a ser
+              deflacionaria, lo que alinea el interés de los que tienen tokens con el crecimiento del uso.
+              El reto es que ese uso sea genuino y no solo especulación — algo que abordamos en los riesgos.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── SECCIÓN 4: CASOS DE USO ── */}
-          <section id="casos-de-uso" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Para qué se usa Render de verdad</h2>
-              <div className="gbc-body">
-                <p>
-                  Render no es una idea abstracta: mueve trabajo real. Empezó centrado en el renderizado 3D y
-                  los efectos visuales, y con el tiempo se ha ido abriendo a la computación de IA y a mundos
-                  inmersivos. Estos son sus usos principales.
-                </p>
-              </div>
-              <GuideSpotlightCards uses={USES} />
+      {/* ── SECCIÓN 6: RIESGOS ── */}
+      <section id="riesgos" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 6 · Riesgos reales</div>
+          <h2 className="gbc-title">Lo que puede salir mal: dependencia, competencia y especulación</h2>
+          <div className="gbc-body">
+            <p>
+              Render es uno de los proyectos DePIN más sólidos por tener un producto y una empresa reales
+              detrás, pero eso no lo hace inmune a los riesgos. Antes de sacar conclusiones, conviene mirar
+              las cuatro tensiones que más se le señalan.
+            </p>
+          </div>
+
+          <div className="gbc-fc-section" style={{ padding: 0 }}>
+            <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar de riesgos — haz clic en cada tarjeta</h3>
+            <GuideFlipCards cards={RISK_CARDS} />
+          </div>
+
+          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">La pregunta que decide su futuro</div>
+            <div className="gbc-box-body">
+              <p>Todo se reduce a una cosa: ¿habrá suficiente demanda real de renderizado (y de cómputo de
+              IA) para sostener la red más allá de los ciclos de entusiasmo del mercado? Si la respuesta es
+              sí, Render tiene una utilidad tangible que pocas criptomonedas pueden presumir. Si es no, su
+              valor dependerá sobre todo de la narrativa. Esta guía es educativa y no es consejo de
+              inversión: infórmate y decide por ti mismo.</p>
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── FLASHCARDS: GLOSARIO ── */}
-          <section id="flashcards" className="gbc-fc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Glosario</div>
-              <h2 className="gbc-title">Términos clave — haz clic para ver la definición</h2>
-              <GuideFlipCards cards={GLOSSARY_CARDS} />
-            </div>
-          </section>
+      {/* ── VÍDEO ── */}
+      <section id="video" className="gbc-section">
+        <div className="gbc-gc">
+          <GuideVideoEmbed youtubeId="tPUQUnytU_Q" title="¿Qué es Render Network? Explicado" />
+        </div>
+      </section>
 
-          {/* ── SECCIÓN 5: TOKENOMICS ── */}
-          <section id="tokenomics" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 5</div>
-              <h2 className="gbc-title">Tokenomics: cómo el token RENDER conecta pagos y recompensas</h2>
-              <div className="gbc-body">
-                <p>
-                  El token RENDER es el que engrasa toda la máquina. Los artistas pagan sus trabajos en RENDER
-                  y los node operators cobran en RENDER. Pero lo interesante es <strong>cómo</strong> se conecta
-                  lo uno con lo otro: mediante un modelo llamado <strong>Burn-and-Mint Equilibrium</strong> (BME).
-                </p>
-                <p>
-                  La idea es sencilla: cuando un artista paga un trabajo, esos tokens se <strong>queman</strong>
-                  (burn) — desaparecen de circulación. A la vez, la red <strong>emite</strong> (mint) tokens
-                  nuevos para pagar a los nodos que hicieron el trabajo. Si se quema más de lo que se emite, la
-                  oferta baja (deflacionario); si se emite más de lo que se quema, sube (inflacionario). Prueba
-                  a mover la demanda y observa el efecto:
-                </p>
-              </div>
-
-              <GuideRenderTokenomics />
-
-              <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Por qué importa el equilibrio</div>
-                <div className="gbc-box-body">
-                  <p>El BME ata el valor del token a la <strong>utilidad real</strong> de la red: cuanto más
-                  renderizado de verdad se paga, más RENDER se quema. En teoría, una red muy usada tiende a ser
-                  deflacionaria, lo que alinea el interés de los que tienen tokens con el crecimiento del uso.
-                  El reto es que ese uso sea genuino y no solo especulación — algo que abordamos en los riesgos.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── SECCIÓN 6: RIESGOS ── */}
-          <section id="riesgos" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 6 · Riesgos reales</div>
-              <h2 className="gbc-title">Lo que puede salir mal: dependencia, competencia y especulación</h2>
-              <div className="gbc-body">
-                <p>
-                  Render es uno de los proyectos DePIN más sólidos por tener un producto y una empresa reales
-                  detrás, pero eso no lo hace inmune a los riesgos. Antes de sacar conclusiones, conviene mirar
-                  las cuatro tensiones que más se le señalan.
-                </p>
-              </div>
-
-              <div className="gbc-fc-section" style={{ padding: 0 }}>
-                <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>Radar de riesgos — haz clic en cada tarjeta</h3>
-                <GuideFlipCards cards={RISK_CARDS} />
-              </div>
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La pregunta que decide su futuro</div>
-                <div className="gbc-box-body">
-                  <p>Todo se reduce a una cosa: ¿habrá suficiente demanda real de renderizado (y de cómputo de
-                  IA) para sostener la red más allá de los ciclos de entusiasmo del mercado? Si la respuesta es
-                  sí, Render tiene una utilidad tangible que pocas criptomonedas pueden presumir. Si es no, su
-                  valor dependerá sobre todo de la narrativa. Esta guía es educativa y no es consejo de
-                  inversión: infórmate y decide por ti mismo.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── VÍDEO ── */}
-          <section id="video" className="gbc-section">
-            <div className="gbc-gc">
-              <GuideVideoEmbed youtubeId="tPUQUnytU_Q" title="¿Qué es Render Network? Explicado" />
-            </div>
-          </section>
-
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Nodo Verificado</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
-              </div>
-              <GuideRenderQuiz />
-            </div>
-          </section>
-        </>
-      )}
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Nodo Verificado</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+          </div>
+          {isRegistered ? <GuideRenderQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

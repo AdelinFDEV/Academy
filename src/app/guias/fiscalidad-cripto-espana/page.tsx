@@ -12,6 +12,7 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideFiscalFifo from "./GuideFiscalFifo";
 import GuideFiscalCalc from "./GuideFiscalCalc";
 import GuideFiscalQuiz from "./GuideFiscalQuiz";
@@ -362,8 +363,8 @@ export default async function FiscalidadCriptoEspanaPage() {
           airdrops y el modelo 721— es lo que se busca en Google y lo que el
           título promete; esconderla dejaba a la guía compitiendo con dos
           secciones contra páginas de asesorías que lo cuentan entero.
-          Las herramientas y el cierre piden una cuenta gratuita, como el
-          resto de guías: desde el 31-10-2026 ninguna va tras Premium. */}
+          Desde el 31-10-2026 la guía entera, herramientas incluidas, se lee
+          sin cuenta; solo el quiz la pide, como en todas las guías. */}
         {/* ── SECCIÓN 3: FIFO ── */}
         <section id="fifo" className="gbc-section">
           <div className="gbc-gc">
@@ -452,18 +453,7 @@ export default async function FiscalidadCriptoEspanaPage() {
                 </figcaption>
               </figure>
 
-              {isRegistered ? (
-                <GuideFiscalFifo />
-              ) : (
-                <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                  <div className="gbc-box-title">El simulador FIFO es gratis con tu cuenta</div>
-                  <div className="gbc-box-body">
-                    <p>
-                      La regla está explicada entera aquí arriba y no hace falta la herramienta para entenderla. El simulador sirve para lo otro: meter tus compras y tus ventas y ver qué lote consume cada una. <Link href="/register">Crea tu cuenta gratis</Link> para usarlo.
-                    </p>
-                  </div>
-                </div>
-              )}
+              <GuideFiscalFifo />
 
             <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
               <div className="gbc-box-title">El FIFO se aplica por criptomoneda, no por plataforma</div>
@@ -523,18 +513,7 @@ export default async function FiscalidadCriptoEspanaPage() {
               </p>
             </div>
 
-              {isRegistered ? (
-                <GuideFiscalCalc />
-              ) : (
-                <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                  <div className="gbc-box-title">La calculadora por tramos es gratis con tu cuenta</div>
-                  <div className="gbc-box-body">
-                    <p>
-                      La escala y el funcionamiento marginal están contados arriba. La calculadora hace la cuenta con tu cifra y te enseña cuánto cae en cada tramo. <Link href="/register">Crea tu cuenta gratis</Link> para usarla.
-                    </p>
-                  </div>
-                </div>
-              )}
+              <GuideFiscalCalc />
 
             <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
               <div className="gbc-box-title">La base del ahorro es un saco compartido</div>
@@ -770,142 +749,100 @@ export default async function FiscalidadCriptoEspanaPage() {
           </div>
         </section>
 
-      {/* ── MURO DE REGISTRO: las herramientas y el cierre ── */}
-      {isRegistered ? (
-        <>
-          {/* ── SECCIÓN 9: ERRORES Y CALENDARIO ── */}
-          <section id="errores" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 9</div>
-              <h2 className="gbc-title">Calendario fiscal y los errores que más dinero cuestan</h2>
-              <div className="gbc-body">
-                <p>
-                  El año de la fiscalidad cripto tiene dos citas fijas y una tarea continua que casi nadie
-                  hace hasta
-                  que es tarde: mantener el histórico de operaciones al día.
-                </p>
-              </div>
+      {/* ── SECCIÓN 9: ERRORES Y CALENDARIO ── */}
+      <section id="errores" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 9</div>
+          <h2 className="gbc-title">Calendario fiscal y los errores que más dinero cuestan</h2>
+          <div className="gbc-body">
+            <p>
+              El año de la fiscalidad cripto tiene dos citas fijas y una tarea continua que casi nadie
+              hace hasta
+              que es tarde: mantener el histórico de operaciones al día.
+            </p>
+          </div>
 
-              <div className="fisc-cal">
-                <div className="fisc-cal-item">
-                  <div className="fisc-cal-when">1 ene – 31 mar</div>
-                  <div className="fisc-cal-what">
-                    <strong>Modelo 721</strong>
-                    <span>Informativa de monedas virtuales en el extranjero del año anterior, si superas los 50.000 €.</span>
-                  </div>
-                </div>
-                <div className="fisc-cal-item">
-                  <div className="fisc-cal-when">Abr – jun</div>
-                  <div className="fisc-cal-what">
-                    <strong>Renta (modelo 100) y Patrimonio (modelo 714)</strong>
-                    <span>Campaña ordinaria. Aquí van tus ganancias y pérdidas patrimoniales y tus rendimientos del capital mobiliario.</span>
-                  </div>
-                </div>
-                <div className="fisc-cal-item">
-                  <div className="fisc-cal-when">31 dic</div>
-                  <div className="fisc-cal-what">
-                    <strong>Fecha de foto</strong>
-                    <span>Es el día que fija el valor de tu patrimonio para el 721 y para el Impuesto sobre el Patrimonio.</span>
-                  </div>
-                </div>
-                <div className="fisc-cal-item">
-                  <div className="fisc-cal-when">Todo el año</div>
-                  <div className="fisc-cal-what">
-                    <strong>Registro de operaciones</strong>
-                    <span>Exporta el histórico de cada plataforma. Reconstruir tres años de operativa en abril es donde se cometen los errores.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="gbc-body" style={{ marginTop: 32 }}>
-                <p>
-                  En cuanto a las casillas, las ganancias y pérdidas por transmisión de monedas virtuales
-                  tienen su apartado propio dentro de la declaración —en el bloque de ganancias y pérdidas
-                  patrimoniales de la base del ahorro, alrededor de las casillas{" "}
-                  <strong>1800 y siguientes</strong>—, donde se detalla cada operación con su valor de
-                  transmisión y de adquisición. La numeración exacta puede variar de una campaña a otra,
-                  así que conviene guiarse por el nombre del apartado y no por el número memorizado del
-                  año pasado.
-                </p>
-              </div>
-
-              <div className="gbc-fc-section" style={{ padding: 0, marginTop: 32 }}>
-                <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>
-                  Los seis errores más caros — haz clic en cada tarjeta
-                </h3>
-                <GuideFlipCards cards={ERROR_CARDS} />
-              </div>
-
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 32 }}>
-                <div className="gbc-box-title">Si arrastras años sin declarar</div>
-                <div className="gbc-box-body">
-                  <p>
-                    Regularizar voluntariamente, antes de recibir cualquier requerimiento, activa el
-                    régimen de recargos por declaración extemporánea en lugar del régimen sancionador —
-                    que es sustancialmente más duro. Dicho de otro modo: adelantarse siempre sale más
-                    barato que esperar a que llamen. Con el cruce automático de datos plenamente operativo
-                    desde 2026, el margen para esperar se ha reducido a prácticamente nada.
-                  </p>
-                </div>
+          <div className="fisc-cal">
+            <div className="fisc-cal-item">
+              <div className="fisc-cal-when">1 ene – 31 mar</div>
+              <div className="fisc-cal-what">
+                <strong>Modelo 721</strong>
+                <span>Informativa de monedas virtuales en el extranjero del año anterior, si superas los 50.000 €.</span>
               </div>
             </div>
-          </section>
-
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>
-                  Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge{" "}
-                  <strong style={{ color: "var(--gold)" }}>Cuentas Claras</strong>. No son preguntas de
-                  memoria: son los cinco matices donde más gente se deja dinero. Puedes releer cualquier
-                  sección antes de responder.
-                </p>
+            <div className="fisc-cal-item">
+              <div className="fisc-cal-when">Abr – jun</div>
+              <div className="fisc-cal-what">
+                <strong>Renta (modelo 100) y Patrimonio (modelo 714)</strong>
+                <span>Campaña ordinaria. Aquí van tus ganancias y pérdidas patrimoniales y tus rendimientos del capital mobiliario.</span>
               </div>
-              <GuideFiscalQuiz />
             </div>
-          </section>
-        </>
-      ) : (
-        <section id="errores" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">
-              Herramientas y cierre <span className="gbc-lock-pill">Registro gratuito</span>
-            </div>
-            <h2 className="gbc-title">Calendario fiscal, los seis errores caros y las herramientas</h2>
-            <div className="gbc-body">
-              <p>
-                Hasta aquí tienes la fiscalidad cripto entera y gratis. Qué tributa, cómo se calcula con FIFO y cuánto se paga en cada tramo. Cómo van staking y airdrops, y a quién le tocan el modelo 721, el Patrimonio y la compensación de pérdidas. Lo que queda es la parte que se usa
-                con la declaración delante.
-              </p>
-            </div>
-
-            <div className="fisc-locked-list">
-              <div className="fisc-locked-item"><span>1</span> Simulador FIFO: mete tus compras y tus ventas y mira qué lote consume cada una</div>
-              <div className="fisc-locked-item"><span>2</span> Calculadora por tramos: tu ganancia desglosada del 19% al 30%, tramo a tramo</div>
-              <div className="fisc-locked-item"><span>3</span> Calendario fiscal del ejercicio y los seis errores que más dinero cuestan</div>
-              <div className="fisc-locked-item"><span>4</span> Quiz de cinco preguntas y el badge Cuentas Claras</div>
-            </div>
-
-            <div className="gbc-paywall" id="quiz">
-              <div className="gbc-paywall-badge">Has leído las 8 secciones de teoría</div>
-              <div className="gbc-paywall-t">Regístrate gratis para usar las herramientas</div>
-              <div className="gbc-paywall-d">
-                La norma la tienes entera arriba. Con una cuenta gratuita la aplicas a tu caso:
-                el <strong>simulador FIFO</strong>, la <strong>calculadora por tramos</strong>, el
-                calendario con los errores caros, el quiz y tu badge{" "}
-                <strong>Cuentas Claras</strong>.
+            <div className="fisc-cal-item">
+              <div className="fisc-cal-when">31 dic</div>
+              <div className="fisc-cal-what">
+                <strong>Fecha de foto</strong>
+                <span>Es el día que fija el valor de tu patrimonio para el 721 y para el Impuesto sobre el Patrimonio.</span>
               </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
+            </div>
+            <div className="fisc-cal-item">
+              <div className="fisc-cal-when">Todo el año</div>
+              <div className="fisc-cal-what">
+                <strong>Registro de operaciones</strong>
+                <span>Exporta el histórico de cada plataforma. Reconstruir tres años de operativa en abril es donde se cometen los errores.</span>
               </div>
             </div>
           </div>
-        </section>
-      )}
+
+          <div className="gbc-body" style={{ marginTop: 32 }}>
+            <p>
+              En cuanto a las casillas, las ganancias y pérdidas por transmisión de monedas virtuales
+              tienen su apartado propio dentro de la declaración —en el bloque de ganancias y pérdidas
+              patrimoniales de la base del ahorro, alrededor de las casillas{" "}
+              <strong>1800 y siguientes</strong>—, donde se detalla cada operación con su valor de
+              transmisión y de adquisición. La numeración exacta puede variar de una campaña a otra,
+              así que conviene guiarse por el nombre del apartado y no por el número memorizado del
+              año pasado.
+            </p>
+          </div>
+
+          <div className="gbc-fc-section" style={{ padding: 0, marginTop: 32 }}>
+            <h3 className="gbc-title" style={{ fontSize: 20, marginTop: 8 }}>
+              Los seis errores más caros — haz clic en cada tarjeta
+            </h3>
+            <GuideFlipCards cards={ERROR_CARDS} />
+          </div>
+
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 32 }}>
+            <div className="gbc-box-title">Si arrastras años sin declarar</div>
+            <div className="gbc-box-body">
+              <p>
+                Regularizar voluntariamente, antes de recibir cualquier requerimiento, activa el
+                régimen de recargos por declaración extemporánea en lugar del régimen sancionador —
+                que es sustancialmente más duro. Dicho de otro modo: adelantarse siempre sale más
+                barato que esperar a que llamen. Con el cruce automático de datos plenamente operativo
+                desde 2026, el margen para esperar se ha reducido a prácticamente nada.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>
+              Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge{" "}
+              <strong style={{ color: "var(--gold)" }}>Cuentas Claras</strong>. No son preguntas de
+              memoria: son los cinco matices donde más gente se deja dinero. Puedes releer cualquier
+              sección antes de responder.
+            </p>
+          </div>
+          {isRegistered ? <GuideFiscalQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

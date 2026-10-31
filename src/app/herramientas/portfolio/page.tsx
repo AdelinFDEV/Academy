@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Wallet, LineChart, PieChart, TrendingUp, ArrowRight } from "lucide-react";
+import { Wallet, LineChart, PieChart, TrendingUp } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
+import AccesoHerramienta from "@/components/AccesoHerramienta";
 import { resumenPortfolioPublico, MOSTRAR_IMPORTES } from "@/lib/portfolio-publico";
 import "../detalle.css";
 
@@ -208,6 +209,7 @@ export default async function FichaPortfolioPage() {
             perdido cada moneda. Con precios en vivo y con las posiciones que
             van mal a la vista.
           </p>
+          <AccesoHerramienta nombre="el Portfolio Adelin" ruta="/portfolio" abrir="Abrir el portfolio" logueado={!!user} premium={isPremium} />
 
           {/* Cifras reales, calculadas en el servidor para que estén en el HTML
               y las lea también Google. Nunca por posición: qué monedas y a qué
@@ -276,6 +278,7 @@ export default async function FichaPortfolioPage() {
               </p>
             </>
           )}
+
         </header>
 
         <div className="det-pilares">
@@ -479,26 +482,7 @@ export default async function FichaPortfolioPage() {
             <Link href="/herramientas/diario">diario de trading</Link>. Una sola
             cuota, sin comprar nada por separado.
           </p>
-          <div className="det-actions">
-            {isPremium ? (
-              <Link href="/portfolio" className="det-btn">
-                Abrir el portfolio
-                <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
-              </Link>
-            ) : (
-              <>
-                <Link href="/premium" className="det-btn">
-                  Ver qué incluye Premium
-                  <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
-                </Link>
-                {!user && (
-                  <Link href="/login?next=/portfolio" className="det-btn det-btn--ghost">
-                    Ya tengo cuenta
-                  </Link>
-                )}
-              </>
-            )}
-          </div>
+          <AccesoHerramienta nombre="el Portfolio Adelin" ruta="/portfolio" abrir="Abrir el portfolio" logueado={!!user} premium={isPremium} />
         </section>
       </main>
 

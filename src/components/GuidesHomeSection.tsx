@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookOpen, Clock, Trophy } from "lucide-react";
 import { GUIDES_NEWEST_FIRST, type GuideMeta } from "@/lib/guides";
 import GuiaPortada from "@/components/GuiaPortada";
+import GuideSearch from "@/components/GuideSearch";
 
 /** Nivel de 1 a 3, para las tres rayitas de dificultad. */
 const NIVEL: Record<GuideMeta["difficulty"], number> = { "básico": 1, "intermedio": 2, "avanzado": 3 };
@@ -62,6 +63,9 @@ export default function GuidesHomeSection() {
               Qué es cada proyecto, cómo funciona por dentro y qué riesgos tiene. Con gráficas,
               ejercicios y un quiz final.
             </p>
+            <div className="gh-buscar">
+              <GuideSearch />
+            </div>
           </div>
           <Link href="/guias" className="gh-todas">
             Ver todas las explicaciones

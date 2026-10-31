@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useId } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 
@@ -128,7 +129,21 @@ function BordeDeLuz({ caja }: { caja: React.RefObject<HTMLDivElement | null> }) 
   );
 }
 
+/** Sin tildes ni mayúsculas: «Ripple» y «ripple», «Ondo» y «ondó» son lo mismo. */
+function plano(t: string): string {
+  return t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+/**
+ * Busca una criptomoneda entre las guías que la explican. Solo las guías con la
+ * etiqueta CRIPTOMONEDAS: el buscador sirve para «quiero entender esta moneda».
+ *
+ * Va a la vista en la sección de guías del home, en /guias y arriba del menú.
+ * Al enfocarlo sin escribir enseña las criptomonedas explicadas: quien no sabe
+ * qué hay, lo ve sin tener que adivinar un nombre.
+ */
 export default function GuideSearch() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -144,26 +159,39 @@ export default function GuideSearch() {
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
-  const q = query.trim().toLowerCase();
-  const hasQuery = q.length >= 3;
-  // Solo filtra por título de la guía — a propósito, no busca en
-  // descripción/temas para que los resultados sean siempre predecibles.
+  const q = plano(query.trim());
+  const hasQuery = q.length >= 2;
+  // Por título y por nombre corto: «xrp» encuentra «XRP y Ripple» aunque el
+  // título largo empiece por otra cosa. No busca en la descripción, para que
+  // los resultados sean siempre predecibles.
   const results = hasQuery
-    ? CRYPTO_GUIDES.filter((g) => g.title.toLowerCase().includes(q))
+    ? CRYPTO_GUIDES.filter((g) => plano(g.title).includes(q) || plano(g.shortTitle).includes(q))
     : [];
+
+  function ir(slug: string) {
+    setOpen(false);
+    setQuery("");
+    router.push(`/guias/${slug}`);
+  }
 
   return (
     <div className="guide-search" ref={wrapRef}>
       <div className="guide-search-box" ref={boxRef}>
         <BordeDeLuz caja={boxRef} />
-        <Search size={14} aria-hidden="true" className="guide-search-icon" />
+        <Search size={19} aria-hidden="true" className="guide-search-icon" />
         <input
-          type="text"
+          type="search"
           className="guide-search-input"
-          placeholder="Busca Criptomonedas"
+          placeholder="Busca una criptomoneda: XRP, Render, Worldcoin…"
+          aria-label="Buscar una criptomoneda en las guías"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
+          onKeyDown={(e) => {
+            // Intro abre el primer resultado; Escape cierra la lista.
+            if (e.key === "Enter" && results[0]) ir(results[0].slug);
+            if (e.key === "Escape") setOpen(false);
+          }}
         />
         {query && (
           <button
@@ -172,15 +200,34 @@ export default function GuideSearch() {
             aria-label="Limpiar búsqueda"
             onClick={() => setQuery("")}
           >
-            <X size={13} aria-hidden="true" />
+            <X size={16} aria-hidden="true" />
           </button>
         )}
       </div>
 
-      {open && hasQuery && (
+      {open && (
         <div className="guide-search-dropdown">
-          {results.length === 0 ? (
-            <p className="guide-search-empty">Sin resultados para &quot;{query}&quot;</p>
+          {!hasQuery ? (
+            <>
+              <p className="guide-search-sugerencias-titulo">Criptomonedas explicadas</p>
+              <div className="guide-search-sugerencias">
+                {CRYPTO_GUIDES.map((g) => (
+                  <Link
+                    key={g.slug}
+                    href={`/guias/${g.slug}`}
+                    className="guide-search-chip"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="guide-search-result-dot" style={{ background: g.color }} />
+                    {g.shortTitle}
+                  </Link>
+                ))}
+              </div>
+            </>
+          ) : results.length === 0 ? (
+            <p className="guide-search-empty">
+              Aún no hay guía de &quot;{query}&quot;. Prueba con otra criptomoneda.
+            </p>
           ) : (
             results.map((g) => (
               <Link

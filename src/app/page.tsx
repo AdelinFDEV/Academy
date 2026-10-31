@@ -4,8 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ShieldCheck, Star } from "lucide-react";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import GuideSearch from "@/components/GuideSearch";
-import PremiumPitch from "@/components/PremiumPitch";
+import PremiumHome from "@/components/PremiumHome";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
 import HeroSlider from "@/components/HeroSlider";
@@ -59,10 +58,6 @@ export default async function HomePage() {
         <div className="hero-aurora" aria-hidden="true" />
 
         <div className="hero-content">
-          <div className="hero-search-bar hero-anim hero-anim-1">
-            <GuideSearch />
-          </div>
-
           <HeroSlider isPremium={isPremium} portfolio={resumenPortfolio} />
 
           {!user && (
@@ -109,12 +104,6 @@ export default async function HomePage() {
           accesibles desde el menú y el dashboard. */}
       <div className="home-layout" id="feed">
 
-        {/* Premium pitch — solo en móvil, bajo el feed. En escritorio no se
-            muestra aquí: va como sección a lo ancho, tras el cuerpo. */}
-        <div className="premium-pitch-mobile-only">
-          <PremiumPitch variant="card" />
-        </div>
-
         {/* El último vídeo de YouTube. Iba dentro del feed de entradas, que se
             retiró el 10-10-2026 con todo el sistema de entradas. */}
         <div className="home-feed">
@@ -125,11 +114,9 @@ export default async function HomePage() {
 
       </div>
 
-      {/* ── Premium — sección full-width en desktop (en móvil va arriba, tras Herramientas) ── */}
-      <section className="premium-section">
-        <PremiumPitch variant="section" />
-      </section>
-
+      {/* ── Premium: una sola sección para todos los anchos, y solo para quien
+          aún no lo es ── */}
+      {!isPremium && <PremiumHome portfolio={resumenPortfolio} />}
 
       <Footer />
     </div>

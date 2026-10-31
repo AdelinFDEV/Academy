@@ -175,7 +175,7 @@ Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constr
 | Dónde | Qué emite | ¿Hay que hacer algo? |
 |---|---|---|
 | **Todas las rutas** | `Organization` + `WebSite` | No. Van en el layout raíz, una sola vez |
-| **Guía** | `Article` (con su muro) + `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>`, y rellenar `muro` en `GUIDES` |
+| **Guía** | `Article` + `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>` |
 | **Página pública nueva** | Nada por defecto | Solo si el tipo aporta algo real. Una página sin tipo propio no necesita ninguno |
 
 **La organización y el sitio se declaran SOLO en el layout raíz**, con un `@id` fijo (`.../#organization` y `.../#website`), y los demás esquemas apuntan a ese `@id` en vez de repetir el objeto. Si copias el bloque entero en otra página tendrás dos definiciones que se pueden desincronizar.
@@ -187,7 +187,7 @@ Dos consecuencias prácticas al tocar contenido:
 - **Las migas de pan del JSON-LD replican las visibles.** Si cambias las que se ven, cambia las del esquema.
 - **El nombre de la guía en las migas sale de `GUIDES`**, no del `title` de su metadata — que es más corto a propósito por el límite de 48. Es intencionado: el de `GUIDES` es el que se ve en `/guias`, y es con lo visible con lo que tiene que coincidir.
 
-`isAccessibleForFree` sale del campo `muro` de `GUIDES` en una guía (`null` = se lee entera sin cuenta). Es lo que evita que Google interprete el muro de pago como *cloaking* — enseñarle a él una cosa y al visitante otra.
+En una guía, `isAccessibleForFree` es siempre `true`: desde el 31-10-2026 toda guía se lee entera sin cuenta, que es justo lo que ve Googlebot. Solo el quiz pide cuenta gratuita, y el quiz no es el texto de la guía.
 
 ### Lo que SÍ hay que hacer al crear algo nuevo
 

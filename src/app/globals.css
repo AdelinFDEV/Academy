@@ -1282,14 +1282,17 @@ html {
 
 /* Tercera columna de la barra: la vuelta al panel y el menú, juntos. El
    hamburguesa era antes hijo directo de la rejilla; ahora va aquí dentro. */
+/* Siempre en la tercera columna. Por debajo de 1.200 px el centro se oculta, y
+   sin esto los botones caían en su hueco, pegados al logo. */
 .blog-nav-end {
+  grid-column: 3;
   justify-self: end;
   /* Ocupa el alto de la barra (la rejilla centra sus columnas por defecto) para
      que el desplegable del nombre pueda colgar desde el borde inferior. */
   align-self: stretch;
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.9rem;
 }
 
 /* ── El nombre de quien ha iniciado sesión, y su menú ───────────────────────
@@ -1504,36 +1507,33 @@ html {
 .nav-acceso {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.6rem;
   /* Sin esto, un nombre largo o un centro que crezca podrian comprimir los
      botones hasta partirles el texto en dos lineas. */
   flex-shrink: 0;
 }
 
+/* «Entrar»: discreto, de cristal. Lo busca quien ya tiene cuenta. */
 .nav-acceso-entrar {
   display: inline-flex;
   align-items: center;
-  height: 34px;
-  padding: 0 0.95rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 10px;
-  background: #fff;
-  font-size: 0.83rem;
+  height: 40px;
+  padding: 0 1.15rem;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.88rem;
   font-weight: 650;
-  letter-spacing: -0.005em;
-  color: #0a1628;
+  color: rgba(240, 244, 255, 0.92);
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.5);
-  transition: background-color 0.18s ease, box-shadow 0.18s ease,
-    transform 0.18s ease;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .nav-acceso-entrar:hover {
-  background: #fff;
-  color: #0a1628;
-  box-shadow: 0 6px 18px -6px rgba(255, 255, 255, 0.45);
-  transform: translateY(-1px);
+  border-color: rgba(240, 244, 255, 0.35);
+  background: rgba(240, 244, 255, 0.08);
+  color: #fff;
 }
 
 .nav-acceso-entrar:focus-visible {
@@ -1541,28 +1541,40 @@ html {
   outline-offset: 2px;
 }
 
+/* «Registrarse»: la acción que interesa, en naranja y con su flecha. */
 .nav-acceso-registro {
   display: inline-flex;
   align-items: center;
-  height: 34px;
-  padding: 0 0.95rem;
-  border: 1px solid var(--accent-orange);
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent-orange) 0%, #f2571c 100%);
-  font-size: 0.83rem;
-  font-weight: 700;
-  letter-spacing: -0.005em;
-  color: #0a1628;
+  gap: 0.45rem;
+  height: 40px;
+  padding: 0 1.2rem;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ff8a4a 0%, var(--accent-orange) 100%);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 4px 14px -6px rgba(255, 107, 43, 0.9);
-  transition: filter 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+  box-shadow:
+    0 10px 24px -12px rgba(255, 107, 43, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-acceso-registro::after {
+  content: "→";
+  transition: transform 0.2s ease;
 }
 
 .nav-acceso-registro:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 8px 22px -8px rgba(255, 107, 43, 0.95);
   transform: translateY(-1px);
+  box-shadow:
+    0 14px 30px -12px rgba(255, 107, 43, 1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.nav-acceso-registro:hover::after {
+  transform: translateX(3px);
 }
 
 .nav-acceso-registro:focus-visible {
@@ -1575,15 +1587,24 @@ html {
    es justo donde no lo busca quien ya tiene cuenta. El sitio para los dos sale
    del contador, que en movil baja al hero. */
 @media (max-width: 480px) {
+  .blog-nav-end {
+    gap: 0.5rem;
+  }
+
   .nav-acceso {
-    gap: 0.25rem;
+    gap: 0.4rem;
   }
 
   .nav-acceso-entrar,
   .nav-acceso-registro {
-    height: 32px;
-    padding: 0 0.62rem;
-    font-size: 0.76rem;
+    height: 36px;
+    padding: 0 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* En el teléfono la flecha no cabe: el botón ya se entiende sin ella. */
+  .nav-acceso-registro::after {
+    display: none;
   }
 }
 
@@ -1648,11 +1669,16 @@ html {
   color: var(--accent-orange);
 }
 
-/* ── Guide search (desktop only) ── */
+/* ── Buscador de guías (GuideSearch.tsx) ───────────────────────────────────
+   Un solo diseño desde el 31-10-2026: a la vista en la sección de guías del
+   home, en /guias y arriba del menú. Ocupa el ancho de su hueco y no encoge
+   al escribir. La barra superior ya no lo lleva: allí van las tres piezas. */
 
 .guide-search {
   position: relative;
   z-index: 500;
+  width: 100%;
+  max-width: 560px;
 }
 
 .guide-search-box {
@@ -1660,18 +1686,20 @@ html {
   isolation: isolate;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 107, 43, 0.18);
-  border-radius: 20px;
-  padding: 0.42rem 0.8rem;
-  width: 220px;
-  transition: border-color 0.15s, width 0.15s;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 54px;
+  padding: 0 1.1rem;
+  border: 1px solid rgba(255, 107, 43, 0.28);
+  border-radius: 16px;
+  background: rgba(7, 12, 24, 0.75);
+  box-shadow: 0 14px 40px -24px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .guide-search-box:focus-within {
-  border-color: rgba(255, 107, 43, 0.4);
-  width: 260px;
+  border-color: rgba(255, 107, 43, 0.6);
+  box-shadow: 0 0 0 4px rgba(255, 107, 43, 0.12), 0 14px 40px -24px rgba(0, 0, 0, 0.9);
 }
 
 /* Punto de luz naranja que recorre el borde. Lo dibuja <BordeDeLuz> en
@@ -1687,35 +1715,40 @@ html {
 }
 
 .guide-search-icon {
-  color: var(--text-muted);
   flex-shrink: 0;
+  color: var(--accent-orange);
 }
 
 .guide-search-input {
   flex: 1;
   min-width: 0;
-  background: none;
   border: none;
   outline: none;
-  color: var(--text-primary);
-  font-size: 0.78rem;
+  background: none;
   font-family: inherit;
+  font-size: 1rem;
+  color: var(--text-primary);
 }
 
 .guide-search-input::placeholder {
   color: var(--text-muted);
 }
 
+/* El navegador pinta su propia «x» en los campos de búsqueda: ya hay una. */
+.guide-search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
 .guide-search-clear {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  cursor: pointer;
   padding: 2px;
-  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
 }
 
 .guide-search-clear:hover {
@@ -1726,19 +1759,19 @@ html {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
-  width: 320px;
+  width: 100%;
   max-height: 360px;
   overflow-y: auto;
-  background: var(--bg-card);
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 14px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
   padding: 0.5rem;
+  border: 1px solid rgba(240, 244, 255, 0.14);
+  border-radius: 14px;
+  background: #12203b;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
 .guide-search-empty {
   padding: 0.75rem;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   text-align: center;
 }
@@ -1758,11 +1791,11 @@ html {
 }
 
 .guide-search-result-dot {
+  flex-shrink: 0;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
   margin-top: 0.35rem;
-  flex-shrink: 0;
+  border-radius: 50%;
 }
 
 .guide-search-result-body {
@@ -1773,24 +1806,157 @@ html {
 }
 
 .guide-search-result-title {
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .guide-search-result-desc {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 
+/* Sin texto escrito: las criptomonedas que hay explicadas, en pastillas. */
+.guide-search-sugerencias-titulo {
+  margin: 0.25rem 0.45rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.guide-search-sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 0.3rem 0.3rem;
+}
+
+.guide-search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.75rem;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.guide-search-chip:hover {
+  border-color: rgba(255, 107, 43, 0.45);
+  background: rgba(255, 107, 43, 0.08);
+}
+
+.guide-search-chip .guide-search-result-dot {
+  margin-top: 0;
+}
+
+/* Arriba del menú: a todo el ancho de su contenido. */
+.mm-buscar {
+  max-width: 1180px;
+  margin: 0 auto 1.8rem;
+}
+
+/* ── Las tres piezas en la barra de escritorio (NavPrincipal.tsx) ─────────
+   Una cápsula de cristal con los tres enlaces. La burbuja de luz la mueve
+   framer-motion (layoutId): se desliza hasta el enlace con el ratón encima y
+   toma su color. */
+
+.nav-principal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.nav-principal-enlace {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 1rem 0 0.45rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgba(240, 244, 255, 0.7);
+  transition: color 0.25s ease;
+}
+
+.nav-principal-enlace:hover,
+.nav-principal-enlace:focus-visible,
+.nav-principal-enlace.is-activo {
+  color: #fff;
+  outline: none;
+}
+
+/* La burbuja: un degradado del color de la pieza, con borde de luz y un
+   resplandor debajo. Va detrás del texto (z-index -1 dentro del enlace). */
+.nav-principal-burbuja {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  background:
+    radial-gradient(120% 140% at 20% 0%, color-mix(in srgb, var(--c) 34%, transparent) 0%, transparent 70%),
+    color-mix(in srgb, var(--c) 12%, rgba(10, 18, 34, 0.9));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c) 45%, transparent),
+    0 8px 24px -10px var(--c);
+}
+
+/* El icono en una pastilla redonda de su color: se enciende con la burbuja. */
+.nav-principal-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  color: var(--c);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-principal-enlace:hover .nav-principal-icono,
+.nav-principal-enlace:focus-visible .nav-principal-icono,
+.nav-principal-enlace.is-activo .nav-principal-icono {
+  background: var(--c);
+  color: #070c18;
+  transform: rotate(-8deg) scale(1.05);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-principal-icono { transition: none; }
+  .nav-principal-enlace:hover .nav-principal-icono,
+  .nav-principal-enlace.is-activo .nav-principal-icono { transform: none; }
+}
+
 @media (max-width: 1200px) {
 
-  .blog-nav-center .guide-search {
+  /* Por debajo de 1200 px las tres piezas no caben en la barra: van en el menú. */
+  .blog-nav-center {
     display: none;
   }
 
@@ -3704,10 +3870,10 @@ html {
 .footer-partners {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.4rem 2rem;
+  padding: 1.8rem 2rem;
   display: flex;
   align-items: center;
-  gap: 1rem 1.5rem;
+  gap: 1rem 1.75rem;
   flex-wrap: wrap;
   border-top: 1px solid rgba(240, 244, 255, 0.06);
 }
@@ -3727,12 +3893,13 @@ html {
   flex-wrap: wrap;
 }
 
+/* Con aire: el logo en su propio recuadro, el nombre y debajo qué aporta. */
 .footer-partner {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.85rem 0.4rem 0.4rem;
-  border-radius: 100px;
+  gap: 0.8rem;
+  padding: 0.6rem 1.3rem 0.6rem 0.6rem;
+  border-radius: 16px;
   border: 1px solid;
   text-decoration: none;
   transition: background 0.15s, border-color 0.15s, transform 0.15s;
@@ -3740,20 +3907,37 @@ html {
 
 .footer-partner:hover { transform: translateY(-1px); }
 
+.footer-partner-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
 .footer-partner-word {
-  font-size: 0.85rem;
+  font-size: 0.98rem;
   font-weight: 800;
+  line-height: 1.1;
   letter-spacing: -0.01em;
+}
+
+.footer-partner-que {
+  font-size: 0.72rem;
+  color: rgba(238, 247, 226, 0.6);
 }
 
 .footer-partner-mark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   flex-shrink: 0;
+}
+
+.footer-partner-mark svg {
+  width: 20px;
+  height: 20px;
 }
 .footer-partner-mark--cg { background: #8bc53f; }
 
@@ -4089,19 +4273,26 @@ html {
    ============================================ */
 
 .btn-hamburger {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  justify-content: center;
-  gap: 5px;
-  background: none;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
   position: relative;
   z-index: 500;
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.04);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.btn-hamburger:hover,
+.btn-hamburger.open {
+  border-color: rgba(240, 244, 255, 0.35);
+  background: rgba(240, 244, 255, 0.08);
 }
 
 .hamburger-lines {
@@ -4114,7 +4305,7 @@ html {
 
 .hamburger-lines span {
   display: block;
-  width: 22px;
+  width: 18px;
   height: 2px;
   background: var(--text-primary);
   border-radius: 2px;
@@ -4128,6 +4319,13 @@ html {
   transform: translateY(7px) rotate(45deg);
 }
 
+/* La línea de en medio, más corta: un detalle que la distingue de un icono
+   genérico. */
+.hamburger-lines span:nth-child(2) {
+  width: 12px;
+  margin-left: auto;
+}
+
 .btn-hamburger.open .hamburger-lines span:nth-child(2) {
   opacity: 0;
   width: 0;
@@ -4135,21 +4333,6 @@ html {
 
 .btn-hamburger.open .hamburger-lines span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
-}
-
-.mobile-tool-soon-badge {
-  margin-left: auto;
-  font-size: 0.62rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: var(--accent-orange);
-  background: rgba(255, 107, 43, 0.12);
-  border: 1px solid rgba(255, 107, 43, 0.24);
-  border-radius: 100px;
-  padding: 3px 10px;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Glosario Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ */
@@ -4524,8 +4707,10 @@ html {
 @media (max-width: 600px) {
 
   /* NavegaciÃƒÂ³n */
+  /* El mismo relleno lateral que el resto de anchos de móvil: 1,5 rem le
+     quitaba a los botones el sitio que necesitan. */
   .blog-nav {
-    padding: 1rem 1.5rem;
+    padding: 0 1.1rem;
     background: #0a1628;
     backdrop-filter: none;
   }
@@ -5114,27 +5299,6 @@ select {
   font-weight: 600;
   color: rgba(240, 244, 255, 0.88);
   transition: background 0.15s, border-color 0.15s;
-}
-
-/* Premium pitch: en móvil sube justo tras Herramientas (antes del feed);
-   en desktop se queda al final del sidebar, como el resto de tarjetas. */
-
-.premium-pitch-mobile-only {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.premium-pitch-desktop-only {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .premium-pitch-mobile-only {
-    display: none;
-  }
-  .premium-pitch-desktop-only {
-    display: block;
-  }
 }
 
 .home-feature:hover {
@@ -5819,7 +5983,6 @@ select {
      escritorio la caja premium está oculta, así que estos `order` no
      afectan al layout de ahí. */
   .home-layout > .home-feed { order: 1; }
-  .home-layout > .premium-pitch-mobile-only { order: 2; }
 }
 
 @media (max-width: 768px) {
@@ -7270,314 +7433,9 @@ select {
   }
 }
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-   PREMIUM PITCH â€” sidebar upsell
-â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-
-.premium-pitch {
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(120% 80% at 0% 0%, rgba(255, 154, 0, 0.12) 0%, transparent 55%),
-    linear-gradient(165deg, rgba(20, 16, 12, 0.9) 0%, var(--bg-card) 70%);
-  border: 1px solid rgba(255, 107, 43, 0.3);
-  border-radius: 20px;
-  padding: 1.75rem 1.6rem;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.35);
-}
-
-.premium-pitch-glow {
-  position: absolute;
-  top: -40%;
-  right: -30%;
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, rgba(255, 107, 43, 0.28) 0%, transparent 65%);
-  pointer-events: none;
-  animation: premium-glow 6s ease-in-out infinite;
-}
-
-@keyframes premium-glow {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-
-  50% {
-    transform: scale(1.15);
-    opacity: 1;
-  }
-}
-
-.premium-pitch-top {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 1.1rem;
-}
-
-.premium-pitch-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--premium-gold);
-  background: rgba(230, 180, 85, 0.12);
-  border: 1px solid rgba(230, 180, 85, 0.3);
-  padding: 0.3rem 0.7rem;
-  border-radius: 50px;
-}
-
-/* Contador de herramientas. Ocupa el sitio del antiguo badge "-60%", que se
-   quedó olvidado al subir el precio a 49,99 € y anunciaba una rebaja que ya no
-   existía. La cifra sale del catálogo, así que nunca se queda corta. */
-.premium-pitch-count {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.55);
-  background: rgba(240, 244, 255, 0.06);
-  border: 1px solid rgba(240, 244, 255, 0.12);
-  padding: 0.28rem 0.62rem;
-  border-radius: 50px;
-}
-
-.premium-pitch-title {
-  position: relative;
-  font-size: 1.4rem;
-  font-weight: 800;
-  line-height: 1.18;
-  color: #fff;
-  margin-bottom: 0.6rem;
-}
-
-.premium-pitch-sub {
-  position: relative;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  margin-bottom: 1.5rem;
-}
-
-.premium-pitch-features {
-  position: relative;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.6rem;
-}
-
-.premium-pitch-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-  transition: transform 0.2s ease;
-}
-
-.premium-pitch-feature:hover {
-  transform: translateX(2px);
-}
-
-.premium-pitch-feature-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  /* Cada herramienta con su color, el mismo del catálogo: la lista se escanea
-     mucho mejor que con ocho iconos naranjas iguales. */
-  background: color-mix(in srgb, var(--pf-color, #ff6b2b) 13%, transparent);
-  border: 1px solid color-mix(in srgb, var(--pf-color, #ff6b2b) 26%, transparent);
-  color: var(--pf-color, var(--accent-orange));
-  transition: box-shadow 0.2s ease;
-}
-
-.premium-pitch-feature:hover .premium-pitch-feature-icon {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
-}
-
-.premium-pitch-feature>span:last-child {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-.premium-pitch-feature strong {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-/* Tira de datos oficiales (colaboradores) en la tarjeta premium */
-.premium-pitch-partners {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  padding: 0.7rem 0.8rem;
-  margin-bottom: 1rem;
-  border: 1px solid rgba(240, 244, 255, 0.09);
-  border-radius: 10px;
-  background: rgba(240, 244, 255, 0.03);
-}
-
-.premium-pitch-partners-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-secondary);
-}
-
-.premium-pitch-partners-label svg { color: #34d399; flex-shrink: 0; }
-
-.premium-pitch-partners-logos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.premium-pitch-partner {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.2rem 0.55rem 0.2rem 0.25rem;
-  border-radius: 100px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  border: 1px solid;
-}
-
-.premium-pitch-partner-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  flex-shrink: 0;
-}
-
-.premium-pitch-partner--cg {
-  color: #e2f2cf;
-  background: rgba(139, 197, 63, 0.12);
-  border-color: rgba(139, 197, 63, 0.4);
-}
-.premium-pitch-partner--cg .premium-pitch-partner-mark { background: #8bc53f; }
-
-.premium-pitch-price-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  margin-bottom: 1.25rem;
-}
-
-.premium-pitch-price {
-  position: relative;
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-}
-
-.premium-pitch-amount {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.02em;
-}
-
-.premium-pitch-period {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.premium-pitch-cta {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  width: 100%;
-  padding: 0.95rem 1.25rem;
-  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 800;
-  border-radius: 13px;
-  text-decoration: none;
-  box-shadow: 0 8px 24px rgba(255, 107, 43, 0.35);
-  transition: all 0.22s ease;
-  overflow: hidden;
-}
-
-.premium-pitch-cta::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 55%;
-  height: 100%;
-  background: linear-gradient(
-    105deg,
-    transparent 10%,
-    rgba(255, 255, 255, 0.28) 50%,
-    transparent 90%
-  );
-  animation: premium-shine 3.5s ease-in-out infinite;
-  pointer-events: none;
-}
-
 @keyframes premium-shine {
   0%        { left: -120%; }
   35%, 100% { left: 160%; }
-}
-
-.premium-pitch-cta svg {
-  transition: transform 0.22s ease;
-}
-
-.premium-pitch-cta:hover {
-  filter: brightness(1.08);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(255, 107, 43, 0.5);
-}
-
-.premium-pitch-cta:hover svg {
-  transform: translateX(4px);
-}
-
-.premium-pitch-note {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  margin-top: 0.85rem;
-  font-size: 0.76rem;
-  color: var(--text-muted);
-}
-
-.premium-pitch-note svg {
-  color: #4ade80;
 }
 
 /* ── PROSE CONTENT (blog post rendering — content es HTML, escrito por Claude) ── */
@@ -9591,72 +9449,6 @@ select {
   text-underline-offset: 3px;
 }
 
-/* ── Datos duros de cada ventaja ───────────────────────────────────────────
-   Una línea corta con un número, un horario o una fuente. A 49,99 €/mes una
-   lista de adjetivos no convence; un hecho comprobable sí. */
-
-.premium-pitch-feature-text {
-  min-width: 0;
-}
-
-.premium-pitch-feature-dato {
-  display: block;
-  margin-top: 0.3rem;
-  font-style: normal;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: color-mix(in srgb, var(--pf-color, #ff6b2b) 78%, #ffffff);
-}
-
-.premium-pitch-price-note {
-  display: block;
-  margin-top: 0.35rem;
-  font-size: 0.76rem;
-  color: rgba(240, 244, 255, 0.45);
-}
-
-/* ── Tarjeta Premium: compactada ───────────────────────────────────────────
-   Con nueve ventajas a cuatro líneas cada una, la tarjeta se salía de la
-   pantalla. Ahora cada fila es título + un dato, y el espaciado va apretado:
-   una tarjeta de venta que obliga a scrollear deja de vender. */
-
-.premium-pitch-features {
-  gap: 0.55rem;
-}
-
-.premium-pitch-feature {
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.premium-pitch-feature-icon {
-  width: 30px;
-  height: 30px;
-}
-
-.premium-pitch-feature-text strong {
-  display: block;
-  margin-bottom: 0.1rem;
-  font-size: 0.88rem;
-  line-height: 1.25;
-}
-
-.premium-pitch-feature-dato {
-  margin-top: 0;
-  font-size: 0.76rem;
-  line-height: 1.35;
-}
-
-.premium-pitch-title {
-  font-size: 1.28rem;
-}
-
-.premium-pitch-sub {
-  font-size: 0.88rem;
-  line-height: 1.5;
-}
-
 /* ── Carteras de Portfolio Adelin: pestañas y DCA ───────────────────────────
  *
  * Desde el 07-09-2026 hay dos carteras: el spot de altcoins de siempre y el DCA
@@ -11038,11 +10830,6 @@ select {
   text-transform: uppercase;
 }
 
-.mm-pill--premium {
-  border: 1px solid rgba(230, 180, 85, 0.4);
-  color: var(--premium-gold);
-}
-
 .mm-pill--pronto {
   border: 1px solid rgba(240, 244, 255, 0.18);
   color: rgba(240, 244, 255, 0.6);
@@ -11297,5 +11084,424 @@ select {
   .mm-premium:hover,
   .mm-btn--principal:hover {
     transform: none;
+  }
+}
+
+/* ── Dudas por Instagram (DudasInstagram.tsx) ───────────────────────────────
+   Un botón pequeño abajo a la derecha, en todas las páginas públicas. Entra
+   a los pocos segundos y solo se despliega si se pulsa. Va por debajo del
+   banner de cookies (z-index 9999), que manda mientras esté. */
+
+.dudas {
+  position: fixed;
+  /* En el iPhone, por encima de la barra de inicio (zona segura). */
+  right: calc(1.1rem + env(safe-area-inset-right, 0px));
+  bottom: calc(1.1rem + env(safe-area-inset-bottom, 0px));
+  z-index: 250;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  animation: dudas-entrar 0.5s cubic-bezier(0.22, 1, 0.36, 1) 3s both;
+}
+
+@keyframes dudas-entrar {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+.dudas-boton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 6px 1.4rem 6px 6px;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(221, 42, 123, 0.14) 0%, rgba(129, 52, 175, 0.08) 50%, rgba(12, 20, 38, 0) 100%),
+    rgba(12, 20, 38, 0.92);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 14px 34px -14px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  font: inherit;
+  text-align: left;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dudas-boton:hover {
+  transform: translateY(-2px);
+  border-color: rgba(221, 42, 123, 0.5);
+  box-shadow:
+    0 18px 40px -14px rgba(221, 42, 123, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+}
+
+/* Abierto: solo el avatar, como botón de minimizar. */
+.dudas.is-abierto .dudas-boton {
+  padding: 6px;
+}
+
+.dudas-avatar {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+}
+
+/* El anillo: un degradado cónico con los colores de Instagram que gira. */
+.dudas-anillo {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #f58529, #feda77, #dd2a7b, #8134af, #515bd4, #f58529);
+  animation: dudas-girar 4s linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+}
+
+@keyframes dudas-girar {
+  to { transform: rotate(360deg); }
+}
+
+.dudas-circulo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  color: #fff;
+  animation: dudas-saludo 9s ease-in-out 4s infinite;
+}
+
+/* Un saludo corto cada pocos segundos: llama la atención sin molestar. */
+@keyframes dudas-saludo {
+  0%, 88%, 100% { transform: rotate(0) scale(1); }
+  91% { transform: rotate(-12deg) scale(1.08); }
+  94% { transform: rotate(10deg) scale(1.08); }
+  97% { transform: rotate(-4deg) scale(1.02); }
+}
+
+/* Los tres puntos de «escribiendo…», dentro de una burbuja blanca. */
+.dudas-escribiendo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 6px;
+  border-radius: 10px 10px 10px 3px;
+  background: #fff;
+}
+
+.dudas-escribiendo i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #dd2a7b;
+  animation: dudas-punto 1.2s ease-in-out infinite;
+}
+
+.dudas-escribiendo i:nth-child(2) { animation-delay: 0.15s; background: #8134af; }
+.dudas-escribiendo i:nth-child(3) { animation-delay: 0.3s; background: #515bd4; }
+
+@keyframes dudas-punto {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+/* Disponible. */
+.dudas-online {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #0c1426;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: dudas-latido 2s ease-in-out infinite;
+}
+
+@keyframes dudas-latido {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
+}
+
+.dudas-boton-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  line-height: 1.1;
+}
+
+.dudas-boton-texto strong {
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.dudas-boton-texto span {
+  font-size: 0.72rem;
+  color: rgba(240, 244, 255, 0.6);
+}
+
+.dudas-tarjeta {
+  display: flex;
+  flex-direction: column;
+  width: min(340px, calc(100vw - 2.2rem));
+  max-height: min(560px, calc(100vh - 7rem));
+  max-height: min(560px, calc(100dvh - 7rem));
+  overflow: hidden;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 20px;
+  background: rgba(12, 20, 38, 0.97);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.9);
+  animation: dudas-abrir 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: bottom right;
+}
+
+@keyframes dudas-abrir {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+}
+
+.dudas-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.15rem 0.9rem;
+  background: linear-gradient(135deg, rgba(221, 42, 123, 0.16) 0%, rgba(129, 52, 175, 0.08) 60%, transparent 100%);
+  border-bottom: 1px solid rgba(240, 244, 255, 0.07);
+}
+
+.dudas-cerrar {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 0.35rem;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(240, 244, 255, 0.06);
+  color: rgba(240, 244, 255, 0.7);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dudas-cerrar:hover {
+  color: #fff;
+  background: rgba(240, 244, 255, 0.12);
+}
+
+.dudas-titulo {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.dudas-texto {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(226, 232, 246, 0.65);
+}
+
+/* Las preguntas: acordeón nativo (<details>), sin JavaScript. */
+.dudas-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+  padding: 0.85rem 0.85rem 0.4rem;
+}
+
+.dudas-pregunta {
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.02);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.dudas-pregunta[open] {
+  border-color: rgba(221, 42, 123, 0.35);
+  background: rgba(221, 42, 123, 0.05);
+}
+
+.dudas-pregunta summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  list-style: none;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: rgba(240, 244, 255, 0.9);
+  cursor: pointer;
+}
+
+.dudas-pregunta summary::-webkit-details-marker {
+  display: none;
+}
+
+.dudas-pregunta summary svg {
+  flex-shrink: 0;
+  color: rgba(240, 244, 255, 0.45);
+  transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.dudas-pregunta[open] summary svg {
+  transform: rotate(180deg);
+  color: #dd2a7b;
+}
+
+.dudas-pregunta p {
+  margin: 0;
+  padding: 0 0.85rem 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(226, 232, 246, 0.7);
+}
+
+.dudas-pie {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.85rem 1.15rem 1.15rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.07);
+}
+
+.dudas-pie-texto {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(226, 232, 246, 0.65);
+}
+
+/* El degradado de Instagram, que es lo que se reconoce de un vistazo. */
+.dudas-enlace {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(90deg, #f58529 0%, #dd2a7b 50%, #8134af 100%);
+  box-shadow: 0 12px 28px -14px rgba(221, 42, 123, 0.8);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.dudas-enlace:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dudas,
+  .dudas-tarjeta,
+  .dudas-anillo,
+  .dudas-circulo,
+  .dudas-escribiendo i,
+  .dudas-online { animation: none; }
+}
+
+/* ── Iconos animados (IconosAnimados.tsx) ──────────────────────────────────
+   Bucles lentos siempre; con el ratón encima del enlace, más rápidos. Las
+   piezas giran o escalan desde su propio sitio: transform-box: fill-box hace
+   que el origen sea la pieza y no el SVG entero. */
+
+.ia * {
+  transform-box: fill-box;
+}
+
+/* Cursos: el birrete se mece y la borla se balancea desde el nudo. */
+.ia-birrete {
+  transform-origin: center;
+  animation: ia-mecer 3.2s ease-in-out infinite;
+}
+
+.ia-borla {
+  transform-origin: top center;
+  animation: ia-borla 3.2s ease-in-out infinite;
+}
+
+@keyframes ia-mecer {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-1px) rotate(-4deg); }
+}
+
+@keyframes ia-borla {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(16deg); }
+  75% { transform: rotate(-12deg); }
+}
+
+/* Portfolio: las barras suben y bajan, cada una a destiempo. */
+.ia-barra {
+  transform-origin: bottom;
+  animation: ia-barra 2.6s ease-in-out infinite;
+}
+
+.ia-barra:nth-child(2) { animation-delay: 0.25s; }
+.ia-barra:nth-child(3) { animation-delay: 0.5s; }
+
+@keyframes ia-barra {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.55); }
+}
+
+/* Diario: las líneas se escriben una tras otra y vuelven a empezar. */
+.ia-linea {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ia-escribir 3.6s ease-in-out infinite;
+}
+
+.ia-linea:nth-of-type(2) { animation-delay: 0.35s; }
+.ia-linea:nth-of-type(3) { animation-delay: 0.7s; }
+
+@keyframes ia-escribir {
+  0% { stroke-dashoffset: 1; }
+  30%, 75% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+
+/* Con el ratón encima, todo al doble de velocidad. */
+.nav-principal-enlace:hover .ia-birrete,
+.nav-principal-enlace:hover .ia-borla { animation-duration: 1.6s; }
+.nav-principal-enlace:hover .ia-barra { animation-duration: 1.3s; }
+.nav-principal-enlace:hover .ia-linea { animation-duration: 1.8s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ia-birrete, .ia-borla, .ia-barra { animation: none; }
+  .ia-linea { animation: none; stroke-dashoffset: 0; }
+}
+
+/* En el móvil el botón de dudas se queda en el avatar, sin texto: ocupa la
+   cuarta parte y no tapa lo que hay debajo. El panel, a casi todo el ancho. */
+@media (max-width: 520px) {
+  .dudas {
+    right: calc(0.8rem + env(safe-area-inset-right, 0px));
+    bottom: calc(0.8rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dudas-boton {
+    padding: 5px;
+  }
+
+  .dudas-boton-texto {
+    display: none;
+  }
+
+  .dudas-tarjeta {
+    width: calc(100vw - 1.6rem);
   }
 }

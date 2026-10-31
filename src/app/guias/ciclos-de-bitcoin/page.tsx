@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -8,12 +7,13 @@ import GuideInteractions from "@/components/GuideInteractions";
 import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
+import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideCycleChart from "./GuideCycleChart";
 import GuideCyclePhases from "./GuideCyclePhases";
 import GuideCycleQuiz from "./GuideCycleQuiz";
 import GuideRevealCard from "./GuideRevealCard";
-import { Unlock } from "lucide-react";
+import {  } from "lucide-react";
 import "./ciclos-de-bitcoin.css";
 
 const HERO_STATS = [
@@ -181,137 +181,107 @@ export default async function CiclosDeBitcoinPage() {
         </div>
       </section>
 
-      {/* ── SECTION 3+: PAYWALL si no registrado ── */}
-      {!isRegistered ? (
-        <section id="senales" className="gbc-section">
-          <div className="gbc-gc">
-            <div className="gbc-ey">Sección 3–5 <span className="gbc-lock-pill">Registro gratuito</span></div>
-            <h2 className="gbc-title">Señales de compra, estrategia y quiz con badge</h2>
-            <div className="gbc-body">
-              <p>Las secciones siguientes cubren las señales concretas de que el momento de acumular ya está aquí y
-              por qué las altcoins suelen adelantarse al halving. También los rangos de precio estimados para
-              este ciclo, cómo posicionarse sin apostarlo todo a una fecha exacta y el quiz interactivo con
-              badge de logro.</p>
+      {/* ── SECTION 3: SEÑALES ── */}
+      <section id="senales" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 3</div>
+          <h2 className="gbc-title">Señales de que el momento de acumular ya está aquí</h2>
+          <div className="gbc-body">
+            <p>
+              Hay una regularidad que se repite en los ciclos anteriores: <strong>las altcoins tienden a moverse
+              con fuerza en los meses previos al siguiente halving</strong>, no después. Cuando la subida de Bitcoin
+              ya es noticia en medios generalistas, gran parte del recorrido de las altcoins ya ha ocurrido. Estar
+              posicionado antes de que sea evidente es, precisamente, la ventaja que busca este análisis.
+            </p>
+            <p>
+              El próximo halving se estima para <strong>principios de 2028</strong>. Si el patrón se repite, la
+              fase «pre-halving» — donde el capital empieza a rotar hacia altcoins con más fuerza — arrancaría
+              durante 2027. Eso deja la fase de recuperación actual (2026) como la ventana de acumulación con
+              mejor relación riesgo/recompensa según este modelo.
+            </p>
+          </div>
+
+          <div className="gbc-cards" style={{ marginTop: 28 }}>
+            <GuideRevealCard title="Suelo estimado de este ciclo" hint="Toca para revelar el rango">
+              <p>Este análisis sitúa el rango de suelo del ciclo actual para Bitcoin entre <strong>$40.000 y $50.000</strong>. No es un precio garantizado — el mercado podría no llegar a tocar ese rango, o perforarlo a la baja en un escenario más bajista de lo esperado.</p>
+            </GuideRevealCard>
+            <GuideRevealCard title="Objetivo del próximo ciclo alcista" hint="Toca para revelar el rango">
+              <p>Para el techo del próximo ciclo, tras el halving de 2028, el rango que maneja este análisis es amplio: entre <strong>$180.000 y $200.000</strong>. Cuanto más lejos en el tiempo, mayor es la incertidumbre — trátalo como una referencia orientativa, no como un objetivo fijo.</p>
+            </GuideRevealCard>
+          </div>
+
+          <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">Esto no es una promesa</div>
+            <div className="gbc-box-body">
+              Ningún modelo de ciclos —por bueno que sea su histórico— predice el futuro con precisión de
+              calendario o de precio exacto. Los rangos anteriores son estimaciones basadas en patrones pasados.
+              El mercado cripto es volátil y puede invalidar cualquier expectativa en cualquier momento.
             </div>
-            <div className="gbc-paywall">
-              <div className="gbc-paywall-badge"><Unlock size={13} strokeWidth={2.2} aria-hidden="true" /> Has leído 2 de 5 secciones</div>
-              <div className="gbc-paywall-t">Regístrate gratis para leer la guía completa</div>
-              <div className="gbc-paywall-d">
-                Desbloquea las 3 secciones restantes: señales de compra, estrategia de posicionamiento,
-                el quiz interactivo y tu badge <strong>Cazador de Ciclos</strong>. Sin tarjeta, en 30 segundos.
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 4: ESTRATEGIA ── */}
+      <section id="estrategia" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 4</div>
+          <h2 className="gbc-title">Cómo posicionarse sin apostarlo todo a una fecha exacta</h2>
+          <div className="gbc-body">
+            <p>
+              Tener una tesis de ciclo no significa apostar todo tu capital de golpe a un mes concreto. La forma
+              más razonable de aplicar este análisis es con una estrategia escalonada:
+            </p>
+          </div>
+
+          <div className="gbc-cards" style={{ marginTop: 8 }}>
+            <div className="gbc-card">
+              <div className="gbc-card-title">1. Compra escalonada (DCA)</div>
+              <div className="gbc-card-text">
+                <p>En lugar de invertir todo de una vez, reparte las compras en el tiempo. Si el suelo llega antes o después de lo esperado, tu precio medio de entrada queda protegido.</p>
               </div>
-              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
-              <div className="gbc-paywall-login">
-                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
+            </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">2. Solo capital que puedas inmovilizar</div>
+              <div className="gbc-card-text">
+                <p>Un ciclo completo dura años. Invertir dinero que podrías necesitar a corto plazo te obliga a vender en el peor momento posible.</p>
+              </div>
+            </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">3. Prioriza Bitcoin, luego altcoins con convicción</div>
+              <div className="gbc-card-text">
+                <p>Bitcoin es la base del ciclo. Las altcoins amplifican el movimiento pero también el riesgo — solo tiene sentido rotar hacia ellas si entiendes el proyecto concreto.</p>
+              </div>
+            </div>
+            <div className="gbc-card">
+              <div className="gbc-card-title">4. Ten un plan de salida</div>
+              <div className="gbc-card-text">
+                <p>Igual que ayuda saber cuándo entrar, ayuda decidir de antemano en qué rangos de precio irás asegurando beneficios — antes de que la euforia del ciclo alcista nuble el criterio.</p>
               </div>
             </div>
           </div>
-        </section>
-      ) : (
-        <>
-          {/* ── SECTION 3: SEÑALES ── */}
-          <section id="senales" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 3</div>
-              <h2 className="gbc-title">Señales de que el momento de acumular ya está aquí</h2>
-              <div className="gbc-body">
-                <p>
-                  Hay una regularidad que se repite en los ciclos anteriores: <strong>las altcoins tienden a moverse
-                  con fuerza en los meses previos al siguiente halving</strong>, no después. Cuando la subida de Bitcoin
-                  ya es noticia en medios generalistas, gran parte del recorrido de las altcoins ya ha ocurrido. Estar
-                  posicionado antes de que sea evidente es, precisamente, la ventaja que busca este análisis.
-                </p>
-                <p>
-                  El próximo halving se estima para <strong>principios de 2028</strong>. Si el patrón se repite, la
-                  fase «pre-halving» — donde el capital empieza a rotar hacia altcoins con más fuerza — arrancaría
-                  durante 2027. Eso deja la fase de recuperación actual (2026) como la ventana de acumulación con
-                  mejor relación riesgo/recompensa según este modelo.
-                </p>
-              </div>
 
-              <div className="gbc-cards" style={{ marginTop: 28 }}>
-                <GuideRevealCard title="Suelo estimado de este ciclo" hint="Toca para revelar el rango">
-                  <p>Este análisis sitúa el rango de suelo del ciclo actual para Bitcoin entre <strong>$40.000 y $50.000</strong>. No es un precio garantizado — el mercado podría no llegar a tocar ese rango, o perforarlo a la baja en un escenario más bajista de lo esperado.</p>
-                </GuideRevealCard>
-                <GuideRevealCard title="Objetivo del próximo ciclo alcista" hint="Toca para revelar el rango">
-                  <p>Para el techo del próximo ciclo, tras el halving de 2028, el rango que maneja este análisis es amplio: entre <strong>$180.000 y $200.000</strong>. Cuanto más lejos en el tiempo, mayor es la incertidumbre — trátalo como una referencia orientativa, no como un objetivo fijo.</p>
-                </GuideRevealCard>
-              </div>
-
-              <div className="gbc-box gbc-box--red" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">Esto no es una promesa</div>
-                <div className="gbc-box-body">
-                  Ningún modelo de ciclos —por bueno que sea su histórico— predice el futuro con precisión de
-                  calendario o de precio exacto. Los rangos anteriores son estimaciones basadas en patrones pasados.
-                  El mercado cripto es volátil y puede invalidar cualquier expectativa en cualquier momento.
-                </div>
-              </div>
+          <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
+            <div className="gbc-box-title">La idea de fondo</div>
+            <div className="gbc-box-body">
+              Nadie acierta el suelo exacto ni el techo exacto. El objetivo de conocer el ciclo no es la
+              perfección de calendario, sino <strong>estar dentro del mercado con una estrategia clara</strong>,
+              en lugar de reaccionar por miedo cuando el precio ya se ha movido.
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* ── SECTION 4: ESTRATEGIA ── */}
-          <section id="estrategia" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Sección 4</div>
-              <h2 className="gbc-title">Cómo posicionarse sin apostarlo todo a una fecha exacta</h2>
-              <div className="gbc-body">
-                <p>
-                  Tener una tesis de ciclo no significa apostar todo tu capital de golpe a un mes concreto. La forma
-                  más razonable de aplicar este análisis es con una estrategia escalonada:
-                </p>
-              </div>
-
-              <div className="gbc-cards" style={{ marginTop: 8 }}>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">1. Compra escalonada (DCA)</div>
-                  <div className="gbc-card-text">
-                    <p>En lugar de invertir todo de una vez, reparte las compras en el tiempo. Si el suelo llega antes o después de lo esperado, tu precio medio de entrada queda protegido.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">2. Solo capital que puedas inmovilizar</div>
-                  <div className="gbc-card-text">
-                    <p>Un ciclo completo dura años. Invertir dinero que podrías necesitar a corto plazo te obliga a vender en el peor momento posible.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">3. Prioriza Bitcoin, luego altcoins con convicción</div>
-                  <div className="gbc-card-text">
-                    <p>Bitcoin es la base del ciclo. Las altcoins amplifican el movimiento pero también el riesgo — solo tiene sentido rotar hacia ellas si entiendes el proyecto concreto.</p>
-                  </div>
-                </div>
-                <div className="gbc-card">
-                  <div className="gbc-card-title">4. Ten un plan de salida</div>
-                  <div className="gbc-card-text">
-                    <p>Igual que ayuda saber cuándo entrar, ayuda decidir de antemano en qué rangos de precio irás asegurando beneficios — antes de que la euforia del ciclo alcista nuble el criterio.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
-                <div className="gbc-box-title">La idea de fondo</div>
-                <div className="gbc-box-body">
-                  Nadie acierta el suelo exacto ni el techo exacto. El objetivo de conocer el ciclo no es la
-                  perfección de calendario, sino <strong>estar dentro del mercado con una estrategia clara</strong>,
-                  en lugar de reaccionar por miedo cuando el precio ya se ha movido.
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* ── QUIZ ── */}
-          <section id="quiz" className="gbc-section">
-            <div className="gbc-gc">
-              <div className="gbc-ey">Quiz final</div>
-              <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
-              <div className="gbc-body" style={{ marginBottom: 32 }}>
-                <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Cazador de Ciclos</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
-              </div>
-              <GuideCycleQuiz />
-            </div>
-          </section>
-        </>
-      )}
+      {/* ── QUIZ ── */}
+      <section id="quiz" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Quiz final</div>
+          <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
+          <div className="gbc-body" style={{ marginBottom: 32 }}>
+            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Cazador de Ciclos</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+          </div>
+          {isRegistered ? <GuideCycleQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
 
       <GuiasRelacionadas slug={SLUG} />
 

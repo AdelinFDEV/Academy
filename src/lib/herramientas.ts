@@ -132,10 +132,9 @@ export const HERRAMIENTAS: Herramienta[] = [
     tag: "Próximamente",
     color: "#e6b455",
     desc: "Cursos por módulos, a tu ritmo, con examen en cada módulo y certificado al aprobar el final.",
-    // "proximamente" mientras no haya ningún curso publicado. Al publicar el
-    // primero pasa a "premium" —y con él cambian el `tag` y la última frase
-    // del `resumen`—. Hasta entonces no entra en el número de herramientas
-    // que se anuncia: ver `HERRAMIENTAS_DISPONIBLES`.
+    // "proximamente" mientras no haya ningún curso publicado: el menú, el
+    // slider y la sección de Premium le ponen la etiqueta «Próximamente». Al
+    // publicar el primero pasa a "premium", y con él cambia el `tag`.
     acceso: "proximamente",
     chips: [
       { icon: ClipboardCheck, label: "Examen por módulo" },
@@ -145,16 +144,6 @@ export const HERRAMIENTAS: Herramienta[] = [
     paginaPublica: "/cursos",
   },
 ];
-
-/**
- * Las que ya se pueden usar: todas menos las "proximamente".
- *
- * Es la lista con la que se **cuenta**. «Las 11 herramientas» en la tarjeta de
- * Premium, con una que aún no existe, sería prometer lo que el producto no
- * hace. Para pintar el catálogo entero —con su etiqueta «En preparación»— se
- * sigue usando `HERRAMIENTAS`.
- */
-export const HERRAMIENTAS_DISPONIBLES = HERRAMIENTAS.filter((h) => h.acceso !== "proximamente");
 
 /** Busca una herramienta por su id. Lanza si no existe: sería un fallo de código. */
 export function herramienta(id: string): Herramienta {

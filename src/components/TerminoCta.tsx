@@ -35,7 +35,7 @@ import { ArrowRight, Bookmark, Check } from "lucide-react";
 /** Lo que se lleva de verdad quien se registra. Nada que no exista ya. */
 const VENTAJAS = [
   "Guarda los términos que vas aprendiendo",
-  "Todas las guías, con su quiz y su logro",
+  "El quiz de cada guía, con su logro",
   "La calculadora de precio objetivo, sin límite",
 ];
 

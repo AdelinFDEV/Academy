@@ -68,33 +68,6 @@
 .fisc-table-tag--yes { background: rgba(255, 107, 43, 0.16); color: #ff8552; border: 1px solid rgba(255, 107, 43, 0.32); }
 .fisc-table-tag--no  { background: rgba(95, 211, 154, 0.14); color: #5fd39a; border: 1px solid rgba(95, 211, 154, 0.3); }
 
-/* ── Lista de secciones bloqueadas (muro de registro) ────── */
-.fisc-locked-list { margin-top: 26px; display: flex; flex-direction: column; gap: 10px; }
-.fisc-locked-item {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  padding: 13px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.025);
-  font-size: 14px;
-  line-height: 1.5;
-  color: #97a9bd;
-}
-.fisc-locked-item span {
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 8px;
-  background: var(--gold-soft);
-  color: var(--gold);
-  font-size: 12.5px;
-  font-weight: 800;
-}
-
 /* ── Cabecera común de simulador / calculadora ───────────── */
 .fisc-sim,
 .fisc-calc {

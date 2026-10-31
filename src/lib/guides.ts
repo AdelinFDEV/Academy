@@ -1,3 +1,8 @@
+/**
+ * Una guía. Desde el 31-10-2026 TODAS se leen enteras sin cuenta ni pago; lo
+ * único que pide una cuenta gratuita es su quiz (`GuideQuizCuenta`), porque
+ * guarda el resultado y desbloquea el logro.
+ */
 export interface GuideMeta {
   slug: string;
   title: string;
@@ -11,15 +16,6 @@ export interface GuideMeta {
   color: string;
   topics: string[];
   tags: string[];
-  /**
-   * Qué cierra la guía a quien entra sin sesión —que es como entra siempre
-   * Googlebot—. Sale en el JSON-LD como `isAccessibleForFree`. `null` solo si
-   * se lee entera sin cuenta: no declares abierta una guía que no lo está.
-   *
-   * Desde el 31-10-2026 TODAS las guías son gratuitas: lo más que piden es
-   * una cuenta gratuita. Ninguna va tras Premium.
-   */
-  muro: "registro" | null;
   /**
    * Foto de portada, en `public/` (p. ej. `/guias/xrp.webp`). WebP a 1.600 px
    * de ancho y calidad 82, como toda portada. Sin ella, las tarjetas pintan
@@ -46,7 +42,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Origen e historia", "Cómo funciona", "Estado actual 2026", "Amenaza cuántica"],
     tags: ["EXPLICACIONES"],
-    muro: "registro",
   },
   {
     slug: "ciclos-de-bitcoin",
@@ -61,7 +56,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["El ciclo de 4 años", "Dónde estamos ahora", "Señales de compra", "Estrategia de entrada"],
     tags: ["EXPLICACIONES"],
-    muro: "registro",
   },
   {
     slug: "worldcoin",
@@ -76,7 +70,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["El Orb y World ID", "Proof of Personhood", "Tokenomics de WLD", "Controversias y prohibiciones"],
     tags: ["CRIPTOMONEDAS"],
-    muro: "registro",
   },
   {
     slug: "render",
@@ -91,7 +84,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["GPUs ociosas en red", "Proof of Render", "Burn-and-Mint Equilibrium", "DePIN e IA"],
     tags: ["CRIPTOMONEDAS"],
-    muro: "registro",
   },
   {
     slug: "hyperliquid",
@@ -106,7 +98,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Libro de órdenes on-chain", "HyperBFT y HyperEVM", "El vault HLP", "Token HYPE y buybacks"],
     tags: ["CRIPTOMONEDAS"],
-    muro: "registro",
   },
   {
     slug: "xrp",
@@ -121,7 +112,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Ripple vs XRP vs XRPL", "Consenso sin minería (RPCA/UNL)", "Moneda puente y ODL", "El caso SEC y el escrow"],
     tags: ["CRIPTOMONEDAS"],
-    muro: "registro",
   },
   {
     slug: "fiscalidad-cripto-espana",
@@ -136,7 +126,6 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Hechos imponibles", "FIFO y tramos del ahorro", "Staking, airdrops y minería", "Modelo 721 y Patrimonio"],
     tags: ["EXPLICACIONES"],
-    muro: "registro",
     imagenPropia: true,
   },
 ];

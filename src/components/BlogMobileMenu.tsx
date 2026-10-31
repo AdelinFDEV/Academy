@@ -8,6 +8,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import LogoutButton from "./LogoutButton";
+import GuideSearch from "./GuideSearch";
 import { destinoPorRuta, herramienta } from "@/lib/herramientas";
 
 interface Props {
@@ -102,10 +103,13 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 
       {open && (
         <div className="mm" role="dialog" aria-modal="true" aria-label="Menú">
+          <div className="mm-buscar">
+            <GuideSearch />
+          </div>
           <div className="mm-cuerpo">
             <nav className="mm-nav" aria-label="Secciones de la academia">
-              <Grupo titulo="Premium" nota="En una sola suscripción" entradas={PREMIUM} desde={0} premium isPremium={isPremium} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
-              <Grupo titulo="Gratis" nota="Para aprender, sin pagar nada" entradas={GRATIS} desde={PREMIUM.length} premium={false} isPremium={isPremium} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+              <Grupo titulo="Mejora como trader" nota="Incluido en Premium" entradas={PREMIUM} desde={0} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+              <Grupo titulo="Aprende cripto" nota="Gratis, a tu ritmo" entradas={GRATIS} desde={PREMIUM.length} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
             </nav>
 
             <aside className="mm-lado" aria-label="Tu cuenta">
@@ -142,7 +146,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <div className="mm-cuenta">
                   <span className="mm-cuenta-titulo">Tu academia</span>
                   <p className="mm-cuenta-texto">
-                    Con una cuenta gratuita lees las guías enteras y guardas tu progreso.
+                    Con una cuenta gratuita haces el quiz de cada guía y desbloqueas sus logros.
                   </p>
                   <Link href="/register" onClick={close} className="mm-btn mm-btn--principal">
                     Crear cuenta gratis <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
@@ -177,14 +181,12 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
 }
 
 /** Un grupo del menú: su cabecera y sus destinos. */
-function Grupo({ titulo, nota, entradas, desde, premium, isPremium, activo, destino, close, primerEnlace }: {
+function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEnlace }: {
   titulo: string;
   nota: string;
   entradas: Entrada[];
   /** Posición del primer enlace en todo el menú: escalona la entrada. */
   desde: number;
-  premium: boolean;
-  isPremium: boolean;
   activo: (href: string) => boolean;
   destino: (ruta: string) => string;
   close: () => void;
@@ -216,7 +218,6 @@ function Grupo({ titulo, nota, entradas, desde, premium, isPremium, activo, dest
                   <span className="mm-item-nombre">
                     {e.label}
                     {proximamente && <span className="mm-pill mm-pill--pronto">Próximamente</span>}
-                    {!proximamente && premium && !isPremium && <span className="mm-pill mm-pill--premium">Premium</span>}
                   </span>
                   <span className="mm-item-linea">{e.linea}</span>
                 </span>

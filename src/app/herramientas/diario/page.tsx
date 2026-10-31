@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
-  NotebookPen, BarChart3, LineChart, Lock, ArrowRight, Trophy, CalendarRange, Crosshair,
+  NotebookPen, BarChart3, LineChart, Lock, Trophy, CalendarRange, Crosshair,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
+import AccesoHerramienta from "@/components/AccesoHerramienta";
 import "../detalle.css";
 
 /**
@@ -201,6 +202,7 @@ export default async function FichaDiarioPage() {
             operas de verdad. Privado, solo tuyo y sin conexión a ningún
             exchange.
           </p>
+          <AccesoHerramienta nombre="el Diario de Trading" ruta="/dashboard/trading" abrir="Abrir mi diario" logueado={!!user} premium={isPremium} />
 
           {/* Maqueta del panel. Cifras de ejemplo, declaradas como tales justo
               debajo: enseñar el producto vende, fingir datos reales engaña. */}
@@ -217,6 +219,7 @@ export default async function FichaDiarioPage() {
             Cifras de ejemplo para ilustrar el panel. Las tuyas salen de lo que
             apuntes.
           </p>
+
         </header>
 
         <div className="det-pilares">
@@ -488,26 +491,7 @@ export default async function FichaDiarioPage() {
             <Link href="/herramientas/portfolio">portfolio</Link>. Una sola cuota,
             sin comprar nada por separado.
           </p>
-          <div className="det-actions">
-            {isPremium ? (
-              <Link href="/dashboard/trading" className="det-btn">
-                Abrir mi diario
-                <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
-              </Link>
-            ) : (
-              <>
-                <Link href="/premium" className="det-btn">
-                  Ver qué incluye Premium
-                  <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
-                </Link>
-                {!user && (
-                  <Link href="/login?next=/dashboard/trading" className="det-btn det-btn--ghost">
-                    Ya tengo cuenta
-                  </Link>
-                )}
-              </>
-            )}
-          </div>
+          <AccesoHerramienta nombre="el Diario de Trading" ruta="/dashboard/trading" abrir="Abrir mi diario" logueado={!!user} premium={isPremium} />
         </section>
       </main>
 

@@ -23,6 +23,27 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00b. Un vídeo explicativo de cada herramienta, para el home (31-10-2026)
+
+Pedido por el admin el 31-10-2026: grabar un vídeo corto de cada herramienta que enseñe cómo se usa, y colocarlo en el home.
+
+- [ ] **Grabar los vídeos** (los graba el admin): Diario de Trading, Portfolio Adelin y Predicción de Precio, y los Cursos cuando se publique el primero.
+- [ ] **Decidir dónde van en el home.** Lo natural es la sección Premium (`PremiumHome` / `PremiumPiezas`): cada tarjeta ya tiene una ilustración arriba que se podría cambiar por su vídeo, o abrirlo desde «Cómo funciona». La Predicción de Precio no está en esa sección: si lleva vídeo, necesita sitio propio.
+- [ ] **Al montarlos**: alojarlos en YouTube y servirlos desde `youtube-nocookie.com`, que ya está permitido en la CSP (`next.config.ts`). Ojo: `GuideVideoEmbed` mete el iframe nada más cargar; en el home conviene una portada con botón de play que solo cargue el vídeo al pulsar, para no frenar la página.
+
+
+### 00a. Ya no hay canal privado de Telegram (31-10-2026)
+
+Decidido por el admin el 31-10-2026: **solo existe el canal gratuito**; Premium ya no da acceso a ningún canal privado. Del home ya está quitado. **Lo demás está sin tocar a propósito** —el admin lo hará más adelante— y sigue prometiendo o gestionando el canal privado:
+
+- [ ] **El bot** (`src/lib/bot-menu.ts`): la ventaja «Canal privado» de Premium, los textos del plan gratuito y de Premium, y la vinculación de cuenta, que existía para dar acceso al canal. Leer `BOT.md` antes.
+- [ ] **Los crons y webhooks**: `telegram-sync` (expulsa del canal privado a quien deja de ser Premium), el webhook de Stripe y el de Telegram, `/api/telegram/unlink`, `/api/admin/users/[id]` y el borrado de cuenta (`revokeChannelAccess`). Decidir qué queda de la vinculación con Telegram si ya no hay canal que abrir.
+- [ ] **Los textos que lo prometen**: `/premium` (tabla, lista de precio y FAQ), `PremiumFeatureGrid`, la tarjeta de Premium del dashboard y la página de gracias tras pagar («Vincula tu Telegram»).
+- [ ] **La cuenta y el dashboard**: `CuentaTelegramCard` (`/cuenta`) y `SiguientePasoTelegram` (dashboard), que piden vincular Telegram para entrar al canal.
+- [ ] **Métricas**: `src/lib/crecimiento.ts` cuenta el canal privado.
+- [ ] **Documentación**: `BOT.md` y `PLATAFORMA.md`.
+
+
 ### 000. Herramientas retiradas (31-10-2026)
 
 Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el Trading en Directo, con su CSS, sus APIs, sus textos y sus menús; sus URLs responden 410 (`src/lib/retiradas.ts`). Falta:
@@ -63,9 +84,19 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Escribir `CURSOS.md`** con el diseño definitivo: estructura de archivos, catálogo de bloques, reglas de examen y cómo se publica.
 - [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json` y volver a subir; `cursos` pasa a `acceso: "premium"` en `src/lib/herramientas.ts` (con su `tag` y su `resumen`), `soon: false` en el rail de `src/app/dashboard/page.tsx`, y ofrecer la auditoría SEO de la ficha.
 
-### 1. Foro de preguntas y respuestas
+### 00c. Foto de portada para cada guía (31-10-2026)
 
-Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin arbitrando.
+Pedido por el admin el 31-10-2026. El código ya está listo: cada guía admite el campo `portada` en `src/lib/guides.ts` y `GuiaPortada` la pinta en la sección de guías del home y en el listado `/guias`. Mientras falte, sale una portada provisional con la inicial de la guía.
+
+- [ ] **Hacer una imagen por guía**: hoy son las que salen con `grep -c "  slug: \"" src/lib/guides.ts`. Horizontal (16:9), y que funcione también recortada en miniatura, que es como sale en las filas del home.
+- [ ] **Convertirlas a WebP** a 1.600 px de ancho y calidad 82, como toda portada, y guardarlas en `public/guias/<slug>.webp`.
+- [ ] **Darlas de alta** con `portada: "/guias/<slug>.webp"` en cada guía de `GUIDES`. Con eso salen solas en el home y en `/guias`.
+
+### 1. Foro completo
+
+**Pedido por el admin el 31-10-2026: un foro completo**, no solo preguntas y respuestas. Un espacio donde los usuarios pregunten, debatan y se respondan entre ellos, con el admin arbitrando. Antes de escribir código hay que cerrar con el admin qué entra en «completo»: categorías o temas (por criptomoneda, por herramienta, trading, fiscalidad…), hilos con respuestas, votos o «me gusta», respuesta marcada como buena, perfiles con sus logros, notificaciones de respuesta, búsqueda y moderación (reportes, bloqueo, edición y borrado).
+
+Desde el 31-10-2026 ya no hay canal privado de Telegram (tarea 00a): el foro puede ser justo el sitio de la comunidad que ese canal dejaba de ser.
 
 **Por qué interesa, más allá de la comunidad:** es el único tipo de contenido que **crece sin que nadie lo escriba**. Cada pregunta bien titulada es una URL que responde a una búsqueda real, y Google tiene un tipo de dato estructurado propio para esto (`QAPage`). Es la vía más barata de multiplicar las URLs indexables del sitio (el recuento actual: `curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"`).
 
@@ -77,6 +108,7 @@ Un espacio donde los usuarios pregunten y se respondan entre ellos, con el admin
 - ¿Preguntar es de Premium, de cuenta gratuita, o abierto? ¿Y leer?
 - ¿Responde solo el admin o también otros usuarios?
 - ¿Las preguntas pasan por aprobación antes de publicarse, como los comentarios?
+- ¿Qué parte del foro es de Premium, si alguna? Hoy todo lo gratuito es lectura libre y la cuenta solo se pide para participar (como el quiz de las guías).
 
 ⚠️ Si el foro es público e indexable, **modera antes de publicar**: una pregunta con spam o con un enlace a una estafa, indexada bajo tu dominio, hace más daño que las URLs que ganas.
 
@@ -166,38 +198,6 @@ El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de l
 4. **Escribir para quien empieza.** Es el lector al que apunta la academia, y el que peor tratan las webs de los exchanges.
 
 ⚠️ **No ampliar por lotes.** Una ficha, publicarla, y a la siguiente. Si se escriben diez seguidas se acaba reciclando estructura y frases sin darse cuenta — y eso es precisamente lo que el script caza.
-
----
-
-## 5. El muro de registro es lo que Google ve de las guías
-
-El protocolo de [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) se ejecuta a partir de ahora en **cada guía nueva**, y se ofrece solo. El contenido anterior no lo había pasado nunca. La primera pasada fue el 07-09-2026; la segunda, el 10-09-2026, encontró la causa de fondo.
-
-**El diagnóstico de la primera pasada era erróneo y conviene decirlo:** se apuntó a los componentes de cliente —quiz, gráficos, minijuegos— como lo que Google no ve. Las siete guías son **componentes de servidor**, así que eso se renderiza. Lo que Googlebot no ve es lo que hay **detrás del muro de registro**, porque entra siempre sin sesión.
-
-Seis de las siete guías cortan en la **sección 2 de 8**. La séptima, fiscalidad, solo cierra los extras de Premium. El resultado se mide solo:
-
-| Guía | Palabras que ve Google | H2 |
-|---|---|---|
-| `fiscalidad-cripto-espana` — sin muro de registro | **3.617** | **9** |
-| `que-es-la-blockchain` | 1.090 | 3 |
-| `xrp` | 917 | 3 |
-| `hyperliquid` | 905 | 3 |
-| `render` | 826 | 3 |
-| `worldcoin` | 737 | 3 |
-| `ciclos-de-bitcoin` | 745 | 3 |
-
-Las seis con muro tienen **exactamente 3 `<h2>`** —dos secciones abiertas más el reclamo— y por eso ninguna llega al mínimo de 4. No es un problema de redacción: **es el muro**, y arreglarlo con un encabezado de adorno sería justo lo que el propio protocolo prohíbe.
-
-**Decidido por el admin el 10-09-2026: el muro no se toca.** Lo que es de registro sigue siendo de registro. Queda anotado como **deuda aceptada** en `DEUDA_CONOCIDA` de `scripts/check-seo.mjs`, con dos etiquetas —`h2` y `palabras`—, para que las seis guías dejen de pedir en rojo una corrección que no va a llegar y sigan diciendo la verdad en amarillo.
-
-Conviene tener claro qué significa y qué no: **las guías con muro aparecen en Google igual**, están indexadas y en el sitemap. Lo que cambia es con cuánto compiten — Googlebot juzga `/guias/xrp` por las 917 palabras que ve, no por las ~3.000 que lee un registrado.
-
-Lo que no dependía del muro quedó cerrado el 03-10-2026: las guías declaran su muro en el JSON-LD (`isAccessibleForFree`, desde el campo `muro` de `GUIDES`) y todas llevan el bloque `<GuiasRelacionadas>` fuera del muro, así que ninguna depende ya solo del enlace de `/guias`.
-
-Lo que ya está corregido y verificado en verde el 10-09-2026: la densidad de `/post/bitcoin-core-v32-2026` (0,07 % → 0,60 %, hoy **sin fallos**), las once frases de más de 40 palabras repartidas por seis guías, la frase media de `worldcoin` (31 → 21), la clave de `ciclos-de-bitcoin` en el H1 y en la description, y el techo de densidad de `render` (2,55 % → 2,30 %).
-
-**El orden lo decide el tráfico, no la lista.** Se empieza por lo que ya recibe impresiones en Search Console, igual que con las fichas del diccionario.
 
 ---
 
