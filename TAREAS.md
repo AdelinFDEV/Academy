@@ -48,7 +48,6 @@ Decidido por el admin el 31-10-2026: **solo existe el canal gratuito**; Premium 
 
 Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el Trading en Directo, con su CSS, sus APIs, sus textos y sus menús; sus URLs responden 410 (`src/lib/retiradas.ts`). Falta:
 
-- [ ] **Ejecutar `scripts/retirar-herramientas.sql`** en Supabase **después** de desplegar: borra las tablas `watchlist` y `portfolio_transactions` (3 operaciones de 1 usuario en Mi Portfolio).
 - [ ] **Reenviar el sitemap en Search Console** y comprobar en producción que `/herramientas`, `/radar-diario`, `/calendario-de-liberaciones` y `/trading-en-directo` dan 410.
 - [ ] **Volver a registrar los comandos del bot** con `telegram-doctor` si alguno de los retirados sigue saliendo en el menú de Telegram.
 
