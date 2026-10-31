@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
-import { ArrowRight, Award, Check } from "lucide-react";
+import { ArrowRight, Award, Check, ChevronRight } from "lucide-react";
 import { herramienta } from "@/lib/herramientas";
 
 export type PiezaPremium = {
@@ -169,6 +169,37 @@ function Tarjeta({ p }: { p: PiezaPremium }) {
 export default function PremiumPiezas({ piezas }: { piezas: PiezaPremium[] }) {
   const lista = useRef<HTMLOListElement>(null);
   const [actual, setActual] = useState(0);
+  const [deslizado, setDeslizado] = useState(false);
+  const [alFinal, setAlFinal] = useState(false);
+  // Mientras dura el empujón de bienvenida, el desplazamiento no es del
+  // usuario: no debe esconder la pista.
+  const empujando = useRef(false);
+
+  // Un empujón la primera vez que el carrusel entra en pantalla: se desliza un
+  // poco y vuelve, para que se vea que se puede deslizar. Solo en el móvil
+  // (donde es carrusel), una vez, y nunca con el movimiento reducido.
+  useEffect(() => {
+    const el = lista.current;
+    if (!el) return;
+    if (!window.matchMedia("(max-width: 760px)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let vuelta = 0;
+    const obs = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      obs.disconnect();
+      empujando.current = true;
+      el.scrollBy({ left: 70, behavior: "smooth" });
+      vuelta = window.setTimeout(() => {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+        window.setTimeout(() => { empujando.current = false; }, 600);
+      }, 650);
+    }, { threshold: 0.6 });
+    obs.observe(el);
+    return () => {
+      obs.disconnect();
+      window.clearTimeout(vuelta);
+    };
+  }, []);
 
   // En el móvil la lista es un carrusel horizontal (ver home.css): los puntos
   // de debajo dicen qué tarjeta se ve y llevan a cada una. En escritorio la
@@ -176,8 +207,13 @@ export default function PremiumPiezas({ piezas }: { piezas: PiezaPremium[] }) {
   function alDesplazar() {
     const el = lista.current;
     if (!el || !el.children.length) return;
-    const paso = (el.children[0] as HTMLElement).offsetWidth;
-    setActual(Math.min(piezas.length - 1, Math.round(el.scrollLeft / Math.max(paso, 1))));
+    // Por la proporción desplazada y no por el ancho de una tarjeta: la última
+    // nunca llega a alinearse a la izquierda, y así su punto también se enciende.
+    const max = el.scrollWidth - el.clientWidth;
+    const ratio = max > 0 ? el.scrollLeft / max : 0;
+    setActual(Math.round(ratio * (piezas.length - 1)));
+    setAlFinal(max > 0 && el.scrollLeft >= max - 4);
+    if (!empujando.current && el.scrollLeft > 8) setDeslizado(true);
   }
 
   function irA(i: number) {
@@ -188,7 +224,12 @@ export default function PremiumPiezas({ piezas }: { piezas: PiezaPremium[] }) {
 
   return (
     <>
-      <ol className="pz-lista" ref={lista} onScroll={alDesplazar}>
+      {/* Solo en el móvil (home.css): se va en cuanto el usuario desliza. */}
+      <p className={`pz-pista${deslizado ? " is-oculta" : ""}`} aria-hidden="true">
+        Desliza para ver las {piezas.length}
+        <span className="pz-pista-flechas"><ChevronRight size={14} /><ChevronRight size={14} /></span>
+      </p>
+      <ol className={`pz-lista${alFinal ? " is-final" : ""}`} ref={lista} onScroll={alDesplazar}>
         {piezas.map((p) => <Tarjeta key={p.id} p={p} />)}
       </ol>
       <div className="pz-puntos-nav" aria-hidden="true">
