@@ -312,7 +312,7 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
           <p className="cf-final-sub">
             {sesion?.esPremium
               ? "Elige tu ritmo y empieza por el primer módulo. Puedes cambiar el ritmo cuando quieras."
-              : "Todos los cursos entran en la misma suscripción que las herramientas, el directo y la comunidad."}
+              : "Todos los cursos entran en la misma suscripción que las herramientas y la comunidad."}
           </p>
           <Link href={cta.href} className="cf-btn">
             {cta.texto}

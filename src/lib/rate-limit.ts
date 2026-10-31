@@ -51,7 +51,7 @@ export const TRAMOS = {
   pago: { nombre: "pago", max: 10, ventanaMs: 15 * 60 * 1000 },
 
   /**
-   * Proxies a APIs de terceros (CoinGecko, DefiLlama). Son las peticiones que
+   * Proxies a APIs de terceros (CoinGecko). Son las peticiones que
    * pueden quemar una cuota gratuita ajena y dejar sin precios a todo el mundo,
    * así que van más apretadas que el resto de la API aunque tengan caché.
    */
@@ -118,11 +118,8 @@ const EXENTAS = [
 const RUTAS_PAGO = ["/api/checkout", "/api/stripe/portal", "/api/account/delete"];
 
 const RUTAS_EXTERNAS = [
-  "/api/crypto/",
   "/api/market-data",
   "/api/portfolio/prices",
-  "/api/unlocks",
-  "/api/radar",
 ];
 
 const RUTAS_ESCRITURA = [

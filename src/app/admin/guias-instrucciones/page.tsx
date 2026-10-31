@@ -48,15 +48,15 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-step">
             <div className="agi-step-num">2</div>
             <div>
-              <strong>Claude pregunta SIEMPRE: ¿guía GRATIS o PREMIUM?</strong>
-              <p className="agi-warning" style={{ marginTop: 8 }}>⚠️ <strong>Paso obligatorio antes de escribir una sola línea.</strong> Claude nunca decide por su cuenta el tipo de acceso — se lo pregunta al admin. La respuesta cambia el paywall y qué usuarios pueden leer la guía completa (ver bloque 06). <strong>Gratis:</strong> el resto se desbloquea con registro gratuito. <strong>Premium:</strong> el resto solo se desbloquea con suscripción y rol premium.</p>
+              <strong>Claude pide la foto de portada</strong>
+              <p className="agi-warning" style={{ marginTop: 8 }}>⚠️ <strong>Todas las guías son GRATIS</strong> desde el 31-10-2026: ninguna va tras Premium, así que ya no se pregunta. Lo que sí lleva toda guía es su <strong>foto de portada</strong>, en <code>public/guias/[slug].webp</code> (WebP, 1.600 px de ancho, calidad 82) y en el campo <code>portada</code> de <code>GUIDES</code>. Sin ella la tarjeta pinta una portada de tipografía, que vale de transición pero no para publicar.</p>
             </div>
           </div>
           <div className="agi-step">
             <div className="agi-step-num">3</div>
             <div>
               <strong>Claude construye la guía completa</strong>
-              <p>Redacta el contenido, elige los componentes interactivos adecuados (quiz, flashcards, gráficas, calculadora si encaja), define secciones gratuitas vs premium, asigna dificultad y crea el badge de logro correspondiente.</p>
+              <p>Redacta el contenido, elige los componentes interactivos adecuados (quiz, flashcards, gráficas, calculadora si encaja), define qué secciones van abiertas y cuáles tras el registro, asigna dificultad y crea el badge de logro correspondiente.</p>
             </div>
           </div>
           <div className="agi-step">
@@ -122,12 +122,12 @@ export default function GuiasInstruccionesPage() {
             <div className="agi-table-def">
               <div className="agi-table-name">GuideMeta — campos de src/lib/guides.ts</div>
               <div className="agi-table-fields">
-                slug · title · shortTitle · description · difficulty (básico|intermedio|avanzado) · type (free|premium) · sections · badge · badgeId · readTime · color · topics[] · tags[]
+                slug · title · shortTitle · description · difficulty (básico|intermedio|avanzado) · sections · badge · badgeId · readTime · color · topics[] · tags[] · muro (registro|null) · portada · imagenPropia?
               </div>
             </div>
           </div>
           <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p>⚠️ <strong>El último elemento del array es la guía destacada</strong> de la home (lo usa <code>GuidesHomeSection</code>). Añade siempre la guía nueva al final.</p>
+            <p>⚠️ <strong>El último elemento del array es la guía más reciente</strong>: la home enseña las cuatro últimas (lo usa <code>GuidesHomeSection</code>). Añade siempre la guía nueva al final.</p>
           </div>
         </div>
 
@@ -187,7 +187,7 @@ export default function GuiasInstruccionesPage() {
               <span className="agi-swatch-name">Oro</span>
               <span className="agi-swatch-var">--gold</span>
               <span className="agi-swatch-hex">#e6b455</span>
-              <span className="agi-swatch-use">Color DOMINANTE de guías. Títulos en gradiente, eyebrows, CTAs principales, borders de cards, stats, badges de acceso premium, pills de características, sección titles. Es lo que hace que las guías se vean como un portal premium diferenciado.</span>
+              <span className="agi-swatch-use">Color DOMINANTE de guías. Títulos en gradiente, eyebrows, CTAs principales, borders de cards, stats, badges de acceso, pills de características, sección titles. Es lo que hace que las guías se vean como un portal premium diferenciado.</span>
             </div>
             <div className="agi-swatch agi-swatch--orange">
               <span className="agi-swatch-name">Naranja</span>
@@ -374,25 +374,14 @@ export default function GuiasInstruccionesPage() {
           <span className="agi-section-num">06</span>
           Sistema de acceso y paywall
         </h2>
-        <div className="agi-access-grid">
-          <div className="agi-access-card">
-            <div className="agi-access-type">Guía FREE</div>
-            <ul className="agi-list">
-              <li>Primeras 1–2 secciones visibles para cualquier visitante (sin sesión)</li>
-              <li>Para continuar: el usuario debe <strong>registrarse gratis</strong></li>
-              <li>Paywall muestra CTA «Crea tu cuenta gratis para continuar»</li>
-              <li>Una vez registrado, acceso completo a toda la guía</li>
-            </ul>
-          </div>
-          <div className="agi-access-card agi-access-card--premium">
-            <div className="agi-access-type">Guía PREMIUM</div>
-            <ul className="agi-list">
-              <li>Primeras 1–2 secciones visibles para cualquier visitante (sin sesión)</li>
-              <li>Usuarios registrados (free) ven el paywall premium</li>
-              <li>Para continuar: el usuario debe ser <strong>miembro Premium</strong></li>
-              <li>Paywall muestra CTA «Hazte Premium para desbloquear»</li>
-            </ul>
-          </div>
+        <div className="agi-card">
+          <p><strong>Todas las guías son gratuitas</strong> (desde el 31-10-2026 no hay guías Premium):</p>
+          <ul className="agi-list">
+            <li>Primeras 1–2 secciones visibles para cualquier visitante (sin sesión)</li>
+            <li>Para continuar: el usuario debe <strong>registrarse gratis</strong></li>
+            <li>Paywall muestra CTA «Crea tu cuenta gratis para continuar»</li>
+            <li>Una vez registrado, acceso completo a toda la guía, herramientas y quiz incluidos</li>
+          </ul>
         </div>
         <div className="agi-card" style={{ marginTop: '1rem' }}>
           <p><strong>Regla siempre activa:</strong> el primer bloque de texto de la primera sección siempre es visible, independientemente del tipo de guía. El paywall corta <em>después</em> de dar al usuario un vistazo real del contenido.</p>
@@ -468,7 +457,7 @@ export default function GuiasInstruccionesPage() {
             </pre>
           </div>
           <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (<code>{`"registro"`}</code>, <code>{`"premium"`}</code> o <code>null</code> si se lee entera sin cuenta), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
+            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (<code>{`"registro"`}</code> o <code>null</code> si se lee entera sin cuenta; desde el 31-10-2026 ninguna guía va tras Premium), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
             <p>El nombre que sale en las migas lo saca de <code>GUIDES</code>, no del <code>title</code> de la metadata — que es más corto a propósito. Es intencionado: el de <code>GUIDES</code> es el que se ve en <code>/guias</code>, y el dato estructurado <strong>tiene que coincidir con lo visible</strong> o Google lo trata como spam.</p>
           </div>
         </div>
@@ -507,10 +496,10 @@ export default function GuiasInstruccionesPage() {
           Checklist para Claude al crear una guía nueva
         </h2>
         <div className="agi-checklist">
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>ANTES DE NADA: preguntar al admin si la guía es GRATIS o PREMIUM</strong> — nunca asumirlo</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Foto de portada</strong> en <code>public/guias/[slug].webp</code> (WebP, 1.600 px, calidad 82) y su ruta en el campo <code>portada</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir slug SEO-friendly: <code>/guias/[tema-especifico]</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Establecer dificultad: Básico / Intermedio / Avanzado</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Aplicar el paywall correcto según la respuesta free/premium del admin (ver bloque 06)</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Aplicar el muro de registro gratuito (ver bloque 06)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Identificar qué componentes interactivos son pertinentes para el tema</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear <code>src/app/guias/[slug]/[slug].css</code> propio — nunca añadir a <code>guias.css</code> ni a <code>globals.css</code></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido completo (no esqueletos, no placeholders)</span></label>
@@ -526,7 +515,7 @@ export default function GuiasInstruccionesPage() {
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><code>title</code> de <strong>48 caracteres o menos</strong> y <code>description</code> de 160 o menos, con la keyword delante (bloque 08)</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir la entrada de la guía al final del array <code>GUIDES</code> en <code>src/lib/guides.ts</code></strong> — es lo único que hace falta para publicarla. <strong>Supabase no se toca</strong></span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Comprobar que <code>badgeId</code> sigue la convención <code>guide-[tema]</code> y que el <code>badge</code> tiene nombre</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar que el paywall funciona para usuarios sin sesión, free y premium</span></label>
+          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar que el muro funciona para usuarios sin sesión y con cuenta</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npm run check &amp;&amp; npx tsc --noEmit</code> — el <code>check</code> verifica la canónica, las migas y el alta en <code>GUIDES</code> — y comprobar la guía en el navegador antes de dar por cerrada</span></label>
           <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Ofrecer la auditoría SEO</strong> — «¿empiezo la auditoría SEO de la guía?» — y si el admin dice que sí, ejecutar <code>AUDITORIA-SEO.md</code> entero sobre ella. Ojo en las guías: lo que Google ve es <strong>solo lo renderizado en el servidor</strong>, no lo que vive dentro de los componentes interactivos</span></label>
         </div>
@@ -545,7 +534,7 @@ export default function GuiasInstruccionesPage() {
           <p>Qué se toca para cada cambio:</p>
           <ul className="agi-list">
             <li><strong>Título, descripción, dificultad, tiempo de lectura, topics o tags</strong> → el objeto de esa guía en <code>src/lib/guides.ts</code></li>
-            <li><strong>Cambiar de gratis a premium o al revés</strong> → el campo <code>type</code> en <code>src/lib/guides.ts</code> <em>y</em> la condición del paywall en el <code>page.tsx</code> de la guía (<code>!isPremium</code> para premium, <code>!isRegistered</code> para gratis)</li>
+            <li><strong>Cambiar la portada</strong> → el archivo en <code>public/guias/</code> y el campo <code>portada</code> en <code>src/lib/guides.ts</code></li>
             <li><strong>Despublicar</strong> → quitar su entrada de <code>GUIDES</code>. La ruta <code>/guias/[slug]</code> seguirá existiendo y accesible por URL directa; para cortarla del todo hay que borrar o proteger la carpeta</li>
             <li><strong>Contenido, secciones o componentes interactivos</strong> → pedir a Claude que edite <code>/src/app/guias/[slug]/page.tsx</code> y sus componentes</li>
             <li><strong>Estilos de esa guía</strong> → su <code>[slug].css</code>, nunca <code>guias.css</code> ni <code>globals.css</code></li>

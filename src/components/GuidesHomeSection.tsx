@@ -1,105 +1,129 @@
 import Link from "next/link";
-import { ArrowRight, Zap, Clock, BookOpen, Lock } from "lucide-react";
-import { GUIDES, GUIDES_NEWEST_FIRST, type GuideMeta } from "@/lib/guides";
-import FeaturedGuideCard from "@/components/FeaturedGuideCard";
+import { ArrowRight, ArrowUpRight, BookOpen, Clock, Trophy } from "lucide-react";
+import { GUIDES_NEWEST_FIRST, type GuideMeta } from "@/lib/guides";
+import GuiaPortada from "@/components/GuiaPortada";
 
-const DIFF_CLASS: Record<string, string> = {
-  "básico": "guides-diff--basic",
-  "intermedio": "guides-diff--intermediate",
-  "avanzado": "guides-diff--advanced",
-};
-const DIFF_LABEL: Record<string, string> = {
+/** Nivel de 1 a 3, para las tres rayitas de dificultad. */
+const NIVEL: Record<GuideMeta["difficulty"], number> = { "básico": 1, "intermedio": 2, "avanzado": 3 };
+const NIVEL_TEXTO: Record<GuideMeta["difficulty"], string> = {
   "básico": "Básico",
   "intermedio": "Intermedio",
   "avanzado": "Avanzado",
 };
 
-/** Cuántas guías se enseñan bajo la destacada. */
-const RECIENTES = 3;
+/** La categoría que se pinta, de la primera etiqueta: «EXPLICACIONES» → «Explicaciones». */
+function categoria(g: GuideMeta): string {
+  const t = g.tags[0] ?? "Guía";
+  return t.charAt(0) + t.slice(1).toLowerCase();
+}
 
-/**
- * Las guías en la portada. Desde el 10-10-2026 son la única vía de
- * información de la web (no hay noticias), así que van justo tras el hero:
- *
- * 1. La guía más reciente, grande.
- * 2. Las tres anteriores, en tarjetas.
- * 3. El paso al catálogo entero.
- *
- * Todo sale de src/lib/guides.ts: al añadir una guía allí, la portada se
- * actualiza sola (la nueva pasa a destacada y empuja a las demás).
- */
-export default function GuidesHomeSection() {
-  const [destacada, ...resto] = GUIDES_NEWEST_FIRST;
-  const recientes = resto.slice(0, RECIENTES);
-
+function Dificultad({ g }: { g: GuideMeta }) {
+  const n = NIVEL[g.difficulty];
   return (
-    <section id="guias" className="guides-home-section">
-      <div className="guides-home-glow" aria-hidden="true" />
-
-      <div className="guides-home-inner">
-
-        <div className="guides-home-header">
-          <span className="guides-home-eyebrow">
-            <Zap size={13} aria-hidden="true" />
-            Guías interactivas
-          </span>
-          <h2 className="guides-home-title">
-            Aprende crypto de verdad.<br />
-            <span className="guides-home-title-gold">Paso a paso. Con criterio.</span>
-          </h2>
-          <p className="guides-home-subtitle">
-            Cada guía explica un tema a fondo, con gráficas, ejercicios y un quiz al final que
-            comprueba que lo has entendido — no solo leído.
-          </p>
-        </div>
-
-        {destacada && <FeaturedGuideCard guide={destacada} />}
-
-        {recientes.length > 0 && (
-          <div className="guides-recientes">
-            <h3 className="guides-recientes-titulo">Últimas guías</h3>
-            <ul className="guides-recientes-lista">
-              {recientes.map((g) => <TarjetaGuia key={g.slug} guia={g} />)}
-            </ul>
-          </div>
-        )}
-
-        <Link href="/guias" className="guides-home-todas">
-          Ver todas las guías
-          <span className="guides-home-todas-cifra">{GUIDES.length}</span>
-          <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
-        </Link>
-
-      </div>
-    </section>
+    <span className="gh-nivel" aria-label={`Nivel ${NIVEL_TEXTO[g.difficulty].toLowerCase()}`}>
+      <span className="gh-nivel-rayas" aria-hidden="true">
+        {[1, 2, 3].map((i) => <i key={i} className={i <= n ? "is-on" : undefined} />)}
+      </span>
+      {NIVEL_TEXTO[g.difficulty]}
+    </span>
   );
 }
 
-function TarjetaGuia({ guia: g }: { guia: GuideMeta }) {
+/**
+ * Las guías en la portada. Rehecha desde cero el 31-10-2026: la web vive de
+ * Portfolio, Diario y Cursos, y las guías son la puerta gratuita, así que van
+ * contenidas —una composición de revista— y no ocupan media portada.
+ *
+ * · A la izquierda, la más reciente, en grande y con su portada a sangre.
+ * · A la derecha, las tres anteriores, en filas con miniatura.
+ * · Arriba, el titular y el paso al catálogo entero.
+ *
+ * Todo sale de src/lib/guides.ts: al añadir una guía allí, la nueva pasa a
+ * ser la grande y empuja a las demás.
+ */
+export default function GuidesHomeSection() {
+  const [nueva, ...resto] = GUIDES_NEWEST_FIRST;
+  const siguientes = resto.slice(0, 3);
+  if (!nueva) return null;
+
   return (
-    <li>
-      <Link href={`/guias/${g.slug}`} className="guides-mini">
-        <div className="guides-mini-top">
-          <span className={`guides-diff-badge ${DIFF_CLASS[g.difficulty]}`}>{DIFF_LABEL[g.difficulty]}</span>
-          {g.type === "premium" && (
-            <span className="guides-access-badge guides-access-badge--premium">
-              <Lock size={11} aria-hidden="true" /> Premium
+    <section id="guias" className="gh" aria-labelledby="gh-titulo">
+      <div className="gh-inner">
+        <header className="gh-cabecera">
+          <div>
+            <span className="gh-eyebrow">
+              <span className="gh-eyebrow-punto" aria-hidden="true" />
+              Guías interactivas · 100 % gratis
             </span>
-          )}
+            <h2 id="gh-titulo" className="gh-titulo">
+              Criptomonedas, <span>explicadas a fondo</span>
+            </h2>
+            <p className="gh-sub">
+              Qué es cada proyecto, cómo funciona por dentro y qué riesgos tiene. Con gráficas,
+              ejercicios y un quiz final.
+            </p>
+          </div>
+          <Link href="/guias" className="gh-todas">
+            Ver todas las explicaciones
+            <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+          </Link>
+        </header>
+
+        <div className="gh-rejilla">
+          {/* ── La más reciente ── */}
+          <Link href={`/guias/${nueva.slug}`} className="gh-grande">
+            <GuiaPortada guia={nueva} className="gh-grande-portada" sizes="(max-width: 900px) 100vw, 640px" />
+            <span className="gh-grande-velo" aria-hidden="true" />
+
+            <span className="gh-grande-cuerpo">
+              <span className="gh-chips">
+                <span className="gh-chip gh-chip--nueva">Nueva</span>
+                <span className="gh-chip">{categoria(nueva)}</span>
+              </span>
+              <h3 className="gh-grande-titulo">{nueva.title}</h3>
+              <p className="gh-grande-desc">{nueva.description}</p>
+
+              <span className="gh-grande-pie">
+                <span className="gh-datos">
+                  <Dificultad g={nueva} />
+                  <span><Clock size={13} aria-hidden="true" /> {nueva.readTime}</span>
+                  <span><BookOpen size={13} aria-hidden="true" /> {nueva.sections} secciones</span>
+                  <span className="gh-logro"><Trophy size={13} aria-hidden="true" /> {nueva.badge}</span>
+                </span>
+                <span className="gh-empezar">
+                  Empezar
+                  <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
+                </span>
+              </span>
+            </span>
+          </Link>
+
+          {/* ── Las tres anteriores ── */}
+          <ol className="gh-lista">
+            {siguientes.map((g, i) => (
+              <li key={g.slug}>
+                <Link href={`/guias/${g.slug}`} className="gh-fila">
+                  <GuiaPortada guia={g} className="gh-fila-portada" sizes="160px" />
+                  <span className="gh-fila-cuerpo">
+                    <span className="gh-fila-cat">
+                      <span className="gh-fila-num">0{i + 2}</span>
+                      {categoria(g)}
+                    </span>
+                    <span className="gh-fila-titulo">{g.shortTitle}</span>
+                    <span className="gh-datos gh-datos--fila">
+                      <Dificultad g={g} />
+                      <span><Clock size={12} aria-hidden="true" /> {g.readTime}</span>
+                    </span>
+                  </span>
+                  <span className="gh-fila-flecha" aria-hidden="true">
+                    <ArrowUpRight size={17} strokeWidth={2.2} />
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
         </div>
-        <h4 className="guides-mini-titulo">{g.title}</h4>
-        <p className="guides-mini-desc">{g.description}</p>
-        <div className="guides-mini-pie">
-          <span className="guides-mini-meta">
-            <Clock size={13} aria-hidden="true" /> {g.readTime}
-            <span aria-hidden="true">·</span>
-            <BookOpen size={13} aria-hidden="true" /> {g.sections} secciones
-          </span>
-          <span className="guides-mini-leer">
-            Leer <ArrowRight size={14} strokeWidth={2.5} aria-hidden="true" />
-          </span>
-        </div>
-      </Link>
-    </li>
+      </div>
+    </section>
   );
 }

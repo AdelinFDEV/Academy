@@ -5,7 +5,7 @@ import {
   motion, useMotionValue, useSpring, useReducedMotion,
 } from "framer-motion";
 import {
-  NotebookPen, Gem, Radio, Unlock, Wallet, Sparkles,
+  NotebookPen, Wallet, Sparkles,
   ClipboardCheck, Trophy, BadgeCheck, Infinity as InfinityIcon, Send,
 } from "lucide-react";
 
@@ -17,30 +17,6 @@ const PERKS = [
     title: "Diario de Trading",
     desc: "Cada operación con su riesgo y su resultado real, diez estadísticas que te dicen cómo operas de verdad e hitos con niveles que premian la disciplina.",
     chips: ["P&L real y ratio riesgo/beneficio", "Hitos con niveles"],
-  },
-  {
-    id: "guias",
-    icon: Gem,
-    color: "#ffd166",
-    title: "Guías Premium",
-    desc: "Desbloquea todas las guías interactivas, no solo las básicas — con gráficas, quizzes y pasos accionables.",
-    chips: ["Todas desbloqueadas", "Quizzes y logros"],
-  },
-  {
-    id: "directo",
-    icon: Radio,
-    color: "#a3a3ff",
-    title: "Trading en Directo",
-    desc: "Solo futuros de NASDAQ y solo en gráficos de 5 minutos, operados en directo los martes y jueves, con cada decisión explicada en el momento.",
-    chips: ["Solo NASDAQ · 5 min", "Martes y jueves"],
-  },
-  {
-    id: "liberaciones",
-    icon: Unlock,
-    color: "#34d399",
-    title: "Liberaciones de Tokens",
-    desc: "Anticipa la presión vendedora con el calendario de vesting del mercado en tiempo real.",
-    chips: ["Calendario en vivo", "Datos por token"],
   },
   {
     id: "portfolio",

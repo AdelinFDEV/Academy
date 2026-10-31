@@ -10,6 +10,14 @@
  * redirigen en next.config.ts, que Next aplica ANTES que el middleware.
  * Copia de lo borrado, en local: backups/.
  *
+ * El 31-10-2026 se retiraron también cinco herramientas —Watchlist,
+ * Liberaciones de Tokens, Radar Diario, Mi Portfolio y la Calculadora de
+ * Riesgo—, la landing `/herramientas` que las listaba y el Trading en
+ * Directo, que ya no se ofrece. Sus páginas, públicas
+ * y privadas, responden 410. Las fichas `/herramientas/portfolio` y
+ * `/herramientas/diario` siguen vivas: por eso se nombran rutas exactas y no
+ * el prefijo `/herramientas/`.
+ *
  * Reglas:
  * - Solo rutas exactas, sin barra final (Next ya la quita con una redirección).
  * - No metas aquí una URL ni un prefijo que pueda volver a existir: si mañana
@@ -18,7 +26,7 @@
  *   trata como un 404 encubierto (soft 404).
  */
 /** Secciones enteras retiradas: todo lo que empiece así responde 410. */
-export const PREFIJOS_RETIRADOS: readonly string[] = ["/post/", "/categoria/"];
+export const PREFIJOS_RETIRADOS: readonly string[] = ["/post/", "/categoria/", "/herramientas/liberaciones/"];
 
 /** ¿Está retirada esta ruta? */
 export function estaRetirada(pathname: string): boolean {
@@ -42,6 +50,17 @@ export const RETIRADAS: ReadonlySet<string> = new Set([
   "/categoria/altcoins",
   "/categoria/bnb",
   "/categoria/fiscalidad",
+  // Herramientas retiradas el 31-10-2026
+  "/herramientas",
+  "/herramientas/radar",
+  "/herramientas/liberaciones",
+  "/radar-diario",
+  "/calendario-de-liberaciones",
+  "/dashboard/watchlist",
+  "/dashboard/mi-portfolio",
+  "/dashboard/calculadora-riesgo",
+  // El Trading en Directo, retirado el mismo día: el servicio ya no se ofrece
+  "/trading-en-directo",
 ]);
 
 /** La página que ve quien llega a una URL retirada: corta, y con salida a las guías. */
@@ -63,7 +82,7 @@ export const PAGINA_RETIRADA = `<!doctype html>
 <body>
 <main>
   <h1>Esta página ya no existe</h1>
-  <p>La academia ha dejado de publicar noticias. Ahora todo se explica en guías detalladas de cada criptomoneda.</p>
+  <p>Este contenido se ha retirado de la academia. Las explicaciones de cada criptomoneda siguen en las guías.</p>
   <a href="/guias">Ver las guías</a>
 </main>
 </body>

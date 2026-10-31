@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Crown, ShieldAlert } from "lucide-react";
 import SocialLinks from "@/components/SocialLinks";
-import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
+import { CoinGeckoGlyph } from "@/components/BrandMarks";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
 
 export default function Footer() {
@@ -67,16 +67,6 @@ export default function Footer() {
       <div className="footer-partners">
         <span className="footer-partners-label">En colaboración con</span>
         <div className="footer-partners-list">
-          <a
-            href="https://defillama.com/unlocks"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="footer-partner footer-partner--dl"
-            title="Datos de liberaciones por DefiLlama"
-          >
-            <span className="footer-partner-mark footer-partner-mark--dl"><DefiLlamaGlyph /></span>
-            <span className="footer-partner-word">Defi<span>Llama</span></span>
-          </a>
           <a
             href="https://www.coingecko.com"
             target="_blank"

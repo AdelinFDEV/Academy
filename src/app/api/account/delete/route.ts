@@ -15,7 +15,6 @@ const OWNED_TABLES = [
   "guide_quiz_completions",
   "saved_terms",
   "trades",
-  "watchlist",
   "user_badges",
 ] as const;
 // Nota: `portfolio_positions` NO va aquí — es el portfolio-escaparate

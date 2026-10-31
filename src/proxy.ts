@@ -28,9 +28,10 @@ export async function proxy(request: NextRequest) {
   // En desarrollo no se limita nada. Aquí NO hay `x-forwarded-for`, así que
   // `ipDe()` devuelve "desconocida" para TODO el tráfico: el navegador, cada
   // pestaña, cada recarga y cada hot reload comparten un mismo cubo. Con el
-  // tramo `externo` en 40/60s, veinte recargas de la portada dejaban
-  // `/api/radar` en 429 y el radar salía «Sin datos» en local mientras en
-  // producción iba perfecto —allí cada visitante trae su IP de verdad—.
+  // tramo `externo` en 40/60s, veinte recargas de la portada dejaban las
+  // APIs de mercado en 429 (pasó con el antiguo Radar, retirado) y salían
+  // «Sin datos» en local mientras en producción iba perfecto —allí cada
+  // visitante trae su IP de verdad—.
   // Limitar tu propia máquina no protege ninguna cuota ni ninguna factura:
   // solo hace perder una tarde buscando un fallo que no existe.
   const tramo =

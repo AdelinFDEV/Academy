@@ -206,7 +206,7 @@ export default async function FiscalidadCriptoEspanaPage() {
           <span className="gbc-pill">8 secciones abiertas</span>
           <span className="gbc-pill">Normativa 2026</span>
           <span className="gbc-pill">Ejemplos con cifras</span>
-          <span className="gbc-pill">Simulador y quiz · Premium</span>
+          <span className="gbc-pill">Simulador y quiz</span>
         </div>
         <GuideHeroStats stats={HERO_STATS} />
       </header>
@@ -362,7 +362,8 @@ export default async function FiscalidadCriptoEspanaPage() {
           airdrops y el modelo 721— es lo que se busca en Google y lo que el
           título promete; esconderla dejaba a la guía compitiendo con dos
           secciones contra páginas de asesorías que lo cuentan entero.
-          Lo que sigue siendo Premium son las herramientas y el cierre. */}
+          Las herramientas y el cierre piden una cuenta gratuita, como el
+          resto de guías: desde el 31-10-2026 ninguna va tras Premium. */}
         {/* ── SECCIÓN 3: FIFO ── */}
         <section id="fifo" className="gbc-section">
           <div className="gbc-gc">
@@ -451,14 +452,14 @@ export default async function FiscalidadCriptoEspanaPage() {
                 </figcaption>
               </figure>
 
-              {isPremium ? (
+              {isRegistered ? (
                 <GuideFiscalFifo />
               ) : (
                 <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                  <div className="gbc-box-title">El simulador FIFO es Premium</div>
+                  <div className="gbc-box-title">El simulador FIFO es gratis con tu cuenta</div>
                   <div className="gbc-box-body">
                     <p>
-                      La regla está explicada entera aquí arriba y no hace falta la herramienta para entenderla. El simulador sirve para lo otro: meter tus compras y tus ventas y ver qué lote consume cada una. <Link href="/premium">Hazte Premium</Link> para usarla.
+                      La regla está explicada entera aquí arriba y no hace falta la herramienta para entenderla. El simulador sirve para lo otro: meter tus compras y tus ventas y ver qué lote consume cada una. <Link href="/register">Crea tu cuenta gratis</Link> para usarlo.
                     </p>
                   </div>
                 </div>
@@ -522,14 +523,14 @@ export default async function FiscalidadCriptoEspanaPage() {
               </p>
             </div>
 
-              {isPremium ? (
+              {isRegistered ? (
                 <GuideFiscalCalc />
               ) : (
                 <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-                  <div className="gbc-box-title">La calculadora por tramos es Premium</div>
+                  <div className="gbc-box-title">La calculadora por tramos es gratis con tu cuenta</div>
                   <div className="gbc-box-body">
                     <p>
-                      La escala y el funcionamiento marginal están contados arriba. La calculadora hace la cuenta con tu cifra y te enseña cuánto cae en cada tramo. <Link href="/premium">Hazte Premium</Link> para usarla.
+                      La escala y el funcionamiento marginal están contados arriba. La calculadora hace la cuenta con tu cifra y te enseña cuánto cae en cada tramo. <Link href="/register">Crea tu cuenta gratis</Link> para usarla.
                     </p>
                   </div>
                 </div>
@@ -769,8 +770,8 @@ export default async function FiscalidadCriptoEspanaPage() {
           </div>
         </section>
 
-      {/* ── MURO PREMIUM: las herramientas y el cierre ── */}
-      {isPremium ? (
+      {/* ── MURO DE REGISTRO: las herramientas y el cierre ── */}
+      {isRegistered ? (
         <>
           {/* ── SECCIÓN 9: ERRORES Y CALENDARIO ── */}
           <section id="errores" className="gbc-section">
@@ -871,7 +872,7 @@ export default async function FiscalidadCriptoEspanaPage() {
         <section id="errores" className="gbc-section">
           <div className="gbc-gc">
             <div className="gbc-ey">
-              Herramientas y cierre <span className="gbc-lock-pill">Premium</span>
+              Herramientas y cierre <span className="gbc-lock-pill">Registro gratuito</span>
             </div>
             <h2 className="gbc-title">Calendario fiscal, los seis errores caros y las herramientas</h2>
             <div className="gbc-body">
@@ -890,25 +891,16 @@ export default async function FiscalidadCriptoEspanaPage() {
 
             <div className="gbc-paywall" id="quiz">
               <div className="gbc-paywall-badge">Has leído las 8 secciones de teoría</div>
-              <div className="gbc-paywall-t">
-                {isRegistered
-                  ? "Hazte Premium para las herramientas"
-                  : "Las herramientas son Premium"}
-              </div>
+              <div className="gbc-paywall-t">Regístrate gratis para usar las herramientas</div>
               <div className="gbc-paywall-d">
-                La norma la tienes entera arriba. Lo que desbloquea Premium es aplicarla a tu caso:
+                La norma la tienes entera arriba. Con una cuenta gratuita la aplicas a tu caso:
                 el <strong>simulador FIFO</strong>, la <strong>calculadora por tramos</strong>, el
                 calendario con los errores caros, el quiz y tu badge{" "}
-                <strong>Cuentas Claras</strong>. Una sola declaración mal planteada cuesta más que la
-                suscripción de un año.
+                <strong>Cuentas Claras</strong>.
               </div>
-              <Link href="/premium" className="gbc-paywall-btn">Hazte Premium →</Link>
+              <Link href="/register" className="gbc-paywall-btn">Crear mi cuenta gratis →</Link>
               <div className="gbc-paywall-login">
-                {isRegistered ? (
-                  <>Ya tienes cuenta gratuita — solo te falta el acceso Premium.</>
-                ) : (
-                  <>¿Ya eres Premium? <Link href="/login">Inicia sesión</Link></>
-                )}
+                ¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link>
               </div>
             </div>
           </div>

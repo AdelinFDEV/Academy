@@ -65,9 +65,8 @@ function recortar(texto: string, maximo: number): string {
 }
 
 function plantillaGuia(guia: (typeof GUIDES_NEWEST_FIRST)[number]) {
-  const candado = guia.type === "premium" ? " 🔒" : "";
   return (
-    `📚 NUEVA GUÍA INTERACTIVA${candado}\n\n` +
+    `📚 NUEVA GUÍA INTERACTIVA\n\n` +
     `${guia.title}\n\n` +
     `${recortar(guia.description, 300)}\n\n` +
     `⏱ ${guia.readTime}  ·  🎯 ${guia.difficulty}  ·  🏅 ${guia.badge}`
@@ -78,67 +77,18 @@ function plantillaVideo(video: { title: string }) {
   return `🎥 NUEVO VÍDEO EN YOUTUBE\n\n${video.title}`;
 }
 
-/** Versión para el canal gratuito de algo que solo está dentro de Premium.
- *  No lleva el contenido, lleva el motivo para suscribirse. */
-function plantillaAnzuelo(titulo: string) {
-  return (
-    "🔒 NUEVA GUÍA PREMIUM\n\n" +
-    `${titulo}\n\n` +
-    "Está dentro de Premium, junto al canal privado y el resto de herramientas."
-  );
-}
-
 /**
- * A qué canales va cada cosa.
- *
- * La regla nace de una idea simple: un canal de pago lleno de lo mismo que hay
- * gratis deja de sentirse como algo de pago. Así que el contenido gratuito va
- * solo al canal free, y lo Premium va completo al canal privado y como reclamo
- * al gratuito — que es justo donde está quien todavía no ha pagado.
- *
- * Duplicar el aviso gratuito en ambos canales tampoco ayudaría: mucha gente
- * está en los dos y recibiría el mismo mensaje dos veces.
+ * Publica una guía en el canal gratuito. Desde el 31-10-2026 todas las guías
+ * son gratuitas, así que ya no hay aviso completo en el privado ni reclamo de
+ * Premium en el free: van solo al canal free, como todo lo gratuito.
+ * Si no hay canal free configurado, se publica en el privado para no perder
+ * el aviso.
  */
-async function publicarSegunPlan(opciones: {
-  esPremium: boolean;
-  titulo: string;
-  texto: string;
-  imagen?: string | null;
-  url: string;
-  etiquetaBoton: string;
-}) {
-  const canalFree = getFreeChannelId();
-
-  if (!opciones.esPremium) {
-    // Gratuito: solo al canal free. Si no hay canal free configurado, se
-    // publica en el privado para no perder el aviso.
-    await sendChannelPost(opciones.texto, {
-      imagen: opciones.imagen,
-      botones: [{ text: opciones.etiquetaBoton, url: opciones.url }],
-      chatId: canalFree ?? undefined,
-    });
-    return;
-  }
-
-  // Premium: el aviso completo al canal privado…
+async function publicarGuia(opciones: { texto: string; url: string; etiquetaBoton: string }) {
   await sendChannelPost(opciones.texto, {
-    imagen: opciones.imagen,
     botones: [{ text: opciones.etiquetaBoton, url: opciones.url }],
+    chatId: getFreeChannelId() ?? undefined,
   });
-
-  // …y el reclamo al gratuito. Que falle este no debe dar el aviso por
-  // perdido: el importante, el de los que pagan, ya salió.
-  if (canalFree) {
-    try {
-      await sendChannelPost(plantillaAnzuelo(opciones.titulo), {
-        imagen: opciones.imagen,
-        botones: [{ text: "💎 Ver qué incluye Premium", url: `${getSiteUrl()}/premium` }],
-        chatId: canalFree,
-      });
-    } catch (err) {
-      console.error("[announce] Falló el reclamo en el canal free:", err);
-    }
-  }
 }
 
 // ── Anunciadores ─────────────────────────────────────────────────────────────
@@ -152,9 +102,7 @@ async function anunciarGuias(admin: Admin): Promise<string[]> {
     if (!(await marcar(admin, "guia", guia.slug))) continue;
 
     try {
-      await publicarSegunPlan({
-        esPremium: guia.type === "premium",
-        titulo: guia.title,
+      await publicarGuia({
         texto: plantillaGuia(guia),
         url: `${getSiteUrl()}/guias/${guia.slug}`,
         etiquetaBoton: "📖 Abrir la guía",

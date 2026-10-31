@@ -223,8 +223,8 @@ export default async function CursosPage() {
                 <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
               </Link>
             )}
-            <Link href="/herramientas" className="det-btn det-btn--ghost">
-              Ver las herramientas
+            <Link href="/herramientas/diario" className="det-btn det-btn--ghost">
+              Ver el diario de trading
             </Link>
           </div>
         </section>

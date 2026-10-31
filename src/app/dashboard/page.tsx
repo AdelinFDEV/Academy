@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { NotebookPen, Unlock, Radar, Gem, Crown, ArrowRight, Check, Lock } from "lucide-react";
+import { NotebookPen, Wallet, Gem, Crown, ArrowRight, Check, Lock } from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardAtajos from "@/components/DashboardAtajos";
@@ -67,10 +67,6 @@ export default async function DashboardPage() {
       label: "Educación",
       tools: [
         { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
-        // Estaba como "soon" y con href "#", ademas de decir solo Solana. Las
-        // sesiones llevan semanas: desde octubre de 2026, solo martes y jueves y
-        // solo NASDAQ en 5 minutos.
-        { href: "/trading-en-directo", icon: "radio", name: "Trading en Directo",   desc: "Solo NASDAQ en 5 min · martes y jueves", locked: false, soon: false },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
         // "Pronto" hasta que se publique el primer curso; entonces, soon: false.
         { href: "/cursos",   icon: "graduationcap", name: "Cursos",               desc: "Por módulos, con examen y certificado", locked: false, soon: true },
@@ -79,15 +75,12 @@ export default async function DashboardPage() {
     {
       label: "Herramientas",
       tools: [
-        { href: isPremium ? "/dashboard/trading"         : "#", icon: "notebookpen",  name: "Diario de Trading",      desc: "Registra y analiza tus operaciones",                        locked: !isPremium, soon: false },
-        { href: "/dashboard/watchlist",                         icon: "scaneye",      name: "Watchlist",              desc: "Sigue el precio de tus coins",                              locked: false,      soon: false },
-        { href: "/logros",                                      icon: "trophy",       name: "Logros",                 desc: "Tu progreso y rachas",                                      locked: false,      soon: false },
-        { href: "/calculadora",                                 icon: "target",       name: "Predicción de Precio",   desc: "¿Qué Market Cap necesita tu token?",                        locked: false,      soon: false },
-        { href: isPremium ? "/portfolio"                 : "#", icon: "piechart",     name: "Portfolio Adelin",       desc: "Sigue las compras de AdelinBTC en SPOT",                    locked: !isPremium, soon: false },
-        { href: isPremium ? "/herramientas/liberaciones" : "#", icon: "unlock",       name: "Liberaciones de Tokens", desc: "Anticipa la presión vendedora con el calendario de vesting", locked: !isPremium, soon: false },
-        { href: isPremium ? "/herramientas/radar"        : "#", icon: "radar",        name: "Radar Diario",           desc: "Resumen del mercado y macro de EE. UU. (inflación y tipos)", locked: !isPremium, soon: false },
-        { href: isPremium ? "/dashboard/mi-portfolio"    : "#", icon: "piechart",     name: "Mi Portfolio",           desc: "Registra compras y ventas y sigue tu P&L en tiempo real",    locked: !isPremium, soon: false },
-        { href: "/dashboard/calculadora-riesgo",                icon: "shield",    name: "Calculadora de Riesgo",  desc: "Tamaño de posición según tu capital y riesgo",              locked: false,      soon: false },
+        // Desde el 31-10-2026 son estas cuatro: se retiraron Watchlist,
+        // Liberaciones, Radar, Mi Portfolio y la Calculadora de Riesgo.
+        { href: isPremium ? "/dashboard/trading" : "#", icon: "notebookpen", name: "Diario de Trading",    desc: "Registra y analiza tus operaciones",     locked: !isPremium, soon: false },
+        { href: isPremium ? "/portfolio"         : "#", icon: "piechart",    name: "Portfolio Adelin",     desc: "Sigue las compras de AdelinBTC en SPOT", locked: !isPremium, soon: false },
+        { href: "/calculadora",                         icon: "target",      name: "Predicción de Precio", desc: "¿Qué Market Cap necesita tu token?",     locked: false,      soon: false },
+        { href: "/logros",                              icon: "trophy",      name: "Logros",               desc: "Tu progreso y rachas",                   locked: false,      soon: false },
       ],
     },
   ];
@@ -214,24 +207,17 @@ export default async function DashboardPage() {
                 </div>
               </div>
               <div className="dash-upsell-feat">
-                <div className="dash-upsell-feat-icon"><Radar size={15} /></div>
+                <div className="dash-upsell-feat-icon"><Wallet size={15} /></div>
                 <div>
-                  <span className="dash-upsell-feat-name">Señales en Spot</span>
-                  <span className="dash-upsell-feat-desc">Entradas y salidas con criterio, no con corazonadas.</span>
-                </div>
-              </div>
-              <div className="dash-upsell-feat">
-                <div className="dash-upsell-feat-icon"><Unlock size={15} /></div>
-                <div>
-                  <span className="dash-upsell-feat-name">Liberaciones de Tokens</span>
-                  <span className="dash-upsell-feat-desc">Anticipa la presión vendedora con el calendario de vesting.</span>
+                  <span className="dash-upsell-feat-name">Portfolio Adelin</span>
+                  <span className="dash-upsell-feat-desc">Todas mis compras en spot, con precio de entrada y rentabilidad en tiempo real.</span>
                 </div>
               </div>
               <div className="dash-upsell-feat">
                 <div className="dash-upsell-feat-icon"><Gem size={15} /></div>
                 <div>
-                  <span className="dash-upsell-feat-name">Herramientas exclusivas</span>
-                  <span className="dash-upsell-feat-desc">Watchlist, estadísticas y todo lo que viene después.</span>
+                  <span className="dash-upsell-feat-name">Canal privado de Telegram</span>
+                  <span className="dash-upsell-feat-desc">La comunidad Premium y trato directo conmigo.</span>
                 </div>
               </div>
             </div>
@@ -266,7 +252,6 @@ export default async function DashboardPage() {
                 style={{ background: `linear-gradient(145deg, var(--card-bg), color-mix(in srgb, ${guide.color} 15%, transparent))` }}
               >
                 <Icon name="map" size={26} style={{ color: guide.color }} />
-                {guide.type === "premium" && <span className="dash-mini-badge">PREMIUM</span>}
               </div>
               <div className="dash-continue-body">
                 <span className="dash-continue-cat" style={{ color: guide.color }}>Guía Interactiva • {guide.difficulty}</span>

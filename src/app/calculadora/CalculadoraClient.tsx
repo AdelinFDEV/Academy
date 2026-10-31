@@ -423,7 +423,7 @@ export default function CalculadoraClient({ isLoggedIn }: { isLoggedIn: boolean 
                 <p className="calc-gate-title">Has usado tus tres cálculos gratis</p>
                 <p className="calc-gate-text">
                   Crea una cuenta gratuita y sigue calculando sin límite. También
-                  te abre la calculadora de riesgo y la watchlist, sin pagar nada.
+                  te abre todas las guías y tus logros, sin pagar nada.
                 </p>
                 <Link href="/register?next=/calculadora" className="calc-gate-cta">
                   Crear cuenta gratuita

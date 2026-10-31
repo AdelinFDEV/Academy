@@ -4,7 +4,6 @@ export interface GuideMeta {
   shortTitle: string;
   description: string;
   difficulty: "básico" | "intermedio" | "avanzado";
-  type: "free" | "premium";
   sections: number;
   badge: string;
   badgeId: string;
@@ -16,8 +15,17 @@ export interface GuideMeta {
    * Qué cierra la guía a quien entra sin sesión —que es como entra siempre
    * Googlebot—. Sale en el JSON-LD como `isAccessibleForFree`. `null` solo si
    * se lee entera sin cuenta: no declares abierta una guía que no lo está.
+   *
+   * Desde el 31-10-2026 TODAS las guías son gratuitas: lo más que piden es
+   * una cuenta gratuita. Ninguna va tras Premium.
    */
-  muro: "registro" | "premium" | null;
+  muro: "registro" | null;
+  /**
+   * Foto de portada, en `public/` (p. ej. `/guias/xrp.webp`). WebP a 1.600 px
+   * de ancho y calidad 82, como toda portada. Sin ella, las tarjetas pintan
+   * el color de la guía con su título corto.
+   */
+  portada?: string;
   /** Tiene su propio `opengraph-image.tsx` en su carpeta. */
   imagenPropia?: boolean;
 }
@@ -31,7 +39,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Blockchain",
     description: "De Satoshi al presente: historia, funcionamiento, estado actual y amenaza cuántica.",
     difficulty: "básico",
-    type: "free",
     sections: 8,
     badge: "Arquitecto de Cadenas",
     badgeId: "guide-blockchain",
@@ -47,7 +54,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Ciclos de Bitcoin",
     description: "El ciclo de 4 años del halving: por qué la fase bajista está terminando y qué esperar del próximo mercado alcista.",
     difficulty: "intermedio",
-    type: "free",
     sections: 5,
     badge: "Cazador de Ciclos",
     badgeId: "guide-ciclos-bitcoin",
@@ -63,7 +69,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Worldcoin",
     description: "El proyecto de Sam Altman que reparte criptomoneda a cambio de escanear tu iris: cómo funciona el Orb, qué es World ID y por qué ha sido prohibido en varios países.",
     difficulty: "intermedio",
-    type: "free",
     sections: 8,
     badge: "Prueba de Humanidad",
     badgeId: "guide-worldcoin",
@@ -79,7 +84,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Render",
     description: "El proyecto que conecta a artistas 3D con GPUs ociosas de todo el mundo: cómo funciona el renderizado descentralizado, su tokenomics Burn-and-Mint, la migración a Solana y por qué es la estrella del sector DePIN.",
     difficulty: "intermedio",
-    type: "free",
     sections: 8,
     badge: "Nodo Verificado",
     badgeId: "guide-render",
@@ -95,7 +99,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Hyperliquid",
     description: "El DEX de perpetuos que corre sobre su propia blockchain con un libro de órdenes 100% on-chain: cómo logra velocidad de exchange centralizado sin custodia, qué son HyperBFT y HyperEVM, el vault HLP y el token HYPE del airdrop sin fondos de inversores.",
     difficulty: "intermedio",
-    type: "free",
     sections: 8,
     badge: "Maestro del Libro de Órdenes",
     badgeId: "guide-hyperliquid",
@@ -111,7 +114,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "XRP y Ripple",
     description: "XRP, Ripple y el XRP Ledger explicados a fondo: la diferencia entre la empresa y el activo, cómo funciona el consenso sin minería del XRPL (RPCA y la UNL), su papel como moneda puente en pagos internacionales, el juicio con la SEC, el escrow y los riesgos de centralización. Con simulador de consenso, quiz y badge.",
     difficulty: "avanzado",
-    type: "free",
     sections: 8,
     badge: "Validador de Confianza",
     badgeId: "guide-xrp",
@@ -127,7 +129,6 @@ export const GUIDES: GuideMeta[] = [
     shortTitle: "Fiscalidad cripto",
     description: "Qué tributa y qué no, el método FIFO obligatorio, la escala del ahorro del 19% al 30%, cómo declarar staking, airdrops y minería, el modelo 721 de criptomonedas en el extranjero, el Impuesto sobre el Patrimonio y la compensación de pérdidas. Con simulador FIFO y calculadora de impuestos por tramos.",
     difficulty: "avanzado",
-    type: "free",
     sections: 9,
     badge: "Cuentas Claras",
     badgeId: "guide-fiscalidad-cripto",
@@ -135,7 +136,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Hechos imponibles", "FIFO y tramos del ahorro", "Staking, airdrops y minería", "Modelo 721 y Patrimonio"],
     tags: ["EXPLICACIONES"],
-    muro: "premium",
+    muro: "registro",
     imagenPropia: true,
   },
 ];

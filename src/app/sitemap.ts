@@ -21,11 +21,10 @@ export const revalidate = 3600;
 /**
  * Solo rutas públicas y indexables. Quedan fuera a propósito:
  *   - `/admin`, `/dashboard`, `/cuenta` — privadas.
- *   - `/calculadora`, `/portfolio`, `/herramientas/**` — redirigen a login o a
- *     premium, así que Google solo vería la redirección.
+ *   - `/portfolio` — redirige a login o a premium, así que Google solo vería
+ *     la redirección.
  *   - `/login`, `/register`, `/forgot-password`, `/auth/**`, `/mfa-challenge`,
  *     `/premium/gracias` — sin valor de búsqueda.
- *   - `/trading-en-directo` — solo admin.
  *   - `/logros` — está en `protectedRoutes` de `src/proxy.ts`, así que el
  *     middleware manda a login a quien no ha entrado. Ojo: la comprobación no
  *     se ve en su `page.tsx`, hay que mirar el middleware.
@@ -36,22 +35,11 @@ const STATIC_ROUTES: { path: string; priority: number; changeFrequency: Metadata
   { path: "", priority: 1.0, changeFrequency: "daily" },
   { path: "/guias", priority: 0.9, changeFrequency: "weekly" },
   { path: "/glosario", priority: 0.8, changeFrequency: "monthly" },
-  // Punto 13: el tercer pilar por fin tiene URL indexable. La landing es
-  // pública y responde 200 sin sesión; las herramientas con muro siguen fuera
-  // del sitemap y bloqueadas en robots.txt.
-  { path: "/herramientas", priority: 0.8, changeFrequency: "monthly" },
   { path: "/calculadora", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/trading-en-directo", priority: 0.7, changeFrequency: "monthly" },
   // Fichas públicas por herramienta: explican qué hay dentro sin abrir el
   // muro. La herramienta en sí sigue fuera del sitemap.
   { path: "/herramientas/portfolio", priority: 0.7, changeFrequency: "monthly" },
   { path: "/herramientas/diario", priority: 0.7, changeFrequency: "monthly" },
-  // Estas dos viven en la raíz, no bajo /herramientas/, y es a propósito: sus
-  // herramientas ocupan `/herramientas/radar` y `/herramientas/liberaciones`,
-  // que están en robots.txt — y el bloqueo es POR PREFIJO, así que cualquier
-  // URL que empiece igual habría quedado sin rastrear.
-  { path: "/radar-diario", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/calendario-de-liberaciones", priority: 0.7, changeFrequency: "monthly" },
   { path: "/premium", priority: 0.7, changeFrequency: "monthly" },
   { path: "/aviso-legal", priority: 0.2, changeFrequency: "yearly" },
   { path: "/privacidad", priority: 0.2, changeFrequency: "yearly" },

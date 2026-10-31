@@ -123,7 +123,7 @@ const FAQ = [
   },
   {
     q: "¿Incluye el trading apalancado?",
-    a: "No. Aquí solo hay compras en spot. La operativa con futuros se ve en Trading en Directo, que es otra herramienta.",
+    a: "No. Aquí solo hay compras en spot, sin futuros ni apalancamiento.",
   },
   {
     q: "¿Cada cuánto se actualiza?",
@@ -158,7 +158,6 @@ export default async function FichaPortfolioPage() {
         data={[
           breadcrumbSchema([
             { name: "Inicio", path: "/" },
-            { name: "Herramientas", path: "/herramientas" },
             { name: "Portfolio Adelin", path: "/herramientas/portfolio" },
           ]),
           {
@@ -186,8 +185,6 @@ export default async function FichaPortfolioPage() {
 
         <nav className="det-breadcrumb" aria-label="Migas de pan">
           <Link href="/">Inicio</Link>
-          <span aria-hidden="true">›</span>
-          <Link href="/herramientas">Herramientas</Link>
           <span aria-hidden="true">›</span>
           <span>Portfolio Adelin</span>
         </nav>
@@ -447,8 +444,7 @@ export default async function FichaPortfolioPage() {
             </li>
             <li>
               <strong>No incluye operativa apalancada.</strong> Aquí solo hay
-              spot. Los <Link href="/glosario/futuros">futuros</Link> se ven en{" "}
-              <Link href="/trading-en-directo">Trading en Directo</Link>.
+              spot: nada de <Link href="/glosario/futuros">futuros</Link>.
             </li>
           </ul>
         </section>
@@ -480,10 +476,8 @@ export default async function FichaPortfolioPage() {
           <h2 className="det-final-title">Ábrelo y júzgalo tú</h2>
           <p className="det-final-sub">
             Va incluido en la suscripción Premium, junto con el{" "}
-            <Link href="/herramientas/diario">diario de trading</Link>, el{" "}
-            <Link href="/trading-en-directo">directo</Link> y el resto de{" "}
-            <Link href="/herramientas">herramientas</Link>. Una sola cuota, sin
-            comprar nada por separado.
+            <Link href="/herramientas/diario">diario de trading</Link>. Una sola
+            cuota, sin comprar nada por separado.
           </p>
           <div className="det-actions">
             {isPremium ? (

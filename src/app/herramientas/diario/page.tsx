@@ -149,7 +149,6 @@ export default async function FichaDiarioPage() {
         data={[
           breadcrumbSchema([
             { name: "Inicio", path: "/" },
-            { name: "Herramientas", path: "/herramientas" },
             { name: "Diario de Trading", path: "/herramientas/diario" },
           ]),
           {
@@ -178,8 +177,6 @@ export default async function FichaDiarioPage() {
 
         <nav className="det-breadcrumb" aria-label="Migas de pan">
           <Link href="/">Inicio</Link>
-          <span aria-hidden="true">›</span>
-          <Link href="/herramientas">Herramientas</Link>
           <span aria-hidden="true">›</span>
           <span>Diario de Trading</span>
         </nav>
@@ -488,10 +485,8 @@ export default async function FichaDiarioPage() {
           <h2 className="det-final-title">Empieza por la próxima operación</h2>
           <p className="det-final-sub">
             Va incluido en la suscripción Premium, junto con el{" "}
-            <Link href="/herramientas/portfolio">portfolio</Link>, el{" "}
-            <Link href="/trading-en-directo">directo</Link> y el resto de{" "}
-            <Link href="/herramientas">herramientas</Link>. Una sola cuota, sin
-            comprar nada por separado.
+            <Link href="/herramientas/portfolio">portfolio</Link>. Una sola cuota,
+            sin comprar nada por separado.
           </p>
           <div className="det-actions">
             {isPremium ? (

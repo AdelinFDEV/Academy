@@ -86,7 +86,7 @@ export default function PrivacidadPage() {
             <tr>
               <td>Contenido que tú creas</td>
               <td>Al usar las herramientas</td>
-              <td>Diario de Trading (operaciones, notas, capital), watchlist, portfolio y términos guardados. Son <strong>privados</strong>: solo tú puedes verlos</td>
+              <td>Diario de Trading (operaciones, notas, capital), términos guardados y progreso en guías y cursos. Son <strong>privados</strong>: solo tú puedes verlos</td>
             </tr>
             <tr>
               <td>Datos de uso agregados</td>

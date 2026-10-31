@@ -25,11 +25,9 @@ function mensaje(): string {
     "💬 La sala de chat privada — el corazón de la comunidad. Se habla de mercado " +
     "todos los días y respondo yo en persona, no un bot.\n" +
     "📈 Mis entradas en spot, en directo y con el precio real de compra\n" +
-    `🛠 9 herramientas en ${dominio()} — diario de trading, radar diario, liberaciones de tokens, portfolio…\n` +
-    "📚 Todas las guías interactivas desbloqueadas\n\n" +
+    `🛠 En ${dominio()}: el diario de trading y mi portfolio en tiempo real\n\n` +
     "🔥 Aquí se trabaja a diario para intentar ganar dinero, con el máximo compromiso " +
     "por mi parte y por la de cada miembro. Nadie está de adorno.\n\n" +
-    "🔴 Trading en directo: solo NASDAQ en 5 minutos, martes y jueves.\n\n" +
     "Sin permanencia. Cancelas cuando quieras."
   );
 }

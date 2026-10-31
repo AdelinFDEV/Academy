@@ -122,6 +122,17 @@
   overflow: hidden;
 }
 
+/* La portada encabeza la tarjeta, a sangre: compensa el padding de la
+   tarjeta para tocar sus bordes. */
+.guias-card-portada {
+  margin: -1.75rem -1.75rem 0.25rem;
+  border-radius: 0;
+}
+
+.guias-card:hover .guia-portada-img {
+  transform: scale(1.05);
+}
+
 .guias-card:hover {
   transform: translateY(-3px);
   border-color: rgba(230,180,85,0.5);

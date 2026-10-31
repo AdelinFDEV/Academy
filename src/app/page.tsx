@@ -3,16 +3,13 @@ import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { ShieldCheck, Star } from "lucide-react";
 import Footer from "@/components/Footer";
-import TelegramBanner from "@/components/TelegramBanner";
 import SiteNav from "@/components/SiteNav";
-import LiveCounter from "@/components/LiveCounter";
 import GuideSearch from "@/components/GuideSearch";
 import PremiumPitch from "@/components/PremiumPitch";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
-import HeroSpotlight from "@/components/HeroSpotlight";
+import HeroSlider from "@/components/HeroSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
-import { GUIDES } from "@/lib/guides";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import "./home.css";
 
@@ -62,33 +59,11 @@ export default async function HomePage() {
         <div className="hero-aurora" aria-hidden="true" />
 
         <div className="hero-content">
-          {/* En movil el contador baja aqui, justo sobre el buscador: en la
-              barra le quitaba el sitio a «Entrar» y «Registrarse», que es lo
-              que de verdad tiene que poder pulsarse desde el telefono. En
-              escritorio sigue en la barra y esto no se pinta. */}
-          <div className="hero-contador hero-anim hero-anim-1">
-            <LiveCounter />
-          </div>
-
           <div className="hero-search-bar hero-anim hero-anim-1">
             <GuideSearch />
           </div>
 
-          <div className="hero-headline hero-anim hero-anim-2">
-            <h1 className="hero-title">
-              Todo lo que necesitas para <span className="text-gradient">dejar de improvisar</span> en cripto
-            </h1>
-            <p className="hero-subtitle">
-              Una única academia para tu camino cripto — sin dispersión, sin letra pequeña.
-            </p>
-          </div>
-
-          <HeroSpotlight
-            isLoggedIn={!!user}
-            isPremium={isPremium}
-            guidesCount={GUIDES.length}
-            portfolio={resumenPortfolio}
-          />
+          <HeroSlider isPremium={isPremium} portfolio={resumenPortfolio} />
 
           {!user && (
             <div className="hero-trust hero-anim hero-anim-4">
@@ -123,9 +98,7 @@ export default async function HomePage() {
 
       {/* ── Las guías, justo tras el hero ─────────────────────────────────
           Desde el 10-10-2026 la academia son las guías: el bloque entero
-          (destacada + cifras + catálogo) sube aquí. El bloque del mercado en
-          vivo que iba antes se retiró el mismo día: está en el Radar Diario. Antes había una fila con la
-          entrada destacada y la última guía, y este bloque iba tras Premium. */}
+          sube aquí, tras el hero. */}
       <GuidesHomeSection />
 
 
@@ -133,7 +106,7 @@ export default async function HomePage() {
           Hasta el 07-09-2026 esto eran dos columnas, con un lateral de 300 px
           que llevaba Herramientas, Educación y Categorías. Retirado a mano por
           el admin: el feed se queda con todo el ancho. Las herramientas siguen
-          accesibles desde la barra de navegación y desde /herramientas. */}
+          accesibles desde el menú y el dashboard. */}
       <div className="home-layout" id="feed">
 
         {/* Premium pitch — solo en móvil, bajo el feed. En escritorio no se
@@ -159,11 +132,6 @@ export default async function HomePage() {
 
 
       <Footer />
-
-      {/* Ya no lleva prop: apuntaba al bot y necesitaba que el servidor le
-          pasara el username. Ahora lee el canal de `lib/contacto`, que es una
-          constante y sí llega al cliente. */}
-      <TelegramBanner />
     </div>
   );
 }

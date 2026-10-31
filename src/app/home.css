@@ -132,11 +132,6 @@
   .hero-search-bar {
     margin-bottom: 2.4rem;
   }
-
-  .hero-headline {
-    gap: 1.35rem;
-    margin-bottom: 2.75rem;
-  }
 }
 
 /* ── Buscador — solo visible en móvil/tablet (el nav lo oculta) ── */
@@ -189,7 +184,6 @@
 }
 
 .hero-anim-1 { animation-delay: 0.05s; }
-.hero-anim-2 { animation-delay: 0.14s; }
 .hero-anim-4 { animation-delay: 0.5s; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -198,479 +192,11 @@
   .hero-aurora::after { animation: none; }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   HEADLINE — titular + eyebrow + subtítulo
-   ═══════════════════════════════════════════════════════════ */
-
-.hero-headline {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.95rem;
-  max-width: 720px;
-  margin: 0 auto 1.9rem;
-}
-
-/* Hairline editorial que cierra el bloque de titular: da un final
-   deliberado al texto antes de que empiecen las tarjetas. */
-.hero-headline::after {
-  content: "";
-  width: 92px;
-  height: 1px;
-  margin-top: 0.35rem;
-  background: linear-gradient(
-    to right,
-    transparent,
-    rgba(255, 154, 0, 0.55),
-    transparent);
-}
-
-.hero-title {
-  font-family: var(--font-display);
-  font-size: 2.1rem;
-  font-weight: 800;
-  line-height: 1.14;
-  letter-spacing: -0.028em;
-  color: #fff;
-  margin: 0;
-  /* Evita la línea huérfana de una sola palabra al partir el titular */
-  text-wrap: balance;
-  /* El vídeo de fondo asoma bajo el texto: una sombra muy suave
-     mantiene el blanco legible sin que se note como sombra. */
-  text-shadow: 0 2px 22px rgba(4, 9, 20, 0.55);
-}
-
-.hero-title .text-gradient {
-  position: relative;
-  font-family: inherit;
-  font-size: 1em;
-  font-weight: inherit;
-  padding: 0;
-  /* Naranja de tres paradas: el degradado de dos era plano al ocupar
-     media línea de titular. */
-  background: linear-gradient(100deg, #ffc46b 0%, #ff9a00 46%, #ff6b2b 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  /* Halo cálido detrás de las palabras acentuadas — el propio texto no
-     puede llevar sombra (está recortado al degradado). */
-  filter: drop-shadow(0 4px 26px rgba(255, 122, 26, 0.28));
-}
-
-.hero-subtitle {
-  font-size: 0.98rem;
-  line-height: 1.62;
-  letter-spacing: 0.005em;
-  color: rgba(217, 227, 248, 0.78);
-  max-width: 560px;
-  margin: 0;
-  text-wrap: pretty;
-}
-
-@media (min-width: 900px) {
-  .hero-title {
-    font-size: 3.05rem;
-    line-height: 1.1;
-  }
-
-  .hero-subtitle {
-    font-size: 1.06rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .hero-title {
-    font-size: 1.6rem;
-    line-height: 1.2;
-  }
-
-  .hero-subtitle {
-    font-size: 0.88rem;
-  }
-
-  .hero-headline::after {
-    width: 64px;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BENTO — las 4 herramientas destacadas
-   ═══════════════════════════════════════════════════════════ */
-
-.hero-spotlight {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.6rem;
-  width: 100%;
-}
-
-
 /* Destello compartido por la banda premium y sus variantes */
 @keyframes hero-cta-shine {
   0% { left: -60%; }
   55% { left: 130%; }
   100% { left: 130%; }
-}
-
-/* ── Banda Premium: el CTA principal del hero ── */
-
-/* Dos tarjetas en fila: un tercio para la cuenta gratuita y DOS TERCIOS para
-   la oferta Premium, que es lo que convierte y lo que necesita sitio: con la
-   columna estrecha su texto se partía en cuatro líneas. */
-.hero-bands {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 1rem;
-  width: 100%;
-}
-
-@media (max-width: 860px) {
-  .hero-bands {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Tarjeta gratuita: misma forma que la Premium, pero en neutro, para que el
-   dorado siga siendo lo que más llama. */
-.hero-free-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-  min-width: 0;
-  padding: 1.5rem 1.6rem;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(91, 141, 239, 0.1) 0%, rgba(9, 18, 36, 0.9) 60%);
-  border: 1.5px solid rgba(240, 244, 255, 0.12);
-  transition: transform 0.25s ease, border-color 0.25s ease;
-}
-
-/* Solo con ratón: en táctil el :hover se queda pegado tras tocar. */
-@media (hover: hover) {
-  .hero-free-card:hover {
-    transform: translateY(-3px);
-    border-color: rgba(240, 244, 255, 0.24);
-  }
-}
-
-/* En móvil, centrada como la tarjeta Premium que va justo debajo, y con el
-   mismo relleno, para que se lean como pareja. */
-@media (max-width: 760px) {
-  .hero-free-card {
-    align-items: center;
-    text-align: center;
-    padding: 1.4rem 1.3rem;
-  }
-
-  .hero-free-card-head {
-    align-items: center;
-  }
-
-  .hero-free-card .hero-band-tools {
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .hero-free-card .hero-band-tools-icons {
-    justify-content: center;
-  }
-
-  .hero-free-card-cta {
-    width: 100%;
-  }
-}
-
-.hero-free-card-head {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.hero-free-card-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.66rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #9db8f5;
-}
-
-.hero-free-card-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  color: #fff;
-  margin: 0;
-  line-height: 1.25;
-}
-
-.hero-free-card-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  font-size: 0.86rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #fff;
-  text-decoration: none;
-  /* Naranja de la marca, con texto blanco: el botón es lo que tiene que
-     llamar en esta tarjeta, no los iconos. */
-  background: linear-gradient(135deg, #ff8a4c 0%, var(--accent-orange, #ff6b2b) 55%, #e8551a 100%);
-  border: 1px solid rgba(255, 170, 120, 0.45);
-  padding: 0.72rem 1.4rem;
-  border-radius: 11px;
-  white-space: nowrap;
-  text-shadow: 0 1px 2px rgba(120, 40, 0, 0.35);
-  box-shadow: 0 8px 24px -6px rgba(255, 107, 43, 0.5);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-
-.hero-free-card-cta:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-  box-shadow: 0 12px 30px -6px rgba(255, 107, 43, 0.65);
-}
-
-/* Tarjeta Premium. Sobria a propósito: un filete dorado arriba, fondo oscuro
-   casi liso y el dorado reservado para el botón y los detalles. El brillo que
-   cruzaba la tarjeta y la mancha de luz restaban seriedad a un precio de
-   49,99 €. */
-.hero-premium-band {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background:
-    radial-gradient(120% 140% at 100% 0%, rgba(230, 180, 85, 0.09) 0%, transparent 55%),
-    linear-gradient(180deg, rgba(18, 26, 44, 0.95) 0%, rgba(10, 16, 30, 0.95) 100%);
-  border: 1px solid rgba(230, 180, 85, 0.22);
-  border-radius: 20px;
-  padding: 1.6rem 2rem;
-  overflow: hidden;
-  isolation: isolate;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 236, 190, 0.06),
-    0 18px 40px -24px rgba(0, 0, 0, 0.8);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-/* Filete superior dorado: el único adorno de la tarjeta. */
-.hero-premium-band::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(245, 214, 138, 0.55) 30%,
-    rgba(245, 214, 138, 0.55) 70%,
-    transparent 100%);
-  pointer-events: none;
-}
-
-@media (hover: hover) {
-  .hero-premium-band:hover {
-    border-color: rgba(230, 180, 85, 0.38);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 236, 190, 0.08),
-      0 22px 48px -24px rgba(0, 0, 0, 0.85),
-      0 0 0 1px rgba(230, 180, 85, 0.06);
-  }
-}
-
-.hero-premium-band-left {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-.hero-premium-band-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  width: fit-content;
-  padding: 0.22rem 0.6rem;
-  border-radius: 100px;
-  font-size: 0.64rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #f5d68a;
-  background: rgba(230, 180, 85, 0.1);
-  border: 1px solid rgba(230, 180, 85, 0.22);
-}
-
-.hero-premium-band-title {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  font-weight: 800;
-  letter-spacing: -0.015em;
-  color: #fff;
-  margin: 0;
-  line-height: 1.25;
-}
-
-.hero-premium-band-sub {
-  font-size: 0.86rem;
-  line-height: 1.55;
-  color: rgba(226, 232, 240, 0.66);
-  margin: 0;
-  max-width: 500px;
-}
-
-.hero-premium-band-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.2rem;
-  margin: 0.35rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.hero-premium-band-list li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgba(240, 244, 255, 0.86);
-}
-
-.hero-premium-band-list svg {
-  color: #e6b455;
-  flex-shrink: 0;
-}
-
-/* Bloque de precio, separado del texto por un filete vertical. */
-.hero-premium-band-right {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.7rem;
-  flex-shrink: 0;
-  min-width: 210px;
-  padding-left: 2rem;
-  border-left: 1px solid rgba(240, 244, 255, 0.08);
-  text-align: center;
-}
-
-.hero-premium-band-price {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.3rem;
-  line-height: 1;
-}
-
-.hero-premium-band-amount {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-
-.hero-premium-band-period {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: rgba(226, 232, 240, 0.55);
-}
-
-/* Botón: dorado sólido con un brillo interior arriba, texto oscuro y en
-   minúsculas. Sin subrayado ni mayúsculas, que lo hacían parecer un banner. */
-.hero-premium-band-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.8rem 1.4rem;
-  border-radius: 12px;
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: -0.005em;
-  color: #1c1204;
-  text-decoration: none;
-  white-space: nowrap;
-  background: linear-gradient(180deg, #f7dc96 0%, #e9b95a 100%);
-  border: 1px solid rgba(255, 226, 160, 0.6);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    0 10px 24px -10px rgba(230, 180, 85, 0.6);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-}
-
-.hero-premium-band-cta:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.04);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.3),
-    0 14px 30px -10px rgba(230, 180, 85, 0.75);
-}
-
-.hero-premium-band-cta:active {
-  transform: translateY(0);
-}
-
-.hero-premium-band-cta:focus-visible {
-  outline: 2px solid #f5d68a;
-  outline-offset: 3px;
-}
-
-.hero-premium-band-cta-arrow {
-  transition: transform 0.18s ease;
-}
-
-.hero-premium-band-cta:hover .hero-premium-band-cta-arrow {
-  transform: translateX(3px);
-}
-
-.hero-premium-band-note {
-  font-size: 0.72rem;
-  color: rgba(226, 232, 240, 0.5);
-}
-
-@media (max-width: 760px) {
-  .hero-premium-band {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    padding: 1.5rem 1.3rem;
-  }
-
-  .hero-premium-band-left {
-    align-items: center;
-    text-align: center;
-  }
-
-  .hero-premium-band-list {
-    justify-content: center;
-  }
-
-  /* En columna, el filete vertical pasa a ser horizontal. */
-  .hero-premium-band-right {
-    width: 100%;
-    min-width: 0;
-    padding-left: 0;
-    padding-top: 1.1rem;
-    border-left: none;
-    border-top: 1px solid rgba(240, 244, 255, 0.08);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-premium-band-cta:hover,
-  .hero-premium-band-cta:hover .hero-premium-band-cta-arrow {
-    transform: none;
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -776,493 +302,6 @@
 }
 
 /* ═══════════════════════════════════════════════════════════
-   GUÍAS — destacada + tres recientes + catálogo (GuidesHomeSection.tsx)
-   Identidad en oro: es la sección que se diferencia del resto
-   de la web (naranja) — no perder ese acento al pulir el diseño.
-   ═══════════════════════════════════════════════════════════ */
-
-.guides-home-section {
-  position: relative;
-  margin: 0;
-  padding: 5rem 2rem 6rem;
-  background: linear-gradient(180deg, var(--bg-dark) 0%, #0c1a30 40%, #0a1628 100%);
-  border-top: 1px solid var(--gold-border);
-  overflow: hidden;
-}
-
-.guides-home-glow {
-  position: absolute;
-  top: -120px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 700px;
-  height: 400px;
-  background: radial-gradient(ellipse at center, rgba(230, 180, 85, 0.09) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.guides-home-inner {
-  position: relative;
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-
-.guides-home-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 640px;
-}
-
-.guides-home-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.guides-home-title {
-  font-family: var(--font-display);
-  font-size: 2.4rem;
-  font-weight: 800;
-  line-height: 1.15;
-  color: var(--text-primary);
-}
-
-.guides-home-title-gold {
-  background: linear-gradient(90deg, var(--gold) 0%, #f5d07a 50%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.guides-home-subtitle {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
-}
-
-/* ── La guía destacada: todo el ancho, con dos columnas por dentro ── */
-
-.guides-featured-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
-  gap: 2.25rem;
-  background: linear-gradient(155deg, #10233f 0%, #0a1628 65%, #0d1c34 100%);
-  border: 1.5px solid var(--gold-border);
-  border-radius: 24px;
-  padding: 2.5rem;
-  overflow: hidden;
-  isolation: isolate;
-  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.guides-featured-card:hover {
-  border-color: rgba(230, 180, 85, 0.55);
-  box-shadow: 0 36px 84px -18px rgba(0, 0, 0, 0.55), 0 0 40px -8px rgba(230, 180, 85, 0.2);
-}
-
-.guides-featured-card-glow {
-  position: absolute;
-  top: -90px;
-  left: 30%;
-  width: 420px;
-  height: 320px;
-  background: radial-gradient(circle, rgba(230, 180, 85, 0.13) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-.guides-featured-card-shine {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.guides-featured-card-shine::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 35%;
-  height: 100%;
-  background: linear-gradient(105deg, transparent 20%, rgba(245, 214, 138, 0.06) 50%, transparent 80%);
-  transform: skewX(-20deg);
-  animation: hero-cta-shine 6s ease-in-out infinite;
-}
-
-.guides-featured-main {
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
-  min-width: 0;
-}
-
-.guides-featured-badges {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.guides-featured-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: rgba(230, 180, 85, 0.12);
-  border: 1px solid rgba(230, 180, 85, 0.3);
-  padding: 0.32rem 0.7rem;
-  border-radius: 100px;
-  white-space: nowrap;
-}
-
-.guides-featured-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.9rem;
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-}
-
-.guides-featured-title a {
-  color: var(--text-primary);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.guides-featured-title a:hover { color: #f5d07a; }
-
-.guides-featured-desc {
-  margin: 0;
-  max-width: 62ch;
-  font-size: 0.97rem;
-  color: var(--text-secondary);
-  line-height: 1.7;
-}
-
-.guides-featured-topics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.guides-topic-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.76rem;
-  font-weight: 500;
-  padding: 0.34rem 0.85rem 0.34rem 0.68rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-}
-
-.guides-topic-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--gold);
-  flex-shrink: 0;
-}
-
-.guides-featured-cta {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.4rem;
-  background: linear-gradient(135deg, var(--gold) 0%, #f5c842 100%);
-  color: #0a1628;
-  font-size: 0.97rem;
-  font-weight: 800;
-  padding: 0.88rem 2rem;
-  border-radius: 12px;
-  text-decoration: none;
-  overflow: hidden;
-  align-self: flex-start;
-  box-shadow: 0 10px 28px -8px rgba(230, 180, 85, 0.45);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-
-.guides-featured-cta-shine {
-  position: absolute;
-  top: 0;
-  left: -80%;
-  width: 55%;
-  height: 100%;
-  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.5) 50%, transparent 80%);
-  transform: skewX(-20deg);
-  animation: hero-cta-shine 4.5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.guides-featured-cta:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-  box-shadow: 0 14px 36px -6px rgba(230, 180, 85, 0.6);
-}
-
-/* El panel de la derecha: lo que incluye la guía */
-.guides-featured-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  padding: 1.5rem;
-  border-radius: 18px;
-  background: rgba(6, 14, 28, 0.55);
-  border: 1px solid rgba(230, 180, 85, 0.18);
-}
-
-.guides-featured-panel-title {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.guides-featured-incluye {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.guides-featured-incluye li {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.9rem;
-  line-height: 1.35;
-  color: var(--text-secondary);
-}
-
-.guides-featured-incluye strong { color: var(--text-primary); font-weight: 700; }
-
-.guides-featured-incluye-icono {
-  display: grid;
-  flex-shrink: 0;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: rgba(230, 180, 85, 0.12);
-  color: var(--gold);
-}
-
-.guides-featured-acceso {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  margin-top: auto;
-  padding: 0.6rem 0.9rem;
-  border-radius: 11px;
-  background: rgba(95, 211, 154, 0.08);
-  border: 1px solid rgba(95, 211, 154, 0.22);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #5fd39a;
-}
-
-.guides-featured-acceso--premium {
-  background: rgba(230, 180, 85, 0.1);
-  border-color: var(--gold-border);
-  color: var(--gold);
-}
-
-/* ── Las tres guías anteriores ── */
-
-.guides-recientes {
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-}
-
-.guides-recientes-titulo {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--text-primary);
-}
-
-/* Una línea fina hasta el borde: separa sin pesar */
-.guides-recientes-titulo::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, rgba(230, 180, 85, 0.3), transparent);
-}
-
-.guides-recientes-lista {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.1rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.guides-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  height: 100%;
-  padding: 1.45rem;
-  border-radius: 18px;
-  background: linear-gradient(160deg, #0f2038 0%, #0a1628 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  text-decoration: none;
-  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.guides-mini:hover {
-  border-color: var(--gold-border);
-  transform: translateY(-3px);
-  box-shadow: 0 22px 44px -22px rgba(0, 0, 0, 0.7), 0 0 28px -12px rgba(230, 180, 85, 0.25);
-}
-
-.guides-mini-top {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.guides-mini-titulo {
-  margin: 0;
-  font-size: 1.06rem;
-  font-weight: 800;
-  line-height: 1.3;
-  color: var(--text-primary);
-}
-
-.guides-mini-desc {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  font-size: 0.86rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
-
-.guides-mini-pie {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  margin-top: auto;
-  padding-top: 0.85rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.guides-mini-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.76rem;
-  color: var(--text-muted);
-}
-
-.guides-mini-meta svg { color: var(--gold); }
-
-.guides-mini-leer {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--gold);
-  transition: gap 0.2s ease;
-}
-
-.guides-mini:hover .guides-mini-leer { gap: 0.5rem; }
-
-/* ── El paso al catálogo ── */
-
-.guides-home-todas {
-  display: inline-flex;
-  align-items: center;
-  align-self: center;
-  gap: 0.6rem;
-  padding: 0.9rem 1.7rem;
-  border-radius: 12px;
-  border: 1px solid var(--gold-border);
-  background: rgba(230, 180, 85, 0.08);
-  font-size: 0.97rem;
-  font-weight: 800;
-  color: var(--gold);
-  text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
-}
-
-.guides-home-todas:hover {
-  background: rgba(230, 180, 85, 0.15);
-  border-color: rgba(230, 180, 85, 0.5);
-  transform: translateY(-2px);
-}
-
-.guides-home-todas-cifra {
-  min-width: 24px;
-  padding: 0.12rem 0.5rem;
-  border-radius: 100px;
-  background: rgba(230, 180, 85, 0.2);
-  font-size: 0.78rem;
-  text-align: center;
-}
-
-@media (max-width: 960px) {
-  .guides-featured-card { grid-template-columns: 1fr; gap: 1.6rem; }
-  .guides-home-title { font-size: 1.9rem; }
-}
-
-@media (max-width: 760px) {
-  .guides-recientes-lista { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 600px) {
-  .guides-home-section { padding: 3.5rem 1.25rem 4rem; }
-  .guides-home-title { font-size: 1.6rem; }
-  .guides-featured-card { padding: 1.5rem; }
-  .guides-featured-title { font-size: 1.35rem; }
-  .guides-home-todas { align-self: stretch; justify-content: center; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .guides-featured-card-shine::before,
-  .guides-featured-cta-shine {
-    animation: none;
-  }
-  .guides-mini:hover,
-  .guides-home-todas:hover { transform: none; }
-}
-
-/* ═══════════════════════════════════════════════════════════
    FILA DESTACADA — la entrada destacada, cuando la hay.
    Desde el 10-10-2026 solo lleva la entrada: la guía tiene su
    propio bloque justo encima (GuidesHomeSection).
@@ -1359,1239 +398,1338 @@
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   HERO DUO — dos tarjetas 50/50 sobre el bento: Asesoría 1:1
-   y suscripción Premium, cada una con su botón.
-   ═══════════════════════════════════════════════════════════ */
-
-
-
-/* Filo superior teñido: marca la identidad de cada tarjeta desde el
-   primer píxel, sin necesidad de más color en el cuerpo. */
-
-/* Barrido de luz al pasar el ratón */
-
-/* Premium es la conversión principal del hero: mismo formato que Asesoría,
-   pero con algo más de peso — borde y sombra propia — para que la mirada
-   caiga primero ahí sin romper la simetría del dúo. */
-
-
-
-
-
-@keyframes heroDuoSheen {
-  from { left: -35%; opacity: 0; }
-  25%  { opacity: 1; }
-  to   { left: 115%; opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-}
-
-
-
-
-/* Regla que continúa hasta el borde tras el eyebrow: aire estructurado
-   en lugar de un hueco vacío a la derecha. */
-
-
-
-
-
-
-
-/* Separador sutil: el precio y el botón forman su propia banda */
-
-
-
-/* Precio anterior tachado — el tachón va con el color de la tarjeta para
-   que se lea como oferta y no como una errata. */
-/* Letra pequeña honesta: duración de la sesión / condiciones */
-
-/* "desde" (precede al importe) va en versalitas; "/mes" (lo sigue) no */
-
-
-
-/* Botón sólido del color identitario de cada tarjeta */
-
-
-
-
-@media (max-width: 560px) {
-
-
-
-
-}
-
-/* ═══════════════════════════════════════════════════════════
-   ARSENAL — mosaico asimétrico de herramientas del hero.
-   Sustituye al antiguo bento de 4 columnas iguales: Guías es
-   el buque insignia (ancha), Diario columna alta, y cada
-   tarjeta enseña su herramienta con un microvisual propio.
-   ═══════════════════════════════════════════════════════════ */
-
-/* Riel editorial sobre el mosaico */
-
-
-
-
-
-/* Mosaico */
-
-.hero-arsenal {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  width: 100%;
-  margin-bottom: 1.6rem;
-}
-
-@media (min-width: 680px) {
-  .hero-arsenal {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  /* Tres tarjetas en dos columnas dejan una huérfana a media anchura, que se
-     lee como un hueco. La última ocupa la fila entera hasta que caben las tres
-     en línea. */
-  .hero-arsenal > :last-child {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (min-width: 1100px) {
-  .hero-arsenal > :last-child {
-    grid-column: auto;
-  }
-}
-
-@media (min-width: 1100px) {
-  /* Una sola fila de tres. Antes eran dos filas de tres con áreas nombradas;
-     al quedarse el hero con las tres que convierten suscripción, las áreas
-     sobran: el orden lo marca ya EN_EL_HERO en HeroSpotlight.tsx, y así no hay
-     dos sitios que puedan discrepar sobre en qué posición va cada tarjeta. */
-  .hero-arsenal {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Tarjeta de herramienta */
-
-
-
-
-
-/* Foco que sigue al cursor (posición vía --mx/--my desde el componente) */
-
-
-/* Línea de acento superior, firma de cada tarjeta */
-
-
-
-
-
-
-
-
-
-
-/* ── Microvisuales ────────────────────────────────────────── */
-
-
-/* Guías: ruta de nodos hacia el logro */
-.hero-viz-path {
-  display: flex;
-  align-items: center;
-  max-width: 340px;
-}
-
-.hero-viz-node {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 1px solid rgba(240, 244, 255, 0.16);
-  background: rgba(240, 244, 255, 0.05);
-  color: var(--text-muted);
-}
-
-.hero-viz-node.is-done {
-  border-color: color-mix(in srgb, var(--tool-color) 55%, transparent);
-  background: color-mix(in srgb, var(--tool-color) 18%, transparent);
-  color: var(--tool-color);
-}
-
-.hero-viz-node.is-now {
-  position: relative;
-  border-color: var(--tool-color);
-  background: color-mix(in srgb, var(--tool-color) 30%, transparent);
-}
-
-.hero-viz-node.is-now::after {
-  content: "";
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--tool-color) 55%, transparent);
-  animation: hero-viz-ring 2.2s ease-out infinite;
-}
-
-@keyframes hero-viz-ring {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
-
-.hero-viz-node.is-badge {
-  border-color: rgba(230, 180, 85, 0.55);
-  background: rgba(230, 180, 85, 0.16);
-  color: var(--premium-gold);
-  box-shadow: 0 0 18px -4px rgba(230, 180, 85, 0.6);
-}
-
-.hero-viz-link {
-  flex: 1;
-  height: 2px;
-  margin: 0 0.35rem;
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.1);
-}
-
-.hero-viz-link.is-done {
-  background: color-mix(in srgb, var(--tool-color) 55%, transparent);
-}
-
-/* ── Micrográfico del Diario ────────────────────────────────────────────
-   Rejilla en los dos ejes, viñeta radial para dar hueco al centro y un
-   borde interior que apoya el gráfico en la tarjeta en vez de dejarlo
-   flotando. El color lo hereda cada tarjeta vía --tool-color.            */
-.hero-viz-spark {
-  display: block;
-  width: 100%;
-  height: 68px;
-  border-radius: 12px;
-  overflow: visible;
-  background:
-    radial-gradient(120% 130% at 50% 100%, color-mix(in srgb, var(--tool-color) 9%, transparent), transparent 62%),
-    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px) 0 0 / 100% 17px,
-    linear-gradient(90deg, rgba(240, 244, 255, 0.03) 1px, transparent 1px) 0 0 / 44px 100%,
-    rgba(4, 11, 24, 0.55);
-  box-shadow:
-    inset 0 0 0 1px rgba(240, 244, 255, 0.05),
-    inset 0 14px 26px -18px color-mix(in srgb, var(--tool-color) 55%, transparent);
-}
-
-/* El trazo se dibuja al entrar: da sensación de dato vivo, no de adorno. */
-.hero-viz-draw {
-  stroke-dasharray: 320;
-  stroke-dashoffset: 320;
-  animation: heroVizDraw 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tool-color) 45%, transparent));
-}
-
-.hero-viz-tip {
-  opacity: 0;
-  animation: heroVizFade 0.4s ease-out 1.35s forwards;
-  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tool-color) 85%, transparent));
-}
-
-@keyframes heroVizDraw {
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes heroVizFade {
-  to { opacity: 1; }
-}
-
-/* Sin animación para quien la haya desactivado en su sistema: el gráfico
-   se muestra ya completo, no a medio dibujar. */
-@media (prefers-reduced-motion: reduce) {
-  .hero-viz-draw,
-  .hero-viz-tip,
-  .hero-viz-readout-num.is-result,
-  .hero-viz-readout-ref {
-    animation: none;
-    opacity: 1;
-    stroke-dashoffset: 0;
-  }
-}
-
-/* ── Predicción: lectura del resultado ──────────────────────────────────
-   Sin curva: la calculadora no proyecta un precio en el tiempo, responde
-   cuánto market cap exige un precio objetivo. La tarjeta reproduce ese
-   panel de resultado — pregunta arriba, cifra abajo, referencia debajo —
-   con el mismo fondo hundido que el micrográfico del Diario para que el
-   mosaico no se descuadre.                                              */
-.hero-viz-readout {
-  display: grid;
-  gap: 0.3rem;
-  padding: 0.68rem 0.8rem 0.6rem;
-  border-radius: 12px;
-  background:
-    radial-gradient(120% 130% at 100% 0%, color-mix(in srgb, var(--tool-color) 11%, transparent), transparent 62%),
-    rgba(4, 11, 24, 0.55);
-  box-shadow:
-    inset 0 0 0 1px rgba(240, 244, 255, 0.05),
-    inset 0 14px 26px -18px color-mix(in srgb, var(--tool-color) 55%, transparent);
-}
-
-.hero-viz-readout-line {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.hero-viz-readout-key {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.hero-viz-readout-num {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-/* La cifra que devuelve la herramienta: es la que tiene que cantar. */
-.hero-viz-readout-num.is-result {
-  font-size: 1.12rem;
-  font-weight: 700;
-  color: var(--tool-color);
-  opacity: 0;
-  animation: heroVizFade 0.5s ease-out 0.5s forwards;
-  text-shadow: 0 0 18px color-mix(in srgb, var(--tool-color) 45%, transparent);
-}
-
-/* "necesita" con hairlines a los lados: marca el paso de dato a resultado. */
-.hero-viz-readout-op {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.64rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--tool-color) 70%, transparent);
-}
-
-.hero-viz-readout-op::before,
-.hero-viz-readout-op::after {
-  content: "";
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(240, 244, 255, 0.14), transparent);
-}
-
-.hero-viz-readout-op::before { width: 14px; flex: none; }
-.hero-viz-readout-op::after  { flex: 1; }
-
-.hero-viz-readout-ref {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: 0.15rem;
-  padding-top: 0.45rem;
-  border-top: 1px solid rgba(240, 244, 255, 0.06);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  opacity: 0;
-  animation: heroVizFade 0.5s ease-out 0.85s forwards;
-}
-
-.hero-viz-readout-ref svg {
-  color: var(--tool-color);
-  flex-shrink: 0;
-}
-
-/* Liberaciones: barra de vesting */
-.hero-viz-vest-bar {
-  position: relative;
-  height: 9px;
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.07);
-  overflow: visible;
-}
-
-.hero-viz-vest-fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 42%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--tool-color) 65%, transparent), var(--tool-color));
-  box-shadow: 0 0 14px -2px color-mix(in srgb, var(--tool-color) 70%, transparent);
-}
-
-.hero-viz-vest-mark {
-  position: absolute;
-  top: 50%;
-  left: 42%;
-  width: 15px;
-  height: 15px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 2px solid var(--tool-color);
-  background: var(--bg-dark);
-  box-shadow: 0 0 12px -1px color-mix(in srgb, var(--tool-color) 80%, transparent);
-}
-
-.hero-viz-vest-meta {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0.55rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
-}
-
-/* Portfolio: posiciones con barra de asignación */
-.hero-viz-folio {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* Cada fila lleva el color de marca de su activo vía --row-color */
-.hero-viz-folio-row {
-  --row-color: var(--tool-color);
-
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.hero-viz-folio-dot {
-  flex-shrink: 0;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--row-color) 80%, #ffffff);
-  box-shadow: 0 0 8px -1px color-mix(in srgb, var(--row-color) 80%, transparent);
-}
-
-.hero-viz-folio-bar {
-  flex: 1;
-  height: 8px;
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.07);
-  overflow: hidden;
-}
-
-.hero-viz-folio-bar i {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--row-color) 55%, transparent), var(--row-color));
-  box-shadow: 0 0 10px -2px color-mix(in srgb, var(--row-color) 70%, transparent);
-}
-
-.hero-viz-folio-tag {
-  flex-shrink: 0;
-  min-width: 46px;
-  text-align: center;
-  padding: 0.14rem 0.45rem;
-  border: 1px solid color-mix(in srgb, var(--row-color) 45%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--row-color) 10%, transparent);
-  font-family: var(--font-display);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--row-color) 85%, #ffffff);
-}
-
-/* Trading en Directo: cabecera de la sala. La barra imita la cinta de una
-   retransmisión —señal, par y temporalidad— y debajo va lo que se ve durante
-   la sesión. El punto late para que se lea "en directo" de un vistazo. */
-.hero-viz-live {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.hero-viz-live-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 11px;
-  border: 1px solid color-mix(in srgb, var(--tool-color) 26%, transparent);
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--tool-color) 13%, transparent), transparent 70%),
-    rgba(4, 11, 24, 0.5);
-}
-
-.hero-viz-live-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: color-mix(in srgb, var(--tool-color) 88%, #ffffff);
-}
-
-.hero-viz-live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #ff5555;
-  box-shadow: 0 0 0 0 rgba(255, 85, 85, 0.55);
-  animation: hero-viz-live-beat 1.9s ease-out infinite;
-}
-
-@keyframes hero-viz-live-beat {
-  0%        { box-shadow: 0 0 0 0 rgba(255, 85, 85, 0.5); }
-  70%, 100% { box-shadow: 0 0 0 7px rgba(255, 85, 85, 0); }
-}
-
-.hero-viz-live-pair {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35rem;
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--text-secondary);
-}
-
-.hero-viz-live-pair em {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 0.68rem;
-  color: var(--text-muted);
-}
-
-.hero-viz-live-pair b {
-  padding: 0.1rem 0.38rem;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--tool-color) 18%, transparent);
-  font-size: 0.68rem;
-  color: color-mix(in srgb, var(--tool-color) 88%, #ffffff);
-}
-
-/* Lo que se ve en la sesión: viñetas con guion, no otra fila de chips —
-   los chips de la tarjeta ya están justo debajo. */
-.hero-viz-live-feed {
-  display: grid;
-  gap: 0.28rem;
-  padding-left: 0.15rem;
-}
-
-.hero-viz-live-feed span {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.hero-viz-live-feed span::before {
-  content: "";
-  width: 10px;
-  height: 1px;
-  flex: none;
-  background: color-mix(in srgb, var(--tool-color) 60%, transparent);
-}
-
-/* ── Nota, chips, colaboración, CTA de tarjeta ────────────── */
-
-
-
-
-
-
-
-
-.hero-collab-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 17px;
-  height: 17px;
-  border-radius: 5px;
-  background: #2172E5;
-}
-
-
-
-
-
-/* ── Dock de acciones (usuario premium) ───────────────────── */
-
-.hero-cta-zone {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.85rem;
-  width: 100%;
-}
-
-.hero-dock {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-}
-
-.hero-dock-primary {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1.35;
-  padding: 1.1rem 1.5rem;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #ff6b2b 0%, #ff9a00 100%);
-  text-decoration: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    0 0 0 1px rgba(255, 154, 0, 0.35),
-    0 14px 34px -14px rgba(255, 107, 43, 0.65);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.hero-dock-primary:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 0 0 4px rgba(255, 107, 43, 0.2),
-    0 18px 42px -14px rgba(255, 107, 43, 0.85);
-}
-
-.hero-dock-shine {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -80%;
-  width: 45%;
-  transform: skewX(-20deg);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-  animation: hero-dock-shine 3.4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes hero-dock-shine {
-  0% { left: -80%; }
-  55% { left: 135%; }
-  100% { left: 135%; }
-}
-
-.hero-dock-primary-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
-  color: #fff;
-}
-
-.hero-dock-primary-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.12rem;
-  min-width: 0;
-}
-
-.hero-dock-primary-text strong {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #fff;
-}
-
-.hero-dock-primary-text span {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.hero-dock-arrow {
-  margin-left: auto;
-  color: #fff;
-  transition: transform 0.25s ease;
-}
-
-.hero-dock-primary:hover .hero-dock-arrow {
-  transform: translateX(4px);
-}
-
-.hero-dock-guide {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  flex: 1;
-  padding: 1.1rem 1.4rem;
-  border: 1px solid rgba(230, 180, 85, 0.4);
-  border-radius: 18px;
-  background: rgba(230, 180, 85, 0.07);
-  text-decoration: none;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.hero-dock-guide:hover {
-  transform: translateY(-2px);
-  border-color: rgba(245, 200, 66, 0.65);
-  background: rgba(230, 180, 85, 0.12);
-  box-shadow: 0 14px 34px -18px rgba(230, 180, 85, 0.5);
-}
-
-.hero-dock-guide-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: rgba(230, 180, 85, 0.14);
-  color: var(--premium-gold);
-  box-shadow: inset 0 0 0 1px rgba(230, 180, 85, 0.32);
-}
-
-.hero-dock-guide-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  min-width: 0;
-}
-
-.hero-dock-guide-eyebrow {
-  font-family: var(--font-display);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--premium-gold);
-}
-
-.hero-dock-guide-text strong {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.hero-dock-guide-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-left: auto;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--premium-gold);
-}
-
-.hero-dock-guide-cta svg {
-  transition: transform 0.25s ease;
-}
-
-.hero-dock-guide:hover .hero-dock-guide-cta svg {
-  transform: translateX(3px);
-}
-
-/* ── Responsive y movimiento reducido ─────────────────────── */
-
-@media (max-width: 760px) {
-  .hero-dock {
-    flex-direction: column;
-  }
-
-  .hero-dock-guide-text strong {
-    white-space: normal;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-dock-shine,
-  .hero-viz-node.is-now::after,
-  .hero-viz-live-dot {
-    animation: none;
-  }
-
-  .tool:hover,
-  .hero-dock-primary:hover,
-  .hero-dock-guide:hover,
-  .hero-free-card:hover {
-    transform: none;
-  }
-}
-
-
 /* ══════════════════════════════════════════════════════════════════════════
-   LAS TRES PIEZAS — tarjetas del hero
+   SLIDER DEL HERO — Portfolio, Diario y Cursos (HeroSlider.tsx)
    ══════════════════════════════════════════════════════════════════════════
 
-   Reconstruidas de cero el 04-09-2026. Lo que tenían antes y por qué se fue:
+   Rehecho desde cero el 31-10-2026, cuando el hero se quedó solo con él.
+   Cada diapositiva es un escaparate a todo el ancho: a la izquierda el
+   argumento, a la derecha la herramienta por dentro, en una ventana de
+   aplicación. El color de cada pieza entra por --tool-color desde el catálogo
+   y es lo único que cambia entre las tres. */
 
-   · Cabecera "ARSENAL · 08 HERRAMIENTAS" con filete. Etiquetaba el bloque como
-     un catálogo y ponía una cifra que contradecía las tres tarjetas visibles.
-   · Icono grande + pastilla de estado compitiendo arriba. Dos focos de atención
-     antes del nombre del producto.
-   · Cápsulas redondas para cada característica. Baratas de leer: mucha caja,
-     poca sustancia.
+@property --hs-giro {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
 
-   La regla de esta versión: MENOS ELEMENTOS Y MÁS AIRE. Un solo acento de color
-   por tarjeta, una sola llamada a la acción, y el microvisual como pieza
-   central — enseñar el producto convence más que adjetivarlo.
-   ═════════════════════════════════════════════════════════════════════════ */
-
-.hero-arsenal {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.05rem;
+.hs {
   width: 100%;
-  margin-bottom: 1.9rem;
+  margin: 0 auto 1.4rem;
 }
 
-@media (min-width: 680px) {
-  .hero-arsenal { grid-template-columns: 1fr 1fr; }
-  .hero-arsenal > :last-child { grid-column: 1 / -1; }
+.hs-ventana {
+  overflow: hidden;
+  border-radius: 30px;
+  touch-action: pan-y;
 }
 
-@media (min-width: 1040px) {
-  .hero-arsenal { grid-template-columns: repeat(3, 1fr); }
-  .hero-arsenal > :last-child { grid-column: auto; }
-}
+/* ── El cambio de diapositiva ───────────────────────────────────────────
+   Tres cosas a la vez, con la misma curva suave de entrada y salida:
+   · la pista se desliza;
+   · la que se va se aleja (escala, se apaga y se desenfoca) y la que llega
+     se acerca, así el cambio se lee como profundidad y no como un corte;
+   · dentro de cada diapositiva, texto y ventana se desplazan a distinta
+     velocidad (parallax, con --rel desde el TSX): la ventana llega un poco
+     después que el texto.
+   Se usa la propiedad `translate` y no `transform` porque la ventana ya
+   lleva su inclinación en `transform`, y así no se pisan. */
 
-.tool {
+.hs-pista {
   display: flex;
-  border-radius: 18px;
-  /* El color propio de cada herramienta entra por variable desde el TSX y es
-     lo ÚNICO que las diferencia: misma estructura, distinto acento. */
-  --tool-tint: color-mix(in srgb, var(--tool-color) 100%, transparent);
+  transition: transform 1.1s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-.tool-link {
+.hs-diapo {
+  transition:
+    scale 1.1s cubic-bezier(0.76, 0, 0.24, 1),
+    opacity 0.9s ease,
+    filter 0.9s ease;
+  scale: 0.9;
+  opacity: 0.35;
+  filter: blur(3px) saturate(0.6);
+}
+
+.hs-diapo.is-activa {
+  scale: 1;
+  opacity: 1;
+  filter: none;
+}
+
+.hs-texto,
+.hs-app {
+  transition: translate 1.1s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.hs-texto {
+  translate: calc(var(--rel, 0) * 14%) 0;
+}
+
+.hs-app {
+  translate: calc(var(--rel, 0) * 34%) 0;
+}
+
+/* Mientras el dedo arrastra, la pista lo sigue sin retraso. */
+.hs-ventana.is-arrastrando .hs-pista {
+  transition: none;
+}
+
+/* ── La diapositiva: un borde de luz que gira, y el marco dentro ────────── */
+
+.hs-diapo {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: flex;
+  padding: 1px;
+  border-radius: 30px;
+  background:
+    conic-gradient(from var(--hs-giro),
+      transparent 0deg,
+      color-mix(in srgb, var(--tool-color) 85%, #fff) 40deg,
+      transparent 110deg,
+      transparent 180deg,
+      color-mix(in srgb, var(--tool-color) 40%, transparent) 230deg,
+      transparent 300deg),
+    rgba(240, 244, 255, 0.08);
+}
+
+.hs-diapo.is-activa {
+  animation: hs-girar 9s linear infinite;
+}
+
+@keyframes hs-girar {
+  to { --hs-giro: 360deg; }
+}
+
+.hs-marco {
   position: relative;
   isolation: isolate;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 1.55rem 1.45rem 1.35rem;
-  border: 1px solid rgba(240, 244, 255, 0.075);
-  border-radius: 18px;
-  text-decoration: none;
-  color: inherit;
   overflow: hidden;
-  /* Fondo profundo con una insinuación del color de la herramienta arriba.
-     Muy sutil a propósito: el color debe reconocerse, no gritar. */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.8rem;
+  width: 100%;
+  padding: 2rem 1.4rem 1.6rem;
+  border-radius: 29px;
+  text-align: left;
   background:
-    radial-gradient(120% 90% at 50% -20%, color-mix(in srgb, var(--tool-tint) 9%, transparent) 0%, transparent 62%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.008) 100%),
-    rgba(9, 13, 24, 0.72);
-  transition: border-color 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.28s ease;
+    radial-gradient(70% 90% at 88% 30%, color-mix(in srgb, var(--tool-color) 20%, transparent) 0%, transparent 65%),
+    radial-gradient(60% 70% at 0% 100%, color-mix(in srgb, var(--tool-color) 9%, transparent) 0%, transparent 70%),
+    linear-gradient(160deg, #0d1527 0%, #070c18 100%);
 }
 
-.tool:hover .tool-link {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--tool-tint) 34%, transparent);
-  box-shadow:
-    0 20px 50px -26px rgba(0, 0, 0, 0.85),
-    0 0 0 1px color-mix(in srgb, var(--tool-tint) 10%, transparent);
-}
-
-/* Halo que sigue al cursor. Las variables --mx/--my las escribe trackSpot. */
-.tool-aura {
+/* Retícula fina que se desvanece hacia el texto: da profundidad técnica sin
+   competir con el contenido. */
+.hs-marco::before {
+  content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  opacity: 0;
-  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0%),
-    color-mix(in srgb, var(--tool-tint) 13%, transparent) 0%, transparent 70%);
-  transition: opacity 0.35s ease;
+  background-image:
+    linear-gradient(rgba(240, 244, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 244, 255, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(75% 85% at 80% 40%, #000 0%, transparent 75%);
 }
 
-.tool:hover .tool-aura { opacity: 1; }
+/* El número de la pieza, enorme y casi invisible, como marca de agua. */
+.hs-indice {
+  position: absolute;
+  z-index: -1;
+  right: -0.04em;
+  bottom: -0.22em;
+  font-family: var(--font-display);
+  font-size: clamp(9rem, 22vw, 17rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--tool-color) 22%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
 
-/* ── Contenido ─────────────────────────────────────────────────────────── */
+@media (min-width: 900px) {
+  .hs-marco {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+    align-items: center;
+    gap: 3.4rem;
+    min-height: 470px;
+    padding: 3.2rem 3.4rem;
+  }
 
-.tool-eyebrow {
+  .hs-indice {
+    right: auto;
+    left: 46%;
+  }
+}
+
+/* ── Entrada del contenido, escalonada, cada vez que la diapositiva llega ── */
+
+/* El contenido está siempre visible: la animación parte de invisible y,
+   con fill-mode both, lo oculta solo mientras espera su turno. Así la
+   diapositiva que se va no se queda vacía mientras sale. */
+.hs-diapo.is-activa .hs-entra {
+  animation: hs-entrar 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.18s + var(--d, 0) * 0.08s);
+}
+
+@keyframes hs-entrar {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+/* ── Texto ─────────────────────────────────────────────────────────────── */
+
+.hs-texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+/* El icono de la pieza, como sello. Sin texto: «Premium» no distinguía
+   nada (todo es de pago menos las guías). Solo lleva texto lo que aún no
+   está disponible. */
+.hs-sello {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  font-size: 0.63rem;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.hs-sello-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--tool-color) 75%, #fff) 0%, var(--tool-color) 100%);
+  color: #070c18;
+  box-shadow:
+    0 12px 30px -10px var(--tool-color),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.hs-sello-texto {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 40%, transparent);
+  border-radius: 999px;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tool-tint) 78%, #f0f4ff);
-  margin-bottom: 0.85rem;
+  color: color-mix(in srgb, var(--tool-color) 80%, #fff);
 }
 
-.tool-name {
-  margin: 0 0 0.5rem;
-  font-size: 1.32rem;
-  line-height: 1.2;
-  letter-spacing: -0.022em;
-  color: rgba(240, 244, 255, 0.97);
+.hs-titulo {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 4.6vw, 3.5rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+  color: #fff;
 }
 
-.tool-claim {
-  margin: 0 0 1.15rem;
-  font-size: 0.895rem;
-  line-height: 1.62;
-  color: rgba(240, 244, 255, 0.6);
+.hs-claim {
+  max-width: 34rem;
+  margin: 0 0 1.4rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(226, 232, 246, 0.7);
+  text-wrap: pretty;
 }
 
-/* La ventana al producto: enmarcada e inset, para que se lea como una captura
-   de la herramienta y no como decoración del fondo. */
-.tool-stage {
-  display: block;
-  padding: 0.9rem 0.85rem;
-  margin-bottom: 1.05rem;
-  border: 1px solid rgba(240, 244, 255, 0.06);
-  border-radius: 12px;
-  background: rgba(4, 7, 14, 0.5);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.028);
-}
-
-/* Respaldo en una línea, en versalitas y con separador fino. Sustituye a las
-   cápsulas: mismo contenido, la mitad de ruido. */
-.tool-proof {
+.hs-puntos-fuertes {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.15rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.055em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.42);
+  gap: 0.55rem 1.4rem;
+  margin: 0 0 1.9rem;
+  padding: 0;
+  list-style: none;
 }
 
-.tool-proof-item {
+.hs-puntos-fuertes li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.88);
+}
+
+.hs-puntos-fuertes svg {
+  color: var(--tool-color);
+}
+
+.hs-accion {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.tool-proof-sep {
-  display: inline-block;
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(240, 244, 255, 0.22);
-}
-
-/* Portfolio: «PnL real · Posiciones en vivo», con el tinte de la tarjeta y un
-   punto que late delante de lo que está en vivo. */
-.tool-proof--destacada {
-  font-size: 0.74rem;
+  min-height: 50px;
+  padding: 0 1.45rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: color-mix(in srgb, var(--tool-tint) 80%, #f0f4ff);
+  text-decoration: none;
+  /* Blanco: el color de la pieza ya está en el sello, el borde y la ventana,
+     y el dorado queda para «Hazte Premium». */
+  color: #070c18;
+  background: #fff;
+  box-shadow: 0 14px 34px -16px rgba(255, 255, 255, 0.55);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
 }
 
-.tool-proof--destacada .tool-proof-sep {
-  background: color-mix(in srgb, var(--tool-tint) 55%, transparent);
+.hs-accion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 44px -16px rgba(255, 255, 255, 0.7);
 }
 
-.tool-proof-live {
-  display: inline-block;
+.hs-accion svg {
+  transition: transform 0.25s ease;
+}
+
+.hs-accion:hover svg {
+  transform: translateX(3px);
+}
+
+/* ── La ventana de aplicación ──────────────────────────────────────────── */
+
+.hs-app {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(14, 22, 40, 0.92) 0%, rgba(6, 10, 20, 0.95) 100%);
+  box-shadow:
+    0 40px 80px -40px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(0, 0, 0, 0.4),
+    0 30px 90px -50px var(--tool-color);
+}
+
+@media (min-width: 900px) {
+  /* Un punto de perspectiva: la ventana se inclina hacia el texto. */
+  .hs-app {
+    transform: perspective(1400px) rotateY(-7deg) rotateX(2deg);
+    transform-origin: left center;
+  }
+
+  .hs-diapo.is-activa .hs-app.hs-entra {
+    animation-name: hs-entrar-app;
+  }
+
+  @keyframes hs-entrar-app {
+    from { opacity: 0; transform: perspective(1400px) rotateY(-16deg) rotateX(4deg) translateX(24px); }
+    to { opacity: 1; transform: perspective(1400px) rotateY(-7deg) rotateX(2deg); }
+  }
+}
+
+.hs-app-barra {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.07);
+}
+
+.hs-app-luces {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.hs-app-luces i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(240, 244, 255, 0.14);
+}
+
+.hs-app-ruta {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.28rem 0.7rem;
+  border-radius: 8px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.72rem;
+  color: rgba(240, 244, 255, 0.45);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hs-app-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.22rem 0.55rem;
+  border: 1px solid rgba(240, 244, 255, 0.14);
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.55);
+  white-space: nowrap;
+}
+
+.hs-app-etiqueta.is-vivo {
+  border-color: rgba(74, 222, 128, 0.35);
+  color: #4ade80;
+}
+
+.hs-app-etiqueta.is-vivo i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: #4ade80;
-  animation: tool-proof-live 1.8s ease-in-out infinite;
+  animation: hs-latido 1.8s ease-in-out infinite;
 }
 
-@keyframes tool-proof-live {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
-  50%      { box-shadow: 0 0 0 4px rgba(74, 222, 128, 0); }
+@keyframes hs-latido {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55); }
+  50% { box-shadow: 0 0 0 5px rgba(74, 222, 128, 0); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .tool-proof-live { animation: none; }
+.hs-app-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 1.4rem 1.3rem 1.5rem;
 }
 
-.tool-collab {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
+@media (min-width: 900px) {
+  .hs-app-cuerpo { padding: 1.7rem 1.7rem 1.8rem; }
+}
+
+.hs .es-verde { color: #4ade80; }
+.hs .es-rojo { color: #f87171; }
+
+/* Portfolio */
+
+.hs-kpi {
+  display: flex;
+  flex-direction: column;
   gap: 0.35rem;
-  margin: -0.5rem 0 1.05rem;
-  font-size: 0.72rem;
-  color: rgba(240, 244, 255, 0.4);
 }
 
-/* Las acciones se pegan al pie aunque los textos midan distinto: las tres
-   tarjetas terminan alineadas, que es la mitad de la sensación de acabado. */
-/* Las acciones se pegan al pie aunque los textos midan distinto: las tres
-   tarjetas terminan alineadas, que es la mitad de la sensación de acabado.
-
-   Son DOS BOTONES de verdad, con cuerpo, no enlaces de texto. La primera
-   versión dejó la secundaria como un enlace subrayado para que no compitiera
-   con la principal, y el resultado se leía como un pie de página: en una
-   tarjeta de producto, un enlace suelto parece un descuido, no una decisión. */
-.tool-actions {
-  display: flex;
-  align-items: stretch;
-  gap: 0.55rem;
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(240, 244, 255, 0.055);
+.hs-kpi-key {
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.5);
 }
 
-/* Base común: misma altura y mismo radio en las dos, que es lo que hace que
-   el par se lea como un grupo y no como dos piezas pegadas. */
-.tool-action,
-.tool-detalle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  min-height: 40px;
-  padding: 0 1.05rem;
-  border-radius: 11px;
-  font-size: 0.855rem;
-  font-weight: 650;
-  letter-spacing: -0.005em;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform 0.2s ease, filter 0.2s ease,
-              background-color 0.2s ease, border-color 0.2s ease;
+.hs-kpi-num {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 4.6rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 40px currentColor;
 }
 
-/* Principal: cuerpo sólido en el color de la herramienta, texto oscuro. Es la
-   que convierte, así que es la única con relleno saturado. */
-.tool-action {
-  flex: 1 1 auto;
-  color: #0b0f1a;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--tool-tint) 62%, #ffffff) 0%,
-    var(--tool-tint) 100%);
-  box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tool-tint) 70%, transparent);
+.hs-fichas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
 }
 
-.tool-action:hover {
-  filter: brightness(1.06);
-  transform: translateY(-1px);
+.hs-fichas--tres {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-/* Secundaria: cuerpo blanco translúcido sobre el fondo oscuro. Tiene el mismo
-   peso visual que la principal —también es un botón— pero sin color de marca,
-   así que la jerarquía se mantiene sin degradarla a enlace. */
-.tool-detalle {
-  flex: 0 0 auto;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.075);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-.tool-detalle:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.13);
-  border-color: rgba(255, 255, 255, 0.28);
-  transform: translateY(-1px);
-}
-
-/* Tarjetas estrechas: antes de que los textos se corten, los botones se apilan
-   y ocupan el ancho. */
-@media (max-width: 380px) {
-  .tool-actions { flex-direction: column; }
-  .tool-detalle { flex: 1 1 auto; }
-}
-
-@media (max-width: 560px) {
-  .tool-link { padding: 1.35rem 1.2rem 1.2rem; }
-  .tool-name { font-size: 1.22rem; }
-}
-
-/* ── Alineación entre las tres tarjetas ────────────────────────────────────
-   Cada tarjeta medía sus zonas por su cuenta, así que una descripción de dos
-   líneas frente a otra de tres subía el microvisual y la línea de respaldo, y
-   las tres dejaban de cuadrar en horizontal.
-
-   Se resuelve con `subgrid`: las filas las define la rejilla del bloque y cada
-   tarjeta se cuelga de ellas, de modo que el título, la descripción, la
-   ventana del producto, el respaldo y los botones **empiezan a la misma altura
-   en las tres**, sin fijar alturas a mano que se romperían al cambiar un texto.
-
-   Solo a partir de 1040 px, que es cuando van en línea: apiladas no hay nada
-   que alinear. Y bajo @supports, porque un navegador sin subgrid debe quedarse
-   con el flex de arriba, que sigue siendo correcto aunque no cuadre igual. */
-
-@supports (grid-template-rows: subgrid) {
-  @media (min-width: 1040px) {
-    .hero-arsenal {
-      /* eyebrow · título · descripción · ventana · respaldo · botones */
-      grid-template-rows: repeat(6, auto);
-    }
-
-    .tool,
-    .tool-link {
-      display: grid;
-      grid-row: span 6;
-      grid-template-rows: subgrid;
-    }
-
-    /* El halo va en absoluto, así que no ocupa fila; se le ancla al alto
-       completo para que cubra la tarjeta entera igual que antes. */
-    .tool-aura {
-      grid-row: 1 / -1;
-    }
-  }
-}
-
-
-/* ── Tira de herramientas dentro de la banda ───────────────────────────────
-   Los ocho iconos hacen de escaparate: se entiende que hay más que las tres
-   tarjetas del hero sin escribir una lista. El enlace va al final, alineado a
-   la derecha en pantallas anchas. */
-
-.hero-band-tools {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.85rem;
-  min-width: 0;
-}
-
-.hero-band-tools-icons {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-
-.hero-band-tool-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  color: var(--icon-color);
-  background: color-mix(in srgb, var(--icon-color) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--icon-color) 22%, transparent);
-}
-
-.hero-band-tools-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  flex-shrink: 0;
-  font-size: 0.84rem;
-  font-weight: 650;
-  color: rgba(240, 244, 255, 0.86);
-  text-decoration: none;
-  transition: gap 0.2s ease, color 0.2s ease;
-}
-
-.hero-band-tools-link:hover {
-  color: #ffffff;
-  gap: 0.62rem;
-}
-
-/* La zona Premium conserva el reparto izquierda/derecha que tenía la banda. */
-.hero-premium-band-main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.75rem;
-  width: 100%;
-}
-
-@media (max-width: 720px) {
-  .hero-premium-band-main {
-    flex-direction: column;
-    /* stretch y no flex-start: el texto ya va centrado y, pegado a la
-       izquierda, desentonaba con la tarjeta gratuita de encima. */
-    align-items: stretch;
-    gap: 1.15rem;
-  }
-}
-
-@media (max-width: 860px) {
-  .hero-band-tools {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-  }
-}
-
-/* ── Cifras en las tarjetas del hero ───────────────────────────────────────
-   Sustituyen al microvisual en Portfolio y Diario: un número grande y
-   verificable convence más que un gráfico decorativo. */
-
-.hero-cifras {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.hero-cifras-main {
+.hs-ficha {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.025);
 }
 
-.hero-cifras-num {
-  /* Tabulares: la cifra no baila de ancho al cambiar el precio de mercado. */
+.hs-ficha b {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+  color: #fff;
+}
+
+.hs-ficha span {
+  font-size: 0.72rem;
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.hs-posiciones {
+  display: flex;
+  gap: 5px;
+}
+
+.hs-posiciones i {
+  flex: 1;
+  height: 26px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--tool-color) 0%, color-mix(in srgb, var(--tool-color) 25%, transparent) 100%);
+  opacity: 0.85;
+}
+
+.hs-diapo.is-activa .hs-posiciones i {
+  animation: hs-subir 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.5s + var(--i) * 0.06s);
+}
+
+@keyframes hs-subir {
+  from { opacity: 0.25; transform: scaleY(0.4); }
+}
+
+.hs-vacio {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(240, 244, 255, 0.7);
+}
+
+/* Diario */
+
+.hs-grafico svg {
+  display: block;
+  width: 100%;
+  height: 110px;
+  overflow: visible;
+}
+
+.hs-curva {
+  stroke: var(--tool-color);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--tool-color) 60%, transparent));
+}
+
+.hs-diapo.is-activa .hs-curva {
+  animation: hs-trazar 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+@keyframes hs-trazar {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.hs-operaciones {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-operaciones li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid rgba(240, 244, 255, 0.06);
+  font-size: 0.82rem;
+}
+
+.hs-op-par {
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.88);
+}
+
+.hs-op-lado {
+  font-size: 0.72rem;
+  color: rgba(240, 244, 255, 0.45);
+}
+
+.hs-op-r {
+  min-width: 4.2rem;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  font-size: 2.15rem;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  color: rgba(240, 244, 255, 0.97);
+  text-align: right;
 }
 
-.hero-cifras-num.es-verde { color: #4ade80; }
-.hero-cifras-num.es-rojo { color: #f87171; }
+/* Cursos */
 
-.hero-cifras-key {
+.hs-modulos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hs-modulo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.025);
+  font-size: 0.86rem;
+}
+
+.hs-modulo-marca {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  color: rgba(240, 244, 255, 0.5);
+}
+
+.hs-modulo.is-hecho .hs-modulo-marca {
+  border-color: transparent;
+  background: var(--tool-color);
+  color: #070c18;
+}
+
+.hs-modulo.is-ahora {
+  border-color: color-mix(in srgb, var(--tool-color) 45%, transparent);
+  background: color-mix(in srgb, var(--tool-color) 8%, transparent);
+}
+
+.hs-modulo.is-ahora .hs-modulo-marca {
+  border-color: var(--tool-color);
+  box-shadow: inset 0 0 0 4px #0b1325, inset 0 0 0 12px var(--tool-color);
+}
+
+.hs-modulo.is-cerrado {
+  color: rgba(240, 244, 255, 0.45);
+}
+
+.hs-modulo-nombre {
+  font-weight: 600;
+  color: rgba(240, 244, 255, 0.88);
+}
+
+.hs-modulo.is-cerrado .hs-modulo-nombre {
+  color: inherit;
+}
+
+.hs-modulo-nota {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tool-color);
+}
+
+.hs-modulo-barra {
+  width: 84px;
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(240, 244, 255, 0.1);
+}
+
+.hs-modulo-barra i {
+  display: block;
+  width: 62%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tool-color);
+  transform-origin: left;
+}
+
+.hs-diapo.is-activa .hs-modulo-barra i {
+  animation: hs-llenar 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+}
+
+@keyframes hs-llenar {
+  from { transform: scaleX(0); }
+  to { transform: none; }
+}
+
+.hs-certificado {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.9rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--tool-color) 45%, transparent);
+  border-radius: 14px;
+  background:
+    linear-gradient(110deg, transparent 30%, color-mix(in srgb, var(--tool-color) 18%, transparent) 50%, transparent 70%) 0 0 / 250% 100%,
+    color-mix(in srgb, var(--tool-color) 7%, transparent);
+  color: var(--tool-color);
+}
+
+.hs-diapo.is-activa .hs-certificado {
+  animation: hs-brillo 3.5s ease-in-out 1s infinite;
+}
+
+@keyframes hs-brillo {
+  0% { background-position: 100% 0, 0 0; }
+  60%, 100% { background-position: -50% 0, 0 0; }
+}
+
+.hs-certificado > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.hs-certificado b {
+  font-size: 0.92rem;
+  color: #fff;
+}
+
+.hs-certificado > span > span {
   font-size: 0.74rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.44);
+  color: rgba(240, 244, 255, 0.55);
 }
 
-/* Marca "ejemplo": el Diario no tiene rentabilidad global que enseñar, así que
-   sus cifras son ilustrativas y deben decirlo. */
-.hero-cifras-tag {
-  font-style: normal;
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  padding: 0.1rem 0.36rem;
-  border-radius: 999px;
-  border: 1px solid rgba(240, 244, 255, 0.18);
-  color: rgba(240, 244, 255, 0.5);
-}
+/* ── Navegación: pestañas con temporizador y flechas ───────────────────── */
 
-.hero-cifras-pie {
+/* Pestañas a la izquierda y la oferta Premium a la derecha, en la misma
+   fila; en pantallas estrechas, la oferta baja debajo. */
+.hs-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.3rem 0.9rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid rgba(240, 244, 255, 0.07);
-  font-size: 0.78rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-top: 1.1rem;
+}
+
+.hs-pasos {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.hs-premium {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.hs-premium-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 1.4rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1a1204;
+  text-decoration: none;
+  background: linear-gradient(180deg, #f5d38a 0%, var(--premium-gold) 100%);
+  box-shadow:
+    0 14px 34px -14px var(--premium-gold),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+
+.hs-premium-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 44px -14px var(--premium-gold),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.hs-premium-cta svg:last-child {
+  transition: transform 0.25s ease;
+}
+
+.hs-premium-cta:hover svg:last-child {
+  transform: translateX(3px);
+}
+
+.hs-premium-nota {
+  max-width: 9.5rem;
+  font-size: 0.74rem;
+  line-height: 1.4;
   color: rgba(240, 244, 255, 0.5);
 }
 
+@media (max-width: 760px) {
+  .hs-nav { justify-content: center; }
+  .hs-premium { flex-direction: column; gap: 0.45rem; }
+  .hs-premium-nota { max-width: none; text-align: center; }
+}
+
+.hs-flecha {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(240, 244, 255, 0.14);
+  border-radius: 50%;
+  background: rgba(9, 13, 24, 0.7);
+  color: rgba(240, 244, 255, 0.8);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.hs-flecha:hover {
+  border-color: rgba(240, 244, 255, 0.35);
+  color: #fff;
+}
+
+.hs-flecha:active {
+  transform: scale(0.94);
+}
+
+.hs-pestanas {
+  display: flex;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.hs-pestana {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 0.55rem;
+  row-gap: 0.45rem;
+  width: clamp(88px, 16vw, 170px);
+  padding: 0.6rem 0.75rem 0.65rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(9, 13, 24, 0.55);
+  color: rgba(240, 244, 255, 0.5);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+
+.hs-pestana:hover {
+  color: rgba(240, 244, 255, 0.85);
+}
+
+.hs-pestana.is-activa {
+  border-color: color-mix(in srgb, var(--tool-color) 40%, transparent);
+  background: color-mix(in srgb, var(--tool-color) 8%, rgba(9, 13, 24, 0.7));
+  color: #fff;
+}
+
+.hs-pestana-num {
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--tool-color);
+}
+
+.hs-pestana-nombre {
+  overflow: hidden;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hs-pestana-pista {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.1);
+}
+
+.hs-pestana-barra {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  border-radius: inherit;
+  background: var(--tool-color);
+}
+
+.hs-pestana.is-activa .hs-pestana-barra {
+  animation: hs-progreso var(--hs-duracion) linear forwards;
+}
+
+.hs.is-pausado .hs-pestana.is-activa .hs-pestana-barra {
+  animation-play-state: paused;
+}
+
+@keyframes hs-progreso {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@media (max-width: 520px) {
+  .hs-flecha { display: none; }
+  .hs-pestana { width: auto; flex: 1; }
+  .hs-pestanas { flex: 1; }
+  .hs-pasos { width: 100%; }
+  .hs-fichas--tres .hs-ficha b { font-size: 1.1rem; }
+}
+
+/* Sin movimiento: ni avance automático ni nada que se anime. El contenido
+   aparece ya colocado y la pestaña activa se pinta llena. */
+.hs.is-quieto .hs-pista {
+  transition: none;
+}
+
+.hs.is-quieto .hs-pestana.is-activa .hs-pestana-barra {
+  animation: none;
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-pista,
+  .hs-diapo,
+  .hs-texto,
+  .hs-app {
+    transition: none;
+  }
+
+  .hs-diapo.is-activa,
+  .hs-diapo.is-activa .hs-entra,
+  .hs-diapo.is-activa .hs-curva,
+  .hs-diapo.is-activa .hs-posiciones i,
+  .hs-diapo.is-activa .hs-modulo-barra i,
+  .hs-diapo.is-activa .hs-certificado,
+  .hs-app-etiqueta.is-vivo i {
+    animation: none;
+  }
+
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GUÍAS (GuidesHomeSection.tsx)
+   ══════════════════════════════════════════════════════════════════════════
+
+   Rehecha desde cero el 31-10-2026. Composición de revista y contenida: las
+   guías son la parte gratuita de la web, no su producto. A la izquierda la
+   más reciente, grande y con la portada a sangre; a la derecha las tres
+   anteriores en filas. El oro es el color de las guías en toda la web. */
+
+.gh {
+  position: relative;
+  padding: 3.2rem 1.25rem 3.6rem;
+}
+
+/* Un filete de oro que se desvanece hacia los lados separa la sección del
+   hero sin pintar una raya. */
+.gh::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(900px, 80%);
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(230, 180, 85, 0.45), transparent);
+}
+
+.gh-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+/* ── Cabecera ──────────────────────────────────────────────────────────── */
+
+.gh-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.2rem 2rem;
+  margin-bottom: 1.8rem;
+}
+
+.gh-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--premium-gold);
+}
+
+.gh-eyebrow-punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--premium-gold);
+  box-shadow: 0 0 10px var(--premium-gold);
+}
+
+.gh-titulo {
+  margin: 0 0 0.55rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.gh-titulo span {
+  background: linear-gradient(100deg, #f7dc9c 0%, var(--premium-gold) 55%, #c9913a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gh-sub {
+  max-width: 34rem;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 246, 0.62);
+}
+
+.gh-todas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.15rem;
+  border: 1px solid rgba(230, 180, 85, 0.35);
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--premium-gold);
+  text-decoration: none;
+  background: rgba(230, 180, 85, 0.05);
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.gh-todas:hover {
+  border-color: var(--premium-gold);
+  background: var(--premium-gold);
+  color: #1a1204;
+}
+
+.gh-todas svg {
+  transition: transform 0.25s ease;
+}
+
+.gh-todas:hover svg {
+  transform: translateX(3px);
+}
+
+/* ── Rejilla ───────────────────────────────────────────────────────────── */
+
+.gh-rejilla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 960px) {
+  .gh-rejilla {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+/* ── La grande ─────────────────────────────────────────────────────────── */
+
+.gh-grande {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 400px;
+  border: 1px solid rgba(230, 180, 85, 0.18);
+  border-radius: 22px;
+  text-decoration: none;
+  color: inherit;
+  background: #070d1a;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gh-grande:hover {
+  border-color: rgba(230, 180, 85, 0.5);
+  box-shadow: 0 30px 70px -35px rgba(230, 180, 85, 0.45);
+}
+
+/* La portada ocupa toda la tarjeta; el velo oscurece la mitad de abajo para
+   que el texto se lea sobre cualquier foto. */
+.gh-grande-portada {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+.gh-grande-velo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(7, 13, 26, 0) 0%, rgba(7, 13, 26, 0.55) 40%, rgba(7, 13, 26, 0.96) 78%);
+}
+
+/* Sin foto, el arte se queda en la mitad de arriba: abajo va el texto. */
+.gh-grande .guia-portada-arte {
+  bottom: 42%;
+}
+
+.gh-grande:hover .guia-portada-img {
+  transform: scale(1.04);
+}
+
+.gh-grande-cuerpo {
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem 1.5rem 1.5rem;
+}
+
+@media (min-width: 960px) {
+  .gh-grande-cuerpo { padding: 2rem 2rem 1.8rem; }
+}
+
+.gh-chips {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.gh-chip {
+  padding: 0.25rem 0.65rem;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.75);
+  background: rgba(7, 13, 26, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.gh-chip--nueva {
+  border-color: transparent;
+  color: #1a1204;
+  background: var(--premium-gold);
+}
+
+.gh-grande-titulo {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.95rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: #fff;
+}
+
+.gh-grande-desc {
+  display: -webkit-box;
+  max-width: 38rem;
+  margin: 0 0 1.3rem;
+  overflow: hidden;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 246, 0.7);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.gh-grande-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(240, 244, 255, 0.09);
+}
+
+.gh-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 1.1rem;
+  font-size: 0.8rem;
+  color: rgba(240, 244, 255, 0.6);
+}
+
+.gh-datos > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.gh-logro {
+  color: var(--premium-gold);
+}
+
+.gh-nivel-rayas {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 11px;
+}
+
+.gh-nivel-rayas i {
+  width: 3px;
+  border-radius: 1px;
+  background: rgba(240, 244, 255, 0.2);
+}
+
+.gh-nivel-rayas i:nth-child(1) { height: 5px; }
+.gh-nivel-rayas i:nth-child(2) { height: 8px; }
+.gh-nivel-rayas i:nth-child(3) { height: 11px; }
+
+.gh-nivel-rayas i.is-on {
+  background: var(--premium-gold);
+}
+
+.gh-empezar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding: 0 1.2rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1a1204;
+  background: linear-gradient(180deg, #f5d38a 0%, var(--premium-gold) 100%);
+  box-shadow: 0 12px 30px -14px var(--premium-gold), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.gh-empezar svg {
+  transition: transform 0.25s ease;
+}
+
+.gh-grande:hover .gh-empezar svg {
+  transform: translateX(4px);
+}
+
+/* ── Las tres filas ────────────────────────────────────────────────────── */
+
+.gh-lista {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gh-fila {
+  position: relative;
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.1rem;
+  height: 100%;
+  padding: 0.65rem 1rem 0.65rem 0.65rem;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  background:
+    linear-gradient(90deg, rgba(230, 180, 85, 0) 0%, rgba(230, 180, 85, 0) 100%),
+    rgba(9, 14, 27, 0.75);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gh-fila:hover {
+  transform: translateX(4px);
+  border-color: rgba(230, 180, 85, 0.35);
+  background:
+    linear-gradient(90deg, rgba(230, 180, 85, 0.07) 0%, rgba(230, 180, 85, 0) 70%),
+    rgba(9, 14, 27, 0.75);
+}
+
+.gh-fila-portada {
+  border-radius: 12px;
+}
+
+.gh-fila-portada .guia-portada-letra {
+  font-size: 2.6rem;
+}
+
+.gh-fila:hover .guia-portada-img {
+  transform: scale(1.06);
+}
+
+.gh-fila-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.gh-fila-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.45);
+}
+
+.gh-fila-num {
+  font-variant-numeric: tabular-nums;
+  color: var(--premium-gold);
+}
+
+.gh-fila-titulo {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.gh-datos--fila {
+  gap: 0.35rem 0.9rem;
+  font-size: 0.74rem;
+}
+
+.gh-fila-flecha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 50%;
+  color: rgba(240, 244, 255, 0.6);
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.gh-fila:hover .gh-fila-flecha {
+  border-color: var(--premium-gold);
+  background: var(--premium-gold);
+  color: #1a1204;
+  transform: rotate(45deg);
+}
+
+@media (max-width: 520px) {
+  .gh-grande { min-height: 360px; }
+  .gh-fila { grid-template-columns: 96px minmax(0, 1fr) auto; gap: 0.8rem; }
+  .gh-fila-flecha { width: 32px; height: 32px; }
+  .gh-datos .gh-logro { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-fila,
+  .gh-fila:hover,
+  .gh-fila:hover .gh-fila-flecha {
+    transform: none;
+  }
+}

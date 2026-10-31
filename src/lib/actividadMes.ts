@@ -16,7 +16,7 @@ import { SEGUNDOS_SHORT, getSubidasEntre, type VideoSubido } from "@/lib/youtube
 
 type Admin = ReturnType<typeof createAdminClient>;
 
-export type Publicacion = { titulo: string; enlace: string; fecha: string; premium: boolean };
+export type Publicacion = { titulo: string; enlace: string; fecha: string };
 
 export type ActividadMes = {
   mes: string;
@@ -86,7 +86,7 @@ async function guiasDe(admin: Admin, mes: string): Promise<Publicacion[]> {
     .order("announced_at", { ascending: false });
   return (data ?? []).map((g) => {
     const guia = GUIDES.find((x) => x.slug === g.ref);
-    return { titulo: guia?.title ?? g.ref, enlace: `/guias/${g.ref}`, fecha: g.announced_at, premium: guia?.type === "premium" };
+    return { titulo: guia?.title ?? g.ref, enlace: `/guias/${g.ref}`, fecha: g.announced_at };
   });
 }
 

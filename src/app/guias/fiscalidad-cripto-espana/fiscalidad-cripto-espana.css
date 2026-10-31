@@ -68,7 +68,7 @@
 .fisc-table-tag--yes { background: rgba(255, 107, 43, 0.16); color: #ff8552; border: 1px solid rgba(255, 107, 43, 0.32); }
 .fisc-table-tag--no  { background: rgba(95, 211, 154, 0.14); color: #5fd39a; border: 1px solid rgba(95, 211, 154, 0.3); }
 
-/* ── Lista de secciones bloqueadas (paywall premium) ─────── */
+/* ── Lista de secciones bloqueadas (muro de registro) ────── */
 .fisc-locked-list { margin-top: 26px; display: flex; flex-direction: column; gap: 10px; }
 .fisc-locked-item {
   display: flex;

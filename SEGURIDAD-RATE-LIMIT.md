@@ -36,7 +36,7 @@ Cubre **toda la web**, no solo `/api`. Los tramos salen de lo que cuesta cada ru
 | Tramo | Límite | Rutas | Por qué ese número |
 |---|---|---|---|
 | `pago` | 10 / 15 min | `/api/checkout`, `/api/stripe/portal`, `/api/account/delete` | Nadie paga dos veces seguidas; no hay uso legítimo intensivo |
-| `externo` | 40 / 60 s | `/api/crypto/*`, `/api/market-data`, `/api/portfolio/prices`, `/api/unlocks`, `/api/radar` | Queman cuota de una API gratuita ajena: si se agota, nadie ve precios |
+| `externo` | 40 / 60 s | `/api/market-data`, `/api/portfolio/prices` | Queman cuota de una API gratuita ajena: si se agota, nadie ve precios |
 | `escritura` | 80 / 60 s | likes, guardados, compartidos y visitas de las guías, quiz, badges, cursos | Escriben en la BD sin necesidad de sesión: es lo que atrae al spam |
 | `api` | 150 / 60 s | resto de `/api` | Lectura autenticada |
 | `paginas` | 300 / 60 s | navegación real | Una IP puede ser una oficina entera |
@@ -50,7 +50,7 @@ comodidad: **en localhost no existe `x-forwarded-for`**, así que `ipDe()` devue
 cada hot reload comparten **un mismo cubo**.
 
 Con el tramo `externo` en 40/60 s, eso significaba que unas veinte recargas de la
-portada dejaban `/api/radar` en 429, y los dos widgets del mercado salían «Sin
+portada dejaban la API del antiguo Radar (retirado el 31-10-2026) en 429, y los dos widgets del mercado salían «Sin
 datos» a la vez —el `fetch` del cliente no distingue un 429 de un fallo de
 CoinGecko—. En producción no pasaba nunca, porque allí cada visitante trae su IP
 de verdad. Se perdió una sesión entera buscando el fallo en el sitio equivocado.

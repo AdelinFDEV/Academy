@@ -93,8 +93,8 @@ export default function DeleteAccountModal({ open, onClose, isPremium }: Props) 
 
           <ul className="danger-warning-list">
             <li>Tu perfil, progreso, insignias y racha</li>
-            <li>Diario de trading, watchlist y portfolio</li>
-            <li>Comentarios, me gustas y términos guardados</li>
+            <li>Diario de trading</li>
+            <li>Me gustas y términos guardados</li>
             {isPremium && <li><strong>Tu suscripción Premium, cancelada al instante</strong></li>}
           </ul>
 

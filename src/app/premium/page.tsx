@@ -6,25 +6,22 @@ import SiteNav from "@/components/SiteNav";
 import PremiumFeatureGrid from "@/components/PremiumFeatureGrid";
 import PremiumStickyBar from "@/components/PremiumStickyBar";
 import { Check, X, ArrowRight, Crown, ShieldCheck, Users, Star, Lock, Sparkles } from "lucide-react";
-import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
+import { CoinGeckoGlyph } from "@/components/BrandMarks";
 import "./premium.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/premium" },
   title: "Hazte Premium",
   description:
-    "Desbloquea el diario de trading, guías premium, trading en directo y el calendario de liberaciones de tokens por 49,99€/mes. Sin permanencia.",
+    "Desbloquea el diario de trading y el Portfolio Adelin en tiempo real por 49,99€/mes. Sin permanencia.",
 };
 
 const COMPARE: { label: string; free: boolean | string; premium: boolean | string }[] = [
-  { label: "Guías interactivas con quiz y logros", free: "Básicas", premium: "Todas" },
-  { label: "Watchlist y predicción de precio", free: true, premium: true },
+  { label: "Guías interactivas con quiz y logros", free: true, premium: true },
+  { label: "Predicción de precio", free: true, premium: true },
   { label: "Logros y rachas", free: true, premium: true },
-  { label: "Calculadora de Riesgo", free: true, premium: true },
   { label: "Diario de Trading con 10 estadísticas", free: false, premium: true },
-  { label: "Liberaciones de tokens en tiempo real", free: false, premium: true },
   { label: "Portfolio Adelin en tiempo real", free: false, premium: true },
-  { label: "Trading en directo: solo NASDAQ en 5 min, martes y jueves", free: false, premium: true },
   { label: "Canal privado de Telegram", free: false, premium: true },
   { label: "Hablar conmigo por Telegram", free: false, premium: true },
   { label: "Soporte prioritario", free: false, premium: true },
@@ -33,7 +30,6 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
 const TESTIMONIALS = [
   { name: "Marcos R.", role: "Miembro Premium", quote: "El diario de trading me hizo ver que mi problema no eran las entradas, eran las salidas. Solo eso ya vale la suscripción." },
   { name: "Laura G.", role: "Miembro Premium", quote: "Vengo de perder dinero siguiendo a gurús de Twitter. Aquí por fin entiendo el porqué de cada movimiento." },
-  { name: "Adrián M.", role: "Miembro Premium", quote: "El calendario de liberaciones me salvó de comprar justo antes de un unlock masivo. Herramienta brutal." },
 ];
 
 const FAQS = [
@@ -91,8 +87,8 @@ export default async function PremiumPage() {
               </h1>
 
               <p className="prem-hero-sub">
-                El diario de trading más completo e interactivo, guías premium, trading en directo
-                de futuros de NASDAQ en 5 minutos los martes y jueves, y el calendario de liberaciones en tiempo real — todo en una sola suscripción.
+                El diario de trading más completo e interactivo y mi cartera real en tiempo
+                real — todo en una sola suscripción.
               </p>
 
               <div className="prem-hero-cta-row">
@@ -139,18 +135,11 @@ export default async function PremiumPage() {
                   Herramientas que funcionan con <span className="pv2-gold">datos reales en directo</span>
                 </h2>
                 <p className="prem-partners-sub">
-                  No inventamos cifras. Cada precio, mercado y calendario de liberaciones viene
-                  directamente de las mayores fuentes del sector, en colaboración con ellas.
+                  No inventamos cifras. Cada precio y cada dato de mercado viene directamente
+                  de CoinGecko, una de las mayores fuentes del sector.
                 </p>
               </div>
               <div className="prem-partners-grid">
-                <div className="prem-partner prem-partner--dl">
-                  <span className="prem-partner-mark"><DefiLlamaGlyph size={20} /></span>
-                  <div className="prem-partner-text">
-                    <strong>DefiLlama</strong>
-                    <span>Calendario oficial de liberaciones de tokens</span>
-                  </div>
-                </div>
                 <div className="prem-partner prem-partner--cg">
                   <span className="prem-partner-mark"><CoinGeckoGlyph size={20} /></span>
                   <div className="prem-partner-text">
@@ -190,9 +179,6 @@ export default async function PremiumPage() {
 
                   <ul className="prem-pricing-list">
                     <li><Check size={16} aria-hidden="true" /> Diario de Trading con 10 estadísticas</li>
-                    <li><Check size={16} aria-hidden="true" /> Guías premium desbloqueadas</li>
-                    <li><Check size={16} aria-hidden="true" /> Trading en directo, incluido</li>
-                    <li><Check size={16} aria-hidden="true" /> Liberaciones de tokens en tiempo real</li>
                     <li><Check size={16} aria-hidden="true" /> Portfolio Adelin</li>
                     <li><Check size={16} aria-hidden="true" /> Comunidad privada en Telegram</li>
                     <li><Check size={16} aria-hidden="true" /> Soporte prioritario</li>

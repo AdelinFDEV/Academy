@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import LogoutButton from "./LogoutButton";
-import { destinoPorRuta } from "@/lib/herramientas";
 import {
-  BookOpen, GraduationCap, LayoutGrid, Radio,
-  TrendingUp, Eye, Trophy, PieChart, Target, Unlock, Shield, Radar, BookOpenCheck,
+  ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Settings, Shield,
+  type LucideIcon,
 } from "lucide-react";
+import LogoutButton from "./LogoutButton";
+import { destinoPorRuta, herramienta } from "@/lib/herramientas";
 
 interface Props {
   user: boolean;
@@ -17,34 +17,73 @@ interface Props {
   isAdmin?: boolean;
 }
 
+type Entrada = {
+  id: string;
+  ruta: string;
+  label: string;
+  /** Una línea: qué es, no un eslogan. */
+  linea: string;
+  icon: LucideIcon;
+  color: string;
+};
+
+/**
+ * Lo que va en el menú, en dos grupos: lo que se paga y lo que se aprende
+ * gratis. Las herramientas toman icono, color y nombre del catálogo
+ * (`@/lib/herramientas`, fuente única); Guías y Diccionario no son
+ * herramientas y se declaran aquí.
+ */
+function deCatalogo(id: string, ruta: string, linea: string): Entrada {
+  const h = herramienta(id);
+  return { id, ruta, label: h.label, linea, icon: h.icon, color: h.color };
+}
+
+const PREMIUM: Entrada[] = [
+  deCatalogo("diario", "/dashboard/trading", "Cada operación registrada y medida"),
+  deCatalogo("portfolio", "/portfolio", "Mis compras reales, al momento"),
+  deCatalogo("cursos", "/cursos", "Por módulos, con examen y certificado"),
+];
+
+const GRATIS: Entrada[] = [
+  { id: "guias", ruta: "/guias", label: "Guías interactivas", linea: "Criptomonedas, explicadas a fondo", icon: BookOpenText, color: "#e6b455" },
+  { id: "glosario", ruta: "/glosario", label: "Diccionario cripto", linea: "El vocabulario, en cristiano", icon: BookA, color: "#7dd3fc" },
+  deCatalogo("prediccion", "/calculadora", "¿Qué market cap necesita tu token?"),
+  deCatalogo("logros", "/logros", "Insignias y rachas de tu progreso"),
+];
+
+/**
+ * El menú de la web, a pantalla completa. Rehecho desde cero el 31-10-2026.
+ *
+ * Dos columnas de destinos —lo de pago y lo gratuito— y un panel lateral con
+ * la cuenta y, a quien no lo tiene, Premium una sola vez. En el móvil todo se
+ * apila y el panel de cuenta queda al final.
+ *
+ * A dónde lleva cada enlace NO se decide aquí: lo decide el catálogo con
+ * `destinoPorRuta`, según quién mire (la ficha pública a quien no tiene
+ * acceso, la herramienta a quien sí).
+ */
 export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const a = (href: string) => pathname === href || pathname.startsWith(href + "/") ? " active" : "";
+  const primerEnlace = useRef<HTMLAnchorElement>(null);
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
+  const activo = (href: string) => pathname === href || pathname.startsWith(href + "/");
+  const destino = (ruta: string) => destinoPorRuta(ruta, { logueado: user, premium: isPremium });
   const close = () => setOpen(false);
 
-  /**
-   * Destino de cada herramienta según quién mire. La regla NO se escribe aquí:
-   * la decide el catálogo (`@/lib/herramientas`), que es la fuente única.
-   *
-   * Antes cada enlace llevaba su propio ternario, y así fue como la calculadora
-   * siguió mandando a `/register` después de abrirse al público. De paso, quien
-   * tiene cuenta pero no Premium ahora va directo a `/premium` en vez de a una
-   * herramienta que iba a rebotarle.
-   */
-  const destino = (ruta: string) => destinoPorRuta(ruta, { logueado: user, premium: isPremium });
-
-  const tradingLocked = !user || !isPremium;
+  // Con el menú abierto, la página de debajo no se desplaza; Escape lo cierra
+  // y el foco entra en el primer enlace, como en cualquier diálogo.
+  useEffect(() => {
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    primerEnlace.current?.focus();
+    const alPulsar = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    window.addEventListener("keydown", alPulsar);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", alPulsar);
+    };
+  }, [open]);
 
   return (
     <>
@@ -62,157 +101,137 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
       </button>
 
       {open && (
-        <div className="blog-mobile-menu">
-          <nav className="blog-mobile-menu-nav">
-            <div className="blog-mobile-section">
-              <span className="blog-mobile-section-label">Educación</span>
-              <Link
-                href={user ? "/dashboard" : "/register"}
-                className={`blog-mobile-tool-link blog-mobile-tool-link--cta${a("/dashboard")}`}
-                onClick={close}
-              >
-                <GraduationCap size={15} aria-hidden="true" />
-                Mi Dashboard
-              </Link>
-              <Link href="/glosario" className={`blog-mobile-tool-link${a("/glosario")}`} onClick={close}>
-                <BookOpen size={15} aria-hidden="true" />
-                Diccionario Cripto
-              </Link>
-              {/* Estuvo como «Pronto» y en un <div> sin enlace hasta el
-                  06-09-2026, cuando ya llevaba semanas emitiendo tres sesiones
-                  por semana. `destino` manda a la sala a los premium y a la
-                  ficha pública al resto, que explica qué es y cuándo se emite. */}
-              <Link
-                href={destino("/trading-en-directo")}
-                className={`blog-mobile-tool-link${a("/trading-en-directo")}`}
-                onClick={close}
-              >
-                <Radio size={15} aria-hidden="true" />
-                Trading en Directo
-                {tradingLocked && <span className="mobile-premium-badge">PREMIUM</span>}
-              </Link>
-              <Link href="/guias" className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/guias")}`} onClick={close}>
-                <LayoutGrid size={15} aria-hidden="true" />
-                Guías Interactivas
-                <span className="mobile-featured-badge">★ Destacado</span>
-              </Link>
-              <Link href="/cursos" className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/cursos")}`} onClick={close}>
-                <BookOpenCheck size={15} aria-hidden="true" />
-                Cursos
-                <span className="mobile-featured-badge">★ Destacado</span>
-              </Link>
-            </div>
+        <div className="mm" role="dialog" aria-modal="true" aria-label="Menú">
+          <div className="mm-cuerpo">
+            <nav className="mm-nav" aria-label="Secciones de la academia">
+              <Grupo titulo="Premium" nota="En una sola suscripción" entradas={PREMIUM} desde={0} premium isPremium={isPremium} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+              <Grupo titulo="Gratis" nota="Para aprender, sin pagar nada" entradas={GRATIS} desde={PREMIUM.length} premium={false} isPremium={isPremium} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+            </nav>
 
-            <div className="blog-mobile-section">
-              <span className="blog-mobile-section-label">Herramientas</span>
-
-              {/* La landing va la primera de la sección: es la que explica las
-                  ocho, y en la barra superior solo se ve en pantallas anchas. */}
-              <Link
-                href="/herramientas"
-                className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/herramientas")}`}
-                onClick={close}
-              >
-                <LayoutGrid size={15} aria-hidden="true" />
-                Ver todas las herramientas
-              </Link>
-
-              <Link href={destino("/dashboard/trading")} className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/dashboard/trading")}`} onClick={close}>
-                <TrendingUp size={15} aria-hidden="true" />
-                Diario de Trading
-                <span className="mobile-featured-badge">★ Destacado</span>
-              </Link>
-
-              <Link href={destino("/dashboard/watchlist")} className={`blog-mobile-tool-link${a("/dashboard/watchlist")}`} onClick={close}>
-                <Eye size={15} aria-hidden="true" />
-                Watchlist
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
-              </Link>
-
-              <Link href="/logros" className={`blog-mobile-tool-link${a("/logros")}`} onClick={close}>
-                <Trophy size={15} aria-hidden="true" />
-                Logros
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
-              </Link>
-
-              {/* La calculadora se usa SIN cuenta (tres cálculos y luego se
-                  pide el registro). Antes este enlace mandaba a /register
-                  directamente, así que nadie llegaba a probarla. */}
-              <Link
-                href="/calculadora"
-                className={`blog-mobile-tool-link${a("/calculadora")}`}
-                onClick={close}
-              >
-                <Target size={15} aria-hidden="true" />
-                Predicción de Precio
-                {!user && <span className="mobile-free-badge">FREE · Sin registro</span>}
-              </Link>
-
-              <Link href={destino("/portfolio")} className={`blog-mobile-tool-link blog-mobile-tool-link--featured${a("/portfolio")}`} onClick={close}>
-                <PieChart size={15} aria-hidden="true" />
-                Portfolio Adelin
-                <span className="mobile-featured-badge">★ Destacado</span>
-              </Link>
-
-              <Link href={destino("/herramientas/liberaciones")} className={`blog-mobile-tool-link${a("/herramientas/liberaciones")}`} onClick={close}>
-                <Unlock size={15} aria-hidden="true" />
-                Liberaciones de Tokens
-                {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
-              </Link>
-
-              <Link href={destino("/herramientas/radar")} className={`blog-mobile-tool-link${a("/herramientas/radar")}`} onClick={close}>
-                <Radar size={15} aria-hidden="true" />
-                Radar Diario
-                {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
-              </Link>
-
-              <Link href={user ? "/dashboard/mi-portfolio" : "/register"} className={`blog-mobile-tool-link${a("/dashboard/mi-portfolio")}`} onClick={close}>
-                <PieChart size={15} aria-hidden="true" />
-                Mi Portfolio
-                {!isPremium && <span className="mobile-premium-badge">PREMIUM</span>}
-              </Link>
-
-              <Link href={destino("/dashboard/calculadora-riesgo")} className={`blog-mobile-tool-link${a("/dashboard/calculadora-riesgo")}`} onClick={close}>
-                <Shield size={15} aria-hidden="true" />
-                Calculadora de Riesgo
-                {!user && <span className="mobile-free-badge">FREE · Registro</span>}
-              </Link>
-
-            </div>
-          </nav>
-
-          <div className="blog-mobile-menu-footer">
-            {user ? (
-              <>
-                {userName && (
-                  <Link href="/cuenta" className="blog-mobile-user-info" onClick={close} style={{ textDecoration: "none" }}>
-                    <span className="blog-mobile-user-name">{userName}</span>
-                    <span className={`blog-mobile-user-role${isPremium ? " premium" : ""}`}>
-                      {isAdmin ? "Admin" : isPremium ? "Premium" : "Free"} · Mi cuenta →
+            <aside className="mm-lado" aria-label="Tu cuenta">
+              {user ? (
+                <div className="mm-cuenta">
+                  <div className="mm-cuenta-quien">
+                    <span className="mm-avatar" aria-hidden="true">{(userName || "U").charAt(0).toUpperCase()}</span>
+                    <span>
+                      <span className="mm-cuenta-nombre">{userName || "Tu cuenta"}</span>
+                      <span className={`mm-rol${isPremium ? " is-premium" : ""}`}>
+                        {isAdmin ? "Admin" : isPremium ? "Premium" : "Cuenta gratuita"}
+                      </span>
                     </span>
+                  </div>
+                  <div className="mm-cuenta-enlaces">
+                    <Link href="/dashboard" onClick={close} className="mm-cuenta-enlace">
+                      <LayoutDashboard size={16} aria-hidden="true" /> Mi dashboard
+                    </Link>
+                    <Link href="/cuenta" onClick={close} className="mm-cuenta-enlace">
+                      <Settings size={16} aria-hidden="true" /> Mi cuenta
+                    </Link>
+                    {isAdmin && (
+                      <Link href="/admin" onClick={close} className="mm-cuenta-enlace">
+                        <Shield size={16} aria-hidden="true" /> Panel admin
+                        <ArrowUpRight size={14} aria-hidden="true" className="mm-cuenta-enlace-ext" />
+                      </Link>
+                    )}
+                    <LogoutButton className="mm-cuenta-enlace mm-salir" onDone={close}>
+                      <LogOut size={16} aria-hidden="true" /> Cerrar sesión
+                    </LogoutButton>
+                  </div>
+                </div>
+              ) : (
+                <div className="mm-cuenta">
+                  <span className="mm-cuenta-titulo">Tu academia</span>
+                  <p className="mm-cuenta-texto">
+                    Con una cuenta gratuita lees las guías enteras y guardas tu progreso.
+                  </p>
+                  <Link href="/register" onClick={close} className="mm-btn mm-btn--principal">
+                    Crear cuenta gratis <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
                   </Link>
-                )}
-                {!userName && (
-                  <Link href="/dashboard" className="blog-mobile-btn-cta" onClick={close}>
-                    Ir a la academia →
+                  <Link href="/login" onClick={close} className="mm-btn mm-btn--secundario">
+                    Ya tengo cuenta
                   </Link>
-                )}
-                {isAdmin && (
-                  <Link href="/admin" className="blog-mobile-admin-link" onClick={close}>
-                    Panel Admin ↗
-                  </Link>
-                )}
-                <div className="blog-mobile-btn-logout"><LogoutButton /></div>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="blog-mobile-btn-login" onClick={close}>Iniciar sesión</Link>
-                <Link href="/register" className="blog-mobile-btn-cta" onClick={close}>Registrarte gratis →</Link>
-              </>
-            )}
+                </div>
+              )}
+
+              {!isPremium && (
+                <Link href="/premium" onClick={close} className="mm-premium">
+                  <span className="mm-premium-cabecera">
+                    <Crown size={15} aria-hidden="true" /> Premium
+                  </span>
+                  <span className="mm-premium-titulo">Diario, Portfolio Adelin y Cursos en una suscripción</span>
+                  <span className="mm-premium-pie">
+                    <span className="mm-premium-precio">49,99 €<small>/mes</small></span>
+                    <span className="mm-premium-ir">
+                      Ver qué incluye <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+                    </span>
+                  </span>
+                  <span className="mm-premium-nota">Sin permanencia · Cancela cuando quieras</span>
+                </Link>
+              )}
+            </aside>
           </div>
         </div>
       )}
     </>
   );
+}
+
+/** Un grupo del menú: su cabecera y sus destinos. */
+function Grupo({ titulo, nota, entradas, desde, premium, isPremium, activo, destino, close, primerEnlace }: {
+  titulo: string;
+  nota: string;
+  entradas: Entrada[];
+  /** Posición del primer enlace en todo el menú: escalona la entrada. */
+  desde: number;
+  premium: boolean;
+  isPremium: boolean;
+  activo: (href: string) => boolean;
+  destino: (ruta: string) => string;
+  close: () => void;
+  primerEnlace: React.RefObject<HTMLAnchorElement | null>;
+}) {
+  return (
+    <section className="mm-grupo" aria-label={titulo}>
+      <header className="mm-grupo-cabecera">
+        <span className="mm-grupo-titulo">{titulo}</span>
+        <span className="mm-grupo-nota">{nota}</span>
+      </header>
+      <ul className="mm-lista">
+        {entradas.map((e, i) => {
+          const Icono = e.icon;
+          const proximamente = herramientaProxima(e.id);
+          const href = e.id === "guias" || e.id === "glosario" ? e.ruta : destino(e.ruta);
+          return (
+            <li key={e.id} style={{ "--i": desde + i } as React.CSSProperties}>
+              <Link
+                ref={desde + i === 0 ? primerEnlace : undefined}
+                href={href}
+                onClick={close}
+                className={`mm-item${activo(e.ruta) ? " is-activo" : ""}`}
+                style={{ "--c": e.color } as React.CSSProperties}
+                aria-current={activo(e.ruta) ? "page" : undefined}
+              >
+                <span className="mm-item-icono" aria-hidden="true"><Icono size={19} strokeWidth={2} /></span>
+                <span className="mm-item-texto">
+                  <span className="mm-item-nombre">
+                    {e.label}
+                    {proximamente && <span className="mm-pill mm-pill--pronto">Próximamente</span>}
+                    {!proximamente && premium && !isPremium && <span className="mm-pill mm-pill--premium">Premium</span>}
+                  </span>
+                  <span className="mm-item-linea">{e.linea}</span>
+                </span>
+                <ArrowRight size={16} strokeWidth={2.4} className="mm-item-flecha" aria-hidden="true" />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+/** ¿Está anunciada pero aún sin abrir? Hoy, los Cursos hasta que se publique el primero. */
+function herramientaProxima(id: string): boolean {
+  if (id === "guias" || id === "glosario") return false;
+  return herramienta(id).acceso === "proximamente";
 }

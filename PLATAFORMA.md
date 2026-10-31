@@ -244,34 +244,28 @@ Salió del punto 13 (landings públicas de las herramientas, cerrado el 07-09-20
 
 #### La trampa de la URL: robots.txt bloquea POR PREFIJO
 
-Las fichas del radar y de las liberaciones **no** están bajo `/herramientas/`, y no es un descuido:
+Un `Disallow` bloquea **todo lo que empiece igual**. Por eso en `robots.ts` no puede ir `/herramientas/` a secas: taparía las fichas públicas `/herramientas/portfolio` y `/herramientas/diario`. Es exactamente el fallo que las dejó bloqueadas el 06-09-2026, y que solo se vio al inspeccionarlas en Search Console.
 
-| Herramienta (de pago, en robots.txt) | Su ficha pública |
-|---|---|
-| `/herramientas/radar` | **`/radar-diario`** |
-| `/herramientas/liberaciones` | **`/calendario-de-liberaciones`** |
-
-`Disallow: /herramientas/radar` bloquea **todo lo que empiece igual**, así que `/herramientas/radar-diario` habría nacido sin poder rastrearse. Es exactamente el fallo que dejó las fichas de portfolio y diario bloqueadas el 06-09-2026, y que solo se vio al inspeccionarlas en Search Console.
+Desde el 31-10-2026 quedan cuatro herramientas (Diario, Portfolio Adelin, Predicción de Precio y Logros). Las retiradas —Watchlist, Liberaciones, Radar, Mi Portfolio, Calculadora de Riesgo— y la landing `/herramientas` responden **410** desde `src/lib/retiradas.ts`, con rutas exactas para no tapar las dos fichas que siguen vivas.
 
 **Antes de elegir la URL de una página pública nueva, compárala con cada `Disallow` de `src/app/robots.ts`.** Que no coincida exactamente no basta: tiene que no empezar igual.
 
 #### El catálogo de herramientas es FUENTE ÚNICA
 
-Vive en **`src/lib/herramientas.ts`** y lo consumen el hero de la portada, la landing, el sidebar, la tarjeta de Premium y las fichas. **No hagas una segunda lista.**
+Vive en **`src/lib/herramientas.ts`** y lo consumen el slider de la portada, la tarjeta de Premium y los menús. **No hagas una segunda lista.**
 
 No es preferencia de estilo: cuatro listas escritas a mano causaron tres fallos reales a la vez — la calculadora ya abierta que seguía enseñando el modal de registro, el trading en directo anunciado como «próximamente» cuando ya había sesiones, y la web diciendo ocho herramientas en un sitio y nueve en otro.
 
-Al añadir una herramienta al catálogo aparece sola en los cinco sitios, con el recuento actualizado. Campos que mandan:
+Campos que mandan:
 
 | Campo | Para qué |
 |---|---|
 | `acceso` | `"gratis"`, `"cuenta"`, `"premium"` o `"proximamente"`. **Manda sobre `href`**: de aquí salen las etiquetas, los muros y a dónde va cada botón |
-| `desc` | Copy corto y comercial, para el hero |
-| `resumen` | Copy largo e indexable, para la landing |
-| `paginaPublica` | Ficha pública propia, si la tiene. Si falta, «Ver detalles» cae en su ancla de `/herramientas` |
+| `desc` | Copy corto y comercial, para el slider de la portada |
+| `paginaPublica` | Ficha pública propia, si la tiene. Si falta, «Ver detalles» lleva a la herramienta misma |
 | `premiumHref` | La herramienta en sí, tras el muro. **No confundir con `paginaPublica`** |
 
-Los helpers `accesoPorRuta()`, `destinoPorRuta()` y `detalleDe()` deciden el destino según quién mire. Úsalos en vez de escribir ternarios por tu cuenta.
+Los helpers `destinoPorRuta()` y `detalleDe()` deciden el destino según quién mire. Úsalos en vez de escribir ternarios por tu cuenta.
 
 #### El sistema visual de las fichas
 
@@ -281,7 +275,7 @@ Para una página nueva de este tipo: importa `detalle.css`, envuélvela en `.det
 
 #### Un solo descargo de responsabilidad
 
-**`src/components/DisclaimerRiesgo.tsx`** es el único sitio donde vive ese texto, con cuatro variantes (`portfolio`, `directo`, `diario`, `general`). Todas cierran con el mismo bloque de responsabilidad, que es innegociable: deja por escrito que la decisión es de quien lee y que esto **no es un grupo de señales**.
+**`src/components/DisclaimerRiesgo.tsx`** es el único sitio donde vive ese texto, con cuatro variantes (`portfolio`, `diario`, `fiscal`, `general`). Todas cierran con el mismo bloque de responsabilidad, que es innegociable: deja por escrito que la decisión es de quien lee y que esto **no es un grupo de señales**.
 
 No escribas avisos legales a mano en una página: si el texto vive en dos sitios acaban diciendo cosas distintas, y entonces no protege — la defensa de «lo advertí» se cae si en una página lo advertiste y en otra no. Había dos avisos sueltos de una línea (Mi Portfolio y Radar) que decían mucho menos; ahora todos pasan por el componente. El pie de página lleva la misma cláusula, y es el único sitio que cubre también entradas y guías.
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, Crown, Gem, Check, Send, Infinity as InfinityIcon, Radio } from "lucide-react";
-import { DefiLlamaGlyph, CoinGeckoGlyph } from "@/components/BrandMarks";
+import { ArrowRight, ShieldCheck, Crown, Check, Send, Infinity as InfinityIcon } from "lucide-react";
+import { CoinGeckoGlyph } from "@/components/BrandMarks";
 import { HERRAMIENTAS, HERRAMIENTAS_DISPONIBLES } from "@/lib/herramientas";
 
 /**
@@ -8,8 +8,7 @@ import { HERRAMIENTAS, HERRAMIENTAS_DISPONIBLES } from "@/lib/herramientas";
  *
  * Las herramientas **salen del catálogo** (`@/lib/herramientas`), no de una
  * lista propia: antes estaban escritas aquí a mano y por eso el diario seguía
- * prometiendo «retos» inexistentes y el directo se anunciaba como
- * «próximamente» cuando ya había sesiones tres días por semana.
+ * prometiendo «retos» inexistentes.
  *
  * Cada una añade un `dato` concreto —un número, un horario, una fuente— porque
  * a 49,99 €/mes una lista de adjetivos no convence: los hechos comprobables sí.
@@ -23,16 +22,12 @@ import { HERRAMIENTAS, HERRAMIENTAS_DISPONIBLES } from "@/lib/herramientas";
  * de la pantalla. Una lista de venta se lee de un vistazo o no se lee.
  */
 const DATOS: Record<string, string> = {
-  directo: "Solo NASDAQ en 5 min · martes y jueves",
   portfolio: "PnL real y posiciones en vivo",
   diario: "10 estadísticas y tu curva de capital",
-  radar: "Bitcoin 24h, miedo y codicia y macro de EE. UU.",
-  liberaciones: "Calendario de 10 tokens, datos de DefiLlama",
-  "mi-portfolio": "Tu cartera: precio medio ponderado y P&L",
 };
 
 /** El orden de venta: primero lo que más convierte. */
-const ORDEN = ["directo", "portfolio", "diario", "radar", "liberaciones", "mi-portfolio"];
+const ORDEN = ["portfolio", "diario"];
 
 const DEL_CATALOGO = ORDEN.map((id) => {
   const h = HERRAMIENTAS.find((x) => x.id === id)!;
@@ -41,13 +36,6 @@ const DEL_CATALOGO = ORDEN.map((id) => {
 
 /** Ventajas que no son herramientas y por eso no viven en el catálogo. */
 const EXTRAS = [
-  {
-    id: "guias",
-    icon: Gem,
-    color: "#ffd166",
-    title: "Guías Premium",
-    dato: "Todas desbloqueadas, con quiz y logros",
-  },
   {
     id: "telegram",
     icon: Send,
@@ -127,30 +115,11 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
         <ShieldCheck size={12} aria-hidden="true" /> Datos oficiales, no estimaciones
       </span>
       <div className="premium-pitch-partners-logos">
-        <span className="premium-pitch-partner premium-pitch-partner--dl">
-          <span className="premium-pitch-partner-mark"><DefiLlamaGlyph size={12} /></span>
-          DefiLlama
-        </span>
         <span className="premium-pitch-partner premium-pitch-partner--cg">
           <span className="premium-pitch-partner-mark"><CoinGeckoGlyph size={12} /></span>
           CoinGecko
         </span>
       </div>
-    </div>
-  );
-
-  /* Antes decía «el trading en directo llega pronto». Ya no: hay sesiones
-     cada semana desde septiembre de 2026 (martes y jueves desde octubre), y anunciarlo como futuro
-     desperdiciaba el argumento más fuerte de la suscripción. */
-  const included = (
-    <div className="premium-pitch-included">
-      <span className="premium-pitch-included-dot" aria-hidden="true" />
-      <Radio size={15} aria-hidden="true" />
-      <span>
-        <strong className="premium-pitch-included-em">Trading en directo, ya disponible</strong>{" "}
-        — solo martes y jueves, operando solo NASDAQ en gráficos de 5 minutos, y
-        quedan grabadas.
-      </span>
     </div>
   );
 
@@ -185,7 +154,6 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
         <div className="premium-pitch-col premium-pitch-col--main">
           {top}
           {heading}
-          {included}
           {price}
           {cta}
           {note}
@@ -204,7 +172,6 @@ export default function PremiumPitch({ variant = "card" }: { variant?: "card" | 
       {top}
       {heading}
       {features}
-      {included}
       {partners}
       {price}
       {cta}

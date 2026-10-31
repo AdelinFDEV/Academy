@@ -1,23 +1,11 @@
-// Logos SVG inline y autocontenidos de los colaboradores (sin hotlink ni
-// dependencias externas). Fuente ÚNICA — reutilizados en el footer, los heros,
-// la watchlist, la tarjeta premium y la página /premium. No dupliques estos
-// paths en otros sitios: importa el glyph desde aquí.
+// Logo SVG inline y autocontenido de CoinGecko, la fuente de los datos de
+// mercado (sin hotlink ni dependencias externas). Fuente ÚNICA — se usa en el
+// footer, la tarjeta premium y la página /premium. No dupliques el path en
+// otros sitios: importa el glyph desde aquí.
 //
-// Cada glyph está pensado para ir sobre un "chip" del color de marca:
-//   DefiLlama → azul  #2172E5   ·  CoinGecko → verde #8bc53f
-
-export function DefiLlamaGlyph({ size = 14 }: { size?: number }) {
-  return (
-    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true">
-      <path d="M8.4 3.4c.62 0 1 .82 1 2.05v2.1h-2v-2.1c0-1.23.38-2.05 1-2.05z" fill="#fff" />
-      <path d="M15.6 3.4c.62 0 1 .82 1 2.05v2.1h-2v-2.1c0-1.23.38-2.05 1-2.05z" fill="#fff" />
-      <rect x="6.8" y="6" width="10.4" height="9" rx="4.6" fill="#fff" />
-      <rect x="9.4" y="12" width="5.2" height="7.4" rx="2.6" fill="#fff" />
-      <circle cx="10.2" cy="9.3" r="1" fill="#2172E5" />
-      <circle cx="13.8" cy="9.3" r="1" fill="#2172E5" />
-    </svg>
-  );
-}
+// Va sobre un "chip" del color de marca: verde #8bc53f.
+// DefiLlama se retiró el 31-10-2026 con las Liberaciones de tokens, que era lo
+// único que tomaba sus datos.
 
 export function CoinGeckoGlyph({ size = 14 }: { size?: number }) {
   return (

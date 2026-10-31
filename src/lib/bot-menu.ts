@@ -19,7 +19,6 @@
  */
 
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
-import { HORARIO_DIRECTO } from "@/lib/directo";
 import {
   getAdminChatUrl,
   getChannelInviteLink,
@@ -242,9 +241,9 @@ export function fichaEstado(perfil: PerfilBot | null): string {
   if (!tienePremium(perfil)) {
     return (
       "🆓 Estás en el plan gratuito\n\n" +
-      "Tienes las guías básicas, la watchlist, la calculadora de riesgo y los logros.\n\n" +
-      `Con Premium 💎 (${precioMes()}/mes) se abren el canal privado, el diario de trading, ` +
-      "el portfolio en tiempo real, las liberaciones de tokens y todas las guías.\n\n" +
+      "Tienes todas las guías, la predicción de precio y los logros.\n\n" +
+      `Con Premium 💎 (${precioMes()}/mes) se abren el canal privado, el diario de trading ` +
+      "y el portfolio en tiempo real.\n\n" +
       "Mira el detalle, una por una 👇"
     );
   }
@@ -309,8 +308,8 @@ function botonesEstado(perfil: PerfilBot | null): Boton[][] {
  * Cada ventaja es una ficha corta: qué es, para qué sirve y dónde está.
  *
  * `ruta` es su sección de la web; `enlacePremium` decide si se enlaza directa
- * (Premium) o a /premium (todos los demás). Las que no tienen ruta propia
- * todavía —el canal y el trading en directo— la resuelven a mano.
+ * (Premium) o a /premium (todos los demás). El canal, que no tiene ruta
+ * propia, lo resuelve a mano.
  */
 type Ventaja = {
   id: string;
@@ -351,46 +350,6 @@ const VENTAJAS: Ventaja[] = [
     textoEnlace: "💼 Ver el portfolio",
   },
   {
-    id: "liberaciones",
-    boton: "🔓 Liberaciones",
-    titulo: "🔓 Liberaciones de tokens",
-    texto:
-      "El calendario de desbloqueos, en tiempo real.\n\n" +
-      "• Qué proyectos liberan tokens y cuándo\n" +
-      "• Cuánta oferta entra al mercado\n" +
-      "• Aviso de lo que viene en los próximos días\n\n" +
-      "Sirve para lo más aburrido y más rentable que hay: no comprar justo antes de " +
-      "que caiga una avalancha de oferta.",
-    ruta: "/herramientas/liberaciones",
-    textoEnlace: "🔓 Ver liberaciones",
-  },
-  {
-    id: "radar",
-    boton: "📡 Radar Diario",
-    titulo: "📡 Radar Diario",
-    texto:
-      "El repaso del mercado cada día, sin tener que rastrearlo tú.\n\n" +
-      "• Lo que se mueve y por qué\n" +
-      "• Niveles y datos que merecen atención hoy\n" +
-      "• En un par de minutos de lectura\n\n" +
-      "Para llegar al mercado sabiendo qué está pasando, no enterándote a media tarde.",
-    ruta: "/herramientas/radar",
-    textoEnlace: "📡 Abrir el radar",
-  },
-  {
-    id: "guias",
-    boton: "📚 Todas las guías",
-    titulo: "📚 Todas las guías, desbloqueadas",
-    texto:
-      "En gratis tienes las guías básicas. Con Premium se abren todas.\n\n" +
-      "• Guías interactivas, con quiz y logros\n" +
-      "• De blockchain y ciclos de Bitcoin a fiscalidad en España\n" +
-      "• Escritas para entenderse, no para presumir\n\n" +
-      "Y se añaden nuevas: lo que entre después ya lo tienes incluido.",
-    ruta: "/guias",
-    textoEnlace: "📚 Ver las guías",
-  },
-  {
     id: "canal",
     boton: "🚀 Canal privado",
     titulo: "🚀 Canal privado de Telegram",
@@ -423,19 +382,6 @@ const VENTAJAS: Ventaja[] = [
       "• Cualquier problema de cuenta o de pago, directo a mí\n" +
       "• Sin repetir tu caso tres veces\n\n" +
       "Cuando algo se atasca, esto es lo que se agradece.",
-  },
-  {
-    id: "directo",
-    boton: "🔴 Trading en directo",
-    titulo: "🔴 Trading en directo",
-    texto:
-      "Sesiones en directo operando futuros, comentando cada decisión.\n\n" +
-      "📈 Solo NASDAQ, solo en gráficos de 5 minutos\n" +
-      `📅 Solo martes y jueves, de ${HORARIO_DIRECTO.franjaEs}\n\n` +
-      "• Por qué entro y por qué no\n" +
-      "• Dónde pongo el stop y cuánto arriesgo\n" +
-      "• Preguntas en el momento\n\n" +
-      "Va incluido en Premium sin pagar nada más, y las sesiones quedan grabadas.",
   },
 ];
 
@@ -498,13 +444,12 @@ function pantallaGratis(perfil: PerfilBot | null): Pantalla {
     texto:
       "🎁 Lo que tienes sin pagar nada\n\n" +
       "La Academy no es un muro de pago con una demo detrás. Gratis ya tienes:\n\n" +
-      "📚 Las guías básicas, con quiz y logros\n" +
-      "👀 Watchlist y predicción de precio\n" +
-      "🧮 Calculadora de riesgo\n" +
+      "📚 Todas las guías, con quiz y logros\n" +
+      "🎯 Predicción de precio\n" +
       "🏆 Logros y rachas\n" +
       "📖 Glosario cripto de la A a la Z\n" +
       "📣 Canal gratuito de Telegram, con las guías y vídeos nuevos\n\n" +
-      "Para la watchlist, la calculadora y los logros necesitas una cuenta gratuita — nada más.",
+      "Para las guías completas y los logros necesitas una cuenta gratuita — nada más.",
     botones: [
       [
         { text: "📚 Guías", url: url("/guias") },
@@ -701,9 +646,9 @@ function pantallaWeb(): Pantalla {
     texto:
       "🧭 La Academy por dentro\n\n" +
       "📚 Guías — interactivas, con quiz y logros\n" +
-      "🧮 Calculadora de riesgo — cuánto arriesgar en cada entrada\n" +
+      "🎯 Predicción de precio — qué market cap necesita tu token\n" +
       "📖 Glosario — el vocabulario cripto explicado en cristiano\n" +
-      "📊 Dashboard — tu watchlist, tus logros y tus herramientas\n" +
+      "📊 Dashboard — tus logros y tus herramientas\n" +
       "⚙️ Mi cuenta — tu plan, tu suscripción y tu Telegram\n\n" +
       "Pulsa donde quieras entrar 👇",
     botones: [

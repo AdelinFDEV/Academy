@@ -3,9 +3,10 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
-import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Lock, Star } from "lucide-react";
+import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Star } from "lucide-react";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import JsonLd from "@/components/JsonLd";
+import GuiaPortada from "@/components/GuiaPortada";
 import { itemListSchema } from "@/lib/schema";
 import "./listado.css";
 
@@ -38,10 +39,7 @@ function enlaceGuia(slug: string) {
   return (
     <li key={g.slug}>
       <Link href={`/guias/${g.slug}`}>{g.shortTitle}</Link>
-      <span className="guias-ruta-meta">
-        {g.readTime}
-        {g.type === "premium" ? " · Premium" : ""}
-      </span>
+      <span className="guias-ruta-meta">{g.readTime}</span>
     </li>
   );
 }
@@ -117,7 +115,7 @@ export default async function GuiasPage() {
             hace por dentro un proyecto concreto y cómo tributa todo esto en España.
           </p>
           <p>
-            <strong>Seis de las siete son gratuitas</strong> y entre todas suman unas dos horas de
+            <strong>Todas son gratuitas</strong> y entre todas suman unas dos horas de
             lectura. Cada una termina con un quiz y un badge, que están ahí para que compruebes
             que lo has entendido de verdad y no solo leído por encima.
           </p>
@@ -130,13 +128,12 @@ export default async function GuiasPage() {
             {GUIDES_NEWEST_FIRST.map((g) => (
               <Link key={g.slug} href={`/guias/${g.slug}`} className="guias-card">
                 <div className="guias-card-glow" aria-hidden="true" />
+                <GuiaPortada guia={g} className="guias-card-portada" />
                 <div className="guias-card-top">
                   <span className={`guides-diff-badge guides-diff--${DIFF_CLASS[g.difficulty]}`}>
                     {g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1)}
                   </span>
-                  {g.type === "free"
-                    ? <span className="guides-access-badge">Gratis con registro</span>
-                    : <span className="guides-access-badge guides-access-badge--premium"><Lock size={11} aria-hidden="true" /> Premium</span>}
+                  <span className="guides-access-badge">Gratis</span>
                 </div>
                 <h3 className="guias-card-title">{g.title}</h3>
                 <p className="guias-card-desc">{g.description}</p>
@@ -189,8 +186,8 @@ export default async function GuiasPage() {
               <span className="guias-ruta-nivel">Cuando ya te mueves solo</span>
               <p>
                 XRP entra en cómo funciona una red que no usa minería y en el juicio que marcó al
-                sector entero. La de fiscalidad es la única premium, y es la que evita disgustos
-                con Hacienda: modelo 721, método FIFO y cómo se declaran el staking y los airdrops.
+                sector entero. La de fiscalidad es la que evita disgustos con Hacienda: modelo 721,
+                método FIFO y cómo se declaran el staking y los airdrops.
               </p>
               <ul className="guias-ruta-lista">
                 {enlaceGuia("xrp")}
@@ -206,8 +203,8 @@ export default async function GuiasPage() {
           <dl className="guias-faq">
             <dt>¿Es gratis de verdad?</dt>
             <dd>
-              Sí. Seis de las siete guías son gratuitas y solo piden una cuenta —también gratuita—
-              para guardar tu progreso y tus badges. La de fiscalidad es la única premium.
+              Sí. Todas las guías son gratuitas y solo piden una cuenta —también gratuita— para
+              guardar tu progreso y tus badges.
             </dd>
 
             <dt>¿Necesito saber algo antes de empezar?</dt>

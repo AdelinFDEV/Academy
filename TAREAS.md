@@ -23,6 +23,15 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 000. Herramientas retiradas (31-10-2026)
+
+Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el Trading en Directo, con su CSS, sus APIs, sus textos y sus menús; sus URLs responden 410 (`src/lib/retiradas.ts`). Falta:
+
+- [ ] **Ejecutar `scripts/retirar-herramientas.sql`** en Supabase **después** de desplegar: borra las tablas `watchlist` y `portfolio_transactions` (3 operaciones de 1 usuario en Mi Portfolio).
+- [ ] **Reenviar el sitemap en Search Console** y comprobar en producción que `/herramientas`, `/radar-diario`, `/calendario-de-liberaciones` y `/trading-en-directo` dan 410.
+- [ ] **Volver a registrar los comandos del bot** con `telegram-doctor` si alguno de los retirados sigue saliendo en el menú de Telegram.
+
+
 ### 00. La web es solo guías (empezado el 10-10-2026)
 
 Decidido por el admin el 10-10-2026: **no hay noticias, ni entradas, ni categorías, ni comentarios**. La academia son **guías ultra detalladas de criptomonedas**. Ya está hecho en el código: retirado todo el sistema de entradas (páginas, admin, comentarios, «me gusta», guardados, RSS, avisos, noticias del bot, la métrica de Objetivos y los 5 logros de leer y guardar); `/post/…`, `/categoria/…` y `/rss.xml` responden 410 (`src/lib/retiradas.ts`) y 4 entradas redirigen a su guía (`next.config.ts`). Copia de todo en `backups/` (local, fuera de git). Falta:
@@ -194,6 +203,5 @@ Lo que ya está corregido y verificado en verde el 10-09-2026: la densidad de `/
 
 ## Menor, y ya identificado
 
-- [ ] **Revisar la indexación a partir del 17-10-2026.** El 03-10-2026 solo 47 de las URLs del sitemap estaban indexadas (las que salgan en Search Console → Páginas). Se pidió a mano la indexación de diez: `/premium`, las guías `hyperliquid`, `render` y `worldcoin` (las dos primeras Google ni las conocía), `/calculadora`, `/categoria/fiscalidad`, las entradas `actualizacion-xrp-ledger-2026` y `staking-airdrops-impuestos-espana`, y las fichas `pnl` y `staking`. Comprobar cuáles han entrado. **`staking-airdrops-impuestos-espana` es distinta**: Google la leyó y decidió no indexarla («Rastreada: actualmente sin indexar»), que es una señal de calidad; si sigue fuera, pasarle la auditoría SEO. Mirar también el CTR de los títulos nuevos de `/calendario-de-liberaciones` y `/glosario/atl`.
-- [ ] **Fichas públicas que faltan.** Cuatro herramientas siguen sin página propia: calculadora de riesgo, watchlist, Mi Portfolio y Logros. Son las únicas que aún salen con candado en `/herramientas` y apagadas en el sidebar. La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.
-- [ ] **`BlogMobileMenu`** es la última lista de herramientas escrita a mano; debería salir del catálogo como el resto.
+- [ ] **Revisar la indexación a partir del 17-10-2026.** El 03-10-2026 solo 47 de las URLs del sitemap estaban indexadas (las que salgan en Search Console → Páginas). Se pidió a mano la indexación de diez: `/premium`, las guías `hyperliquid`, `render` y `worldcoin` (las dos primeras Google ni las conocía), `/calculadora`, `/categoria/fiscalidad`, las entradas `actualizacion-xrp-ledger-2026` y `staking-airdrops-impuestos-espana`, y las fichas `pnl` y `staking`. Comprobar cuáles han entrado. **`staking-airdrops-impuestos-espana` es distinta**: Google la leyó y decidió no indexarla («Rastreada: actualmente sin indexar»), que es una señal de calidad; si sigue fuera, pasarle la auditoría SEO. Mirar también el CTR del título nuevo de `/glosario/atl`.
+- [ ] **Ficha pública de Logros.** Es la única de las cuatro herramientas sin página propia (Diario y Portfolio la tienen; la Predicción de Precio se usa sin cuenta). La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.

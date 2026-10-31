@@ -86,7 +86,7 @@ export default function GraciasPage() {
                   <span className="gracias-paso-num">✓</span>
                   <div>
                     <strong>Pago confirmado</strong>
-                    <span>Ya tienes acceso a todas las guías y herramientas.</span>
+                    <span>Ya tienes acceso al Diario de Trading y al Portfolio Adelin.</span>
                   </div>
                 </li>
                 <li className="gracias-paso gracias-paso--activo">

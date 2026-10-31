@@ -14,7 +14,6 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Vas a hacer… | Lee **antes** de empezar |
 |---|---|
 | Una **guía** interactiva | `/admin/guias-instrucciones` |
-| Una **liberación** de tokens | `/admin/liberaciones-instrucciones` |
 | Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | La **auditoría SEO** de lo que acabas de montar | [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) · ver el punto 2 |
 | Tocar el **bot de Telegram** | [`BOT.md`](./BOT.md) |
@@ -24,9 +23,11 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Un **anuncio de Telegram con copy propio** | [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 
-Las dos primeras filas son **la fuente de verdad** de su tipo de contenido: lo que diga el panel manda, y este archivo no las repite a propósito — repetirlas es cómo se desincronizan.
+La primera fila es **la fuente de verdad** de las guías: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan.
 
 **Desde el 10-10-2026 la web es solo guías.** No hay entradas, noticias, categorías ni comentarios: se retiró todo el sistema, con sus tablas. `/post/…` y `/categoria/…` responden **410** (`src/lib/retiradas.ts`). No lo vuelvas a crear sin que el admin lo pida.
+
+**Desde el 31-10-2026 la web vive de tres piezas de pago —Diario de Trading, Portfolio Adelin y Cursos— y las guías son gratuitas, todas.** Las herramientas son cuatro: Diario, Portfolio Adelin, Predicción de Precio y Logros. Se retiraron Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el **Trading en Directo** (el servicio ya no se ofrece: no lo anuncies en ningún texto); sus URLs responden **410**. Al quitar algo, **se borra para siempre todo su código**: componentes, CSS, rutas, textos que lo prometen.
 
 ---
 

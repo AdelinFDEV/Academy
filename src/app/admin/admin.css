@@ -1537,28 +1537,6 @@
 
 .agi-comp-rule { font-size: 0.78rem; color: var(--accent-orange); background: rgba(255,107,43,0.06); border-left: 2px solid var(--accent-orange); padding: 0.4rem 0.65rem; border-radius: 0 6px 6px 0; margin-top: 0.25rem; }
 
-.agi-access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-
-.agi-access-card {
-  background: var(--bg-card);
-  border: var(--card-border);
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-}
-
-.agi-access-card--premium { border-color: rgba(230,180,85,0.2); }
-
-.agi-access-type {
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent-orange);
-  margin-bottom: 0.85rem;
-}
-
-.agi-access-card--premium .agi-access-type { color: var(--premium-gold); }
-
 .agi-checklist {
   background: var(--bg-card);
   border: var(--card-border);
@@ -1592,7 +1570,6 @@
 @media (max-width: 700px) {
   .agi-palette { grid-template-columns: 1fr; }
   .agi-components-grid { grid-template-columns: 1fr; }
-  .agi-access-grid { grid-template-columns: 1fr; }
   .agi-code-path { min-width: 160px; }
 }
 

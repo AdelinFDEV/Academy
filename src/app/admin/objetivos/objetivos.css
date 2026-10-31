@@ -1729,38 +1729,6 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 .obj-cierre-nota { padding: 12px 14px; border: 1px solid rgba(250, 204, 21, 0.3); border-radius: 12px; background: rgba(250, 204, 21, 0.06); }
 .obj-cierre-nota textarea { resize: vertical; }
 
-/* ── Calendario: resumen del mes ──────────────────────────────────────── */
-
-/* Cabecera */
-
-/* Las cuatro cifras */
-
-/* Bloques */
-
-/* El mapa del mes */
-
-/* Detalle: dos columnas que encajan */
-
-/* Récord / plan: una barra con su porcentaje */
-
-/* Filas dato · valor */
-
-/* Ánimo: reparto en columnas */
-
-/* Objetivos */
-
-/* Contenido: tres canales en fila */
-
-/* Estados vacíos con guía */
-
-/* Lo que dicen tus datos */
-
-@media (max-width: 760px) {
-
-  /* Cada día, una fila compacta: número y ánimo a la izquierda, marcar a la derecha; lo demás debajo */
-
-}
-
 /* En pantallas táctiles no hay «pasar por encima»: los botones, siempre a la vista,
    y sin la animación de la celda (un transform rompería el panel fijo). */
 
@@ -2213,7 +2181,6 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 .act-etiqueta--short { background: rgba(244, 114, 182, 0.18); color: #fbcfe8; }
 .act-etiqueta--top { background: rgba(250, 204, 21, 0.16); color: #fde68a; }
 .act-vistas { font-size: 12px; color: var(--o-texto-3); font-variant-numeric: tabular-nums; }
-.act-etiqueta--premium { background: rgba(250, 204, 21, 0.16); color: #fde68a; }
 
 .act-vacio { margin: 0; font-size: 13px; color: var(--o-texto-3); }
 .act-aviso { margin: 0; font-size: 12px; color: var(--o-texto-3); }

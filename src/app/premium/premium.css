@@ -1134,10 +1134,6 @@
   color: var(--text-muted, #b0c4d8);
 }
 
-.prem-partner--dl { border-color: rgba(33, 114, 229, 0.35); }
-.prem-partner--dl:hover { border-color: rgba(33, 114, 229, 0.6); }
-.prem-partner--dl .prem-partner-mark { background: #2172E5; }
-
 .prem-partner--cg { border-color: rgba(139, 197, 63, 0.35); }
 .prem-partner--cg:hover { border-color: rgba(139, 197, 63, 0.6); }
 .prem-partner--cg .prem-partner-mark { background: #8bc53f; }

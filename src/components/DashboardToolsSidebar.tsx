@@ -4,19 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Medal, Crosshair, BookA, NotebookPen, ScanEye, Wallet,
-  ListOrdered, MessagesSquare, Network, Unlock, Map,
-  LayoutGrid, X, ChevronUp, Radio, Files, Trophy, Target, PieChart, Award, Shield, Radar, Lock, GraduationCap,
+  BookA, NotebookPen, Map, LayoutGrid, X, ChevronUp, Trophy, Target, PieChart, Lock, GraduationCap,
 } from "lucide-react";
 
+/** Los iconos que usan las secciones del dashboard, y solo esos. */
 const ICON_MAP = {
-  medal: Medal, crosshair: Crosshair, booka: BookA,
-  notebookpen: NotebookPen, scaneye: ScanEye, wallet: Wallet,
-  listordered: ListOrdered, messagessquare: MessagesSquare,
-  network: Network, unlock: Unlock, map: Map,
-  radio: Radio, files: Files,
-  trophy: Trophy, target: Target, piechart: PieChart, award: Award,
-  shield: Shield, radar: Radar, graduationcap: GraduationCap,
+  booka: BookA, notebookpen: NotebookPen, map: Map,
+  trophy: Trophy, target: Target, piechart: PieChart, graduationcap: GraduationCap,
 } as const;
 
 export type ToolItem = {

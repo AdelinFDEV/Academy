@@ -11,7 +11,6 @@ const links = [
   { href: "/admin/comunidad",            label: "Canal free",  icon: "globe" as const,     priority: true },
   { href: "/admin/objetivos",            label: "Objetivos",   icon: "target" as const,    priority: true },
   { href: "/admin/guias-instrucciones",        label: "Guías · Ref",        icon: "book" as const },
-  { href: "/admin/liberaciones-instrucciones", label: "Liberaciones · Ref", icon: "list" as const },
 ];
 
 export default function AdminNav() {

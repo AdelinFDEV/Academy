@@ -25,7 +25,7 @@ import { AlertTriangle } from "lucide-react";
  * quien se dirige la comunicación.
  */
 
-export type VarianteAviso = "portfolio" | "directo" | "diario" | "general" | "fiscal";
+export type VarianteAviso = "portfolio" | "diario" | "general" | "fiscal";
 type Variante = VarianteAviso;
 
 /**
@@ -87,40 +87,6 @@ const TEXTO: Record<Variante, { titulo: string; cuerpo: React.ReactNode }> = {
     ),
   },
 
-  directo: {
-    titulo: "Aviso de riesgo: esto no son señales de trading",
-    cuerpo: (
-      <>
-        <p>
-          Las sesiones son <strong>contenido formativo</strong>. Se muestra mi
-          operativa en tiempo real para explicar cómo se toma una decisión, no
-          para que se copie.
-        </p>
-        <p>
-          <strong>
-            Operar <Link href="/glosario/futuros">futuros</Link> con{" "}
-            <Link href="/glosario/apalancamiento">apalancamiento</Link> es de
-            altísimo riesgo.
-          </strong>{" "}
-          Puedes perder la totalidad del capital, y más rápido de lo que
-          imaginas. Con apalancamiento basta un movimiento en contra para que la
-          posición se cierre sola —{" "}
-          <Link href="/glosario/liquidacion">liquidación</Link> — sin que el
-          precio te haya dado tiempo a tener razón. La mayoría de las cuentas
-          minoristas que operan derivados apalancados pierden dinero.
-        </p>
-        <p>
-          <strong>No soy asesor financiero registrado</strong> y no presto
-          asesoramiento personalizado. Lo que funciona en mi cuenta, con mi
-          tamaño y mi tolerancia al riesgo, puede arruinar la tuya. Si decides
-          operar, hazlo solo con dinero que puedas permitirte perder y define
-          antes tu{" "}
-          <Link href="/glosario/tamano-de-posicion">tamaño de posición</Link> y
-          tu <Link href="/glosario/stop-loss">stop-loss</Link>.
-        </p>
-      </>
-    ),
-  },
 
   diario: {
     titulo: "Lo que el diario dice, y lo que no",

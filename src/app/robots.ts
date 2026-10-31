@@ -40,13 +40,11 @@ export default function robots(): MetadataRoute.Robots {
 
           // Redirigen a login o a premium, así que Google solo vería el salto.
           "/portfolio",
-          // Solo las DOS herramientas que siguen tras el muro, nombradas una a
-          // una. Antes esto era `/herramientas/` a secas, y al ser el bloqueo
-          // por prefijo habría tapado también las fichas públicas
-          // `/herramientas/portfolio` y `/herramientas/diario`, que existen
-          // justamente para que Google las lea.
-          "/herramientas/radar",
-          "/herramientas/liberaciones",
+          // Ojo: aquí NO va `/herramientas/`. El bloqueo es por prefijo y
+          // taparía las fichas públicas `/herramientas/portfolio` y
+          // `/herramientas/diario`, que existen justamente para que Google las
+          // lea. Las dos herramientas que iban aquí (radar y liberaciones) se
+          // retiraron el 31-10-2026 y responden 410 (src/lib/retiradas.ts).
           "/logros",
 
           // Página de confirmación de pago: se llega tras el checkout, nunca

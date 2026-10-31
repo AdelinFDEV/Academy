@@ -160,10 +160,7 @@ function Lista({ items, vacio }: { items: Publicacion[]; vacio: string }) {
         <li key={p.enlace}>
           <a href={p.enlace} target="_blank" rel="noopener noreferrer" className="act-item">
             <span className="act-item-titulo">{p.titulo}</span>
-            <span className="act-meta">
-              {dia(p.fecha)}
-              {p.premium ? <span className="act-etiqueta act-etiqueta--premium">👑 Premium</span> : <span className="act-etiqueta">Gratis</span>}
-            </span>
+            <span className="act-meta">{dia(p.fecha)}</span>
           </a>
         </li>
       ))}
