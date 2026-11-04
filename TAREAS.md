@@ -23,12 +23,20 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00d. El bot inteligente del Diario de Trading (04-11-2026)
+
+🔴 **Ya está anunciado y todavía no existe.** El admin pidió el 04-11-2026 que el slider de la portada diga del Diario «Con bot inteligente, hitos y registro completo» (`remate` de la diapositiva `diario` en `src/components/HeroSlider.tsx`), y que el bot se haga después. Hoy el diario no tiene ningún bot: calcula las estadísticas, el análisis y los hitos (`src/components/trading/`), y el bot de Telegram no se conecta con él.
+
+- [ ] **Decidir con el admin qué hace el bot** antes de escribir código: si analiza las operaciones y da observaciones, si responde preguntas sobre ellas, si vive dentro del diario o en Telegram, y qué modelo usa.
+- [ ] **Construirlo.**
+- [ ] **Hasta que exista**, ningún otro texto (fichas `/herramientas/diario`, `/premium`, catálogo, bot de Telegram) debe prometerlo. Si se decide no hacerlo, quitar «bot inteligente» del slider.
+
 ### 00b. Un vídeo explicativo de cada herramienta, para el home (31-10-2026)
 
 Pedido por el admin el 31-10-2026: grabar un vídeo corto de cada herramienta que enseñe cómo se usa, y colocarlo en el home.
 
 - [ ] **Grabar los vídeos** (los graba el admin): Diario de Trading, Portfolio Adelin y Predicción de Precio, y los Cursos cuando se publique el primero.
-- [ ] **Decidir dónde van en el home.** Lo natural es la sección Premium (`PremiumHome` / `PremiumPiezas`): cada tarjeta ya tiene una ilustración arriba que se podría cambiar por su vídeo, o abrirlo desde «Cómo funciona». La Predicción de Precio no está en esa sección: si lleva vídeo, necesita sitio propio.
+- [ ] **Decidir dónde van en el home.** Lo natural es la sección Premium (`PremiumHome`, rehecha el 04-11-2026): cada tarjeta lleva a la ficha de su pieza, y el vídeo podría abrirse desde ella o ir en la propia ficha. La Predicción de Precio no está en esa sección: si lleva vídeo, necesita sitio propio.
 - [ ] **Al montarlos**: alojarlos en YouTube y servirlos desde `youtube-nocookie.com`, que ya está permitido en la CSP (`next.config.ts`). Ojo: `GuideVideoEmbed` mete el iframe nada más cargar; en el home conviene una portada con botón de play que solo cargue el vídeo al pulsar, para no frenar la página.
 
 

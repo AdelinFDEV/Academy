@@ -1,50 +1,62 @@
 import Link from "next/link";
-import { ArrowRight, Crown, GraduationCap, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
-import PremiumPiezas, { type PiezaPremium } from "@/components/PremiumPiezas";
+import { ArrowRight, Crown, ShieldCheck, Sparkles } from "lucide-react";
 import { detalleDe, herramienta } from "@/lib/herramientas";
+import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 import type { ResumenHero } from "@/components/HeroSlider";
 
 /**
- * La sección de Premium del home. Rehecha desde cero el 31-10-2026: una sola,
- * para todos los anchos (antes había una tarjeta para móvil y otra a lo ancho
- * para escritorio), y sin recuento de herramientas — se venden tres piezas,
- * no un número.
+ * La sección de Premium del home.
  *
- * Todo lo que promete existe y está comprobado en su código: las diez
- * estadísticas y los hitos del diario, la rentabilidad real de la cartera
- * (sale de `resumenPortfolioPublico()`, la misma que el slider) y la
- * estructura de los cursos, que se anuncian como «próximamente» hasta que se
- * publique el primero. No se enseña a quien ya es Premium.
+ * Rehecha el 04-11-2026: la anterior (31-10) tenía un párrafo de entrada, tres
+ * puntos por tarjeta y otro párrafo junto al precio, y se leía como un folleto.
+ * Esta se queda con lo que se ve de un golpe: un titular, tres tarjetas con su
+ * icono animado, UNA cifra y una frase, y una barra con el precio y el botón.
+ * Compactas, caben apiladas en el móvil, así que ya no hace falta carrusel.
+ *
+ * Todo lo que dice existe y está comprobado en su código: las diez
+ * estadísticas del diario, la rentabilidad real de la cartera (de
+ * `resumenPortfolioPublico()`, la misma que el slider) y el certificado de los
+ * cursos, que se anuncian como «próximamente» hasta que se publique el primero.
+ * No se enseña a quien ya es Premium.
  */
 
-function piezas(portfolio: ResumenHero): PiezaPremium[] {
+type Pieza = {
+  id: "diario" | "portfolio" | "cursos";
+  Icono: (p: { size?: number }) => React.ReactNode;
+  titulo: string;
+  frase: string;
+  cifra: string;
+  cifraTexto: string;
+};
+
+function piezas(portfolio: ResumenHero): Pieza[] {
   const pct = portfolio
     ? `${portfolio.rentabilidadPct >= 0 ? "+" : ""}${portfolio.rentabilidadPct.toFixed(1).replace(".", ",")} %`
     : null;
   return [
     {
       id: "diario",
-      href: detalleDe(herramienta("diario")),
+      Icono: IconoDiario,
       titulo: "Diario de Trading",
-      linea: "Cada operación, registrada y medida.",
-      dato: { valor: "10", key: "estadísticas de tu operativa" },
-      puntos: ["Riesgo, resultado y por qué la tomaste", "Curva de capital y rendimiento por meses", "Hitos con niveles que premian la disciplina"],
+      frase: "Cada operación, registrada y medida.",
+      cifra: "10",
+      cifraTexto: "estadísticas automáticas",
     },
     {
       id: "portfolio",
-      href: detalleDe(herramienta("portfolio")),
+      Icono: IconoPortfolio,
       titulo: "Portfolio Adelin",
-      linea: "Mis compras reales de este ciclo, al momento.",
-      dato: pct ? { valor: pct, key: "rentabilidad real de la cartera" } : null,
-      puntos: ["Cada compra en spot, publicada", "Precio de entrada de cada posición", "Rentabilidad en tiempo real"],
+      frase: "Mis compras reales, al momento.",
+      cifra: pct ?? "En vivo",
+      cifraTexto: pct ? "rentabilidad real de la cartera" : "precio de entrada y rentabilidad",
     },
     {
       id: "cursos",
-      href: detalleDe(herramienta("cursos")),
-      titulo: "Cursos con certificado",
-      linea: "Formación completa, a tu ritmo.",
-      dato: null,
-      puntos: ["Módulos y lecciones con su cronograma", "Un examen al cerrar cada módulo", "Certificado verificable al aprobar"],
+      Icono: IconoCursos,
+      titulo: "Cursos",
+      frase: "Por módulos, a tu ritmo.",
+      cifra: "Certificado",
+      cifraTexto: "al aprobar el examen final",
     },
   ];
 }
@@ -52,48 +64,61 @@ function piezas(portfolio: ResumenHero): PiezaPremium[] {
 export default function PremiumHome({ portfolio }: { portfolio: ResumenHero }) {
   return (
     <section className="ph" aria-labelledby="ph-titulo">
-      <div className="ph-marco">
+      <div className="ph-inner">
         <header className="ph-cabecera">
           <span className="ph-sello"><Crown size={14} aria-hidden="true" /> Premium</span>
           <h2 id="ph-titulo" className="ph-titulo">
-            Una suscripción. <span>Tres piezas para operar con método.</span>
+            Una suscripción. <span>Tres piezas.</span>
           </h2>
-          <p className="ph-sub">
-            El diario que te dice cómo operas de verdad, mi cartera real para ver cómo se hace y
-            cursos que te lo enseñan paso a paso.
-          </p>
         </header>
 
-        <PremiumPiezas piezas={piezas(portfolio)} />
+        <ul className="ph-piezas">
+          {piezas(portfolio).map((p) => {
+            const h = herramienta(p.id);
+            const pronto = h.acceso === "proximamente";
+            return (
+              <li key={p.id} style={{ "--c": h.color } as React.CSSProperties}>
+                {/* Toda la tarjeta lleva a la ficha pública de la pieza. */}
+                <Link href={detalleDe(h)} className="ph-pieza">
+                  <span className="ph-pieza-cab">
+                    <span className="ph-pieza-icono" aria-hidden="true"><p.Icono size={26} /></span>
+                    {pronto && <span className="ph-pronto">Próximamente</span>}
+                  </span>
 
-        <div className="ph-cierre">
-          <div className="ph-incluye">
-            {/* Lo que tiene que quedar claro: lo que se añada a la web no se
-                cobra aparte. Y la cuota no sube mientras sigas suscrito, que
-                es lo que dice la FAQ de /premium — no prometer más que eso. */}
-            <p className="ph-incluye-titulo">Todo lo que llegue, incluido</p>
-            <p className="ph-incluye-texto">
-              Cada herramienta nueva y cada curso que publique entran en tu suscripción. Nunca
-              pagarás más por lo que añada, y tu cuota no sube mientras sigas suscrito.
-            </p>
-            <ul className="ph-incluye-lista">
-              <li><Sparkles size={15} aria-hidden="true" /> Herramientas nuevas, incluidas</li>
-              <li><GraduationCap size={15} aria-hidden="true" /> Cursos futuros, incluidos</li>
-              <li><MessageCircle size={15} aria-hidden="true" /> Me escribes y te contesto yo</li>
-            </ul>
-          </div>
+                  <span className="ph-cifra">{p.cifra}</span>
+                  <span className="ph-cifra-texto">{p.cifraTexto}</span>
 
-          <div className="ph-precio">
-            <p className="ph-precio-cifra">
-              49,99 €<small>/mes</small>
-            </p>
-            <p className="ph-precio-nota">Menos de 1,70 € al día, sin extras ni compras sueltas</p>
-            <Link href="/premium" className="ph-cta">
-              Hazte Premium <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />
-            </Link>
-            <p className="ph-garantia">
-              <ShieldCheck size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
-            </p>
+                  <span className="ph-pieza-pie">
+                    <span>
+                      <strong className="ph-pieza-titulo">{p.titulo}</strong>
+                      <span className="ph-pieza-frase">{p.frase}</span>
+                    </span>
+                    <span className="ph-pieza-flecha" aria-hidden="true">
+                      <ArrowRight size={16} strokeWidth={2.4} />
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="ph-barra">
+          <p className="ph-incluye">
+            <Sparkles size={16} aria-hidden="true" />
+            <span><strong>Todo lo que añada, incluido.</strong> Herramientas y cursos nuevos, sin pagar más.</span>
+          </p>
+
+          <div className="ph-compra">
+            <p className="ph-precio">49,99 €<small>/mes</small></p>
+            <div className="ph-compra-accion">
+              <Link href="/premium" className="ph-cta">
+                Hazte Premium <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />
+              </Link>
+              <p className="ph-garantia">
+                <ShieldCheck size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -2,9 +2,9 @@
    FICHAS DE HERRAMIENTA  ·  sistema visual
    ══════════════════════════════════════════════════════════════════════════
 
-   Un solo archivo para todas las fichas (/herramientas/portfolio, /diario…):
-   son la misma plantilla con distinto contenido, y duplicarlo garantizaría que
-   se desincronicen. Lo único que cambia por ficha es `--det-accent`.
+   Lo usan los cursos y el glosario. Las fichas del Portfolio y del Diario se
+   pasaron el 04-11-2026 a su propia plantilla, `ficha.css`, más visual y con
+   menos texto. Lo único que cambia por página es `--det-accent`.
 
    Hereda el lenguaje de la antigua página de asesoría, que es la mejor
    resuelta del sitio: fondo técnico con rejilla y orbes en movimiento,
@@ -761,125 +761,4 @@
   }
 
   .det-faq-item summary::after { transition: none; }
-}
-
-/* ── Acceso a la herramienta (AccesoHerramienta.tsx) ───────────────────────
-   Bajo la cabecera y en el cierre de cada ficha. Sin Premium, el botón lleva
-   directo al pago; con Premium, abre la herramienta. */
-
-.acceso {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  margin-top: 1.8rem;
-}
-
-/* En la cabecera va justo bajo la descripción, antes de las cifras. */
-.det-hero .acceso {
-  margin: 1.6rem 0 2.2rem;
-}
-
-.det-final .acceso {
-  align-items: center;
-}
-
-.acceso-fila {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1.25rem;
-}
-
-.det-final .acceso-fila {
-  justify-content: center;
-}
-
-.acceso-btn {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: 54px;
-  padding: 0 1.6rem;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 800;
-  text-decoration: none;
-  color: #08101f;
-  background: linear-gradient(135deg, var(--det-accent-2) 0%, var(--det-accent) 100%);
-  box-shadow:
-    0 16px 36px -14px color-mix(in srgb, var(--det-accent) 80%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
-  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
-}
-
-/* Un destello que lo cruza de vez en cuando: se ve sin moverse todo el rato. */
-.acceso-btn::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-  transform: skewX(-20deg);
-  animation: acceso-destello 5s ease-in-out infinite;
-}
-
-@keyframes acceso-destello {
-  0%, 70% { left: -60%; }
-  100% { left: 130%; }
-}
-
-.acceso-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 22px 44px -14px color-mix(in srgb, var(--det-accent) 85%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
-}
-
-.acceso-btn svg:last-child {
-  transition: transform 0.25s ease;
-}
-
-.acceso-btn:hover svg:last-child {
-  transform: translateX(3px);
-}
-
-.acceso-sec {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--det-accent) 45%, transparent);
-  text-underline-offset: 4px;
-  color: rgba(240, 244, 255, 0.8);
-}
-
-.acceso-sec:hover {
-  color: #fff;
-  text-decoration-color: var(--det-accent);
-}
-
-.acceso-nota {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0;
-  font-size: 0.8rem;
-  color: rgba(240, 244, 255, 0.55);
-}
-
-.acceso-nota svg {
-  color: #4ade80;
-}
-
-.acceso-nota a {
-  color: var(--det-accent-2);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .acceso-btn::after { animation: none; display: none; }
-  .acceso-btn:hover { transform: none; }
 }

@@ -2,31 +2,36 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
-  NotebookPen, BarChart3, LineChart, Lock, Trophy, CalendarRange, Crosshair,
+  ArrowRight, Lock, ShieldCheck, NotebookPen, BarChart3, Search,
+  LineChart, CalendarRange, Crosshair, EyeOff, Trophy, Check, X,
+  CreditCard, RefreshCw,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
-import AccesoHerramienta from "@/components/AccesoHerramienta";
-import "../detalle.css";
+import "../ficha.css";
 
 /**
  * Ficha pública del Diario de Trading — punto 13 del plan SEO.
+ *
+ * Rehecha el 04-11-2026 con la misma plantilla que la del Portfolio
+ * (`../ficha.css`): menos texto, la herramienta a la vista y la llamada a
+ * suscribirse en el hero, en el bloque de precio y en la barra de móvil.
  *
  * Escrita sobre lo que la herramienta hace DE VERDAD, revisado en
  * `TradingJournal.tsx` y `src/components/trading/`: capital inicial, diez
  * estadísticas, curva de capital, P&L real opcional, rendimiento por periodo,
  * calendario, desglose por par/estrategia/día/hora e hitos con niveles.
  *
- * **Hitos, no retos.** Hasta el 26-09-2026 aquí se decía que no había retos ni
- * niveles. Desde entonces hay siete hitos con niveles, y el admin decidió que
- * cumplen esa promesa. No hay "retos" (objetivos que se aceptan o se proponen):
- * no los anuncies.
+ * **Hitos, no retos.** Hay siete hitos con niveles. No hay "retos" (objetivos
+ * que se aceptan o se proponen): no los anuncies.
  *
- * El texto le habla a quien YA opera y no lleva registro (decisión del admin),
- * y el gancho son las estadísticas, no la gamificación.
+ * La ventana del hero es una maqueta decorativa (`aria-hidden`): el diario es
+ * de cada usuario, así que no hay datos reales que enseñar. Sin rótulo de
+ * «ejemplo» por decisión del admin (04-11-2026); las cifras son redondas y
+ * no se atribuyen a nadie.
  */
 export const metadata: Metadata = {
   title: "Diario de trading con 10 estadísticas",
@@ -35,66 +40,113 @@ export const metadata: Metadata = {
   alternates: { canonical: "/herramientas/diario" },
 };
 
-/** Las diez métricas reales del panel, tal cual las calcula la herramienta. */
-const METRICAS: [string, string][] = [
-  ["P&L Total", "Lo que llevas ganado o perdido en total, sumando todas las operaciones registradas."],
-  ["Win Rate", "El porcentaje de operaciones ganadoras. Útil, pero engañoso solo: se lee junto a la ganancia y la pérdida medias."],
-  ["Operaciones", "Cuántas llevas apuntadas. Con menos de treinta, casi ninguna conclusión se sostiene."],
-  ["P&L Medio", "Cuánto deja de media cada operación. Es la cifra que dice si tu método tiene ventaja."],
-  ["Ganancia media", "Cuánto ganas cuando aciertas."],
-  ["Pérdida media", "Cuánto pierdes cuando fallas. Comparada con la anterior te dice si tus pérdidas están controladas."],
-  ["Mejor operación", "Tu mayor acierto. Si destaca demasiado sobre el resto, tu resultado depende de un golpe de suerte."],
-  ["Peor operación", "Tu mayor pérdida, calculada solo entre las perdedoras. Es la que revela si alguna vez se te fue de las manos."],
-  ["Mayor racha ganando", "Cuántas seguidas encadenaste sin fallar."],
-  ["Mayor racha perdiendo", "La racha mala más larga. Saber que la aguantaste ayuda a no abandonar en la siguiente."],
+const PRECIO = "49,99 €";
+
+/** Cifras de la maqueta del hero. Redondas y coherentes entre sí. */
+const DEMO = {
+  pl: "+1.240 $",
+  plPct: "+12,4 %",
+  winRate: 58,
+  operaciones: 47,
+  plMedio: "+26 $",
+};
+
+const DEMO_OPS = [
+  { par: "BTC", dir: "Long", estrategia: "Ruptura", res: "+184 $", tono: "es-sube" },
+  { par: "ETH", dir: "Short", estrategia: "Rango", res: "−62 $", tono: "es-baja" },
+  { par: "SOL", dir: "Long", estrategia: "Tendencia", res: "+97 $", tono: "es-sube" },
 ];
 
-const DENTRO = [
-  {
-    icon: BarChart3,
-    title: "Diez estadísticas sobre cómo operas",
-    text: "El panel completo se calcula solo a medida que apuntas: win rate, P&L medio, ganancia y pérdida medias, mejor y peor operación y tus dos rachas máximas.",
-  },
-  {
-    icon: LineChart,
-    title: "Tu curva de capital",
-    text: "Partes de tu capital inicial y el diario dibuja cómo evoluciona operación a operación. Es la vista que más rápido te dice si estás mejorando o solo dando vueltas.",
-  },
+/** La curva de la maqueta: puntos de un SVG de 320 × 110. */
+const CURVA: [number, number][] = [
+  [0, 92], [27, 86], [53, 89], [80, 74], [107, 78], [133, 64], [160, 68],
+  [187, 52], [213, 57], [240, 40], [267, 44], [293, 28], [320, 18],
+];
+const CURVA_PUNTOS = CURVA.map(([x, y]) => `${x},${y}`).join(" ");
+const [CURVA_X, CURVA_Y] = CURVA[CURVA.length - 1];
+
+/** Circunferencia del anillo del win rate (r = 15.9, la del 100 = 100). */
+const ANILLO = 2 * Math.PI * 15.9;
+
+/** Cómo funciona, en el orden en que pasa. */
+const PASOS = [
   {
     icon: NotebookPen,
-    title: "El registro, con el porqué",
-    text: "Par, dirección, riesgo asumido, ganancia esperada, resultado, estrategia y una nota. Ese porqué es lo que dentro de tres meses te dirá si el problema era el método o la disciplina.",
+    title: "Apuntas la operación",
+    text: "Par, dirección, riesgo, resultado y por qué entraste. Un minuto.",
+  },
+  {
+    icon: BarChart3,
+    title: "El diario hace las cuentas",
+    text: "Diez estadísticas y tu curva de capital, al día con cada operación.",
+  },
+  {
+    icon: Search,
+    title: "Ves dónde se te va el dinero",
+    text: "Por par, estrategia, día y hora. Sin discutir con tu memoria.",
+  },
+];
+
+/** Las diez métricas reales del panel, con lo que dicen en una línea. */
+const METRICAS: [string, string][] = [
+  ["P&L total", "Lo ganado o perdido en total"],
+  ["Win rate", "Qué parte de tus operaciones gana"],
+  ["Operaciones", "Cuántas llevas apuntadas"],
+  ["P&L medio", "Lo que deja cada operación"],
+  ["Ganancia media", "Cuánto ganas al acertar"],
+  ["Pérdida media", "Cuánto pierdes al fallar"],
+  ["Mejor operación", "Tu mayor acierto"],
+  ["Peor operación", "Tu mayor pérdida"],
+  ["Racha ganando", "La más larga sin fallar"],
+  ["Racha perdiendo", "La mala más larga"],
+];
+
+const ADEMAS = [
+  {
+    icon: LineChart,
+    title: "Curva de capital",
+    text: "Desde el capital que indiques, operación a operación.",
   },
   {
     icon: CalendarRange,
-    title: "Dónde ganas y dónde pierdes",
-    text: "Tu rendimiento por mes, trimestre y año, un calendario con el resultado de cada día y el desglose por par, estrategia, día de la semana y franja horaria.",
+    title: "Calendario y periodos",
+    text: "El resultado de cada día, y tu rendimiento por mes, trimestre y año.",
   },
   {
     icon: Crosshair,
     title: "El plan frente a lo que pasó",
-    text: "Si cerraste antes del objetivo o el stop-loss se deslizó, apuntas el P&L real. El diario mide qué parte del objetivo te llevas en las ganadoras y cuánto pierdes frente al stop en las perdedoras.",
-    link: { term: "stop-loss", href: "/glosario/stop-loss" },
+    text: "Si cerraste antes o el stop-loss se deslizó, el diario mide la diferencia.",
+    termino: { texto: "stop-loss", href: "/glosario/stop-loss" },
   },
   {
-    icon: Lock,
+    icon: EyeOff,
     title: "Privado de verdad",
-    text: "Cada operación queda ligada a tu cuenta y no la ve nadie más: ni otros suscriptores, ni un muro público de resultados. Es tu registro.",
+    text: "Nadie más ve tus operaciones: ni otros suscriptores ni un ranking.",
   },
 ];
 
-/** Enlaza al diccionario la primera aparición de un término dentro de un texto plano. */
-function TextoConTermino({ text, link }: { text: string; link?: { term: string; href: string } }) {
-  const i = link ? text.indexOf(link.term) : -1;
-  if (!link || i < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, i)}
-      <Link href={link.href}>{link.term}</Link>
-      {text.slice(i + link.term.length)}
-    </>
-  );
-}
+const HITOS = [
+  "Muestra fiable",
+  "Disciplina de riesgo",
+  "Diario con porqué",
+  "Sin revancha",
+  "Meses en verde",
+  "Rentabilidad sobre tu capital",
+  "Vuelta a máximos",
+];
+
+const COMPARA: { otros: string; aqui: string }[] = [
+  { otros: "«Voy más o menos bien»", aqui: "Tu P&L medio, en una cifra" },
+  { otros: "Recuerdas los aciertos, olvidas las pérdidas", aqui: "Todas las operaciones, también las malas" },
+  { otros: "Un win rate alto que no dice nada", aqui: "Win rate junto a ganancia y pérdida medias" },
+];
+
+const NO_ES = [
+  "No opera por ti",
+  "No se conecta a ningún exchange",
+  "No te dice qué comprar",
+  "No importa tu histórico",
+];
 
 const FAQ = [
   {
@@ -110,28 +162,49 @@ const FAQ = [
     a: "Sí. El par lo escribes tú, así que vale para cripto, índices o lo que operes, y el diario te desglosa el P&L por par para que veas dónde ganas y dónde pierdes.",
   },
   {
-    q: "¿Qué es el capital inicial y para qué sirve?",
-    a: "Es el saldo desde el que arranca tu curva. Al indicarlo, el diario puede calcular tu rentabilidad en porcentaje además del resultado en dinero. Se puede cambiar cuando quieras.",
-  },
-  {
-    q: "¿Puedo empezar de cero si me lío?",
-    a: "Sí, hay opción de resetear el diario y borrar todas las operaciones registradas. Es irreversible, así que conviene estar seguro.",
-  },
-  {
     q: "¿Tiene niveles o recompensas?",
-    a: "Tiene siete hitos con niveles, y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde. Van incluidos en la suscripción.",
+    a: "Tiene siete hitos con niveles, y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde.",
+  },
+  {
+    q: "¿Qué más incluye la suscripción?",
+    a: `El Portfolio Adelin, mi cartera real con precios en vivo. Las dos herramientas van en la misma cuota de ${PRECIO} al mes, sin permanencia: cancelas cuando quieras desde tu cuenta.`,
   },
 ];
 
-/** Cifras de la maqueta. Redondas a propósito: ilustran, no fingen ser reales. */
-const DEMO = [
-  { valor: "+1.240 $", label: "P&L Total", tono: "es-verde" },
-  { valor: "58 %", label: "Win Rate", tono: "" },
-  { valor: "47", label: "Operaciones", tono: "" },
-  { valor: "+26 $", label: "P&L Medio", tono: "es-verde" },
-  { valor: "+118 $", label: "Ganancia media", tono: "es-verde" },
-  { valor: "−87 $", label: "Pérdida media", tono: "es-rojo" },
-];
+/** Enlaza al diccionario la primera aparición de un término dentro de un texto plano. */
+function ConTermino({ text, termino }: { text: string; termino?: { texto: string; href: string } }) {
+  const i = termino ? text.indexOf(termino.texto) : -1;
+  if (!termino || i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <Link href={termino.href}>{termino.texto}</Link>
+      {text.slice(i + termino.texto.length)}
+    </>
+  );
+}
+
+/** El botón principal. Quien ya es Premium abre su diario; el resto paga. */
+function Cta({ premium, grande = false }: { premium: boolean; grande?: boolean }) {
+  const clase = `fh-btn${grande ? " fh-btn--grande" : ""}`;
+  if (premium) {
+    return (
+      <Link href="/dashboard/trading" className={clase}>
+        Abrir mi diario
+        <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
+      </Link>
+    );
+  }
+  // /api/checkout manda primero al registro si no hay sesión y vuelve solo
+  // al pago (ver su ruta): un paso menos que pasar por /premium.
+  return (
+    <Link href="/api/checkout" prefetch={false} className={clase}>
+      <Lock size={16} strokeWidth={2.4} aria-hidden="true" />
+      Empezar mi diario
+      <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
+    </Link>
+  );
+}
 
 export default async function FichaDiarioPage() {
   const supabase = await createClient();
@@ -166,313 +239,277 @@ export default async function FichaDiarioPage() {
       <SiteNav user={!!user} isPremium={isPremium} isAdmin={role === "admin"} />
 
       <main
-        className="blog-main det-main"
-        style={{ "--det-accent": "#ff9a4d", "--det-accent-2": "#ffcfa3" } as React.CSSProperties}
+        className={`fh${isPremium ? "" : " fh--con-barra"}`}
+        style={{ "--fh-acento": "#ff9a4d", "--fh-acento-2": "#ffcfa3" } as React.CSSProperties}
       >
-        <div className="det-backdrop" aria-hidden="true">
-          <span className="det-backdrop-grid" />
-          <span className="det-orb det-orb--1" />
-          <span className="det-orb det-orb--2" />
-          <span className="det-orb det-orb--3" />
-        </div>
-
-        <nav className="det-breadcrumb" aria-label="Migas de pan">
+        <nav className="fh-migas" aria-label="Migas de pan">
           <Link href="/">Inicio</Link>
           <span aria-hidden="true">›</span>
           <span>Diario de Trading</span>
         </nav>
 
         {/* ── Hero ── */}
-        <header className="det-hero">
-          <span className="det-hero-watermark" aria-hidden="true">10</span>
-
-          <span className="det-eyebrow">
-            <span className="det-eyebrow-dot" aria-hidden="true" />
-            Incluido en Premium
-          </span>
-
-          <h1 className="det-title">
-            Diario de Trading
-            <span className="det-title-grad">Los números, no tu memoria.</span>
-          </h1>
-
-          <p className="det-lead">
-            Apuntas cada operación con su riesgo y su resultado, y el diario te
-            devuelve <strong>diez estadísticas</strong> que describen cómo
-            operas de verdad. Privado, solo tuyo y sin conexión a ningún
-            exchange.
-          </p>
-          <AccesoHerramienta nombre="el Diario de Trading" ruta="/dashboard/trading" abrir="Abrir mi diario" logueado={!!user} premium={isPremium} />
-
-          {/* Maqueta del panel. Cifras de ejemplo, declaradas como tales justo
-              debajo: enseñar el producto vende, fingir datos reales engaña. */}
-          <div className="det-stats" aria-hidden="true">
-            {DEMO.slice(0, 4).map((d) => (
-              <div key={d.label} className="det-stat">
-                <span className={`det-stat-value ${d.tono}`}>{d.valor}</span>
-                <span className="det-stat-label">{d.label}</span>
-              </div>
-            ))}
-          </div>
-          <p className="det-stats-nota">
-            <span className="det-stats-dot" aria-hidden="true" />
-            Cifras de ejemplo para ilustrar el panel. Las tuyas salen de lo que
-            apuntes.
-          </p>
-
-        </header>
-
-        <div className="det-pilares">
-          <div className="det-pilar">
-            <span className="det-pilar-num">01</span>
-            <span className="det-pilar-title">Diez métricas, no una</span>
-            <span className="det-pilar-desc">
-              Win rate, medias, extremos y rachas. El win rate solo no dice casi nada.
+        <section className="fh-hero">
+          <div className="fh-hero-texto">
+            <span className="fh-eyebrow">
+              <span className="fh-eyebrow-punto" aria-hidden="true" />
+              Incluido en Premium
             </span>
-          </div>
-          <div className="det-pilar">
-            <span className="det-pilar-num">02</span>
-            <span className="det-pilar-title">Curva de capital</span>
-            <span className="det-pilar-desc">
-              Desde el capital que tú indiques, para ver la evolución y no solo el total.
-            </span>
-          </div>
-          <div className="det-pilar">
-            <span className="det-pilar-num">03</span>
-            <span className="det-pilar-title">Nadie más lo ve</span>
-            <span className="det-pilar-desc">
-              Ni otros suscriptores ni un ranking público. Es un registro privado.
-            </span>
-          </div>
-        </div>
 
-        {/* ── 01 · El problema ── */}
-        <section className="det-seccion">
-          <header className="det-sechead">
-            <span className="det-sechead-num">01</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Crees que sabes cómo te va</h2>
-              <p className="det-sechead-sub">
-                Y casi seguro que no. No por falta de atención — por cómo
-                funciona la memoria.
-              </p>
+            <h1 className="fh-titulo">
+              Diario de Trading
+              <span>Los números, no tu memoria.</span>
+            </h1>
+
+            <p className="fh-lead">
+              Apunta cada operación y descubre en diez estadísticas cómo operas
+              de verdad. Privado y solo tuyo.
+            </p>
+
+            <div className="fh-cta">
+              <Cta premium={isPremium} />
+              {!isPremium && (
+                <p className="fh-cta-nota">
+                  <ShieldCheck size={14} aria-hidden="true" />
+                  {PRECIO}/mes · Sin permanencia · Cancela en 1 clic
+                </p>
+              )}
+              {!user && (
+                <p className="fh-cta-login">
+                  ¿Ya eres Premium?{" "}
+                  <Link href={`/login?next=${encodeURIComponent("/dashboard/trading")}`}>Inicia sesión</Link>
+                </p>
+              )}
             </div>
-          </header>
+          </div>
 
-          <p className="det-p">
-            La memoria guarda las operaciones buenas con todo detalle y difumina
-            las malas. Por eso la sensación de «voy más o menos bien» rara vez
-            coincide con el número, y por eso mucha gente lleva años operando
-            sin saber si su método tiene ventaja o si simplemente ha tenido
-            rachas.
-          </p>
-
-          <p className="det-destacado">
-            No hace falta operar mejor para descubrir por qué pierdes. Hace
-            falta apuntarlo.
-          </p>
-
-          <p className="det-p">
-            Cuando anotas cuánto arriesgaste y por qué entraste, en unas semanas
-            deja de haber discusión. Se ve si el problema son las entradas, si
-            es que arriesgas de más en unas pocas operaciones, o si simplemente
-            operas demasiado. <strong>Son tres problemas distintos y se
-            arreglan de formas distintas</strong> — pero sin registro los tres
-            se sienten igual.
-          </p>
-        </section>
-
-        {/* ── 02 · Las diez métricas ── */}
-        <section className="det-seccion det-seccion--panel">
-          <header className="det-sechead">
-            <span className="det-sechead-num">02</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Las diez estadísticas, una por una</h2>
-              <p className="det-sechead-sub">
-                Se calculan solas a medida que apuntas. Ninguna hay que
-                configurarla.
-              </p>
-            </div>
-          </header>
-
-          <dl className="det-columnas">
-            {METRICAS.map(([nombre, texto], i) => (
-              <div key={nombre} className="det-columna">
-                <span className="det-columna-num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
+          {/* Maqueta del panel. Decorativa: las cifras ilustran cómo se ve,
+              no son de nadie. El admin pidió el 04-11-2026 no rotularla. */}
+          <div className="fh-ventana-marco" aria-hidden="true">
+            <div className="fh-ventana fh-ventana--diario">
+              <div className="fh-ventana-barra">
+                <span className="fh-ventana-puntos"><i /><i /><i /></span>
+                <span className="fh-ventana-nombre">Mi diario de trading</span>
+                <span className="fh-periodos">
+                  <span>Semana</span>
+                  <span className="is-activo">Mes</span>
+                  <span>Año</span>
                 </span>
-                <dt>{nombre}</dt>
-                <dd>{texto}</dd>
               </div>
-            ))}
-          </dl>
+
+              <div className="fh-dj-cuerpo">
+                <div className="fh-dj-kpis">
+                  <div className="fh-dj-pl">
+                    <span className="fh-cifra-label">P&amp;L total</span>
+                    <span className="fh-dj-pl-valor es-sube">{DEMO.pl}</span>
+                    <span className="fh-dj-pl-pct">{DEMO.plPct} sobre tu capital</span>
+                  </div>
+
+                  <div className="fh-dj-win">
+                    <svg viewBox="0 0 36 36" className="fh-dj-anillo">
+                      <circle cx="18" cy="18" r="15.9" className="fh-dj-anillo-fondo" />
+                      <circle
+                        cx="18" cy="18" r="15.9"
+                        className="fh-dj-anillo-valor"
+                        strokeDasharray={`${(ANILLO * DEMO.winRate) / 100} ${ANILLO}`}
+                      />
+                    </svg>
+                    <span className="fh-dj-win-texto">
+                      <b>{DEMO.winRate} %</b>
+                      <small>Win rate</small>
+                    </span>
+                  </div>
+
+                  <div className="fh-dj-mini">
+                    <span><small>Operaciones</small><b>{DEMO.operaciones}</b></span>
+                    <span><small>P&amp;L medio</small><b className="es-sube">{DEMO.plMedio}</b></span>
+                  </div>
+                </div>
+
+                <div className="fh-dj-curva">
+                  <div className="fh-dj-curva-cab">
+                    <span className="fh-cifra-label">Curva de capital</span>
+                    <span className="fh-dj-max">Máximo histórico</span>
+                  </div>
+                  <div className="fh-dj-grafica">
+                    <svg viewBox="0 0 320 110" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="fh-dj-relleno" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="var(--fh-acento)" stopOpacity="0.32" />
+                          <stop offset="100%" stopColor="var(--fh-acento)" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      {[28, 55, 82].map((y) => (
+                        <line key={y} x1="0" x2="320" y1={y} y2={y} className="fh-dj-guia" />
+                      ))}
+                      <polygon points={`${CURVA_PUNTOS} 320,110 0,110`} fill="url(#fh-dj-relleno)" />
+                      <polyline points={CURVA_PUNTOS} className="fh-dj-linea" />
+                    </svg>
+                    <span
+                      className="fh-dj-punto"
+                      style={{ left: `${(CURVA_X / 320) * 100}%`, top: `${(CURVA_Y / 110) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="fh-dj-ops">
+                  {DEMO_OPS.map((o) => (
+                    <div key={o.par} className="fh-dj-op">
+                      <span className="fh-dj-moneda">{o.par.slice(0, 1)}</span>
+                      <span className="fh-dj-par">{o.par}<small>/USDT</small></span>
+                      <span className={`fh-dj-dir ${o.dir === "Long" ? "es-long" : "es-short"}`}>{o.dir}</span>
+                      <span className="fh-dj-estrategia">{o.estrategia}</span>
+                      <span className={`fh-dj-res ${o.tono}`}>{o.res}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* El aviso de hito, como sale en la herramienta al subir de nivel. */}
+            <div className="fh-dj-hito">
+              <span className="fh-dj-hito-icono"><Trophy size={16} strokeWidth={2.2} /></span>
+              <span>
+                <small>Hito conseguido</small>
+                <b>Disciplina de riesgo · Nivel 2</b>
+              </span>
+            </div>
+          </div>
         </section>
 
-        {/* ── 03 · Qué más hay ── */}
-        <section className="det-seccion">
-          <header className="det-sechead">
-            <span className="det-sechead-num">03</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Y además</h2>
-              <p className="det-sechead-sub">
-                Lo que rodea al panel: la curva, el análisis, el registro y a
-                quién pertenece todo esto.
-              </p>
-            </div>
-          </header>
-
-          <div className="det-grid">
-            {DENTRO.map((b, i) => {
-              const Icon = b.icon;
+        {/* ── Cómo funciona ── */}
+        <section className="fh-bloque">
+          <h2 className="fh-h2">Así funciona</h2>
+          <div className="fh-dentro">
+            {PASOS.map((d, i) => {
+              const Icon = d.icon;
               return (
-                <article key={b.title} className="det-card">
-                  <span className="det-card-num" aria-hidden="true">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="det-card-icon" aria-hidden="true">
-                    <Icon size={19} strokeWidth={1.9} />
-                  </span>
-                  <h3 className="det-card-title">{b.title}</h3>
-                  <p className="det-card-text"><TextoConTermino text={b.text} link={b.link} /></p>
+                <article key={d.title} className="fh-paso">
+                  <span className="fh-paso-num" aria-hidden="true">{i + 1}</span>
+                  <span className="fh-paso-icono" aria-hidden="true"><Icon size={20} strokeWidth={1.9} /></span>
+                  <h3>{d.title}</h3>
+                  <p>{d.text}</p>
                 </article>
               );
             })}
           </div>
         </section>
 
-        {/* ── 04 · Cómo leerlas juntas ── */}
-        <section className="det-seccion det-seccion--panel">
-          <header className="det-sechead">
-            <span className="det-sechead-num">04</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Las métricas se leen en pareja</h2>
-              <p className="det-sechead-sub">
-                Una sola cifra casi siempre miente. Estas tres combinaciones son
-                las que de verdad explican un resultado.
-              </p>
-            </div>
-          </header>
+        {/* ── Las diez estadísticas ── */}
+        <section className="fh-bloque">
+          <h2 className="fh-h2">Diez estadísticas que se calculan solas</h2>
+          <dl className="fh-metricas">
+            {METRICAS.map(([nombre, texto]) => (
+              <div key={nombre} className="fh-metrica">
+                <dt>{nombre}</dt>
+                <dd>{texto}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="fh-nota">
+            Se leen en pareja: un 58 % de acierto es malo si ganas 40 € y
+            pierdes 120 €. Y tu racha perdedora por la pérdida media dice si
+            tu <Link href="/glosario/tamano-de-posicion">tamaño de posición</Link> es
+            demasiado grande para tu capital.
+          </p>
+        </section>
 
-          <div className="det-anatomia">
-            <div className="det-lectura">
-              <span className="det-lectura-cifra">58 %</span>
-              <span>
-                <span className="det-lectura-title">Win rate + ganancia y pérdida medias</span>
-                <span className="det-lectura-text">
-                  Un 58 % de acierto es malo si ganas 40 € y pierdes 120 €. Y un
-                  35 % es excelente si es al revés. El win rate solo no dice
-                  nada sin el tamaño de lo que ganas y lo que pierdes.
-                </span>
-              </span>
-            </div>
-
-            <div className="det-lectura">
-              <span className="det-lectura-cifra">+1.240 $</span>
-              <span>
-                <span className="det-lectura-title">P&amp;L total + mejor operación</span>
-                <span className="det-lectura-text">
-                  Si tu mejor operación se acerca a todo tu resultado
-                  acumulado, no tienes un método: tuviste un acierto. Comparar
-                  las dos cifras es la forma más rápida de detectarlo.
-                </span>
-              </span>
-            </div>
-
-            <div className="det-lectura">
-              <span className="det-lectura-cifra es-mute">7</span>
-              <span>
-                <span className="det-lectura-title">Racha perdedora + pérdida media</span>
-                <span className="det-lectura-text">
-                  Multiplícalas y tendrás lo que tu cuenta llegó a encajar
-                  seguido. Si ese número te incomoda, tu{" "}
-                  <Link href="/glosario/tamano-de-posicion">tamaño de posición</Link>{" "}
-                  es demasiado grande para tu capital.
-                </span>
-              </span>
-            </div>
+        {/* ── Y además ── */}
+        <section className="fh-bloque">
+          <h2 className="fh-h2">Y además</h2>
+          <div className="fh-ademas">
+            {ADEMAS.map((a) => {
+              const Icon = a.icon;
+              return (
+                <div key={a.title} className="fh-extra">
+                  <span className="fh-paso-icono" aria-hidden="true"><Icon size={18} strokeWidth={1.9} /></span>
+                  <div>
+                    <h3>{a.title}</h3>
+                    <p><ConTermino text={a.text} termino={a.termino} /></p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
-        {/* ── 05 · Qué no es ── */}
-        <section className="det-seccion">
-          <header className="det-sechead">
-            <span className="det-sechead-num">05</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Qué NO es</h2>
-            </div>
-          </header>
-
-          <ul className="det-lista">
-            <li>
-              <strong>No opera por ti</strong> ni se conecta a ningún exchange.
-              Las operaciones las apuntas tú, a mano.
-            </li>
-            <li>
-              <strong>No te dice qué comprar.</strong> No hay señales ni
-              sugerencias de entrada: el diario mira hacia atrás, no hacia
-              delante.
-            </li>
-            <li>
-              <strong>No importa tu histórico automáticamente.</strong> Empiezas
-              desde la próxima operación, no desde tus últimos dos años.
-            </li>
+        {/* ── Hitos ── */}
+        <section className="fh-bloque">
+          <h2 className="fh-h2">Siete hitos que premian la disciplina</h2>
+          <ul className="fh-hitos">
+            {HITOS.map((h) => (
+              <li key={h}><Trophy size={15} strokeWidth={2} aria-hidden="true" />{h}</li>
+            ))}
           </ul>
+          <p className="fh-nota">
+            Cada uno sube de nivel a medida que apuntas, y te avisa cuando lo
+            consigues. Ninguno premia operar más: premian lo que depende de ti.
+          </p>
         </section>
 
-        {/* ── 06 · Hitos ── */}
-        <section className="det-seccion">
-          <header className="det-sechead">
-            <span className="det-sechead-num">06</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Hitos que premian la disciplina</h2>
-              <p className="det-sechead-sub">
-                El problema de un diario nunca es abrirlo: es seguir
-                escribiéndolo al mes siguiente.
-              </p>
-            </div>
-          </header>
+        {/* ── Frente a lo habitual ── */}
+        <section className="fh-bloque">
+          <h2 className="fh-h2">Sin diario, y con él</h2>
+          <div className="fh-compara">
+            {COMPARA.map((c) => (
+              <div key={c.aqui} className="fh-compara-fila">
+                <span className="fh-compara-no"><X size={15} strokeWidth={2.6} aria-hidden="true" />{c.otros}</span>
+                <span className="fh-compara-si"><Check size={15} strokeWidth={2.6} aria-hidden="true" />{c.aqui}</span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          <div className="det-lectura">
-            <span className="det-lectura-cifra es-mute">
-              <Trophy size={22} strokeWidth={2} aria-hidden="true" />
+        {/* ── Qué no es ── */}
+        <section className="fh-bloque fh-bloque--estrecho">
+          <h2 className="fh-h2 fh-h2--peq">Para que nadie se lleve otra idea</h2>
+          <ul className="fh-noes">
+            {NO_ES.map((n) => <li key={n}>{n}</li>)}
+          </ul>
+          <p className="fh-nota">
+            Las operaciones las apuntas tú, desde la próxima. El diario mira
+            hacia atrás, no hacia delante: no hay señales.
+          </p>
+        </section>
+
+        {/* ── Precio y llamada final ── */}
+        <section className="fh-precio" id="suscribirse">
+          <div className="fh-precio-texto">
+            <span className="fh-eyebrow">
+              <span className="fh-eyebrow-punto" aria-hidden="true" />
+              Premium
             </span>
-            <span>
-              <span className="det-lectura-title">Siete hitos con niveles</span>
-              <span className="det-lectura-text">
-                Cada uno sube de nivel a medida que apuntas, y te avisa cuando
-                lo consigues. Ninguno premia operar más ni tener una buena
-                racha: premian lo que depende de ti.
-              </span>
-            </span>
+            <h2 className="fh-precio-titulo">Empieza por la próxima operación</h2>
+            <ul className="fh-incluye">
+              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Diario de Trading con sus diez estadísticas</li>
+              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Curva de capital, calendario y siete hitos</li>
+              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>, en la misma cuota</li>
+            </ul>
           </div>
 
-          <ul className="det-lista">
-            <li>
-              <strong>Del proceso:</strong> muestra fiable (tus números
-              empiezan a significar algo), disciplina de riesgo, diario con
-              porqué y sin revancha, que cuenta las veces que esperaste una
-              hora tras una pérdida antes de volver a entrar.
-            </li>
-            <li>
-              <strong>De los resultados:</strong> meses cerrados en verde,
-              rentabilidad sobre tu capital y vuelta a máximos después de una
-              caída de más del 5 %.
-            </li>
-          </ul>
+          <div className="fh-precio-caja">
+            {isPremium ? (
+              <p className="fh-precio-ya">Ya tienes acceso.</p>
+            ) : (
+              <p className="fh-precio-cifra">{PRECIO}<span>/mes</span></p>
+            )}
+            <Cta premium={isPremium} grande />
+            {!isPremium && (
+              <ul className="fh-confianza">
+                <li><ShieldCheck size={14} aria-hidden="true" />Sin permanencia</li>
+                <li><RefreshCw size={14} aria-hidden="true" />Cancela en 1 clic</li>
+                <li><CreditCard size={14} aria-hidden="true" />Pago seguro con Stripe</li>
+              </ul>
+            )}
+          </div>
         </section>
 
-        {/* ── 07 · FAQ ── */}
-        <section className="det-seccion">
-          <header className="det-sechead">
-            <span className="det-sechead-num">07</span>
-            <div className="det-sechead-text">
-              <h2 className="det-h2">Preguntas frecuentes</h2>
-            </div>
-          </header>
-
-          <div className="det-faq">
+        {/* ── FAQ ── */}
+        <section className="fh-bloque fh-bloque--estrecho">
+          <h2 className="fh-h2">Preguntas frecuentes</h2>
+          <div className="fh-faq">
             {FAQ.map((f) => (
-              <details key={f.q} className="det-faq-item">
+              <details key={f.q} className="fh-faq-item">
                 <summary>{f.q}</summary>
                 <p>{f.a}</p>
               </details>
@@ -482,17 +519,14 @@ export default async function FichaDiarioPage() {
 
         <DisclaimerRiesgo variante="diario" />
 
-        {/* ── Cierre ── */}
-        <section className="det-final">
-          <span className="det-final-watermark" aria-hidden="true">10</span>
-          <h2 className="det-final-title">Empieza por la próxima operación</h2>
-          <p className="det-final-sub">
-            Va incluido en la suscripción Premium, junto con el{" "}
-            <Link href="/herramientas/portfolio">portfolio</Link>. Una sola cuota,
-            sin comprar nada por separado.
-          </p>
-          <AccesoHerramienta nombre="el Diario de Trading" ruta="/dashboard/trading" abrir="Abrir mi diario" logueado={!!user} premium={isPremium} />
-        </section>
+        {!isPremium && (
+          <div className="fh-barra">
+            <span className="fh-barra-precio">{PRECIO}<small>/mes</small></span>
+            <Link href="/api/checkout" prefetch={false} className="fh-barra-btn">
+              Empezar <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+            </Link>
+          </div>
+        )}
       </main>
 
       <Footer />

@@ -3,14 +3,28 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useReducedMotion } from "framer-motion";
-import { ArrowRight, Award, Check, ChevronLeft, ChevronRight, Crown, Lock } from "lucide-react";
+import {
+  ArrowRight, Award, Bitcoin, Check, ChevronLeft, ChevronRight, Crown, Lock, Trophy,
+} from "lucide-react";
 import { herramienta, detalleDe, type Herramienta } from "@/lib/herramientas";
+import { PORTFOLIOS } from "@/lib/portfolios";
+import {
+  IconoAnillo, IconoAprobado, IconoCandado, IconoCapas, IconoCursos, IconoDiario,
+  IconoMedalla, IconoPortfolio, IconoPulso, IconoReloj, IconoTrofeo,
+} from "@/components/IconosAnimados";
 
-/** Cifras reales de la cartera, calculadas en el servidor. `null` si fallan. */
+/**
+ * Cifras reales de la cartera, calculadas en el servidor. `null` si fallan.
+ *
+ * Solo lo que se enseña: este componente es de cliente y todo lo que recibe
+ * viaja en el HTML. La portada lo recorta con `resumenHero()` para que no
+ * salgan los importes (ver `MOSTRAR_IMPORTES` en `portfolio-publico.ts`).
+ */
 export type ResumenHero = {
   posiciones: number;
   rentabilidadPct: number;
   desdeAnio: number | null;
+  dca: { rentabilidadPct: number; compras: number } | null;
 } | null;
 
 interface Props {
@@ -23,15 +37,52 @@ interface Props {
  * vive de estas tres y de nada más, y el hero las enseña de una en una, a todo
  * el ancho, en un slider que avanza solo.
  *
- * El copy sale del catálogo (`@/lib/herramientas`, fuente única). `corto` es
- * el nombre de la pestaña; Cursos lleva además título propio, porque en el
- * catálogo es «Cursos» a secas y aquí el certificado es el argumento.
+ * El nombre, el color y la descripción salen del catálogo (`@/lib/herramientas`,
+ * fuente única). Lo de aquí es solo de esta portada: `corto` es el nombre de
+ * la pestaña, `lema` la línea de encima del título y `remate` la de debajo.
  */
-const DIAPOSITIVAS: { id: string; corto: string; titulo?: string }[] = [
-  { id: "portfolio", corto: "Portfolio" },
-  { id: "diario", corto: "Diario" },
-  { id: "cursos", corto: "Cursos", titulo: "Cursos con certificado" },
+const DIAPOSITIVAS: { id: string; corto: string; titulo?: string; lema: string; remate: string }[] = [
+  { id: "portfolio", corto: "Portfolio", lema: "Mi cartera real", remate: "Qué compro, y a qué precio." },
+  { id: "diario", corto: "Diario", lema: "Tu registro privado", remate: "Con bot inteligente, hitos y registro completo." },
+  { id: "cursos", corto: "Cursos", lema: "Formación por módulos", remate: "Con examen y certificado." },
 ];
+
+/** El icono animado grande de cada pieza, el mismo de la barra. */
+const ICONO_PIEZA: Record<string, (p: { size?: number }) => React.ReactNode> = {
+  portfolio: IconoPortfolio,
+  diario: IconoDiario,
+  cursos: IconoCursos,
+};
+
+type Hecho = { icono: (p: { size?: number }) => React.ReactNode; valor: string; texto: string };
+
+/**
+ * Tres datos de cada pieza, con su icono animado. Todos ciertos y
+ * comprobables en la herramienta: si cambia lo que hace, cambia esto.
+ */
+function hechos(id: string, portfolio: ResumenHero): Hecho[] {
+  if (id === "portfolio") {
+    return [
+      { icono: IconoPulso, valor: "En vivo", texto: "precios de mercado" },
+      { icono: IconoCapas, valor: "2", texto: "carteras: spot y DCA" },
+      portfolio
+        ? { icono: IconoPortfolio, valor: String(portfolio.posiciones), texto: "posiciones abiertas" }
+        : { icono: IconoPortfolio, valor: "Todas", texto: "también las que pierden" },
+    ];
+  }
+  if (id === "diario") {
+    return [
+      { icono: IconoAnillo, valor: "10", texto: "estadísticas automáticas" },
+      { icono: IconoTrofeo, valor: "7", texto: "hitos con niveles" },
+      { icono: IconoCandado, valor: "Privado", texto: "solo lo ves tú" },
+    ];
+  }
+  return [
+    { icono: IconoAprobado, valor: "Examen", texto: "en cada módulo" },
+    { icono: IconoMedalla, valor: "Certificado", texto: "al aprobar el final" },
+    { icono: IconoReloj, valor: "A tu ritmo", texto: "sin horarios" },
+  ];
+}
 
 /** Lo que dura cada diapositiva. Lo cuenta la barra de la pestaña activa. */
 const DURACION_MS = 9000;
@@ -72,9 +123,21 @@ function Contador({ valor, activo }: { valor: number; activo: boolean }) {
 
 /* ── Las tres ventanas ──────────────────────────────────────────────────────
    Cada diapositiva enseña su herramienta por dentro, en una ventana de
-   aplicación. Lo que no es real lo dice: el Portfolio enseña sus cifras de
-   verdad; el Diario y los Cursos, un ejemplo marcado como tal, porque las
-   estadísticas y el progreso de cada alumno son privados. */
+   aplicación. Rehechas el 04-11-2026 con el lenguaje de las fichas públicas
+   (`/herramientas/portfolio` y `/herramientas/diario`).
+
+   El Portfolio enseña sus cifras de verdad, solo agregadas: lo que se paga
+   —qué monedas y a qué precio— va velado. El Diario y los Cursos son una
+   maqueta decorativa: las estadísticas y el progreso de cada alumno son
+   privados. Sin rótulo de «ejemplo» por decisión del admin (04-11-2026). */
+
+/** Filas veladas de la tabla del portfolio: anchos de las barras, no datos. */
+const FILAS_VELADAS = [
+  [62, 70, 48],
+  [48, 82, 64],
+  [70, 58, 40],
+  [54, 76, 56],
+];
 
 function VentanaPortfolio({ datos, activo }: { datos: ResumenHero; activo: boolean }) {
   if (!datos) {
@@ -87,86 +150,153 @@ function VentanaPortfolio({ datos, activo }: { datos: ResumenHero; activo: boole
   const positiva = datos.rentabilidadPct >= 0;
   return (
     <>
-      <div className="hs-kpi">
-        <span className="hs-kpi-key">Rentabilidad de la cartera</span>
-        <span className={`hs-kpi-num ${positiva ? "es-verde" : "es-rojo"}`}>
-          <Contador valor={datos.rentabilidadPct} activo={activo} />
-        </span>
-      </div>
-      <div className="hs-fichas">
-        <span className="hs-ficha">
-          <b>{datos.posiciones}</b>
-          <span>posiciones abiertas</span>
-        </span>
-        {datos.desdeAnio && (
-          <span className="hs-ficha">
-            <b>{datos.desdeAnio}</b>
-            <span>inicio del ciclo</span>
+      <div className="hs-pf-tabs" aria-hidden="true">
+        {PORTFOLIOS.map((p, i) => (
+          <span
+            key={p.id}
+            className={i === 0 ? "is-activa" : undefined}
+            style={{ "--hs-tab": p.color } as React.CSSProperties}
+          >
+            {p.label}
           </span>
+        ))}
+      </div>
+
+      <div className="hs-pf-kpis">
+        <div className={`hs-pf-principal ${positiva ? "es-positiva" : "es-negativa"}`}>
+          <span className="hs-etiqueta">Rentabilidad spot</span>
+          <span className={`hs-pf-num ${positiva ? "es-verde" : "es-rojo"}`}>
+            <Contador valor={datos.rentabilidadPct} activo={activo} />
+          </span>
+          <span className="hs-pf-pie">
+            {datos.posiciones} posiciones abiertas
+            {datos.desdeAnio ? ` · desde ${datos.desdeAnio}` : ""}
+          </span>
+        </div>
+
+        {datos.dca && (
+          <div className="hs-pf-dca">
+            <span className="hs-pf-dca-icono" aria-hidden="true"><Bitcoin size={16} strokeWidth={2.2} /></span>
+            <span className="hs-etiqueta">DCA Bitcoin</span>
+            <b className={datos.dca.rentabilidadPct >= 0 ? "es-verde" : "es-rojo"}>{pct(datos.dca.rentabilidadPct)}</b>
+            <small>{datos.dca.compras} compras</small>
+          </div>
         )}
       </div>
-      {/* Una marca por posición, sin cifras: enseña el tamaño de la cartera
-          sin decir nada que no esté en la página del portfolio. */}
-      <div className="hs-posiciones" aria-hidden="true">
-        {Array.from({ length: Math.min(datos.posiciones, 16) }, (_, i) => (
-          <i key={i} style={{ "--i": i } as React.CSSProperties} />
+
+      {/* La tabla, velada: se ve que hay filas, no qué dicen. */}
+      <div className="hs-pf-tabla" aria-hidden="true">
+        <div className="hs-pf-cab">
+          <span>Coin</span>
+          <span>Entrada</span>
+          <span>P&amp;L</span>
+        </div>
+        {FILAS_VELADAS.map((f, i) => (
+          <div key={i} className="hs-pf-fila" style={{ "--i": i } as React.CSSProperties}>
+            <span className="hs-pf-moneda"><i /><span className="hs-velo" style={{ width: `${f[0]}%` }} /></span>
+            <span className="hs-velo" style={{ width: `${f[1]}%` }} />
+            <span className="hs-velo hs-velo--pl" style={{ width: `${f[2]}%` }} />
+          </div>
         ))}
+        <div className="hs-pf-candado">
+          <span className="hs-pf-candado-icono"><Lock size={14} strokeWidth={2.4} /></span>
+          <span><b>{datos.posiciones} posiciones reales</b> con su precio de entrada</span>
+        </div>
       </div>
     </>
   );
 }
 
-const CURVA =
-  "M0 92 C18 88 26 80 40 82 C56 84 60 90 74 86 C92 81 96 64 112 60 " +
-  "C128 56 134 68 150 64 C168 60 172 42 190 38 C206 35 214 46 230 42 " +
-  "C250 37 254 22 272 18 C288 15 296 24 312 20 C328 16 334 8 352 6";
+/** Cifras de la maqueta del Diario. Redondas y coherentes entre sí. */
+const DJ = { pl: "+1.240 $", plPct: "+12,4 %", winRate: 58 };
 
-const OPERACIONES = [
-  { par: "BTC/USDT", lado: "Long", r: "+2,4 R", ok: true },
-  { par: "ETH/USDT", lado: "Short", r: "−1,0 R", ok: false },
-  { par: "SOL/USDT", lado: "Long", r: "+1,6 R", ok: true },
+/** Curva de la maqueta, en un SVG de 320 × 100. */
+const DJ_CURVA: [number, number][] = [
+  [0, 84], [27, 78], [53, 81], [80, 66], [107, 70], [133, 56], [160, 60],
+  [187, 45], [213, 50], [240, 34], [267, 38], [293, 22], [320, 12],
+];
+const DJ_PUNTOS = DJ_CURVA.map(([x, y]) => `${x},${y}`).join(" ");
+const [DJ_X, DJ_Y] = DJ_CURVA[DJ_CURVA.length - 1];
+
+/** Circunferencia del anillo del win rate. */
+const DJ_ANILLO = 2 * Math.PI * 15.9;
+
+const DJ_OPS = [
+  { par: "BTC", lado: "Long", res: "+184 $", ok: true },
+  { par: "ETH", lado: "Short", res: "−62 $", ok: false },
+  { par: "SOL", lado: "Long", res: "+97 $", ok: true },
 ];
 
 function VentanaDiario() {
   return (
-    <>
-      <div className="hs-grafico" aria-hidden="true">
-        <svg viewBox="0 0 352 100" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="hsCurvaRelleno" x1="0" y1="0" x2="0" y2="1">
-              {/* var() no vale en un atributo de presentación de SVG: el
-                  color de la pieza entra por style y por la clase. */}
-              <stop offset="0" style={{ stopColor: "var(--tool-color)", stopOpacity: 0.38 }} />
-              <stop offset="1" style={{ stopColor: "var(--tool-color)", stopOpacity: 0 }} />
-            </linearGradient>
-          </defs>
-          <path d={`${CURVA} L352 100 L0 100 Z`} fill="url(#hsCurvaRelleno)" />
-          <path
-            className="hs-curva"
-            d={CURVA}
-            pathLength={1}
-            fill="none"
-            strokeWidth="2.4"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
+    <div className="hs-dj" aria-hidden="true">
+      <div className="hs-dj-kpis">
+        <div className="hs-dj-pl">
+          <span className="hs-etiqueta">P&amp;L total</span>
+          <b className="es-verde">{DJ.pl}</b>
+          <small>{DJ.plPct} sobre tu capital</small>
+        </div>
+        <div className="hs-dj-win">
+          <svg viewBox="0 0 36 36" className="hs-dj-anillo">
+            <circle cx="18" cy="18" r="15.9" className="hs-dj-anillo-fondo" />
+            <circle
+              cx="18" cy="18" r="15.9"
+              className="hs-dj-anillo-valor"
+              strokeDasharray={`${(DJ_ANILLO * DJ.winRate) / 100} ${DJ_ANILLO}`}
+            />
+          </svg>
+          <span>
+            <b>{DJ.winRate} %</b>
+            <small>Win rate</small>
+          </span>
+        </div>
       </div>
-      <div className="hs-fichas hs-fichas--tres">
-        <span className="hs-ficha"><b className="es-verde">58 %</b><span>win rate</span></span>
-        <span className="hs-ficha"><b>1,9</b><span>profit factor</span></span>
-        <span className="hs-ficha"><b>47</b><span>operaciones</span></span>
+
+      <div className="hs-dj-curva">
+        <div className="hs-dj-curva-cab">
+          <span className="hs-etiqueta">Curva de capital</span>
+          <span className="hs-dj-max">Máximo histórico</span>
+        </div>
+        <div className="hs-dj-grafica">
+          <svg viewBox="0 0 320 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="hsDjRelleno" x1="0" y1="0" x2="0" y2="1">
+                {/* var() no vale en un atributo de presentación de SVG: el
+                    color de la pieza entra por style. */}
+                <stop offset="0" style={{ stopColor: "var(--tool-color)", stopOpacity: 0.34 }} />
+                <stop offset="1" style={{ stopColor: "var(--tool-color)", stopOpacity: 0 }} />
+              </linearGradient>
+            </defs>
+            {[25, 50, 75].map((y) => (
+              <line key={y} x1="0" x2="320" y1={y} y2={y} className="hs-dj-guia" />
+            ))}
+            <polygon points={`${DJ_PUNTOS} 320,100 0,100`} fill="url(#hsDjRelleno)" />
+            <polyline points={DJ_PUNTOS} pathLength={1} className="hs-dj-linea" />
+          </svg>
+          <span className="hs-dj-punto" style={{ left: `${(DJ_X / 320) * 100}%`, top: `${DJ_Y}%` }} />
+        </div>
       </div>
-      <ul className="hs-operaciones">
-        {OPERACIONES.map((o) => (
-          <li key={o.par}>
-            <span className="hs-op-par">{o.par}</span>
-            <span className="hs-op-lado">{o.lado}</span>
-            <span className={`hs-op-r ${o.ok ? "es-verde" : "es-rojo"}`}>{o.r}</span>
-          </li>
+
+      <div className="hs-dj-ops">
+        {DJ_OPS.map((o) => (
+          <div key={o.par} className="hs-dj-op">
+            <span className="hs-dj-moneda">{o.par.slice(0, 1)}</span>
+            <span className="hs-dj-par">{o.par}<small>/USDT</small></span>
+            <span className={`hs-dj-lado ${o.ok ? "es-long" : "es-short"}`}>{o.lado}</span>
+            <span className={`hs-dj-res ${o.ok ? "es-verde" : "es-rojo"}`}>{o.res}</span>
+          </div>
         ))}
-      </ul>
-    </>
+      </div>
+
+      {/* El aviso de hito, como sale en la herramienta al subir de nivel. */}
+      <div className="hs-dj-hito">
+        <span className="hs-dj-hito-icono"><Trophy size={14} strokeWidth={2.4} /></span>
+        <span>
+          <small>Hito conseguido</small>
+          <b>Disciplina de riesgo · Nivel 2</b>
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -206,15 +336,15 @@ function VentanaCursos() {
   );
 }
 
-/** Qué ventana lleva cada pieza, su ruta y si sus datos son de ejemplo. */
+/** Qué ventana lleva cada pieza, su ruta y si sus cifras son en vivo. */
 function ventana(id: string, portfolio: ResumenHero, activo: boolean) {
   if (id === "portfolio") {
-    return { ruta: "/portfolio", ejemplo: false, cuerpo: <VentanaPortfolio datos={portfolio} activo={activo} /> };
+    return { ruta: "/portfolio", vivo: !!portfolio, cuerpo: <VentanaPortfolio datos={portfolio} activo={activo} /> };
   }
   if (id === "diario") {
-    return { ruta: "/dashboard/trading", ejemplo: true, cuerpo: <VentanaDiario /> };
+    return { ruta: "/dashboard/trading", vivo: false, cuerpo: <VentanaDiario /> };
   }
-  return { ruta: "/aula", ejemplo: true, cuerpo: <VentanaCursos /> };
+  return { ruta: "/aula", vivo: false, cuerpo: <VentanaCursos /> };
 }
 
 /**
@@ -313,7 +443,7 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
             const activo = i === actual;
             const a = accion(f, isPremium);
             const v = ventana(f.id, portfolio, activo);
-            const Icono = f.icon;
+            const IconoGrande = ICONO_PIEZA[f.id];
 
             return (
               <div
@@ -334,21 +464,33 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
                     {/* Sin etiqueta «Premium»: desde el 31-10-2026 todo es de pago
                         menos las guías, así que no distingue nada. Solo se dice
                         lo que sí informa: que algo aún no está disponible. */}
-                    <span className="hs-sello hs-entra" style={{ "--d": 0 } as React.CSSProperties}>
-                      <span className="hs-sello-icono" aria-hidden="true"><Icono size={18} strokeWidth={2} /></span>
+                    <div className="hs-cabeza hs-entra" style={{ "--d": 0 } as React.CSSProperties}>
+                      <span className="hs-sello-icono" aria-hidden="true">
+                        {IconoGrande && <IconoGrande size={24} />}
+                      </span>
+                      <span className="hs-lema">
+                        <span className="hs-lema-num">0{i + 1} / 0{total}</span>
+                        {d.lema}
+                      </span>
                       {f.acceso === "proximamente" && <span className="hs-sello-texto">{f.tag}</span>}
-                    </span>
+                    </div>
 
-                    <h2 className="hs-titulo hs-entra" style={{ "--d": 1 } as React.CSSProperties}>{titulo}</h2>
+                    <h2 className="hs-titulo hs-entra" style={{ "--d": 1 } as React.CSSProperties}>
+                      {titulo}
+                      <span className="hs-remate">{d.remate}</span>
+                    </h2>
                     <p className="hs-claim hs-entra" style={{ "--d": 2 } as React.CSSProperties}>{f.desc}</p>
 
-                    <ul className="hs-puntos-fuertes hs-entra" style={{ "--d": 3 } as React.CSSProperties}>
-                      {f.chips.map((c) => {
-                        const ChipIcono = c.icon;
+                    <ul className="hs-hechos hs-entra" style={{ "--d": 3 } as React.CSSProperties}>
+                      {hechos(f.id, portfolio).map((h) => {
+                        const IconoHecho = h.icono;
                         return (
-                          <li key={c.label}>
-                            <ChipIcono size={14} strokeWidth={2.2} aria-hidden="true" />
-                            {c.label}
+                          <li key={h.texto} className="hs-hecho">
+                            <span className="hs-hecho-icono"><IconoHecho size={18} /></span>
+                            <span className="hs-hecho-texto">
+                              <b>{h.valor}</b>
+                              <span>{h.texto}</span>
+                            </span>
                           </li>
                         );
                       })}
@@ -364,9 +506,7 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
                     <div className="hs-app-barra">
                       <span className="hs-app-luces" aria-hidden="true"><i /><i /><i /></span>
                       <span className="hs-app-ruta">adelinacademy.com{v.ruta}</span>
-                      {v.ejemplo
-                        ? <span className="hs-app-etiqueta">Ejemplo</span>
-                        : <span className="hs-app-etiqueta is-vivo"><i aria-hidden="true" />En vivo</span>}
+                      {v.vivo && <span className="hs-app-etiqueta is-vivo"><i aria-hidden="true" />En vivo</span>}
                     </div>
                     <div className="hs-app-cuerpo">{v.cuerpo}</div>
                   </div>

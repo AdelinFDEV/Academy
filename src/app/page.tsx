@@ -7,7 +7,7 @@ import SiteNav from "@/components/SiteNav";
 import PremiumHome from "@/components/PremiumHome";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
 import HeroVideo from "@/components/HeroVideo";
-import HeroSlider from "@/components/HeroSlider";
+import HeroSlider, { type ResumenHero } from "@/components/HeroSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
 import "./home.css";
@@ -41,7 +41,20 @@ export default async function HomePage() {
 
   // Cifras reales de la cartera para la tarjeta del hero. Si falla, la
   // tarjeta cae a su microvisual de siempre y nadie se entera.
-  const resumenPortfolio = await resumenPortfolioPublico();
+  //
+  // Recortadas a lo que se enseña: HeroSlider es de cliente, y lo que recibe
+  // viaja en el HTML. Pasarle el resumen entero publicaba los importes
+  // invertidos aunque `MOSTRAR_IMPORTES` diga que no (arreglado el 04-11-2026).
+  const resumenCompleto = await resumenPortfolioPublico();
+  const resumenPortfolio: ResumenHero = resumenCompleto && {
+    posiciones: resumenCompleto.posiciones,
+    rentabilidadPct: resumenCompleto.rentabilidadPct,
+    desdeAnio: resumenCompleto.desdeAnio,
+    dca: resumenCompleto.dca && {
+      rentabilidadPct: resumenCompleto.dca.rentabilidadPct,
+      compras: resumenCompleto.dca.compras,
+    },
+  };
 
   return (
     <div className="blog-page home-page">

@@ -1,10 +1,13 @@
 /**
- * Iconos animados de las tres piezas de pago, para la barra (NavPrincipal).
+ * Iconos animados. Los tres de las piezas de pago van en la barra
+ * (NavPrincipal) y en el slider de la portada; el resto, solo en el slider.
  *
- * Son SVG dibujados aquí y animados con CSS (globals.css, «Iconos animados»),
- * no GIF: un GIF pesa, se ve pixelado en pantallas nítidas y no puede tomar
- * el color de cada pieza. Estos heredan el color con `currentColor`, se ven
- * igual a cualquier tamaño y casi no pesan.
+ * Son SVG dibujados aquí y animados con CSS, no GIF: un GIF pesa, se ve
+ * pixelado en pantallas nítidas y no puede tomar el color de cada pieza.
+ * Estos heredan el color con `currentColor`, se ven igual a cualquier tamaño
+ * y casi no pesan. La animación de los tres de la barra vive en globals.css
+ * («Iconos animados»); la de los del slider, en home.css, que es donde se
+ * usan.
  *
  * Se mueven despacio siempre, más rápido con el ratón encima, y nada si el
  * visitante tiene activado el movimiento reducido.
@@ -46,6 +49,95 @@ export function IconoDiario({ size = 16 }: { size?: number }) {
       <path className="ia-linea" d="M8 8.5h8" pathLength={1} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <path className="ia-linea" d="M8 12h8" pathLength={1} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       <path className="ia-linea" d="M8 15.5h5" pathLength={1} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* ── Los del slider de la portada (animados en home.css) ─────────────────── */
+
+/** En vivo: un punto con una onda que se expande. */
+export function IconoPulso({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--pulso" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle className="ia-onda" cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="12" r="4" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Dos carteras: dos capas que se separan y se vuelven a juntar. */
+export function IconoCapas({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--capas" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path className="ia-capa-baja" d="M3 14.5 12 19l9-4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="ia-capa-alta" d="M12 4 3 8.5 12 13l9-4.5z" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Hitos: un trofeo que da un pequeño salto y suelta un destello. */
+export function IconoTrofeo({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--trofeo" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <g className="ia-copa">
+        <path d="M7 4h10v5a5 5 0 0 1-10 0z" fill="currentColor" />
+        <path d="M7 6H4.5a2.5 2.5 0 0 0 2.6 4.4M17 6h2.5a2.5 2.5 0 0 1-2.6 4.4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <path d="M12 14v3.5M8.5 20h7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </g>
+      <path className="ia-destello" d="M20.5 2.5v3M19 4h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Privado: un candado cuyo arco se abre un poco y vuelve a cerrar. */
+export function IconoCandado({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--candado" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path className="ia-arco" d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
+      <rect x="5" y="11" width="14" height="10" rx="2.6" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Estadísticas: un anillo que se rellena y se vacía. */
+export function IconoAnillo({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--anillo" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2.4" />
+      <circle className="ia-arco-anillo" cx="12" cy="12" r="8.5" pathLength={1} stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Examen: una marca de aprobado que se dibuja. */
+export function IconoAprobado({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--aprobado" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+      <path className="ia-marca" d="m8 12.3 2.7 2.7L16.2 9.4" pathLength={1} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Certificado: una medalla que se balancea desde la cinta. */
+export function IconoMedalla({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--medalla" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <g className="ia-colgante">
+        <path d="M7.5 2.5 12 9.5l4.5-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="15" r="6" fill="currentColor" />
+      </g>
+    </svg>
+  );
+}
+
+/** A tu ritmo: la aguja de un reloj que da la vuelta. */
+export function IconoReloj({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--reloj" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M12 12V8.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path className="ia-aguja" d="M12 12h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   );
 }
