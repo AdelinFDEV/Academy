@@ -18,8 +18,8 @@ import { formatoES } from "@/lib/objetivos";
 
 type Punto = { etiqueta: string; valor: number };
 
-/** El color de cada bloque: azul Telegram, rojo YouTube, verde dinero. */
-export type Tono = "telegram" | "youtube" | "dinero";
+/** El color de cada bloque: rojo YouTube, verde dinero. */
+export type Tono = "youtube" | "dinero";
 
 const ALTO = 200;
 const ABAJO = 24;
@@ -95,7 +95,7 @@ function posicionTip(x: number, ancho: number): React.CSSProperties {
   return { left: `${pct}%`, transform: `translate(${desplazar}, -100%)` };
 }
 
-export function GraficaLinea({ puntos, euros = false, vacio, tono = "telegram" }: { puntos: Punto[]; euros?: boolean; vacio: string; tono?: Tono }) {
+export function GraficaLinea({ puntos, euros = false, vacio, tono = "youtube" }: { puntos: Punto[]; euros?: boolean; vacio: string; tono?: Tono }) {
   const [activo, setActivo] = useState<number | null>(null);
   const { caja, ancho: ANCHO } = useAncho();
   if (puntos.length < 2) return <p className="obj-vacio obj-vacio--grafica">📭 {vacio}</p>;

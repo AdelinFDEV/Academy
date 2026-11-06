@@ -180,7 +180,7 @@ function idea(b: Record<string, unknown>): Resultado {
   const canal = texto(b.canal);
   if (!textoIdea) return { error: "La idea está vacía." };
   if (textoIdea.length > 5000) return { error: "La idea es demasiado larga." };
-  if (!(canal in CANALES)) return { error: "¿Para YouTube, la web o Telegram?" };
+  if (!(canal in CANALES)) return { error: "¿Para YouTube o para la web?" };
   return { datos: { texto: textoIdea, canal, hecha: b.hecha === true, updated_at: new Date().toISOString() } };
 }
 

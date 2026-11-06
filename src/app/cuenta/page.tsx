@@ -8,7 +8,6 @@ import SiteNav from "@/components/SiteNav";
 import CuentaPasswordBtn from "@/components/CuentaPasswordBtn";
 import CuentaDeleteAccountBtn from "@/components/CuentaDeleteAccountBtn";
 import TwoFactorSettings from "@/components/TwoFactorSettings";
-import CuentaTelegramCard from "@/components/CuentaTelegramCard";
 import { Crown, CreditCard, Calendar, ShieldCheck, ArrowRight, Gem, User, Lock } from "lucide-react";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 
@@ -41,6 +40,12 @@ function statusColor(status: string | null, willCancel: boolean): string {
   }
 }
 
+/** Días que quedan hasta una fecha, sin bajar de 0. Fuera del componente:
+ *  `Date.now()` no puede ir en el render (regla react-hooks/purity). */
+function diasHasta(iso: string): number {
+  return Math.max(0, Math.ceil((new Date(iso).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+}
+
 export default async function CuentaPage({
   searchParams,
 }: {
@@ -60,7 +65,7 @@ export default async function CuentaPage({
   const admin = createAdminClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, role, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, premium_since, stripe_customer_id, telegram_username, telegram_linked_at")
+    .select("full_name, role, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, premium_since, stripe_customer_id")
     .eq("id", user.id)
     .single();
 
@@ -79,9 +84,7 @@ export default async function CuentaPage({
     : null;
 
   const daysLeft = profile?.subscription_current_period_end && profile?.subscription_status === "active"
-    ? Math.max(0, Math.ceil(
-        (new Date(profile.subscription_current_period_end).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-      ))
+    ? diasHasta(profile.subscription_current_period_end)
     : null;
   const cycleTotal = 31;
   const daysUsed = daysLeft !== null ? Math.min(cycleTotal, cycleTotal - daysLeft) : null;
@@ -239,18 +242,6 @@ export default async function CuentaPage({
                 </>
               )}
             </div>
-
-            {/* — Comunidad en Telegram — */}
-            {/* El enlace solo se envía si es Premium. CuentaTelegramCard es un
-                componente de cliente, así que sus props viajan serializadas en
-                el HTML: pasarlo siempre y ocultar el botón al renderizar dejaba
-                el enlace a la vista de cualquiera en el código fuente. */}
-            <CuentaTelegramCard
-              initialLinked={!!profile?.telegram_linked_at}
-              initialUsername={profile?.telegram_username ?? null}
-              isPremium={isPremium}
-              inviteLink={isPremium ? process.env.TELEGRAM_CHANNEL_INVITE_LINK ?? null : null}
-            />
 
             {/* — Seguridad — */}
             <div className="cuenta-card cuenta-card--full" id="seguridad">

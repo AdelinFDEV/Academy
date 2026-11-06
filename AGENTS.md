@@ -16,11 +16,9 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Una **guía** interactiva | `/admin/guias-instrucciones` |
 | Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | La **auditoría SEO** de lo que acabas de montar | [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) · ver el punto 2 |
-| Tocar el **bot de Telegram** | [`BOT.md`](./BOT.md) |
 | Tocar el **limitador por IP**, el middleware (`src/proxy.ts`) o **añadir un webhook** | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
 | Tocar **muro de pago, portfolios, legal, analítica, sitemap, robots, canónicas, JSON-LD o el catálogo de herramientas** | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | Escribir **código**: CSS, tipos, hooks, guardarraíles | [`CODIGO.md`](./CODIGO.md) |
-| Un **anuncio de Telegram con copy propio** | [`ANUNCIO-TELEGRAM.md`](./ANUNCIO-TELEGRAM.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 
 La primera fila es **la fuente de verdad** de las guías: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan.
@@ -28,6 +26,8 @@ La primera fila es **la fuente de verdad** de las guías: lo que diga el panel m
 **Desde el 10-10-2026 la web es solo guías.** No hay entradas, noticias, categorías ni comentarios: se retiró todo el sistema, con sus tablas. `/post/…` y `/categoria/…` responden **410** (`src/lib/retiradas.ts`). No lo vuelvas a crear sin que el admin lo pida.
 
 **Desde el 31-10-2026 la web vive de tres piezas de pago —Diario de Trading, Portfolio Adelin y Cursos— y las guías son gratuitas, todas.** Las herramientas son cuatro: Diario, Portfolio Adelin, Predicción de Precio y Logros. Se retiraron Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el **Trading en Directo** (el servicio ya no se ofrece: no lo anuncies en ningún texto); sus URLs responden **410**. Al quitar algo, **se borra para siempre todo su código**: componentes, CSS, rutas, textos que lo prometen.
+
+**Desde el 05-11-2026 no hay Telegram en ningún sitio**: ni canal, ni bot, ni vinculación de cuentas, ni avisos. Se retiró entero, con sus tablas. Las redes son Instagram y YouTube, y el contacto directo es Instagram (`INSTAGRAM_DM_URL`). El único cron es `/api/cron/diario` (foto de YouTube y red de seguridad de los cobros de Stripe). No lo vuelvas a meter sin que el admin lo pida.
 
 ---
 
@@ -60,7 +60,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 
 | Regla | Detalle |
 |---|---|
-| **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**, y el cron diario **la anuncia en el canal de Telegram**: no hay paso intermedio para echarse atrás | [`BOT.md`](./BOT.md) |
+| **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**: no hay paso intermedio para echarse atrás. Ponle su `publicada` (la fecha) al darla de alta | `/admin/guias-instrucciones` |
 | **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **Comprueba el destino antes de enlazarlo.** Un término sin `extended` da **404** y una guía que no esté en `GUIDES` no existe | paneles de `/admin` |
@@ -80,7 +80,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | **Nunca metas en el sitemap una ruta que redirige o exige sesión.** La protección vive en `src/proxy.ts`, así que mirar el `page.tsx` no basta | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **El catálogo de herramientas es fuente única** (`src/lib/herramientas.ts`). No hagas una segunda lista | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | **Un solo descargo de responsabilidad**: `DisclaimerRiesgo.tsx`. Nunca escribas un aviso legal a mano en una página | [`PLATAFORMA.md`](./PLATAFORMA.md) |
-| **Toda ruta que llame un sistema externo se da de alta en `EXENTAS`** (`src/lib/rate-limit.ts`). Si no, cae en el tramo normal y algún día devuelve 429 a Stripe, a Telegram o a Google: se pierde el pago o el mensaje, y no lo ve nadie | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
+| **Toda ruta que llame un sistema externo se da de alta en `EXENTAS`** (`src/lib/rate-limit.ts`). Si no, cae en el tramo normal y algún día devuelve 429 a Stripe o a Google: se pierde el pago o el rastreo, y no lo ve nadie | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
 | **No prometas lo que el producto no hace.** Abre su código y compruébalo antes de escribirlo | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 
 ### Código

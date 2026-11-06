@@ -20,7 +20,6 @@ import "./ideas.css";
 const AYUDA: Record<Canal, string> = {
   youtube: "Vídeos, shorts, directos…",
   web: "Guías, herramientas, mejoras…",
-  telegram: "Mensajes, encuestas, avisos…",
 };
 
 /** Minúsculas y sin tildes, para buscar. */

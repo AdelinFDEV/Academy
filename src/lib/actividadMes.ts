@@ -8,10 +8,11 @@ import { SEGUNDOS_SHORT, getSubidasEntre, type VideoSubido } from "@/lib/youtube
  * que se publicó en un mes (hora de Rumanía). Solo servidor.
  *
  * - Vídeos: de la API de YouTube, todos los subidos (largos y Shorts), con
- *   título y duración. Sin clave o si falla, los que anunció el bot (solo
- *   largos y sin título).
- * - Guías: las que anunció el bot ese mes (`content_announcements`), con su
- *   ficha de GUIDES. Las guías son código, no filas: no tienen otra fecha.
+ *   título y duración. Sin clave o si falla, ninguno, y el panel lo dice.
+ * - Guías: las de GUIDES con `publicada` dentro del mes.
+ *
+ * Hasta el 05-11-2026 los dos salían también de los avisos del bot de Telegram
+ * (`content_announcements`), que se retiró con todo Telegram.
  */
 
 type Admin = ReturnType<typeof createAdminClient>;
@@ -22,8 +23,8 @@ export type ActividadMes = {
   mes: string;
   /** `short`: 3 minutos o menos. Se calcula aquí para que el cliente no importe youtube.ts. */
   videos: (VideoSubido & { short: boolean })[];
-  /** De dónde salen los vídeos: la API (completos) o los anuncios del bot (solo largos, sin título). */
-  fuenteVideos: "api" | "anuncios";
+  /** De dónde salen los vídeos: la API, o ninguno si falta su clave. */
+  fuenteVideos: "api" | "sin-api";
   guias: Publicacion[];
   anterior: { mes: string; largos: number; shorts: number; guias: number };
 };
@@ -39,66 +40,41 @@ export function esShort(v: VideoSubido): boolean {
   return v.segundos !== null && v.segundos <= SEGUNDOS_SHORT;
 }
 
-function videosDe(admin: Admin, mes: string): Promise<{ videos: VideoSubido[]; fuente: "api" | "anuncios" }> {
+function videosDe(admin: Admin, mes: string): Promise<{ videos: VideoSubido[]; fuente: "api" | "sin-api" }> {
   const { desde, hasta } = limites(mes);
   return subidasEntre(admin, desde, hasta);
 }
 
 /**
- * Lo subido a YouTube entre dos instantes, del más nuevo al más antiguo. Con
- * la API, todo (largos y Shorts) con su fecha real de publicación; sin ella,
- * lo que anunció el bot, con la fecha del anuncio. Lo usan este resumen y el
- * calendario.
+ * Lo subido a YouTube entre dos instantes, del más nuevo al más antiguo, con
+ * su fecha real de publicación. Lo usan este resumen, el calendario y los
+ * objetivos de vídeos. Sin YOUTUBE_API_KEY (o si la API falla) no hay otra
+ * fuente: devuelve la lista vacía y `sin-api`, para que el panel lo diga.
+ * Recibe `admin` aunque ya no lo use, para no cambiar a quien la llama.
  */
-export async function subidasEntre(admin: Admin, desde: Date, hasta: Date): Promise<{ videos: VideoSubido[]; fuente: "api" | "anuncios" }> {
+export async function subidasEntre(_admin: Admin, desde: Date, hasta: Date): Promise<{ videos: VideoSubido[]; fuente: "api" | "sin-api" }> {
   const api = await getSubidasEntre(desde, hasta);
-  if (api) return { videos: api, fuente: "api" };
-  const { data } = await admin
-    .from("content_announcements")
-    .select("ref, announced_at")
-    .eq("kind", "video")
-    .gte("announced_at", desde.toISOString())
-    .lt("announced_at", hasta.toISOString())
-    .order("announced_at", { ascending: false });
-  return {
-    fuente: "anuncios",
-    videos: (data ?? []).map((v) => ({
-      id: v.ref,
-      title: "Vídeo de YouTube",
-      publishedAt: v.announced_at,
-      thumbnail: `https://i.ytimg.com/vi/${v.ref}/mqdefault.jpg`,
-      url: `https://www.youtube.com/watch?v=${v.ref}`,
-      segundos: null,
-      vistas: null,
-      likes: null,
-    })),
-  };
+  return api ? { videos: api, fuente: "api" } : { videos: [], fuente: "sin-api" };
 }
 
-async function guiasDe(admin: Admin, mes: string): Promise<Publicacion[]> {
+/** Las guías de GUIDES con `publicada` dentro del mes, de la más nueva a la más antigua. */
+function guiasDe(mes: string): Publicacion[] {
   const { desde, hasta } = limites(mes);
-  const { data } = await admin
-    .from("content_announcements")
-    .select("ref, announced_at")
-    .eq("kind", "guia")
-    .gte("announced_at", desde.toISOString())
-    .lt("announced_at", hasta.toISOString())
-    .order("announced_at", { ascending: false });
-  return (data ?? []).map((g) => {
-    const guia = GUIDES.find((x) => x.slug === g.ref);
-    return { titulo: guia?.title ?? g.ref, enlace: `/guias/${g.ref}`, fecha: g.announced_at };
-  });
+  return GUIDES.filter((g) => {
+    if (!g.publicada) return false;
+    const t = medianocheRumania(g.publicada).getTime();
+    return t >= desde.getTime() && t < hasta.getTime();
+  })
+    .map((g) => ({ titulo: g.title, enlace: `/guias/${g.slug}`, fecha: medianocheRumania(g.publicada as string).toISOString() }))
+    .sort((a, b) => b.fecha.localeCompare(a.fecha));
 }
 
 export async function cargarActividadMes(admin: Admin, mes: string): Promise<ActividadMes> {
   const [a, m] = mes.split("-").map(Number);
   const mesAnterior = new Date(Date.UTC(a, m - 2, 1)).toISOString().slice(0, 7);
-  const [videos, guias, videosAnt, guiasAnt] = await Promise.all([
-    videosDe(admin, mes),
-    guiasDe(admin, mes),
-    videosDe(admin, mesAnterior),
-    guiasDe(admin, mesAnterior),
-  ]);
+  const [videos, videosAnt] = await Promise.all([videosDe(admin, mes), videosDe(admin, mesAnterior)]);
+  const guias = guiasDe(mes);
+  const guiasAnt = guiasDe(mesAnterior);
   return {
     mes,
     videos: videos.videos.map((v) => ({ ...v, short: esShort(v) })),

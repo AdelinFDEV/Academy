@@ -32,7 +32,6 @@
   --o-violeta: #a78bfa;
   --o-violeta-2: #ddd6fe;
 
-  --o-telegram: #38bdf8;
   --o-youtube: #ff4d5e;
   --o-web: #ff8a3d;
   --o-dinero: #22c55e;
@@ -1233,7 +1232,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 }
 
 .crec-bloque {
-  --tono: var(--o-telegram);
+  --tono: var(--o-youtube);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -1245,7 +1244,6 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
     rgba(255, 255, 255, 0.015);
 }
 
-.crec-bloque--telegram { --tono: var(--o-telegram); }
 .crec-bloque--youtube  { --tono: var(--o-youtube); }
 .crec-bloque--dinero   { --tono: var(--o-dinero); }
 
@@ -1274,8 +1272,7 @@ textarea.obj-input { resize: vertical; line-height: 1.55; }
 .crec-bloque .obj-tile--sube { --tono: var(--o-verde); }
 .crec-bloque .obj-tile--baja { --tono: var(--o-rojo); }
 
-.crec-grafica { --tono: var(--o-telegram); position: relative; }
-.crec-grafica--telegram { --tono: #38bdf8; }
+.crec-grafica { --tono: var(--o-youtube); position: relative; }
 .crec-grafica--youtube  { --tono: #ff4d5e; }
 .crec-grafica--dinero   { --tono: #22c55e; }
 

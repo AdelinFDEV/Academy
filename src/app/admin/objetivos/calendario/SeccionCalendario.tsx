@@ -344,7 +344,6 @@ export default function SeccionCalendario(props: Props) {
       <p className="cal-leyenda">
         <span><i className="cal-canal cal-canal--youtube" /> {CANALES.youtube}</span>
         <span><i className="cal-canal cal-canal--web" /> {CANALES.web}</span>
-        <span><i className="cal-canal cal-canal--telegram" /> {CANALES.telegram}</span>
         <span className="cal-leyenda-sep" />
         <span>✅ productivo · ❌ no · 🔥 muy productivo</span>
         <span className="cal-leyenda-sep" />

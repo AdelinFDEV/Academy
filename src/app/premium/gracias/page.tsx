@@ -4,20 +4,18 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Crown, Loader2, Send, ArrowRight, MessageCircle } from "lucide-react";
-import { TELEGRAM_ADELIN_URL } from "@/lib/contacto";
+import { Crown, Loader2, NotebookPen, ArrowRight, MessageCircle } from "lucide-react";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 
 /**
  * Pantalla posterior al pago.
  *
- * Antes se limitaba a confirmar el cobro y saltaba sola al dashboard en un
- * segundo y medio. El problema: el acceso al canal de Telegram NO es
- * automático — hay que vincular la cuenta y pedir entrada — y ese paso se
- * quedaba sin contar. La gente pagaba y no sabía que le faltaba algo.
+ * Confirma el cobro y lleva a lo que se acaba de pagar: el Diario de Trading y
+ * el Portfolio Adelin. No salta sola al dashboard: quien acaba de pagar quiere
+ * saber por dónde empezar, y una página que se va sola no se lee.
  *
- * Ahora el salto automático se quita a propósito y en su lugar se explican los
- * dos pasos que quedan. Que la página se vaya sola justo cuando hay algo que
- * leer era exactamente lo contrario de lo que hacía falta.
+ * Hasta el 05-11-2026 explicaba cómo vincular Telegram y entrar en el canal
+ * privado; Telegram se retiró de la web ese día.
  */
 export default function GraciasPage() {
   const router = useRouter();
@@ -92,29 +90,29 @@ export default function GraciasPage() {
                 <li className="gracias-paso gracias-paso--activo">
                   <span className="gracias-paso-num">1</span>
                   <div>
-                    <strong>Vincula tu Telegram</strong>
+                    <strong>Apunta tu primera operación</strong>
                     <span>
-                      Entra en <b>Mi cuenta</b> y pulsa «Conectar Telegram». Es un minuto y solo se
-                      hace una vez.
+                      En el <b>Diario de Trading</b>, con su riesgo y por qué la tomas. Desde ahí
+                      el diario empieza a calcular tus estadísticas.
                     </span>
                   </div>
                 </li>
                 <li className="gracias-paso">
                   <span className="gracias-paso-num">2</span>
                   <div>
-                    <strong>Pide entrada al canal</strong>
+                    <strong>Mira mi cartera</strong>
                     <span>
-                      En esa misma página aparecerá el botón para entrar. Te acepto al instante,
-                      automáticamente.
+                      En el <b>Portfolio Adelin</b> tienes mis posiciones reales, con su precio de
+                      entrada y la rentabilidad de cada una.
                     </span>
                   </div>
                 </li>
               </ol>
 
               <div className="premium-gate-actions gracias-acciones">
-                <Link href="/cuenta" className="btn-primary">
-                  <Send size={16} aria-hidden="true" />
-                  Vincular Telegram ahora
+                <Link href="/dashboard/trading" className="btn-primary">
+                  <NotebookPen size={16} aria-hidden="true" />
+                  Empezar mi diario
                   <ArrowRight size={15} aria-hidden="true" />
                 </Link>
                 <Link href="/dashboard" className="gracias-btn-secundario">
@@ -125,8 +123,8 @@ export default function GraciasPage() {
               <p className="gracias-ayuda">
                 <MessageCircle size={13} aria-hidden="true" />
                 ¿Alguna duda?{" "}
-                <a href={TELEGRAM_ADELIN_URL} target="_blank" rel="noopener noreferrer">
-                  Escríbeme por Telegram
+                <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">
+                  Escríbeme por Instagram
                 </a>{" "}
                 y te ayudo.
               </p>

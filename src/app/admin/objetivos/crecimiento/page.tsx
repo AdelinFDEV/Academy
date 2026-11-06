@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Pestaña Crecimiento: lo publicado en un mes y cómo crecen los canales
- * (miembros de Telegram y suscriptores de YouTube). El dinero tiene su propia
+ * (suscriptores de YouTube). El dinero tiene su propia
  * pestaña desde el 10-10-2026 (/admin/objetivos/dinero).
  * Abre en 30 días y en el mes actual. Lee con la clave de servicio, detrás del
  * layout de /admin, que exige rol admin.

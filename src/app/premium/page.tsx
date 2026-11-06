@@ -22,8 +22,7 @@ const COMPARE: { label: string; free: boolean | string; premium: boolean | strin
   { label: "Logros y rachas", free: true, premium: true },
   { label: "Diario de Trading con 10 estadísticas", free: false, premium: true },
   { label: "Portfolio Adelin en tiempo real", free: false, premium: true },
-  { label: "Canal privado de Telegram", free: false, premium: true },
-  { label: "Hablar conmigo por Telegram", free: false, premium: true },
+  { label: "Cursos con certificado, cuando se publiquen", free: false, premium: true },
   { label: "Soporte prioritario", free: false, premium: true },
 ];
 
@@ -180,7 +179,7 @@ export default async function PremiumPage() {
                   <ul className="prem-pricing-list">
                     <li><Check size={16} aria-hidden="true" /> Diario de Trading con 10 estadísticas</li>
                     <li><Check size={16} aria-hidden="true" /> Portfolio Adelin</li>
-                    <li><Check size={16} aria-hidden="true" /> Comunidad privada en Telegram</li>
+                    <li><Check size={16} aria-hidden="true" /> Cursos con certificado, cuando se publiquen</li>
                     <li><Check size={16} aria-hidden="true" /> Soporte prioritario</li>
                   </ul>
 

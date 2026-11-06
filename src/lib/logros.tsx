@@ -151,7 +151,7 @@ export const BADGE_DEFS: BadgeDef[] = [
     id: "first-premium",
     label: "Miembro Fundador",
     condition: "Realizaste tu primer pago Premium en AdelinBTC Academy",
-    reward: "Tu perfil lleva la corona dorada — apoyas el proyecto desde el principio",
+    reward: "Para siempre en tu perfil: apoyaste el proyecto desde el principio",
     icon: <PremiumCrownIcon size={24} />,
     bigIcon: <PremiumCrownIcon size={48} />,
     special: true,

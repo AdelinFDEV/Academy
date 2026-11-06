@@ -90,8 +90,8 @@ export default async function AdminPage() {
     { data: userSignups },
     { data: recentSignups },
   ] = await Promise.all([
-    // Usuarios sin administradores en todas las cifras, igual que en /admin/premium
-    // y /admin/comunidad: el admin no es un usuario que llega ni que paga.
+    // Usuarios sin administradores en todas las cifras, igual que en
+    // /admin/premium: el admin no es un usuario que llega ni que paga.
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin"),
     supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "premium"),
     supabase.from("profiles").select("id", { count: "exact", head: true }).neq("role", "admin").gte("created_at", d7.toISOString()),

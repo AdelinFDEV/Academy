@@ -83,8 +83,7 @@ const texto = (h) => h.replace(/<[^>]+>/g, " ").replace(/&[a-z]+;/g, " ").replac
  * Auditar un BORRADOR, iniciando sesión como admin.
  *
  * El sitio deja al admin ver una entrada sin publicar (`src/lib/borradores.ts`)
- * porque publicar manda un aviso a Telegram y auditar después de anunciar no
- * sirve de nada. Pero esa vista previa necesita una sesión, y este script pide
+ * porque auditar algo ya publicado no sirve de nada. Pero esa vista previa necesita una sesión, y este script pide
  * la página a pelo — así que sobre un borrador daba 404 y no se podía auditar
  * nada hasta publicarlo, que es justo lo que queríamos evitar.
  *

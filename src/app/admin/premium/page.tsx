@@ -1,19 +1,13 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getChannelMemberCount, getChannelMembership } from "@/lib/telegram";
 import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import Icon from "@/components/Icon";
 
-// El estado de suscripción y los datos de Telegram no tienen GRANT SELECT para
+// El estado de suscripción no tiene GRANT SELECT para
 // `authenticated` (ver /cuenta), así que todo se lee con el cliente admin. La
 // ruta ya está protegida por el layout de /admin, que exige rol admin.
 export const dynamic = "force-dynamic";
 
 const DIA = 24 * 60 * 60 * 1000;
-
-/** Comprobar la pertenencia al canal es una llamada a Telegram por persona.
- *  Con pocos Premium es instantáneo; a partir de aquí se omite para no dejar
- *  la página colgada esperando a la API. */
-const MAX_COMPROBACIONES_CANAL = 40;
 
 type Fila = {
   id: string;
@@ -21,9 +15,6 @@ type Fila = {
   role: string;
   created_at: string;
   premium_since: string | null;
-  telegram_user_id: number | null;
-  telegram_username: string | null;
-  telegram_linked_at: string | null;
   subscription_status: string | null;
   subscription_current_period_end: string | null;
   subscription_cancel_at_period_end: boolean | null;
@@ -197,16 +188,15 @@ function etiquetaEstado(f: Fila): { texto: string; clase: string } {
 export default async function AdminPremiumPage() {
   const admin = createAdminClient();
 
-  const [{ data: perfiles }, { data: authData }, miembrosCanal] = await Promise.all([
+  const [{ data: perfiles }, { data: authData }] = await Promise.all([
     admin
       .from("profiles")
       // En una sola cadena literal a propósito: Supabase infiere el tipo de la
       // fila analizando este texto, y partirlo en trozos concatenados rompe la
       // inferencia y obliga a castear.
-      .select("id, full_name, role, created_at, premium_since, telegram_user_id, telegram_username, telegram_linked_at, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, stripe_customer_id, stripe_subscription_id, cancel_warning_period_end")
+      .select("id, full_name, role, created_at, premium_since, subscription_status, subscription_current_period_end, subscription_cancel_at_period_end, stripe_customer_id, stripe_subscription_id, cancel_warning_period_end")
       .order("premium_since", { ascending: true, nullsFirst: false }),
     admin.auth.admin.listUsers({ perPage: 1000 }),
-    getChannelMemberCount(),
   ]);
 
   const emails: Record<string, string> = {};
@@ -215,42 +205,18 @@ export default async function AdminPremiumPage() {
   });
 
   // Los administradores fuera de TODAS las cifras: tienen acceso Premium por
-  // su rol, no porque paguen, y contarlos inflaba los activos, la tabla, el
-  // «con Telegram» y la base de la conversión. Solo se usan abajo para cuadrar
-  // los miembros del canal, donde sí están dentro.
+  // su rol, no porque paguen, y contarlos inflaba los activos, la tabla y la
+  // base de la conversión.
   const filas = (perfiles ?? []) as Fila[];
   const todos = filas.filter((f) => f.role !== "admin");
-  const adminsConTelegram = filas.filter((f) => f.role === "admin" && f.telegram_user_id).length;
   const m = calcularMetricas(todos);
   const { activos, dePago, bajas } = m;
   const grafica = altasPorMes(todos);
   const registrados = todos.length;
 
-  // Pertenencia real al canal, solo para los que tienen Telegram vinculado.
-  const conTelegram = activos.filter((f) => f.telegram_user_id);
-  const enCanal: Record<string, "dentro" | "fuera" | "desconocido"> = {};
-  if (conTelegram.length <= MAX_COMPROBACIONES_CANAL) {
-    const resultados = await Promise.all(
-      conTelegram.map((f) => getChannelMembership(f.telegram_user_id as number))
-    );
-    conTelegram.forEach((f, i) => {
-      enCanal[f.id] = resultados[i];
-    });
-  }
-
   const mrr = dePago.filter((f) => !f.subscription_cancel_at_period_end).length * PREMIUM_PRICE_EUR;
   const cancelan = activos.filter((f) => f.subscription_cancel_at_period_end).length;
-  const dentro = Object.values(enCanal).filter((v) => v === "dentro").length;
-
-  // El detalle de las dos métricas que piden acción, no solo lectura: saber
-  // que hay "3 sin usar el canal" no sirve de nada si no sabes quiénes son.
-  const fueraDelCanal = conTelegram.filter((f) => enCanal[f.id] === "fuera");
-  const sinVincular = activos.filter((f) => !f.telegram_user_id);
   const renuevanPronto = ordenarPorVencimiento(dePago);
-
-  // El bot y los administradores vinculados también son miembros del canal.
-  const previsto = conTelegram.length + adminsConTelegram + 1;
-  const descuadre = miembrosCanal !== null ? miembrosCanal - previsto : null;
 
   return (
     <div className="admin-page">
@@ -258,7 +224,7 @@ export default async function AdminPremiumPage() {
         <div>
           <h1>Control Premium</h1>
           <p className="admin-page-subtitle">
-            {activos.length} con acceso · {conTelegram.length} vinculados a Telegram · {bajas.length} bajas
+            {activos.length} con acceso · {bajas.length} bajas
           </p>
         </div>
       </div>
@@ -295,8 +261,8 @@ export default async function AdminPremiumPage() {
         </div>
       </div>
 
-      {/* — Comunidad — */}
-      <h2 className="cp-group-title"><Icon name="users" size={14} /> Comunidad</h2>
+      {/* — Suscriptores — */}
+      <h2 className="cp-group-title"><Icon name="users" size={14} /> Suscriptores</h2>
       <div className="cp-cards">
         <div className="cp-card cp-card--destacada">
           <span className="cp-card-label">Premium activos</span>
@@ -311,24 +277,6 @@ export default async function AdminPremiumPage() {
           <span className="cp-card-label">Conversión</span>
           <strong className="cp-card-value">{pct(dePago.length, registrados)}</strong>
           <span className="cp-card-foot">{dePago.length} de {registrados} registrados</span>
-        </div>
-
-        <div className="cp-card">
-          <span className="cp-card-label">Con Telegram</span>
-          <strong className="cp-card-value">{pct(conTelegram.length, activos.length)}</strong>
-          <span className="cp-card-foot">{conTelegram.length} de {activos.length} han vinculado</span>
-        </div>
-
-        <div className={`cp-card${descuadre !== null && descuadre > 0 ? " cp-card--alerta" : ""}`}>
-          <span className="cp-card-label">Dentro del canal</span>
-          <strong className="cp-card-value">{miembrosCanal ?? "—"}</strong>
-          <span className="cp-card-foot">
-            {miembrosCanal === null
-              ? "no se pudo consultar"
-              : descuadre !== null && descuadre > 0
-                ? `⚠ ${descuadre} de más — ¿aprobado a mano?`
-                : `${dentro} premium usándolo + el bot`}
-          </span>
         </div>
       </div>
 
@@ -351,21 +299,6 @@ export default async function AdminPremiumPage() {
           <span className="cp-card-foot">fueron Premium y ya no</span>
         </div>
 
-        {/* Se cuentan los dos casos: vinculados pero fuera, y los que ni
-            siquiera vincularon. Ambos pagan sin usar la comunidad. Los
-            "desconocido" quedan fuera del recuento a propósito: no se sabe. */}
-        <div
-          className={`cp-card${fueraDelCanal.length + sinVincular.length > 0 ? " cp-card--alerta" : ""}`}
-        >
-          <span className="cp-card-label">Pagan sin usarlo</span>
-          <strong className="cp-card-value">{fueraDelCanal.length + sinVincular.length}</strong>
-          <span className="cp-card-foot">
-            {fueraDelCanal.length + sinVincular.length === 0
-              ? "todos están en la comunidad"
-              : "riesgo de baja — detalle abajo"}
-          </span>
-        </div>
-
         {/* Altas por mes: con pocos datos una gráfica grande engaña, así que
             van barras mínimas dentro de una tarjeta más. */}
         <div className="cp-card cp-card--grafica">
@@ -386,18 +319,8 @@ export default async function AdminPremiumPage() {
         </div>
       </div>
 
-      {descuadre !== null && descuadre > 0 && (
-        <p className="cp-alerta">
-          Hay <strong>{descuadre}</strong> miembro(s) en el canal que no corresponden a ningún Premium
-          vinculado. Suele significar que se aprobó una solicitud a mano: el cron no los expulsará
-          nunca, porque reconcilia desde la base de datos y a esa persona no la ve. La API de
-          Telegram no permite listar los miembros de un canal, así que hay que localizarlo a mano
-          desde la lista de suscriptores del canal.
-        </p>
-      )}
-
       {/* — Detalle accionable — */}
-      {(renuevanPronto.length > 0 || fueraDelCanal.length > 0 || sinVincular.length > 0) && (
+      {renuevanPronto.length > 0 && (
         <div className="cp-detalles">
           {renuevanPronto.length > 0 && (
             <div className="cp-detalle">
@@ -424,47 +347,6 @@ export default async function AdminPremiumPage() {
             </div>
           )}
 
-          {(fueraDelCanal.length > 0 || sinVincular.length > 0) && (
-            <div className="cp-detalle cp-detalle--riesgo">
-              <h3 className="cp-detalle-titulo">
-                ⚠️ Pagan y no usan la comunidad
-                <span className="cp-detalle-total">
-                  {fueraDelCanal.length + sinVincular.length}
-                </span>
-              </h3>
-              <p className="cp-detalle-hint">
-                Los candidatos más claros a darse de baja: pagan por algo que no están usando.
-                Un recordatorio a tiempo suele bastar.
-              </p>
-              <ul className="cp-lista">
-                {fueraDelCanal.map((f) => (
-                  <li key={f.id}>
-                    <span className="cp-lista-nombre">{f.full_name ?? "Sin nombre"}</span>
-                    <span className="cp-lista-dato">
-                      {f.telegram_username ? (
-                        <a
-                          className="cp-tg"
-                          href={`https://t.me/${f.telegram_username}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          escribirle
-                        </a>
-                      ) : (
-                        <em>vinculado, fuera del canal</em>
-                      )}
-                    </span>
-                  </li>
-                ))}
-                {sinVincular.map((f) => (
-                  <li key={f.id}>
-                    <span className="cp-lista-nombre">{f.full_name ?? "Sin nombre"}</span>
-                    <span className="cp-lista-dato"><em>sin vincular Telegram</em></span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       )}
 
@@ -475,8 +357,6 @@ export default async function AdminPremiumPage() {
           <thead>
             <tr>
               <th>Usuario</th>
-              <th>Telegram</th>
-              <th>Canal</th>
               <th>Estado</th>
               <th>Origen</th>
               <th>Renueva / hasta</th>
@@ -487,12 +367,11 @@ export default async function AdminPremiumPage() {
           </thead>
           <tbody>
             {activos.length === 0 && (
-              <tr><td colSpan={9} className="admin-empty">Todavía no hay usuarios Premium</td></tr>
+              <tr><td colSpan={7} className="admin-empty">Todavía no hay usuarios Premium</td></tr>
             )}
             {activos.map((f) => {
               const estado = etiquetaEstado(f);
               const dias = diasHasta(f.subscription_current_period_end);
-              const canal = enCanal[f.id];
               const avisado =
                 f.cancel_warning_period_end &&
                 f.subscription_current_period_end &&
@@ -507,38 +386,6 @@ export default async function AdminPremiumPage() {
                       <span>{f.full_name ?? "Sin nombre"}</span>
                       <small>{emails[f.id] ?? "—"}</small>
                     </div>
-                  </td>
-
-                  <td>
-                    {f.telegram_username ? (
-                      <a
-                        className="cp-tg"
-                        href={`https://t.me/${f.telegram_username}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        @{f.telegram_username}
-                      </a>
-                    ) : f.telegram_user_id ? (
-                      <span className="cp-muted">vinculado (sin @)</span>
-                    ) : (
-                      <span className="cp-muted">sin vincular</span>
-                    )}
-                  </td>
-
-                  <td>
-                    {!f.telegram_user_id ? (
-                      <span className="cp-muted">—</span>
-                    ) : canal === "dentro" ? (
-                      <span className="cp-tag cp-tag--ok">dentro</span>
-                    ) : canal === "fuera" ? (
-                      <span className="cp-tag cp-tag--muted">fuera</span>
-                    ) : (
-                      // "desconocido" (Telegram no contestó) y "sin comprobar"
-                      // (demasiados usuarios) se pintan igual: en ambos casos
-                      // el dato no existe, y fingir uno sería peor que no darlo.
-                      <span className="cp-muted" title="No se ha podido comprobar">sin datos</span>
-                    )}
                   </td>
 
                   <td>
@@ -592,7 +439,6 @@ export default async function AdminPremiumPage() {
               <thead>
                 <tr>
                   <th>Usuario</th>
-                  <th>Telegram</th>
                   <th>Alta Premium</th>
                   <th>Fin de acceso</th>
                   <th>Duró</th>
@@ -608,15 +454,6 @@ export default async function AdminPremiumPage() {
                         <span>{f.full_name ?? "Sin nombre"}</span>
                         <small>{emails[f.id] ?? "—"}</small>
                       </div>
-                    </td>
-                    <td>
-                      {f.telegram_username ? (
-                        <a className="cp-tg" href={`https://t.me/${f.telegram_username}`} target="_blank" rel="noopener noreferrer">
-                          @{f.telegram_username}
-                        </a>
-                      ) : (
-                        <span className="cp-muted">sin vincular</span>
-                      )}
                     </td>
                     <td className="users-table-date">{fecha(f.premium_since)}</td>
                     <td className="users-table-date">{fecha(f.subscription_current_period_end)}</td>

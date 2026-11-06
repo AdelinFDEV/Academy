@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 /**
- * La imagen que sale al compartir la guía en Telegram, WhatsApp o X.
+ * La imagen que sale al compartir la guía en WhatsApp, X o cualquier red.
  *
  * La guía no tenía ninguna, así que el enlace viajaba con la genérica del sitio
  * —o con nada— y no decía de qué iba. La genera Next en el servidor: no hay

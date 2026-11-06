@@ -99,9 +99,9 @@ export const TRAMOS = {
  *
  * No es una comodidad: limitar cualquiera de estas rompe el sitio de formas
  * que además tardan en notarse.
- *  · Los webhooks los llama Stripe y Telegram desde SUS servidores, con lo que
- *    todas las llamadas llegan de unas pocas IPs. Un 429 aquí significa perder
- *    el aviso de un pago o un mensaje del bot.
+ *  · El webhook lo llama Stripe desde SUS servidores, con lo que todas las
+ *    llamadas llegan de unas pocas IPs. Un 429 aquí significa perder el aviso
+ *    de un pago.
  *  · El cron lo llama Vercel, y ya va autenticado con CRON_SECRET.
  *  · `robots.txt` y `sitemap.xml` son lo que lee Google. Un 429 ahí no lo ve
  *    ningún visitante, pero le dice al rastreador que se vaya justo cuando
@@ -109,7 +109,6 @@ export const TRAMOS = {
  */
 const EXENTAS = [
   "/api/stripe/webhook",
-  "/api/telegram/webhook",
   "/api/cron/",
   "/robots.txt",
   "/sitemap.xml",

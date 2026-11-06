@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown, Minus, X } from "lucide-react";
 import { InstagramIcon } from "@/components/SocialLinks";
@@ -37,34 +37,95 @@ const PREGUNTAS = [
  * Un botón abajo a la derecha para resolver dudas: primero las preguntas
  * frecuentes y, si no está la suya, Instagram para hablar conmigo de tú a tú.
  *
+ * Rediseñado el 04-11-2026 con la paleta de la web (fondo oscuro, naranja y
+ * oro) en vez del degradado de Instagram, que no entonaba con nada. Instagram
+ * solo aparece donde importa: en su icono y en el botón para escribir.
+ *
  * Poco invasivo a propósito: aparece a los pocos segundos, minimizado, y solo
  * se despliega si alguien lo pulsa. Nunca desaparece: cerrar el panel lo
  * vuelve a minimizar en el botón. El enlace es el de mensajes directos
  * (`ig.me`), que en el móvil abre la app de Instagram.
  */
+/** Lo que dura la animación de cierre (ver `dudas-cerrar` en globals.css). */
+const CIERRE_MS = 320;
+
+type Fase = "cerrado" | "abierto" | "cerrando";
+
 export default function DudasInstagram() {
   const pathname = usePathname();
-  const [abierto, setAbierto] = useState(false);
+  // Tres fases y no un booleano: al cerrar, el panel sigue montado mientras
+  // dura su animación de salida, y solo entonces se desmonta. Con un booleano
+  // desaparecía de golpe.
+  const [fase, setFase] = useState<Fase>("cerrado");
+  const caja = useRef<HTMLDivElement>(null);
+  const abierto = fase === "abierto";
+  const visible = fase !== "cerrado";
+
+  const cerrar = useCallback(() => {
+    setFase((f) => (f === "abierto" ? "cerrando" : f));
+  }, []);
+
+  // Al terminar la animación de salida, fuera. Con movimiento reducido no hay
+  // animación: el CSS la quita y aquí se desmonta enseguida.
+  useEffect(() => {
+    if (fase !== "cerrando") return;
+    const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const t = window.setTimeout(() => setFase("cerrado"), reducido ? 0 : CIERRE_MS);
+    return () => window.clearTimeout(t);
+  }, [fase]);
+
+  // Abierto: se cierra con Escape o pulsando fuera del panel y del botón.
+  useEffect(() => {
+    if (!abierto) return;
+    const tecla = (e: KeyboardEvent) => { if (e.key === "Escape") cerrar(); };
+    const fuera = (e: PointerEvent) => {
+      if (!caja.current?.contains(e.target as Node)) cerrar();
+    };
+    window.addEventListener("keydown", tecla);
+    document.addEventListener("pointerdown", fuera);
+    return () => {
+      window.removeEventListener("keydown", tecla);
+      document.removeEventListener("pointerdown", fuera);
+    };
+  }, [abierto, cerrar]);
 
   if (SIN_DUDAS.some((r) => pathname.startsWith(r))) return null;
 
   return (
-    <div className={`dudas${abierto ? " is-abierto" : ""}`}>
-      {abierto && (
-        <div className="dudas-tarjeta" role="dialog" aria-label="Dudas frecuentes y contacto">
+    <>
+    {/* En el móvil, un velo detrás del panel: oscurece la página y tocarlo
+        cierra. En escritorio no se ve (globals.css). */}
+    {visible && (
+      <div
+        className={`dudas-velo${fase === "cerrando" ? " is-cerrando" : ""}`}
+        onClick={cerrar}
+        aria-hidden="true"
+      />
+    )}
+    <div className={`dudas${abierto ? " is-abierto" : ""}`} ref={caja}>
+      {visible && (
+        <div
+          className={`dudas-tarjeta${fase === "cerrando" ? " is-cerrando" : ""}`}
+          role="dialog"
+          aria-label="Dudas frecuentes y contacto"
+        >
           <div className="dudas-cabecera">
-            <div>
+            <span className="dudas-cabecera-avatar" aria-hidden="true">
+              A
+              <span className="dudas-online" />
+            </span>
+            <div className="dudas-cabecera-texto">
               <p className="dudas-titulo">¿En qué te ayudo?</p>
               <p className="dudas-texto">Lo que más me preguntan. Si no está, escríbeme.</p>
             </div>
-            <button type="button" className="dudas-cerrar" onClick={() => setAbierto(false)} aria-label="Minimizar">
+            <button type="button" className="dudas-cerrar" onClick={cerrar} aria-label="Minimizar">
               <Minus size={15} aria-hidden="true" />
             </button>
           </div>
 
           <div className="dudas-faq">
-            {PREGUNTAS.map((p) => (
-              <details key={p.q} className="dudas-pregunta">
+            {PREGUNTAS.map((p, i) => (
+              <details key={p.q} className="dudas-pregunta" style={{ "--i": i } as React.CSSProperties}>
                 <summary>
                   {p.q}
                   <ChevronDown size={15} aria-hidden="true" />
@@ -86,31 +147,29 @@ export default function DudasInstagram() {
       <button
         type="button"
         className="dudas-boton"
-        onClick={() => setAbierto(!abierto)}
+        onClick={() => (abierto ? cerrar() : setFase("abierto"))}
         aria-expanded={abierto}
         aria-label={abierto ? "Minimizar dudas" : "¿Dudas? Pregúntame"}
       >
-        {/* El avatar: degradado de Instagram con un anillo que gira, una
-            burbuja con los tres puntos de «escribiendo…» y el punto verde de
+        {/* El avatar: una baldosa naranja con un anillo dorado que gira
+            despacio, la burbuja de «escribiendo…» y el punto verde de
             disponible. Todo CSS: sin gif ni librerías que cargar. */}
         <span className="dudas-avatar" aria-hidden="true">
           <span className="dudas-anillo" />
+          {/* Los dos iconos están siempre: el CSS cruza uno con otro, con
+              un giro, en vez de cambiarlos de golpe. */}
           <span className="dudas-circulo">
-            {abierto ? (
-              <X size={17} strokeWidth={2.4} />
-            ) : (
-              <span className="dudas-escribiendo"><i /><i /><i /></span>
-            )}
+            <span className="dudas-escribiendo"><i /><i /><i /></span>
+            <span className="dudas-x"><X size={17} strokeWidth={2.4} /></span>
           </span>
-          {!abierto && <span className="dudas-online" />}
+          <span className="dudas-online" />
         </span>
-        {!abierto && (
-          <span className="dudas-boton-texto">
-            <strong>¿Dudas?</strong>
-            <span>Pregúntame</span>
-          </span>
-        )}
+        <span className="dudas-boton-texto">
+          <strong>¿Dudas?</strong>
+          <span>Pregúntame</span>
+        </span>
       </button>
     </div>
+    </>
   );
 }

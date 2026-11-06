@@ -17,7 +17,6 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 ## 🔴 Bloqueante — está mal en producción ahora mismo
 
 - [ ] **Datos del titular en `src/lib/legal.ts`.** Siguen con texto de relleno (`[Nombre y apellidos del titular]`, `[PFA o SRL…]`, `[CUI…]`, `[Domicilio…]`) y **se publican tal cual** en `/aviso-legal` y `/privacidad`. Identificar al prestador es una obligación legal, no un adorno. Lo tiene que dar el admin.
-- [ ] **El bot se saltó un vídeo largo sin anunciarlo.** «¿Qué es Ondo Finance?» (`j9dd3d38fY0`, 10:38, subido el 07-10-2026 a las 15:00 UTC) no tiene fila en `content_announcements` ni salió en el canal gratuito, mientras que el anterior (`TBzOukSkW2g`, del 06-10) sí se anunció en el cron del 07-10 a las 04:54 UTC. El cron del 08-10 debía cogerlo y no lo hizo, y nada avisó. Mirar en los logs de Vercel la ejecución de `/api/cron/telegram-sync` del 08-10 y, en `anunciarVideos` (`src/lib/announce.ts`), qué lo descartó: `getLatestVideos(3)` (feed con caché, duración por API o raspando, corte en `MIN_DURATION_SECONDS`), la ventana de `esReciente` o un fallo al enviar. Para ver qué vídeos faltan por anunciar, comparar `select ref, announced_at from content_announcements where kind = 'video' order by announced_at desc limit 10;` con la lista de subidas del canal. Ya no afecta a los objetivos ni al calendario, que desde el 10-10-2026 cuentan desde la API de YouTube: solo al aviso en Telegram.
 
 ---
 
@@ -25,11 +24,11 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ### 00d. El bot inteligente del Diario de Trading (04-11-2026)
 
-🔴 **Ya está anunciado y todavía no existe.** El admin pidió el 04-11-2026 que el slider de la portada diga del Diario «Con bot inteligente, hitos y registro completo» (`remate` de la diapositiva `diario` en `src/components/HeroSlider.tsx`), y que el bot se haga después. Hoy el diario no tiene ningún bot: calcula las estadísticas, el análisis y los hitos (`src/components/trading/`), y el bot de Telegram no se conecta con él.
+🔴 **Ya está anunciado y todavía no existe.** El admin pidió el 04-11-2026 que el slider de la portada diga del Diario «Con bot inteligente, hitos y registro completo» (`remate` de la diapositiva `diario` en `src/components/HeroSlider.tsx`), y que el bot se haga después. Hoy el diario no tiene ningún bot: calcula las estadísticas, el análisis y los hitos (`src/components/trading/`).
 
-- [ ] **Decidir con el admin qué hace el bot** antes de escribir código: si analiza las operaciones y da observaciones, si responde preguntas sobre ellas, si vive dentro del diario o en Telegram, y qué modelo usa.
+- [ ] **Decidir con el admin qué hace el bot** antes de escribir código: si analiza las operaciones y da observaciones, si responde preguntas sobre ellas, cómo se ve dentro del diario y qué modelo usa. (Telegram ya no existe: vive en la web.)
 - [ ] **Construirlo.**
-- [ ] **Hasta que exista**, ningún otro texto (fichas `/herramientas/diario`, `/premium`, catálogo, bot de Telegram) debe prometerlo. Si se decide no hacerlo, quitar «bot inteligente» del slider.
+- [ ] **Hasta que exista**, ningún otro texto (fichas `/herramientas/diario`, `/premium`, catálogo) debe prometerlo. Si se decide no hacerlo, quitar «bot inteligente» del slider.
 
 ### 00b. Un vídeo explicativo de cada herramienta, para el home (31-10-2026)
 
@@ -40,24 +39,25 @@ Pedido por el admin el 31-10-2026: grabar un vídeo corto de cada herramienta qu
 - [ ] **Al montarlos**: alojarlos en YouTube y servirlos desde `youtube-nocookie.com`, que ya está permitido en la CSP (`next.config.ts`). Ojo: `GuideVideoEmbed` mete el iframe nada más cargar; en el home conviene una portada con botón de play que solo cargue el vídeo al pulsar, para no frenar la página.
 
 
-### 00a. Ya no hay canal privado de Telegram (31-10-2026)
+### 00a. Telegram, retirado entero (05-11-2026)
 
-Decidido por el admin el 31-10-2026: **solo existe el canal gratuito**; Premium ya no da acceso a ningún canal privado. Del home ya está quitado. **Lo demás está sin tocar a propósito** —el admin lo hará más adelante— y sigue prometiendo o gestionando el canal privado:
+Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho en el código: fuera el bot (webhook y comandos), la vinculación de cuentas (`/api/telegram/*`, la tarjeta de `/cuenta` y el aviso del dashboard), los crons `telegram-sync` y `promo-premium`, los avisos al admin, los avisos de guías y vídeos (`announce.ts`), `/admin/comunidad`, Telegram en `/admin/premium` y en Objetivos (métrica, canal de ideas y calendario, gráficas de Crecimiento), los enlaces del pie y de redes, los textos de Premium y de la página de gracias, `BOT.md` y `ANUNCIO-TELEGRAM.md`. Lo que no era de Telegram y vivía en su cron (la foto diaria de YouTube y la red de seguridad de los cobros de Stripe) pasó a `/api/cron/diario`. Copia de todos los datos en `backups/telegram-2026-11-05/` (local, fuera de git). Falta:
 
-- [ ] **El bot** (`src/lib/bot-menu.ts`): la ventaja «Canal privado» de Premium, los textos del plan gratuito y de Premium, y la vinculación de cuenta, que existía para dar acceso al canal. Leer `BOT.md` antes.
-- [ ] **Los crons y webhooks**: `telegram-sync` (expulsa del canal privado a quien deja de ser Premium), el webhook de Stripe y el de Telegram, `/api/telegram/unlink`, `/api/admin/users/[id]` y el borrado de cuenta (`revokeChannelAccess`). Decidir qué queda de la vinculación con Telegram si ya no hay canal que abrir.
-- [ ] **Los textos que lo prometen**: `/premium` (tabla, lista de precio y FAQ), `PremiumFeatureGrid`, la tarjeta de Premium del dashboard y la página de gracias tras pagar («Vincula tu Telegram»).
-- [ ] **La cuenta y el dashboard**: `CuentaTelegramCard` (`/cuenta`) y `SiguientePasoTelegram` (dashboard), que piden vincular Telegram para entrar al canal.
-- [ ] **Métricas**: `src/lib/crecimiento.ts` cuenta el canal privado.
-- [ ] **Documentación**: `BOT.md` y `PLATAFORMA.md`.
-
+- [ ] **Ejecutar el SQL que borra las tablas y columnas de Telegram**, **después** de desplegar el código (el admin lo tiene en el chat del 05-11-2026; está también al final de `scripts/create-objetivos.sql`).
+- [ ] **Quitar las variables de Telegram en Vercel**: todas las `TELEGRAM_*` (token del bot, ids de canal, enlace de invitación, secreto del webhook…). Ya no las lee nadie.
+- [ ] **Apagar el bot en Telegram**: borrar su webhook (`deleteWebhook`) o el bot entero desde @BotFather, y decidir qué pasa con los canales (cerrarlos o dejar un último mensaje que lleve a la web).
+- [ ] **El aviso de que se acaba el Premium** iba por Telegram a quien había cancelado y le quedaban 3 días. Ya no existe: decidir si se manda por email (`cancel_warning_period_end` en `profiles` sigue sirviendo para no repetirlo).
+- [ ] **Pedido por el admin el 05-11-2026: revisar la seguridad y que todo funcione solo desde la web, ahora que no hay Telegram.**
+  - **Gestionar la cuenta desde el dashboard:** el usuario tiene que poder hacer ahí todo lo que antes pasaba por el bot o por Telegram: ver su plan, renovar o cancelar Premium (portal de Stripe), cambiar contraseña y 2FA, borrar su cuenta y escribir a soporte. Hoy está en `/cuenta`; decidir si se trae al dashboard o se enlaza bien desde él.
+  - **Seguridad:** repasar las rutas que tocaban Telegram (webhook de Stripe, borrado de cuenta, cambio de rol desde `/admin/users`) y que el resto sigue protegido (RLS de `profiles`, `CRON_SECRET` del cron nuevo, limitador).
+  - **Ni una mención ni lógica de Telegram:** buscar en el código, los textos, el SQL, las variables de entorno y los emails (`grep -rni telegram src scripts *.md`) y que no quede nada que dependa de él. Lo que sí queda a propósito: comentarios que explican que se retiró y los scripts SQL históricos.
+- [ ] **«Soporte prioritario»** sigue en la tabla y en la lista de precio de `/premium`. Antes había un relé de soporte por el bot; ahora el contacto es Instagram para todos. Decidir si se mantiene la promesa y cómo se cumple.
 
 ### 000. Herramientas retiradas (31-10-2026)
 
 Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el Trading en Directo, con su CSS, sus APIs, sus textos y sus menús; sus URLs responden 410 (`src/lib/retiradas.ts`). Falta:
 
 - [ ] **Reenviar el sitemap en Search Console** y comprobar en producción que `/herramientas`, `/radar-diario`, `/calendario-de-liberaciones` y `/trading-en-directo` dan 410.
-- [ ] **Volver a registrar los comandos del bot** con `telegram-doctor` si alguno de los retirados sigue saliendo en el menú de Telegram.
 
 
 ### 00. La web es solo guías (empezado el 10-10-2026)
@@ -91,6 +91,13 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Escribir `CURSOS.md`** con el diseño definitivo: estructura de archivos, catálogo de bloques, reglas de examen y cómo se publica.
 - [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json` y volver a subir; `cursos` pasa a `acceso: "premium"` en `src/lib/herramientas.ts` (con su `tag` y su `resumen`), `soon: false` en el rail de `src/app/dashboard/page.tsx`, y ofrecer la auditoría SEO de la ficha.
 
+**Pedido por el admin el 05-11-2026: implementar el primer curso de punta a punta y comprobarlo todo antes de abrirlo.** No basta con que el contenido esté escrito; hay que recorrerlo como un alumno:
+
+- [ ] **Desbloqueo de módulos:** cada módulo se abre solo al aprobar el examen del anterior, y no antes. Probar también los atajos: entrar por URL directa a una lección de un módulo bloqueado, recargar a mitad de examen o abrirlo en dos pestañas.
+- [ ] **Exámenes:** preguntas sorteadas y corregidas en el servidor (`src/lib/cursos-examen.ts`), nota mínima 5, la espera de 24 h tras suspender, y que la nota guardada sea la que se enseña. Comprobar que la respuesta correcta no viaja al navegador antes de corregir.
+- [ ] **Certificado:** que se entregue completo al aprobar el examen final, con la nota (40 % media de módulos + 60 % final), descargable, y que el código abra su página pública de verificación (`/cursos/verificar/<codigo>`). Que el logro del curso salga en `/dashboard/logros`.
+- [ ] **Un apartado nuevo en el dashboard para todos los usuarios**, «Mis cursos»: los cursos en curso con su progreso por módulos, el siguiente paso, las notas y los certificados conseguidos. Quien no es Premium ve el catálogo y qué incluye. Hoy el dashboard solo tiene un enlace a `/cursos` en la barra lateral, marcado «Pronto».
+
 ### 00c. Foto de portada para cada guía (31-10-2026)
 
 Pedido por el admin el 31-10-2026. El código ya está listo: cada guía admite el campo `portada` en `src/lib/guides.ts` y `GuiaPortada` la pinta en la sección de guías del home y en el listado `/guias`. Mientras falte, sale una portada provisional con la inicial de la guía.
@@ -103,7 +110,7 @@ Pedido por el admin el 31-10-2026. El código ya está listo: cada guía admite 
 
 **Pedido por el admin el 31-10-2026: un foro completo**, no solo preguntas y respuestas. Un espacio donde los usuarios pregunten, debatan y se respondan entre ellos, con el admin arbitrando. Antes de escribir código hay que cerrar con el admin qué entra en «completo»: categorías o temas (por criptomoneda, por herramienta, trading, fiscalidad…), hilos con respuestas, votos o «me gusta», respuesta marcada como buena, perfiles con sus logros, notificaciones de respuesta, búsqueda y moderación (reportes, bloqueo, edición y borrado).
 
-Desde el 31-10-2026 ya no hay canal privado de Telegram (tarea 00a): el foro puede ser justo el sitio de la comunidad que ese canal dejaba de ser.
+Desde el 05-11-2026 no hay Telegram (tarea 00a): el foro puede ser justo el sitio de la comunidad que ese canal dejaba de ser.
 
 **Por qué interesa, más allá de la comunidad:** es el único tipo de contenido que **crece sin que nadie lo escriba**. Cada pregunta bien titulada es una URL que responde a una búsqueda real, y Google tiene un tipo de dato estructurado propio para esto (`QAPage`). Es la vía más barata de multiplicar las URLs indexables del sitio (el recuento actual: `curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"`).
 
@@ -118,6 +125,19 @@ Desde el 31-10-2026 ya no hay canal privado de Telegram (tarea 00a): el foro pue
 - ¿Qué parte del foro es de Premium, si alguna? Hoy todo lo gratuito es lectura libre y la cuenta solo se pide para participar (como el quiz de las guías).
 
 ⚠️ Si el foro es público e indexable, **modera antes de publicar**: una pregunta con spam o con un enlace a una estafa, indexada bajo tu dominio, hace más daño que las URLs que ganas.
+
+**Decidido por el admin el 05-11-2026: foro de preguntas y respuestas y, posiblemente, una sala de chat. Primero la seguridad; el diseño, después.** Antes de escribir una línea, hay que dejar escrito con reglas estrictas el paso a paso, en este orden:
+
+- [ ] **Fase 0 — Escribir `FORO.md`** con las reglas que no se pueden saltar: quién puede leer, preguntar, responder y chatear; qué se modera antes de publicar y qué después; qué se guarda de cada mensaje y cuánto tiempo (RGPD y marco legal rumano, ver `PLATAFORMA.md`); y qué hace el admin ante un reporte.
+- [ ] **Fase 1 — Seguridad, sin diseño:**
+  - Tablas con RLS cerradas por defecto: nadie escribe en nombre de otro, y un usuario solo edita o borra lo suyo.
+  - Escritura solo desde el servidor, validando todo (longitud, enlaces, HTML). Nunca se pinta HTML que venga del usuario.
+  - Límite de envíos por usuario e IP, además del tramo `escritura` de `src/lib/rate-limit.ts`.
+  - Anti-spam: la cola de aprobación (el patrón de `scripts/comments-one-pending.sql`), filtro de enlaces y palabras, y bloqueo de cuentas.
+  - Moderación: reportar, ocultar, borrar y banear, con registro de quién hizo qué.
+  - Si hay chat en tiempo real (Supabase Realtime): canales con RLS, mensajes limitados por segundo y sin datos personales en el canal.
+- [ ] **Fase 2 — Comprobarlo:** intentar romperlo antes de abrirlo (escribir sin sesión, como otro usuario, con HTML o scripts, en ráfaga) y dejar escrito lo que se probó.
+- [ ] **Fase 3 — Diseño e implementación artística**, ya sobre una base segura: listado, hilo, chat, perfiles con su avatar y sus logros, y los datos estructurados `QAPage` para las preguntas indexables.
 
 ---
 
@@ -140,19 +160,15 @@ Niveles de usuario **en toda la web**. No confundir con los hitos del Diario de 
 
 ### 3. Fotos de perfil
 
-Que cada usuario pueda subir su avatar.
+**Decidido por el admin el 05-11-2026: los usuarios eligen su foto de perfil entre unas variantes que creamos nosotros.** No suben fotos propias, y eso quita de un golpe la moderación, la validación de archivos y el gasto de Storage.
 
-**Dónde se vería, ya montado:** la barra superior enseña hoy la **inicial en una moneda naranja** (`src/components/NavSaludo.tsx`); ese es el hueco exacto donde entraría la foto, con la inicial como reserva para quien no suba ninguna. También en los comentarios, que hoy salen sin cara.
+**Dónde se vería, ya montado:** la tarjeta del usuario de la barra superior enseña hoy su **inicial en una baldosa** naranja, o dorada si es Premium (`src/components/NavSaludo.tsx`). Ese es el hueco exacto del avatar, con la inicial como reserva para quien no elija ninguno. También en el dashboard y, cuando exista, en el foro.
 
-**Lo que hay que resolver sí o sí:**
-- **Moderación.** Un avatar es contenido público bajo tu dominio. Hace falta decidir qué pasa con una foto inapropiada y cómo se retira.
-- **Optimización.** Regla del sitio: WebP siempre, y aquí además recortado a un cuadrado pequeño (~256 px). Una foto de móvil sin tocar son varios MB por usuario.
-- ⚠️ **La extensión del archivo se deriva hoy del nombre que manda el cliente**, cosa que ya señaló la auditoría de seguridad. Antes de abrir subidas a todos los usuarios hay que validar el tipo real del archivo, no fiarse de cómo se llame.
-- Storage de Supabase: 1 GB en el plan gratuito. A 30 KB por avatar da de sobra, pero solo si se optimizan.
-
-**Preguntas para el admin:**
-- ¿Pueden subir foto todos o solo Premium?
-- ¿Se aprueba antes de que se vea, o se publica y se retira si hay problema?
+- [ ] **Diseñar las variantes** (las hace el admin, con prompts de Gemini): un estilo común, cuadradas, que se lean bien a 32 px. Decidir cuántas y si alguna es solo para Premium.
+- [ ] **Optimizarlas:** WebP, ~256 px, en `public/avatares/`. Al ser fijas, se sirven como estáticos.
+- [ ] **Guardar la elección:** una columna `avatar` en `profiles` con el id de la variante, validado en el servidor contra la lista de variantes (nunca una ruta libre que mande el cliente). Ojo: `authenticated` no tiene `UPDATE` sobre todas las columnas de `profiles` (`scripts/lock-profiles-columns.sql`), así que el cambio va por una API propia.
+- [ ] **El selector**, en `/cuenta`: una rejilla con las variantes y la elegida marcada.
+- [ ] **Pintarlo** en la barra, en el menú del usuario y en el dashboard, con la inicial como reserva.
 
 ---
 

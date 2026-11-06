@@ -112,7 +112,7 @@ export default async function CalendarioPage({ searchParams }: { searchParams: P
     ...subidas.videos.map((v) => ({
       fecha: diaRumania(v.publishedAt),
       tipo: esShort(v) ? ("short" as const) : ("video" as const),
-      titulo: subidas.fuente === "api" ? v.title : "Vídeo publicado en YouTube",
+      titulo: v.title,
       enlace: `https://youtu.be/${v.id}`,
     })),
   ];

@@ -214,7 +214,7 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
   const categories: { id: CategoryId; num: string; title: string; sub: string; icon: React.ReactNode; defs: BadgeDef[] }[] = [
     {
       id: "actividad", num: "01", title: "Actividad", icon: <Zap size={15} />,
-      sub: "Lectura, constancia y curiosidad: lo que haces cada día en la academia.",
+      sub: "Constancia: entra en la academia varios días seguidos y mantén tu racha.",
       defs: BADGE_DEFS,
     },
     {
@@ -270,7 +270,7 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
           <span className="imm-title-grad">Cada paso deja huella.</span>
         </h1>
         <p className="imm-sub">
-          Lectura, constancia, guías y disciplina al operar: todo lo que vas desbloqueando en la academia, y lo que te falta.
+          Constancia, guías y disciplina al operar: todo lo que vas desbloqueando en la academia, y lo que te falta.
         </p>
       </header>
 

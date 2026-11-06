@@ -6,7 +6,7 @@ import SeccionIdeas from "./SeccionIdeas";
 export const dynamic = "force-dynamic";
 
 /**
- * Pestaña Ideas: una columna por canal (YouTube, web, Telegram), cada una con
+ * Pestaña Ideas: una columna por canal (YouTube y web), cada una con
  * su campo para apuntar y un tick para tachar lo hecho. Sin día ni relación
  * con el calendario; si una idea llega a hacerse, se planea allí aparte.
  */

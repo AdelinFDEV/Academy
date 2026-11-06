@@ -138,8 +138,8 @@ export default function ActividadMes({ datos, hoy, hrefMes }: { datos: Datos; ho
           ) : (
             <p className="act-vacio">Sin vídeos este mes.</p>
           )}
-          {datos.fuenteVideos === "anuncios" && (
-            <p className="act-aviso">Sin la clave de YouTube solo se ven los vídeos largos que anunció el bot, sin título.</p>
+          {datos.fuenteVideos === "sin-api" && (
+            <p className="act-aviso">Falta la clave de YouTube (YOUTUBE_API_KEY) en este entorno: sin ella no se ven los vídeos.</p>
           )}
         </div>
 

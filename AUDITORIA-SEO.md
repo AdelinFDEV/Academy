@@ -68,7 +68,7 @@ Si da **404** siendo una entrada premium, para: es el fallo que describe AGENTS.
 
 ### El caso normal: la entrada todavía es un borrador
 
-**Una entrada con `published = false` da 404, y eso es correcto.** No se publica para auditarla: publicar dispara el aviso al grupo de Telegram, y el orden de esta auditoría es justo el contrario.
+**Una entrada con `published = false` da 404, y eso es correcto.** No se publica para auditarla: publicar es lo último, y el orden de esta auditoría es justo el contrario.
 
 Así que la auditoría se parte en dos:
 
@@ -110,7 +110,7 @@ Va primero porque **condiciona todo lo demás**. Una página impecable que respo
 
 1. **Search Console → Rendimiento → Consultas**, filtrando por páginas parecidas. Es el único dato real que tenemos.
 2. Las sugerencias del propio buscador y el bloque de «Otras preguntas».
-3. Las preguntas que hace un principiante en el grupo de Telegram.
+3. Las preguntas que hace un principiante en los comentarios de YouTube o por Instagram.
 
 **1.4 — Con el texto delante, comprueba cuáles de esas formulaciones responde la página.** Una por una. Las que no responda y sean relevantes: o entran en un `<h2>` o en la FAQ, o se anota por qué se descartan.
 
@@ -526,7 +526,7 @@ Pendiente de ti     <lo que requiere una decisión del admin>
 Dos reglas del informe:
 
 1. **Se dice lo que quedó fuera y por qué.** Un informe que solo lista aciertos no informa de nada.
-2. **Se separa lo hecho de lo pendiente de decisión.** Nada se publica antes de la aprobación explícita: `published = true` **dispara un aviso al grupo de Telegram** desde `anunciarPendientes()`. Publicar por cuenta propia manda un mensaje a la comunidad del admin.
+2. **Se separa lo hecho de lo pendiente de decisión.** Nada se publica antes de la aprobación explícita: dar de alta una guía en `GUIDES` y desplegar la pone en la web al momento, sin paso intermedio.
 
 ---
 
@@ -557,7 +557,7 @@ La auditoría no acaba en el `publish`. Estos son los únicos datos reales que v
 3. **Meter la palabra clave donde no encaja.** Se nota, se lee peor y ya no funciona desde hace más de una década.
 4. **Declarar en el esquema algo que no se ve.**
 5. **Prometer rentabilidades, ni siquiera de forma indirecta.**
-6. **Publicar sin la aprobación del admin.** Dispara un aviso en su grupo de Telegram.
+6. **Publicar sin la aprobación del admin.** La guía sale en la web en cuanto se despliega.
 7. **Cambiar el slug de una página ya indexada** sin montar la redirección.
 8. **Dar por buena una página porque el script salió en verde.** Es la trampa que este documento existe para evitar.
 

@@ -99,29 +99,6 @@ export default function SeccionCrecimiento({ datos, rango, actividad }: {
         </nav>
       </div>
 
-      {/* ── Telegram ─────────────────────────────────────────────── */}
-      <section className="crec-bloque crec-bloque--telegram">
-      <h3 className="crec-bloque-titulo"><span aria-hidden="true">✈️</span> Telegram · canal gratuito</h3>
-      <Tarjetas s={datos.telegramFree} unidad="Miembros" tono="telegram" emoji="👥" />
-      <figure className="obj-grafica">
-        <figcaption className="obj-grafica-titulo">Miembros del canal gratuito</figcaption>
-        <GraficaLinea puntos={aPuntos(datos.telegramFree.puntos)} vacio="Aún no hay dos días de fotos del canal en este periodo." tono="telegram" />
-      </figure>
-      </section>
-
-      {datos.telegramPremium && (
-        <>
-          <section className="crec-bloque crec-bloque--telegram">
-          <h3 className="crec-bloque-titulo"><span aria-hidden="true">👑</span> Telegram · canal Premium</h3>
-          <Tarjetas s={datos.telegramPremium} unidad="Miembros" tono="telegram" emoji="💎" />
-          <figure className="obj-grafica">
-            <figcaption className="obj-grafica-titulo">Miembros del canal Premium</figcaption>
-            <GraficaLinea puntos={aPuntos(datos.telegramPremium.puntos)} vacio="Aún no hay dos días de fotos del canal en este periodo." tono="telegram" />
-          </figure>
-          </section>
-        </>
-      )}
-
       {/* ── YouTube ──────────────────────────────────────────────── */}
       <section className="crec-bloque crec-bloque--youtube">
       <h3 className="crec-bloque-titulo"><span aria-hidden="true">▶️</span> YouTube · suscriptores</h3>

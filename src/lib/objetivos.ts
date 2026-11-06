@@ -23,7 +23,6 @@ export const METRICAS = {
   premium: { texto: "Altas Premium", emoji: "👑", grupo: "auto", tipo: "flujo", ayuda: "Cuenta sola la gente que se hace Premium dentro del periodo." },
   beneficio: { texto: "Beneficio", emoji: "⚖️", grupo: "auto", tipo: "flujo", ayuda: "Todo lo que ingresas menos todo lo que gastas en el periodo, como en la pestaña Dinero. Los fijos de cada mes cuentan en proporción a los días." },
   ingresos: { texto: "Ingresos Premium", emoji: "💶", grupo: "auto", tipo: "flujo", ayuda: "Lo que Stripe cobra de verdad por Premium dentro del periodo, antes de comisiones." },
-  miembros_telegram: { texto: "Miembros en Telegram", emoji: "📣", grupo: "auto", tipo: "nivel", ayuda: "Un total a alcanzar en el canal gratuito. Sale de la foto diaria de las 04:00." },
   suscriptores_youtube: { texto: "Suscriptores de YouTube", emoji: "▶️", grupo: "auto", tipo: "nivel", ayuda: "Un total a alcanzar. Se fotografía cada día a las 04:00 con la clave de YouTube." },
 } as const;
 export type Metrica = keyof typeof METRICAS;
@@ -40,24 +39,23 @@ export const REPETICIONES = { no: "Una sola vez", semanal: "Cada semana", mensua
 export const REPETICION_EMOJI = { no: "🎯", semanal: "🔁", mensual: "📅" } as const;
 export type Repeticion = keyof typeof REPETICIONES;
 
-export const CANALES = { youtube: "YouTube", web: "Web", telegram: "Telegram" } as const;
+// Telegram fue el tercer canal hasta el 05-11-2026, cuando se retiró de la web.
+export const CANALES = { youtube: "YouTube", web: "Web" } as const;
 export type Canal = keyof typeof CANALES;
-export const CANAL_EMOJI = { youtube: "▶️", web: "🌐", telegram: "✈️" } as const;
+export const CANAL_EMOJI = { youtube: "▶️", web: "🌐" } as const;
 
 export const TIPOS = {
   video: "Vídeo",
   short: "Short",
   guia: "Guía",
-  publicacion: "Publicación",
 } as const;
 export type Tipo = keyof typeof TIPOS;
-export const TIPO_EMOJI = { video: "🎬", short: "⚡", guia: "📚", publicacion: "📣" } as const;
+export const TIPO_EMOJI = { video: "🎬", short: "⚡", guia: "📚" } as const;
 
 /** Qué tipos de pieza tienen sentido en cada canal; el primero es el habitual. Lo usa «Planificar» en Ideas. */
 export const TIPOS_POR_CANAL: Record<Canal, Tipo[]> = {
   youtube: ["video", "short"],
   web: ["guia"],
-  telegram: ["publicacion"],
 };
 
 /** En orden: es el camino que recorre una pieza hasta salir. */

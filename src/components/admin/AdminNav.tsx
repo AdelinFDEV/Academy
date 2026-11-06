@@ -8,7 +8,6 @@ const links = [
   { href: "/admin",                      label: "Panel",       icon: "bar-chart" as const, priority: true },
   { href: "/admin/users",                label: "Usuarios",    icon: "users" as const,     priority: true },
   { href: "/admin/premium",              label: "Premium",     icon: "crown" as const,     priority: true },
-  { href: "/admin/comunidad",            label: "Canal free",  icon: "globe" as const,     priority: true },
   { href: "/admin/objetivos",            label: "Objetivos",   icon: "target" as const,    priority: true },
   { href: "/admin/guias-instrucciones",        label: "Guías · Ref",        icon: "book" as const },
 ];

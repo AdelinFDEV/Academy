@@ -45,13 +45,13 @@ alter table public.objetivos enable row level security;
 -- ── 2. Plan de contenido ────────────────────────────────────────────────────
 --
 -- Una fila por pieza: un vídeo, un short, una guía o una
--- publicación en Telegram. Sin `fecha` es una idea todavía sin día.
+-- pieza de la web. Sin `fecha` es una idea todavía sin día.
 create table if not exists public.contenido_plan (
   id            uuid primary key default gen_random_uuid(),
   fecha         date,
-  canal         text not null check (canal in ('youtube', 'web', 'telegram')),
+  canal         text not null check (canal in ('youtube', 'web')),
   tipo          text not null
-                  check (tipo in ('video', 'short', 'guia', 'publicacion')),
+                  check (tipo in ('video', 'short', 'guia')),
   titulo        text not null check (length(trim(titulo)) > 0),
   estado        text not null default 'idea'
                   check (estado in ('idea', 'guion', 'grabado', 'editado', 'programado', 'publicado')),
@@ -122,7 +122,7 @@ alter table public.objetivos
 -- ── Métricas nuevas ─────────────────────────────────────────────────────────
 --
 -- Se cuentan en el periodo:     videos, registros, premium, ingresos
--- Se leen como nivel alcanzado: miembros_telegram (canal gratuito),
+-- Se leen como nivel alcanzado:
 --                               suscriptores_youtube
 alter table public.objetivos drop constraint if exists objetivos_metrica_check;
 alter table public.objetivos
@@ -132,7 +132,7 @@ alter table public.objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
     'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
-    'miembros_telegram', 'suscriptores_youtube'
+    'suscriptores_youtube'
   ));
 
 -- ── Progreso manual por periodo ─────────────────────────────────────────────
@@ -163,8 +163,7 @@ on conflict (objetivo_id, periodo) do nothing;
 --
 -- Los suscriptores de YouTube solo se pueden leer «ahora»: sin guardar una
 -- foto al día no habría con qué comparar ni historial. La toma el cron de las
--- 04:00 (telegram-sync). Los miembros de Telegram ya tienen la suya en
--- `telegram_channel_stats`.
+-- 04:00 (`/api/cron/diario`).
 create table if not exists public.metricas_diarias (
   clave   text not null,
   fecha   date not null,
@@ -199,7 +198,7 @@ alter table public.objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
     'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
-    'miembros_telegram', 'suscriptores_youtube'
+    'suscriptores_youtube'
   ));
 
 -- Las marcas apuntadas, una por objetivo y día (apuntar dos veces el mismo
@@ -288,7 +287,7 @@ create index if not exists diario_intenciones_desde_idx on public.diario_intenci
 -- 05-10-2026 · Ideas: notas sueltas, sin calendario
 -- ════════════════════════════════════════════════════════════════════════════
 
--- Una idea es texto y su canal (youtube, web o telegram), con un tick de
+-- Una idea es texto y su canal (youtube o web), con un tick de
 -- hecha para tacharla. Nada de día ni estado: no tiene relación con el
 -- calendario; si llega a hacerse, se planea allí aparte.
 create table if not exists public.ideas (
@@ -306,7 +305,7 @@ alter table public.ideas enable row level security;
 alter table public.ideas add column if not exists canal text not null default 'youtube';
 alter table public.ideas add column if not exists hecha boolean not null default false;
 alter table public.ideas drop constraint if exists ideas_canal_check;
-alter table public.ideas add constraint ideas_canal_check check (canal in ('youtube', 'web', 'telegram'));
+alter table public.ideas add constraint ideas_canal_check check (canal in ('youtube', 'web'));
 
 create index if not exists ideas_created_idx on public.ideas (created_at desc);
 
@@ -414,7 +413,7 @@ alter table public.objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
     'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
-    'miembros_telegram', 'suscriptores_youtube'
+    'suscriptores_youtube'
   ));
 
 -- ════════════════════════════════════════════════════════════════════════════
@@ -465,7 +464,7 @@ alter table public.objetivos
     -- que ya usan métricas nuevas y pararía el script. Al añadir una métrica,
     -- añádela aquí en TODOS los bloques (búscalos por objetivos_metrica_check).
     'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
-    'miembros_telegram', 'suscriptores_youtube'
+    'suscriptores_youtube'
   ));
 
 -- ── La web es solo guías (10-10-2026) ───────────────────────────────────────
@@ -504,7 +503,7 @@ alter table public.objetivos
   add constraint objetivos_metrica_check check (metrica in (
     -- Lista COMPLETA, igual que en los bloques de arriba.
     'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
-    'miembros_telegram', 'suscriptores_youtube'
+    'suscriptores_youtube'
   ));
 
 -- Plan de contenido: sin el tipo «entrada» (ninguna pieza lo usaba). El
@@ -523,4 +522,64 @@ begin
 end $$;
 alter table public.contenido_plan
   add constraint contenido_plan_tipo_check
-  check (tipo in ('video', 'short', 'guia', 'publicacion'));
+  check (tipo in ('video', 'short', 'guia'));
+
+-- ── Telegram, retirado entero (05-11-2026) ──────────────────────────────────
+--
+-- Se quitó de la web todo lo de Telegram: el bot, los canales, la vinculación
+-- de cuentas, los avisos y su sitio en Objetivos. Esto borra sus tablas, sus
+-- columnas en `profiles` y lo que quedaba de él en Objetivos. Copia de todo en
+-- backups/telegram-2026-11-05/ (local). Ejecutar DESPUÉS de desplegar el código
+-- que ya no las lee. Idempotente: relanzarlo no rompe nada.
+
+-- Objetivos: las ideas del canal Telegram (había 4) y lo que no pueda existir ya.
+delete from public.ideas where canal = 'telegram';
+delete from public.contenido_plan where canal = 'telegram' or tipo = 'publicacion';
+delete from public.objetivos where metrica = 'miembros_telegram';
+
+alter table public.objetivos drop constraint if exists objetivos_metrica_check;
+alter table public.objetivos
+  add constraint objetivos_metrica_check check (metrica in (
+    -- Lista COMPLETA, igual que en los bloques de arriba.
+    'manual', 'marca', 'videos', 'shorts', 'registros', 'premium', 'ingresos', 'beneficio',
+    'suscriptores_youtube'
+  ));
+
+alter table public.ideas drop constraint if exists ideas_canal_check;
+alter table public.ideas
+  add constraint ideas_canal_check check (canal in ('youtube', 'web'));
+
+-- El plan de contenido: los nombres de sus restricciones de canal y de tipo
+-- los puso Postgres, así que se buscan en el catálogo.
+do $$
+declare r record;
+begin
+  for r in
+    select conname from pg_constraint
+    where conrelid = 'public.contenido_plan'::regclass
+      and contype = 'c'
+      and (pg_get_constraintdef(oid) ilike '%canal%' or pg_get_constraintdef(oid) ilike '%tipo%')
+  loop
+    execute format('alter table public.contenido_plan drop constraint %I', r.conname);
+  end loop;
+end $$;
+alter table public.contenido_plan
+  add constraint contenido_plan_canal_check check (canal in ('youtube', 'web'));
+alter table public.contenido_plan
+  add constraint contenido_plan_tipo_check check (tipo in ('video', 'short', 'guia'));
+
+-- Las tablas del bot, los canales y los avisos. cascade se lleva sus
+-- políticas, índices y claves ajenas; ninguna tabla viva apunta a ellas.
+drop table if exists public.telegram_link_tokens     cascade;
+drop table if exists public.telegram_access_log      cascade;
+drop table if exists public.telegram_support_threads cascade;
+drop table if exists public.telegram_events          cascade;
+drop table if exists public.telegram_channel_events  cascade;
+drop table if exists public.telegram_channel_stats   cascade;
+drop table if exists public.bot_ajustes              cascade;
+drop table if exists public.content_announcements    cascade;
+
+-- La vinculación de cada cuenta con Telegram.
+alter table public.profiles drop column if exists telegram_user_id;
+alter table public.profiles drop column if exists telegram_username;
+alter table public.profiles drop column if exists telegram_linked_at;

@@ -24,6 +24,14 @@ export interface GuideMeta {
   portada?: string;
   /** Tiene su propio `opengraph-image.tsx` en su carpeta. */
   imagenPropia?: boolean;
+  /**
+   * Día en que se publicó («AAAA-MM-DD», hora de Rumanía). Lo usa el resumen
+   * mensual de /admin/objetivos (Crecimiento). Hasta el 05-11-2026 esa fecha
+   * salía del aviso del bot de Telegram; las guías anteriores no la tienen
+   * porque sus avisos se sembraron todos el mismo día y no eran su fecha real.
+   * Ponla en cada guía nueva al publicarla.
+   */
+  publicada?: string;
 }
 
 // El último elemento del array es siempre la guía más reciente —

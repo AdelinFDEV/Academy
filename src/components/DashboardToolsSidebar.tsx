@@ -5,13 +5,40 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookA, NotebookPen, Map, LayoutGrid, X, ChevronUp, Trophy, Target, PieChart, Lock, GraduationCap,
+  LayoutDashboard, Crown, ArrowRight,
 } from "lucide-react";
+import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 
 /** Los iconos que usan las secciones del dashboard, y solo esos. */
 const ICON_MAP = {
   booka: BookA, notebookpen: NotebookPen, map: Map,
   trophy: Trophy, target: Target, piechart: PieChart, graduationcap: GraduationCap,
 } as const;
+
+/**
+ * Las tres piezas de pago llevan el mismo icono animado que en la barra de
+ * arriba: así se reconocen igual en toda la web.
+ */
+const ICONO_ANIMADO: Partial<Record<keyof typeof ICON_MAP, (p: { size?: number }) => React.ReactNode>> = {
+  notebookpen: IconoDiario,
+  piechart: IconoPortfolio,
+  graduationcap: IconoCursos,
+};
+
+/**
+ * El color de cada herramienta: el de su pieza en el catálogo
+ * (`@/lib/herramientas`) para las que están allí; Diccionario y Guías, que no
+ * son herramientas, llevan el suyo.
+ */
+const COLOR: Record<keyof typeof ICON_MAP, string> = {
+  booka: "#a5b4fc",
+  map: "#e6b455",
+  graduationcap: "#e6b455",
+  notebookpen: "#ff9a4d",
+  piechart: "#4f9dff",
+  target: "#22d3ee",
+  trophy: "#fbbf24",
+};
 
 export type ToolItem = {
   href: string;
@@ -31,6 +58,9 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
   const [open, setOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const ruta = usePathname() ?? "";
+  // Si algo está bloqueado, el usuario no es Premium: es lo que decide si se
+  // enseña la tarjeta de abajo, sin pedirle a la página un prop más.
+  const hayBloqueadas = sections.some((s) => s.tools.some((t) => t.locked));
 
   // Cierre animado: reproduce la salida y desmonta al terminar.
   const close = useCallback(() => {
@@ -74,10 +104,11 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
       t.locked || t.soon ? "dtb-tool--dim" : "",
     ].filter(Boolean).join(" ");
 
+    const Animado = ICONO_ANIMADO[t.icon];
     const content = (
       <>
         <span className="dtb-tool-icon" aria-hidden="true">
-          {Icon && <Icon size={16} strokeWidth={1.9} />}
+          {Animado ? <Animado size={17} /> : Icon && <Icon size={17} strokeWidth={2} />}
         </span>
         <span className="dtb-tool-name">{t.name}</span>
         {t.soon && <span className="dtb-badge dtb-badge--soon">Pronto</span>}
@@ -93,13 +124,14 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
         key={t.name}
         href={t.href}
         className={cls}
+        style={{ "--dtb-c": COLOR[t.icon] } as React.CSSProperties}
         onClick={close}
         aria-current={activa ? "page" : undefined}
       >
         {content}
       </Link>
     ) : (
-      <div key={t.name} className={cls}>{content}</div>
+      <div key={t.name} className={cls} style={{ "--dtb-c": COLOR[t.icon] } as React.CSSProperties}>{content}</div>
     );
   }
 
@@ -107,16 +139,39 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
     <>
       {/* ── Desktop sidebar ── */}
       <aside className="dtb-sidebar" aria-label="Herramientas">
-        {/* Ni cabecera ni etiquetas de sección: el usuario ya sabe que está en
-            su panel, y "HERRAMIENTAS / EDUCACIÓN" ocupaba tres líneas para no
-            decir nada. Los grupos se distinguen por el separador. */}
+        {/* Rehecho el 04-11-2026: arriba la vuelta al panel, después las dos
+            secciones con su etiqueta corta, y abajo, solo a quien tiene algo
+            bloqueado, la tarjeta de Premium. */}
+        <Link
+          href="/dashboard"
+          className={`dtb-panel${ruta === "/dashboard" ? " is-activa" : ""}`}
+          aria-current={ruta === "/dashboard" ? "page" : undefined}
+        >
+          <span className="dtb-panel-icon" aria-hidden="true"><LayoutDashboard size={17} /></span>
+          <span className="dtb-panel-texto">
+            <span className="dtb-panel-nombre">Mi panel</span>
+            <span className="dtb-panel-sub">Tu progreso y lo guardado</span>
+          </span>
+        </Link>
+
         {sections.map((s) => (
           <div key={s.label} className="dtb-section">
+            <span className="dtb-section-label">{s.label}</span>
             <div className="dtb-section-tools">
               {s.tools.map((t) => renderTool(t))}
             </div>
           </div>
         ))}
+
+        {hayBloqueadas && (
+          <Link href="/premium" className="dtb-premium">
+            <span className="dtb-premium-icono" aria-hidden="true"><Crown size={16} /></span>
+            <span className="dtb-premium-titulo">Desbloquea el Diario y el Portfolio</span>
+            <span className="dtb-premium-cta">
+              Hazte Premium <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
+            </span>
+          </Link>
+        )}
       </aside>
 
       {/* ── Barra inferior en móvil: sólida y pegada al borde del dispositivo,

@@ -49,7 +49,7 @@ export const RITMO: Record<Ritmo, { texto: string; emoji: string; clase: string 
   pendiente: { texto: "Aún no empieza", emoji: "⏳", clase: "obj-ritmo--off" },
 };
 
-export const CANAL_CORTO: Record<Canal, string> = { youtube: "YT", web: "Web", telegram: "TG" };
+export const CANAL_CORTO: Record<Canal, string> = { youtube: "YT", web: "Web" };
 
 export function diasEntre(a: string, b: string): number {
   return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / DIA);
@@ -244,11 +244,11 @@ export function useEditor(objetivos: ObjetivoConProgreso[], urlsFotos: Record<st
   return {
     modal,
     nuevoObjetivo: (mes: string) => abrir("objetivo", null, objetivoVacio(mes)),
-    /** Con `canal`, sugiere también el tipo que le pega: vídeo, entrada o publicación. */
+    /** Con `canal`, sugiere también el tipo que le pega: vídeo o guía. */
     nuevaPieza: (fecha: string, canal?: Canal) =>
       abrir("pieza", null, {
         ...piezaVacia(fecha),
-        ...(canal ? { canal, tipo: canal === "web" ? "guia" : canal === "telegram" ? "publicacion" : "video" } : {}),
+        ...(canal ? { canal, tipo: canal === "web" ? "guia" : "video" } : {}),
       }),
     editarObjetivo: (o: ObjetivoConProgreso) =>
       abrir("objetivo", o.id, {

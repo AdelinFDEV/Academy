@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import Icon from "@/components/Icon";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
-import { NotebookPen, Wallet, Gem, Crown, ArrowRight, Check, Lock } from "lucide-react";
+import {
+  NotebookPen, Wallet, GraduationCap, Crown, ArrowRight, Check, Lock, Flame, Trophy,
+  BookOpenCheck, ShieldCheck, Clock,
+} from "lucide-react";
 import DashboardSavedGuides from "@/components/DashboardSavedGuides";
 import TwoFactorNudge from "@/components/TwoFactorNudge";
 import DashboardAtajos from "@/components/DashboardAtajos";
@@ -11,8 +13,17 @@ import DashboardToolsSidebar from "@/components/DashboardToolsSidebar";
 import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
-import SiguientePasoTelegram from "@/components/SiguientePasoTelegram";
+import GuiaPortada from "@/components/GuiaPortada";
 
+/**
+ * El panel de cada usuario.
+ *
+ * Rehecho el 04-11-2026: arriba, una cabecera con el saludo y tres datos
+ * suyos —racha, logros y guías completadas—; debajo, la cartera, los logros
+ * con su barra de progreso, las últimas guías (marcadas si ya las completó),
+ * y lo que tiene guardado. Todo lo que se cuenta aquí sale de sus datos: no
+ * hay ni una cifra de adorno.
+ */
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -20,7 +31,7 @@ export default async function DashboardPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, role, current_streak, last_seen, is_featured, telegram_linked_at")
+    .select("full_name, role, current_streak, last_seen, is_featured")
     .eq("id", user.id)
     .single();
 
@@ -29,7 +40,7 @@ export default async function DashboardPage() {
   const name = profile?.full_name || user.email?.split("@")[0] || "Usuario";
   const role = profile?.role || "free";
   const isPremium = role === "premium" || role === "admin";
-  const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Free";
+  const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Plan gratuito";
 
   const [{ data: savedTermsData }, { data: savedGuidesData }, { data: userBadgesData }] = await Promise.all([
     supabase
@@ -54,13 +65,15 @@ export default async function DashboardPage() {
     .filter((sg): sg is { slug: string; savedAt: string; meta: NonNullable<typeof sg.meta> } => !!sg.meta);
   const earnedBadgeIds = new Set((userBadgesData ?? []).map((b) => b.badge_id));
 
-  // Los logros salen de `@/lib/logros`, que es la misma lista que pinta
-  // /dashboard/logros. Aquí había una copia a mano con SEIS de los dieciséis
-  // que hay, así que la tarjeta enseñaba "3/6" a quien tenía tres de dieciséis.
-  // Los del diario solo se consiguen con Premium: a quien no lo tiene (ni tiene
-  // ninguno de antes) no se le enseñan siete logros imposibles.
+  // Los logros salen de `@/lib/logros`, la misma lista que pinta
+  // /dashboard/logros. Los del diario solo se consiguen con Premium: a quien no
+  // lo tiene (ni tiene ninguno de antes) no se le enseñan logros imposibles.
   const DASH_BADGES = LOGROS.filter((b) => !b.diario || isPremium || isEarned(earnedBadgeIds, b));
   const badgesUnlockedCount = DASH_BADGES.filter((b) => isEarned(earnedBadgeIds, b)).length;
+  const badgesPct = DASH_BADGES.length ? Math.round((badgesUnlockedCount / DASH_BADGES.length) * 100) : 0;
+
+  // Una guía está completada cuando tiene su logro: el quiz con nota perfecta.
+  const guiasCompletadas = GUIDES.filter((g) => earnedBadgeIds.has(g.badgeId)).length;
 
   const TOOL_SECTIONS: ToolSection[] = [
     {
@@ -95,60 +108,77 @@ export default async function DashboardPage() {
     <div className="dash-page-wrap">
     <main className="dashboard-main">
 
-      {/* Solo aparece si es Premium y aún no ha vinculado Telegram: es el
-          único paso que le queda y no es evidente por sí solo. */}
-      <SiguientePasoTelegram
-        isPremium={isPremium}
-        telegramVinculado={!!profile?.telegram_linked_at}
-      />
-
-      {/* ── Cabecera ── */}
-      <div className="dash-header">
-        <div className="dash-header-left">
-          <h1 className="dash-greeting">
+      {/* ── Cabecera: el saludo y tres datos suyos ── */}
+      <section className={`dh-hero${isPremium ? " is-premium" : ""}`}>
+        <div className="dh-hero-texto">
+          <span className="dh-plan">
+            {isPremium && <Crown size={13} aria-hidden="true" />}
+            {planLabel}
+          </span>
+          <h1 className="dh-saludo">
             Hola, <span>{name}</span>
             {profile?.is_featured && (
-              <span className="featured-star-large" title="Usuario destacado — 30 días de racha">★</span>
+              <span className="dh-estrella" title="Usuario destacado: 30 días de racha">★</span>
             )}
           </h1>
-          <div className="dash-header-meta">
-            <span className={`dash-plan-badge${isPremium ? " premium" : ""}`}>{planLabel}</span>
-            {effectiveStreak > 0 && (
-              <Link href="/dashboard/logros" className="dash-streak-badge">
-                🔥 {effectiveStreak} días
-              </Link>
-            )}
-          </div>
-        </div>
-        <div className="dash-header-actions">
-          {/* «Mi cuenta» estuvo aquí hasta el 06-09-2026. Se quitó al meterlo en
-              el menú del nombre, en la barra: ahí está en TODAS las páginas, y
-              tenerlo dos veces en la misma pantalla solo le restaba peso a
-              «Hazte Premium», que es lo único que queda y lo que interesa. */}
+          <p className="dh-sub">Tu academia: guías, diccionario y herramientas, todo en un sitio.</p>
           {!isPremium && (
-            <Link href="/premium" className="dash-upgrade-btn">Hazte Premium →</Link>
+            <Link href="/premium" className="dh-hero-cta">
+              <Crown size={15} aria-hidden="true" /> Hazte Premium
+              <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+            </Link>
           )}
         </div>
-      </div>
+
+        <div className="dh-datos">
+          <Link href="/dashboard/logros" className="dh-dato dh-dato--racha">
+            <span className="dh-dato-icono" aria-hidden="true"><Flame size={18} /></span>
+            <span className="dh-dato-valor">{effectiveStreak}</span>
+            <span className="dh-dato-texto">{effectiveStreak === 1 ? "día de racha" : "días de racha"}</span>
+          </Link>
+          <Link href="/dashboard/logros" className="dh-dato dh-dato--logros">
+            <span className="dh-dato-icono" aria-hidden="true"><Trophy size={18} /></span>
+            <span className="dh-dato-valor">{badgesUnlockedCount}<small>/{DASH_BADGES.length}</small></span>
+            <span className="dh-dato-texto">logros</span>
+          </Link>
+          <Link href="/guias" className="dh-dato dh-dato--guias">
+            <span className="dh-dato-icono" aria-hidden="true"><BookOpenCheck size={18} /></span>
+            <span className="dh-dato-valor">{guiasCompletadas}<small>/{GUIDES.length}</small></span>
+            <span className="dh-dato-texto">guías completadas</span>
+          </Link>
+        </div>
+      </section>
 
       <TwoFactorNudge />
 
-      {/* ── Los dos atajos con dato vivo ── */}
+      {/* ── La cartera, con su dato vivo ── */}
       <DashboardAtajos isPremium={isPremium} />
 
       {/* ── Logros ── */}
-      <div className="dash-badges-card">
-        <div className="dash-progress-head">
-          <span className="dash-card-label">Tus logros</span>
-          <span className="dash-progress-count">
-            {badgesUnlockedCount}<span>/{DASH_BADGES.length}</span>
-          </span>
+      <section className="dh-card dh-logros">
+        <header className="dh-card-cab">
+          <div>
+            <h2 className="dh-h2">Tus logros</h2>
+            <p className="dh-card-sub">
+              {badgesUnlockedCount === 0
+                ? "Completa el quiz de una guía o entra unos días seguidos para conseguir el primero."
+                : `${badgesUnlockedCount} de ${DASH_BADGES.length} desbloqueados`}
+            </p>
+          </div>
+          <Link href="/dashboard/logros" className="dh-enlace">
+            Ver todos <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </header>
+
+        <div className="dh-barra" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={badgesPct} aria-label="Progreso de logros">
+          <span style={{ width: `${badgesPct}%` }} />
         </div>
-        <div className="dash-badges-row">
+
+        <div className="dh-logros-rejilla">
           {DASH_BADGES.map((badge) => {
             const unlocked = isEarned(earnedBadgeIds, badge);
             return (
-              <div key={badge.id} className={`dash-badge-tile${unlocked ? " dash-badge-tile--unlocked" : ""}`}>
+              <div key={badge.id} className={`dh-logro${unlocked ? " is-conseguido" : ""}${badge.special ? " is-especial" : ""}`}>
                 {unlocked ? (
                   <span className={`badge-unlocked-check${badge.special ? " badge-unlocked-check--gold" : ""}`} title="Logro obtenido">
                     <Check size={10} strokeWidth={3.2} aria-hidden="true" />
@@ -158,8 +188,8 @@ export default async function DashboardPage() {
                     <Lock size={9} strokeWidth={3} aria-hidden="true" />
                   </span>
                 )}
-                <div className="dash-badge-tile-icon">{badge.icon}</div>
-                <span className="dash-badge-tile-label">{badge.label}</span>
+                <div className="dh-logro-icono">{badge.icon}</div>
+                <span className="dh-logro-nombre">{badge.label}</span>
                 <div className="badge-tooltip">
                   <p className="badge-tooltip-condition">{badge.condition}</p>
                   {badge.diario && (
@@ -177,118 +207,90 @@ export default async function DashboardPage() {
             );
           })}
         </div>
-        <div className="dash-progress-foot">
-          <span>{badgesUnlockedCount === 0 ? "Empieza a leer para desbloquear tu primer logro" : `${badgesUnlockedCount} de ${DASH_BADGES.length} logros desbloqueados`}</span>
-          <Link href="/dashboard/logros" className="dash-link-orange"><span>Ver todos</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
-        </div>
-      </div>
+      </section>
 
-      {/* ── Asesoría 1:1 ── */}
-
-      {/* ── Upgrade card (free users only) ── */}
+      {/* ── Premium (solo a quien no lo tiene) ── */}
       {!isPremium && (
-        <div className="dash-upsell">
-          <div className="dash-upsell-accent" />
-
-          <div className="dash-upsell-left">
-            <div className="dash-upsell-header">
-              <span className="dash-upsell-eyebrow">
-                <Crown size={11} aria-hidden="true" /> Premium
-              </span>
-              <h3 className="dash-upsell-title">Lleva tu trading al siguiente nivel</h3>
-            </div>
-
-            <div className="dash-upsell-features">
-              <div className="dash-upsell-feat">
-                <div className="dash-upsell-feat-icon"><NotebookPen size={15} /></div>
-                <div>
-                  <span className="dash-upsell-feat-name">Diario de Trading</span>
-                  <span className="dash-upsell-feat-desc">Registra cada operación y descubre qué te hace ganar.</span>
-                </div>
-              </div>
-              <div className="dash-upsell-feat">
-                <div className="dash-upsell-feat-icon"><Wallet size={15} /></div>
-                <div>
-                  <span className="dash-upsell-feat-name">Portfolio Adelin</span>
-                  <span className="dash-upsell-feat-desc">Todas mis compras en spot, con precio de entrada y rentabilidad en tiempo real.</span>
-                </div>
-              </div>
-              <div className="dash-upsell-feat">
-                <div className="dash-upsell-feat-icon"><Gem size={15} /></div>
-                <div>
-                  <span className="dash-upsell-feat-name">Canal privado de Telegram</span>
-                  <span className="dash-upsell-feat-desc">La comunidad Premium y trato directo conmigo.</span>
-                </div>
-              </div>
-            </div>
+        <section className="dh-premium">
+          <div className="dh-premium-texto">
+            <span className="dh-plan dh-plan--oro"><Crown size={13} aria-hidden="true" /> Premium</span>
+            <h2 className="dh-premium-titulo">Opera con método, no de memoria</h2>
+            <ul className="dh-premium-lista">
+              <li><span><NotebookPen size={15} aria-hidden="true" /></span>Diario de Trading con diez estadísticas</li>
+              <li><span><Wallet size={15} aria-hidden="true" /></span>Portfolio Adelin: mi cartera real, en vivo</li>
+              <li><span><GraduationCap size={15} aria-hidden="true" /></span>Cursos con certificado, cuando se publiquen</li>
+            </ul>
           </div>
-
-          <div className="dash-upsell-right">
-            <div className="dash-upsell-price">
-              <span className="dash-upsell-price-main">49,99€</span>
-              <span className="dash-upsell-price-per">/mes</span>
-            </div>
-            <Link href="/premium" className="dash-upsell-cta">
-              Hazte Premium <ArrowRight size={16} strokeWidth={2.5} />
+          <div className="dh-premium-compra">
+            <p className="dh-premium-precio">49,99 €<small>/mes</small></p>
+            <Link href="/premium" className="dh-premium-cta">
+              Hazte Premium <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
             </Link>
-            <p className="dash-upsell-note">
-              <Check size={11} /> Sin permanencia · Cancela cuando quieras
+            <p className="dh-premium-nota">
+              <ShieldCheck size={12} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
             </p>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* ── Últimas guías publicadas ── */}
-      <div className="dash-section">
-        <div className="dash-section-head">
-          <h2 className="dash-section-title">Últimas guías publicadas</h2>
-          <Link href="/guias" className="dash-link-orange"><span>Ver todas</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
-        </div>
-        <div className="dash-continue-list">
-          {GUIDES_NEWEST_FIRST.slice(0, 3).map((guide) => (
-            <Link key={guide.slug} href={`/guias/${guide.slug}`} className="dash-continue-card" style={{borderColor: `color-mix(in srgb, ${guide.color} 30%, transparent)`}}>
-              <div
-                className="dash-continue-thumb"
-                style={{ background: `linear-gradient(145deg, var(--card-bg), color-mix(in srgb, ${guide.color} 15%, transparent))` }}
+      {/* ── Últimas guías ── */}
+      <section className="dh-bloque">
+        <header className="dh-bloque-cab">
+          <h2 className="dh-h2">Últimas guías</h2>
+          <Link href="/guias" className="dh-enlace">Ver todas <ArrowRight size={14} aria-hidden="true" /></Link>
+        </header>
+        <div className="dh-guias">
+          {GUIDES_NEWEST_FIRST.slice(0, 3).map((guide) => {
+            const hecha = earnedBadgeIds.has(guide.badgeId);
+            return (
+              <Link
+                key={guide.slug}
+                href={`/guias/${guide.slug}`}
+                className="dh-guia"
+                style={{ "--g": guide.color } as React.CSSProperties}
               >
-                <Icon name="map" size={26} style={{ color: guide.color }} />
-              </div>
-              <div className="dash-continue-body">
-                <span className="dash-continue-cat" style={{ color: guide.color }}>Guía Interactiva • {guide.difficulty}</span>
-                <h3 className="dash-continue-title">{guide.title}</h3>
-              </div>
-            </Link>
-          ))}
+                <span className="dh-guia-portada">
+                  <GuiaPortada guia={guide} sizes="(max-width: 760px) 100vw, 320px" />
+                  {hecha && (
+                    <span className="dh-guia-hecha"><Check size={12} strokeWidth={3} aria-hidden="true" /> Completada</span>
+                  )}
+                </span>
+                <span className="dh-guia-cuerpo">
+                  <span className="dh-guia-meta">
+                    {guide.difficulty.charAt(0).toUpperCase() + guide.difficulty.slice(1)}
+                    <span aria-hidden="true">·</span>
+                    <Clock size={12} aria-hidden="true" /> {guide.readTime}
+                  </span>
+                  <span className="dh-guia-titulo">{guide.title}</span>
+                </span>
+              </Link>
+            );
+          })}
         </div>
-      </div>
+      </section>
 
-      {/* ── Guías guardadas ── */}
-      <div className="dash-section">
-        <div className="dash-section-head">
-          <h2 className="dash-section-title">
+      {/* ── Guardado ── */}
+      <section className="dh-bloque">
+        <header className="dh-bloque-cab">
+          <h2 className="dh-h2">
             Guías guardadas
-            {savedGuidesList.length > 0 && (
-              <span className="dash-count-pill">{savedGuidesList.length}</span>
-            )}
+            {savedGuidesList.length > 0 && <span className="dh-cuenta">{savedGuidesList.length}</span>}
           </h2>
-          <Link href="/guias" className="dash-link-orange"><span>Ver guías</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
-        </div>
+          <Link href="/guias" className="dh-enlace">Ver guías <ArrowRight size={14} aria-hidden="true" /></Link>
+        </header>
         <DashboardSavedGuides initialGuides={savedGuidesList} />
-      </div>
+      </section>
 
-      {/* ── Diccionario guardado ── */}
-      <div className="dash-section">
-        <div className="dash-section-head">
-          <h2 className="dash-section-title">
+      <section className="dh-bloque">
+        <header className="dh-bloque-cab">
+          <h2 className="dh-h2">
             Diccionario guardado
-            {savedTermsList.length > 0 && (
-              <span className="dash-count-pill">{savedTermsList.length}</span>
-            )}
+            {savedTermsList.length > 0 && <span className="dh-cuenta">{savedTermsList.length}</span>}
           </h2>
-          <Link href="/glosario" className="dash-link-orange"><span>Ver diccionario</span><ArrowRight size={14} className="dash-link-arrow" /></Link>
-        </div>
+          <Link href="/glosario" className="dh-enlace">Ver diccionario <ArrowRight size={14} aria-hidden="true" /></Link>
+        </header>
         <DashboardSavedTerms initialTerms={savedTermsList} />
-      </div>
+      </section>
 
     </main>
     </div>

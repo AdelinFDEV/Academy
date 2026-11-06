@@ -8,7 +8,8 @@ import DcaClient from "@/components/DcaClient";
 import PortfoliosTabs from "@/components/PortfoliosTabs";
 import { precioBitcoin, type CompraDCA } from "@/lib/dca";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
-import "../herramientas/detalle.css";
+import { IconoPortfolio } from "@/components/IconosAnimados";
+import "./portfolio.css";
 
 export const metadata: Metadata = {
   title: "Portfolio Adelin",
@@ -16,6 +17,13 @@ export const metadata: Metadata = {
     "Sigue en tiempo real el portfolio de AdelinBTC. Precio de compra, rentabilidad actual y evolución de cada posición.",
 };
 
+/**
+ * La herramienta Portfolio Adelin, para Premium y Admin.
+ *
+ * Rehecha el 04-11-2026: una cabecera propia con el icono animado de la pieza,
+ * el conmutador de carteras y cada cartera con sus cifras, su gráfico y su
+ * tabla. Los estilos viven en `./portfolio.css`, que solo carga esta página.
+ */
 export default async function PortfolioPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -48,18 +56,23 @@ export default async function PortfolioPage() {
     <div className="blog-page">
       <div className="bg-ambient" />
 
-      <SiteNav user={!!user} isPremium={isPremium} />
+      <SiteNav user={!!user} isPremium={isPremium} isAdmin={isAdmin} />
 
-      <main className="blog-main">
+      <main className="blog-main pv">
+        <header className="pv-cabecera">
+          <span className="pv-cabecera-icono" aria-hidden="true"><IconoPortfolio size={26} /></span>
+          <div>
+            <span className="pv-cabecera-sello">Premium · Cartera real</span>
+            <h1 className="pv-titulo">Portfolio Adelin</h1>
+            <p className="pv-subtitulo">
+              Mis posiciones reales, con su precio de entrada y su rentabilidad al momento.
+              También las que van en pérdidas.
+            </p>
+          </div>
+        </header>
+
         <PortfoliosTabs
-          spot={
-            <PortfolioClient
-              initialPositions={positions ?? []}
-              isPremium={isPremium}
-              isAdmin={isAdmin}
-              isLoggedIn={!!user}
-            />
-          }
+          spot={<PortfolioClient initialPositions={positions ?? []} isAdmin={isAdmin} />}
           dca={
             <DcaClient
               compras={(compras ?? []) as CompraDCA[]}

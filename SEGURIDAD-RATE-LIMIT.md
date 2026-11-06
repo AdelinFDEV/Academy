@@ -65,7 +65,6 @@ producción.
 | Ruta | Por qué nunca se limita |
 |---|---|
 | `/api/stripe/webhook` | Lo llama Stripe desde sus IPs. Un 429 = **pago perdido** sin enterarte |
-| `/api/telegram/webhook` | Igual con el bot: se pierde el mensaje |
 | `/api/cron/*` | Lo llama Vercel y ya va autenticado con `CRON_SECRET` |
 | `/robots.txt`, `/sitemap.xml` | Los lee Google. Un 429 aquí no lo ve ningún visitante, pero echa al rastreador justo cuando venía a indexar |
 

@@ -1,6 +1,5 @@
 import type { createAdminClient } from "@/lib/supabase/admin";
 import { todasLasFilas } from "@/lib/supabase/todasLasFilas";
-import { getChannelAdminCount, getFreeChannelId } from "@/lib/telegram";
 import { getSubscriberCount } from "@/lib/youtube";
 import { esShort, subidasEntre } from "@/lib/actividadMes";
 import {
@@ -85,26 +84,10 @@ class Contexto {
   }
 
   /** Fotos diarias de una métrica de nivel, de la más antigua a la más reciente. */
-  fotosDe(metrica: "miembros_telegram" | "suscriptores_youtube"): Promise<Foto[]> {
+  fotosDe(metrica: "suscriptores_youtube"): Promise<Foto[]> {
     const guardada = this.fotos.get(metrica);
     if (guardada) return guardada;
     const nueva = (async (): Promise<Foto[]> => {
-      if (metrica === "miembros_telegram") {
-        const canal = getFreeChannelId();
-        const [data, admins] = await Promise.all([
-          todasLasFilas((a, b) =>
-            this.admin
-              .from("telegram_channel_stats")
-              .select("fecha, miembros")
-              .eq("chat_id", String(canal ?? ""))
-              .order("fecha")
-              .range(a, b)
-          ),
-          // Sin el dueño ni el bot, como en la pestaña Crecimiento (src/lib/crecimiento.ts).
-          canal ? getChannelAdminCount(canal) : Promise.resolve(null),
-        ]);
-        return data.map((f) => ({ fecha: String(f.fecha), valor: Math.max(0, Number(f.miembros) - (admins ?? 0)) }));
-      }
       const data = await todasLasFilas((a, b) =>
         this.admin.from("metricas_diarias").select("fecha, valor").eq("clave", "suscriptores_youtube").order("fecha").range(a, b)
       );
@@ -164,7 +147,7 @@ async function beneficio(ctx: Contexto, p: Periodo): Promise<number> {
  * Nivel al final del periodo (o hoy, si sigue abierto) y nivel con que empezó.
  * Si no hay foto anterior al periodo, la base es la primera foto dentro de él.
  */
-async function nivel(ctx: Contexto, metrica: "miembros_telegram" | "suscriptores_youtube", p: Periodo) {
+async function nivel(ctx: Contexto, metrica: "suscriptores_youtube", p: Periodo) {
   return nivelDe(await ctx.fotosDe(metrica), p);
 }
 
@@ -196,7 +179,7 @@ async function medir(ctx: Contexto, o: Objetivo, p: Periodo): Promise<{ valor: n
       // Lo subido a YouTube, por su fecha real de publicación: la misma fuente
       // que el calendario. Antes se contaban los avisos del bot, que van por
       // el día del aviso, sin Shorts y sin los vídeos que el bot no anunció.
-      // Sin API, la función cae a esos avisos (y ahí no hay Shorts).
+      // Sin API no hay otra fuente: cuenta cero.
       const { videos } = await subidasEntre(a, new Date(ini), new Date(fin));
       return { valor: videos.filter((v) => esShort(v) === (o.metrica === "shorts")).length, base: 0 };
     }
@@ -214,7 +197,6 @@ async function medir(ctx: Contexto, o: Objetivo, p: Periodo): Promise<{ valor: n
       return { valor: await ingresos(ctx, p), base: 0 };
     case "beneficio":
       return { valor: await beneficio(ctx, p), base: 0 };
-    case "miembros_telegram":
     case "suscriptores_youtube":
       return nivel(ctx, o.metrica, p);
   }
