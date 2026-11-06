@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, User, ChevronDown, LogOut, Crown, ArrowRight } from "lucide-react";
+import { LayoutDashboard, UserRound, ChevronDown, LogOut, Crown, ArrowRight } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
+import AvatarUsuario from "@/components/AvatarUsuario";
 
 export type PlanUsuario = "admin" | "premium" | "free";
 
@@ -26,7 +27,16 @@ const PLAN_TEXTO: Record<PlanUsuario, string> = {
  * Premium. El plan lo resuelve la barra (`SiteNav`) desde el perfil, así que
  * es el mismo en todas las páginas.
  */
-export default function NavSaludo({ nombre, plan }: { nombre: string; plan: PlanUsuario }) {
+export default function NavSaludo({
+  nombre,
+  plan,
+  avatar = null,
+}: {
+  nombre: string;
+  plan: PlanUsuario;
+  /** La foto de perfil elegida (`profiles.avatar`); sin ella, la inicial. */
+  avatar?: string | null;
+}) {
   const [abierto, setAbierto] = useState(false);
   const caja = useRef<HTMLDivElement>(null);
 
@@ -66,7 +76,7 @@ export default function NavSaludo({ nombre, plan }: { nombre: string; plan: Plan
         title={`Has iniciado sesión como ${nombre}`}
       >
         <span className="nav-saludo-avatar" aria-hidden="true">
-          {inicial}
+          <AvatarUsuario avatar={avatar} inicial={inicial} className="nav-saludo-foto" />
           {dorado && <span className="nav-saludo-corona"><Crown size={9} strokeWidth={2.6} /></span>}
         </span>
         <span className="nav-saludo-texto">
@@ -81,7 +91,7 @@ export default function NavSaludo({ nombre, plan }: { nombre: string; plan: Plan
           {/* Quién eres, con el nombre entero y el plan. */}
           <div className="nav-saludo-cabecera">
             <span className="nav-saludo-avatar nav-saludo-avatar--grande" aria-hidden="true">
-              {inicial}
+              <AvatarUsuario avatar={avatar} inicial={inicial} className="nav-saludo-foto" />
               {dorado && <span className="nav-saludo-corona"><Crown size={10} strokeWidth={2.6} /></span>}
             </span>
             <span className="nav-saludo-cabecera-texto">
@@ -103,13 +113,13 @@ export default function NavSaludo({ nombre, plan }: { nombre: string; plan: Plan
             Mi panel
           </Link>
           <Link
-            href="/cuenta"
+            href="/dashboard/perfil"
             className="nav-saludo-item"
             role="menuitem"
             onClick={() => setAbierto(false)}
           >
-            <User size={15} strokeWidth={2.1} aria-hidden="true" />
-            Mi cuenta
+            <UserRound size={15} strokeWidth={2.1} aria-hidden="true" />
+            Mi perfil
           </Link>
 
           {!dorado && (

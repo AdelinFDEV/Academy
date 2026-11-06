@@ -450,99 +450,6 @@ html {
 
 /* Cuenta page */
 
-.cuenta-page {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 5rem;
-}
-
-.cuenta-header {
-  margin-bottom: 2.5rem;
-}
-
-.cuenta-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.35rem;
-}
-
-.cuenta-subtitle {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.cuenta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-.cuenta-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.cuenta-card--full {
-  grid-column: 1 / -1;
-}
-
-.cuenta-card-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.cuenta-card-header svg {
-  color: var(--accent-orange);
-}
-
-.cuenta-card-header h2 {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.cuenta-info-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.cuenta-info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.875rem;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 0.75rem;
-}
-
-.cuenta-info-row:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.cuenta-info-label {
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
-.cuenta-info-value {
-  color: var(--text-primary);
-  text-align: right;
-  word-break: break-all;
-}
-
 .cuenta-btn-manage {
   display: flex;
   align-items: center;
@@ -561,59 +468,6 @@ html {
 
 .cuenta-btn-manage:hover {
   opacity: 0.88;
-}
-
-.cuenta-btn-arrow {
-  margin-left: auto;
-}
-
-.cuenta-manage-hint {
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  line-height: 1.5;
-  margin-top: -0.5rem;
-}
-
-.cuenta-cancel-notice {
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 10px;
-  padding: 0.65rem 0.85rem;
-  font-size: 0.8rem;
-  line-height: 1.5;
-}
-
-.cuenta-no-plan {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.6;
-}
-
-.cuenta-btn-change-pw {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  text-align: left;
-  margin-top: auto;
-  font-family: inherit;
-  transition: color 0.15s;
-}
-
-.cuenta-btn-change-pw:hover { color: var(--accent-orange); }
-
-.cuenta-btn-manage--as-button {
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.cuenta-btn-manage--as-button:disabled {
-  opacity: 0.6;
-  cursor: default;
 }
 
 /* — Seguridad / 2FA — */
@@ -765,34 +619,6 @@ html {
   padding-left: 0.6em !important;
 }
 
-.cuenta-days-bar {
-  margin-top: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.cuenta-days-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-.cuenta-days-track {
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(240,244,255,0.08);
-  overflow: hidden;
-}
-
-.cuenta-days-fill {
-  height: 100%;
-  border-radius: 2px;
-  background: var(--accent-orange);
-  transition: width 0.4s ease;
-}
-
 /* Password field show/hide toggle */
 
 .field-pw-wrap {
@@ -822,25 +648,6 @@ html {
 }
 
 .field-pw-toggle:hover { color: var(--text-secondary); }
-
-.cuenta-portal-error {
-  background: rgba(255, 68, 68, 0.08);
-  border: 1px solid rgba(255, 68, 68, 0.25);
-  color: #ff6666;
-  font-size: 0.875rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-@media (max-width: 600px) {
-  .cuenta-grid {
-    grid-template-columns: 1fr;
-  }
-  .cuenta-page {
-    padding: 2rem 1rem 4rem;
-  }
-}
 
 /* ── Legal pages ── */
 
@@ -1351,6 +1158,41 @@ html {
 .nav-saludo-menu.is-dorado .nav-saludo-avatar {
   --ns-c: #e6b455;
   --ns-c2: #f6d58e;
+}
+
+/* La foto de perfil (`AvatarUsuario`), la misma en toda la web. Sin
+   variante es solo la inicial, sobre el fondo de quien la contiene; con
+   variante pinta su propio fondo (el color de la foto o su imagen). */
+.avatar-usuario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.avatar-usuario.is-variante {
+  background: linear-gradient(145deg, var(--av-c2) 0%, var(--av-c) 100%);
+  color: #fff;
+}
+
+.avatar-usuario-icono {
+  width: 56%;
+  height: 56%;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+
+.avatar-usuario-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dentro de la moneda de la barra: la llena entera y hereda sus esquinas. */
+.nav-saludo-foto {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
 }
 
 /* La coronita, en la esquina de la moneda. */
@@ -8703,53 +8545,6 @@ select {
 
 /* — Zona de peligro en Mi cuenta — */
 
-.cuenta-danger-zone {
-  border: 1px solid rgba(248, 113, 113, 0.2);
-  background: rgba(248, 113, 113, 0.04);
-  border-radius: 14px;
-  padding: 1.1rem 1.25rem;
-  margin-top: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.cuenta-danger-zone-text h3 {
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--text-primary, #f0f4ff);
-  margin-bottom: 0.2rem;
-}
-
-.cuenta-danger-zone-text p {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  max-width: 480px;
-}
-
-.cuenta-btn-delete-account {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 1rem;
-  border-radius: 10px;
-  border: 1px solid rgba(248, 113, 113, 0.35);
-  background: rgba(248, 113, 113, 0.08);
-  color: #f87171;
-  font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s, color 0.15s;
-}
-
-.cuenta-btn-delete-account:hover {
-  background: #dc2626;
-  color: #fff;
-}
-
 @keyframes hero-cta-shine {
   0%, 60%  { left: -80%; }
   85%, 100% { left: 130%; }
@@ -11081,6 +10876,84 @@ select {
 @media (prefers-reduced-motion: reduce) {
   .ia-birrete, .ia-borla, .ia-barra { animation: none; }
   .ia-linea { animation: none; stroke-dashoffset: 0; }
+}
+
+/* Los iconos animados del rail del dashboard (y el trofeo, que también usa
+   el slider de la portada). Como los de la barra: lentos siempre, más
+   rápidos con el ratón encima (dashboard.css) y quietos con movimiento
+   reducido. */
+.ia-copa {
+  transform-origin: bottom center;
+  animation: ia-salto 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes ia-salto {
+  0%, 60%, 100% { transform: translateY(0) scale(1); }
+  70% { transform: translateY(-2.5px) scale(1.06); }
+  82% { transform: translateY(0) scale(0.98); }
+}
+
+.ia-destello {
+  transform-origin: center;
+  animation: ia-destello 2.6s ease-in-out infinite;
+}
+
+@keyframes ia-destello {
+  0%, 62% { opacity: 0; transform: scale(0.4) rotate(0); }
+  74% { opacity: 1; transform: scale(1.1) rotate(45deg); }
+  100% { opacity: 0; transform: scale(0.6) rotate(90deg); }
+}
+
+.ia-cinta {
+  animation: ia-cinta 3s ease-in-out infinite;
+}
+
+@keyframes ia-cinta {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(1.6px); }
+}
+
+.ia-ruta {
+  stroke-dashoffset: 1;
+  animation: ia-ruta 3.4s ease-in-out infinite;
+}
+
+@keyframes ia-ruta {
+  0% { stroke-dashoffset: 1; }
+  55%, 100% { stroke-dashoffset: 0; }
+}
+
+.ia-chincheta {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: ia-chincheta 3.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes ia-chincheta {
+  0%, 50%, 100% { transform: translateY(0); }
+  62% { transform: translateY(-2.2px); }
+  74% { transform: translateY(0) scaleY(0.92); }
+}
+
+.ia-diana {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ia-diana 2.8s ease-out infinite;
+}
+
+.ia-diana--2 {
+  animation-delay: 1.4s;
+}
+
+@keyframes ia-diana {
+  0% { transform: scale(0.45); opacity: 0.9; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ia-copa, .ia-destello, .ia-cinta, .ia-chincheta, .ia-diana { animation: none; }
+  .ia-diana--2 { display: none; }
+  .ia-ruta { animation: none; stroke-dashoffset: 0; }
 }
 
 /* En el móvil el botón de dudas se queda en el avatar, sin texto: ocupa la

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b3fb5"/>
+      <stop offset="1" stop-color="#1e1747"/>
+    </linearGradient>
+    <linearGradient id="v" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a4a7a"/>
+      <stop offset="1" stop-color="#151b33"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" fill="url(#f)"/>
+  <!-- estrellas y luna -->
+  <circle cx="34" cy="40" r="3" fill="#fff"/>
+  <circle cx="60" cy="214" r="2.5" fill="#fff" opacity=".8"/>
+  <circle cx="226" cy="186" r="3" fill="#fff" opacity=".9"/>
+  <circle cx="98" cy="22" r="2" fill="#fff" opacity=".7"/>
+  <circle cx="214" cy="46" r="20" fill="#f6d58e"/>
+  <circle cx="206" cy="40" r="4" fill="#e6b455"/>
+  <circle cx="220" cy="54" r="3" fill="#e6b455"/>
+  <!-- cuerpo -->
+  <path d="M64 256 C64 212 92 192 128 192 C164 192 192 212 192 256 Z" fill="#eef2fb"/>
+  <rect x="108" y="214" width="40" height="26" rx="6" fill="#c9d3ea"/>
+  <circle cx="118" cy="227" r="4" fill="#ff6b2b"/>
+  <circle cx="138" cy="227" r="4" fill="#4ade80"/>
+  <!-- casco -->
+  <circle cx="128" cy="124" r="78" fill="#f4f6fc"/>
+  <circle cx="128" cy="124" r="78" fill="none" stroke="#c9d3ea" stroke-width="6"/>
+  <rect x="44" y="110" width="14" height="34" rx="6" fill="#c9d3ea"/>
+  <rect x="198" y="110" width="14" height="34" rx="6" fill="#c9d3ea"/>
+  <!-- visera -->
+  <rect x="68" y="80" width="120" height="96" rx="44" fill="url(#v)"/>
+  <!-- cara -->
+  <circle cx="128" cy="132" r="38" fill="#f2c29b"/>
+  <path d="M92 118 C96 92 160 92 164 118 C150 106 106 106 92 118 Z" fill="#5a3a26"/>
+  <circle cx="114" cy="130" r="5.5" fill="#1d1d2b"/>
+  <circle cx="142" cy="130" r="5.5" fill="#1d1d2b"/>
+  <circle cx="116" cy="128" r="2" fill="#fff"/>
+  <circle cx="144" cy="128" r="2" fill="#fff"/>
+  <circle cx="104" cy="144" r="6" fill="#ff8f8f" opacity=".6"/>
+  <circle cx="152" cy="144" r="6" fill="#ff8f8f" opacity=".6"/>
+  <path d="M114 148 Q128 162 142 148" stroke="#1d1d2b" stroke-width="5" fill="#fff" stroke-linecap="round"/>
+  <!-- reflejo -->
+  <path d="M84 104 C88 92 98 86 108 84" stroke="#fff" stroke-width="7" stroke-linecap="round" fill="none" opacity=".45"/>
+</svg>

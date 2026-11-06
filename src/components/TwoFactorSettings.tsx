@@ -6,7 +6,11 @@ import { ShieldCheck, ShieldOff, X, Check, Loader2 } from "lucide-react";
 
 type Status = "loading" | "off" | "on" | "enrolling";
 
-export default function TwoFactorSettings() {
+/**
+ * `onCambio` avisa a quien la contiene cuando se activa o se desactiva, para
+ * que refresque lo que dependa de ello (en «Mi perfil», el aviso destacado).
+ */
+export default function TwoFactorSettings({ onCambio }: { onCambio?: () => void } = {}) {
   const supabase = createClient();
   const [status, setStatus] = useState<Status>("loading");
   const [factorId, setFactorId] = useState<string | null>(null);
@@ -30,7 +34,10 @@ export default function TwoFactorSettings() {
   }
 
   useEffect(() => {
-    refreshStatus();
+    // Diferido un tick: el estado se escribe cuando responde Supabase, no en
+    // el cuerpo del efecto (regla react-hooks/set-state-in-effect).
+    const t = window.setTimeout(() => { void refreshStatus(); }, 0);
+    return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -93,6 +100,7 @@ export default function TwoFactorSettings() {
     setSecret("");
     setCode("");
     setStatus("on");
+    onCambio?.();
   }
 
   async function disable2FA() {
@@ -107,6 +115,7 @@ export default function TwoFactorSettings() {
     }
     setFactorId(null);
     setStatus("off");
+    onCambio?.();
   }
 
   if (status === "loading") {

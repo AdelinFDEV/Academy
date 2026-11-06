@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.redirect(`${origin}/login?next=/cuenta`);
+    return NextResponse.redirect(`${origin}/login?next=/dashboard/perfil`);
   }
 
   // `stripe_customer_id` no tiene GRANT SELECT para `authenticated` (ver
@@ -27,18 +27,18 @@ export async function GET(request: Request) {
   // Admins and users without a Stripe record don't go through the portal.
   if (!profile?.stripe_customer_id) {
     const isPremium = profile?.role === "premium" || profile?.role === "admin";
-    return NextResponse.redirect(isPremium ? `${origin}/cuenta` : `${origin}/premium`);
+    return NextResponse.redirect(isPremium ? `${origin}/dashboard/perfil` : `${origin}/premium`);
   }
 
   try {
     const stripe = getStripe();
     const session = await stripe.billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
-      return_url: `${origin}/cuenta`,
+      return_url: `${origin}/dashboard/perfil#suscripcion`,
     });
     return NextResponse.redirect(session.url);
   } catch (err) {
     console.error("[stripe-portal] Error creando sesión:", err);
-    return NextResponse.redirect(`${origin}/cuenta?portal_error=1`);
+    return NextResponse.redirect(`${origin}/dashboard/perfil?portal_error=1`);
   }
 }

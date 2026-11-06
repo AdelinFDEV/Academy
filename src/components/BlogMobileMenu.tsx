@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Settings, Shield,
+  ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserRound,
   type LucideIcon,
 } from "lucide-react";
 import LogoutButton from "./LogoutButton";
@@ -128,8 +128,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                     <Link href="/dashboard" onClick={close} className="mm-cuenta-enlace">
                       <LayoutDashboard size={16} aria-hidden="true" /> Mi dashboard
                     </Link>
-                    <Link href="/cuenta" onClick={close} className="mm-cuenta-enlace">
-                      <Settings size={16} aria-hidden="true" /> Mi cuenta
+                    <Link href="/dashboard/perfil" onClick={close} className="mm-cuenta-enlace">
+                      <UserRound size={16} aria-hidden="true" /> Mi perfil
                     </Link>
                     {isAdmin && (
                       <Link href="/admin" onClick={close} className="mm-cuenta-enlace">

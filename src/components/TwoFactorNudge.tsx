@@ -48,7 +48,7 @@ export default function TwoFactorNudge() {
       <p className="dash-2fa-nudge-text">
         Tu cuenta no tiene verificación en dos pasos. Actívala para protegerla mejor.
       </p>
-      <Link href="/cuenta#seguridad" className="dash-2fa-nudge-cta">
+      <Link href="/dashboard/perfil#seguridad" className="dash-2fa-nudge-cta">
         Activar 2FA
       </Link>
       <button className="dash-2fa-nudge-dismiss" onClick={dismiss} aria-label="Recordar más tarde">

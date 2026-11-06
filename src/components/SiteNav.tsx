@@ -29,21 +29,27 @@ interface Props {
  * páginas que no los pasan, y la tarjeta del usuario diría «Plan gratuito» a
  * quien paga.
  */
-const perfilDelUsuario = cache(async (): Promise<{ nombre: string; plan: PlanUsuario }> => {
+const perfilDelUsuario = cache(async (): Promise<{ nombre: string; plan: PlanUsuario; avatar: string | null }> => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { nombre: "", plan: "free" };
-  const { data } = await supabase
-    .from("profiles")
-    .select("full_name, role")
-    .eq("id", user.id)
-    .single();
+  if (!user) return { nombre: "", plan: "free", avatar: null };
+  // La foto va en su propia consulta, en paralelo: si la columna aún no
+  // existe (antes de ejecutar `scripts/create-perfil-publico.sql`), falla
+  // sola y la barra sigue con la inicial, en vez de quedarse sin nombre.
+  const [{ data }, { data: foto }] = await Promise.all([
+    supabase.from("profiles").select("full_name, role").eq("id", user.id).single(),
+    supabase.from("profiles").select("avatar").eq("id", user.id).maybeSingle(),
+  ]);
   const plan: PlanUsuario = data?.role === "admin" ? "admin" : data?.role === "premium" ? "premium" : "free";
-  return { nombre: data?.full_name || user.email?.split("@")[0] || "", plan };
+  return {
+    nombre: data?.full_name || user.email?.split("@")[0] || "",
+    plan,
+    avatar: (foto as { avatar?: string | null } | null)?.avatar ?? null,
+  };
 });
 
 export default async function SiteNav({ user, isPremium, userName, isAdmin }: Props) {
-  const perfil = user ? await perfilDelUsuario() : { nombre: "", plan: "free" as const };
+  const perfil = user ? await perfilDelUsuario() : { nombre: "", plan: "free" as const, avatar: null };
   const nombre = userName ?? perfil.nombre;
 
   return (
@@ -59,7 +65,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
             nombre se abre el menú con «Mi dashboard» y «Mi cuenta».
             «Mi dashboard» fue un botón suelto aquí al lado durante unas horas:
             dos accesos personales pegados competían por el mismo hueco. */}
-        {user && nombre && <NavSaludo nombre={nombre} plan={perfil.plan} />}
+        {user && nombre && <NavSaludo nombre={nombre} plan={perfil.plan} avatar={perfil.avatar} />}
 
         {/* Y para quien todavía no tiene cuenta, lo que sí le sirve: entrar o
             registrarse. Antes ambas cosas vivían solo dentro del desplegable,

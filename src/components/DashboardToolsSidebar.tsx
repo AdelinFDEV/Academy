@@ -5,24 +5,33 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookA, NotebookPen, Map, LayoutGrid, X, ChevronUp, Trophy, Target, PieChart, Lock, GraduationCap,
-  LayoutDashboard, Crown, ArrowRight,
+  LayoutDashboard, Crown, ArrowRight, UserRound,
 } from "lucide-react";
-import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
+import {
+  IconoCursos, IconoDiario, IconoPortfolio, IconoDiccionario, IconoGuias, IconoPrediccion, IconoTrofeo,
+} from "@/components/IconosAnimados";
+import AvatarUsuario from "@/components/AvatarUsuario";
 
 /** Los iconos que usan las secciones del dashboard, y solo esos. */
 const ICON_MAP = {
   booka: BookA, notebookpen: NotebookPen, map: Map,
   trophy: Trophy, target: Target, piechart: PieChart, graduationcap: GraduationCap,
+  user: UserRound,
 } as const;
 
 /**
- * Las tres piezas de pago llevan el mismo icono animado que en la barra de
- * arriba: así se reconocen igual en toda la web.
+ * Todas las secciones llevan icono animado. Las tres piezas de pago, el mismo
+ * que en la barra de arriba: así se reconocen igual en toda la web. «Mi
+ * perfil» no lleva icono sino la foto de perfil del usuario (`foto`).
  */
 const ICONO_ANIMADO: Partial<Record<keyof typeof ICON_MAP, (p: { size?: number }) => React.ReactNode>> = {
   notebookpen: IconoDiario,
   piechart: IconoPortfolio,
   graduationcap: IconoCursos,
+  booka: IconoDiccionario,
+  map: IconoGuias,
+  target: IconoPrediccion,
+  trophy: IconoTrofeo,
 };
 
 /**
@@ -38,6 +47,7 @@ const COLOR: Record<keyof typeof ICON_MAP, string> = {
   piechart: "#4f9dff",
   target: "#22d3ee",
   trophy: "#fbbf24",
+  user: "#f0f4ff",
 };
 
 export type ToolItem = {
@@ -47,6 +57,8 @@ export type ToolItem = {
   desc: string;
   locked: boolean;
   soon: boolean;
+  /** Si viene, en vez del icono se pinta la foto de perfil del usuario. */
+  foto?: { avatar: string | null; inicial: string };
 };
 
 export type ToolSection = {
@@ -107,8 +119,10 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
     const Animado = ICONO_ANIMADO[t.icon];
     const content = (
       <>
-        <span className="dtb-tool-icon" aria-hidden="true">
-          {Animado ? <Animado size={17} /> : Icon && <Icon size={17} strokeWidth={2} />}
+        <span className={`dtb-tool-icon${t.foto ? " has-foto" : ""}`} aria-hidden="true">
+          {t.foto
+            ? <AvatarUsuario avatar={t.foto.avatar} inicial={t.foto.inicial} className="dtb-tool-foto" />
+            : Animado ? <Animado size={17} /> : Icon && <Icon size={17} strokeWidth={2} />}
         </span>
         <span className="dtb-tool-name">{t.name}</span>
         {t.soon && <span className="dtb-badge dtb-badge--soon">Pronto</span>}

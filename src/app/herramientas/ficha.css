@@ -876,6 +876,13 @@
 @media (max-width: 760px) {
   .fh--con-barra { padding-bottom: 7rem; }
 
+  /* El botón de dudas (DudasInstagram) también va fijo abajo a la derecha:
+     sin esto caía encima del botón «Desbloquear». Se sube por encima de la
+     barra solo en las páginas que la llevan. */
+  body:has(.fh-barra) .dudas {
+    bottom: calc(5.6rem + env(safe-area-inset-bottom, 0px));
+  }
+
   .fh-barra {
     position: fixed;
     left: 0.75rem;

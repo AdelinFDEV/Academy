@@ -42,7 +42,7 @@ export default async function DashboardPage() {
   const isPremium = role === "premium" || role === "admin";
   const planLabel = role === "admin" ? "Admin" : isPremium ? "Premium" : "Plan gratuito";
 
-  const [{ data: savedTermsData }, { data: savedGuidesData }, { data: userBadgesData }] = await Promise.all([
+  const [{ data: savedTermsData }, { data: savedGuidesData }, { data: userBadgesData }, { data: foto }] = await Promise.all([
     supabase
       .from("saved_terms")
       .select("term, definition, category")
@@ -57,6 +57,9 @@ export default async function DashboardPage() {
       .from("user_badges")
       .select("badge_id")
       .eq("user_id", user.id),
+    // La foto de perfil, para «Mi perfil» del rail. Aparte: si la columna aún
+    // no existe, falla sola y sale la inicial.
+    supabase.from("profiles").select("avatar").eq("id", user.id).maybeSingle(),
   ]);
 
   const savedTermsList = savedTermsData ?? [];
@@ -94,6 +97,16 @@ export default async function DashboardPage() {
         { href: isPremium ? "/portfolio"         : "#", icon: "piechart",    name: "Portfolio Adelin",     desc: "Sigue las compras de AdelinBTC en SPOT", locked: !isPremium, soon: false },
         { href: "/calculadora",                         icon: "target",      name: "Predicción de Precio", desc: "¿Qué Market Cap necesita tu token?",     locked: false,      soon: false },
         { href: "/logros",                              icon: "trophy",      name: "Logros",               desc: "Tu progreso y rachas",                   locked: false,      soon: false },
+      ],
+    },
+    {
+      label: "Tu cuenta",
+      tools: [
+        // Alias y foto: lo que el foro enseñará de cada uno (FORO.md).
+        {
+          href: "/dashboard/perfil", icon: "user", name: "Mi perfil", desc: "Tu perfil, tu plan y tu seguridad", locked: false, soon: false,
+          foto: { avatar: (foto as { avatar?: string | null } | null)?.avatar ?? null, inicial: (name.trim().charAt(0) || "U").toUpperCase() },
+        },
       ],
     },
   ];

@@ -662,28 +662,6 @@
   50% { transform: translateY(-2.5px); }
 }
 
-.ia-copa {
-  transform-origin: bottom center;
-  animation: ia-salto 2.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-@keyframes ia-salto {
-  0%, 60%, 100% { transform: translateY(0) scale(1); }
-  70% { transform: translateY(-2.5px) scale(1.06); }
-  82% { transform: translateY(0) scale(0.98); }
-}
-
-.ia-destello {
-  transform-origin: center;
-  animation: ia-destello 2.6s ease-in-out infinite;
-}
-
-@keyframes ia-destello {
-  0%, 62% { opacity: 0; transform: scale(0.4) rotate(0); }
-  74% { opacity: 1; transform: scale(1.1) rotate(45deg); }
-  100% { opacity: 0; transform: scale(0.6) rotate(90deg); }
-}
-
 .ia-arco {
   animation: ia-arco 3.2s ease-in-out infinite;
 }
@@ -746,7 +724,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hs-sello-icono::after,
-  .ia-onda, .ia-capa-alta, .ia-copa, .ia-destello, .ia-arco,
+  .ia-onda, .ia-capa-alta, .ia-arco,
   .ia-colgante, .ia-aguja { animation: none; }
 
   .ia-arco-anillo { animation: none; stroke-dashoffset: 0.3; }

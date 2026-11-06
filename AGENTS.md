@@ -19,6 +19,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Tocar el **limitador por IP**, el middleware (`src/proxy.ts`) o **añadir un webhook** | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
 | Tocar **muro de pago, portfolios, legal, analítica, sitemap, robots, canónicas, JSON-LD o el catálogo de herramientas** | [`PLATAFORMA.md`](./PLATAFORMA.md) |
 | Escribir **código**: CSS, tipos, hooks, guardarraíles | [`CODIGO.md`](./CODIGO.md) |
+| Tocar el **foro** o el **perfil público** (alias, foto, avisos) | [`FORO.md`](./FORO.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 
 La primera fila es **la fuente de verdad** de las guías: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan.

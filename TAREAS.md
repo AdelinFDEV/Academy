@@ -48,7 +48,7 @@ Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho
 - [ ] **Apagar el bot en Telegram**: borrar su webhook (`deleteWebhook`) o el bot entero desde @BotFather, y decidir qué pasa con los canales (cerrarlos o dejar un último mensaje que lleve a la web).
 - [ ] **El aviso de que se acaba el Premium** iba por Telegram a quien había cancelado y le quedaban 3 días. Ya no existe: decidir si se manda por email (`cancel_warning_period_end` en `profiles` sigue sirviendo para no repetirlo).
 - [ ] **Pedido por el admin el 05-11-2026: revisar la seguridad y que todo funcione solo desde la web, ahora que no hay Telegram.**
-  - **Gestionar la cuenta desde el dashboard:** el usuario tiene que poder hacer ahí todo lo que antes pasaba por el bot o por Telegram: ver su plan, renovar o cancelar Premium (portal de Stripe), cambiar contraseña y 2FA, borrar su cuenta y escribir a soporte. Hoy está en `/cuenta`; decidir si se trae al dashboard o se enlaza bien desde él.
+  - **Gestionar la cuenta desde el dashboard:** el usuario tiene que poder hacer ahí todo lo que antes pasaba por el bot o por Telegram: ver su plan, renovar o cancelar Premium (portal de Stripe), cambiar contraseña y 2FA, borrar su cuenta y escribir a soporte. Hecho el 06-11-2026: todo vive en «Mi perfil» (`/dashboard/perfil`) y `/cuenta` redirige allí; el portal de Stripe vuelve a `/dashboard/perfil#suscripcion`. Queda revisar que el flujo entero funciona sin Telegram (sobre todo renovar y cancelar).
   - **Seguridad:** repasar las rutas que tocaban Telegram (webhook de Stripe, borrado de cuenta, cambio de rol desde `/admin/users`) y que el resto sigue protegido (RLS de `profiles`, `CRON_SECRET` del cron nuevo, limitador).
   - **Ni una mención ni lógica de Telegram:** buscar en el código, los textos, el SQL, las variables de entorno y los emails (`grep -rni telegram src scripts *.md`) y que no quede nada que dependa de él. Lo que sí queda a propósito: comentarios que explican que se retiró y los scripts SQL históricos.
 - [ ] **«Soporte prioritario»** sigue en la tabla y en la lista de precio de `/premium`. Antes había un relé de soporte por el bot; ahora el contacto es Instagram para todos. Decidir si se mantiene la promesa y cómo se cumple.
@@ -106,38 +106,17 @@ Pedido por el admin el 31-10-2026. El código ya está listo: cada guía admite 
 - [ ] **Convertirlas a WebP** a 1.600 px de ancho y calidad 82, como toda portada, y guardarlas en `public/guias/<slug>.webp`.
 - [ ] **Darlas de alta** con `portada: "/guias/<slug>.webp"` en cada guía de `GUIDES`. Con eso salen solas en el home y en `/guias`.
 
-### 1. Foro completo
+### 1. Foro de preguntas y respuestas
 
-**Pedido por el admin el 31-10-2026: un foro completo**, no solo preguntas y respuestas. Un espacio donde los usuarios pregunten, debatan y se respondan entre ellos, con el admin arbitrando. Antes de escribir código hay que cerrar con el admin qué entra en «completo»: categorías o temas (por criptomoneda, por herramienta, trading, fiscalidad…), hilos con respuestas, votos o «me gusta», respuesta marcada como buena, perfiles con sus logros, notificaciones de respuesta, búsqueda y moderación (reportes, bloqueo, edición y borrado).
+**El plan entero está en [`FORO.md`](./FORO.md)**: lo decidido, los principios, permisos, límites, modelo de datos, seguridad capa a capa, moderación, me gusta y etiquetas, orden de respuestas y ganadora, puntos y ranking, avisos, Google, lo legal y las pruebas para romperlo. Aquí solo el estado; el detalle no se repite, para que no se desincronice.
 
-Desde el 05-11-2026 no hay Telegram (tarea 00a): el foro puede ser justo el sitio de la comunidad que ese canal dejaba de ser.
+Lo esencial (06-11-2026): **leer es de todos y participar es solo de Premium**, en todo; sin perfiles visitables ni mensajes directos; respuestas con me gusta y las más valoradas arriba; etiquetas en las preguntas; respuesta ganadora que cierra el hilo; ranking con libro de puntos. **Primero la seguridad y la moderación; el diseño, al final.**
 
-**Por qué interesa, más allá de la comunidad:** es el único tipo de contenido que **crece sin que nadie lo escriba**. Cada pregunta bien titulada es una URL que responde a una búsqueda real, y Google tiene un tipo de dato estructurado propio para esto (`QAPage`). Es la vía más barata de multiplicar las URLs indexables del sitio (el recuento actual: `curl -s https://adelinacademy.com/sitemap.xml | grep -c "<loc>"`).
+**Por qué interesa:** es el único contenido que **crece sin que nadie lo escriba**, y cada pregunta bien titulada es una URL que responde a una búsqueda real (`QAPage`).
 
-**Con qué se conecta:**
-- Los comentarios de las entradas (retirados el 10-10-2026) resolvían media infraestructura, y su script sigue en el repo como referencia: aprobación por el admin, el trigger anti-spam de «un pendiente por persona» (`scripts/comments-one-pending.sql`) y las políticas de RLS. Conviene leerlo antes de empezar de cero.
-- El rate limiting del tramo `escritura` ya cubriría los envíos (`src/lib/rate-limit.ts`).
-
-**Preguntas para el admin, antes de escribir código:**
-- ¿Preguntar es de Premium, de cuenta gratuita, o abierto? ¿Y leer?
-- ¿Responde solo el admin o también otros usuarios?
-- ¿Las preguntas pasan por aprobación antes de publicarse, como los comentarios?
-- ¿Qué parte del foro es de Premium, si alguna? Hoy todo lo gratuito es lectura libre y la cuenta solo se pide para participar (como el quiz de las guías).
-
-⚠️ Si el foro es público e indexable, **modera antes de publicar**: una pregunta con spam o con un enlace a una estafa, indexada bajo tu dominio, hace más daño que las URLs que ganas.
-
-**Decidido por el admin el 05-11-2026: foro de preguntas y respuestas y, posiblemente, una sala de chat. Primero la seguridad; el diseño, después.** Antes de escribir una línea, hay que dejar escrito con reglas estrictas el paso a paso, en este orden:
-
-- [ ] **Fase 0 — Escribir `FORO.md`** con las reglas que no se pueden saltar: quién puede leer, preguntar, responder y chatear; qué se modera antes de publicar y qué después; qué se guarda de cada mensaje y cuánto tiempo (RGPD y marco legal rumano, ver `PLATAFORMA.md`); y qué hace el admin ante un reporte.
-- [ ] **Fase 1 — Seguridad, sin diseño:**
-  - Tablas con RLS cerradas por defecto: nadie escribe en nombre de otro, y un usuario solo edita o borra lo suyo.
-  - Escritura solo desde el servidor, validando todo (longitud, enlaces, HTML). Nunca se pinta HTML que venga del usuario.
-  - Límite de envíos por usuario e IP, además del tramo `escritura` de `src/lib/rate-limit.ts`.
-  - Anti-spam: la cola de aprobación (el patrón de `scripts/comments-one-pending.sql`), filtro de enlaces y palabras, y bloqueo de cuentas.
-  - Moderación: reportar, ocultar, borrar y banear, con registro de quién hizo qué.
-  - Si hay chat en tiempo real (Supabase Realtime): canales con RLS, mensajes limitados por segundo y sin datos personales en el canal.
-- [ ] **Fase 2 — Comprobarlo:** intentar romperlo antes de abrirlo (escribir sin sesión, como otro usuario, con HTML o scripts, en ráfaga) y dejar escrito lo que se probó.
-- [ ] **Fase 3 — Diseño e implementación artística**, ya sobre una base segura: listado, hilo, chat, perfiles con su avatar y sus logros, y los datos estructurados `QAPage` para las preguntas indexables.
+- [ ] **Fase 0 — Cerrar las decisiones pendientes** del final de `FORO.md` (D2, D4–D9, D11–D14).
+  El perfil público (su fase 1) ya está hecho: es la tarea 3, y le falta ejecutar `scripts/create-perfil-publico.sql`.
+- [ ] **Fases 2 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: esquema, funciones atómicas, API, imágenes, moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
 
 ---
 
@@ -158,19 +137,13 @@ Niveles de usuario **en toda la web**. No confundir con los hitos del Diario de 
 
 ---
 
-### 3. Fotos de perfil
+### 3. Perfil público y fotos de perfil — VA ANTES QUE EL FORO
 
-**Decidido por el admin el 05-11-2026: los usuarios eligen su foto de perfil entre unas variantes que creamos nosotros.** No suben fotos propias, y eso quita de un golpe la moderación, la validación de archivos y el gasto de Storage.
+**Decidido por el admin el 06-11-2026: se hace antes que el foro, y son 4 fotos.** Montado el 06-11-2026: `/dashboard/perfil` («Mi perfil», en el rail del dashboard y en el menú del usuario) con la foto, el alias (`src/lib/perfilPublico.ts`, que valida igual en el navegador y en `/api/perfil`), la vista previa de cómo se verá en el foro, qué podrá hacer allí según sea Premium o no, y toda la cuenta (plan y suscripción, contraseña, verificación en dos pasos —destacada solo si no está activada—, soporte por Instagram y borrado). `/cuenta` redirige aquí. La foto ya sale en la barra. Falta:
 
-**Dónde se vería, ya montado:** la tarjeta del usuario de la barra superior enseña hoy su **inicial en una baldosa** naranja, o dorada si es Premium (`src/components/NavSaludo.tsx`). Ese es el hueco exacto del avatar, con la inicial como reserva para quien no elija ninguno. También en el dashboard y, cuando exista, en el foro.
-
-- [ ] **Diseñar las variantes** (las hace el admin, con prompts de Gemini): un estilo común, cuadradas, que se lean bien a 32 px. Decidir cuántas y si alguna es solo para Premium.
-- [ ] **Optimizarlas:** WebP, ~256 px, en `public/avatares/`. Al ser fijas, se sirven como estáticos.
-- [ ] **Guardar la elección:** una columna `avatar` en `profiles` con el id de la variante, validado en el servidor contra la lista de variantes (nunca una ruta libre que mande el cliente). Ojo: `authenticated` no tiene `UPDATE` sobre todas las columnas de `profiles` (`scripts/lock-profiles-columns.sql`), así que el cambio va por una API propia.
-- [ ] **El selector**, en `/cuenta`: una rejilla con las variantes y la elegida marcada.
-- [ ] **Pintarlo** en la barra, en el menú del usuario y en el dashboard, con la inicial como reserva.
-
----
+- [ ] **Ejecutar `scripts/create-perfil-publico.sql`** (columnas `alias`, `avatar` y `alias_cambiado_at`, índice único y lectura pública). Hasta entonces la página dice que el perfil no está activado y no deja guardar.
+- [ ] **Las 4 fotos definitivas, si el admin las quiere de otro estilo.** Hoy son 4 personajes en SVG dibujados a mano (toro, oso, ballena y astronauta, en `public/avatares/`): se ven nítidos a cualquier tamaño. Si se hacen con Gemini, WebP de ~256 px en la misma carpeta y cambiar solo el `src` de cada una en `AVATARES`; el `id` no se toca. Decidir si alguna es solo para Premium.
+- [ ] **Los logros que el usuario elija mostrar** en su perfil público: se decide con el diseño del foro (fase G de `FORO.md`).
 
 ### 4. El diccionario en profundidad — plantarle cara a Binance
 

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7fe3c3"/>
+      <stop offset="1" stop-color="#16a37f"/>
+    </linearGradient>
+    <linearGradient id="c" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f8ff7"/>
+      <stop offset="1" stop-color="#2b5fc9"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" fill="url(#f)"/>
+  <!-- chorro -->
+  <path d="M124 74 C118 52 104 42 92 44 M124 74 C124 50 124 38 124 30 M124 74 C130 52 144 42 156 44" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <circle cx="90" cy="40" r="7" fill="#fff"/>
+  <circle cx="124" cy="26" r="7" fill="#fff"/>
+  <circle cx="158" cy="40" r="7" fill="#fff"/>
+  <!-- cola -->
+  <path d="M196 150 C214 132 226 110 240 104 C236 124 238 136 246 148 C232 146 220 156 206 170 Z" fill="#2b5fc9"/>
+  <!-- cuerpo -->
+  <path d="M30 156 C30 106 74 80 126 80 C180 80 210 112 210 156 C210 198 172 222 120 222 C68 222 30 200 30 156 Z" fill="url(#c)"/>
+  <!-- barriga -->
+  <path d="M44 176 C70 210 168 214 200 176 C186 206 152 220 120 220 C86 220 58 204 44 176 Z" fill="#d6e8ff"/>
+  <path d="M70 196 L74 208 M96 204 L98 216 M124 206 L124 218 M150 204 L148 216 M174 196 L170 208" stroke="#9cbcf0" stroke-width="4" stroke-linecap="round"/>
+  <!-- ojo con brillo -->
+  <circle cx="96" cy="136" r="15" fill="#fff"/>
+  <circle cx="99" cy="138" r="9" fill="#132040"/>
+  <circle cx="102" cy="134" r="3.5" fill="#fff"/>
+  <!-- moflete y sonrisa -->
+  <circle cx="74" cy="164" r="10" fill="#ff8fb1" opacity=".6"/>
+  <path d="M60 156 Q90 186 128 168" stroke="#132040" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- aleta -->
+  <path d="M136 176 C150 186 164 188 176 182 C168 172 154 166 140 168 Z" fill="#2b5fc9"/>
+  <!-- moneda -->
+  <circle cx="200" cy="60" r="22" fill="#ffd166" stroke="#e6a817" stroke-width="5"/>
+  <path d="M195 48 V72 M203 48 V72 M190 52 H206 C214 52 214 60 206 60 H190 M190 60 H208 C216 60 216 68 208 68 H190" stroke="#b07a00" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

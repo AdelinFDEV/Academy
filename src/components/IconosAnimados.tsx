@@ -141,3 +141,41 @@ export function IconoReloj({ size = 18 }: { size?: number }) {
     </svg>
   );
 }
+
+/** Diccionario: un libro con su «A»; el marcapáginas baja y sube. */
+export function IconoDiccionario({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--diccionario" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      <path d="M9.5 13.5 12 7l2.5 6.5M10.4 11.3h3.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path className="ia-cinta" d="M16 3v5.5l-1.2-1-1.2 1V3" fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Guías: un mapa plegado; la ruta se dibuja y la chincheta bota al llegar. */
+export function IconoGuias({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--guias" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 6.5 8.5 4l7 2.5L21 4v13.5L15.5 20l-7-2.5L3 20z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" opacity=".55" />
+      <path className="ia-ruta" d="M5.5 16.5c2-1 3-3.5 5.5-3.5s3-2.5 4.5-4" pathLength={1} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeDasharray="0.12 0.08" />
+      <g className="ia-chincheta">
+        <path d="M17 3.2a2.6 2.6 0 0 0-2.6 2.6c0 2 2.6 4.2 2.6 4.2s2.6-2.2 2.6-4.2A2.6 2.6 0 0 0 17 3.2z" fill="currentColor" />
+        <circle cx="17" cy="5.8" r=".9" fill="#0b1224" />
+      </g>
+    </svg>
+  );
+}
+
+/** Predicción de Precio: una diana; las ondas salen del centro. */
+export function IconoPrediccion({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--prediccion" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" opacity=".45" />
+      <circle className="ia-diana" cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.7" />
+      <circle className="ia-diana ia-diana--2" cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="12" cy="12" r="2.2" fill="currentColor" />
+    </svg>
+  );
+}

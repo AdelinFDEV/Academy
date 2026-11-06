@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="f" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffb07a"/>
+      <stop offset="1" stop-color="#ff6b2b"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9a5a34"/>
+      <stop offset="1" stop-color="#7a4126"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" fill="url(#f)"/>
+  <circle cx="210" cy="44" r="10" fill="#fff" opacity=".35"/>
+  <circle cx="40" cy="70" r="6" fill="#fff" opacity=".3"/>
+  <!-- cuernos -->
+  <path d="M70 96 C40 92 28 64 36 40 C48 60 64 70 88 74 Z" fill="#fff4dc"/>
+  <path d="M186 96 C216 92 228 64 220 40 C208 60 192 70 168 74 Z" fill="#fff4dc"/>
+  <!-- orejas -->
+  <ellipse cx="58" cy="112" rx="24" ry="14" transform="rotate(-20 58 112)" fill="#7a4126"/>
+  <ellipse cx="198" cy="112" rx="24" ry="14" transform="rotate(20 198 112)" fill="#7a4126"/>
+  <!-- cabeza -->
+  <path d="M128 64 C178 64 200 96 200 140 C200 196 170 226 128 226 C86 226 56 196 56 140 C56 96 78 64 128 64 Z" fill="url(#g)"/>
+  <!-- tupé -->
+  <path d="M104 70 C112 56 124 60 128 70 C132 58 146 56 152 70 C140 78 116 78 104 70 Z" fill="#5c2f1a"/>
+  <!-- gafas de sol -->
+  <path d="M70 120 H186" stroke="#141820" stroke-width="7" stroke-linecap="round"/>
+  <rect x="76" y="110" width="46" height="34" rx="12" fill="#141820"/>
+  <rect x="134" y="110" width="46" height="34" rx="12" fill="#141820"/>
+  <path d="M84 118 L98 118" stroke="#6ad1ff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <path d="M142 118 L156 118" stroke="#6ad1ff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <!-- hocico -->
+  <ellipse cx="128" cy="184" rx="50" ry="34" fill="#f4a9a0"/>
+  <ellipse cx="108" cy="182" rx="8" ry="11" fill="#7a3b33"/>
+  <ellipse cx="148" cy="182" rx="8" ry="11" fill="#7a3b33"/>
+  <!-- sonrisa -->
+  <path d="M110 204 Q128 216 146 204" stroke="#7a3b33" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- aro de la nariz -->
+  <path d="M118 210 Q128 230 138 210" stroke="#ffd166" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>

@@ -131,6 +131,9 @@ const RUTAS_ESCRITURA = [
   "/api/guide-badge",
   // El aula: progreso, exámenes y ritmo. Escrituras propias, sin terceros.
   "/api/cursos",
+  // El perfil público (alias y foto). El plazo de 30 días entre cambios de
+  // alias lo pone la propia ruta, en la base de datos.
+  "/api/perfil",
 ];
 
 /**
