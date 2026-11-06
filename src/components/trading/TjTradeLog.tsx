@@ -1,10 +1,12 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
-import { NotebookText, Pencil, Trash2, Download, Search, Check, X, ChevronDown } from "lucide-react";
+import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Pencil, Trash2, Download, Search, Check, X, ChevronDown, ArrowRight, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { TjSelect } from "./TjControls";
-import { dateTime, moneyStr, pctStr, pnlStr, rStr, ratioStr, toneOf } from "./tjFormat";
-import { RISK_LIMIT_PCT, rOf, resultTone, type Trade, type TradeContext } from "./tjStats";
+import { MONTHS, WEEKDAY_NAMES, dateTime, moneyStr, pctStr, pnlStr, rStr, ratioStr, toneOf } from "./tjFormat";
+import { RISK_LIMIT_PCT, computeStats, rOf, resultTone, type Trade, type TradeContext, type TradeResult } from "./tjStats";
+import { animoInfo, fechaKey, type DiasMap } from "./tjDias";
 
 const PAGE = 25;
 
@@ -69,48 +71,94 @@ function exportCsv(trades: Trade[], ctx: Map<string, TradeContext>) {
 
 const RECENT = 5;
 
+const MONTH_SHORT = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+
 export function TjRecentTrades({ trades, onSeeAll }: { trades: Trade[]; onSeeAll: () => void }) {
   const recent = trades.slice(-RECENT).reverse();
+  const recentPnl = recent.reduce((s, t) => s + t.pnl, 0);
+  const recentWins = recent.filter(t => t.result === "win").length;
   return (
-    <section className="tj-card">
-      <div className="tj-card-head">
-        <span className="tj-label"><NotebookText size={15} /> Últimas operaciones</span>
-        <button type="button" className="tj-btn" onClick={onSeeAll}>Ver las {trades.length}</button>
-      </div>
-      <div className="tj-table-wrap">
-        <table className="tj-table">
-          <tbody>
-            {recent.map(t => {
-              const r = rOf(t);
-              return (
-                <tr key={t.id} className="tj-log-row" data-tone={resultTone(t.result)} onClick={onSeeAll}>
-                  <td className="muted nowrap">{dateTime(t.date)}</td>
-                  <td>
-                    <span className="strong">{t.pair}</span>
-                    {t.strategy && <span className="tj-sub">{t.strategy}</span>}
-                  </td>
-                  <td className={`num strong tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</td>
-                  <td className={`num strong tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+    <section className="tj-card tjt">
+      <header className="tjr-head">
+        <h3>Últimas operaciones</h3>
+        <button type="button" className="tjr-link" onClick={onSeeAll}>
+          Ver las {trades.length} <ArrowRight size={14} />
+        </button>
+      </header>
+      <ul className="tjt-list">
+        {recent.map(t => {
+          const r = rOf(t);
+          const d = new Date(t.date);
+          return (
+            <li key={t.id}>
+              <button type="button" className={`tjt-row tone-${resultTone(t.result)}`} onClick={onSeeAll}>
+                <span className="tjt-date">
+                  <strong>{d.getDate()}</strong>
+                  <small>{MONTH_SHORT[d.getMonth()]}</small>
+                </span>
+                <span className="tjt-main">
+                  <span className="tjt-pair">
+                    {t.pair}
+                    <span className={`tj-dir is-${t.direction}`}>
+                      {t.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                      {t.direction === "long" ? "Long" : "Short"}
+                    </span>
+                  </span>
+                  <span className="tjt-meta">
+                    {d.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                    {t.strategy && ` · ${t.strategy}`}
+                  </span>
+                </span>
+                <span className={`tjt-r tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</span>
+                <strong className={`tjt-pnl tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</strong>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      {/* El balance de lo que se ve: el pie se queda abajo aunque haya pocas operaciones. */}
+      <footer className="tjt-foot">
+        <span>{recent.length === 1 ? "Tu última operación" : `Tus últimas ${recent.length}`}</span>
+        <span className="tjt-foot-stats">
+          <span>{recentWins} de {recent.length} ganadas</span>
+          <strong className={`tone-${toneOf(recentPnl)}`}>{pnlStr(recentPnl)}</strong>
+        </span>
+      </footer>
     </section>
   );
 }
 
+type ResultFilter = "all" | TradeResult;
+
+const RESULT_FILTERS: { value: ResultFilter; label: string }[] = [
+  { value: "all", label: "Todas" },
+  { value: "win", label: "Ganadas" },
+  { value: "loss", label: "Perdidas" },
+  { value: "breakeven", label: "Breakeven" },
+];
+
 interface Props {
   trades: Trade[];
   ctx: Map<string, TradeContext>;
+  /** Ánimo de cada día: su emoji va en la cabecera de cada día de la lista. */
+  dias: DiasMap;
   onEdit: (t: Trade) => void;
   onDelete: (id: string) => Promise<void>;
 }
 
-export default function TjTradeLog({ trades, ctx, onEdit, onDelete }: Props) {
+const dayTitle = (d: Date) => `${WEEKDAY_NAMES[(d.getDay() + 6) % 7]} ${d.getDate()} de ${MONTHS[d.getMonth()]} de ${d.getFullYear()}`;
+const timeOf = (iso: string) => new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+
+/**
+ * El registro completo. Arriba, el balance de lo que se ve; luego buscar, filtrar
+ * por resultado, ordenar y exportar. Por fecha, la lista va agrupada por días (con
+ * el ánimo de cada día); por P&L o R, en una sola lista. Cada fila se despliega
+ * con el plan, la ejecución, el capital de antes y las notas.
+ */
+export default function TjTradeLog({ trades, ctx, dias, onEdit, onDelete }: Props) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortId>("recent");
+  const [result, setResult] = useState<ResultFilter>("all");
   const [limit, setLimit] = useState(PAGE);
   const [open, setOpen] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
@@ -119,11 +167,30 @@ export default function TjTradeLog({ trades, ctx, onEdit, onDelete }: Props) {
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const found = q
-      ? trades.filter(t => [t.pair, t.strategy, t.notes].some(v => v?.toLowerCase().includes(q)))
-      : trades;
+    const found = trades.filter(t =>
+      (result === "all" || t.result === result) &&
+      (!q || [t.pair, t.strategy, t.notes].some(v => v?.toLowerCase().includes(q))),
+    );
     return sortTrades(found, sort);
-  }, [trades, query, sort]);
+  }, [trades, query, sort, result]);
+
+  const stats = useMemo(() => computeStats(list), [list]);
+  const shown = list.slice(0, limit);
+  const byDate = sort === "recent" || sort === "oldest";
+
+  // Por fecha: grupos por día, en el orden de la lista.
+  const groups = useMemo(() => {
+    if (!byDate) return [{ key: "all", date: null as Date | null, trades: shown }];
+    const out: { key: string; date: Date | null; trades: Trade[] }[] = [];
+    for (const t of shown) {
+      const d = new Date(t.date);
+      const key = fechaKey(d);
+      const last = out[out.length - 1];
+      if (last?.key === key) last.trades.push(t);
+      else out.push({ key, date: d, trades: [t] });
+    }
+    return out;
+  }, [shown, byDate]);
 
   async function remove(id: string) {
     setDeleting(id);
@@ -138,136 +205,184 @@ export default function TjTradeLog({ trades, ctx, onEdit, onDelete }: Props) {
     }
   }
 
+  const reset = () => { setQuery(""); setResult("all"); setLimit(PAGE); };
+
   return (
-    <section className="tj-card">
-      <div className="tj-card-head">
-        <span className="tj-label"><NotebookText size={15} /> Registro de operaciones</span>
-        <div className="tj-actions">
-          <label className="tj-search">
-            <Search size={14} aria-hidden="true" />
-            <input
-              type="search" value={query} placeholder="Buscar par, estrategia, nota…" aria-label="Buscar operaciones"
-              onChange={e => { setQuery(e.target.value); setLimit(PAGE); }}
-            />
-          </label>
-          <TjSelect compact value={sort} onChange={v => setSort(v as SortId)} options={SORTS} />
-          <button type="button" className="tj-btn" onClick={() => exportCsv(list, ctx)} disabled={!list.length}>
-            <Download size={13} /> CSV
-          </button>
+    <>
+      {/* El balance de lo que se ve (obedece a los filtros de arriba y a los de aquí). */}
+      <dl className="tjo-band">
+        <div className={`tjo-band-main tone-${toneOf(stats.totalPnl)}`}>
+          <dt>P&L de la selección</dt>
+          <dd>{pnlStr(stats.totalPnl)}</dd>
         </div>
-      </div>
+        <div><dt>Operaciones</dt><dd>{stats.count}</dd></div>
+        <div><dt>Acierto</dt><dd>{stats.count ? `${Math.round(stats.winRate)} %` : "—"}</dd></div>
+        <div className={`tone-${toneOf(stats.totalR)}`}><dt>R acumulada</dt><dd>{stats.count ? rStr(stats.totalR) : "—"}</dd></div>
+        <div className="tone-win"><dt>Mejor</dt><dd>{stats.best != null ? pnlStr(stats.best) : "—"}</dd></div>
+        <div className="tone-loss"><dt>Peor</dt><dd>{stats.worst != null ? pnlStr(stats.worst) : "—"}</dd></div>
+      </dl>
 
-      {error && <p className="auth-error">{error}</p>}
+      <section className="tj-card tjo">
+        <header className="tjo-toolbar">
+          <div className="tjo-chips" role="radiogroup" aria-label="Filtrar por resultado">
+            {RESULT_FILTERS.map(f => {
+              const n = f.value === "all" ? trades.length : trades.filter(t => t.result === f.value).length;
+              return (
+                <button
+                  key={f.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={result === f.value}
+                  className={`tjo-chip${result === f.value ? " is-on" : ""}${f.value !== "all" ? ` tone-${resultTone(f.value as TradeResult)}` : ""}`}
+                  onClick={() => { setResult(f.value); setLimit(PAGE); }}
+                >
+                  {f.value !== "all" && <i aria-hidden="true" />}
+                  {f.label}
+                  <span>{n}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="tjo-tools">
+            <label className="tj-search">
+              <Search size={14} aria-hidden="true" />
+              <input
+                type="search" value={query} placeholder="Buscar par, estrategia, nota…" aria-label="Buscar operaciones"
+                onChange={e => { setQuery(e.target.value); setLimit(PAGE); }}
+              />
+            </label>
+            <TjSelect compact value={sort} onChange={v => setSort(v as SortId)} options={SORTS} />
+            <button type="button" className="tj-btn" onClick={() => exportCsv(list, ctx)} disabled={!list.length} title="Descargar lo que ves en CSV (Excel)">
+              <Download size={13} /> CSV
+            </button>
+          </div>
+        </header>
 
-      {list.length === 0 ? (
-        <p className="tj-empty">Ninguna operación coincide con «{query}».</p>
-      ) : (
-        <div className="tj-table-wrap">
-          <table className="tj-table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Par</th>
-                <th className="tj-hide-sm">Dir.</th>
-                <th className="num tj-hide-sm">Riesgo</th>
-                <th className="num">R</th>
-                <th className="num">P&L</th>
-                <th className="tj-hide-sm">Resultado</th>
-                <th aria-label="Acciones" />
-              </tr>
-            </thead>
-            <tbody>
-              {list.slice(0, limit).map(t => {
-                const tone = resultTone(t.result);
-                const r = rOf(t);
-                const c = ctx.get(t.id);
-                const isOpen = open === t.id;
-                return (
-                  <Fragment key={t.id}>
-                    <tr className={`tj-log-row${isOpen ? " is-open" : ""}`} data-tone={tone} onClick={() => setOpen(isOpen ? null : t.id)}>
-                      <td className="muted nowrap">{dateTime(t.date)}</td>
-                      <td>
-                        <span className="strong">{t.pair}</span>
-                        {t.strategy && <span className="tj-sub">{t.strategy}</span>}
-                      </td>
-                      <td className="tj-hide-sm">
-                        <span className={`tj-chip tone-${t.direction === "long" ? "win" : "loss"}`}>{t.direction === "long" ? "Long" : "Short"}</span>
-                      </td>
-                      <td className="num tj-hide-sm">
-                        {moneyStr(t.risk_amount)}
-                        {c?.riskPct != null && (
-                          <span className={`tj-sub${c.riskPct > RISK_LIMIT_PCT ? " tone-loss" : ""}`}>{pctStr(c.riskPct, false, 2)}</span>
-                        )}
-                      </td>
-                      <td className={`num strong tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</td>
-                      <td className={`num strong tone-${toneOf(t.pnl)}`}>
-                        {pnlStr(t.pnl)}
-                        {t.real_pnl != null && t.pnl !== plannedPnl(t) && <span className="tj-sub muted">plan {pnlStr(plannedPnl(t))}</span>}
-                      </td>
-                      <td className="tj-hide-sm"><span className={`tj-chip tone-${tone}`}>{RESULT_LABEL[t.result]}</span></td>
-                      <td onClick={e => e.stopPropagation()}>
-                        <div className="tj-actions is-end">
-                          {confirming === t.id ? (
-                            <>
-                              <button type="button" className="tj-icon-btn tone-loss" onClick={() => remove(t.id)} disabled={deleting === t.id} aria-label="Confirmar borrado" title="Confirmar borrado">
-                                <Check size={14} />
-                              </button>
-                              <button type="button" className="tj-icon-btn" onClick={() => setConfirming(null)} aria-label="Cancelar borrado" title="Cancelar">
-                                <X size={14} />
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button type="button" className="tj-icon-btn" onClick={() => onEdit(t)} aria-label="Editar" title="Editar">
-                                <Pencil size={14} />
-                              </button>
-                              <button type="button" className="tj-icon-btn" onClick={() => setConfirming(t.id)} aria-label="Eliminar" title="Eliminar">
-                                <Trash2 size={14} />
-                              </button>
-                            </>
-                          )}
-                          <button
-                            type="button" className="tj-icon-btn" aria-expanded={isOpen} aria-label="Ver detalle" title="Ver detalle"
-                            onClick={() => setOpen(isOpen ? null : t.id)}
-                          >
-                            <ChevronDown size={15} className="tj-log-chevron" />
-                          </button>
+        {error && <p className="auth-error">{error}</p>}
+
+        {list.length === 0 ? (
+          <div className="tj-empty">
+            <p>Ninguna operación coincide{query ? ` con «${query}»` : ""}.</p>
+            <button type="button" className="tj-btn" onClick={reset}><X size={13} /> Quitar búsqueda y filtro</button>
+          </div>
+        ) : (
+          <div className="tjo-list">
+            {groups.map(g => {
+              const dayPnl = g.trades.reduce((sum, t) => sum + t.pnl, 0);
+              const dia = g.date ? dias[fechaKey(g.date)] : undefined;
+              const mood = dia?.animo ? animoInfo(dia.animo) : null;
+              return (
+                <section key={g.key} className="tjo-day">
+                  {g.date && (
+                    <header className="tjo-day-head">
+                      <span className="tjo-day-title cap">{dayTitle(g.date)}</span>
+                      {mood && <span className="tjo-day-mood" title={`Ese día te sentías: ${mood.label.toLowerCase()}`}>{mood.emoji}</span>}
+                      <span className="tjo-day-meta">{g.trades.length} op.</span>
+                      <strong className={`tjo-day-pnl tone-${toneOf(dayPnl)}`}>{pnlStr(dayPnl)}</strong>
+                    </header>
+                  )}
+                  {g.trades.map(t => {
+                    const tone = resultTone(t.result);
+                    const r = rOf(t);
+                    const c = ctx.get(t.id);
+                    const isOpen = open === t.id;
+                    return (
+                      <article key={t.id} className={`tjo-row${isOpen ? " is-open" : ""}`} data-tone={tone}>
+                        <div className="tjo-line" onClick={() => setOpen(isOpen ? null : t.id)}>
+                          <span className="tjo-time">{byDate ? timeOf(t.date) : dateTime(t.date)}</span>
+                          <span className="tjo-main">
+                            <span className="tjo-pair">
+                              {t.pair}
+                              <span className={`tj-dir is-${t.direction}`}>
+                                {t.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                                {t.direction === "long" ? "Long" : "Short"}
+                              </span>
+                            </span>
+                            <span className="tjo-sub">{t.strategy ?? "Sin estrategia"}{t.notes ? " · con nota" : ""}</span>
+                          </span>
+                          <span className="tjo-risk">
+                            {moneyStr(t.risk_amount)}
+                            {c?.riskPct != null && <small className={c.riskPct > RISK_LIMIT_PCT ? "tone-loss" : undefined}>{pctStr(c.riskPct, false, 2)} cuenta</small>}
+                          </span>
+                          <span className={`tjo-r tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</span>
+                          <span className="tjo-pnl">
+                            <strong className={`tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</strong>
+                            <span className={`tj-chip tone-${tone}`}>{RESULT_LABEL[t.result]}</span>
+                          </span>
+                          <span className="tjo-actions" onClick={e => e.stopPropagation()}>
+                            {confirming === t.id ? (
+                              <>
+                                <button type="button" className="tj-btn tone-loss" onClick={() => remove(t.id)} disabled={deleting === t.id}>
+                                  <Check size={13} /> {deleting === t.id ? "Borrando…" : "Borrar"}
+                                </button>
+                                <button type="button" className="tj-icon-btn" onClick={() => setConfirming(null)} aria-label="Cancelar borrado" title="Cancelar">
+                                  <X size={14} />
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button type="button" className="tj-icon-btn" onClick={() => onEdit(t)} aria-label={`Editar ${t.pair}`} title="Editar">
+                                  <Pencil size={14} />
+                                </button>
+                                <button type="button" className="tj-icon-btn" onClick={() => setConfirming(t.id)} aria-label={`Eliminar ${t.pair}`} title="Eliminar">
+                                  <Trash2 size={14} />
+                                </button>
+                              </>
+                            )}
+                            <button
+                              type="button" className="tj-icon-btn tjo-toggle" aria-expanded={isOpen} aria-label="Ver detalle" title="Ver detalle"
+                              onClick={() => setOpen(isOpen ? null : t.id)}
+                            >
+                              <ChevronDown size={15} />
+                            </button>
+                          </span>
                         </div>
-                      </td>
-                    </tr>
-                    {isOpen && (
-                      <tr className="tj-log-detail">
-                        <td colSpan={8}>
-                          <dl className="tj-strip">
-                            <div className="tj-metric"><dt>Plan</dt><dd>{moneyStr(t.risk_amount)} → {moneyStr(t.expected_gain)}</dd>
-                              {t.risk_amount > 0 && <dd className="tj-metric-sub">R:R {ratioStr(t.expected_gain / t.risk_amount)}</dd>}
-                            </div>
-                            <div className="tj-metric"><dt>Ejecución</dt><dd>{t.real_pnl != null ? pnlStr(t.real_pnl) : "Según el plan"}</dd>
-                              {executionText(t) && <dd className="tj-metric-sub">{executionText(t)}</dd>}
-                            </div>
-                            <div className="tj-metric"><dt>Capital antes</dt><dd>{c?.equityBefore != null ? moneyStr(c.equityBefore) : "—"}</dd>
-                              {c?.riskPct != null && <dd className="tj-metric-sub">arriesgó el {pctStr(c.riskPct, false, 2)}</dd>}
-                            </div>
-                            <div className="tj-metric"><dt>Dirección</dt><dd>{t.direction === "long" ? "Long" : "Short"}</dd></div>
-                            <div className="tj-metric"><dt>Estrategia</dt><dd>{t.strategy ?? "—"}</dd></div>
-                          </dl>
-                          <p className={t.notes ? "tj-log-notes" : "tj-note"}>{t.notes ?? "Sin notas. Apuntar por qué entraste es lo que dentro de tres meses te dirá si falló el método o la disciplina."}</p>
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
 
-      {list.length > limit && (
-        <button type="button" className="tj-btn tj-more" onClick={() => setLimit(l => l + PAGE)}>
-          Mostrar más ({list.length - limit} restantes)
-        </button>
-      )}
-    </section>
+                        <AnimatePresence initial={false}>
+                          {isOpen && (
+                            <motion.div
+                              className="tjo-detail"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                            >
+                              <div className="tjo-detail-inner">
+                                <dl className="tjo-facts">
+                                  <div><dt>Plan</dt><dd>{moneyStr(t.risk_amount)} → {moneyStr(t.expected_gain)}</dd>
+                                    {t.risk_amount > 0 && <dd className="tjo-fact-sub">R:R {ratioStr(t.expected_gain / t.risk_amount)}</dd>}
+                                  </div>
+                                  <div><dt>Ejecución</dt><dd>{t.real_pnl != null ? pnlStr(t.real_pnl) : "Según el plan"}</dd>
+                                    {executionText(t) && <dd className="tjo-fact-sub">{executionText(t)}</dd>}
+                                    {t.real_pnl != null && t.pnl !== plannedPnl(t) && <dd className="tjo-fact-sub">el plan era {pnlStr(plannedPnl(t))}</dd>}
+                                  </div>
+                                  <div><dt>Capital antes</dt><dd>{c?.equityBefore != null ? moneyStr(c.equityBefore) : "—"}</dd>
+                                    {c?.riskPct != null && <dd className="tjo-fact-sub">arriesgó el {pctStr(c.riskPct, false, 2)}</dd>}
+                                  </div>
+                                  <div><dt>Fecha</dt><dd>{dateTime(t.date)}</dd></div>
+                                </dl>
+                                <p className={t.notes ? "tjo-notes" : "tjo-notes is-empty"}>
+                                  {t.notes ?? "Sin notas. Apuntar por qué entraste es lo que dentro de tres meses te dirá si falló el método o la disciplina."}
+                                </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </article>
+                    );
+                  })}
+                </section>
+              );
+            })}
+          </div>
+        )}
+
+        {list.length > limit && (
+          <button type="button" className="tj-btn tj-more" onClick={() => setLimit(l => l + PAGE)}>
+            Mostrar más ({list.length - limit} restantes)
+          </button>
+        )}
+      </section>
+    </>
   );
 }

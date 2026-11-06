@@ -5,6 +5,8 @@ import { AlertTriangle, X } from "lucide-react";
 import { TjSelect, TjCombobox, TjDateTimePicker, TjSegmented } from "./TjControls";
 import { pctStr, pnlStr, ratioStr, toneOf } from "./tjFormat";
 import { RISK_LIMIT_PCT, type Direction, type Trade, type TradeResult } from "./tjStats";
+import TjDayJournal from "./TjDayJournal";
+import { fechaKey, type DiaDiario, type DiasMap } from "./tjDias";
 
 const NOTES_MAX = 150;
 
@@ -47,10 +49,10 @@ function inputValueToIso(valor: string): string {
 
 const errorMessage = (err: unknown) => (err instanceof Error ? err.message : "Ha ocurrido un error inesperado");
 
-function fromTrade(t: Trade | null): FormState {
+function fromTrade(t: Trade | null, initialDate?: Date): FormState {
   if (!t) {
     return {
-      date: toInputValue(new Date()), pair: "", direction: "long", risk_amount: "", expected_gain: "",
+      date: toInputValue(initialDate ?? new Date()), pair: "", direction: "long", risk_amount: "", expected_gain: "",
       result: "win", real_pnl: "", strategy: "", notes: "",
     };
   }
@@ -64,15 +66,20 @@ function fromTrade(t: Trade | null): FormState {
 
 interface Props {
   editing: Trade | null;
+  /** Fecha con la que abrir una operación nueva (desde un día del calendario). */
+  initialDate?: Date;
   pairOptions: string[];
   strategyOptions: string[];
   equity: number | null;
   onSaved: (trade: Trade) => void;
   onClose: () => void;
+  /** Ánimo y nota por día: el formulario enseña los del día de la operación. */
+  dias: DiasMap;
+  onSaveDia: (d: DiaDiario) => Promise<void>;
 }
 
-export default function TjTradeForm({ editing, pairOptions, strategyOptions, equity, onSaved, onClose }: Props) {
-  const [form, setForm] = useState<FormState>(() => fromTrade(editing));
+export default function TjTradeForm({ editing, initialDate, pairOptions, strategyOptions, equity, onSaved, onClose, dias, onSaveDia }: Props) {
+  const [form, setForm] = useState<FormState>(() => fromTrade(editing, initialDate));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -89,6 +96,8 @@ export default function TjTradeForm({ editing, pairOptions, strategyOptions, equ
   const pnl = hasReal ? real : planned;
   const riskPct = hasRisk && equity && equity > 0 ? (risk / equity) * 100 : null;
   const ratio = hasRisk && !isNaN(gain) && gain > 0 ? gain / risk : null;
+  // El día de la operación, en el calendario del usuario: sus emociones van con ella.
+  const fechaDia = fechaKey(isNaN(new Date(form.date).getTime()) ? new Date() : new Date(form.date));
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -200,6 +209,15 @@ export default function TjTradeForm({ editing, pairOptions, strategyOptions, equ
             <dd>{ratio != null ? ratioStr(ratio) : "—"}</dd>
           </div>
         </dl>
+
+        {/* Emociones del día, en el mismo recuadro: se guardan aparte, al pulsar el ánimo o al salir de la nota. */}
+        <TjDayJournal
+          key={fechaDia}
+          fecha={fechaDia}
+          dia={dias[fechaDia]}
+          isToday={fechaDia === fechaKey(new Date())}
+          onSave={onSaveDia}
+        />
 
         {error && <p className="auth-error">{error}</p>}
 

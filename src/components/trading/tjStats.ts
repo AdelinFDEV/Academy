@@ -207,6 +207,75 @@ export function maxDrawdown(series: EquityPoint[]): { abs: number; pct: number |
   return { abs, pct };
 }
 
+// ─────────────────────────── Lectura por periodos (bienvenida) ───────────────────────────
+
+export interface PeriodRead {
+  id: "7d" | "30d" | "90d" | "365d";
+  label: string;
+  sub: string;
+  count: number;
+  wins: number;
+  pnl: number;
+  winRate: number;
+  /** P&L del periodo anterior de la misma longitud: para decir si vas mejor o peor. */
+  prevPnl: number;
+  prevCount: number;
+}
+
+const PERIODS: { id: PeriodRead["id"]; label: string; sub: string; days: number }[] = [
+  { id: "7d", label: "Semana", sub: "Últimos 7 días", days: 7 },
+  { id: "30d", label: "Mes", sub: "Últimos 30 días", days: 30 },
+  { id: "90d", label: "Trimestre", sub: "Últimos 90 días", days: 90 },
+  { id: "365d", label: "Año", sub: "Últimos 12 meses", days: 365 },
+];
+
+/** Ventanas móviles hasta hoy: así «la semana» siempre son siete días, sea lunes o domingo. */
+export function periodReads(trades: Trade[], now: Date): PeriodRead[] {
+  const end = now.getTime();
+  return PERIODS.map(p => {
+    const span = p.days * 864e5;
+    const inRange = (from: number, to: number) => trades.filter(t => {
+      const ms = new Date(t.date).getTime();
+      return ms > from && ms <= to;
+    });
+    const cur = computeStats(inRange(end - span, end));
+    const prev = computeStats(inRange(end - 2 * span, end - span));
+    return {
+      id: p.id, label: p.label, sub: p.sub,
+      count: cur.count, wins: cur.wins, pnl: cur.totalPnl, winRate: cur.winRate,
+      prevPnl: prev.totalPnl, prevCount: prev.count,
+    };
+  });
+}
+
+/**
+ * Una o dos frases que resumen la operativa: cómo va la semana y cómo encaja
+ * en el año. Solo afirma lo que los números dicen; sin consejos.
+ */
+export function welcomeReading(reads: PeriodRead[], total: number): string {
+  if (!total) return "Tu diario está listo. Apunta tu primera operación y aquí verás cómo evoluciona tu operativa, de la semana al año.";
+  const [week, month, , year] = reads;
+  const parts: string[] = [];
+
+  if (!week.count) {
+    parts.push(month.count
+      ? `Esta semana no has operado; en los últimos 30 días llevas ${pnlStr(month.pnl)} en ${month.count} ${month.count === 1 ? "operación" : "operaciones"}.`
+      : "Llevas más de un mes sin registrar operaciones.");
+  } else {
+    const verb = week.pnl > 0 ? "va en verde" : week.pnl < 0 ? "va en rojo" : "va plana";
+    parts.push(`Tu semana ${verb}: ${pnlStr(week.pnl)} en ${week.count} ${week.count === 1 ? "operación" : "operaciones"}, con un ${Math.round(week.winRate)} % de acierto.`);
+  }
+
+  if (year.count && year.count > month.count) {
+    if (month.pnl < 0 && year.pnl > 0) parts.push(`El mes cuesta, pero el año sigue en positivo (${pnlStr(year.pnl)}).`);
+    else if (month.pnl > 0 && year.pnl < 0) parts.push(`Buen mes, aunque el año aún va en negativo (${pnlStr(year.pnl)}).`);
+    else if (month.count && month.prevCount && month.pnl > month.prevPnl) parts.push(`Este mes mejora al anterior; el año suma ${pnlStr(year.pnl)}.`);
+    else parts.push(`En los últimos 12 meses: ${pnlStr(year.pnl)} en ${year.count} ${year.count === 1 ? "operación" : "operaciones"}.`);
+  }
+
+  return parts.join(" ");
+}
+
 // ─────────────────────────── Filtros ───────────────────────────
 
 export type RangeId = "all" | "30d" | "90d" | "ytd";
@@ -406,7 +475,7 @@ export function buildInsights(trades: Trade[], stats: Stats, ctx: Map<string, Tr
 
 // ─────────────────────────── Hitos ───────────────────────────
 
-export type MilestoneGroup = "proceso" | "resultado";
+export type MilestoneGroup = "proceso" | "resultado" | "leyenda";
 
 export interface Milestone {
   id: string;
@@ -439,6 +508,84 @@ export interface MilestoneDef {
   format: (v: number) => string;
   needsCapital?: boolean;
   series: (trades: Trade[], capital: number | null, ctx: Map<string, TradeContext>, now: Date) => Point[];
+}
+
+// ─────────────────────────── Súper hito: vivir del trading ───────────────────────────
+
+/*
+ * «Conseguiste vivir del trading» (decidido con el admin el 07-11-2026):
+ *   · 12 meses CERRADOS seguidos, cada uno con al menos VIVIR_MIN_OPS operaciones;
+ *   · el total de esos 12 meses, en beneficio;
+ *   · como mucho VIVIR_MAX_RED meses en rojo dentro de la racha.
+ * Un mes con menos operaciones, o un tercer mes en rojo, reinicia la cuenta.
+ * Una vez conseguido se queda para siempre, como todos los hitos.
+ */
+export const VIVIR_MONTHS = 12;
+export const VIVIR_MIN_OPS = 10;
+export const VIVIR_MAX_RED = 2;
+
+/** Operaciones y P&L de cada mes, por índice de mes (año × 12 + mes). */
+function monthTotals(trades: Trade[]): Map<number, { n: number; pnl: number }> {
+  const months = new Map<number, { n: number; pnl: number }>();
+  for (const t of trades) {
+    const m = monthIndex(new Date(t.date));
+    const v = months.get(m) ?? { n: 0, pnl: 0 };
+    v.n++;
+    v.pnl += t.pnl;
+    months.set(m, v);
+  }
+  return months;
+}
+
+/**
+ * La racha válida que termina en el mes `m`: cuántos meses seguidos hacia atrás
+ * cumplen (hasta 12), cuántos de ellos en rojo y cuánto suman.
+ */
+function vivirRun(months: Map<number, { n: number; pnl: number }>, m: number) {
+  let k = 0;
+  let reds = 0;
+  let sum = 0;
+  for (let j = m; j > m - VIVIR_MONTHS; j--) {
+    const v = months.get(j);
+    if (!v || v.n < VIVIR_MIN_OPS) break;
+    const red = v.pnl < 0 ? 1 : 0;
+    if (reds + red > VIVIR_MAX_RED) break;
+    reds += red;
+    sum += v.pnl;
+    k++;
+  }
+  return { k, reds, sum };
+}
+
+/** Valor del súper hito con la racha: 12 solo si además el año suma beneficio. */
+const vivirValue = (run: { k: number; sum: number }) => (run.k === VIVIR_MONTHS && run.sum <= 0 ? VIVIR_MONTHS - 1 : run.k);
+
+export interface VivirMonth {
+  key: number;
+  label: string;
+  n: number;
+  pnl: number;
+  /** ok: cuenta (verde) · red: cuenta, pero en rojo · few: menos de 10 operaciones · empty: sin operar. */
+  status: "ok" | "red" | "few" | "empty";
+}
+
+/** Los últimos 12 meses cerrados (del más antiguo al último), y cómo va la racha ahora. */
+export function vivirWindow(trades: Trade[], now: Date): { months: VivirMonth[]; run: number; reds: number; sum: number } {
+  const totals = monthTotals(trades);
+  const lastClosed = monthIndex(now) - 1;
+  const months: VivirMonth[] = [];
+  for (let m = lastClosed - VIVIR_MONTHS + 1; m <= lastClosed; m++) {
+    const v = totals.get(m);
+    months.push({
+      key: m,
+      label: MONTHS[((m % 12) + 12) % 12].slice(0, 3),
+      n: v?.n ?? 0,
+      pnl: v?.pnl ?? 0,
+      status: !v ? "empty" : v.n < VIVIR_MIN_OPS ? "few" : v.pnl < 0 ? "red" : "ok",
+    });
+  }
+  const run = vivirRun(totals, lastClosed);
+  return { months, run: vivirValue(run), reds: run.reds, sum: run.sum };
 }
 
 /** Espera mínima tras una pérdida para que la siguiente entrada no cuente como revancha. */
@@ -524,6 +671,22 @@ export const MILESTONES: MilestoneDef[] = [
     },
   },
   {
+    id: "vivir", group: "leyenda", title: "Conseguiste vivir del trading",
+    desc: `${VIVIR_MONTHS} meses seguidos con ${VIVIR_MIN_OPS}+ operaciones al mes, el año en beneficio y como mucho ${VIVIR_MAX_RED} meses en rojo`,
+    tiers: [VIVIR_MONTHS], format: v => `${Math.round(v)} ${Math.round(v) === 1 ? "mes" : "meses"}`,
+    tierNotes: ["Un año entero viviendo del trading"],
+    series: (trades, _c, _x, now) => {
+      // Se mide al cerrarse cada mes (el día 1 del siguiente): un mes en curso aún puede cambiar.
+      if (!trades.length) return [];
+      const totals = monthTotals(trades);
+      const points: Point[] = [];
+      for (let m = Math.min(...totals.keys()); m <= monthIndex(now) - 1; m++) {
+        points.push({ date: new Date(Math.floor((m + 1) / 12), (m + 1) % 12, 1).toISOString(), value: vivirValue(vivirRun(totals, m)) });
+      }
+      return points;
+    },
+  },
+  {
     id: "recuperacion", group: "resultado", title: "Vuelta a máximos", desc: "Caídas de más del 5 % recuperadas hasta un nuevo máximo",
     tiers: [1, 3, 5, 10], format: count, needsCapital: true,
     series: (trades, capital) => {
@@ -552,7 +715,7 @@ export type StoredLevels = Map<string, Map<number, string>>;
 export function parseStoredLevels(rows: { badge_id: string; unlocked_at: string }[]): StoredLevels {
   const out: StoredLevels = new Map();
   for (const r of rows) {
-    const m = /^diario-([a-z]+)-(d+)$/.exec(r.badge_id);
+    const m = /^diario-([a-z]+)-(\d+)$/.exec(r.badge_id);
     if (!m) continue;
     const levels = out.get(m[1]) ?? new Map<number, string>();
     levels.set(Number(m[2]), r.unlocked_at);

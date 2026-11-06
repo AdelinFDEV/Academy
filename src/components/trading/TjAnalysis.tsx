@@ -1,12 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import { BarChart3, ShieldAlert } from "lucide-react";
 import TjPeriodSummary from "./TjPeriodSummary";
-import TjCalendar from "./TjCalendar";
 import TjBreakdown from "./TjBreakdown";
 import { TjInfo } from "./TjControls";
-import { dateShort, moneyStr, pctStr, pnlStr, rStr, ratioStr, toneOf, type Tone } from "./tjFormat";
+import { dateShort, factorStr, moneyStr, pctStr, pnlStr, rStr, ratioStr, toneOf, type Tone } from "./tjFormat";
 import { RISK_LIMIT_PCT, computeStats, executionStats, rOf, type Trade, type TradeContext } from "./tjStats";
 
 /** Tramos del histograma de resultados, en múltiplos de R. */
@@ -22,7 +20,6 @@ const R_BUCKETS: { label: string; test: (r: number) => boolean; tone: Tone }[] =
 
 export default function TjAnalysis({ trades, ctx }: { trades: Trade[]; ctx: Map<string, TradeContext> }) {
   const stats = useMemo(() => computeStats(trades), [trades]);
-  const streak = stats.currentStreak;
 
   const rValues = trades.map(rOf).filter((r): r is number => r != null);
   const histogram = R_BUCKETS.map(b => ({ ...b, count: rValues.filter(b.test).length }));
@@ -103,77 +100,140 @@ export default function TjAnalysis({ trades, ctx }: { trades: Trade[]; ctx: Map<
     },
   ];
 
-  const kpis: { label: string; value: string; sub: string; tone?: Tone }[] = [
-    { label: "P&L total", value: pnlStr(stats.totalPnl), sub: `${rStr(stats.totalR)} acumuladas`, tone: toneOf(stats.totalPnl) },
+  const pf = stats.profitFactor;
+  const headline: { label: string; value: string; sub: string; info: string; tone?: Tone }[] = [
     {
-      label: "Ratio de acierto", value: `${Math.round(stats.winRate)} %`,
-      sub: `ganadas: ${stats.wins} de ${stats.count}${stats.bes ? ` · ${stats.bes} en breakeven` : ""}`,
+      label: "P&L total", value: pnlStr(stats.totalPnl), sub: `${rStr(stats.totalR)} acumuladas en ${plural(stats.count, "operación", "operaciones")}`,
+      info: "Lo ganado menos lo perdido en las operaciones que ves con los filtros actuales.", tone: toneOf(stats.totalPnl),
     },
     {
-      label: "Operaciones", value: String(stats.count),
-      sub: streak.tone ? `racha actual: ${streak.count} ${streak.tone === "win" ? "ganada" : "perdida"}${streak.count > 1 ? "s" : ""}` : "sin racha abierta",
-    },
-    { label: "P&L medio", value: pnlStr(stats.avgPnl), sub: stats.expectancyR != null ? `${rStr(stats.expectancyR)} por operación` : "—", tone: toneOf(stats.avgPnl) },
-    // Sin ganadas o sin perdidas no hay media que enseñar: un 0,00 $ en rojo parecería una pérdida.
-    {
-      label: "Ganancia media", value: stats.wins ? pnlStr(stats.avgWin) : "—",
-      sub: stats.wins ? `en ${plural(stats.wins, "ganada", "ganadas")}` : "aún sin ganadas", tone: stats.wins ? "win" : undefined,
+      label: "Acierto", value: `${Math.round(stats.winRate)} %`,
+      sub: `${stats.wins} ganadas · ${stats.losses} perdidas${stats.bes ? ` · ${stats.bes} BE` : ""}`,
+      info: "Qué parte de tus operaciones acabó en ganancia. Solo no basta: hay que leerlo junto a lo que ganas y pierdes de media.",
     },
     {
-      label: "Pérdida media", value: stats.losses ? pnlStr(stats.avgLoss) : "—",
-      sub: stats.losses ? `en ${plural(stats.losses, "perdida", "perdidas")}` : "ninguna perdida", tone: stats.losses ? "loss" : undefined,
+      label: "Profit factor", value: factorStr(pf),
+      sub: pf == null ? "sin datos" : pf >= 1.5 ? "sistema sólido" : pf >= 1 ? "rentable, pero justo" : "pierde dinero",
+      info: "Lo que ganan tus operaciones buenas dividido entre lo que pierden las malas. Por encima de 1,5 es un sistema sólido.",
+      tone: pf == null ? undefined : pf >= 1.5 ? "win" : pf >= 1 ? "be" : "loss",
     },
-    { label: "Mejor op.", value: stats.best != null ? pnlStr(stats.best) : "—", sub: "mayor ganancia", tone: "win" },
-    { label: "Peor op.", value: stats.worst != null ? pnlStr(stats.worst) : "—", sub: "mayor pérdida", tone: "loss" },
-    { label: "Mayor racha ganando", value: String(stats.bestWinStreak), sub: "seguidas sin fallar", tone: "win" },
-    { label: "Mayor racha perdiendo", value: String(stats.bestLossStreak), sub: "la peor que aguantaste", tone: "loss" },
+    {
+      label: "Esperanza", value: stats.expectancyR != null ? rStr(stats.expectancyR) : "—",
+      sub: `${pnlStr(stats.avgPnl)} de media por operación`,
+      info: "Lo que deja de media cada operación, medido en R (unidades de riesgo). Es la cifra que dice si tu método tiene ventaja.",
+      tone: toneOf(stats.expectancyR ?? 0),
+    },
   ];
+
+  // Cara a cara: lo mismo medido en ganadoras y en perdedoras, para compararlo de un vistazo.
+  const duel: { label: string; win: string; loss: string }[] = [
+    { label: "Operaciones", win: String(stats.wins), loss: String(stats.losses) },
+    { label: "Media", win: stats.wins ? pnlStr(stats.avgWin) : "—", loss: stats.losses ? pnlStr(stats.avgLoss) : "—" },
+    { label: "La mayor", win: stats.best != null ? pnlStr(stats.best) : "—", loss: stats.worst != null ? pnlStr(stats.worst) : "—" },
+    { label: "Racha más larga", win: plural(stats.bestWinStreak, "seguida", "seguidas"), loss: plural(stats.bestLossStreak, "seguida", "seguidas") },
+    { label: "Total", win: pnlStr(stats.grossProfit), loss: pnlStr(-stats.grossLoss) },
+  ];
+  const grossMax = Math.max(stats.grossProfit, stats.grossLoss, 1e-9);
 
   return (
     <>
-      <dl className="tj-card tj-kpis">
-        {kpis.map(k => (
-          <div key={k.label} className={`tj-metric${k.tone ? ` tone-${k.tone}` : ""}`}>
-            <dt>{k.label}</dt>
-            <dd>{k.value}</dd>
-            <dd className="tj-metric-sub">{k.sub}</dd>
+      <dl className="tjn-head">
+        {headline.map(k => (
+          <div key={k.label} className={`tjn-kpi${k.tone ? ` tone-${k.tone}` : ""}`}>
+            <dt>{k.label} <TjInfo label={k.label}>{k.info}</TjInfo></dt>
+            <dd className="tjn-kpi-value">{k.value}</dd>
+            <dd className="tjn-kpi-sub">{k.sub}</dd>
+            {k.label === "Acierto" && stats.count > 0 && (
+              <dd className="tjn-split-bar" aria-hidden="true">
+                <i className="tone-win" style={{ width: `${(stats.wins / stats.count) * 100}%` }} />
+                <i className="tone-be" style={{ width: `${(stats.bes / stats.count) * 100}%` }} />
+                <i className="tone-loss" style={{ width: `${(stats.losses / stats.count) * 100}%` }} />
+              </dd>
+            )}
           </div>
         ))}
       </dl>
 
+      <section className="tj-card tjn-duel">
+        <header className="tjr-head">
+          <div>
+            <h3>Ganadoras frente a perdedoras</h3>
+            <span className="tj-count">
+              {stats.payoff != null
+                ? `Cada ganadora vale de media ${stats.payoff.toFixed(2).replace(".", ",")} veces una perdedora`
+                : "Hacen falta ganadoras y perdedoras para compararlas"}
+            </span>
+          </div>
+        </header>
+        <div className="tjn-duel-bars" aria-hidden="true">
+          <span className="tone-win"><i style={{ width: `${(stats.grossProfit / grossMax) * 100}%` }} /></span>
+          <span className="tone-loss"><i style={{ width: `${(stats.grossLoss / grossMax) * 100}%` }} /></span>
+        </div>
+        <table className="tjn-duel-table">
+          <thead>
+            <tr>
+              <th scope="col"><span className="sr-only">Medida</span></th>
+              <th scope="col" className="tone-win">Ganadoras</th>
+              <th scope="col" className="tone-loss">Perdedoras</th>
+            </tr>
+          </thead>
+          <tbody>
+            {duel.map(d => (
+              <tr key={d.label}>
+                <th scope="row">{d.label}</th>
+                <td className="tone-win">{d.win}</td>
+                <td className="tone-loss">{d.loss}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
       <TjPeriodSummary trades={trades} ctx={ctx} />
 
-      <div className="tj-split is-balanced">
-        <section className="tj-card tj-hist-card">
-          <span className="tj-label" title="Cuántas operaciones cerraron en cada tramo de R (ganancia o pérdida en unidades de riesgo)">
-            <BarChart3 size={15} /> Distribución en R
-          </span>
-          <div className="tj-hist">
+      <div className="tjn-pair">
+        <section className="tj-card tjn-hist">
+          <header className="tjr-head">
+            <div>
+              <h3>Distribución en R</h3>
+              <span className="tj-count">Cuántas operaciones cerraron en cada tramo de riesgo</span>
+            </div>
+          </header>
+          <div className="tjn-hist-bars">
             {histogram.map(b => (
-              <div key={b.label} className={`tone-${b.tone}`} title={`${b.count} operaciones`}>
+              <div key={b.label} className={`tone-${b.tone}${b.count ? "" : " is-zero"}`} title={plural(b.count, "operación", "operaciones")}>
                 <strong>{b.count || ""}</strong>
-                <i style={{ height: `${(b.count / histMax) * 72}%` }} />
-                <span>{b.label}</span>
+                <i style={{ height: `${Math.max((b.count / histMax) * 100, b.count ? 4 : 0)}%` }} />
               </div>
             ))}
           </div>
+          <div className="tjn-hist-axis" aria-hidden="true">
+            {histogram.map(b => <span key={b.label}>{b.label}</span>)}
+          </div>
         </section>
 
-        <section className="tj-card">
-          <span className="tj-label"><ShieldAlert size={15} /> Riesgo y ejecución</span>
-          <dl className="tj-strip is-grid2">
+        <section className="tj-card tjn-risk">
+          <header className="tjr-head">
+            <div>
+              <h3>Riesgo y ejecución</h3>
+              <span className="tj-count">Cómo planeas y cómo cumples el plan</span>
+            </div>
+          </header>
+          <dl className="tjn-risk-list">
             {riskItems.map(r => (
-              <div key={r.label} className={`tj-metric${r.tone ? ` tone-${r.tone}` : ""}`}>
-                <dt>{r.label} <TjInfo label={r.label}>{r.info}</TjInfo></dt>
+              <div key={r.label} className={r.tone ? `tone-${r.tone}` : "tone-none"}>
+                <dt>
+                  <span className="tjn-risk-dot" aria-hidden="true" />
+                  <span className="tjn-risk-label">{r.label} <TjInfo label={r.label}>{r.info}</TjInfo></span>
+                  <span className="tjn-risk-sub">{r.sub}</span>
+                </dt>
                 <dd>{r.value}</dd>
-                <dd className="tj-metric-sub">{r.sub}</dd>
               </div>
             ))}
           </dl>
         </section>
       </div>
 
-      <TjCalendar trades={trades} />
       <TjBreakdown trades={trades} />
     </>
   );

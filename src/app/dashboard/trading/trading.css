@@ -201,8 +201,6 @@
 
 .tj-bar.is-accent i { background: linear-gradient(90deg, #c9923a, var(--tj-accent)); }
 
-.tj-bar-cell { display: inline-flex; align-items: center; justify-content: flex-end; gap: 0.7rem; }
-.tj-bar-cell .tj-bar { width: 72px; }
 
 /* Métrica: etiqueta, valor y una línea de contexto. Se usa en todo el diario. */
 .tj-metric { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; margin: 0; }
@@ -320,7 +318,6 @@
 
 /* :not() para no agrandar también la línea de contexto: tiene la misma especificidad. */
 .tj-strip .tj-metric dd:not(.tj-metric-sub) { font-size: 1.1rem; }
-.tj-strip.is-grid2 { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 1rem 0 0; }
 
 .tj-tip {
   --tone: initial;
@@ -534,19 +531,746 @@
   font: 500 0.82rem var(--font-family);
 }
 
-/* ── Cabecera y avisos ── */
+/* ── Bienvenida ──
+ * Un solo bloque: el saludo a la izquierda y, a la derecha, una franja continua
+ * con cuatro ventanas móviles (7, 30, 90 y 365 días) separadas por filetes.
+ */
 
-/* ── Cabecera: el fondo, la marca de agua y los títulos son los compartidos imm-* (dashboard.css) ── */
-
-.tj-header {
+.tjw {
+  position: relative;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1.25rem;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.6rem 1.8rem;
+  border: 1px solid rgba(230, 180, 85, 0.16);
+  border-radius: 20px;
+  background:
+    radial-gradient(70% 140% at 0% 0%, rgba(230, 180, 85, 0.13), transparent 60%),
+    radial-gradient(60% 120% at 100% 100%, rgba(126, 166, 255, 0.07), transparent 60%),
+    var(--tj-panel);
+  box-shadow: var(--card-shadow);
 }
 
-.tj-new { display: inline-flex; align-items: center; gap: 0.4rem; }
+/* Filete dorado arriba: la firma de la cabecera. */
+.tjw::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.8rem;
+  right: 1.8rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 180, 85, 0.55), transparent);
+}
+
+/* Fila de arriba: el saludo a la izquierda y el balance a la derecha, centrados en vertical. */
+.tjw-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 380px); align-items: center; gap: 1.5rem 3rem; }
+
+.tjw-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.1vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--text-secondary);
+}
+
+.tjw-name {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  background: linear-gradient(100deg, #f7e2ad, var(--tj-accent) 55%, #d9a14a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+
+.tjw-periods {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  background: var(--hairline);
+}
+
+.tjw-period {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+  min-height: 8.25rem;
+  padding: 1.05rem 1.15rem 1rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tone) 9%, transparent), transparent 65%),
+    var(--tj-panel-solid);
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--tone) 75%, transparent);
+}
+
+.tjw-period.is-quiet { background: var(--tj-panel-solid); box-shadow: none; }
+
+.tjw-period dt { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 22px; margin-bottom: 0.45rem; }
+.tjw-period dd { margin: 0; }
+.tjw-label { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); }
+
+.tjw-pnl {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--tone);
+}
+
+/* Datos separados por puntos finos, sin que el separador sea texto. */
+.tjw-meta { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.74rem; font-weight: 600; color: var(--text-muted); }
+
+.tjw-period dd.tjw-foot { display: flex; align-items: center; gap: 0.6rem; margin-top: auto; padding-top: 0.6rem; }
+
+.tjw-bar { flex: 1; height: 4px; overflow: hidden; border-radius: 999px; background: var(--tj-surface-2); }
+.tjw-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--tj-win) 55%, transparent), var(--tj-win)); }
+
+.tjw-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  font-size: 0.64rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--tone);
+}
+
+.tjw-period dd.tjw-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tjw-empty::before { content: ""; width: 14px; height: 1px; background: var(--hairline); }
+
+/* ── Nova, el asistente (v1) ──
+ * En la cabecera, bajo el saludo: una píldora con el avatar y una frase que se
+ * escribe sola. Al pulsarla se abre un bocadillo por capítulos: «Tu pulso»
+ * (nota de 0 a 100 y lo más importante) y después cada tema, uno cada vez.
+ */
+
+.tjw-hello { display: flex; flex-direction: column; align-items: stretch; gap: 0.6rem; min-width: 0; }
+
+.tjbot { position: relative; z-index: 30; width: 100%; }
+
+/* ── Su espacio ──
+ * Nova, una cabeza que vuela por todo el hueco bajo el saludo (TjBot la mueve
+ * con transform). Es un botón: pulsarla abre el bocadillo.
+ */
+
+.tjbot-habitat { position: relative; width: 100%; height: 172px; }
+.tjbot-walker { position: absolute; top: 0; left: 0; will-change: transform; }
+
+.tjbot-trigger {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 40px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tjbot-trigger:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 4px; }
+
+.tjbot-avatar-wrap { position: relative; display: grid; transform-origin: 50% 50%; }
+
+/* Sombra lejana en el «suelo»: Nova vuela, así que es tenue y respira con él. */
+.tjbot-shadow {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  width: 60px;
+  height: 9px;
+  margin-left: -30px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.42), transparent);
+  animation: nh-shadow 4.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Punto de aviso: hay mensajes que el usuario aún no ha abierto. */
+.tjbot-ping { position: absolute; top: 18px; right: 8px; z-index: 2; width: 14px; height: 14px; border: 2px solid #0f1e39; border-radius: 50%; background: #ff7a7a; }
+
+.tjbot-ping::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid #ff7a7a;
+  animation: tjbot-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ── La cabeza ── */
+
+.nh {
+  --look-x: 0px;
+  --look-y: 0px;
+  position: relative;
+  display: block;
+  width: 112px;
+  height: 112px;
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.38));
+}
+
+.nh svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* Flotar: un vaivén lento con un leve balanceo. Al volar, más vivo. */
+.nh-float { transform-box: view-box; transform-origin: 60px 64px; animation: nh-hover 4.2s ease-in-out infinite; }
+.nh.is-flying .nh-float { animation: nh-fly 1.6s ease-in-out infinite; }
+.nh.is-joy .nh-float { animation: nh-joy 0.95s cubic-bezier(0.3, 0, 0.3, 1) infinite; }
+.nh.act-sleep .nh-float { animation: nh-doze 5s ease-in-out infinite; }
+.nh.act-music .nh-float { animation: nh-groove 0.9s ease-in-out infinite; }
+.nh.act-ball .nh-float { animation: nh-header 1.5s ease-in-out infinite; }
+
+/* La estela: tenue en reposo, viva al volar, apagada dormido. */
+.nh-thrust { transform-box: fill-box; transform-origin: 50% 0; opacity: 0.45; animation: nh-thrust 1.2s ease-in-out infinite; transition: opacity 0.4s; }
+.nh.is-flying .nh-thrust { opacity: 1; animation-duration: 0.35s; }
+.nh.act-sleep .nh-thrust { opacity: 0.15; }
+
+/* La hélice solo gira al volar (y con alegría). */
+.nh-propeller { transform-box: fill-box; transform-origin: center; opacity: 0; transition: opacity 0.3s; }
+.nh.is-flying .nh-propeller,
+.nh.is-joy .nh-propeller { opacity: 1; animation: nh-spin 0.22s linear infinite; }
+
+.nh-antenna,
+.nh-antenna-glow { transform-box: fill-box; transform-origin: center; transition: fill 0.5s; }
+.nh-antenna-glow { animation: nh-glow 2.4s ease-in-out infinite; }
+.nh.is-worried .nh-antenna-glow { animation-duration: 1.1s; }
+.nh.is-joy .nh-antenna-glow { animation-duration: 0.6s; }
+.nh.act-sleep .nh-antenna-glow { animation: none; opacity: 0.08; }
+
+/* Cabeza: inclinaciones de cada actividad, siempre con transición suave. */
+.nh-head { transform-box: view-box; transform-origin: 60px 64px; transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.nh.act-sleep .nh-head { transform: rotate(-9deg) translateY(4px); }
+.nh.act-trade .nh-head,
+.nh.act-study .nh-head { transform: rotate(5deg); }
+.nh.act-ball .nh-head { transform: translateY(1px); }
+
+/* Ojos: mirar, parpadear. Concentrado, la mirada se va al objeto. */
+.nh-look { transform: translate(var(--look-x), var(--look-y)); transition: transform 0.25s ease-out; }
+.nh-look-prop { transform: translate(4px, 3px); }
+.nh-eyes { transform-box: fill-box; transform-origin: center; animation: nh-blink 5s infinite; }
+.nh-stars { animation: nh-twinkle-eyes 1.2s ease-in-out infinite; }
+.nh.act-ball .nh-look { transform: translate(0, -4px); }
+
+.nh-mouth { transform-box: fill-box; transform-origin: center; }
+.nh.is-talking .nh-mouth { animation: nh-talk 0.42s ease-in-out 5; }
+.nh-snore { transform-box: fill-box; transform-origin: center; animation: nh-snore 5s ease-in-out infinite; }
+.nh-hum { transform-box: fill-box; transform-origin: center; animation: nh-hum 0.9s ease-in-out infinite; }
+.nh-sweat { animation: nh-sweat 2.4s ease-in infinite; }
+
+/* Accesorios. */
+.nh-cap { transform-box: fill-box; transform-origin: 30% 100%; animation: nh-prop-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nh-pompom { transform-box: fill-box; transform-origin: center; animation: nh-pompom 5s ease-in-out infinite; }
+.nh-phones { animation: nh-prop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nh-glasses { animation: nh-prop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ── Actividades: lo que mueve «con la mente», flotando a su lado ── */
+
+.nh-prop { transform-box: fill-box; transform-origin: center; animation: nh-prop-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both, nh-prop-bob 3.2s ease-in-out 0.6s infinite; }
+.nh-candles rect { transform-box: fill-box; transform-origin: center bottom; animation: nh-candle 1.8s ease-in-out infinite; }
+.nh-candles rect:nth-child(2) { animation-delay: 0.35s; }
+.nh-candles rect:nth-child(3) { animation-delay: 0.7s; }
+.nh-candles rect:nth-child(4) { animation-delay: 1.05s; }
+.nh-price { stroke-dasharray: 60; animation: nh-price 3.6s ease-in-out infinite; }
+.nh-page { transform-box: fill-box; transform-origin: left center; animation: nh-page 4.5s ease-in-out infinite; }
+
+/* Pelota: rebota sobre la cabeza, que la acompaña con un cabeceo. */
+.nh-ball { animation: nh-ball 1.5s cubic-bezier(0.33, 0, 0.67, 1) infinite; transform-box: fill-box; transform-origin: center; }
+
+/* «z», notas, corazones y destellos: suben y se desvanecen. */
+.nh-zzz,
+.nh-notes { position: absolute; top: 4px; right: -4px; pointer-events: none; }
+
+.nh-zzz i,
+.nh-notes i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font: italic 700 0.9rem var(--font-display);
+  color: #9aa6ff;
+  opacity: 0;
+  animation: nh-float-up 3s ease-out infinite;
+}
+
+.nh-notes i { font-style: normal; color: #c9a2ff; font-size: 1rem; }
+.nh-zzz i:nth-child(2),
+.nh-notes i:nth-child(2) { font-size: 1.05rem; animation-delay: 1s; }
+.nh-zzz i:nth-child(3),
+.nh-notes i:nth-child(3) { font-size: 1.2rem; animation-delay: 2s; }
+
+.nh-hearts { position: absolute; top: 10px; left: 50%; pointer-events: none; }
+.nh-hearts i { position: absolute; left: 0; top: 0; font-size: 0.9rem; font-style: normal; opacity: 0; animation: nh-heart 1.6s ease-out infinite; }
+.nh-hearts i:nth-child(1) { --hx: -40px; }
+.nh-hearts i:nth-child(2) { --hx: -12px; animation-delay: 0.4s; font-size: 1.05rem; }
+.nh-hearts i:nth-child(3) { --hx: 14px; animation-delay: 0.8s; }
+.nh-hearts i:nth-child(4) { --hx: 40px; animation-delay: 1.2s; font-size: 0.8rem; }
+
+.nh-sparkles { position: absolute; inset: -8px; pointer-events: none; }
+.nh-sparkles i { position: absolute; font-style: normal; font-size: 0.85rem; color: #ffd76a; animation: nh-twinkle 1.6s ease-in-out infinite; }
+.nh-sparkles i:nth-child(1) { top: 10px; left: 2px; }
+.nh-sparkles i:nth-child(2) { top: 24px; right: -2px; font-size: 0.65rem; animation-delay: 0.5s; }
+.nh-sparkles i:nth-child(3) { bottom: 22px; left: -6px; font-size: 0.6rem; animation-delay: 1s; }
+
+@keyframes nh-hover { 0%, 100% { transform: translateY(0) rotate(-1.2deg); } 50% { transform: translateY(-6px) rotate(1.2deg); } }
+@keyframes nh-fly { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
+@keyframes nh-joy { 0%, 100% { transform: translateY(0) scale(1, 1); } 18% { transform: translateY(1px) scale(1.07, 0.93); } 48% { transform: translateY(-14px) scale(0.96, 1.05) rotate(-4deg); } 72% { transform: translateY(-4px) scale(1, 1) rotate(4deg); } }
+@keyframes nh-doze { 0%, 100% { transform: translateY(2px) scale(1, 1); } 50% { transform: translateY(5px) scale(1.02, 0.98); } }
+@keyframes nh-groove { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-3px); } }
+@keyframes nh-header { 0%, 100% { transform: translateY(0); } 8% { transform: translateY(3px) scale(1.03, 0.97); } 20% { transform: translateY(-2px); } }
+@keyframes nh-thrust { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(0.85, 1.2); } }
+@keyframes nh-spin { to { transform: rotate(360deg); } }
+@keyframes nh-glow { 0%, 100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(1.35); opacity: 0.08; } }
+@keyframes nh-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.08); } }
+@keyframes nh-twinkle-eyes { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(8deg); } }
+@keyframes nh-talk { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.6); } }
+@keyframes nh-snore { 0%, 100% { transform: scale(0.7); } 50% { transform: scale(1.2); } }
+@keyframes nh-hum { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.15); } }
+@keyframes nh-sweat { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(8px); opacity: 0; } }
+@keyframes nh-pompom { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 3px); } }
+@keyframes nh-prop-in { from { opacity: 0; transform: translateY(8px) scale(0.8); } to { opacity: 1; transform: none; } }
+@keyframes nh-prop-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
+@keyframes nh-candle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.5); } }
+@keyframes nh-price { 0% { stroke-dashoffset: 60; } 60%, 100% { stroke-dashoffset: 0; } }
+@keyframes nh-page { 0%, 60%, 100% { transform: scaleX(1); } 75% { transform: scaleX(-1); } 88% { transform: scaleX(-1); opacity: 0; } 89% { transform: scaleX(1); opacity: 0; } 97% { opacity: 1; } }
+@keyframes nh-ball { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-34px) rotate(200deg); } }
+@keyframes nh-float-up { 0% { opacity: 0; transform: translate(0, 0) scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(18px, -40px) scale(1.15); } }
+@keyframes nh-heart { 0% { opacity: 0; transform: translate(0, 0) scale(0.5); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--hx), -52px) scale(1.2); } }
+@keyframes nh-twinkle { 0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(25deg); } }
+@keyframes nh-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.82); opacity: 0.65; } }
+@keyframes tjbot-ping { 75%, 100% { transform: scale(2.1); opacity: 0; } }
+@keyframes tjbot-dot { 0%, 80%, 100% { transform: translateY(0); opacity: 0.4; } 40% { transform: translateY(-4px); opacity: 1; } }
+@keyframes tjbot-nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+
+/* ── La escena del diálogo ──
+ * Al pulsar a Nova, su copia vuela a lo alto del centro de la pantalla (y se
+ * agranda: se acerca) y debajo se abre el popup grande. Al cerrar, vuelve.
+ */
+
+.tjbot-trigger.is-away { visibility: hidden; }
+
+.tjbot-stage { position: fixed; inset: 0; z-index: 1500; }
+
+.tjbot-backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 60% at 50% 20%, rgba(230, 180, 85, 0.08), transparent 70%), rgba(4, 10, 22, 0.66);
+  backdrop-filter: blur(7px);
+}
+
+/* Nova volando: posición y tamaño los anima TjBot (transform), desde la esquina. */
+.tjbot-flyer { position: fixed; top: 0; left: 0; z-index: 2; transform-origin: 0 0; pointer-events: none; will-change: transform; }
+
+/* El popup, centrado bajo Nova. */
+.tjbot-dialog {
+  position: fixed;
+  top: var(--dlg-top);
+  right: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 3vw;
+  pointer-events: none;
+}
+
+.tjbot-panel.is-modal {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: min(760px, 100%);
+  pointer-events: auto;
+  transform-origin: 50% 0;
+}
+
+.tjbot-panel.is-modal .tjbot-tail { left: 50%; margin-left: -8px; }
+.tjbot-panel.is-modal .tjbot-panel-head { padding: 1rem 1.2rem 1.15rem; }
+.tjbot-panel.is-modal .tjbot-body { min-height: 260px; max-height: calc(100vh - var(--dlg-top) - 170px); padding: 1.2rem 1.3rem 0.6rem; }
+.tjbot-panel.is-modal .tjbot-foot { padding: 0.9rem 1.2rem 1.05rem; }
+.tjbot-panel.is-modal .tjbot-msg { font-size: 0.92rem; padding: 0.85rem 1rem; }
+.tjbot-panel.is-modal .tjbot-chapter { height: 36px; }
+.tjbot-panel.is-modal .tjbot-gauge { width: 120px; height: 120px; }
+.tjbot-panel.is-modal .tjbot-gauge-value { padding-top: 43px; }
+
+/* ── Bocadillo ── */
+
+.tjbot-panel:focus { outline: none; }
+
+.tjbot-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(480px, calc(100vw - 2.5rem));
+  border: 1px solid rgba(230, 180, 85, 0.3);
+  border-radius: 22px;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgba(230, 180, 85, 0.11), transparent 60%),
+    radial-gradient(80% 50% at 100% 100%, rgba(126, 166, 255, 0.07), transparent 60%),
+    #0d1a33;
+  box-shadow: 0 34px 80px -24px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transform-origin: 30px -12px;
+}
+
+.tjbot-tail {
+  position: absolute;
+  top: -8px;
+  left: 28px;
+  width: 16px;
+  height: 16px;
+  border-top: 1px solid rgba(230, 180, 85, 0.3);
+  border-left: 1px solid rgba(230, 180, 85, 0.3);
+  background: #11203d;
+  transform: rotate(45deg);
+}
+
+/* Capítulos. */
+.tjbot-panel-head { position: relative; display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 0.9rem 1rem; }
+.tjbot-chapters { display: flex; flex: 1; align-items: center; gap: 0.35rem; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+
+.tjbot-chapter {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.4rem;
+  height: 34px;
+  padding: 0 0.55rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--tj-surface);
+  color: var(--text-secondary);
+  font: 600 0.78rem var(--font-family);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, opacity 0.2s, transform 0.2s;
+}
+
+.tjbot-chapter > span:first-child { font-size: 1rem; line-height: 1; }
+.tjbot-chapter:not(.is-on) { opacity: 0.6; }
+.tjbot-chapter:not(.is-on):hover { opacity: 1; transform: translateY(-1px); }
+.tjbot-chapter.is-done { opacity: 0.85; border-color: rgba(230, 180, 85, 0.25); }
+.tjbot-chapter:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjbot-chapter.is-on {
+  padding-right: 0.85rem;
+  border-color: var(--tj-accent);
+  background: linear-gradient(100deg, rgba(230, 180, 85, 0.22), rgba(230, 180, 85, 0.06));
+  color: var(--text-primary);
+}
+
+.tjbot-chapter-label { display: inline-block; overflow: hidden; }
+
+/* Un capítulo con algo importante dentro lleva un punto. */
+.tjbot-chapter-dot { position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border: 1.5px solid #0d1a33; border-radius: 50%; background: #ff7a7a; }
+
+.tjbot-progress { position: absolute; right: 0.9rem; bottom: 0; left: 0.9rem; height: 2px; overflow: hidden; border-radius: 999px; background: var(--hairline); }
+.tjbot-progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c98f35, var(--tj-accent), #f7dfa6); }
+
+/* Cuerpo: una sección cada vez, altura contenida. */
+.tjbot-body { min-height: 200px; max-height: min(56vh, 460px); padding: 1rem 1rem 0.5rem; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+
+.tjbot-typing {
+  display: inline-flex;
+  gap: 5px;
+  margin-bottom: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  overflow: hidden;
+  border-radius: 14px 14px 14px 4px;
+  background: var(--tj-surface-2);
+}
+
+.tjbot-typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-secondary); animation: tjbot-dot 1s infinite; }
+.tjbot-typing i:nth-child(2) { animation-delay: 0.15s; }
+.tjbot-typing i:nth-child(3) { animation-delay: 0.3s; }
+
+.tjbot-section { touch-action: pan-y; cursor: grab; }
+.tjbot-section:active { cursor: grabbing; }
+.tjbot-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.tjbot-kicker { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjbot-kicker-row { margin: 0.5rem 0 0.1rem; }
+
+/* Mensajes: burbujas de chat con su emoji, un filo del color de lo que dicen y, si toca, un botón. */
+.tjbot-msg {
+  --bot-tone: var(--text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--bot-tone) 22%, transparent);
+  border-radius: 4px 14px 14px 14px;
+  background: color-mix(in srgb, var(--bot-tone) 7%, rgba(240, 244, 255, 0.03));
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.tjbot-msg.is-win { --bot-tone: var(--tj-win); }
+.tjbot-msg.is-loss { --bot-tone: var(--tj-loss); }
+.tjbot-msg.is-accent { --bot-tone: var(--tj-accent); }
+.tjbot-msg.is-be { --bot-tone: #8ab8ff; }
+.tjbot-msg.is-important { border-color: color-mix(in srgb, var(--bot-tone) 45%, transparent); box-shadow: inset 3px 0 0 var(--bot-tone); }
+
+.tjbot-emoji { flex-shrink: 0; font-size: 1.15rem; line-height: 1.3; }
+.tjbot-msg-body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; min-width: 0; }
+
+.tjbot-flag {
+  padding: 0.08rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bot-tone) 16%, transparent);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bot-tone);
+}
+
+.tjbot-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--bot-tone) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bot-tone) 12%, transparent);
+  color: var(--text-primary);
+  font: 600 0.74rem var(--font-family);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.tjbot-action:hover { transform: translateX(2px); background: color-mix(in srgb, var(--bot-tone) 22%, transparent); }
+.tjbot-action:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+/* ── Tu pulso ── */
+
+.tjbot-pulse {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(230, 180, 85, 0.2);
+  border-radius: 16px;
+  background: linear-gradient(150deg, rgba(230, 180, 85, 0.08), rgba(7, 12, 24, 0.3));
+}
+
+.tjbot-gauge { position: relative; flex-shrink: 0; width: 104px; height: 104px; }
+.tjbot-gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.tjbot-gauge-track { fill: none; stroke: var(--tj-surface-2); stroke-width: 9; }
+.tjbot-gauge-arc { fill: none; stroke: var(--gauge, var(--tj-accent)); stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--gauge, var(--tj-accent)) 55%, transparent)); }
+.tjbot-gauge.is-win { --gauge: var(--tj-win); }
+.tjbot-gauge.is-accent { --gauge: var(--tj-accent); }
+.tjbot-gauge.is-loss { --gauge: var(--tj-loss); }
+
+.tjbot-gauge-value { position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; padding-top: 37px; line-height: 1; }
+.tjbot-gauge-value strong { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+.tjbot-gauge-value small { margin-left: 2px; font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+
+.tjbot-pulse-text { display: flex; flex: 1; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.tjbot-pulse-text > strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+
+.tjbot-parts { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.4rem 0 0; padding: 0; list-style: none; }
+
+.tjbot-parts li {
+  display: grid;
+  grid-template-columns: 5.2rem minmax(0, 1fr);
+  grid-template-areas: "label bar" "hint hint";
+  align-items: center;
+  gap: 0.1rem 0.6rem;
+}
+
+.tjbot-part-label { grid-area: label; font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); }
+.tjbot-part-bar { grid-area: bar; height: 6px; overflow: hidden; border-radius: 999px; background: var(--tj-surface-2); }
+.tjbot-part-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c98f35, var(--tj-accent)); }
+.tjbot-part-bar.is-empty { background: repeating-linear-gradient(90deg, var(--tj-surface-2) 0 4px, transparent 4px 8px); }
+.tjbot-part-hint { grid-area: hint; overflow: hidden; font-size: 0.66rem; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+
+/* ── Pie ── */
+
+.tjbot-foot { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 0.9rem 0.9rem; border-top: 1px solid var(--hairline); }
+
+.tjbot-back {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  background: var(--tj-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.tjbot-back:hover:not(:disabled) { background: var(--tj-surface-2); color: var(--text-primary); }
+.tjbot-back:disabled { opacity: 0.3; cursor: default; }
+
+.tjbot-count { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
+
+.tjbot-next {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  grid-template-areas: "kicker icon arrow" "label icon arrow";
+  align-items: center;
+  column-gap: 0.6rem;
+  margin-left: auto;
+  padding: 0.45rem 0.6rem 0.45rem 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(230, 180, 85, 0.45);
+  border-radius: 14px;
+  background: linear-gradient(100deg, rgba(230, 180, 85, 0.18), rgba(230, 180, 85, 0.05));
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Un brillo que cruza el botón al pasar el ratón. */
+.tjbot-next::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.14) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+}
+
+.tjbot-next:hover { transform: translateY(-1px); border-color: var(--tj-accent); box-shadow: 0 12px 26px -16px rgba(230, 180, 85, 0.9); }
+.tjbot-next:hover::after { transform: translateX(120%); }
+.tjbot-next:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjbot-next-kicker { grid-area: kicker; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjbot-next-label { grid-area: label; font-family: var(--font-display); font-size: 0.88rem; font-weight: 600; white-space: nowrap; }
+.tjbot-next-icon { grid-area: icon; font-size: 1.25rem; line-height: 1; }
+.tjbot-next-arrow { grid-area: arrow; color: var(--tj-accent); animation: tjbot-nudge 1.4s ease-in-out infinite; }
+.tjbot-next.is-done { grid-template-areas: "label icon"; grid-template-columns: auto auto; padding: 0.6rem 0.9rem 0.6rem 1rem; }
+
+@media (max-width: 520px) {
+  .tjbot-pulse { flex-direction: column; align-items: stretch; }
+  .tjbot-gauge { align-self: center; }
+  .tjbot-next-kicker { display: none; }
+  .tjbot-next { grid-template-areas: "label icon arrow"; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nh *,
+  .nh-float,
+  .tjbot-shadow,
+  .tjbot-next-arrow,
+  .tjbot-ping::after,
+  .tjbot-typing i,
+  .tjh-ic,
+  .tjh-aura,
+  .tjh-rays,
+  .tjh-legend-glow,
+  .tjh-legend-sparks i { animation: none !important; }
+  .nh-look { transition: none; }
+}
+
+
+/* Balance en la cabecera: la cifra más grande de todo el diario. */
+.tjb {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.1rem 1.25rem 0.9rem;
+  border: 1px solid rgba(230, 180, 85, 0.22);
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(230, 180, 85, 0.09), transparent 60%), rgba(7, 12, 24, 0.35);
+}
+
+.tjb-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.tjb-eyebrow { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjb-tools { display: flex; gap: 0.35rem; }
+.tjb-tools .tj-icon-btn { width: 30px; height: 30px; border-radius: 9px; }
+
+.tjb-main { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.8rem; }
+
+.tjb-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3vw, 2.45rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  color: var(--tone, var(--text-primary));
+}
+
+.tjb-pct {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.tjb-sub { font-size: 0.78rem; line-height: 1.45; color: var(--text-muted); }
+.tjb-sub strong { font-weight: 700; }
+
+.tjb-cta {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--tj-accent);
+  font: 600 0.8rem/1.45 var(--font-family);
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: var(--tj-accent-line);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.tjb-form { display: flex; flex-direction: column; gap: 0.7rem; }
+.tjb-form .auth-error { margin: 0; }
+.tjb .tj-spark { height: 40px; margin-top: 0.2rem; }
+
+/* ── Barra superior y avisos ── */
+
+/* Sin cabecera: vistas a la izquierda, «Nueva operación» a la derecha, fija al hacer scroll. */
+.tj-topbar {
+  position: sticky;
+  top: calc(var(--nav-h) + 0.5rem);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+}
+
+.tj-new { display: inline-flex; align-items: center; gap: 0.4rem; flex-shrink: 0; margin-left: auto; }
 
 .tj-alert {
   border-color: color-mix(in srgb, var(--tj-loss) 35%, transparent);
@@ -558,83 +1282,921 @@
 
 .tj-scroll-anchor { scroll-margin-top: calc(var(--nav-h) + 1rem); }
 
-/* ── Resumen de rentabilidad ── */
+/* ── Resumen ──
+ * Un panel de control: el calendario manda, la cuenta va a su lado, y debajo la
+ * curva, las últimas operaciones, el próximo hito y las lecturas.
+ * Prefijos: tjr- (maqueta), tjc- (calendario), tja- (cuenta), tje- (curva),
+ * tjt- (últimas operaciones), tjm- (hito).
+ */
 
-.tj-hero {
-  background:
-    radial-gradient(120% 140% at 0% 0%, rgba(230, 180, 85, 0.13), transparent 55%),
-    radial-gradient(80% 120% at 100% 100%, rgba(126, 166, 255, 0.06), transparent 60%),
-    var(--tj-panel);
-  border-color: rgba(230, 180, 85, 0.18);
+/* El calendario a todo el ancho; la cuenta, debajo, en una franja horizontal. */
+.tjr-top { display: flex; flex-direction: column; gap: 1.25rem; }
+/* Misma altura en las dos: sin huecos debajo de la más corta. */
+.tjr-duo { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: stretch; gap: 1.25rem; }
+
+/* Cabecera de tarjeta del Resumen: título en la fuente de titulares, sin icono. */
+.tjr-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  margin-bottom: 1.1rem;
 }
 
-.tj-hero-caption {
-  display: block;
-  font-size: 0.72rem;
+.tjr-head h3 {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.07em;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.tjr-head > .tj-count { align-self: center; }
+
+.tjr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--tj-accent);
+  font: 600 0.8rem var(--font-family);
+  cursor: pointer;
+}
+
+.tjr-link svg { transition: transform 0.15s; }
+.tjr-link:hover svg { transform: translateX(3px); }
+
+/* Long / short: la misma pastilla en el calendario y en las últimas operaciones. */
+.tj-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.08rem 0.4rem 0.08rem 0.3rem;
+  border-radius: 6px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tj-dir.is-long { background: rgba(95, 211, 154, 0.1); color: var(--tj-win); }
+.tj-dir.is-short { background: rgba(255, 92, 92, 0.1); color: var(--tj-loss); }
+
+/* ── Calendario ── */
+
+.tjc { padding: 1.4rem 1.5rem 1.5rem; }
+
+.tjc-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem 1rem; margin-bottom: 1.1rem; }
+.tjc-head-main { display: flex; align-items: center; gap: 1rem; }
+.tjc-head-tools { display: flex; align-items: center; gap: 0.5rem; }
+
+.tjc-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+}
+
+.tjc-year { font-weight: 500; color: var(--text-muted); }
+
+.tjc-nav {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: 11px;
+  background: var(--tj-surface);
+}
+
+.tjc-nav button {
+  display: inline-grid;
+  place-items: center;
+  height: 30px;
+  min-width: 32px;
+  padding: 0 0.55rem;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-secondary);
+  font: 600 0.8rem var(--font-family);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tjc-nav button:hover:not(:disabled) { background: var(--tj-surface-2); color: var(--text-primary); }
+.tjc-nav .tjc-today { padding: 0 0.85rem; }
+.tjc-nav .tjc-today:disabled { color: var(--text-muted); opacity: 0.6; cursor: default; }
+
+/* Franja del mes: cinco lecturas separadas por filetes, la primera destacada. */
+.tjc-band {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 13px;
+  background: var(--hairline);
+}
+
+.tjc-band > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  padding: 0.7rem 0.95rem;
+  background: var(--tj-panel-solid);
+}
+
+.tjc-band dt {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.tj-hero-value {
-  display: block;
-  margin: 0.2rem 0 0.55rem;
+.tjc-band dd {
+  margin: 0;
+  overflow: hidden;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   color: var(--tone, var(--text-primary));
 }
 
-.tj-hero-sub {
-  display: flex;
+.tjc-band .tjc-band-main {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--tone) 14%, var(--tj-panel-solid)), var(--tj-panel-solid));
+}
+
+.tjc-band .tjc-band-main dd:not(.tjc-band-diff) { font-size: 1.3rem; letter-spacing: -0.02em; }
+
+/* Comparación con el mes anterior, bajo el resultado. */
+.tjc-band dd.tjc-band-diff {
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin: 0;
-  font-size: 0.86rem;
-  line-height: 1.5;
+  gap: 0.2rem;
+  font-family: var(--font-family);
+  font-size: 0.68rem;
+  font-weight: 700;
+  white-space: normal;
+}
+
+/* Siete días y una columna de semana, separada por un hueco mayor. */
+.tjc-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 9rem; gap: 8px; }
+
+.tjc-weekdays {
+  margin-bottom: 0.45rem;
+  text-align: center;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.tjc-weekdays .is-weekend { opacity: 0.5; }
+.tjc-weekhead { margin-left: 8px; padding-right: 0.7rem; text-align: right; }
+
+/* clip, no hidden: recorta el deslizamiento lateral sin cortar el resalte de las celdas. */
+.tjc-viewport { overflow-x: clip; }
+
+/*
+ * Celda del día: cinco huecos fijos y ninguno compartido.
+ *
+ *   num    mood     ← número del día · emoji de ánimo (caja fija de 22 px)
+ *   pnl    pnl      ← resultado del día (o «¿Qué tal hoy?»)
+ *   dots   flags    ← un punto por operación · nota y mejor día (iconos de 12 px)
+ *
+ * container-type: lo que se oculta depende del ancho de la CASILLA, no de la
+ * pantalla (ver los @container más abajo). Así no hay ancho en que se pisen.
+ */
+.tjc-day {
+  position: relative;
+  container: tjc-day / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "num  mood"
+    "pnl  pnl"
+    "dots flags";
+  align-items: center;
+  gap: 0.25rem 0.3rem;
+  min-width: 0;
+  min-height: 108px;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid rgba(240, 244, 255, 0.05);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.02);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.tjc-day.is-empty { border-color: transparent; background: none; }
+.tjc-day.is-weekend:not(.has-data) { background: rgba(240, 244, 255, 0.008); }
+.tjc-day.is-weekend:not(.has-data) .tjc-num { opacity: 0.45; }
+
+.tjc-day.has-data {
+  cursor: pointer;
+  border-color: color-mix(in srgb, var(--tone) 32%, transparent);
+  background:
+    linear-gradient(165deg,
+      color-mix(in srgb, var(--tone) calc(var(--intensity) * 30%), transparent),
+      color-mix(in srgb, var(--tone) calc(var(--intensity) * 8%), transparent));
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.tjc-day.has-data:hover {
+  z-index: 2;
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tone) 70%, transparent);
+  box-shadow: 0 12px 26px -16px color-mix(in srgb, var(--tone) 80%, transparent);
+}
+
+.tjc-day.has-data:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjc-day.is-selected {
+  border-color: var(--tj-accent);
+  box-shadow: 0 0 0 1px var(--tj-accent), 0 14px 30px -16px rgba(230, 180, 85, 0.7);
+}
+
+.tjc-num {
+  grid-area: num;
+  justify-self: start;
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  margin: -2px 0 0 -3px;
+  border-radius: 7px;
+  font-family: var(--font-display);
+  font-size: 0.84rem;
+  font-weight: 600;
   color: var(--text-secondary);
 }
 
-.tj-hero-metrics {
+.tjc-day.has-data .tjc-num { color: var(--text-primary); }
+.tjc-day.is-today .tjc-num { background: var(--text-primary); color: var(--bg-dark); }
+
+/* Día pasado sin operaciones: al pasar el ratón ofrece apuntar una. */
+.tjc-day.is-open { cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.tjc-day.is-open:hover { border-color: var(--tj-accent-line); }
+.tjc-day.is-open:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+
+/* Días que aún no han llegado: presentes pero apagados. */
+.tjc-day.is-future { background: none; border-style: dashed; border-color: rgba(240, 244, 255, 0.04); }
+.tjc-day.is-future .tjc-num { opacity: 0.35; }
+
+/* ── Vista Año: doce meses en miniatura ── */
+
+.tjy-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+
+.tjy-month {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 0.9rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--tone, #f0f4ff) 24%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--tone, #f0f4ff) 8%, transparent), transparent 60%), rgba(240, 244, 255, 0.02);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.tjy-month.is-quiet { border-color: var(--hairline); background: rgba(240, 244, 255, 0.015); }
+.tjy-month.is-now { box-shadow: 0 0 0 1px rgba(240, 244, 255, 0.35); }
+
+.tjy-month:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--tone, var(--tj-accent)) 60%, transparent);
+  box-shadow: 0 14px 30px -18px color-mix(in srgb, var(--tone, var(--tj-accent)) 80%, transparent);
+}
+
+.tjy-month:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjy-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.tjy-name { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+.tjy-head strong { overflow: hidden; font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; color: var(--tone, var(--text-muted)); }
+
+.tjy-mini { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.tjy-mini i { aspect-ratio: 1; border-radius: 3px; background: rgba(240, 244, 255, 0.05); }
+.tjy-mini i.is-empty { background: none; }
+.tjy-mini i.has-data { background: color-mix(in srgb, var(--tone) calc(var(--intensity) * 100%), transparent); }
+
+.tjy-meta { overflow: hidden; font-size: 0.68rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+
+
+.tjc-pnl {
+  grid-area: pnl;
+  align-self: end;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--tone);
+}
+
+/* Un punto por operación, del color de su resultado. */
+.tjc-dots { grid-area: dots; display: flex; align-items: center; gap: 3px; min-width: 0; height: 12px; overflow: hidden; }
+.tjc-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--tone); }
+.tjc-dots em { font-size: 0.6rem; font-style: normal; font-weight: 700; color: var(--text-muted); }
+
+/* La semana no es un día más: marco propio y lectura alineada a la derecha. */
+.tjc-week {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.15rem;
+  min-width: 0;
+  margin-left: 8px;
+  padding: 0.5rem 0.75rem;
+  border-left: 2px solid color-mix(in srgb, var(--tone, var(--tj-accent)) 70%, transparent);
+  border-radius: 4px 12px 12px 4px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tone, var(--tj-accent)) 11%, transparent), rgba(240, 244, 255, 0.015));
+  text-align: right;
+}
+
+.tjc-week.is-quiet { border-left-color: var(--hairline); background: rgba(240, 244, 255, 0.015); }
+.tjc-week-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+.tjc-week strong { font-family: var(--font-display); font-size: 0.98rem; font-weight: 600; color: var(--tone); }
+.tjc-week-meta { font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
+
+/* Detalle del día pulsado: se despliega bajo el calendario, en PC y en móvil. */
+.tjc-detail { overflow: hidden; }
+
+.tjc-detail-inner {
+  margin-top: 1.1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--tj-accent-line);
+  border-radius: 13px;
+  background: linear-gradient(160deg, rgba(230, 180, 85, 0.07), transparent 60%), rgba(7, 12, 24, 0.35);
+}
+
+.tjc-detail-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+.tjc-detail-head > div:first-child { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; margin-right: auto; }
+.tjc-detail-date { font-family: var(--font-display); font-size: 1rem; font-weight: 600; text-transform: capitalize; color: var(--text-primary); }
+.tjc-detail-meta { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+.tjc-detail-total { display: flex; flex-direction: column; align-items: flex-end; gap: 0.05rem; }
+.tjc-detail-total strong { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+.tjc-detail-total span { font-size: 0.74rem; font-weight: 700; }
+
+.tjc-detail-list { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+
+.tjc-detail-list li {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1.2fr) minmax(0, 1fr) 4.5rem 6.5rem 30px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-left: 2px solid var(--tone);
+  border-radius: 4px 9px 9px 4px;
+  background: var(--tj-surface);
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+}
+
+.tjc-detail-time { font-size: 0.76rem; font-weight: 600; color: var(--text-muted); }
+.tjc-detail-pair { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--text-primary); }
+.tjc-detail-strategy { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.78rem; color: var(--text-muted); }
+.tjc-detail-r { text-align: right; font-weight: 700; }
+.tjc-detail-list strong { text-align: right; font-weight: 700; }
+.tjc-detail-list .tj-icon-btn { width: 28px; height: 28px; opacity: 0.7; }
+.tjc-detail-list li:hover .tj-icon-btn { opacity: 1; }
+
+.tjc-detail-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px dashed var(--tj-accent-line);
+  border-radius: 9px;
+  background: none;
+  color: var(--tj-accent);
+  font: 600 0.78rem var(--font-family);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tjc-detail-add:hover { background: var(--tj-accent-soft); }
+
+/* ── Ánimo ──
+ * Cuatro colores propios, distintos del verde/rojo del dinero: el ánimo no es
+ * un resultado y no debe confundirse con uno. .mood-N fija --mood.
+ */
+
+.trading-journal {
+  --mood-4: #6ee7b7;
+  --mood-3: #8ab8ff;
+  --mood-2: #f5b860;
+  --mood-1: #ff7a7a;
+}
+
+.trading-journal .mood-4 { --mood: var(--mood-4); }
+.trading-journal .mood-3 { --mood: var(--mood-3); }
+.trading-journal .mood-2 { --mood: var(--mood-2); }
+.trading-journal .mood-1 { --mood: var(--mood-1); }
+
+/* En la celda del día: número, corona y marcas en una fila. */
+.tjc-mood {
+  grid-area: mood;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  font-size: 1.05rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.tjc-flags { grid-area: flags; display: inline-flex; align-items: center; gap: 4px; height: 12px; }
+.tjc-flag-note { color: var(--text-muted); }
+.tjc-flag-best { color: var(--premium-gold); }
+
+/* Un día sin operaciones pero con ánimo toma un velo de su color. */
+.tjc-day.is-open[class*="mood-"] {
+  border-color: color-mix(in srgb, var(--mood) 26%, transparent);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--mood) 10%, transparent), transparent 70%);
+}
+
+/* Día pasado sin operaciones: un «+» discreto que se enciende al pasar el ratón. */
+.tjc-plus {
+  grid-area: pnl;
+  align-self: end;
+  justify-self: start;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px dashed rgba(240, 244, 255, 0.14);
+  border-radius: 8px;
+  color: var(--text-muted);
+  opacity: 0.55;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.tjc-day.is-open:hover .tjc-plus,
+.tjc-day.is-open:focus-visible .tjc-plus {
+  opacity: 1;
+  border-style: solid;
+  border-color: var(--tj-accent-line);
+  background: var(--tj-accent-soft);
+  color: var(--tj-accent);
+}
+
+.tjc-band-mood dd { display: flex; align-items: center; gap: 0.35rem; }
+
+/* Casilla estrecha (pantallas medianas): el importe más pequeño y fuera las marcas. */
+@container tjc-day (max-width: 96px) {
+  .tjc-pnl { font-size: 0.78rem; }
+  .tjc-flags { display: none; }
+}
+
+/* Casilla mínima (móvil): número, ánimo y puntos, en columna y centrados. Lo demás, al pulsar. */
+@container tjc-day (max-width: 64px) {
+  .tjc-num,
+  .tjc-mood,
+  .tjc-dots { grid-column: 1 / -1; justify-self: center; }
+  .tjc-num { grid-row: 1; }
+  .tjc-mood { grid-row: 2; }
+  .tjc-dots { grid-row: 3; }
+  .tjc-pnl,
+  .tjc-plus { display: none; }
+  .tjc-mood { width: 18px; height: 18px; font-size: 0.85rem; }
+  .tjc-dots { justify-content: center; }
+  .tjc-dots i { width: 5px; height: 5px; }
+  .tjc-dots em { display: none; }
+}
+
+/* ── Panel del día: ánimo y nota ── */
+
+/* Dentro del formulario de operación: entre las cifras y los botones, con filetes arriba y abajo. */
+.tjd {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 1rem 1.5rem;
+  margin: 0 0 1.1rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tjd-q {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-bottom: 0.65rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tjd-hint { font-family: var(--font-family); font-size: 0.72rem; font-weight: 500; color: var(--text-muted); }
+
+.tjd-moods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+
+.tjd-mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.75rem 0.3rem 0.6rem;
+  border: 1px solid var(--hairline);
+  border-radius: 13px;
+  background: var(--tj-surface);
+  color: var(--text-muted);
+  font: 600 0.72rem var(--font-family);
+  cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.tjd-emoji { font-size: 1.75rem; line-height: 1; filter: grayscale(0.55) opacity(0.75); transition: filter 0.15s, transform 0.15s; }
+
+.tjd-mood-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: color-mix(in srgb, var(--mood) 45%, transparent); color: var(--text-primary); }
+.tjd-mood-btn:hover .tjd-emoji { filter: none; transform: scale(1.08); }
+.tjd-mood-btn:focus-visible { outline: 2px solid var(--mood); outline-offset: 2px; }
+.tjd-mood-btn:disabled { cursor: progress; }
+
+.tjd-mood-btn.is-on {
+  border-color: var(--mood);
+  background: linear-gradient(170deg, color-mix(in srgb, var(--mood) 22%, transparent), color-mix(in srgb, var(--mood) 6%, transparent));
+  box-shadow: 0 10px 24px -14px var(--mood);
+  color: var(--text-primary);
+}
+
+.tjd-mood-btn.is-on .tjd-emoji { filter: none; transform: scale(1.12); }
+
+.tjd-note textarea {
+  width: 100%;
+  min-height: 92px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--hairline);
+  border-radius: 11px;
+  background: rgba(7, 12, 24, 0.4);
+  color: var(--text-primary);
+  font: 0.88rem/1.55 var(--font-family);
+  resize: vertical;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.tjd-note textarea::placeholder { color: var(--text-muted); }
+.tjd-note textarea:focus { outline: none; border-color: var(--tj-accent); box-shadow: 0 0 0 3px var(--tj-accent-soft); }
+
+.tjd-note-foot { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
+.tjd-count { margin-right: auto; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
+.tjd-count.is-near { color: var(--mood-2); }
+.tjd-saved { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.74rem; font-weight: 700; color: var(--tj-win); }
+.tjd-error { font-size: 0.74rem; font-weight: 600; color: var(--tj-loss); }
+
+/* ── Emociones ── */
+
+.tjm2-head .tjn-kpi-value small { font-size: 0.55em; font-weight: 600; color: var(--text-muted); }
+.tjm2-racha { display: inline-flex; align-items: center; gap: 0.35rem; }
+.tjm2-racha svg { color: var(--mood-2); }
+.tjm2-emoji { font-size: 1.25rem; line-height: 1; }
+
+.tjm2-empty { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; padding: 2.5rem 1.5rem; text-align: center; }
+.tjm2-empty-emojis { font-size: 2rem; letter-spacing: 0.3rem; }
+.tjm2-empty h3 { margin: 0; font-family: var(--font-display); font-size: 1.3rem; color: var(--text-primary); }
+.tjm2-empty p { max-width: 54ch; margin: 0 0 0.4rem; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); }
+
+/* Últimos 30 días: una tira de casillas con su emoji y una línea de resultado. */
+.tjm2-strip { display: grid; grid-template-columns: repeat(30, minmax(0, 1fr)); gap: 4px; margin: 0; padding: 0; list-style: none; }
+
+.tjm2-strip li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 0.45rem 0 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--mood, #f0f4ff) 30%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--mood, #f0f4ff) 9%, transparent);
+}
+
+.tjm2-strip li.is-blank { border-color: rgba(240, 244, 255, 0.05); background: rgba(240, 244, 255, 0.015); }
+.tjm2-strip li.is-today { box-shadow: 0 0 0 1px rgba(240, 244, 255, 0.55); }
+.tjm2-strip-emoji { height: 1.1rem; font-size: 1rem; line-height: 1.1; }
+.tjm2-strip-day { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); }
+.tjm2-strip i { width: 60%; height: 3px; border-radius: 999px; background: var(--tone); }
+.tjm2-strip i.is-none { background: transparent; }
+
+/* Reparto del ánimo. */
+.tjm2-dist { display: flex; flex-direction: column; gap: 0.75rem; margin: 0; padding: 0; list-style: none; }
+
+.tjm2-dist li {
+  display: grid;
+  grid-template-columns: 1.6rem 5.5rem minmax(0, 1fr) 3rem 2rem;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.tjm2-dist-label { font-weight: 600; color: var(--text-primary); }
+.tjm2-dist-bar { height: 10px; overflow: hidden; border-radius: 999px; background: var(--tj-surface-2); }
+.tjm2-dist-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--mood) 50%, transparent), var(--mood)); }
+.tjm2-dist strong { text-align: right; font-family: var(--font-display); color: var(--mood); }
+.tjm2-dist-n { text-align: right; font-size: 0.74rem; color: var(--text-muted); }
+
+/* Ánimo por día de la semana: siete columnas. */
+.tjm2-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; height: 190px; }
+.tjm2-week > div { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; min-width: 0; }
+.tjm2-week-bar { display: flex; flex: 1; align-items: flex-end; width: 100%; max-width: 38px; overflow: hidden; border-radius: 9px; background: var(--tj-surface); }
+.tjm2-week-bar i { display: block; width: 100%; border-radius: 9px; background: linear-gradient(180deg, var(--mood, transparent), color-mix(in srgb, var(--mood, transparent) 25%, transparent)); }
+.tjm2-week-day { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-muted); }
+.tjm2-week .is-blank .tjm2-emoji { color: var(--text-muted); }
+
+/* Ánimo frente a resultado: una tarjeta por ánimo. */
+.tjm2-results { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+
+.tjm2-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--mood) 28%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(170deg, color-mix(in srgb, var(--mood) 10%, transparent), transparent 65%);
+}
+
+.tjm2-result.is-blank { border-color: var(--hairline); background: rgba(240, 244, 255, 0.015); }
+.tjm2-result header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-weight: 700; color: var(--text-primary); }
+.tjm2-result > strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+.tjm2-result-sub { font-size: 0.72rem; color: var(--text-muted); }
+
+.tjm2-result-bar { position: relative; height: 6px; margin: 0.6rem 0 0.3rem; border-radius: 999px; background: var(--tj-surface-2); }
+.tjm2-result-bar::before { content: ""; position: absolute; top: -3px; bottom: -3px; left: 50%; width: 1px; background: rgba(240, 244, 255, 0.25); }
+.tjm2-result-bar i { position: absolute; top: 0; bottom: 0; left: 50%; border-radius: 0 999px 999px 0; background: var(--tj-win); }
+.tjm2-result-bar i.is-neg { left: auto; right: 50%; border-radius: 999px 0 0 999px; background: var(--tj-loss); }
+
+.tjm2-result dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; margin: 0.5rem 0 0; }
+.tjm2-result dt { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.tjm2-result dd { margin: 0; overflow: hidden; font-size: 0.8rem; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; color: var(--tone, var(--text-primary)); }
+
+/* Notas: una entrada de diario por día. */
+.tjm2-notes { display: flex; flex-direction: column; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+
+.tjm2-notes li {
+  display: flex;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border-left: 3px solid var(--mood, var(--hairline));
+  border-radius: 4px 12px 12px 4px;
+  background: var(--tj-surface);
+}
+
+.tjm2-note-emoji { flex-shrink: 0; font-size: 1.4rem; line-height: 1.2; }
+.tjm2-notes li > div { min-width: 0; flex: 1; }
+.tjm2-notes header { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.7rem; margin-bottom: 0.3rem; }
+.tjm2-note-date { font-family: var(--font-display); font-size: 0.9rem; font-weight: 600; text-transform: capitalize; color: var(--text-primary); }
+.tjm2-note-mood { font-size: 0.72rem; font-weight: 700; color: var(--mood, var(--text-muted)); }
+.tjm2-notes header strong { margin-left: auto; font-size: 0.82rem; }
+.tjm2-notes p { margin: 0; font-size: 0.87rem; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; color: var(--text-secondary); }
+
+/* ── Cuenta (franja bajo el calendario) ──
+ * Dos zonas iguales en estructura, separadas por un filete:
+ *   cabecera (título dorado y, si toca, una acción), 34 px en las dos
+ *   contenido, centrado en vertical
+ * Anillo de acierto con los recuentos en fila · cuatro métricas.
+ * El balance no está aquí: vive en la cabecera del diario (TjBalance, .tjb).
+ */
+
+.tja {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
+  padding: 1.6rem 0;
+  background:
+    radial-gradient(130% 80% at 0% 0%, rgba(230, 180, 85, 0.12), transparent 55%),
+    var(--tj-panel);
+  border-color: rgba(230, 180, 85, 0.2);
+}
+
+.tja-zone { display: flex; flex-direction: column; gap: 1rem; min-width: 0; padding: 0 2rem; }
+.tja-zone + .tja-zone { border-left: 1px solid var(--hairline); }
+
+.tja-zone-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; min-height: 34px; }
+
+.tja-eyebrow {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--tj-accent-2);
+}
+
+
+/* La minicurva (la usa el balance de la cabecera). */
+.tj-spark { display: block; width: 100%; height: 56px; overflow: visible; }
+.tj-spark-base { stroke: rgba(240, 244, 255, 0.18); stroke-dasharray: 3 3; stroke-width: 1; }
+
+/* Zona 2: anillo centrado y, debajo, los tres recuentos en fila. */
+.tja-ops { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem; }
+
+.tja-ring { position: relative; flex-shrink: 0; width: 112px; height: 112px; }
+.tja-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.tja-ring-track { fill: none; stroke: var(--tj-surface-2); stroke-width: 8; }
+.tja-ring-arc { fill: none; stroke: var(--tone); stroke-width: 8; stroke-linecap: round; }
+
+.tja-ring-value {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  line-height: 1;
+}
+
+.tja-ring-value strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+
+/* El % más pequeño y separado: «100 %» no choca con el trazo. */
+.tja-ring-value strong span { margin-left: 0.1em; font-size: 0.6em; font-weight: 600; color: var(--text-secondary); }
+.tja-ring-value small { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted); }
+
+/* Cada recuento con aire a los lados: el filete no toca el punto de color. */
+.tja-counts { display: grid; grid-template-columns: repeat(3, auto); justify-content: center; margin: 0.35rem 0 0; padding: 0; list-style: none; }
+
+.tja-counts li { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; min-width: 0; padding: 0.1rem 1.4rem; }
+.tja-counts li + li { border-left: 1px solid var(--hairline); }
+.tja-counts strong { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; line-height: 1.1; color: var(--text-primary); }
+
+.tja-counts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.tja-counts i { width: 7px; height: 7px; flex-shrink: 0; border-radius: 2px; background: var(--tone); }
+
+.tja-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--tone);
+}
+
+/* Zona 3: cuatro métricas, centradas en vertical. */
+.tja-metrics {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  gap: 1.5rem 1.75rem;
+  margin: 0;
+}
+
+.tja-metrics .tj-metric { gap: 0.35rem; }
+.tja-metrics .tj-metric dt { font-size: 0.62rem; letter-spacing: 0.09em; }
+.tja-metrics .tj-metric dd:not(.tj-metric-sub) { font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
+.tja-metrics .tj-metric dd.tj-metric-sub { overflow: hidden; font-size: 0.76rem; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+
+/* ── Curva de capital ── */
+
+.tje-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
-  margin: 1.4rem 0 0;
-  padding-top: 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0 0 1.1rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tje-stats > div { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.tje-stats dt { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.tje-stats dd { margin: 0; overflow: hidden; font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--tone, var(--text-primary)); }
+
+.tje .tj-chart { height: 320px; }
+
+/* ── Últimas operaciones ── */
+
+.tjt { display: flex; flex-direction: column; }
+/* El margen inferior separa el pie cuando la lista llena la tarjeta; si hay poca, el pie baja solo (margin-top: auto). */
+.tjt-list { display: flex; flex-direction: column; gap: 6px; margin: 0 0 1.1rem; padding: 0; list-style: none; }
+
+.tjt-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.1rem;
   border-top: 1px solid var(--hairline);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-.tj-hero-metrics dt { cursor: help; }
+.tjt-foot-stats { display: inline-flex; align-items: baseline; gap: 0.9rem; }
+.tjt-foot-stats strong { font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
 
-.tj-inline-form { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 0.75rem; }
-.tj-inline-form .field input { width: 180px; }
-.tj-inline-form .auth-error { width: 100%; margin: 0; }
-
-.tj-insights ul { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0 0; padding: 0; list-style: none; }
-
-.tj-insights li {
-  position: relative;
-  padding-left: 1.2rem;
-  font-size: 0.86rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
+.tjt-row {
+  display: grid;
+  grid-template-columns: 2.9rem minmax(0, 1fr) 4.5rem 6.5rem;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.6rem 0.85rem 0.6rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--tj-surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
 }
 
-.tj-insights li::before {
-  content: "";
-  position: absolute;
-  top: 0.5em;
-  left: 0;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--tone);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 20%, transparent);
+.tjt-row:hover { border-color: color-mix(in srgb, var(--tone) 35%, transparent); background: var(--tj-surface-2); }
+.tjt-row:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjt-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 2.9rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 28%, transparent);
+  line-height: 1;
 }
+
+.tjt-date strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+.tjt-date small { margin-top: 0.15rem; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tone); }
+
+.tjt-main { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.tjt-pair { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 700; color: var(--text-primary); }
+.tjt-meta { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 0.74rem; font-weight: 500; color: var(--text-muted); }
+.tjt-r { text-align: right; font-size: 0.82rem; font-weight: 700; }
+.tjt-pnl { text-align: right; font-family: var(--font-display); font-size: 0.98rem; font-weight: 600; }
+
+/* ── Próximo hito ── */
+
+.tjm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  border-color: var(--tj-accent-line);
+  background: linear-gradient(160deg, rgba(230, 180, 85, 0.1), transparent 55%), var(--tj-panel);
+}
+
+.tjm .tjr-head { margin-bottom: 0; }
+.tjm-body { display: flex; align-items: center; gap: 1rem; }
+
+.tjm-ring { position: relative; display: grid; place-items: center; flex-shrink: 0; width: 72px; height: 72px; color: var(--tj-accent); }
+.tjm-ring .tjm-ring-svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.tjm-ring-track { fill: rgba(230, 180, 85, 0.06); stroke: var(--tj-surface-2); stroke-width: 5; }
+.tjm-ring-arc { fill: none; stroke: var(--tj-accent); stroke-width: 5; stroke-linecap: round; }
+
+.tjm-text { min-width: 0; }
+.tjm-level { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjm-text h4 { margin: 0.15rem 0 0.1rem; font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+.tjm-text p { margin: 0; font-size: 0.78rem; line-height: 1.45; color: var(--text-muted); }
+
+.tjm-progress { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.tjm-progress strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; color: var(--tj-accent); }
+.tjm-progress strong span { font-size: 0.9rem; font-weight: 500; color: var(--text-muted); }
+.tjm-progress > span { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+.tjm .tj-bar { height: 7px; }
+.tjm-note { margin: 0; font-size: 0.76rem; line-height: 1.5; color: var(--text-secondary); }
+.tjm-all { align-self: flex-start; }
+
 
 .tj-onboarding ol { display: flex; flex-direction: column; gap: 0.7rem; margin: 1rem 0 1.3rem; padding: 0; list-style: none; }
 .tj-onboarding li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-secondary); }
@@ -656,16 +2218,12 @@
 
 /* ── Filtros y métricas ── */
 
-/* Pestañas de vista: lo único fijo al hacer scroll. */
+/* Pestañas de vista: van dentro de .tj-topbar, que es lo que se queda fijo. */
 .tj-tabs {
-  position: sticky;
-  top: calc(var(--nav-h) + 0.5rem);
-  z-index: 20;
   display: flex;
   align-items: center;
   gap: 0.6rem 1rem;
-  align-self: flex-start;
-  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
   padding: 4px;
   border: var(--card-border);
@@ -679,289 +2237,565 @@
 .tj-tabs .tj-seg button { padding: 0.55rem 1.1rem; font-size: 0.88rem; }
 .tj-tabs .tj-count { padding-right: 0.8rem; white-space: nowrap; }
 
-.tj-filters { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; padding: 0.75rem 1rem; }
+/* Barra de filtros: título con su explicación y los controles en línea. */
+.tj-filters { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; padding: 0.7rem 0.9rem; }
 
-/* Una sola franja: el hueco de 1px deja ver la línea del fondo entre celdas, a cualquier número de columnas. */
-.tj-kpis {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
-  margin: 0;
-  overflow: hidden;
-  background: var(--hairline);
+.tj-filters-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-right: 0.4rem;
+  padding-right: 0.9rem;
+  border-right: 1px solid var(--hairline);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-.tj-card.tj-kpis { padding: 0; }
-
-.tj-kpis .tj-metric { padding: 1rem 1.2rem; background: var(--tj-panel-solid); }
+.tj-filters-title svg { color: var(--tj-accent); }
+.tj-filters-title small { font-family: var(--font-family); font-size: 0.7rem; font-weight: 500; color: var(--text-muted); }
 
 /* ── Gráficos ── */
 
-.tj-split { display: grid; grid-template-columns: minmax(0, 1fr) 320px; align-items: start; gap: 1.25rem; }
-.tj-split.is-balanced { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: stretch; }
-.tj-split > :only-child { grid-column: 1 / -1; }
-.tj-split:empty { display: none; }
 .tj-chart { height: 300px; }
-.tj-chart.is-short { height: 200px; margin-bottom: 1.1rem; }
 
-.tj-hist-card { display: flex; flex-direction: column; }
-.tj-hist { display: grid; flex: 1; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; min-height: 150px; margin-top: 1rem; }
-.tj-hist div { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 0.3rem; min-width: 0; }
+/* ── Análisis ──
+ * Prefijo tjn-. Mismo lenguaje que el Resumen: titulares sin icono, franjas
+ * con filetes y color solo donde dice algo.
+ */
 
-.tj-hist i {
-  width: 100%;
-  min-height: 2px;
-  border-radius: 5px 5px 2px 2px;
-  background: linear-gradient(180deg, var(--tone), color-mix(in srgb, var(--tone) 30%, transparent));
+/* Cuatro cifras clave, en una franja continua. */
+.tjn-head {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  background: var(--hairline);
+  box-shadow: var(--card-shadow);
 }
 
-.tj-hist strong { font-size: 0.75rem; }
-.tj-hist span { font-size: 0.6rem; font-weight: 600; white-space: nowrap; color: var(--text-muted); }
-
-/* ── Calendario ── */
-
-.tj-cal-nav { display: flex; align-items: center; gap: 0.5rem; }
-.tj-cal-nav .tj-label { justify-content: center; min-width: 11.5rem; }
-.tj-cal-year { font-weight: 500; color: var(--text-muted); }
-
-/* Resumen del mes: cuatro mini-métricas en vez de una frase corrida. */
-.tj-cal-stats { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 0; }
-
-.tj-cal-stat {
+.tjn-kpi {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
-  min-width: 5.2rem;
-  padding: 0.38rem 0.75rem;
-  border: 1px solid var(--hairline);
-  border-radius: 10px;
-  background: var(--tj-surface);
+  gap: 0.3rem;
+  min-width: 0;
+  padding: 1.2rem 1.35rem 1.15rem;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--tone, transparent) 8%, transparent), transparent 70%),
+    var(--tj-panel-solid);
 }
 
-.tj-cal-stat dt { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
-.tj-cal-stat dd { margin: 0; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--tone, var(--text-primary)); }
+.tjn-kpi:first-child { border-radius: 17px 0 0 17px; }
+.tjn-kpi:last-child { border-radius: 0 17px 17px 0; }
+.tjn-kpi dd { margin: 0; }
 
-.tj-cal-stat.is-main {
-  border-color: color-mix(in srgb, var(--tone) 38%, transparent);
-  background: color-mix(in srgb, var(--tone) 10%, transparent);
-}
-
-.tj-cal-stat.is-main dd { font-size: 1.05rem; }
-
-/* Siete días y una columna de semana, separada por un hueco mayor. */
-.tj-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)) 7.4rem; gap: 6px; }
-
-.tj-cal-weekdays {
-  margin-bottom: 0.5rem;
-  text-align: center;
-  font-size: 0.7rem;
+.tjn-kpi dt {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.tj-cal-weekdays .is-weekend { opacity: 0.55; }
-.tj-cal-weekhead { margin-left: 10px; padding-right: 0.7rem; text-align: right; color: var(--tj-accent-2); }
+.tjn-kpi-value {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--tone, var(--text-primary));
+}
 
-/* clip, no hidden: recorta el deslizamiento lateral sin cortar el tooltip de la primera fila. */
-.tj-cal-viewport { overflow-x: clip; }
+.tjn-kpi-sub { font-size: 0.74rem; font-weight: 500; line-height: 1.4; color: var(--text-muted); }
 
-.tj-cal-day {
+/* Ganadas, BE y perdidas en una sola barra. */
+.tjn-kpi dd.tjn-split-bar { display: flex; gap: 2px; height: 5px; margin-top: 0.4rem; overflow: hidden; border-radius: 999px; }
+.tjn-split-bar i { display: block; height: 100%; background: var(--tone); }
+.tjn-split-bar i:first-child { border-radius: 999px 0 0 999px; }
+.tjn-split-bar i:last-child { border-radius: 0 999px 999px 0; }
+
+
+/* Ganadoras frente a perdedoras. */
+.tjn-duel-bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.1rem; }
+.tjn-duel-bars span { display: block; height: 8px; overflow: hidden; border-radius: 999px; background: var(--tj-surface-2); }
+.tjn-duel-bars i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--tone) 45%, transparent), var(--tone)); }
+
+.tjn-duel-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+
+.tjn-duel-table th,
+.tjn-duel-table td { padding: 0.65rem 0.4rem; border-bottom: 1px solid rgba(240, 244, 255, 0.05); }
+
+.tjn-duel-table tr:last-child th,
+.tjn-duel-table tr:last-child td { border-bottom: 0; }
+
+.tjn-duel-table thead th {
+  padding-top: 0;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.tjn-duel-table tbody th { text-align: left; font-weight: 500; color: var(--text-secondary); }
+.tjn-duel-table td { width: 30%; text-align: right; font-family: var(--font-display); font-weight: 600; }
+.tjn-duel-table tbody tr:last-child td { font-size: 1.05rem; font-weight: 700; }
+
+/* Rendimiento por periodo: franja de lecturas y gráfico. */
+.tjn-band {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  margin: 0 0 1.2rem;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 13px;
+  background: var(--hairline);
+}
+
+.tjn-band .tj-metric { padding: 0.75rem 1rem; background: var(--tj-panel-solid); }
+.tjn-band .tj-metric dd:not(.tj-metric-sub) { font-size: 1.1rem; }
+.tjn-period-chart { height: 220px; margin-bottom: 1.1rem; }
+
+/* Distribución en R y riesgo, lado a lado. */
+.tjn-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: stretch; gap: 1.25rem; }
+
+.tjn-hist { display: flex; flex-direction: column; }
+
+.tjn-hist-bars {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  min-height: 200px;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tjn-hist-bars div { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 0.35rem; height: 100%; min-width: 0; }
+
+.tjn-hist-bars i {
+  width: 100%;
+  max-width: 46px;
+  border-radius: 7px 7px 3px 3px;
+  background: linear-gradient(180deg, var(--tone), color-mix(in srgb, var(--tone) 25%, transparent));
+}
+
+.tjn-hist-bars strong { font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; color: var(--tone); }
+.tjn-hist-axis { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; margin-top: 0.5rem; }
+.tjn-hist-axis span { overflow: hidden; text-align: center; font-size: 0.64rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+
+.tjn-risk-list { display: flex; flex-direction: column; margin: 0; }
+
+.tjn-risk-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.05);
+}
+
+.tjn-risk-list > div:last-child { border-bottom: 0; padding-bottom: 0; }
+.tjn-risk-list > div:first-child { padding-top: 0; }
+.tjn-risk-list .tone-none { --tone: var(--text-muted); }
+
+.tjn-risk-list dt {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  min-height: 88px;
-  padding: 0.5rem 0.55rem;
-  border: 1px solid rgba(240, 244, 255, 0.05);
-  border-radius: 12px;
-  background: rgba(240, 244, 255, 0.022);
-  transition: transform 0.15s, border-color 0.15s;
+  min-width: 0;
+  padding-left: 1.1rem;
 }
 
-.tj-cal-day.is-empty { border-color: transparent; background: none; }
-.tj-cal-day.is-weekend:not(.has-data) { background: rgba(240, 244, 255, 0.01); }
-.tj-cal-day.is-weekend:not(.has-data) .tj-cal-num { opacity: 0.55; }
-
-.tj-cal-day.has-data {
-  cursor: pointer;
-  border-color: color-mix(in srgb, var(--tone) 35%, transparent);
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--tone) calc(var(--intensity) * 32%), transparent),
-    color-mix(in srgb, var(--tone) calc(var(--intensity) * 10%), transparent)
-  );
-}
-
-.tj-cal-day.has-data:hover { z-index: 5; transform: translateY(-2px); border-color: color-mix(in srgb, var(--tone) 65%, transparent); }
-
-.tj-cal-day.is-today { border-color: rgba(240, 244, 255, 0.5); }
-
-.tj-cal-day.is-best {
-  border-color: var(--premium-gold);
-  box-shadow: 0 0 0 1px rgba(230, 180, 85, 0.3), 0 10px 26px -14px rgba(230, 180, 85, 0.6);
-}
-
-.tj-cal-num {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-display);
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--tone, var(--text-secondary));
-}
-
-.tj-cal-day.is-today .tj-cal-num::after {
-  content: "Hoy";
-  padding: 0.05rem 0.4rem;
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.12);
-  font-family: var(--font-family);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-primary);
-}
-
-/* El importe y el recuento, abajo: arriba solo el número del día. */
-.tj-cal-pnl { margin-top: auto; font-family: var(--font-display); font-size: 0.92rem; font-weight: 600; }
-.tj-cal-count { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
-.tj-cal-crown { position: absolute; top: 7px; right: 7px; display: flex; color: var(--premium-gold); }
-
-.tj-cal-tip {
+.tjn-risk-dot {
   position: absolute;
-  bottom: calc(100% + 8px);
+  top: 0.4rem;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tone);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tone) 18%, transparent);
+}
+
+.tjn-risk-label { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.86rem; font-weight: 600; color: var(--text-primary); }
+.tjn-risk-sub { font-size: 0.74rem; line-height: 1.4; color: var(--text-muted); }
+
+.tjn-risk-list dd {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--tone, var(--text-primary));
+}
+
+.tjn-risk-list .tone-none dd { color: var(--text-primary); }
+
+/* Tablas del Análisis: más aire y la barra que nace del centro. */
+.tjn-table td { padding-block: 0.8rem; }
+.tjn-table td.num:last-child { width: 46%; }
+
+.tj-div { display: flex; align-items: center; justify-content: flex-end; gap: 0.9rem; }
+.tj-div strong { min-width: 6.5rem; text-align: right; font-weight: 700; }
+
+.tj-div-track {
+  position: relative;
+  flex: 1;
+  max-width: 260px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--tj-surface);
+}
+
+/* Línea del cero. */
+.tj-div-track::before { content: ""; position: absolute; top: -3px; bottom: -3px; left: 50%; width: 1px; background: rgba(240, 244, 255, 0.25); }
+
+.tj-div-track i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   left: 50%;
-  z-index: 20;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate(-50%, 4px);
-  transition: opacity 0.15s, transform 0.15s;
+  min-width: 2px;
+  border-radius: 0 999px 999px 0;
+  background: var(--tj-win);
 }
 
-.tj-cal-day:hover .tj-cal-tip { opacity: 1; transform: translate(-50%, 0); }
+.tj-div-track i.is-neg { left: auto; right: 50%; border-radius: 999px 0 0 999px; background: var(--tj-loss); }
 
-/* La semana no es un día más: marco propio, degradado y lectura alineada a la derecha. */
-.tj-cal-week {
+/* ── Hitos ──
+ * Prefijo tjh-. Cada hito, una medalla con su icono en movimiento. Dos fases:
+ * bloqueado (gris, quieto, con candado) y desbloqueado (color de su nivel,
+ * brillo, icono animado). Los niveles: bronce, plata, oro, platino, diamante.
+ * Arriba, el súper hito «Conseguiste vivir del trading».
+ */
+
+.tjh {
+  --tier-0: #6b7895;
+  --tier-1: #d58c55;
+  --tier-2: #c9d4e8;
+  --tier-3: #f0c76e;
+  --tier-4: #8fe3ff;
+  --tier-5: #c9a2ff;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0.15rem;
-  margin-left: 10px;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--tone, var(--tj-accent)) 42%, transparent);
-  border-radius: 12px;
-  background: linear-gradient(135deg, color-mix(in srgb, var(--tone, var(--tj-accent)) 16%, transparent), rgba(7, 12, 24, 0.55));
-  text-align: right;
+  gap: 1.25rem;
 }
 
-.tj-cal-week.is-quiet { border-style: dashed; border-color: var(--hairline); background: rgba(7, 12, 24, 0.35); }
-.tj-cal-week-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tj-accent-2); }
-.tj-cal-week strong { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--tone); }
-.tj-cal-week-meta { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+.tjh .tier-0 { --tier: var(--tier-0); }
+.tjh .tier-1 { --tier: var(--tier-1); }
+.tjh .tier-2 { --tier: var(--tier-2); }
+.tjh .tier-3 { --tier: var(--tier-3); }
+.tjh .tier-4 { --tier: var(--tier-4); }
+.tjh .tier-5 { --tier: var(--tier-5); }
 
-/* El detalle del día en móvil; en PC queda oculto y manda el tooltip. */
-.tj-modal-backdrop { display: none; }
-.tj-modal-list { display: flex; flex-direction: column; gap: 6px; margin: 0.8rem 0 0; padding: 0; list-style: none; }
+.tjh-kicker { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--tier, var(--tj-accent-2)); }
+.tjh-kicker.is-legend { color: #ffd76a; }
 
-.tj-modal-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.55rem 0.7rem;
-  border-radius: 9px;
-  background: var(--tj-surface);
-  font-size: 0.84rem;
-}
+.tjh-bar { display: block; height: 7px; overflow: hidden; border-radius: 999px; background: var(--tj-surface-2); }
+.tjh-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--tier, var(--tj-accent)) 55%, transparent), var(--tier, var(--tj-accent))); }
 
-.tj-modal-list li span { color: var(--text-secondary); }
+/* ── Resumen ── */
 
-/* ── Hitos ── */
+.tjh-summary { display: flex; align-items: center; gap: 1.5rem; padding: 1.3rem 1.5rem; }
+.tjh-summary-ring { position: relative; flex-shrink: 0; width: 112px; height: 112px; }
+.tjh-summary-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.tjh-summary-arc { fill: none; stroke: var(--tj-accent); stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(230, 180, 85, 0.5)); }
+.tjh-summary-value { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; line-height: 1; }
+.tjh-summary-value strong { font-family: var(--font-display); font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+.tjh-summary-value small { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+.tjh-summary-value em { font-size: 0.62rem; font-style: normal; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjh-summary-text { flex: 1; min-width: 0; }
+.tjh-summary-text h3 { margin: 0.2rem 0 0.9rem; font-family: var(--font-display); font-size: 1.3rem; color: var(--text-primary); }
 
-.tj-milestones-total { height: 8px; margin-bottom: 1.4rem; }
+/* Tres datos con nombre: niveles (con su barra), completados y lo más cercano. */
+.tjh-summary-stats { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.7fr) minmax(0, 1.4fr); gap: 1px; margin: 0; overflow: hidden; border: 1px solid var(--hairline); border-radius: 12px; background: var(--hairline); }
+.tjh-summary-stats > div { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; padding: 0.65rem 0.85rem; background: var(--tj-panel-solid); }
+.tjh-summary-stats dt { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); }
+.tjh-summary-stats dd { display: flex; flex-direction: column; gap: 0.35rem; margin: 0; font-size: 0.8rem; line-height: 1.4; color: var(--text-secondary); }
+.tjh-summary-stats dd strong { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+.tjh-summary-stats .tjh-bar { height: 6px; }
 
-.tj-milestone-group + .tj-milestone-group { margin-top: 1.6rem; }
-.tj-milestone-group-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.75rem; margin-bottom: 0.8rem; }
-.tj-milestone-group-head h3 { margin: 0; font-size: 0.95rem; }
-.tj-milestone-group-head p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+/* ── Medalla ── */
 
-.tj-milestones { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem; }
+.tjh-medal { position: relative; display: grid; flex-shrink: 0; place-items: center; }
+.tjh-medal-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.tjh-medal-track { fill: none; stroke: var(--tj-surface-2); stroke-width: 6; }
+.tjh-medal-arc { fill: none; stroke: var(--tier); stroke-width: 6; stroke-linecap: round; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--tier) 55%, transparent)); }
 
-.tj-milestone {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--hairline);
-  border-radius: 14px;
-  background: var(--tj-surface);
-}
-
-.tj-milestone.is-done {
-  border-color: color-mix(in srgb, var(--premium-gold) 45%, transparent);
-  background: linear-gradient(160deg, color-mix(in srgb, var(--premium-gold) 10%, transparent), var(--tj-surface));
-}
-
-.tj-milestone.is-locked .tj-milestone-top { opacity: 0.55; }
-.tj-milestone-locked { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem; }
-
-.tj-next {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  border-color: var(--tj-accent-line);
-  background: linear-gradient(160deg, rgba(230, 180, 85, 0.1), transparent 55%), var(--tj-panel);
-}
-
-.tj-next .tj-milestone-value strong { color: var(--tj-accent); }
-.tj-milestone .tj-note { margin: 0; font-size: 0.72rem; }
-
-.tj-milestone-top { display: flex; align-items: flex-start; gap: 0.7rem; }
-.tj-milestone-top h4 { margin: 0; font-size: 0.92rem; }
-.tj-milestone-top p { margin: 0.1rem 0 0; font-size: 0.75rem; color: var(--text-muted); }
-
-.tj-milestone-icon {
+.tjh-medal-core {
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: var(--tj-accent-soft);
-  color: var(--tj-accent);
+  width: 74%;
+  height: 74%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--tier) 45%, #1a2c52), color-mix(in srgb, var(--tier) 12%, #0b1730) 70%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.12), inset 0 -4px 10px rgba(0, 0, 0, 0.35), 0 0 22px -6px color-mix(in srgb, var(--tier) 70%, transparent);
+  color: color-mix(in srgb, var(--tier) 70%, #fff);
 }
 
-.tj-milestone.is-done .tj-milestone-icon {
-  background: linear-gradient(135deg, var(--premium-gold), #f5c842);
-  color: #1a0f00;
-}
-
-.tj-milestone-level { margin-left: auto; white-space: nowrap; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); }
-
-.tj-milestone-value { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
-.tj-milestone-value strong { font-size: 1.4rem; letter-spacing: -0.02em; }
-.tj-milestone-value span { font-size: 0.75rem; color: var(--text-muted); }
-
-.tj-milestone-tiers { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0; padding: 0; list-style: none; }
-
-.tj-milestone-tiers li {
-  padding: 0.12rem 0.45rem;
-  border: 1px solid var(--hairline);
-  border-radius: 6px;
-  background: var(--tj-surface);
+.tjh-level {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #0f1e39;
+  border-radius: 50%;
+  background: var(--tier);
   font-size: 0.68rem;
+  font-weight: 800;
+  color: #0b1730;
+}
+
+.tjh-lock {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #0f1e39;
+  border-radius: 50%;
+  background: #2a3552;
+  color: var(--text-muted);
+}
+
+.tjh-lock.is-big { right: 6px; bottom: 6px; width: 30px; height: 30px; }
+
+/* Bloqueado: gris y quieto. Desbloqueado: color y vida. */
+.tjh-medal.is-sealed .tjh-medal-core,
+.tjh-medal.is-locked .tjh-medal-core { background: radial-gradient(circle at 35% 30%, #26314d, #121c33 70%); box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.05); color: #56627e; }
+.tjh-medal.is-sealed .tjh-medal-arc,
+.tjh-medal.is-locked .tjh-medal-arc { stroke: #56627e; filter: none; }
+.tjh-medal.is-sealed .tjh-ic,
+.tjh-medal.is-locked .tjh-ic { animation: none; }
+
+/* ── Iconos en movimiento: cada hito, el suyo ── */
+
+.tjh-ic { transform-box: fill-box; transform-origin: center; }
+.tjh-ic-muestra { animation: tjh-tick 2.2s ease-in-out infinite; }
+.tjh-ic-disciplina { animation: tjh-shield 2.8s ease-in-out infinite; }
+.tjh-ic-porque { animation: tjh-write 1.6s ease-in-out infinite; transform-origin: 20% 80%; }
+.tjh-ic-revancha { animation: tjh-hourglass 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+.tjh-ic-meses { animation: tjh-pop 2.4s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
+.tjh-ic-rentabilidad { animation: tjh-rise 2s ease-in-out infinite; }
+.tjh-ic-recuperacion { animation: tjh-spin 3.4s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+.tjh-ic-vivir { animation: tjh-crown 3s ease-in-out infinite; }
+
+@keyframes tjh-tick { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.14) rotate(-4deg); } 60% { transform: scale(0.96) rotate(2deg); } }
+@keyframes tjh-shield { 0%, 100% { transform: rotate(0deg); filter: drop-shadow(0 0 0 transparent); } 50% { transform: rotate(-6deg) scale(1.06); filter: drop-shadow(0 0 6px currentColor); } }
+@keyframes tjh-write { 0%, 100% { transform: rotate(0deg) translate(0, 0); } 25% { transform: rotate(-9deg) translate(-1px, 1px); } 50% { transform: rotate(4deg) translate(1px, 0); } 75% { transform: rotate(-6deg) translate(0, 1px); } }
+@keyframes tjh-hourglass { 0%, 40% { transform: rotate(0deg); } 50%, 90% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+@keyframes tjh-pop { 0%, 70%, 100% { transform: scale(1) translateY(0); } 80% { transform: scale(1.18) translateY(-2px); } 90% { transform: scale(0.95) translateY(0); } }
+@keyframes tjh-rise { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(3px, -3px); } }
+@keyframes tjh-spin { 0% { transform: rotate(0deg); } 70%, 100% { transform: rotate(360deg); } }
+@keyframes tjh-crown { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
+
+/* ── Tarjetas ── */
+
+.tjh-group { display: flex; flex-direction: column; gap: 0.8rem; }
+.tjh-group-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.8rem; padding: 0 0.2rem; }
+.tjh-group-head h3 { margin: 0; font-family: var(--font-display); font-size: 1.1rem; color: var(--text-primary); }
+.tjh-group-head p { margin: 0; font-size: 0.82rem; color: var(--text-muted); }
+
+.tjh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1rem; }
+
+.tjh-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 0;
+  padding: 1.15rem 1.2rem 1.1rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--tier) 30%, var(--hairline));
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 70% at 0% 0%, color-mix(in srgb, var(--tier) 12%, transparent), transparent 60%),
+    var(--tj-panel);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+
+.tjh-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -24px color-mix(in srgb, var(--tier) 70%, transparent); }
+
+.tjh-card.is-sealed,
+.tjh-card.is-locked { border-color: var(--hairline); background: var(--tj-panel); }
+.tjh-card.is-sealed:hover,
+.tjh-card.is-locked:hover { box-shadow: var(--card-shadow); }
+.tjh-card.is-sealed .tjh-kicker,
+.tjh-card.is-locked .tjh-kicker { color: var(--text-muted); }
+
+/* Completado: un aura dorada que gira despacio detrás de todo. */
+.tjh-card.is-done { border-color: color-mix(in srgb, var(--tier) 60%, transparent); }
+
+.tjh-aura {
+  position: absolute;
+  inset: -40%;
+  z-index: 0;
+  background: conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--tier) 22%, transparent), transparent 30%);
+  animation: tjh-aura 9s linear infinite;
+  pointer-events: none;
+}
+
+.tjh-card > :not(.tjh-aura) { position: relative; z-index: 1; }
+@keyframes tjh-aura { to { transform: rotate(360deg); } }
+
+.tjh-card-head { display: flex; align-items: center; gap: 1rem; }
+.tjh-card-title { min-width: 0; }
+.tjh-card-title h4 { margin: 0.15rem 0 0.2rem; font-family: var(--font-display); font-size: 1rem; color: var(--text-primary); }
+.tjh-card-title p { margin: 0; font-size: 0.78rem; line-height: 1.45; color: var(--text-muted); }
+
+.tjh-progress { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.tjh-progress strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+.tjh-progress span { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); }
+
+/* Escalera de niveles: una mini medalla por nivel, del color de su metal. */
+.tjh-tiers { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+
+.tjh-tiers li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem 0.2rem 0.3rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--tj-surface);
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--text-muted);
 }
 
-.tj-milestone-tiers li.on {
-  border-color: color-mix(in srgb, var(--premium-gold) 40%, transparent);
-  background: color-mix(in srgb, var(--premium-gold) 10%, transparent);
-  color: var(--premium-gold);
+.tjh-tiers li i { width: 12px; height: 12px; border-radius: 50%; background: #2a3552; box-shadow: inset 0 0 0 1.5px #3a4666; }
+
+.tjh-tiers li.is-on {
+  border-color: color-mix(in srgb, var(--tier) 45%, transparent);
+  background: color-mix(in srgb, var(--tier) 12%, transparent);
+  color: var(--text-primary);
 }
+
+.tjh-tiers li.is-on i { background: radial-gradient(circle at 35% 30%, #fff, var(--tier) 55%); box-shadow: 0 0 8px color-mix(in srgb, var(--tier) 70%, transparent); }
+
+.tjh-note { margin: 0; font-size: 0.74rem; line-height: 1.5; color: var(--text-muted); }
+.tjh-locked { display: flex; flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+.tjh-locked p { margin: 0; font-size: 0.82rem; color: var(--text-secondary); }
+
+/* ── Súper hito ── */
+
+.tjh-legend {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: 1.5rem 2rem;
+  padding: 1.6rem 1.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 106, 0.35);
+  border-radius: 22px;
+  background:
+    radial-gradient(60% 120% at 0% 50%, rgba(255, 215, 106, 0.16), transparent 60%),
+    radial-gradient(50% 90% at 100% 100%, rgba(201, 162, 255, 0.1), transparent 60%),
+    linear-gradient(160deg, #13234a, #0b1730);
+  box-shadow: 0 30px 60px -34px rgba(255, 215, 106, 0.55), var(--card-shadow);
+}
+
+.tjh-legend:not(.is-done) { border-color: rgba(255, 215, 106, 0.18); }
+.tjh-legend-glow { position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.05) 50%, transparent 65%); animation: tjh-sheen 6s ease-in-out infinite; pointer-events: none; }
+@keyframes tjh-sheen { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+
+.tjh-legend-crown { position: relative; display: grid; place-items: center; width: 132px; height: 132px; }
+
+/* Rayos que giran detrás de la corona; apagados hasta conseguirlo. */
+.tjh-rays {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 215, 106, 0.28) 0deg 8deg, transparent 8deg 22deg);
+  -webkit-mask: radial-gradient(circle, #000 30%, transparent 70%);
+  mask: radial-gradient(circle, #000 30%, transparent 70%);
+  animation: tjh-aura 18s linear infinite;
+  opacity: 0.35;
+}
+
+.tjh-legend.is-done .tjh-rays { opacity: 1; animation-duration: 10s; }
+
+.tjh-legend-medal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff1c2, #ffd76a 40%, #c8902f 85%);
+  box-shadow: 0 0 0 4px rgba(255, 215, 106, 0.25), 0 0 40px -6px rgba(255, 215, 106, 0.8), inset 0 -6px 12px rgba(120, 70, 10, 0.4);
+  color: #6b4310;
+}
+
+.tjh-legend:not(.is-done) .tjh-legend-medal { background: radial-gradient(circle at 35% 30%, #3a4666, #1a2440 85%); box-shadow: 0 0 0 4px rgba(255, 215, 106, 0.1), inset 0 -6px 12px rgba(0, 0, 0, 0.4); color: #8b97b5; }
+.tjh-legend:not(.is-done) .tjh-ic-vivir { animation-duration: 5s; }
+
+.tjh-legend-sparks { position: absolute; inset: 0; pointer-events: none; }
+.tjh-legend-sparks i { position: absolute; font-style: normal; color: #ffd76a; animation: tjh-spark 1.8s ease-in-out infinite; }
+.tjh-legend-sparks i:nth-child(1) { top: 6px; left: 18px; }
+.tjh-legend-sparks i:nth-child(2) { top: 14px; right: 10px; animation-delay: 0.45s; font-size: 0.75rem; }
+.tjh-legend-sparks i:nth-child(3) { bottom: 14px; left: 8px; animation-delay: 0.9s; font-size: 0.7rem; }
+.tjh-legend-sparks i:nth-child(4) { bottom: 6px; right: 22px; animation-delay: 1.35s; }
+@keyframes tjh-spark { 0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1.2) rotate(30deg); } }
+
+.tjh-legend-text h3 { margin: 0.3rem 0 0.4rem; font-family: var(--font-display); font-size: clamp(1.25rem, 2.2vw, 1.6rem); line-height: 1.15; color: #fff3cf; }
+.tjh-legend-text p { margin: 0 0 0.8rem; font-size: 0.84rem; line-height: 1.55; color: var(--text-secondary); }
+
+.tjh-rules { display: flex; flex-direction: column; gap: 0.35rem; margin: 0; padding: 0; list-style: none; }
+.tjh-rules li { display: flex; align-items: center; gap: 0.45rem; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+.tjh-rules li svg { flex-shrink: 0; }
+.tjh-rules li.is-ok { color: var(--tj-win); }
+
+.tjh-legend-months { display: flex; flex-direction: column; gap: 0.7rem; }
+.tjh-legend-count { display: flex; align-items: baseline; gap: 0.45rem; }
+.tjh-legend-count strong { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; line-height: 1; color: #ffd76a; }
+.tjh-legend-count span { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+
+/* Los últimos 12 meses cerrados, como casillas. */
+.tjh-legend-months ol { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; margin: 0; padding: 0; list-style: none; }
+.tjh-legend-months li { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+
+.tjh-legend-months li i {
+  width: 100%;
+  height: 22px;
+  border-radius: 6px;
+  background: rgba(240, 244, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(240, 244, 255, 0.06);
+}
+
+.tjh-legend-months li.is-ok i { background: linear-gradient(180deg, #6ee7b7, #2fae7c); box-shadow: 0 0 10px -2px rgba(110, 231, 183, 0.6); }
+.tjh-legend-months li.is-red i { background: linear-gradient(180deg, #ff8f8f, #d9474f); }
+.tjh-legend-months li.is-few i { background: repeating-linear-gradient(45deg, rgba(240, 180, 85, 0.35) 0 4px, transparent 4px 8px); box-shadow: inset 0 0 0 1px rgba(240, 180, 85, 0.35); }
+.tjh-legend-months li span { font-size: 0.6rem; font-weight: 700; text-transform: capitalize; color: var(--text-muted); }
+
+.tjh-legend-legend { display: flex; gap: 0.8rem; margin: 0; font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
+.tjh-legend-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+.tjh-legend-legend span::before { content: ""; width: 9px; height: 9px; border-radius: 3px; }
+.tjh-legend-legend .is-ok::before { background: #6ee7b7; }
+.tjh-legend-legend .is-red::before { background: #ff8f8f; }
+.tjh-legend-legend .is-few::before { background: repeating-linear-gradient(45deg, rgba(240, 180, 85, 0.6) 0 2px, transparent 2px 4px); }
 
 /* ── Formulario ── */
 
@@ -978,85 +2812,280 @@
 .field .tj-seg { display: flex; }
 .field .tj-seg button { flex: 1; padding: 0.5rem; font-size: 0.88rem; }
 
-/* ── Registro ── */
+/* ── Operaciones ──
+ * Prefijo tjo-. Arriba el balance de lo que se ve; la barra de herramientas
+ * (chips de resultado, buscar, ordenar, CSV); la lista agrupada por días, con
+ * el ánimo de cada día; y cada operación como una fila que se despliega.
+ */
 
-.tj-log-row { cursor: pointer; }
-.tj-log-row[data-tone="win"] td:first-child { box-shadow: inset 3px 0 0 var(--tj-win); }
-.tj-log-row[data-tone="loss"] td:first-child { box-shadow: inset 3px 0 0 var(--tj-loss); }
-.tj-log-row[data-tone="be"] td:first-child { box-shadow: inset 3px 0 0 var(--tj-be); }
-
-.tj-log-chevron { color: var(--text-muted); transition: transform 0.2s; }
-.tj-log-row.is-open .tj-log-chevron { transform: rotate(180deg); }
-
-.tj-log-row.is-open td,
-.tj-log-detail td { background: rgba(240, 244, 255, 0.03); }
-
-.tj-table .tj-log-detail td { padding: 0.4rem 1rem 1.1rem; }
-.tj-log-detail .tj-strip { margin-bottom: 0.7rem; }
-
-.tj-log-notes {
+.tjo-band {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(5, minmax(0, 1fr));
+  gap: 1px;
   margin: 0;
-  padding: 0.75rem 1rem;
-  border-left: 2px solid var(--tj-accent);
-  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 16px;
+  background: var(--hairline);
+  box-shadow: var(--card-shadow);
+}
+
+.tjo-band > div { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; padding: 0.9rem 1.1rem; background: var(--tj-panel-solid); }
+.tjo-band dt { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); }
+.tjo-band dd { margin: 0; overflow: hidden; font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--tone, var(--text-primary)); }
+.tjo-band .tjo-band-main { background: linear-gradient(135deg, color-mix(in srgb, var(--tone) 14%, var(--tj-panel-solid)), var(--tj-panel-solid)); }
+.tjo-band .tjo-band-main dd { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+
+.tjo { padding: 1.1rem 1.2rem 1.3rem; }
+
+.tjo-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tjo-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.tjo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 34px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
   background: var(--tj-surface);
+  color: var(--text-secondary);
+  font: 600 0.8rem var(--font-family);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.tjo-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--tone); }
+.tjo-chip span { padding: 0.05rem 0.4rem; border-radius: 999px; background: var(--tj-surface-2); font-size: 0.68rem; color: var(--text-muted); }
+.tjo-chip:hover { color: var(--text-primary); border-color: rgba(240, 244, 255, 0.18); }
+.tjo-chip:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjo-chip.is-on {
+  border-color: color-mix(in srgb, var(--tone, var(--tj-accent)) 60%, transparent);
+  background: color-mix(in srgb, var(--tone, var(--tj-accent)) 14%, transparent);
+  color: var(--text-primary);
+}
+
+.tjo-chip.is-on span { background: color-mix(in srgb, var(--tone, var(--tj-accent)) 22%, transparent); color: var(--text-primary); }
+.tjo-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+
+/* Lista por días. */
+.tjo-list { display: flex; flex-direction: column; gap: 1.2rem; }
+.tjo-day { display: flex; flex-direction: column; gap: 6px; }
+
+.tjo-day-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.3rem 0.35rem;
+}
+
+.tjo-day-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+.tjo-day-mood { font-size: 1rem; line-height: 1; }
+.tjo-day-meta { margin-left: auto; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
+.tjo-day-pnl { font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; }
+
+/* Cada operación: una fila con filo de color que se despliega. */
+/* El color de la fila va en --row (no en tone-*: teñiría también sus botones). */
+.tjo-row[data-tone="win"] { --row: var(--tj-win); }
+.tjo-row[data-tone="loss"] { --row: var(--tj-loss); }
+.tjo-row[data-tone="be"] { --row: var(--tj-be); }
+
+.tjo-row {
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-left: 3px solid var(--row);
+  border-radius: 6px 13px 13px 6px;
+  background: var(--tj-surface);
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tjo-row:hover,
+.tjo-row.is-open { border-color: color-mix(in srgb, var(--row) 30%, transparent); border-left-color: var(--row); background: var(--tj-surface-2); }
+
+.tjo-line {
+  display: grid;
+  grid-template-columns: 4.6rem minmax(0, 1fr) 7.5rem 4.5rem 9.5rem auto;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.7rem 0.75rem 0.7rem 0.9rem;
+  cursor: pointer;
+}
+
+.tjo-time { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+.tjo-main { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.tjo-pair { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; font-weight: 700; color: var(--text-primary); }
+.tjo-sub { overflow: hidden; font-size: 0.74rem; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+
+.tjo-risk { display: flex; flex-direction: column; align-items: flex-end; gap: 0.1rem; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+.tjo-risk small { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+.tjo-risk small.tone-loss { color: var(--tj-loss); }
+.tjo-r { text-align: right; font-size: 0.86rem; font-weight: 700; }
+
+.tjo-pnl { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; }
+.tjo-pnl strong { font-family: var(--font-display); font-size: 1rem; font-weight: 700; }
+.tjo-pnl .tj-chip { padding: 0.08rem 0.5rem; font-size: 0.64rem; }
+
+/* Acciones: discretas hasta pasar por la fila. */
+.tjo-actions { display: flex; align-items: center; gap: 0.3rem; }
+.tjo-actions .tj-icon-btn:not(.tjo-toggle) { opacity: 0; transition: opacity 0.15s, background 0.15s, color 0.15s; }
+.tjo-row:hover .tjo-actions .tj-icon-btn,
+.tjo-row.is-open .tjo-actions .tj-icon-btn,
+.tjo-actions .tj-icon-btn:focus-visible { opacity: 1; }
+.tjo-toggle svg { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+.tjo-row.is-open .tjo-toggle svg { transform: rotate(180deg); }
+
+/* Detalle desplegado. */
+.tjo-detail { overflow: hidden; }
+.tjo-detail-inner { padding: 0.2rem 0.9rem 1rem; border-top: 1px dashed var(--hairline); }
+
+.tjo-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; margin: 0.9rem 0; }
+.tjo-facts > div { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; padding: 0.7rem 0.85rem; border: 1px solid var(--hairline); border-radius: 11px; background: rgba(7, 12, 24, 0.3); }
+.tjo-facts dt { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); }
+.tjo-facts dd { margin: 0; overflow: hidden; font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--text-primary); }
+.tjo-facts dd.tjo-fact-sub { font-family: var(--font-family); font-size: 0.72rem; font-weight: 500; white-space: normal; color: var(--text-muted); }
+
+.tjo-notes {
+  margin: 0;
+  padding: 0.8rem 1rem;
+  border-left: 2px solid var(--tj-accent);
+  border-radius: 0 10px 10px 0;
+  background: var(--tj-surface);
+  font-size: 0.88rem;
   line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
   color: var(--text-secondary);
 }
+
+.tjo-notes.is-empty { border-left-color: var(--hairline); font-size: 0.8rem; color: var(--text-muted); }
 
 .tj-more { display: flex; margin: 1rem auto 0; }
 
 /* ── Responsive ── */
 
 @media (max-width: 1100px) {
-  .tj-split,
-  .tj-split.is-balanced { grid-template-columns: 1fr; }
+  .tjn-pair { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 900px) {
-  .tj-kpis,
-  .tj-hero-metrics,
   .tj-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjn-head { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjn-kpi:first-child { border-radius: 17px 0 0 0; }
+  .tjn-kpi:nth-child(2) { border-radius: 0 17px 0 0; }
+  .tjn-kpi:nth-child(3) { border-radius: 0 0 0 17px; }
+  .tjn-kpi:last-child { border-radius: 0 0 17px 0; }
+}
+
+@media (max-width: 1100px) {
+  /* La cuenta pasa a dos zonas arriba y las cuatro métricas en fila debajo. */
+  .tja { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr); }
+  .tjc-grid { grid-template-columns: repeat(7, minmax(0, 1fr)) 7.5rem; gap: 6px; }
+  .tjc-day { min-height: 92px; }
+}
+
+@media (max-width: 1180px) {
+  .tjw-top { grid-template-columns: minmax(0, 1fr) minmax(260px, 340px); gap: 1.5rem 2rem; }
+}
+
+@media (max-width: 860px) {
+  .tjw-top { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 980px) {
+  .tjh-legend { grid-template-columns: auto minmax(0, 1fr); }
+  .tjh-legend-months { grid-column: 1 / -1; }
+  .tjo-band { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tjo-line { grid-template-columns: 4rem minmax(0, 1fr) 4.2rem 8.5rem auto; }
+  .tjo-risk { display: none; }
+  .tjo-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjm2-strip { grid-template-columns: repeat(15, minmax(0, 1fr)); }
+  .tjm2-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjy-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tjr-duo { grid-template-columns: 1fr; }
+  .tjc-band { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tjc-band .tjc-band-main { grid-column: 1 / -1; }
+  .tje-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {
   .tj-card { padding: 1.1rem; }
-  .tj-tabs { align-self: stretch; }
+  .tjbot-habitat { height: 150px; }
+  .tjbot-panel { left: -0.4rem; }
+  .tjw-periods { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjw { padding: 1.25rem 1.1rem; gap: 1.25rem; }
+  .tjb { padding: 0.95rem 1rem 0.8rem; }
+  .tjw-period { min-height: 8.5rem; padding: 0.9rem 0.95rem; }
+  .tj-tabs { flex: 1; }
+  .tj-tabs .tj-seg button { padding: 0.5rem 0.75rem; font-size: 0.82rem; }
+  .tj-new { padding-inline: 0.7rem; }
   .tj-hide-sm { display: none; }
   .tj-chart { height: 240px; }
+  .tje .tj-chart { height: 240px; }
   .tj-search input { width: 130px; }
+  .tj-filters-title { width: 100%; margin: 0 0 0.2rem; padding: 0; border: 0; }
+  .tjn-kpi { padding: 1rem; }
+  .tjn-hist-bars { min-height: 150px; gap: 4px; }
+  .tjn-hist-axis { gap: 4px; }
+  .tj-div-track { display: none; }
+  .tj-div strong { min-width: 0; }
   .tj-form-grid { grid-template-columns: 1fr; }
+  .tjh-summary { flex-direction: column; text-align: center; }
+  .tjh-summary-stats { grid-template-columns: 1fr; text-align: left; }
+  .tjh-legend { grid-template-columns: 1fr; justify-items: center; padding: 1.3rem 1.1rem; text-align: center; }
+  .tjh-legend-months { width: 100%; }
+  .tjh-rules li { justify-content: center; }
+  .tjh-grid { grid-template-columns: 1fr; }
+  .tjo-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjo-band .tjo-band-main { grid-column: 1 / -1; }
+  .tjo { padding: 0.9rem; }
+  .tjo-line { grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.6rem; padding: 0.65rem 0.6rem 0.65rem 0.75rem; }
+  .tjo-time,
+  .tjo-r { display: none; }
+  .tjo-actions .tj-icon-btn:not(.tjo-toggle) { opacity: 1; }
+  .tjo-facts { grid-template-columns: 1fr; }
 
-  .tj-cal-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
-  .tj-cal-week,
-  .tj-cal-weekhead,
-  .tj-cal-pnl,
-  .tj-cal-tip { display: none; }
-  .tj-cal-day { min-height: 52px; padding: 0.3rem; }
-  .tj-cal-count { font-size: 0.6rem; line-height: 1.2; }
-  .tj-cal-day.is-today .tj-cal-num::after { display: none; }
+  .tja { display: flex; flex-direction: column; gap: 1.3rem; padding: 1.2rem 0; }
+  .tja-zone { padding: 0 1.1rem; }
+  .tja-zone + .tja-zone { margin: 0 1.1rem; padding: 1.3rem 0 0; border-left: 0; border-top: 1px solid var(--hairline); }
+  .tja-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 1rem; }
+  .tja-counts li { padding: 0.1rem 0.9rem; }
 
-  .tj-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 22px;
-    background: rgba(4, 10, 22, 0.62);
-    backdrop-filter: blur(7px);
-  }
+  .tjc { padding: 1rem 0.8rem; }
+  .tjc-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjc-band > div:last-child { grid-column: 1 / -1; }
+  .tjc-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .tjc-week,
+  .tjc-weekhead { display: none; }
+  .tjc-day { min-height: 56px; padding: 0.3rem 0.15rem; column-gap: 0.15rem; border-radius: 9px; }
+  .tjc-num { margin: 0; }
 
-  .tj-modal {
-    width: 100%;
-    max-width: 340px;
-    max-height: 78vh;
-    overflow-y: auto;
-    padding: 1.1rem;
-    border: var(--card-border);
-    border-radius: 16px;
-    background: var(--bg-elevated);
-    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.6);
-  }
+  .tjc-detail-inner { padding: 0.85rem; }
+  .tjc-detail-list li { grid-template-columns: minmax(0, 1fr) auto auto 28px; gap: 0.6rem; }
+  .tjd { grid-template-columns: 1fr; }
+  .tjd-emoji { font-size: 1.45rem; }
+  .tjm2-strip { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .tjm2-dist li { grid-template-columns: 1.4rem 4.6rem minmax(0, 1fr) 2.6rem; }
+  .tjm2-dist-n { display: none; }
+  .tjm2-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjc-head-main { width: 100%; justify-content: space-between; }
+  .tjy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .tjy-month { padding: 0.75rem; }
+  .tjc-detail-time,
+  .tjc-detail-strategy { display: none; }
+
+  .tjt-row { grid-template-columns: 2.6rem minmax(0, 1fr) auto; gap: 0.7rem; }
+  .tjt-date { height: 2.6rem; }
+  .tjt-r { display: none; }
 }

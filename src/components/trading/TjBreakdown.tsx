@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Layers } from "lucide-react";
 import { TjSegmented } from "./TjControls";
-import { factorStr, pnlStr, rStr, toneOf } from "./tjFormat";
+import DivergingBar from "./TjDivergingBar";
+import { factorStr, rStr, toneOf } from "./tjFormat";
 import { BREAKDOWNS, groupStats, type BreakdownId, type Trade } from "./tjStats";
 
 const OPTIONS = (Object.keys(BREAKDOWNS) as BreakdownId[]).map(id => ({ value: id, label: BREAKDOWNS[id].label }));
@@ -23,15 +23,18 @@ export default function TjBreakdown({ trades }: { trades: Trade[] }) {
 
   return (
     <section className="tj-card">
-      <div className="tj-card-head">
-        <span className="tj-label"><Layers size={15} /> ¿Dónde ganas y dónde pierdes?</span>
+      <header className="tjr-head">
+        <div>
+          <h3>¿Dónde ganas y dónde pierdes?</h3>
+          <span className="tj-count">
+            {by === "hour" ? "Franjas de cuatro horas en tu hora local" : `Tu resultado repartido por ${BREAKDOWNS[by].label.toLowerCase()}`}
+          </span>
+        </div>
         <TjSegmented label="Agrupar por" value={by} onChange={setBy} options={OPTIONS} />
-      </div>
-
-      {by === "hour" && <p className="tj-note">Franjas de cuatro horas en tu hora local.</p>}
+      </header>
 
       <div className="tj-table-wrap">
-        <table className="tj-table">
+        <table className="tj-table tjn-table">
           <thead>
             <tr>
               <th>{BREAKDOWNS[by].label}</th>
@@ -53,10 +56,7 @@ export default function TjBreakdown({ trades }: { trades: Trade[] }) {
                   {r.expectancyR != null ? rStr(r.expectancyR) : "—"}
                 </td>
                 <td className={`num tone-${toneOf(r.pnl)}`}>
-                  <span className="tj-bar-cell">
-                    <span className="tj-bar"><i style={{ width: `${(Math.abs(r.pnl) / maxAbs) * 100}%` }} /></span>
-                    <strong>{pnlStr(r.pnl)}</strong>
-                  </span>
+                  <DivergingBar value={r.pnl} max={maxAbs} />
                 </td>
               </tr>
             ))}

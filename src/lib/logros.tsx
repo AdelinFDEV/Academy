@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Flame, Zap, Gem, Trophy,
-  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, type LucideIcon,
+  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, type LucideIcon,
 } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 import { MILESTONES, milestoneBadgeId } from "@/components/trading/tjStats";
@@ -222,6 +222,7 @@ export const DIARIO_ICONS: Record<string, LucideIcon> = {
   meses: CalendarCheck,
   rentabilidad: TrendingUp,
   recuperacion: RefreshCw,
+  vivir: Crown,
 };
 
 export const DIARIO_BADGE_DEFS: BadgeDef[] = MILESTONES.map((m) => {
@@ -233,6 +234,8 @@ export const DIARIO_BADGE_DEFS: BadgeDef[] = MILESTONES.map((m) => {
     icon: <Icon size={24} aria-hidden="true" />,
     bigIcon: <Icon size={48} aria-hidden="true" />,
     diario: { family: m.id, levels: m.tiers.length },
+    // El súper hito se presenta como especial, igual que los logros de guías perfectas.
+    ...(m.group === "leyenda" ? { special: true } : {}),
   };
 });
 

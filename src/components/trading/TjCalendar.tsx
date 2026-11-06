@@ -1,18 +1,31 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, CalendarDays, Crown, X } from "lucide-react";
-import { WEEKDAYS, MONTHS, pnlStr, toneOf } from "./tjFormat";
-import { resultTone, type Trade } from "./tjStats";
+import { ChevronLeft, ChevronRight, Crown, X, ArrowUpRight, ArrowDownRight, Pencil, Plus, NotebookPen } from "lucide-react";
+import { TjSegmented } from "./TjControls";
+import { WEEKDAYS, WEEKDAY_NAMES, MONTHS, pnlStr, rStr, toneOf } from "./tjFormat";
+import { rOf, resultTone, type Trade } from "./tjStats";
+import { animoDeMedia, animoInfo, fechaKey, type DiaDiario, type DiasMap } from "./tjDias";
 
 interface DayInfo {
   pnl: number;
+  /** Suma de R de las operaciones con riesgo apuntado. */
+  r: number;
   wins: number;
   losses: number;
   bes: number;
   trades: Trade[];
 }
+
+type Mode = "month" | "year";
+type Unit = "usd" | "r";
+
+/**
+ * Puntos de un día: uno por operación, hasta este tope; el resto va como «+n».
+ * Cuatro caben siempre en su hueco junto a las marcas, en cualquier ancho.
+ */
+const MAX_DOTS = 4;
 
 function dayKey(d: Date): string {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -23,8 +36,9 @@ function buildDayMap(trades: Trade[]): Map<string, DayInfo> {
   for (const t of trades) {
     const d = new Date(t.date);
     if (isNaN(d.getTime())) continue;
-    const info = map.get(dayKey(d)) ?? { pnl: 0, wins: 0, losses: 0, bes: 0, trades: [] };
+    const info = map.get(dayKey(d)) ?? { pnl: 0, r: 0, wins: 0, losses: 0, bes: 0, trades: [] };
     info.pnl += t.pnl;
+    info.r += rOf(t) ?? 0;
     if (t.result === "win") info.wins++;
     else if (t.result === "loss") info.losses++;
     else info.bes++;
@@ -34,6 +48,18 @@ function buildDayMap(trades: Trade[]): Map<string, DayInfo> {
   return map;
 }
 
+/** Suma de varios días: lo que necesitan la semana, el mes y el año. */
+function sumInfos(infos: DayInfo[]) {
+  return {
+    pnl: infos.reduce((s, i) => s + i.pnl, 0),
+    r: infos.reduce((s, i) => s + i.r, 0),
+    wins: infos.reduce((s, i) => s + i.wins, 0),
+    count: infos.reduce((s, i) => s + i.trades.length, 0),
+    days: infos.length,
+    green: infos.filter(i => i.pnl > 0).length,
+  };
+}
+
 /** Semana ISO (de lunes a domingo): la numeración que usan los calendarios de trading. */
 function isoWeek(d: Date): number {
   const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -41,30 +67,69 @@ function isoWeek(d: Date): number {
   return Math.ceil(((t.getTime() - Date.UTC(t.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
 }
 
-function DayCount({ info }: { info: DayInfo }) {
+/** Celdas de un mes empezando en lunes, con huecos (null) para completar semanas. */
+function monthCells(year: number, month: number): (number | null)[] {
+  const startOffset = (new Date(year, month, 1).getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells: (number | null)[] = [
+    ...Array(startOffset).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+  while (cells.length % 7) cells.push(null);
+  return cells;
+}
+
+const timeOf = (iso: string) =>
+  new Date(iso).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+
+const isTyping = (el: EventTarget | null) =>
+  el instanceof HTMLElement && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+
+function DayDots({ trades }: { trades: Trade[] }) {
   return (
-    <span className="tj-cal-count">
-      {info.wins > 0 && `${info.wins}G `}
-      {info.losses > 0 && `${info.losses}P `}
-      {info.bes > 0 && `${info.bes}BE`}
+    <span className="tjc-dots" aria-hidden="true">
+      {trades.slice(0, MAX_DOTS).map(t => <i key={t.id} className={`tone-${resultTone(t.result)}`} />)}
+      {trades.length > MAX_DOTS && <em>+{trades.length - MAX_DOTS}</em>}
     </span>
   );
 }
 
-export default function TjCalendar({ trades }: { trades: Trade[] }) {
-  const now = new Date();
+interface Props {
+  trades: Trade[];
+  /** Abre el formulario para editar una operación. */
+  onEdit: (t: Trade) => void;
+  /** Abre el formulario de operación nueva con esa fecha. */
+  onAdd: (date: Date) => void;
+  /** Ánimo y nota de cada día, por fecha AAAA-MM-DD. */
+  /** Ánimo y nota de cada día, para marcarlos en su casilla. Se apuntan desde el formulario de operación. */
+  dias: DiasMap;
+}
+
+export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
+  const [now] = useState(() => new Date());
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
+  const [mode, setMode] = useState<Mode>("month");
+  const [unit, setUnit] = useState<Unit>("usd");
   const [direction, setDirection] = useState(1);
+  // Día abierto: solo los días con operaciones tienen panel (sus operaciones, para verlas o editarlas).
   const [selected, setSelected] = useState<number | null>(null);
 
   const dayMap = useMemo(() => buildDayMap(trades), [trades]);
   const today = dayKey(now);
-  const infoOf = (day: number) => dayMap.get(dayKey(new Date(year, month, day)));
+  const infoOf = (y: number, m: number, d: number) => dayMap.get(dayKey(new Date(y, m, d)));
+  const valueOf = (x: { pnl: number; r: number }) => (unit === "r" ? x.r : x.pnl);
+  const fmt = (x: { pnl: number; r: number }) => (unit === "r" ? rStr(x.r) : pnlStr(x.pnl));
+  const isFuture = (y: number, m: number, d: number) => new Date(y, m, d).getTime() > now.getTime();
+  const diaOf = (y: number, m: number, d: number): DiaDiario | undefined => dias[fechaKey(new Date(y, m, d))];
 
-  function shiftMonth(delta: number) {
+  function shift(delta: number) {
     setDirection(delta);
     setSelected(null);
+    if (mode === "year") {
+      setYear(y => y + delta);
+      return;
+    }
     const d = new Date(year, month + delta, 1);
     setMonth(d.getMonth());
     setYear(d.getFullYear());
@@ -77,165 +142,377 @@ export default function TjCalendar({ trades }: { trades: Trade[] }) {
     setMonth(now.getMonth());
   }
 
-  const startOffset = (new Date(year, month, 1).getDay() + 6) % 7; // lunes = 0
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const cells: (number | null)[] = [
-    ...Array(startOffset).fill(null),
-    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
-  ];
-  while (cells.length % 7) cells.push(null);
-  const weeks = Array.from({ length: cells.length / 7 }, (_, w) => cells.slice(w * 7, w * 7 + 7));
-
-  const monthInfos = cells.map(d => (d ? infoOf(d) : undefined)).filter((i): i is DayInfo => !!i);
-  const monthPnl = monthInfos.reduce((s, i) => s + i.pnl, 0);
-  const monthWins = monthInfos.reduce((s, i) => s + i.wins, 0);
-  const monthTotal = monthInfos.reduce((s, i) => s + i.trades.length, 0);
-  const greenDays = monthInfos.filter(i => i.pnl > 0).length;
-  const maxAbs = Math.max(...monthInfos.map(i => Math.abs(i.pnl)), 1);
-
-  // Mejor día del mes: el de mayor P&L, solo si fue positivo.
-  let bestDay: number | null = null;
-  let bestPnl = 0;
-  for (const d of cells) {
-    const pnl = d ? infoOf(d)?.pnl ?? 0 : 0;
-    if (d && pnl > bestPnl) { bestPnl = pnl; bestDay = d; }
+  function openMonth(m: number) {
+    setDirection(0);
+    setMonth(m);
+    setMode("month");
   }
 
-  const selectedInfo = selected != null ? infoOf(selected) : undefined;
+  // Flechas del teclado: mes (o año) anterior y siguiente; Escape cierra el detalle.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
+      if (e.key === "ArrowLeft") shift(-1);
+      else if (e.key === "ArrowRight") shift(1);
+      else if (e.key === "Escape") setSelected(null);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  const isCurrent = mode === "year" ? year === now.getFullYear() : year === now.getFullYear() && month === now.getMonth();
 
   return (
-    <section className="tj-card">
-      <div className="tj-card-head">
-        <div className="tj-cal-nav">
-          <button type="button" className="tj-icon-btn" onClick={() => shiftMonth(-1)} aria-label="Mes anterior"><ChevronLeft size={16} /></button>
-          <span className="tj-label cap"><CalendarDays size={15} /> {MONTHS[month]} <span className="tj-cal-year">{year}</span></span>
-          <button type="button" className="tj-icon-btn" onClick={() => shiftMonth(1)} aria-label="Mes siguiente"><ChevronRight size={16} /></button>
+    <section className="tj-card tjc" aria-label="Calendario de operaciones">
+      <header className="tjc-head">
+        <div className="tjc-head-main">
+          <h2 className="tjc-title">
+            {mode === "month" ? (
+              <><span className="cap">{MONTHS[month]}</span> <span className="tjc-year">{year}</span></>
+            ) : (
+              <>{year}</>
+            )}
+          </h2>
+          <div className="tjc-nav">
+            <button type="button" onClick={() => shift(-1)} aria-label={mode === "year" ? "Año anterior" : "Mes anterior"} title="Flecha izquierda">
+              <ChevronLeft size={16} />
+            </button>
+            <button type="button" onClick={goToday} disabled={isCurrent} className="tjc-today">Hoy</button>
+            <button type="button" onClick={() => shift(1)} aria-label={mode === "year" ? "Año siguiente" : "Mes siguiente"} title="Flecha derecha">
+              <ChevronRight size={16} />
+            </button>
+          </div>
         </div>
-        <div className="tj-actions">
-          {monthTotal > 0 ? (
-            <dl className="tj-cal-stats">
-              <div className={`tj-cal-stat is-main tone-${toneOf(monthPnl)}`}><dt>P&L del mes</dt><dd>{pnlStr(monthPnl)}</dd></div>
-              <div className="tj-cal-stat"><dt>Operaciones</dt><dd>{monthTotal}</dd></div>
-              <div className="tj-cal-stat"><dt>Acierto</dt><dd>{Math.round((monthWins / monthTotal) * 100)} %</dd></div>
-              <div className="tj-cal-stat"><dt>Días en verde</dt><dd>{greenDays}/{monthInfos.length}</dd></div>
-            </dl>
-          ) : (
-            <span className="tj-count">Sin operaciones este mes</span>
-          )}
-          <button type="button" className="tj-btn" onClick={goToday}>Hoy</button>
+        <div className="tjc-head-tools">
+          <TjSegmented label="Unidad" value={unit} onChange={setUnit}
+            options={[{ value: "usd", label: "$" }, { value: "r", label: "R" }]} />
+          <TjSegmented label="Vista del calendario" value={mode} onChange={v => { setSelected(null); setMode(v); }}
+            options={[{ value: "month", label: "Mes" }, { value: "year", label: "Año" }]} />
         </div>
-      </div>
+      </header>
 
-      <div className="tj-cal-grid tj-cal-weekdays">
-        {WEEKDAYS.map((w, i) => <span key={w} className={i > 4 ? "is-weekend" : undefined}>{w}</span>)}
-        <span className="tj-cal-weekhead">Semana</span>
-      </div>
-
-      <div className="tj-cal-viewport">
-        <AnimatePresence mode="wait" custom={direction} initial={false}>
-          <motion.div
-            key={`${year}-${month}`}
-            className="tj-cal-grid"
-            initial={{ opacity: 0, x: direction * 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -direction * 24 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-          >
-            {weeks.map((week, w) => {
-              const weekInfos = week.map(d => (d ? infoOf(d) : undefined)).filter((i): i is DayInfo => !!i);
-              const weekPnl = weekInfos.reduce((s, i) => s + i.pnl, 0);
-              const weekOps = weekInfos.reduce((s, i) => s + i.trades.length, 0);
-              const weekWins = weekInfos.reduce((s, i) => s + i.wins, 0);
-              const firstDay = week.find((d): d is number => d != null)!;
-              return (
-                <Fragment key={w}>
-                  {week.map((day, i) => {
-                    if (day == null) return <div key={i} className="tj-cal-day is-empty" />;
-                    const info = infoOf(day);
-                    const isToday = dayKey(new Date(year, month, day)) === today;
-                    const cls = [
-                      "tj-cal-day",
-                      i > 4 && "is-weekend",
-                      info && `tone-${toneOf(info.pnl)} has-data`,
-                      isToday && "is-today",
-                      day === bestDay && "is-best",
-                    ].filter(Boolean).join(" ");
-                    return (
-                      <div
-                        key={i}
-                        className={cls}
-                        style={info ? ({ "--intensity": 0.3 + 0.7 * (Math.abs(info.pnl) / maxAbs) } as React.CSSProperties) : undefined}
-                        onClick={info ? () => setSelected(day) : undefined}
-                      >
-                        {day === bestDay && <span className="tj-cal-crown" title="Mejor día del mes"><Crown size={11} /></span>}
-                        <span className="tj-cal-num">{day}</span>
-                        {info && (
-                          <>
-                            <strong className="tj-cal-pnl">{pnlStr(info.pnl)}</strong>
-                            <DayCount info={info} />
-                            <div className="tj-tip tj-cal-tip">
-                              <span className="tj-tip-head">{day} de {MONTHS[month]} · {pnlStr(info.pnl)}</span>
-                              {info.trades.slice(0, 5).map(t => (
-                                <span key={t.id} className={`tj-tip-row tone-${resultTone(t.result)}`}>
-                                  <span>{t.pair}</span><span>{pnlStr(t.pnl)}</span>
-                                </span>
-                              ))}
-                              {info.trades.length > 5 && <span className="muted">+{info.trades.length - 5} más</span>}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
-                  <div className={`tj-cal-week${weekOps ? ` tone-${toneOf(weekPnl)}` : " is-quiet"}`}>
-                    <span className="tj-cal-week-label">Sem. {isoWeek(new Date(year, month, firstDay))}</span>
-                    {weekOps ? (
-                      <>
-                        <strong>{pnlStr(weekPnl)}</strong>
-                        <span className="tj-cal-week-meta">{weekOps} op. · {Math.round((weekWins / weekOps) * 100)} %</span>
-                      </>
-                    ) : (
-                      <span className="tj-cal-week-meta">sin operaciones</span>
-                    )}
-                  </div>
-                </Fragment>
-              );
-            })}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* En móvil el detalle del día se abre en un modal; en PC basta el tooltip. */}
-      <AnimatePresence>
-        {selectedInfo && selected != null && (
-          <motion.div
-            className="tj-modal-backdrop"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={() => setSelected(null)}
-          >
-            <motion.div
-              className="tj-modal" role="dialog" aria-modal="true"
-              initial={{ opacity: 0, scale: 0.92, y: 16 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              onClick={e => e.stopPropagation()}
-            >
-              <div className="tj-card-head">
-                <span className="tj-label cap">{selected} de {MONTHS[month]}</span>
-                <strong className={`tone-${toneOf(selectedInfo.pnl)}`}>{pnlStr(selectedInfo.pnl)}</strong>
-                <button type="button" className="tj-icon-btn" onClick={() => setSelected(null)} aria-label="Cerrar"><X size={16} /></button>
-              </div>
-              <DayCount info={selectedInfo} />
-              <ul className="tj-modal-list">
-                {selectedInfo.trades.map(t => (
-                  <li key={t.id} className={`tone-${resultTone(t.result)}`}>
-                    <span>{t.pair}</span><strong>{pnlStr(t.pnl)}</strong>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {mode === "month" ? renderMonth() : renderYear()}
     </section>
   );
+
+  // Vistas como funciones de render, no como componentes: un componente definido
+  // aquí dentro sería otro en cada render y React lo remontaría (adiós animaciones).
+
+  // ─────────────────────────── Mes ───────────────────────────
+
+  function renderMonth() {
+    const cells = monthCells(year, month);
+    const weeks = Array.from({ length: cells.length / 7 }, (_, w) => cells.slice(w * 7, w * 7 + 7));
+    const days = cells.filter((d): d is number => d != null);
+    const active = days.map(d => ({ day: d, info: infoOf(year, month, d) })).filter((d): d is { day: number; info: DayInfo } => !!d.info);
+    const sum = sumInfos(active.map(d => d.info));
+    const prevDate = new Date(year, month - 1, 1);
+    const prevDays = monthCells(prevDate.getFullYear(), prevDate.getMonth()).filter((d): d is number => d != null);
+    const prev = sumInfos(prevDays.map(d => infoOf(prevDate.getFullYear(), prevDate.getMonth(), d)).filter((i): i is DayInfo => !!i));
+    const diff = { pnl: sum.pnl - prev.pnl, r: sum.r - prev.r };
+    const maxAbs = Math.max(...active.map(d => Math.abs(valueOf(d.info))), 1e-9);
+    // Mejor día del mes: el de mayor resultado, solo si fue positivo.
+    const best = active.reduce<{ day: number; info: DayInfo } | null>(
+      (b, d) => (valueOf(d.info) > (b ? valueOf(b.info) : 0) ? d : b),
+      null,
+    );
+    // Ánimo del mes: la media de los días con ánimo apuntado.
+    const moods = days.map(d => diaOf(year, month, d)?.animo).filter((a): a is NonNullable<typeof a> => a != null);
+    const moodAvg = moods.length ? animoInfo(animoDeMedia(moods.reduce((s, a) => s + a, 0) / moods.length)) : null;
+
+    return (
+      <>
+        <dl className="tjc-band">
+          <div className={`tjc-band-main tone-${toneOf(valueOf(sum))}`}>
+            <dt>Resultado del mes</dt>
+            <dd>{sum.count ? fmt(sum) : "—"}</dd>
+            {prev.count > 0 && (
+              <dd className={`tjc-band-diff tone-${toneOf(valueOf(diff))}`}>
+                {valueOf(diff) >= 0 ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                {fmt(diff)} frente a {MONTHS[prevDate.getMonth()]}
+              </dd>
+            )}
+          </div>
+          <div><dt>Operaciones</dt><dd>{sum.count}</dd></div>
+          <div><dt>Acierto</dt><dd>{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd></div>
+          <div><dt>Días en verde</dt><dd>{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd></div>
+          <div className={best ? "tone-win" : undefined}>
+            <dt>Mejor día</dt>
+            <dd>{best ? `${best.day} · ${fmt(best.info)}` : "—"}</dd>
+          </div>
+          <div className="tjc-band-mood">
+            <dt>Ánimo del mes</dt>
+            <dd>{moodAvg ? <><span aria-hidden="true">{moodAvg.emoji}</span> {moodAvg.label}</> : "—"}</dd>
+          </div>
+        </dl>
+
+        <div className="tjc-grid tjc-weekdays" aria-hidden="true">
+          {WEEKDAYS.map((w, i) => <span key={w} className={i > 4 ? "is-weekend" : undefined}>{w}</span>)}
+          <span className="tjc-weekhead">Semana</span>
+        </div>
+
+        <div className="tjc-viewport">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={`${year}-${month}`}
+              className="tjc-grid"
+              initial={{ opacity: 0, x: direction * 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -direction * 24 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
+              {weeks.map((week, w) => {
+                const wk = sumInfos(week.map(d => (d ? infoOf(year, month, d) : undefined)).filter((i): i is DayInfo => !!i));
+                const firstDay = week.find((d): d is number => d != null)!;
+                return (
+                  <Fragment key={w}>
+                    {week.map((day, i) => {
+                      if (day == null) return <div key={i} className="tjc-day is-empty" />;
+                      const info = infoOf(year, month, day);
+                      const isToday = dayKey(new Date(year, month, day)) === today;
+                      const future = isFuture(year, month, day);
+                      const dia = diaOf(year, month, day);
+                      const mood = dia?.animo ? animoInfo(dia.animo) : null;
+                      const isBest = best?.day === day;
+                      const cls = [
+                        "tjc-day",
+                        i > 4 && "is-weekend",
+                        info && `tone-${toneOf(valueOf(info))} has-data`,
+                        !info && !future && "is-open",
+                        mood && `mood-${mood.value}`,
+                        future && "is-future",
+                        isToday && "is-today",
+                        isBest && "is-best",
+                        selected === day && "is-selected",
+                      ].filter(Boolean).join(" ");
+                      const label = [
+                        `${day} de ${MONTHS[month]}`,
+                        info ? `${fmt(info)} en ${info.trades.length} ${info.trades.length === 1 ? "operación" : "operaciones"}` : "sin operaciones",
+                        mood && `ánimo: ${mood.label.toLowerCase()}`,
+                        dia?.nota && "con nota",
+                      ].filter(Boolean).join(", ");
+
+                      if (future) {
+                        return (
+                          <div key={i} className={cls}>
+                            <span className="tjc-num">{day}</span>
+                          </div>
+                        );
+                      }
+                      // Día con operaciones: abre su panel. Día pasado sin operaciones: el «+»
+                      // abre el formulario de operación nueva en esa fecha, que ya trae sus sensaciones.
+                      const addOn = () => onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes()));
+                      return (
+                        <button
+                          key={i}
+                          type="button"
+                          className={cls}
+                          style={info ? ({ "--intensity": 0.25 + 0.75 * (Math.abs(valueOf(info)) / maxAbs) } as React.CSSProperties) : undefined}
+                          onClick={info ? () => setSelected(selected === day ? null : day) : addOn}
+                          aria-pressed={info ? selected === day : undefined}
+                          aria-label={info ? label : `${label}. Apuntar una operación este día`}
+                        >
+                          {/*
+                            Cinco huecos fijos (rejilla con áreas en trading.css), uno por cosa:
+                            número · ánimo / resultado / operaciones · marcas. Nada comparte
+                            hueco, así que nada se pisa; si la casilla se estrecha, se ocultan
+                            por orden según su propio ancho, no el de la pantalla.
+                          */}
+                          <span className="tjc-num">{day}</span>
+                          {mood && <span className="tjc-mood" title={mood.label} aria-hidden="true">{mood.emoji}</span>}
+                          {info && <strong className="tjc-pnl">{fmt(info)}</strong>}
+                          {info && <DayDots trades={info.trades} />}
+                          {!info && <span className="tjc-plus" aria-hidden="true"><Plus size={14} /></span>}
+                          {(dia?.nota || isBest) && (
+                            <span className="tjc-flags" aria-hidden="true">
+                              {dia?.nota && <NotebookPen size={12} className="tjc-flag-note" />}
+                              {isBest && <Crown size={12} className="tjc-flag-best" />}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                    <div className={`tjc-week${wk.count ? ` tone-${toneOf(valueOf(wk))}` : " is-quiet"}`}>
+                      <span className="tjc-week-label">Sem. {isoWeek(new Date(year, month, firstDay))}</span>
+                      {wk.count ? (
+                        <>
+                          <strong>{fmt(wk)}</strong>
+                          <span className="tjc-week-meta">{wk.count} op. · {Math.round((wk.wins / wk.count) * 100)} %</span>
+                        </>
+                      ) : (
+                        <span className="tjc-week-meta">—</span>
+                      )}
+                    </div>
+                  </Fragment>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {selected != null && infoOf(year, month, selected) && (
+            <motion.div
+              key={`${year}-${month}-${selected}`}
+              className="tjc-detail"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {renderDayDetail(selected, infoOf(year, month, selected)!)}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    );
+  }
+
+  /** Panel de un día con operaciones: la lista para verlas o editarlas, y añadir otra. */
+  function renderDayDetail(day: number, info: DayInfo) {
+    const date = new Date(year, month, day);
+    const weekday = WEEKDAY_NAMES[(date.getDay() + 6) % 7];
+    const isToday = dayKey(date) === today;
+    return (
+      <div className="tjc-detail-inner">
+        <div className="tjc-detail-head">
+          <div>
+            <span className="tjc-detail-date">{isToday ? "Hoy, " : ""}{weekday} {day} de {MONTHS[month]}</span>
+            <span className="tjc-detail-meta">
+              {info.trades.length} {info.trades.length === 1 ? "operación" : "operaciones"}
+              {info.wins > 0 && ` · ${info.wins} ganada${info.wins === 1 ? "" : "s"}`}
+              {info.losses > 0 && ` · ${info.losses} perdida${info.losses === 1 ? "" : "s"}`}
+              {info.bes > 0 && ` · ${info.bes} BE`}
+            </span>
+          </div>
+          <div className="tjc-detail-total">
+            <strong className={`tone-${toneOf(info.pnl)}`}>{pnlStr(info.pnl)}</strong>
+            <span className={`tone-${toneOf(info.r)}`}>{rStr(info.r)}</span>
+          </div>
+          <button type="button" className="tj-icon-btn" onClick={() => setSelected(null)} aria-label="Cerrar el detalle del día" title="Cerrar (Esc)">
+            <X size={15} />
+          </button>
+        </div>
+        <ul className="tjc-detail-list">
+          {info.trades.map(t => {
+            const r = rOf(t);
+            return (
+              <li key={t.id} className={`tone-${resultTone(t.result)}`}>
+                <span className="tjc-detail-time">{timeOf(t.date)}</span>
+                <span className="tjc-detail-pair">
+                  {t.pair}
+                  <span className={`tj-dir is-${t.direction}`}>
+                    {t.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                    {t.direction === "long" ? "Long" : "Short"}
+                  </span>
+                </span>
+                <span className="tjc-detail-strategy">{t.strategy ?? ""}</span>
+                <span className={`tjc-detail-r tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</span>
+                <strong className={`tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</strong>
+                <button type="button" className="tj-icon-btn" onClick={() => onEdit(t)} aria-label={`Editar ${t.pair} de las ${timeOf(t.date)}`} title="Editar">
+                  <Pencil size={13} />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <button
+          type="button"
+          className="tjc-detail-add"
+          onClick={() => onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes()))}
+        >
+          <Plus size={14} /> Añadir otra operación este día
+        </button>
+      </div>
+    );
+  }
+
+  // ─────────────────────────── Año ───────────────────────────
+
+  function renderYear() {
+    const months = Array.from({ length: 12 }, (_, m) => {
+      const cells = monthCells(year, m);
+      const infos = cells.map(d => (d ? infoOf(year, m, d) : undefined));
+      return { m, cells, infos, sum: sumInfos(infos.filter((i): i is DayInfo => !!i)) };
+    });
+    const total = sumInfos(months.flatMap(x => x.infos.filter((i): i is DayInfo => !!i)));
+    const traded = months.filter(x => x.sum.count);
+    const greenMonths = traded.filter(x => x.sum.pnl > 0).length;
+    const best = traded.reduce<(typeof months)[number] | null>((b, x) => (valueOf(x.sum) > (b ? valueOf(b.sum) : 0) ? x : b), null);
+    const maxAbs = Math.max(...months.flatMap(x => x.infos.map(i => (i ? Math.abs(valueOf(i)) : 0))), 1e-9);
+    // Ánimo del año: la media de los días del año con ánimo apuntado (la franja del mes tiene el suyo).
+    const yearMoods = Object.values(dias)
+      .filter(d => d.animo != null && d.fecha.startsWith(`${year}-`))
+      .map(d => d.animo!);
+    const yearMood = yearMoods.length ? animoInfo(animoDeMedia(yearMoods.reduce((s, a) => s + a, 0) / yearMoods.length)) : null;
+
+    return (
+      <>
+        <dl className="tjc-band">
+          <div className={`tjc-band-main tone-${toneOf(valueOf(total))}`}>
+            <dt>Resultado de {year}</dt>
+            <dd>{total.count ? fmt(total) : "—"}</dd>
+          </div>
+          <div><dt>Operaciones</dt><dd>{total.count}</dd></div>
+          <div><dt>Acierto</dt><dd>{total.count ? `${Math.round((total.wins / total.count) * 100)} %` : "—"}</dd></div>
+          <div><dt>Meses en verde</dt><dd>{traded.length ? `${greenMonths}/${traded.length}` : "—"}</dd></div>
+          <div className={best ? "tone-win" : undefined}>
+            <dt>Mejor mes</dt>
+            <dd className="cap">{best ? `${MONTHS[best.m].slice(0, 3)} · ${fmt(best.sum)}` : "—"}</dd>
+          </div>
+          <div className="tjc-band-mood">
+            <dt>Ánimo del año</dt>
+            <dd>{yearMood ? <><span aria-hidden="true">{yearMood.emoji}</span> {yearMood.label}</> : "—"}</dd>
+          </div>
+        </dl>
+
+        <div className="tjc-viewport">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={year}
+              className="tjy-grid"
+              initial={{ opacity: 0, x: direction * 24 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -direction * 24 }}
+              transition={{ duration: 0.22, ease: "easeOut" }}
+            >
+              {months.map(({ m, cells, infos, sum }) => {
+                const isNow = year === now.getFullYear() && m === now.getMonth();
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    className={`tjy-month${sum.count ? ` tone-${toneOf(valueOf(sum))}` : " is-quiet"}${isNow ? " is-now" : ""}`}
+                    onClick={() => openMonth(m)}
+                    aria-label={`${MONTHS[m]} de ${year}: ${sum.count ? `${fmt(sum)} en ${sum.count} operaciones` : "sin operaciones"}. Abrir el mes`}
+                  >
+                    <span className="tjy-head">
+                      <span className="tjy-name cap">{MONTHS[m]}</span>
+                      <strong>{sum.count ? fmt(sum) : "—"}</strong>
+                    </span>
+                    <span className="tjy-mini" aria-hidden="true">
+                      {cells.map((d, i) => {
+                        const info = infos[i];
+                        if (d == null) return <i key={i} className="is-empty" />;
+                        return (
+                          <i
+                            key={i}
+                            className={info ? `tone-${toneOf(valueOf(info))} has-data` : undefined}
+                            style={info ? ({ "--intensity": 0.3 + 0.7 * (Math.abs(valueOf(info)) / maxAbs) } as React.CSSProperties) : undefined}
+                          />
+                        );
+                      })}
+                    </span>
+                    <span className="tjy-meta">
+                      {sum.count ? `${sum.count} op. · ${Math.round((sum.wins / sum.count) * 100)} % · ${sum.green}/${sum.days} días en verde` : "Sin operaciones"}
+                    </span>
+                  </button>
+                );
+              })}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </>
+    );
+  }
 }

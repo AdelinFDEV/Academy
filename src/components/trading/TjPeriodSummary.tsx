@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, ReferenceLine, CartesianGrid } from "recharts";
-import { CalendarRange } from "lucide-react";
 import { TjSegmented } from "./TjControls";
+import DivergingBar from "./TjDivergingBar";
 import { TJ_COLORS, factorStr, pctStr, pnlStr, toneOf } from "./tjFormat";
 import { groupStats, periodKey, type Granularity, type GroupStats, type Trade, type TradeContext } from "./tjStats";
 
@@ -63,13 +63,16 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
   const hitDelta = last && prev ? Math.round(last.winRate) - Math.round(prev.winRate) : null;
 
   return (
-    <section className="tj-card">
-      <div className="tj-card-head">
-        <span className="tj-label"><CalendarRange size={15} /> Rendimiento por periodo</span>
+    <section className="tj-card tjn-period">
+      <header className="tjr-head">
+        <div>
+          <h3>Rendimiento por periodo</h3>
+          <span className="tj-count">Cómo se reparte tu resultado en el tiempo</span>
+        </div>
         <TjSegmented label="Periodo" value={granularity} onChange={setGranularity} options={OPTIONS} />
-      </div>
+      </header>
 
-      <dl className="tj-strip">
+      <dl className="tjn-band">
         <div className="tj-metric">
           <dt>{unit} en verde</dt>
           <dd>{green}/{rows.length}</dd>
@@ -106,7 +109,7 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
         </div>
       </dl>
 
-      <div className="tj-chart is-short">
+      <div className="tj-chart tjn-period-chart">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <CartesianGrid stroke={TJ_COLORS.grid} vertical={false} />
@@ -126,7 +129,7 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
       </div>
 
       <div className="tj-table-wrap">
-        <table className="tj-table">
+        <table className="tj-table tjn-table">
           <thead>
             <tr>
               <th>Periodo</th>
@@ -146,10 +149,7 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
                 <td className="num tj-hide-sm">{factorStr(r.profitFactor)}</td>
                 <td className={`num tj-hide-sm tone-${toneOf(r.returnPct ?? 0)}`}>{r.returnPct != null ? pctStr(r.returnPct) : "—"}</td>
                 <td className={`num tone-${toneOf(r.pnl)}`}>
-                  <span className="tj-bar-cell">
-                    <span className="tj-bar"><i style={{ width: `${(Math.abs(r.pnl) / maxAbs) * 100}%` }} /></span>
-                    <strong>{pnlStr(r.pnl)}</strong>
-                  </span>
+                  <DivergingBar value={r.pnl} max={maxAbs} />
                 </td>
               </tr>
             ))}

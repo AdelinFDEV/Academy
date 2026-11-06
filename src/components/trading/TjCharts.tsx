@@ -1,7 +1,9 @@
 "use client";
 
+import { useId, useState } from "react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { TJ_COLORS, moneyStr, pctStr, pnlStr } from "./tjFormat";
+import { TjSegmented } from "./TjControls";
+import { TJ_COLORS, moneyStr, pctStr, pnlStr, toneOf } from "./tjFormat";
 import { resultTone, type EquityPoint } from "./tjStats";
 
 /**
@@ -73,6 +75,89 @@ function EquityTooltip({ active, payload, isDd, usePct }: TooltipRenderProps<Equ
 }
 
 export type EquityMode = "equity" | "drawdown";
+
+/**
+ * Curva mínima, sin ejes ni tooltip: solo la forma. SVG propio en vez de
+ * Recharts porque es decorativa y se pinta en una tarjeta estrecha.
+ */
+export function Sparkline({ values, base }: { values: number[]; base: number }) {
+  // useId trae «:» o «»: no valen dentro de url(#…), así que se limpian.
+  const id = `spark${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  const min = Math.min(base, ...values);
+  const max = Math.max(base, ...values);
+  const span = max - min || 1;
+  const W = 100;
+  const H = 36;
+  const x = (i: number) => (i / (values.length - 1)) * W;
+  const y = (v: number) => H - 2 - ((v - min) / span) * (H - 4);
+  const line = values.map((v, i) => `${x(i).toFixed(2)},${y(v).toFixed(2)}`).join(" ");
+  const color = values[values.length - 1] < base ? TJ_COLORS.loss : TJ_COLORS.win;
+  return (
+    <svg className="tj-spark" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={0.32} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <line x1="0" x2={W} y1={y(base)} y2={y(base)} className="tj-spark-base" vectorEffect="non-scaling-stroke" />
+      <polygon points={`0,${H} ${line} ${W},${H}`} fill={`url(#${id})`} />
+      <polyline points={line} fill="none" stroke={color} strokeWidth={2} vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Tarjeta de la curva: el gráfico y cuatro lecturas que lo explican sin pasar el ratón. */
+export function TjEquityCard({
+  series,
+  capital,
+  drawdown,
+}: {
+  series: EquityPoint[];
+  capital: number | null;
+  drawdown: { abs: number; pct: number | null };
+}) {
+  const [mode, setMode] = useState<EquityMode>("equity");
+  const base = capital ?? 0;
+  const last = series[series.length - 1];
+  const peak = Math.max(...series.map(p => p.equity));
+  const low = Math.min(...series.map(p => p.equity));
+  const stats: { label: string; value: string; tone?: string }[] = capital != null
+    ? [
+        { label: "Actual", value: moneyStr(last.equity), tone: toneOf(last.equity - base) },
+        { label: "Máximo", value: moneyStr(peak) },
+        { label: "Mínimo", value: moneyStr(low) },
+        { label: "Desde el máximo", value: last.ddPct != null ? pctStr(last.ddPct) : pnlStr(last.dd), tone: last.dd < 0 ? "loss" : "be" },
+      ]
+    : [
+        { label: "P&L acumulado", value: pnlStr(last.equity), tone: toneOf(last.equity) },
+        { label: "Máximo", value: pnlStr(peak) },
+        { label: "Mínimo", value: pnlStr(low) },
+        { label: "Mayor caída", value: pnlStr(drawdown.abs), tone: drawdown.abs < 0 ? "loss" : "be" },
+      ];
+
+  return (
+    <section className="tj-card tje">
+      <header className="tjr-head">
+        <div>
+          <h3>{capital != null ? "Evolución del capital" : "Curva de P&L"}</h3>
+          <span className="tj-count">{series.length - 1} operaciones, de la primera a la última</span>
+        </div>
+        <TjSegmented label="Vista del gráfico" value={mode} onChange={setMode}
+          options={[{ value: "equity", label: "Capital" }, { value: "drawdown", label: "Drawdown" }]} />
+      </header>
+      <dl className="tje-stats">
+        {stats.map(s => (
+          <div key={s.label} className={s.tone ? `tone-${s.tone}` : undefined}>
+            <dt>{s.label}</dt>
+            <dd>{s.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <EquityChart series={series} base={base} mode={mode} />
+    </section>
+  );
+}
 
 export function EquityChart({ series, base, mode }: { series: EquityPoint[]; base: number; mode: EquityMode }) {
   const isDd = mode === "drawdown";

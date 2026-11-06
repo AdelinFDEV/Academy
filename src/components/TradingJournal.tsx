@@ -2,19 +2,25 @@
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, Filter, X, LineChart, Check, NotebookPen } from "lucide-react";
+import { Plus, Filter, X, Check, NotebookPen } from "lucide-react";
 import { TjSegmented, TjSelect } from "@/components/trading/TjControls";
-import { EquityChart, type EquityMode } from "@/components/trading/TjCharts";
-import TjSummary, { TjInsights } from "@/components/trading/TjSummary";
+import { TjEquityCard } from "@/components/trading/TjCharts";
+import TjSummary from "@/components/trading/TjSummary";
 import TjAnalysis from "@/components/trading/TjAnalysis";
-import TjMilestones, { TjNextMilestone, milestoneNotices } from "@/components/trading/TjMilestones";
+import TjMilestones, { TjMilestoneTeaser, milestoneNotices } from "@/components/trading/TjMilestones";
 import type { UnlockEventDetail } from "@/components/BadgeNotifier";
 import type { DiarioLogrosSync } from "@/lib/diarioLogros";
 import TjTradeForm from "@/components/trading/TjTradeForm";
 import TjTradeLog, { TjRecentTrades } from "@/components/trading/TjTradeLog";
-import { dateLong } from "@/components/trading/tjFormat";
+import TjCalendar from "@/components/trading/TjCalendar";
+import TjWelcome from "@/components/trading/TjWelcome";
+import TjBalance from "@/components/trading/TjBalance";
+import TjBot from "@/components/trading/TjBot";
+import { buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
+import TjEmotions from "@/components/trading/TjEmotions";
+import { toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
 import {
-  MILESTONES, NO_FILTERS, NO_STRATEGY, accountContext, applyFilters, buildInsights, buildMilestones, byChronology,
+  MILESTONES, NO_FILTERS, NO_STRATEGY, accountContext, applyFilters, buildMilestones, byChronology,
   computeStats, distinctByUse, equitySeries, isFiltered, maxDrawdown, parseStoredLevels,
   type Filters, type RangeId, type Trade,
 } from "@/components/trading/tjStats";
@@ -33,10 +39,11 @@ const RANGES: { value: RangeId; label: string }[] = [
   { value: "ytd", label: "Este año" },
 ];
 
-type View = "resumen" | "analisis" | "operaciones" | "hitos";
+type View = "resumen" | "emociones" | "analisis" | "operaciones" | "hitos";
 
 const VIEWS: { value: View; label: string }[] = [
   { value: "resumen", label: "Resumen" },
+  { value: "emociones", label: "Emociones" },
   { value: "analisis", label: "Análisis" },
   { value: "operaciones", label: "Operaciones" },
   { value: "hitos", label: "Hitos" },
@@ -59,50 +66,35 @@ function readView(): View {
 
 const serverView = (): View => "resumen";
 
-/** Cabecera de cada vista: el mismo lenguaje que las fichas públicas (número, título, lectura). */
-const VIEW_HEADS: Record<View, { num: string; title: string; sub: string }> = {
-  resumen: { num: "01", title: "Tu cuenta, de un vistazo", sub: "Rentabilidad, evolución del capital y lo que dicen tus números. Siempre sobre la cuenta completa." },
-  analisis: { num: "02", title: "Análisis", sub: "Dónde ganas, dónde pierdes y cómo gestionas el riesgo. Todo lo que ves aquí obedece a los filtros." },
-  operaciones: { num: "03", title: "Tus operaciones", sub: "El registro completo: busca, ordena, abre el detalle de cada una o expórtalo a CSV." },
-  hitos: { num: "04", title: "Hitos", sub: "Niveles que premian la disciplina, no el volumen. Cada uno queda guardado entre tus logros." },
-};
-
-function ViewHead({ view }: { view: View }) {
-  const h = VIEW_HEADS[view];
-  return (
-    <header className="imm-sechead">
-      <span className="imm-sechead-num">{h.num}</span>
-      <div>
-        <h2>{h.title}</h2>
-        <p>{h.sub}</p>
-      </div>
-    </header>
-  );
-}
-
 export default function TradingJournal({
   initialTrades,
   userName,
   initialCapital,
   initialLogros,
+  initialDias,
 }: {
   initialTrades: Trade[];
+  /** Nombre de pila para el saludo. */
   userName: string;
   initialCapital: number | null;
   /** Niveles de hito ya guardados como logro en user_badges. */
   initialLogros: DiarioLogrosSync["stored"];
+  /** Ánimo y nota de cada día (tabla diario_dias). */
+  initialDias: DiaDiario[];
 }) {
   const [trades, setTrades] = useState<Trade[]>(() => [...initialTrades].sort(byChronology));
   const [capital, setCapital] = useState<number | null>(initialCapital);
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
-  const [eqMode, setEqMode] = useState<EquityMode>("equity");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Trade | null>(null);
+  /** Fecha con la que abrir una operación nueva; null = ahora. */
+  const [newDate, setNewDate] = useState<Date | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [resetError, setResetError] = useState("");
   const [now] = useState(() => new Date());
   const [logros, setLogros] = useState(initialLogros);
+  const [dias, setDias] = useState<DiasMap>(() => toDiasMap(initialDias));
   const [editingCapital, setEditingCapital] = useState(false);
   const view = useSyncExternalStore(subscribeHash, readView, serverView);
   const formRef = useRef<HTMLDivElement>(null);
@@ -110,23 +102,30 @@ export default function TradingJournal({
 
   useEffect(() => {
     if (formOpen) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [formOpen, editing]);
+  }, [formOpen, editing, newDate]);
+
+  // Las operaciones nuevas solo se apuntan desde el Resumen: el resto de vistas
+  // no enseñan el botón ni responden al atajo. Editar sí se puede desde Operaciones.
+  const canAdd = view === "resumen" || trades.length === 0;
 
   // Atajo: N abre una operación nueva, salvo que se esté escribiendo en un campo.
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const el = e.target as HTMLElement;
-      if (e.key !== "n" && e.key !== "N") return;
+      if (!canAdd || (e.key !== "n" && e.key !== "N")) return;
       if (e.ctrlKey || e.metaKey || e.altKey || el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) return;
       e.preventDefault();
       setEditing(null);
+      setNewDate(null);
       setFormOpen(true);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [canAdd]);
 
   function goTo(v: View) {
+    // Salir del Resumen descarta una operación nueva a medias (las ediciones siguen).
+    if (v !== "resumen" && formOpen && !editing) setFormOpen(false);
     window.location.hash = v;
     // Si se cambia de vista desde abajo del todo, sube a las pestañas.
     const tabs = tabsRef.current;
@@ -143,7 +142,6 @@ export default function TradingJournal({
       stats,
       series,
       drawdown: maxDrawdown(series),
-      insights: buildInsights(trades, stats, ctx),
       milestones: buildMilestones(trades, capital, ctx, now, stored),
     };
   }, [trades, capital, ctx, now, stored]);
@@ -184,8 +182,9 @@ export default function TradingJournal({
     }
   }
 
-  function openNew() {
+  function openNew(date: Date | null = null) {
     setEditing(null);
+    setNewDate(date);
     setFormOpen(true);
   }
 
@@ -200,6 +199,23 @@ export default function TradingJournal({
     );
     closeForm();
     void syncLogros();
+  }
+
+  /** Guarda el ánimo y la nota de un día. Lanza si falla, para que el panel lo diga. */
+  async function saveDia(d: DiaDiario) {
+    const res = await fetch("/api/diario-dias", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(d),
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(data?.error ?? "No se pudo guardar");
+    setDias(prev => {
+      const next = { ...prev };
+      if (d.animo == null && !d.nota) delete next[d.fecha];
+      else next[d.fecha] = { fecha: d.fecha, animo: d.animo, nota: d.nota };
+      return next;
+    });
   }
 
   async function onDelete(id: string) {
@@ -231,16 +247,44 @@ export default function TradingJournal({
     }
   }
 
-  const last = trades[trades.length - 1];
   const setFilter = <K extends keyof Filters>(k: K, v: Filters[K]) => setFilters(f => ({ ...f, [k]: v }));
   const openReset = () => { setResetOpen(true); setResetError(""); };
 
+  const calendar = (
+    <TjCalendar
+      trades={trades}
+      onEdit={t => { setEditing(t); setFormOpen(true); }}
+      onAdd={d => openNew(d)}
+      dias={dias}
+    />
+  );
+
   const summary = (
-    <TjSummary
+    <TjSummary stats={account.stats} drawdown={account.drawdown} />
+  );
+
+  // Nova lee todo (operaciones, sensaciones, hitos) y lo cuenta desde la cabecera.
+  const botReport = useMemo(
+    () => buildBotReport({
+      name: userName, trades, dias, milestones: account.milestones, ctx, stats: account.stats, capital, now,
+    }),
+    [userName, trades, dias, account, ctx, capital, now],
+  );
+
+  /** Los botones de los mensajes de Nova: cada uno lleva a hacer lo que propone. */
+  function onBotAction(kind: BotActionKind) {
+    if (kind === "nuevo") openNew();
+    else if (kind === "capital") setEditingCapital(true);
+    else goTo(kind);
+  }
+
+  // El balance va en la cabecera: lo primero que se ve al entrar.
+  const balance = (
+    <TjBalance
       key={capital ?? "sin-capital"}
-      stats={account.stats}
+      totalPnl={account.stats.totalPnl}
       capital={capital}
-      drawdown={account.drawdown}
+      series={account.series}
       editing={editingCapital}
       onEditingChange={setEditingCapital}
       onCapitalSaved={v => { setCapital(v); void syncLogros(); }}
@@ -250,7 +294,10 @@ export default function TradingJournal({
 
   const filterBar = (
     <div className="tj-card tj-filters">
-      <span className="tj-label"><Filter size={15} /> Filtrar</span>
+      <span className="tj-filters-title">
+        <Filter size={14} /> Filtros
+        <small>{view === "analisis" ? "Todo lo de abajo los obedece" : "Afectan a la lista"}</small>
+      </span>
       <TjSegmented label="Periodo" value={filters.range} onChange={v => setFilter("range", v)} options={RANGES} />
       <TjSelect compact value={filters.pair} onChange={v => setFilter("pair", v)}
         options={[{ value: "", label: "Todos los pares" }, ...pairs.map(p => ({ value: p, label: p }))]} />
@@ -289,26 +336,25 @@ export default function TradingJournal({
         <span className="imm-orb imm-orb--3" />
       </div>
 
-      <header className="tj-header imm-head">
-        <span className="imm-watermark" aria-hidden="true">R</span>
-        <div>
-          <span className="imm-eyebrow">
-            <span className="imm-eyebrow-dot" aria-hidden="true" />
-            Premium · Privado y solo tuyo
-          </span>
-          <h1 className="imm-title">
-            Diario de Trading
-            <span className="imm-title-grad">Los números, no tu memoria.</span>
-          </h1>
-          <p className="imm-sub">
-            {trades.length} {trades.length === 1 ? "operación registrada" : "operaciones registradas"} · {userName}
-            {last && ` · última el ${dateLong(last.date)}`}
-          </p>
-        </div>
-        <button type="button" className="btn-primary btn-small tj-new" onClick={openNew} title="Atajo: tecla N" aria-keyshortcuts="N">
-          <Plus size={16} /> Nueva operación
-        </button>
-      </header>
+      {/* Sin cabecera: al entrar, lo primero es el calendario. La barra solo lleva
+          las vistas y el botón de apuntar, y se queda fija al hacer scroll. */}
+      {/* La bienvenida abre el Resumen; en las demás vistas el título queda solo para lectores de pantalla. */}
+      {view === "resumen" || trades.length === 0
+        ? <TjWelcome name={userName} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
+        : <h1 className="sr-only">Diario de Trading</h1>}
+      <div className="tj-topbar tj-scroll-anchor" ref={tabsRef}>
+        {trades.length > 0 && (
+          <div className="tj-tabs">
+            <TjSegmented label="Vista del diario" value={view} onChange={goTo} options={VIEWS} />
+            {(view === "analisis" || view === "operaciones") && filtering && (
+              <span className="tj-count">Filtros activos · {filtered.length} de {trades.length}</span>
+            )}
+          </div>
+        )}
+        {canAdd && <button type="button" className="btn-primary btn-small tj-new" onClick={() => openNew()} title="Nueva operación (atajo: tecla N)" aria-label="Nueva operación" aria-keyshortcuts="N">
+          <Plus size={16} /> <span className="tj-hide-sm">Nueva operación</span>
+        </button>}
+      </div>
 
       {resetOpen && (
         <div className="tj-card tj-alert">
@@ -327,7 +373,8 @@ export default function TradingJournal({
       )}
 
       <AnimatePresence initial={false}>
-        {formOpen && (
+        {/* Una operación nueva a medias se cierra al salir del Resumen; una edición sigue abierta. */}
+        {formOpen && (editing || canAdd) && (
           <motion.div
             ref={formRef}
             className="tj-scroll-anchor"
@@ -335,13 +382,16 @@ export default function TradingJournal({
             transition={{ duration: 0.2 }}
           >
             <TjTradeForm
-              key={editing?.id ?? "new"}
+              key={editing?.id ?? `new-${newDate?.getTime() ?? "ahora"}`}
               editing={editing}
+              initialDate={newDate ?? undefined}
               pairOptions={distinctByUse([...pairs, ...COMMON_PAIRS])}
               strategyOptions={strategies}
               equity={capital != null ? capital + account.stats.totalPnl : null}
               onSaved={onSaved}
               onClose={closeForm}
+              dias={dias}
+              onSaveDia={saveDia}
             />
           </motion.div>
         )}
@@ -349,6 +399,7 @@ export default function TradingJournal({
 
       {trades.length === 0 ? (
         <>
+          {calendar}
           {summary}
           <section className="tj-card tj-onboarding">
             <span className="tj-label"><NotebookPen size={15} /> Empieza tu diario</span>
@@ -360,39 +411,30 @@ export default function TradingJournal({
               <li><span>2</span> Apunta cada operación con su riesgo, su objetivo y el porqué.</li>
               <li><span>3</span> A partir de 30 operaciones, tus números empiezan a decir la verdad.</li>
             </ol>
-            <button type="button" className="tj-btn is-primary" onClick={openNew}><Plus size={15} /> Registrar mi primera operación</button>
+            <button type="button" className="tj-btn is-primary" onClick={() => openNew()}><Plus size={15} /> Registrar mi primera operación</button>
           </section>
         </>
       ) : (
         <>
-          <div className="tj-tabs tj-scroll-anchor" ref={tabsRef}>
-            <TjSegmented label="Vista del diario" value={view} onChange={goTo} options={VIEWS} />
-            {(view === "analisis" || view === "operaciones") && filtering && (
-              <span className="tj-count">Filtros activos · {filtered.length} de {trades.length}</span>
-            )}
-          </div>
-
-          <ViewHead view={view} />
-
           {view === "resumen" && (
             <>
-              {summary}
-              <section className="tj-card">
-                <div className="tj-card-head">
-                  <span className="tj-label">
-                    <LineChart size={15} /> {capital != null ? "Evolución del capital" : "Curva de P&L"}
-                  </span>
-                  <TjSegmented label="Vista del gráfico" value={eqMode} onChange={setEqMode}
-                    options={[{ value: "equity", label: "Capital" }, { value: "drawdown", label: "Drawdown" }]} />
-                </div>
-                <EquityChart series={account.series} base={capital ?? 0} mode={eqMode} />
-              </section>
-              <div className="tj-split is-balanced">
-                <TjInsights insights={account.insights} />
-                <TjNextMilestone milestones={account.milestones} />
+              {/* El calendario, a todo el ancho y lo primero; la cuenta, en franja debajo. */}
+              <div className="tjr-top">
+                {calendar}
+                {summary}
               </div>
-              <TjRecentTrades trades={trades} onSeeAll={() => goTo("operaciones")} />
+              <TjEquityCard series={account.series} capital={capital} drawdown={account.drawdown} />
+              {/* Últimas operaciones y próximo hito, a la misma altura. Las lecturas automáticas
+                  que iban aquí («Lo que dicen tus números») serán frases del bot. */}
+              <div className="tjr-duo">
+                <TjRecentTrades trades={trades} onSeeAll={() => goTo("operaciones")} />
+                <TjMilestoneTeaser milestones={account.milestones} onOpen={() => goTo("hitos")} />
+              </div>
             </>
+          )}
+
+          {view === "emociones" && (
+            <TjEmotions trades={trades} dias={dias} now={now} onOpenToday={() => { goTo("resumen"); openNew(); }} />
           )}
 
           {view === "analisis" && (
@@ -409,6 +451,7 @@ export default function TradingJournal({
                 <TjTradeLog
                   trades={filtered}
                   ctx={ctx}
+                  dias={dias}
                   onEdit={t => { setEditing(t); setFormOpen(true); }}
                   onDelete={onDelete}
                 />
@@ -417,13 +460,12 @@ export default function TradingJournal({
           )}
 
           {view === "hitos" && (
-            <>
-              <TjNextMilestone milestones={account.milestones} />
-              <TjMilestones
-                milestones={account.milestones}
-                onDefineCapital={() => { setEditingCapital(true); goTo("resumen"); }}
-              />
-            </>
+            <TjMilestones
+              milestones={account.milestones}
+              trades={trades}
+              now={now}
+              onDefineCapital={() => { setEditingCapital(true); goTo("resumen"); }}
+            />
           )}
         </>
       )}

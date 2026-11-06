@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import TradingJournal from "@/components/TradingJournal";
 import { readDiarioLogros } from "@/lib/diarioLogros";
+import type { DiaDiario } from "@/components/trading/tjDias";
 import "./trading.css";
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ export default async function TradingPage() {
   const admin = createAdminClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, role, trading_starting_capital")
+    .select("full_name, alias, role, trading_starting_capital")
     .eq("id", user.id)
     .single();
 
@@ -31,7 +32,7 @@ export default async function TradingPage() {
   const isPremium = role === "premium" || role === "admin";
   if (!isPremium) redirect("/dashboard");
 
-  const [{ data: trades }, logros] = await Promise.all([
+  const [{ data: trades }, logros, { data: dias }] = await Promise.all([
     supabase
       .from("trades")
       .select("*")
@@ -39,9 +40,12 @@ export default async function TradingPage() {
       .order("date", { ascending: true })
       .order("created_at", { ascending: true }),
     readDiarioLogros(supabase, user.id),
+    // Ánimo y nota de cada día. Si la tabla aún no existe, el diario funciona igual, vacío.
+    supabase.from("diario_dias").select("fecha, animo, nota").eq("user_id", user.id),
   ]);
 
-  const name = profile?.full_name || user.email?.split("@")[0] || "Trader";
+  // Para saludar: el nombre de pila; si no lo hay, el alias del foro o el correo.
+  const name = profile?.full_name?.trim().split(/\s+/)[0] || profile?.alias || user.email?.split("@")[0] || "trader";
 
   return (
     <main className="dashboard-main">
@@ -50,6 +54,7 @@ export default async function TradingPage() {
         userName={name}
         initialCapital={profile?.trading_starting_capital ?? null}
         initialLogros={logros}
+        initialDias={(dias ?? []) as DiaDiario[]}
       />
     </main>
   );

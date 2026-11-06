@@ -22,13 +22,12 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
-### 00d. El bot inteligente del Diario de Trading (04-11-2026)
+### 00d. Nova, el bot del Diario: siguientes pasos (06-11-2026)
 
-🔴 **Ya está anunciado y todavía no existe.** El admin pidió el 04-11-2026 que el slider de la portada diga del Diario «Con bot inteligente, hitos y registro completo» (`remate` de la diapositiva `diario` en `src/components/HeroSlider.tsx`), y que el bot se haga después. Hoy el diario no tiene ningún bot: calcula las estadísticas, el análisis y los hitos (`src/components/trading/`).
+Hecho el 06-11-2026 (versión 1): **Nova** vive en la cabecera del Resumen (`TjBot.tsx`, motor en `tjNova.ts`). Son reglas sobre los datos, sin IA. Da un **pulso** de 0 a 100 (riesgo, resultados, emociones y constancia, sobre lo reciente), prioriza sus mensajes (lo urgente sube a «Lo más importante»), propone acciones con botón y analiza hoy, sensaciones y su efecto en el dinero, tendencia del ánimo, rachas, riesgo, revancha, sobreoperar, caída desde el máximo y nuevos máximos, forma reciente, franjas horarias, hitos y las lecturas de `buildInsights`/`welcomeReading`. El personaje (`NovaHead.tsx`) es una cabeza que vuela por su espacio bajo el saludo, girándose en continuo; hace una actividad (dormir, pelota, trading, estudiar, música) durante 10 minutos o hasta que le interrumpan, y luego otra; cambia de cara según cómo va el usuario y se alegra al pasarle el ratón. La frase corta junto a él está quitada de momento (el motor sigue calculando `teasers`). Falta:
 
-- [ ] **Decidir con el admin qué hace el bot** antes de escribir código: si analiza las operaciones y da observaciones, si responde preguntas sobre ellas, cómo se ve dentro del diario y qué modelo usa. (Telegram ya no existe: vive en la web.)
-- [ ] **Construirlo.**
-- [ ] **Hasta que exista**, ningún otro texto (fichas `/herramientas/diario`, `/premium`, catálogo) debe prometerlo. Si se decide no hacerlo, quitar «bot inteligente» del slider.
+- [ ] **Ver con el admin si se le añade IA** encima de las reglas (por ejemplo, que redacte el resumen o responda preguntas), y con qué modelo y coste.
+- [ ] **Antes de anunciarlo en las fichas** (`/herramientas/diario`, `/premium`), abrir `tjNova.ts` y prometer solo lo que hace.
 
 ### 00b. Un vídeo explicativo de cada herramienta, para el home (31-10-2026)
 
