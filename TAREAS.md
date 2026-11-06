@@ -51,7 +51,6 @@ Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho
   - **Gestionar la cuenta desde el dashboard:** el usuario tiene que poder hacer ahí todo lo que antes pasaba por el bot o por Telegram: ver su plan, renovar o cancelar Premium (portal de Stripe), cambiar contraseña y 2FA, borrar su cuenta y escribir a soporte. Hecho el 06-11-2026: todo vive en «Mi perfil» (`/dashboard/perfil`) y `/cuenta` redirige allí; el portal de Stripe vuelve a `/dashboard/perfil#suscripcion`. Queda revisar que el flujo entero funciona sin Telegram (sobre todo renovar y cancelar).
   - **Seguridad:** repasar las rutas que tocaban Telegram (webhook de Stripe, borrado de cuenta, cambio de rol desde `/admin/users`) y que el resto sigue protegido (RLS de `profiles`, `CRON_SECRET` del cron nuevo, limitador).
   - **Ni una mención ni lógica de Telegram:** buscar en el código, los textos, el SQL, las variables de entorno y los emails (`grep -rni telegram src scripts *.md`) y que no quede nada que dependa de él. Lo que sí queda a propósito: comentarios que explican que se retiró y los scripts SQL históricos.
-- [ ] **«Soporte prioritario»** sigue en la tabla y en la lista de precio de `/premium`. Antes había un relé de soporte por el bot; ahora el contacto es Instagram para todos. Decidir si se mantiene la promesa y cómo se cumple.
 
 ### 000. Herramientas retiradas (31-10-2026)
 
