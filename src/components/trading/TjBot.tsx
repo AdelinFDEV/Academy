@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom";
 import { AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity, type AnimationPlaybackControls, type Variants } from "framer-motion";
 import NovaHead, { type NovaActivity, type NovaFace } from "./NovaHead";
+import NovaRoom from "./NovaRoom";
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import {
   BOT_NAME, IMPORTANT, SECTION_LABEL,
@@ -439,6 +440,8 @@ export default function TjBot({ report, onAction }: {
     );
   }
 
+  const flightDir = stage ? (stage.to.x >= stage.from.x ? 1 : -1) : 1;
+
   // La cara del momento: alegría con el ratón encima; si no, la de lo que esté haciendo; si no, la del informe.
   const face: NovaFace = hover
     ? "joy"
@@ -452,6 +455,8 @@ export default function TjBot({ report, onAction }: {
     <div className="tjbot">
       {/* El espacio de Nova: vive y se pasea por todo el hueco bajo el saludo. */}
       <div className="tjbot-habitat" ref={habitatRef}>
+        {/* Su habitación: un fondo fijo. Va aparte para recortar solo el fondo, no a Nova (la pelota y los corazones salen por arriba). */}
+        <NovaRoom />
         <motion.div className="tjbot-walker" style={{ x, y }}>
           <motion.button
             ref={triggerRef}
@@ -489,36 +494,65 @@ export default function TjBot({ report, onAction }: {
             className="tjbot-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: open ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.35 }}
             onClick={close}
             aria-hidden="true"
           />
 
-          {/* Nova volando: de su sitio al centro (agrandándose, «se acerca») y de vuelta al cerrar. */}
+          {/*
+            Nova volando EN ARCO: sube y baja describiendo una curva, se inclina hacia
+            donde va, se agranda («se acerca») y al llegar rebota un poco y deja un
+            anillo de luz. La vuelta, el arco contrario, encogiéndose.
+          */}
           <AnimatePresence custom={home ?? stage.from} onExitComplete={() => setStage(null)}>
             {open && (
               <motion.div
                 key="nova"
                 className="tjbot-flyer"
                 custom={home ?? stage.from}
-                initial={{ x: stage.from.x, y: stage.from.y, scale: 1 }}
+                initial={{ x: stage.from.x, y: stage.from.y, scale: 1, rotate: 0 }}
                 animate={{
-                  x: stage.to.x,
-                  y: stage.to.y,
-                  scale: stage.scale,
-                  transition: { type: "spring", stiffness: 150, damping: 19, mass: 0.85 },
+                  x: [stage.from.x, (stage.from.x + stage.to.x) / 2, stage.to.x],
+                  y: [stage.from.y, Math.max(0, (stage.from.y + stage.to.y) / 2 - 70), stage.to.y],
+                  scale: [1, (1 + stage.scale) / 2, stage.scale * 1.08, stage.scale],
+                  rotate: [0, flightDir * 14, -flightDir * 5, 0],
+                  transition: {
+                    x: { duration: 0.8, times: [0, 0.5, 1], ease: ["easeOut", "easeInOut"] },
+                    y: { duration: 0.8, times: [0, 0.45, 1], ease: ["easeOut", "easeIn"] },
+                    scale: { duration: 0.95, times: [0, 0.45, 0.82, 1], ease: "easeInOut" },
+                    rotate: { duration: 0.9, times: [0, 0.4, 0.82, 1], ease: "easeInOut" },
+                  },
                 }}
                 exit="back"
                 variants={{
                   back: (p: Pt) => ({
-                    x: p.x,
-                    y: p.y,
-                    scale: 1,
-                    transition: { type: "spring", stiffness: 160, damping: 21, delay: 0.1 },
+                    x: [stage.to.x, (stage.to.x + p.x) / 2, p.x],
+                    y: [stage.to.y, Math.max(0, (stage.to.y + p.y) / 2 - 50), p.y],
+                    scale: [stage.scale, stage.scale * 0.75, 1.06, 1],
+                    rotate: [0, -flightDir * 12, flightDir * 4, 0],
+                    transition: {
+                      delay: 0.12,
+                      x: { duration: 0.75, times: [0, 0.5, 1], ease: ["easeIn", "easeOut"] },
+                      y: { duration: 0.75, times: [0, 0.4, 1], ease: ["easeOut", "easeIn"] },
+                      scale: { duration: 0.8, times: [0, 0.45, 0.85, 1], ease: "easeInOut" },
+                      rotate: { duration: 0.8, times: [0, 0.4, 0.85, 1], ease: "easeInOut" },
+                    },
                   }),
                 }}
                 onAnimationComplete={def => { if (def !== "back") setArrived(true); }}
               >
+                <AnimatePresence>
+                  {arrived && (
+                    <motion.span
+                      key="ring"
+                      className="tjbot-arrive-ring"
+                      initial={{ opacity: 0.8, scale: 0.5 }}
+                      animate={{ opacity: 0, scale: 1.6 }}
+                      transition={{ duration: 0.7, ease: "easeOut" }}
+                      aria-hidden="true"
+                    />
+                  )}
+                </AnimatePresence>
                 <NovaHead
                   theta={flyerTheta}
                   face={arrived ? report.expression : "joy"}
@@ -534,129 +568,136 @@ export default function TjBot({ report, onAction }: {
 
           {/* El popup, bajo Nova, con el piquito hacia ella. */}
           <div className="tjbot-dialog" style={{ "--dlg-top": `${Math.round(stage.to.y + HEAD * stage.scale * 0.92)}px` } as React.CSSProperties}>
-          <AnimatePresence>
-            {open && current && (
-              <motion.div
-                id={panelId}
-                ref={panelRef}
-                tabIndex={-1}
-                className="tjbot-panel is-modal"
-                role="dialog"
-                aria-label={`Mensajes de ${BOT_NAME}`}
-                variants={modalVariants}
-                initial="hidden"
-                animate="show"
-                exit="exit"
-                onKeyDown={onPanelKey}
-              >
-                <span className="tjbot-tail" aria-hidden="true" />
+            <AnimatePresence>
+              {open && current && (
+                <motion.div
+                  id={panelId}
+                  ref={panelRef}
+                  tabIndex={-1}
+                  className="tjbot-panel is-modal"
+                  role="dialog"
+                  aria-label={`Mensajes de ${BOT_NAME}`}
+                  variants={modalVariants}
+                  initial="hidden"
+                  animate="show"
+                  exit="exit"
+                  onKeyDown={onPanelKey}
+                >
+                  <span className="tjbot-tail" aria-hidden="true" />
 
-                {/* Capítulos: un chip por sección; el activo se despliega con su nombre y la línea avanza. */}
-                <header className="tjbot-panel-head">
-                  <nav className="tjbot-chapters" aria-label="Secciones">
-                    {sections.map((g, i) => {
-                      const urgent = g.s !== "pulso" && g.items.some(m => m.priority >= IMPORTANT);
-                      return (
-                        <button
-                          key={g.s}
-                          type="button"
-                          className={`tjbot-chapter${i === at ? " is-on" : ""}${i < at ? " is-done" : ""}`}
-                          onClick={() => go(i)}
-                          aria-current={i === at ? "step" : undefined}
-                          aria-label={`${SECTION_LABEL[g.s]}${urgent ? " (tiene algo importante)" : ""}`}
-                          title={SECTION_LABEL[g.s]}
-                        >
-                          <span aria-hidden="true">{SECTION_EMOJI[g.s]}</span>
-                          {i === at && (
-                            <motion.span
-                              className="tjbot-chapter-label"
-                              initial={{ opacity: 0, width: 0 }}
-                              animate={{ opacity: 1, width: "auto" }}
-                              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                              {SECTION_LABEL[g.s]}
-                            </motion.span>
-                          )}
-                          {urgent && i !== at && <span className="tjbot-chapter-dot" aria-hidden="true" />}
-                        </button>
-                      );
-                    })}
-                  </nav>
-                  <button type="button" className="tj-icon-btn" onClick={close} aria-label="Cerrar" title="Cerrar (Esc)">
-                    <X size={15} />
-                  </button>
-                  <span className="tjbot-progress" aria-hidden="true">
-                    <motion.i
-                      initial={false}
-                      animate={{ width: `${((at + 1) / sections.length) * 100}%` }}
-                      transition={{ type: "spring", stiffness: 260, damping: 30 }}
-                    />
-                  </span>
-                </header>
-
-                {/* La sección abierta. En el móvil, arrastrar a un lado pasa de sección. */}
-                <div className="tjbot-body">
-                  {!visited && (
-                    <motion.div
-                      className="tjbot-typing"
-                      initial={{ opacity: 1, height: "auto" }}
-                      animate={{ opacity: 0, height: 0, marginBottom: 0 }}
-                      transition={{ delay: 0.5, duration: 0.2 }}
-                      aria-hidden="true"
-                    >
-                      <i /><i /><i />
-                    </motion.div>
-                  )}
-                  <AnimatePresence mode="wait" custom={dir} initial={false}>
-                    <motion.section
-                      key={current.s}
-                      className="tjbot-section"
-                      custom={dir}
-                      variants={slideVariants}
-                      initial="enter"
-                      animate="center"
-                      exit="leave"
-                      drag="x"
-                      dragConstraints={{ left: 0, right: 0 }}
-                      dragElastic={0.25}
-                      onDragEnd={(_, info) => {
-                        if (info.offset.x < -SWIPE) go(at + 1);
-                        else if (info.offset.x > SWIPE) go(at - 1);
-                      }}
-                      aria-live="polite"
-                    >
-                      <motion.div className="tjbot-list" variants={listVariants} custom={!visited} initial="hidden" animate="show">
-                        {current.s === "pulso" && report.pulse
-                          ? <PulseView pulse={report.pulse} highlights={current.items} renderMsg={renderMsg} />
-                          : current.items.map(renderMsg)}
-                      </motion.div>
-                    </motion.section>
-                  </AnimatePresence>
-                </div>
-
-                {/* Pie: atrás discreto y un «siguiente» que enseña qué viene. */}
-                <footer className="tjbot-foot">
-                  <button type="button" className="tjbot-back" onClick={() => go(at - 1)} disabled={at === 0} aria-label="Sección anterior">
-                    <ChevronLeft size={16} />
-                  </button>
-                  <span className="tjbot-count">{at + 1} de {sections.length}</span>
-                  {isLast ? (
-                    <button type="button" className="tjbot-next is-done" onClick={close}>
-                      <span className="tjbot-next-label">¡Entendido!</span>
-                      <span className="tjbot-next-icon" aria-hidden="true">👍</span>
+                  {/* Cabecera: lo que Nova te dice al llegar. */}
+                  <header className="tjbot-modal-head">
+                    <div className="tjbot-greet">
+                      <span className="tjbot-greet-kicker">{BOT_NAME} · tu asistente de trading</span>
+                      <h2>{report.teasers[0]}</h2>
+                      <p>
+                        {report.messages.length === 1 ? "Tengo una cosa que contarte" : `Tengo ${report.messages.length} cosas que contarte`}
+                        {report.highlights.length ? ` · ${report.highlights.length} ${report.highlights.length === 1 ? "es importante" : "son importantes"}` : " · nada urgente"}
+                      </p>
+                    </div>
+                    <button type="button" className="tj-icon-btn tjbot-close" onClick={close} aria-label="Cerrar" title="Cerrar (Esc)">
+                      <X size={16} />
                     </button>
-                  ) : (
-                    <button type="button" className="tjbot-next" onClick={() => go(at + 1)}>
-                      <span className="tjbot-next-kicker">Ahora</span>
-                      <span className="tjbot-next-label">{SECTION_LABEL[next.s]}</span>
-                      <span className="tjbot-next-icon" aria-hidden="true">{SECTION_EMOJI[next.s]}</span>
-                      <ChevronRight size={16} className="tjbot-next-arrow" aria-hidden="true" />
+                  </header>
+
+                  <div className="tjbot-modal-grid">
+                    {/* Índice: las secciones, con cuántas cosas tiene cada una; el resalte se desliza a la activa. */}
+                    <nav className="tjbot-index" aria-label="Secciones">
+                      {sections.map((g, i) => {
+                        const urgent = g.s !== "pulso" && g.items.some(m => m.priority >= IMPORTANT);
+                        const count = g.s === "pulso" && report.pulse ? `${report.pulse.score}` : String(g.items.length);
+                        return (
+                          <button
+                            key={g.s}
+                            type="button"
+                            className={`tjbot-index-item${i === at ? " is-on" : ""}`}
+                            onClick={() => go(i)}
+                            aria-current={i === at ? "step" : undefined}
+                          >
+                            {i === at && <motion.span layoutId="tjbot-index-on" className="tjbot-index-on" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+                            <span className="tjbot-index-emoji" aria-hidden="true">{SECTION_EMOJI[g.s]}</span>
+                            <span className="tjbot-index-label">{SECTION_LABEL[g.s]}</span>
+                            {urgent && <span className="tjbot-index-dot" title="Tiene algo importante" />}
+                            <span className="tjbot-index-count">{count}</span>
+                          </button>
+                        );
+                      })}
+                    </nav>
+
+                    {/* La sección abierta. En el móvil, arrastrar a un lado pasa de sección. */}
+                    <div className="tjbot-main">
+                      <div className="tjbot-body">
+                        {!visited && (
+                          <motion.div
+                            className="tjbot-typing"
+                            initial={{ opacity: 1, height: "auto" }}
+                            animate={{ opacity: 0, height: 0, marginBottom: 0 }}
+                            transition={{ delay: 0.5, duration: 0.2 }}
+                            aria-hidden="true"
+                          >
+                            <i /><i /><i />
+                          </motion.div>
+                        )}
+                        <AnimatePresence mode="wait" custom={dir} initial={false}>
+                          <motion.section
+                            key={current.s}
+                            className="tjbot-section"
+                            custom={dir}
+                            variants={slideVariants}
+                            initial="enter"
+                            animate="center"
+                            exit="leave"
+                            drag="x"
+                            dragConstraints={{ left: 0, right: 0 }}
+                            dragElastic={0.25}
+                            onDragEnd={(_, info) => {
+                              if (info.offset.x < -SWIPE) go(at + 1);
+                              else if (info.offset.x > SWIPE) go(at - 1);
+                            }}
+                            aria-live="polite"
+                          >
+                            <header className="tjbot-section-head">
+                              <span aria-hidden="true">{SECTION_EMOJI[current.s]}</span>
+                              <h3>{SECTION_LABEL[current.s]}</h3>
+                            </header>
+                            <motion.div className="tjbot-list" variants={listVariants} custom={!visited} initial="hidden" animate="show">
+                              {current.s === "pulso" && report.pulse
+                                ? <PulseView pulse={report.pulse} highlights={current.items} renderMsg={renderMsg} />
+                                : current.items.map(renderMsg)}
+                            </motion.div>
+                          </motion.section>
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pie: puntos de progreso, atrás y un «siguiente» que enseña qué viene. */}
+                  <footer className="tjbot-foot">
+                    <button type="button" className="tjbot-back" onClick={() => go(at - 1)} disabled={at === 0} aria-label="Sección anterior">
+                      <ChevronLeft size={16} />
                     </button>
-                  )}
-                </footer>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                    <span className="tjbot-dots" aria-label={`Sección ${at + 1} de ${sections.length}`}>
+                      {sections.map((g, i) => (
+                        <motion.i key={g.s} className={i === at ? "is-on" : i < at ? "is-done" : undefined} animate={{ width: i === at ? 22 : 7 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} />
+                      ))}
+                    </span>
+                    {isLast ? (
+                      <button type="button" className="tjbot-next is-done" onClick={close}>
+                        <span className="tjbot-next-label">¡Entendido!</span>
+                        <span className="tjbot-next-icon" aria-hidden="true">👍</span>
+                      </button>
+                    ) : (
+                      <button type="button" className="tjbot-next" onClick={() => go(at + 1)}>
+                        <span className="tjbot-next-kicker">Ahora</span>
+                        <span className="tjbot-next-label">{SECTION_LABEL[next.s]}</span>
+                        <span className="tjbot-next-icon" aria-hidden="true">{SECTION_EMOJI[next.s]}</span>
+                        <ChevronRight size={16} className="tjbot-next-arrow" aria-hidden="true" />
+                      </button>
+                    )}
+                  </footer>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>,
         document.body,

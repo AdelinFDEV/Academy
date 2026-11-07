@@ -683,6 +683,23 @@
  */
 
 .tjbot-habitat { position: relative; width: 100%; height: 172px; }
+/* La habitación de fondo: recortada en su recuadro, apagada para que Nova destaque. */
+.tjbot-room {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  opacity: 0.9;
+  box-shadow: inset 0 0 40px rgba(4, 10, 22, 0.55);
+  pointer-events: none;
+}
+
+.tjbot-room svg { display: block; width: 100%; height: 100%; }
+
+/* Un velo que oscurece un poco los bordes: la habitación se intuye, no compite. */
+.tjbot-room::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 140% at 50% 40%, transparent 55%, rgba(6, 12, 26, 0.55)); }
+
 .tjbot-walker { position: absolute; top: 0; left: 0; will-change: transform; }
 
 .tjbot-trigger {
@@ -753,10 +770,6 @@
 .nh.is-flying .nh-thrust { opacity: 1; animation-duration: 0.35s; }
 .nh.act-sleep .nh-thrust { opacity: 0.15; }
 
-/* La hélice solo gira al volar (y con alegría). */
-.nh-propeller { transform-box: fill-box; transform-origin: center; opacity: 0; transition: opacity 0.3s; }
-.nh.is-flying .nh-propeller,
-.nh.is-joy .nh-propeller { opacity: 1; animation: nh-spin 0.22s linear infinite; }
 
 .nh-antenna,
 .nh-antenna-glow { transform-box: fill-box; transform-origin: center; transition: fill 0.5s; }
@@ -773,17 +786,23 @@
 .nh.act-ball .nh-head { transform: translateY(1px); }
 
 /* Ojos: mirar, parpadear. Concentrado, la mirada se va al objeto. */
-.nh-look { transform: translate(var(--look-x), var(--look-y)); transition: transform 0.25s ease-out; }
-.nh-look-prop { transform: translate(4px, 3px); }
-.nh-eyes { transform-box: fill-box; transform-origin: center; animation: nh-blink 5s infinite; }
-.nh-stars { animation: nh-twinkle-eyes 1.2s ease-in-out infinite; }
-.nh.act-ball .nh-look { transform: translate(0, -4px); }
+/* Mirar: el ojo se mueve un poco y la pupila mucho más (dentro del ojo, recortada). */
+.nh-look { transform: translate(calc(var(--look-x) * 0.3), calc(var(--look-y) * 0.3)); transition: transform 0.25s ease-out; }
+.nh-pupil { transform: translate(calc(var(--look-x) * 1.3), calc(var(--look-y) * 1.3)); transition: transform 0.18s ease-out; }
+.nh-look-prop { transform: none; }
+.nh-look-prop .nh-pupil { transform: translate(3.4px, 2.6px); }
+/* Parpadeo: uno simple y, más tarde, uno doble, como una persona. */
+.nh-eyes { transform-box: fill-box; transform-origin: center; animation: nh-blink 9s infinite; }
+.nh-eye { transform-box: fill-box; transform-origin: center; }
+/* Los destellos de los ojos al celebrar: aparecen, giran un poco y se apagan. */
+.nh-glint { transform-box: fill-box; transform-origin: center; animation: nh-glint 1.8s ease-in-out infinite; }
+.nh-glint-2 { animation-delay: 0.9s; }
+.nh.act-ball .nh-pupil { transform: translate(0, -3.6px); }
 
 .nh-mouth { transform-box: fill-box; transform-origin: center; }
 .nh.is-talking .nh-mouth { animation: nh-talk 0.42s ease-in-out 5; }
 .nh-snore { transform-box: fill-box; transform-origin: center; animation: nh-snore 5s ease-in-out infinite; }
 .nh-hum { transform-box: fill-box; transform-origin: center; animation: nh-hum 0.9s ease-in-out infinite; }
-.nh-sweat { animation: nh-sweat 2.4s ease-in infinite; }
 
 /* Accesorios. */
 .nh-cap { transform-box: fill-box; transform-origin: 30% 100%; animation: nh-prop-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -838,21 +857,39 @@
 .nh-sparkles i:nth-child(2) { top: 24px; right: -2px; font-size: 0.65rem; animation-delay: 0.5s; }
 .nh-sparkles i:nth-child(3) { bottom: 22px; left: -6px; font-size: 0.6rem; animation-delay: 1s; }
 
-@keyframes nh-hover { 0%, 100% { transform: translateY(0) rotate(-1.2deg); } 50% { transform: translateY(-6px) rotate(1.2deg); } }
+/* Vaivén en forma de ocho: menos mecánico que subir y bajar. */
+@keyframes nh-hover { 0%, 100% { transform: translate(0, 0) rotate(-1.2deg); } 25% { transform: translate(2px, -4px) rotate(0.4deg); } 50% { transform: translate(0, -6px) rotate(1.2deg); } 75% { transform: translate(-2px, -3px) rotate(-0.2deg); } }
 @keyframes nh-fly { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
 @keyframes nh-joy { 0%, 100% { transform: translateY(0) scale(1, 1); } 18% { transform: translateY(1px) scale(1.07, 0.93); } 48% { transform: translateY(-14px) scale(0.96, 1.05) rotate(-4deg); } 72% { transform: translateY(-4px) scale(1, 1) rotate(4deg); } }
 @keyframes nh-doze { 0%, 100% { transform: translateY(2px) scale(1, 1); } 50% { transform: translateY(5px) scale(1.02, 0.98); } }
 @keyframes nh-groove { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-3px); } }
 @keyframes nh-header { 0%, 100% { transform: translateY(0); } 8% { transform: translateY(3px) scale(1.03, 0.97); } 20% { transform: translateY(-2px); } }
 @keyframes nh-thrust { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(0.85, 1.2); } }
-@keyframes nh-spin { to { transform: rotate(360deg); } }
 @keyframes nh-glow { 0%, 100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(1.35); opacity: 0.08; } }
-@keyframes nh-blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.08); } }
-@keyframes nh-twinkle-eyes { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(8deg); } }
+@keyframes nh-blink { 0%, 42%, 46%, 88%, 91%, 94%, 100% { transform: scaleY(1); } 44% { transform: scaleY(0.08); } 89.5% { transform: scaleY(0.08); } 92.5% { transform: scaleY(0.08); } }
+
+/* ── Gestos al azar (NovaHead pone .q-<gesto> unos segundos) ── */
+.nh.q-tilt .nh-head { animation: nh-q-tilt 1.7s ease-in-out; }
+.nh.q-nod .nh-head { animation: nh-q-nod 1.3s ease-in-out; }
+.nh.q-spin .nh-head { animation: nh-q-spin 1.3s cubic-bezier(0.65, 0, 0.35, 1); }
+.nh.q-wiggle .nh-head { animation: nh-q-wiggle 1s ease-in-out; }
+.nh.q-hop .nh-head { animation: nh-q-hop 1.1s cubic-bezier(0.3, 0, 0.3, 1); }
+.nh.q-wink .nh-eye-r { animation: nh-q-wink 0.9s ease-in-out; }
+.nh.q-look .nh-pupil-q { animation: nh-q-look 2.2s ease-in-out; }
+.nh.q-surprise .nh-eye { animation: nh-q-surprise 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes nh-q-tilt { 0%, 100% { transform: rotate(0deg); } 30%, 70% { transform: rotate(-12deg); } }
+@keyframes nh-q-nod { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(3px) rotate(4deg); } 50% { transform: translateY(0) rotate(0deg); } 75% { transform: translateY(3px) rotate(4deg); } }
+@keyframes nh-q-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes nh-q-wiggle { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(-7deg); } 40% { transform: rotate(6deg); } 60% { transform: rotate(-4deg); } 80% { transform: rotate(2deg); } }
+@keyframes nh-q-hop { 0%, 100% { transform: translateY(0) scale(1, 1); } 20% { transform: translateY(1px) scale(1.06, 0.94); } 50% { transform: translateY(-12px) scale(0.97, 1.04); } 80% { transform: translateY(0) scale(1.03, 0.97); } }
+@keyframes nh-q-wink { 0%, 100% { transform: scaleY(1); } 30%, 65% { transform: scaleY(0.1); } }
+@keyframes nh-q-look { 0%, 100% { transform: translate(0, 0); } 25%, 40% { transform: translate(-3.5px, 0.5px); } 60%, 80% { transform: translate(3.5px, 0.5px); } }
+@keyframes nh-q-surprise { 0%, 100% { transform: scale(1); } 30%, 70% { transform: scale(1.18); } }
+@keyframes nh-glint { 0%, 100% { transform: scale(0.3) rotate(0deg); opacity: 0; } 45% { transform: scale(1.15) rotate(45deg); opacity: 1; } 70% { transform: scale(0.9) rotate(60deg); opacity: 0.9; } }
 @keyframes nh-talk { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.6); } }
 @keyframes nh-snore { 0%, 100% { transform: scale(0.7); } 50% { transform: scale(1.2); } }
 @keyframes nh-hum { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.15); } }
-@keyframes nh-sweat { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(8px); opacity: 0; } }
 @keyframes nh-pompom { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 3px); } }
 @keyframes nh-prop-in { from { opacity: 0; transform: translateY(8px) scale(0.8); } to { opacity: 1; transform: none; } }
 @keyframes nh-prop-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
@@ -904,17 +941,97 @@
   position: relative;
   top: auto;
   left: auto;
-  width: min(760px, 100%);
+  width: min(860px, 100%);
+  border-radius: 24px;
   pointer-events: auto;
   transform-origin: 50% 0;
 }
 
+/* Cabecera: el saludo de Nova. */
+.tjbot-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.3rem 1.4rem 1.1rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tjbot-greet { min-width: 0; }
+.tjbot-greet-kicker { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tj-accent-2); }
+.tjbot-greet h2 { margin: 0.3rem 0 0.25rem; font-family: var(--font-display); font-size: clamp(1.25rem, 2.4vw, 1.6rem); font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+.tjbot-greet p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
+.tjbot-close { width: 36px; height: 36px; border-radius: 12px; }
+
+/* Índice a la izquierda, sección a la derecha. */
+.tjbot-modal-grid { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 0; }
+
+.tjbot-index {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0.9rem 0.7rem;
+  border-right: 1px solid var(--hairline);
+  background: rgba(7, 12, 24, 0.25);
+}
+
+.tjbot-index-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--text-secondary);
+  font: 600 0.84rem var(--font-family);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.tjbot-index-item:hover { background: var(--tj-surface); color: var(--text-primary); }
+.tjbot-index-item:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 1px; }
+.tjbot-index-item.is-on { color: var(--text-primary); }
+
+/* El resalte de la sección activa: se desliza de una a otra (layoutId). */
+.tjbot-index-on {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border: 1px solid rgba(230, 180, 85, 0.45);
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(230, 180, 85, 0.18), rgba(230, 180, 85, 0.04));
+  box-shadow: inset 3px 0 0 var(--tj-accent);
+}
+
+.tjbot-index-item > :not(.tjbot-index-on) { position: relative; z-index: 1; }
+.tjbot-index-emoji { font-size: 1.05rem; line-height: 1; }
+.tjbot-index-label { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tjbot-index-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff7a7a; box-shadow: 0 0 0 3px rgba(255, 122, 122, 0.18); }
+.tjbot-index-count { min-width: 22px; padding: 0.08rem 0.4rem; border-radius: 999px; background: var(--tj-surface-2); text-align: center; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); }
+.tjbot-index-item.is-on .tjbot-index-count { background: rgba(230, 180, 85, 0.22); color: var(--text-primary); }
+
+.tjbot-main { min-width: 0; }
+
+.tjbot-section-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+.tjbot-section-head span { font-size: 1.35rem; line-height: 1; }
+.tjbot-section-head h3 { margin: 0; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+
+/* Anillo de luz al aterrizar en el centro. */
+.tjbot-arrive-ring {
+  position: absolute;
+  inset: -6px;
+  border: 2px solid rgba(230, 180, 85, 0.65);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
 .tjbot-panel.is-modal .tjbot-tail { left: 50%; margin-left: -8px; }
-.tjbot-panel.is-modal .tjbot-panel-head { padding: 1rem 1.2rem 1.15rem; }
-.tjbot-panel.is-modal .tjbot-body { min-height: 260px; max-height: calc(100vh - var(--dlg-top) - 170px); padding: 1.2rem 1.3rem 0.6rem; }
+.tjbot-panel.is-modal .tjbot-body { min-height: 300px; max-height: calc(100vh - var(--dlg-top) - 230px); padding: 1.2rem 1.4rem 0.8rem; }
 .tjbot-panel.is-modal .tjbot-foot { padding: 0.9rem 1.2rem 1.05rem; }
 .tjbot-panel.is-modal .tjbot-msg { font-size: 0.92rem; padding: 0.85rem 1rem; }
-.tjbot-panel.is-modal .tjbot-chapter { height: 36px; }
 .tjbot-panel.is-modal .tjbot-gauge { width: 120px; height: 120px; }
 .tjbot-panel.is-modal .tjbot-gauge-value { padding-top: 43px; }
 
@@ -950,49 +1067,6 @@
   background: #11203d;
   transform: rotate(45deg);
 }
-
-/* Capítulos. */
-.tjbot-panel-head { position: relative; display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 0.9rem 1rem; }
-.tjbot-chapters { display: flex; flex: 1; align-items: center; gap: 0.35rem; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-
-.tjbot-chapter {
-  position: relative;
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.4rem;
-  height: 34px;
-  padding: 0 0.55rem;
-  border: 1px solid var(--hairline);
-  border-radius: 999px;
-  background: var(--tj-surface);
-  color: var(--text-secondary);
-  font: 600 0.78rem var(--font-family);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, opacity 0.2s, transform 0.2s;
-}
-
-.tjbot-chapter > span:first-child { font-size: 1rem; line-height: 1; }
-.tjbot-chapter:not(.is-on) { opacity: 0.6; }
-.tjbot-chapter:not(.is-on):hover { opacity: 1; transform: translateY(-1px); }
-.tjbot-chapter.is-done { opacity: 0.85; border-color: rgba(230, 180, 85, 0.25); }
-.tjbot-chapter:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
-
-.tjbot-chapter.is-on {
-  padding-right: 0.85rem;
-  border-color: var(--tj-accent);
-  background: linear-gradient(100deg, rgba(230, 180, 85, 0.22), rgba(230, 180, 85, 0.06));
-  color: var(--text-primary);
-}
-
-.tjbot-chapter-label { display: inline-block; overflow: hidden; }
-
-/* Un capítulo con algo importante dentro lleva un punto. */
-.tjbot-chapter-dot { position: absolute; top: 3px; right: 3px; width: 7px; height: 7px; border: 1.5px solid #0d1a33; border-radius: 50%; background: #ff7a7a; }
-
-.tjbot-progress { position: absolute; right: 0.9rem; bottom: 0; left: 0.9rem; height: 2px; overflow: hidden; border-radius: 999px; background: var(--hairline); }
-.tjbot-progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c98f35, var(--tj-accent), #f7dfa6); }
 
 /* Cuerpo: una sección cada vez, altura contenida. */
 .tjbot-body { min-height: 200px; max-height: min(56vh, 460px); padding: 1rem 1rem 0.5rem; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
@@ -1134,7 +1208,11 @@
 .tjbot-back:hover:not(:disabled) { background: var(--tj-surface-2); color: var(--text-primary); }
 .tjbot-back:disabled { opacity: 0.3; cursor: default; }
 
-.tjbot-count { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
+/* Puntos de progreso: uno por sección; el activo, alargado. */
+.tjbot-dots { display: inline-flex; align-items: center; gap: 5px; }
+.tjbot-dots i { display: block; width: 7px; height: 7px; border-radius: 999px; background: var(--tj-surface-2); }
+.tjbot-dots i.is-done { background: rgba(230, 180, 85, 0.45); }
+.tjbot-dots i.is-on { background: linear-gradient(90deg, #c98f35, var(--tj-accent)); }
 
 .tjbot-next {
   position: relative;
@@ -1176,6 +1254,15 @@
 .tjbot-next-arrow { grid-area: arrow; color: var(--tj-accent); animation: tjbot-nudge 1.4s ease-in-out infinite; }
 .tjbot-next.is-done { grid-template-areas: "label icon"; grid-template-columns: auto auto; padding: 0.6rem 0.9rem 0.6rem 1rem; }
 
+@media (max-width: 760px) {
+  .tjbot-modal-grid { grid-template-columns: 1fr; }
+  .tjbot-index { flex-direction: row; gap: 4px; padding: 0.6rem; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--hairline); scrollbar-width: none; }
+  .tjbot-index-item { flex-shrink: 0; padding: 0.5rem 0.65rem; }
+  .tjbot-index-label { display: none; }
+  .tjbot-index-item.is-on .tjbot-index-label { display: inline; }
+  .tjbot-panel.is-modal .tjbot-body { max-height: calc(100vh - var(--dlg-top) - 260px); }
+}
+
 @media (max-width: 520px) {
   .tjbot-pulse { flex-direction: column; align-items: stretch; }
   .tjbot-gauge { align-self: center; }
@@ -1194,7 +1281,8 @@
   .tjh-aura,
   .tjh-rays,
   .tjh-legend-glow,
-  .tjh-legend-sparks i { animation: none !important; }
+  .tjh-legend-sparks i,
+  .nh-glint { animation: none !important; }
   .nh-look { transition: none; }
 }
 

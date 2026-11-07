@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useTransform, type MotionValue } from "framer-motion";
 import type { BotExpression } from "./tjNova";
 
@@ -9,7 +9,7 @@ import type { BotExpression } from "./tjNova";
  *
  * Diseño: carcasa dorada con brillo y sombra, marco oscuro alrededor de una
  * pantalla con cristal y reflejo, orejeras con anillo de luz, antena con bola
- * luminosa y una hélice que gira mientras vuela, y una estela de propulsión debajo.
+ * luminosa, y una estela de propulsión debajo (vuela sin hélice).
  *
  * Giro CONTINUO, como un modelo en 3D: `theta` es el ángulo en grados (0 de
  * frente, 90 de perfil derecho, 180 de espaldas, −90 perfil izquierdo). La cara
@@ -22,6 +22,16 @@ import type { BotExpression } from "./tjNova";
 
 export type NovaActivity = "none" | "sleep" | "ball" | "trade" | "study" | "music";
 export type NovaFace = BotExpression | "joy" | "sleepy" | "focused" | "music";
+
+/*
+ * Gestos que hace por su cuenta cuando está tranquilo (sin actividad, sin volar,
+ * sin ratón encima): uno al azar cada 4-8 s. Cada uno es una animación en
+ * trading.css (.nh.q-<gesto>), y dura lo que dice aquí.
+ */
+const QUIRKS: [string, number][] = [
+  ["tilt", 1700], ["nod", 1300], ["spin", 1300], ["wiggle", 1000],
+  ["hop", 1100], ["wink", 900], ["look", 2200], ["surprise", 1200],
+];
 
 /** Color de la luz de la antena (y de las orejeras) según la cara. */
 const GLOW: Record<NovaFace, string> = {
@@ -36,140 +46,154 @@ const GLOW: Record<NovaFace, string> = {
 };
 
 /** Color de la pantalla a la altura de los ojos: los párpados se pintan con él. */
-const SCREEN = "#142a52";
-const EYE = "#eef7ff";
-const MINT = "#6ee7b7";
+/** Pantalla a la altura de los ojos: los párpados se pintan con él para «cortar» el ojo. */
+const SCREEN = "#16295a";
+/** Luz de la cara: ojos y boca brillan con el mismo cian, como una sola pantalla. */
+const GLOW_FACE = "#9feaff";
+
 
 const rad = (deg: number) => (deg * Math.PI) / 180;
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
-/** Estrella de cinco puntas centrada en (cx, cy): los ojos al celebrar. */
-function star(cx: number, cy: number, r: number) {
-  const pts: string[] = [];
-  for (let i = 0; i < 10; i++) {
-    const a = -Math.PI / 2 + (i * Math.PI) / 5;
-    const rr = i % 2 ? r * 0.45 : r;
-    pts.push(`${(cx + Math.cos(a) * rr).toFixed(2)},${(cy + Math.sin(a) * rr).toFixed(2)}`);
-  }
-  return `M${pts.join(" L")} Z`;
+/** Destello de cuatro puntas centrado en (cx, cy): el brillo de los ojos al celebrar. */
+function glint(cx: number, cy: number, r: number) {
+  const k = r * 0.28;
+  return `M${cx} ${cy - r} Q${cx + k} ${cy - k} ${cx + r} ${cy} Q${cx + k} ${cy + k} ${cx} ${cy + r} Q${cx - k} ${cy + k} ${cx - r} ${cy} Q${cx - k} ${cy - k} ${cx} ${cy - r} Z`;
 }
 
-/** Los ojos y la boca de cada cara. Ojos en (46, 58) y (74, 58); boca hacia y = 76. */
-function Face({ face }: { face: NovaFace }) {
+/*
+ * La cara: SOLO dos ojos y una boca, sencillos y luminosos (degradado blanco-cian,
+ * un halo suave y un brillo). Cada emoción se dice con la forma de los ojos y de
+ * la boca; nada más en la cara. Ojos en (45, 61) y (75, 61); boca hacia y = 78.
+ * `eye` y `glow` son los ids del degradado y del halo (únicos por cabeza).
+ */
+/**
+ * Un ojo: el blanco luminoso y, dentro (recortada por el propio ojo), una pupila
+ * azul oscura con su brillo. La que se mueve para mirar es la pupila (.nh-pupil),
+ * no el ojo entero. `side` permite guiñar solo uno.
+ */
+function Eye({ cx, cy, rx = 7, ry = 8.8, eye, uid, side, pupil = 3.9 }: {
+  cx: number; cy: number; rx?: number; ry?: number; eye: string; uid: string; side: "l" | "r"; pupil?: number;
+}) {
+  const clip = `${uid}${side}`;
+  return (
+    <g className={`nh-eye nh-eye-${side}`}>
+      <clipPath id={clip}><ellipse cx={cx} cy={cy} rx={rx} ry={ry} /></clipPath>
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={`url(#${eye})`} />
+      <g clipPath={`url(#${clip})`}>
+        <g className="nh-pupil">
+          <g className="nh-pupil-q">
+            <circle cx={cx} cy={cy + 0.6} r={pupil} fill="#0f2250" />
+            <circle cx={cx} cy={cy + 0.6} r={pupil * 0.55} fill="#081537" />
+            <circle cx={cx + pupil * 0.42} cy={cy - pupil * 0.32} r={pupil * 0.36} fill="#fff" />
+            <circle cx={cx - pupil * 0.4} cy={cy + pupil * 0.5} r={pupil * 0.16} fill="#fff" opacity="0.8" />
+          </g>
+        </g>
+      </g>
+    </g>
+  );
+}
+
+function Face({ face, eye, glow, uid }: { face: NovaFace; eye: string; glow: string; uid: string }) {
+  const line = { stroke: GLOW_FACE, fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   switch (face) {
     case "joy":
       return (
-        <>
+        <g filter={`url(#${glow})`}>
           <g className="nh-eyes">
-            <path d="M38.5 60 Q46 48.5 53.5 60" stroke={EYE} strokeWidth="4.6" fill="none" strokeLinecap="round" />
-            <path d="M66.5 60 Q74 48.5 81.5 60" stroke={EYE} strokeWidth="4.6" fill="none" strokeLinecap="round" />
+            <path d="M37.5 63 Q45 51.5 52.5 63" {...line} strokeWidth="5" />
+            <path d="M67.5 63 Q75 51.5 82.5 63" {...line} strokeWidth="5" />
           </g>
-          <path d="M47 70 Q60 89 73 70 Z" fill="#2b0f24" stroke={MINT} strokeWidth="2.6" strokeLinejoin="round" />
-          <path d="M53 79 Q60 86 67 79 Q60 76 53 79 Z" fill="#ff8fab" />
-          <path d="M49.5 71.5 H70.5" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" opacity="0.85" />
-        </>
+          <path d="M49 74 Q60 89 71 74 Z" fill={GLOW_FACE} />
+        </g>
       );
     case "celebrate":
       return (
         <>
-          <g className="nh-eyes nh-stars">
-            <path d={star(46, 58, 8.6)} fill="#ffd76a" />
-            <path d={star(74, 58, 8.6)} fill="#ffd76a" />
-            <circle cx="43.5" cy="55.5" r="1.4" fill="#fff" />
-            <circle cx="71.5" cy="55.5" r="1.4" fill="#fff" />
+          <g filter={`url(#${glow})`}>
+            <g className="nh-eyes">
+              <Eye cx={45} cy={60} rx={8.2} ry={9.8} eye={eye} uid={uid} side="l" pupil={4.8} />
+              <Eye cx={75} cy={60} rx={8.2} ry={9.8} eye={eye} uid={uid} side="r" pupil={4.8} />
+            </g>
+            <path d="M50 75 Q60 87 70 75 Z" fill={GLOW_FACE} />
           </g>
-          <path d="M48 71 Q60 85 72 71 Z" fill={MINT} />
+          <path className="nh-glint" d={glint(38.5, 49.5, 4.2)} fill="#fff4c4" />
+          <path className="nh-glint nh-glint-2" d={glint(82, 50.5, 3.4)} fill="#fff4c4" />
         </>
       );
     case "happy":
       return (
-        <>
+        <g filter={`url(#${glow})`}>
           <g className="nh-look">
             <g className="nh-eyes">
-              <rect x="40" y="49" width="12" height="17" rx="6" fill={EYE} />
-              <rect x="68" y="49" width="12" height="17" rx="6" fill={EYE} />
-              {/* Mejillas que empujan los ojos hacia arriba: ojos sonrientes. */}
-              <ellipse cx="46" cy="69" rx="9" ry="6.5" fill={SCREEN} />
-              <ellipse cx="74" cy="69" rx="9" ry="6.5" fill={SCREEN} />
-              <circle cx="49" cy="53" r="2.1" fill="#fff" />
-              <circle cx="77" cy="53" r="2.1" fill="#fff" />
+              <Eye cx={45} cy={60} ry={7.4} eye={eye} uid={uid} side="l" />
+              <Eye cx={75} cy={60} ry={7.4} eye={eye} uid={uid} side="r" />
             </g>
           </g>
-          <path className="nh-mouth" d="M49 72 Q60 83 71 72" stroke={MINT} strokeWidth="3.2" fill="none" strokeLinecap="round" />
-        </>
+          <path className="nh-mouth" d="M50.5 75.5 Q60 85.5 69.5 75.5" {...line} strokeWidth="3.4" />
+        </g>
       );
     case "worried":
       return (
         <>
-          <g className="nh-look">
-            <g className="nh-eyes">
-              <rect x="41" y="50" width="10" height="17" rx="5" fill={EYE} />
-              <rect x="69" y="50" width="10" height="17" rx="5" fill={EYE} />
-              <circle cx="47.5" cy="54" r="1.8" fill="#fff" />
-              <circle cx="75.5" cy="54" r="1.8" fill="#fff" />
+          <g filter={`url(#${glow})`}>
+            <g className="nh-look">
+              <g className="nh-eyes">
+                <Eye cx={45} cy={62} rx={6.4} ry={8.2} eye={eye} uid={uid} side="l" pupil={3} />
+                <Eye cx={75} cy={62} rx={6.4} ry={8.2} eye={eye} uid={uid} side="r" pupil={3} />
+              </g>
             </g>
+            <path className="nh-mouth" d="M53 80 Q60 76 67 80" {...line} strokeWidth="3" />
           </g>
-          <g stroke={EYE} strokeWidth="2.6" strokeLinecap="round">
-            <line x1="38.5" y1="45.5" x2="51" y2="42" />
-            <line x1="81.5" y1="45.5" x2="69" y2="42" />
-          </g>
-          <path className="nh-mouth" d="M50.5 77 Q55 73 60 77 Q65 81 69.5 77" stroke={MINT} strokeWidth="2.8" fill="none" strokeLinecap="round" />
-          {/* Gota de sudor. */}
-          <path className="nh-sweat" d="M86 42 Q83 48 86 50.5 Q89 48 86 42 Z" fill="#8ab8ff" />
+          {/* Párpados de arriba caídos hacia fuera: cara de apuro. */}
+          <path d="M35 50 L56 50 L56 54.5 Q46 54 35 58 Z" fill={SCREEN} />
+          <path d="M85 50 L64 50 L64 54.5 Q74 54 85 58 Z" fill={SCREEN} />
         </>
       );
     case "sleepy":
       return (
-        <>
-          <g>
-            <path d="M39.5 59 Q46 65 52.5 59" stroke={EYE} strokeWidth="3.4" fill="none" strokeLinecap="round" />
-            <path d="M67.5 59 Q74 65 80.5 59" stroke={EYE} strokeWidth="3.4" fill="none" strokeLinecap="round" />
-          </g>
-          <ellipse className="nh-snore" cx="60" cy="76" rx="3.4" ry="3" fill="none" stroke={MINT} strokeWidth="2.4" />
-        </>
+        <g filter={`url(#${glow})`}>
+          <path d="M38.5 62 Q45 67.5 51.5 62" {...line} strokeWidth="3.4" />
+          <path d="M68.5 62 Q75 67.5 81.5 62" {...line} strokeWidth="3.4" />
+          <ellipse className="nh-snore" cx="60" cy="79" rx="3" ry="2.6" {...line} strokeWidth="2.4" />
+        </g>
       );
     case "focused":
       return (
         <>
-          <g className="nh-look nh-look-prop">
-            <g className="nh-eyes">
-              <rect x="40" y="51" width="12" height="15" rx="6" fill={EYE} />
-              <rect x="68" y="51" width="12" height="15" rx="6" fill={EYE} />
-              {/* Párpado de arriba: mirada atenta. */}
-              <rect x="38" y="47" width="16" height="8" fill={SCREEN} />
-              <rect x="66" y="47" width="16" height="8" fill={SCREEN} />
-              <circle cx="49" cy="58" r="2" fill="#fff" />
-              <circle cx="77" cy="58" r="2" fill="#fff" />
+          <g filter={`url(#${glow})`}>
+            <g className="nh-look nh-look-prop">
+              <g className="nh-eyes">
+                <Eye cx={45} cy={62} rx={6.8} ry={8} eye={eye} uid={uid} side="l" />
+                <Eye cx={75} cy={62} rx={6.8} ry={8} eye={eye} uid={uid} side="r" />
+              </g>
             </g>
+            <path d="M54.5 79 Q60 81 65.5 79" {...line} strokeWidth="2.8" />
           </g>
-          <path d="M53 76 Q60 78.5 67 75.5" stroke={MINT} strokeWidth="2.8" fill="none" strokeLinecap="round" />
+          {/* Párpado de arriba entornado: mirada atenta. */}
+          <rect x="35" y="48" width="21" height="10.5" fill={SCREEN} />
+          <rect x="64" y="48" width="21" height="10.5" fill={SCREEN} />
         </>
       );
     case "music":
       return (
-        <>
-          <g>
-            <path d="M39.5 60 Q46 53 52.5 60" stroke={EYE} strokeWidth="3.6" fill="none" strokeLinecap="round" />
-            <path d="M67.5 60 Q74 53 80.5 60" stroke={EYE} strokeWidth="3.6" fill="none" strokeLinecap="round" />
-          </g>
-          <path className="nh-hum" d="M51 73 Q60 81 69 73" stroke={MINT} strokeWidth="3" fill="none" strokeLinecap="round" />
-        </>
+        <g filter={`url(#${glow})`}>
+          <path d="M38.5 63 Q45 56 51.5 63" {...line} strokeWidth="3.6" />
+          <path d="M68.5 63 Q75 56 81.5 63" {...line} strokeWidth="3.6" />
+          <path className="nh-hum" d="M52 76 Q60 83.5 68 76" {...line} strokeWidth="3" />
+        </g>
       );
     default:
       return (
-        <>
+        <g filter={`url(#${glow})`}>
           <g className="nh-look">
             <g className="nh-eyes">
-              <rect x="40" y="49" width="12" height="18" rx="6" fill={EYE} />
-              <rect x="68" y="49" width="12" height="18" rx="6" fill={EYE} />
-              <circle cx="49" cy="53.5" r="2.2" fill="#fff" />
-              <circle cx="77" cy="53.5" r="2.2" fill="#fff" />
-              <circle cx="43" cy="63" r="1.1" fill="#fff" opacity="0.6" />
-              <circle cx="71" cy="63" r="1.1" fill="#fff" opacity="0.6" />
+              <Eye cx={45} cy={61} eye={eye} uid={uid} side="l" />
+              <Eye cx={75} cy={61} eye={eye} uid={uid} side="r" />
             </g>
           </g>
-          <path className="nh-mouth" d="M52 74 Q60 80 68 74" stroke={MINT} strokeWidth="3" fill="none" strokeLinecap="round" />
-        </>
+          <path className="nh-mouth" d="M53.5 77.5 Q60 82 66.5 77.5" {...line} strokeWidth="3" />
+        </g>
       );
   }
 }
@@ -193,12 +217,39 @@ export default function NovaHead({
   /** Los ojos siguen al cursor (de frente y sin actividad). */
   track: boolean;
 }) {
+  // Con nada que hacer, de vez en cuando un gesto (ladear la cabeza, guiñar, voltereta…).
+  const idle = activity === "none" && !flying && !joy && !talking;
+  const [quirk, setQuirk] = useState<string | null>(null);
+  useEffect(() => {
+    if (!idle || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let timer = 0;
+    let end = 0;
+    const next = () => {
+      timer = window.setTimeout(() => {
+        const [name, ms] = QUIRKS[Math.floor(Math.random() * QUIRKS.length)];
+        setQuirk(name);
+        end = window.setTimeout(() => {
+          setQuirk(null);
+          next();
+        }, ms);
+      }, 4000 + Math.random() * 4000);
+    };
+    next();
+    return () => {
+      window.clearTimeout(timer);
+      window.clearTimeout(end);
+      setQuirk(null);
+    };
+  }, [idle]);
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const gShell = `nh${uid}s`;
   const gScreen = `nh${uid}c`;
   const gGlass = `nh${uid}g`;
   const gBall = `nh${uid}b`;
   const gThrust = `nh${uid}t`;
+  const gEye = `nh${uid}e`;
+  const fGlow = `nh${uid}w`;
+  const gVig = `nh${uid}v`;
   const ref = useRef<HTMLSpanElement>(null);
 
   // ── El giro: todo sale de theta ──
@@ -241,7 +292,6 @@ export default function NovaHead({
     };
   }, [track]);
 
-  const cheek = face === "joy" ? 0.85 : face === "worried" || face === "sleepy" ? 0.25 : 0.5;
   const cls = [
     "nh",
     `is-${face}`,
@@ -249,6 +299,7 @@ export default function NovaHead({
     flying && "is-flying",
     joy && "is-joy",
     talking && "is-talking",
+    idle && quirk && `q-${quirk}`,
   ].filter(Boolean).join(" ");
 
   return (
@@ -280,6 +331,21 @@ export default function NovaHead({
             <stop offset="60%" stopColor="#6ab8ff" stopOpacity="0.35" />
             <stop offset="100%" stopColor="#6ab8ff" stopOpacity="0" />
           </radialGradient>
+          <radialGradient id={gEye} cx="0.45" cy="0.35" r="0.75">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="55%" stopColor="#d6f6ff" />
+            <stop offset="100%" stopColor="#7fdcff" />
+          </radialGradient>
+          {/* Halo: la luz de ojos y boca se derrama un poco sobre la pantalla. */}
+          <filter id={fGlow} x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur" />
+            <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.55  0 0 0 0 0.9  0 0 0 0 1  0 0 0 0.75 0" result="halo" />
+            <feMerge><feMergeNode in="halo" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <radialGradient id={gVig} cx="0.5" cy="0.45" r="0.7">
+            <stop offset="65%" stopColor="#000" stopOpacity="0" />
+            <stop offset="100%" stopColor="#000" stopOpacity="0.35" />
+          </radialGradient>
         </defs>
 
         <g className="nh-float">
@@ -287,16 +353,11 @@ export default function NovaHead({
           <ellipse className="nh-thrust" cx="60" cy="110" rx="17" ry="9" fill={`url(#${gThrust})`} />
 
           <g className="nh-head">
-            {/* Antena: tallo, bola de luz y una hélice que gira al volar. */}
+            {/* Antena: tallo y bola de luz. */}
             <line x1="60" y1="12" x2="60" y2="24" stroke="#e2ae55" strokeWidth="3.4" strokeLinecap="round" />
             <circle className="nh-antenna-glow" cx="60" cy="9" r="9" fill={GLOW[face]} opacity="0.25" />
             <circle className="nh-antenna" cx="60" cy="9" r="5.6" fill={GLOW[face]} />
             <circle cx="58.2" cy="7.2" r="1.8" fill="#fff" opacity="0.7" />
-            <g className="nh-propeller">
-              <ellipse cx="51" cy="2.5" rx="8" ry="2" fill="#d79c3e" />
-              <ellipse cx="69" cy="2.5" rx="8" ry="2" fill="#d79c3e" />
-              <circle cx="60" cy="2.5" r="2" fill="#b97f2c" />
-            </g>
 
             {/* Orejeras: detrás de la carcasa de frente, en el centro de perfil. */}
             <motion.ellipse cx={earL} cy={64} rx={earRx} ry={13} fill="#c48a32" />
@@ -304,7 +365,9 @@ export default function NovaHead({
 
             {/* Carcasa con brillo arriba y sombra abajo. */}
             <rect x="14" y="22" width="92" height="84" rx="38" fill={`url(#${gShell})`} />
-            <path d="M30 34 Q44 25 64 26" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity="0.35" fill="none" />
+            {/* Brillo de arriba: una franja suave y un punto de luz, como plástico pulido. */}
+            <path d="M30 34 Q44 25 64 26" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" opacity="0.3" fill="none" />
+            <ellipse cx="74" cy="27.5" rx="6" ry="2.4" fill="#fff" opacity="0.35" />
             <path d="M24 88 Q60 108 96 88" stroke="#8a5a1c" strokeWidth="3" strokeLinecap="round" opacity="0.18" fill="none" />
 
             {/* La espalda: panel con rejillas, tornillos y una pequeña N. */}
@@ -325,16 +388,16 @@ export default function NovaHead({
             {/* La cara: marco, pantalla, ojos, boca, mejillas y reflejo del cristal. */}
             <motion.g style={{ x: faceX, scaleX: faceScale, opacity: frontOp }}>
               <rect x="20" y="33" width="80" height="64" rx="29" fill="#0a1426" />
+              <rect x="20.8" y="33.8" width="78.4" height="62.4" rx="28.2" fill="none" stroke="#f7dfa6" strokeWidth="0.8" opacity="0.45" />
               <rect x="23" y="36" width="74" height="58" rx="26" fill={`url(#${gScreen})`} />
-              <ellipse cx="34" cy="73" rx="6" ry="3.6" fill="#ff8f8f" opacity={cheek} />
-              <ellipse cx="86" cy="73" rx="6" ry="3.6" fill="#ff8f8f" opacity={cheek} />
-              <Face face={face} />
+              <rect x="23" y="36" width="74" height="58" rx="26" fill={`url(#${gVig})`} />
+              <Face face={face} eye={gEye} glow={fGlow} uid={uid} />
               {/* Gafas al estudiar. */}
               {activity === "study" && (
                 <g className="nh-glasses" fill="none" stroke="#f0c76e" strokeWidth="2.2">
-                  <circle cx="46" cy="58" r="10" />
-                  <circle cx="74" cy="58" r="10" />
-                  <path d="M56 57 Q60 54 64 57" />
+                  <circle cx="45" cy="61" r="10.5" />
+                  <circle cx="75" cy="61" r="10.5" />
+                  <path d="M55.5 60 Q60 57 64.5 60" />
                 </g>
               )}
               <rect x="23" y="36" width="74" height="58" rx="26" fill={`url(#${gGlass})`} pointerEvents="none" />
