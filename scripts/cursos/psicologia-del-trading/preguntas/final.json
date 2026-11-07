@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "pt-f-01",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "¿Qué obliga a publicar la ESMA a todo broker de CFD en su publicidad?",
+    "opciones": [
+      "Su beneficio anual",
+      "El número de empleados",
+      "La rentabilidad de sus mejores clientes",
+      "El porcentaje de sus cuentas minoristas que pierde dinero"
+    ],
+    "correcta": 3,
+    "explicacion": "Es el aviso estandarizado de riesgo, y es el dato más útil de su página: cómo le va a la mayoría de sus clientes."
+  },
+  {
+    "clave": "pt-f-02",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "Lees que «el 95 % de los traders pierde todo en 90 días». ¿Qué dice el curso de cifras así?",
+    "opciones": [
+      "Que es una cifra redonda que nadie ha medido; cada dato debe ir con su producto, su país y su periodo",
+      "Que es un dato de la ESMA",
+      "Que se queda corta",
+      "Que solo vale para cripto"
+    ],
+    "correcta": 0,
+    "explicacion": "Exagerar los datos es tan engañoso como quitarles peso."
+  },
+  {
+    "clave": "pt-f-03",
+    "leccion": "operar-mas-no-es-operar-mejor",
+    "enunciado": "¿Cuáles son las dos razones por las que operar mucho perjudicaba a los hogares del estudio de Barber y Odean?",
+    "opciones": [
+      "Los impuestos y la inflación",
+      "El apalancamiento y las liquidaciones",
+      "La falta de información y la mala conexión",
+      "Los costes de cada operación y que, de media, cambiaban valores buenos por otros peores"
+    ],
+    "correcta": 3,
+    "explicacion": "Los costes repetidos y unas decisiones que, de media, empeoraban la cartera."
+  },
+  {
+    "clave": "pt-f-04",
+    "leccion": "se-puede-vivir-del-day-trading",
+    "enunciado": "Un curso de trading te promete que «todos pierden al principio, es el precio de aprender». ¿Qué matiz aporta el estudio brasileño?",
+    "opciones": [
+      "Que es verdad: al año todos ganan",
+      "Que solo pierden los que no pagan cursos",
+      "Que no encontró pruebas de que la experiencia sola hiciera mejorar a la gente",
+      "Que se aprende en tres meses"
+    ],
+    "correcta": 2,
+    "explicacion": "Puedes pagar ese «precio» y no aprender nada si solo repites. Hace falta revisar tus decisiones de forma sistemática."
+  },
+  {
+    "clave": "pt-f-05",
+    "leccion": "que-puede-hacer-la-psicologia",
+    "enunciado": "¿Qué dos piezas hacen falta para ganar dinero operando, según el curso?",
+    "opciones": [
+      "Suerte y capital",
+      "Apalancamiento y paciencia",
+      "Información privilegiada y velocidad",
+      "Un método con ventaja y la capacidad de ejecutarlo sin que la cabeza lo estropee"
+    ],
+    "correcta": 3,
+    "explicacion": "La psicología trabaja la ejecución. Sin ventaja, no hay nada que ejecutar bien."
+  },
+  {
+    "clave": "pt-f-06",
+    "leccion": "que-puede-hacer-la-psicologia",
+    "enunciado": "¿Qué sugiere que el estudio de Lo, Repin y Steenbarger no encontrara un «perfil de trader» en los tests de personalidad?",
+    "opciones": [
+      "Que operar bien puede ser una habilidad que se trabaja, no un rasgo innato",
+      "Que nadie puede operar bien",
+      "Que los tests no sirven para nada",
+      "Que solo los extrovertidos ganan"
+    ],
+    "correcta": 0,
+    "explicacion": "Es la base de este curso: la ejecución se puede entrenar."
+  },
+  {
+    "clave": "pt-f-07",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "Una operación va perdiendo y estás pensando en quitar el stop «para darle una oportunidad». ¿Qué parte de la teoría prospectiva lo explica?",
+    "opciones": [
+      "El efecto certeza",
+      "Que sobrestimamos las ganancias pequeñas",
+      "Que importa la riqueza total",
+      "Que ante pérdidas nos volvemos buscadores de riesgo"
+    ],
+    "correcta": 3,
+    "explicacion": "Es el efecto reflejo: ante una pérdida segura, preferimos jugárnosla a no perder."
+  },
+  {
+    "clave": "pt-f-08",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "¿Cuál de estas afirmaciones sobre el coeficiente de aversión a la pérdida de 2,25 es correcta?",
+    "opciones": [
+      "Es una constante universal igual para todos",
+      "Es una estimación media; varía entre personas y contextos",
+      "Significa que perder es 2,25 veces más probable",
+      "Solo se aplica a apuestas de casino"
+    ],
+    "correcta": 1,
+    "explicacion": "Lo que se mantiene es la dirección: a casi todo el mundo le pesa más perder que ganar."
+  },
+  {
+    "clave": "pt-f-09",
+    "leccion": "el-efecto-disposicion",
+    "enunciado": "Nova te dice: «Cierras las ganadoras antes de tiempo: te quedas de media con el 40 % del objetivo». ¿Qué sesgo describe?",
+    "opciones": [
+      "El anclaje",
+      "La ilusión de control",
+      "El sesgo de confirmación",
+      "La mitad «vender pronto» del efecto disposición"
+    ],
+    "correcta": 3,
+    "explicacion": "Vender pronto lo que gana es una de las dos mitades del efecto disposición."
+  },
+  {
+    "clave": "pt-f-10",
+    "leccion": "el-efecto-disposicion",
+    "enunciado": "Durante dos semanas etiquetas tus cierres. Resultado: 4 «plan», 7 «miedo» y 5 «esperanza». ¿Qué te dice?",
+    "opciones": [
+      "Que tu método no tiene ventaja",
+      "Que la mayoría de tus cierres los decide la emoción, no tu plan: tu primer trabajo es de ejecución",
+      "Que debes operar más",
+      "Nada: son pocas operaciones para cualquier conclusión"
+    ],
+    "correcta": 1,
+    "explicacion": "La ejecución se juzga desde la primera operación; el método, con una muestra grande."
+  },
+  {
+    "clave": "pt-f-11",
+    "leccion": "dinero-de-la-casa-y-querer-empatar",
+    "enunciado": "Llevas +3R en el día y piensas: «si pierdo, solo pierdo lo que he ganado hoy». ¿Qué haces según el curso?",
+    "opciones": [
+      "Mantener tu tamaño fijo: lo ganado es tan tuyo como lo depositado",
+      "Subir el tamaño, porque es dinero de la casa",
+      "Retirar todo y no volver a operar",
+      "Operar sin stop"
+    ],
+    "correcta": 0,
+    "explicacion": "Tratar lo ganado como algo distinto es la contabilidad mental que está detrás del efecto dinero de la casa."
+  },
+  {
+    "clave": "pt-f-12",
+    "leccion": "la-biologia-del-riesgo",
+    "enunciado": "En el estudio de Kuhnen y Knutson, ¿qué zona cerebral se activaba antes de las elecciones arriesgadas?",
+    "opciones": [
+      "La ínsula anterior",
+      "El núcleo accumbens",
+      "El cerebelo",
+      "La corteza visual"
+    ],
+    "correcta": 1,
+    "explicacion": "El núcleo accumbens precedía a las elecciones arriesgadas; la ínsula anterior, a las prudentes."
+  },
+  {
+    "clave": "pt-f-13",
+    "leccion": "la-biologia-del-riesgo",
+    "enunciado": "Antes de entrar notas el pulso acelerado y prisa por pulsar. ¿Qué propone el curso?",
+    "opciones": [
+      "Ignorarlo y entrar",
+      "Doblar el tamaño mientras estás activado",
+      "Tomar un café para concentrarte",
+      "Usarlo como información sobre tu estado, apuntarlo y pasar tu lista antes de decidir"
+    ],
+    "correcta": 3,
+    "explicacion": "No puedes apagar el cuerpo, pero puedes escucharlo sin obedecerle."
+  },
+  {
+    "clave": "pt-f-14",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "No te separas del gráfico porque sientes que, si lo vigilas, la operación irá mejor. ¿Qué es?",
+    "opciones": [
+      "Sobrestimación",
+      "Ilusión de control",
+      "Exceso de precisión",
+      "Aversión a la pérdida"
+    ],
+    "correcta": 1,
+    "explicacion": "Creer que influyes en algo que depende del azar es ilusión de control."
+  },
+  {
+    "clave": "pt-f-15",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "Tras cinco aciertos seguidos en tus primeras operaciones, crees que tienes un don. ¿Qué dice el curso?",
+    "opciones": [
+      "Que con tan pocas operaciones el azar lo explica casi todo",
+      "Que es una prueba sólida de habilidad",
+      "Que debes subir el tamaño cuanto antes",
+      "Que es hora de dejar tu trabajo"
+    ],
+    "correcta": 0,
+    "explicacion": "La confianza tiene que venir de una muestra grande, no de la última semana."
+  },
+  {
+    "clave": "pt-f-16",
+    "leccion": "el-sesgo-de-confirmacion",
+    "enunciado": "Tu operación va en contra y solo lees análisis alcistas; los bajistas los llamas FUD. ¿Qué haces según el curso?",
+    "opciones": [
+      "Buscar más análisis alcistas para estar seguro",
+      "Mover el stop por si acaso",
+      "Volver a tu condición de invalidez escrita antes de entrar y aplicarla",
+      "Preguntar en redes qué opina la mayoría"
+    ],
+    "correcta": 2,
+    "explicacion": "La información ya no sirve para decidir, sino para justificar no cerrar. Tu regla escrita decide por ti."
+  },
+  {
+    "clave": "pt-f-17",
+    "leccion": "el-sesgo-de-confirmacion",
+    "enunciado": "¿Por qué informarse más no protege del sesgo de confirmación?",
+    "opciones": [
+      "Porque la información siempre es falsa",
+      "Porque si buscas de forma sesgada, más información solo aumenta tu seguridad sin mejorar la decisión",
+      "Porque no hay tiempo",
+      "Sí protege, siempre"
+    ],
+    "correcta": 1,
+    "explicacion": "El problema es cómo buscas, no cuánto."
+  },
+  {
+    "clave": "pt-f-18",
+    "leccion": "el-anclaje",
+    "enunciado": "Una moneda llegó a 4 $ y ahora está a 1 $. Un amigo dice que «está regalada». ¿Qué sesgo es?",
+    "opciones": [
+      "Anclaje al máximo histórico",
+      "Efecto disposición",
+      "Ilusión de control",
+      "Ninguno: es un análisis correcto"
+    ],
+    "correcta": 0,
+    "explicacion": "El ATH no es un valor justo: es solo el precio más alto que alguien pagó, a veces en plena euforia."
+  },
+  {
+    "clave": "pt-f-19",
+    "leccion": "el-anclaje",
+    "enunciado": "Compraste a 3.000, el precio está en 2.400 y hoy no abrirías esa compra. ¿Qué te mantiene dentro?",
+    "opciones": [
+      "Tu análisis",
+      "Tu stop-loss",
+      "El ancla de tu precio de entrada, un coste hundido",
+      "La esperanza de tu método"
+    ],
+    "correcta": 2,
+    "explicacion": "La pérdida ya existe. La decisión es qué hacer desde ahora, según tu plan."
+  },
+  {
+    "clave": "pt-f-20",
+    "leccion": "redes-finfluencers-y-copy-trading",
+    "enunciado": "Ves un vídeo que recomienda un token con una cuenta atrás de «solo hoy». ¿Qué dice el filtro del curso?",
+    "opciones": [
+      "Entrar rápido antes de que suba",
+      "No operar hoy: no estaba en tu plan y la urgencia es una señal de alarma",
+      "Entrar con poco por si acaso",
+      "Copiar al creador del vídeo"
+    ],
+    "correcta": 1,
+    "explicacion": "Si la operación no estaba en tu plan antes del vídeo, es el vídeo el que decide. Casi todo puede esperar 24 horas."
+  },
+  {
+    "clave": "pt-f-21",
+    "leccion": "redes-finfluencers-y-copy-trading",
+    "enunciado": "¿Qué exige el reglamento europeo MiCA a la publicidad de criptoactivos?",
+    "opciones": [
+      "Que garantice rentabilidades",
+      "Que sea imparcial, clara y no engañosa, y que se reconozca como publicidad",
+      "Que solo se haga en televisión",
+      "Nada: no la regula"
+    ],
+    "correcta": 1,
+    "explicacion": "Un vídeo que recomienda una moneda sin decir que es un anuncio pagado ya es una señal de alarma."
+  },
+  {
+    "clave": "pt-f-22",
+    "leccion": "una-operacion-no-significa-nada",
+    "enunciado": "Entraste por un impulso, sin stop, y ganaste +3R. ¿Cómo la juzga el curso?",
+    "opciones": [
+      "Como una decisión mala con un resultado bueno: la casilla más peligrosa",
+      "Como una buena operación, porque ganó",
+      "Como una operación neutra",
+      "Como prueba de que tienes intuición"
+    ],
+    "correcta": 0,
+    "explicacion": "Te enseña que saltarte el plan funciona, y eso lo pagarás en otra operación."
+  },
+  {
+    "clave": "pt-f-23",
+    "leccion": "una-operacion-no-significa-nada",
+    "enunciado": "Seguiste tu plan y el stop saltó justo antes de que el precio se fuera a tu objetivo. ¿Qué fue?",
+    "opciones": [
+      "Un error de ejecución",
+      "Una buena decisión con un resultado malo: se repite igualmente",
+      "Una prueba de que el stop estaba mal siempre",
+      "Un motivo para quitar los stops"
+    ],
+    "correcta": 1,
+    "explicacion": "El resultado de una operación aislada no juzga tu decisión. Juzga la serie."
+  },
+  {
+    "clave": "pt-f-24",
+    "leccion": "piensa-en-r",
+    "enunciado": "Un trader acierta el 70 %, gana 0,5R de media y pierde 1,5R de media. ¿Tiene ventaja?",
+    "opciones": [
+      "Sí, porque acierta mucho",
+      "Sí: +0,35R por operación",
+      "No: su esperanza es −0,1R por operación",
+      "No se puede saber"
+    ],
+    "correcta": 2,
+    "explicacion": "0,7 × 0,5 − 0,3 × 1,5 = 0,35 − 0,45 = −0,10R. Acertar mucho no basta."
+  },
+  {
+    "clave": "pt-f-25",
+    "leccion": "piensa-en-r",
+    "enunciado": "Revisas 20 operaciones: 6 terminaron por debajo de −1R. ¿Qué indica?",
+    "opciones": [
+      "Que tu método es malo",
+      "Un problema de ejecución: algo pasa entre la entrada y la salida, como mover el stop",
+      "Mala suerte con los precios",
+      "Nada relevante"
+    ],
+    "correcta": 1,
+    "explicacion": "Si respetaras el stop, ninguna pasaría de −1R salvo saltos de precio. Tu objetivo es cero."
+  },
+  {
+    "clave": "pt-f-26",
+    "leccion": "el-tamano-de-posicion-te-protege",
+    "enunciado": "Tienes 10.000 € y arriesgas el 1 %. Entrada en 100, stop en 95. ¿Cuántas unidades compras?",
+    "opciones": [
+      "10",
+      "20",
+      "100",
+      "1.000"
+    ],
+    "correcta": 1,
+    "explicacion": "1R = 100 €. Distancia al stop = 5. 100 / 5 = 20 unidades, que valen 2.000 €."
+  },
+  {
+    "clave": "pt-f-27",
+    "leccion": "el-tamano-de-posicion-te-protege",
+    "enunciado": "Tu posición, bien calculada con un stop cercano, vale más que tu cuenta entera. ¿Cuánto arriesgas?",
+    "opciones": [
+      "Toda la cuenta",
+      "Lo que fijaste como 1R, si respetas el stop",
+      "El doble de la cuenta",
+      "Nada"
+    ],
+    "correcta": 1,
+    "explicacion": "El tamaño lo decide la distancia al stop. Lo que arriesgas sigue siendo 1R."
+  },
+  {
+    "clave": "pt-f-28",
+    "leccion": "muestra-ruido-y-rachas",
+    "enunciado": "Tu método, que acierta algo más de la mitad, encadena seis pérdidas. Has seguido tus reglas. ¿Qué haces?",
+    "opciones": [
+      "Seguir con tu plan y tu protocolo de racha: en 100 operaciones de un método así son normales rachas de cinco a siete",
+      "Cambiar de método inmediatamente",
+      "Doblar el tamaño para recuperar",
+      "Dejar el trading"
+    ],
+    "correcta": 0,
+    "explicacion": "Las rachas largas forman parte de cualquier método con ventaja. El método se juzga con una muestra grande."
+  },
+  {
+    "clave": "pt-f-29",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "Pones alertas de precio en lugar de mirar el gráfico cada minuto. ¿Qué estrategia del modelo de Gross aplicas?",
+    "opciones": [
+      "Modificar la situación",
+      "Reprimir la emoción",
+      "Modular la respuesta",
+      "Ninguna"
+    ],
+    "correcta": 0,
+    "explicacion": "Cambias las condiciones para que la emoción no llegue a dispararse."
+  },
+  {
+    "clave": "pt-f-30",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "Un compañero te dice: «aprieta los dientes y aguanta sin mover el stop». ¿Qué dice el curso de esa estrategia?",
+    "opciones": [
+      "Que es la mejor, porque no se nota nada",
+      "Que siempre funciona",
+      "Que es igual que reinterpretar",
+      "Que reprimir esconde la emoción, pero no la reduce y desgasta; reinterpretar y decidir antes funciona mejor"
+    ],
+    "correcta": 3,
+    "explicacion": "Reprimir mantiene la emoción intacta por dentro; a la tercera vez, se cede."
+  },
+  {
+    "clave": "pt-f-31",
+    "leccion": "reglas-si-pasa-esto-hago-esto",
+    "enunciado": "¿Cuál de estas reglas está mejor escrita?",
+    "opciones": [
+      "«Seré más paciente»",
+      "«Si quiero mover el stop, lo escribo primero en la nota y espero 10 minutos»",
+      "«No me dejaré llevar por las emociones»",
+      "«Intentaré operar mejor»"
+    ],
+    "correcta": 1,
+    "explicacion": "Tiene un disparador reconocible y una acción concreta y pequeña."
+  },
+  {
+    "clave": "pt-f-32",
+    "leccion": "reglas-si-pasa-esto-hago-esto",
+    "enunciado": "¿Cómo resume el curso la evidencia sobre las intenciones de implementación?",
+    "opciones": [
+      "Magia garantizada",
+      "Un efecto real y modesto, barato y fácil de aplicar",
+      "Sin ningún efecto",
+      "Solo sirven para dietas"
+    ],
+    "correcta": 1,
+    "explicacion": "Medio-grande en 2006; bastante menor tras corregir sesgos en 2024, pero positivo."
+  },
+  {
+    "clave": "pt-f-33",
+    "leccion": "la-lista-previa-a-operar",
+    "enunciado": "Tu lista tiene seis preguntas y una es «no». ¿Qué haces?",
+    "opciones": [
+      "No entrar",
+      "Entrar con medio tamaño",
+      "Entrar si las otras cinco son claras",
+      "Entrar y revisar después"
+    ],
+    "correcta": 0,
+    "explicacion": "La lista solo funciona si se aplica siempre, también en la operación «clarísima»."
+  },
+  {
+    "clave": "pt-f-34",
+    "leccion": "despues-de-una-perdida",
+    "enunciado": "Te salta el stop y, dos minutos después, el precio se da la vuelta como esperabas. Tu protocolo marca 60 minutos de pausa. ¿Qué haces?",
+    "opciones": [
+      "Entrar ya",
+      "Reabrir la operación sin stop",
+      "Entrar con el doble",
+      "Respetar la pausa: ese impulso es el que el protocolo existe para frenar"
+    ],
+    "correcta": 3,
+    "explicacion": "La pausa protege tus próximas decisiones. Perder una buena entrada cuesta poco; el revenge trading, mucho."
+  },
+  {
+    "clave": "pt-f-35",
+    "leccion": "despues-de-una-perdida",
+    "enunciado": "¿Para qué sirve un límite diario de pérdida, por ejemplo −3R?",
+    "opciones": [
+      "Para operar más",
+      "Para recuperar antes las pérdidas",
+      "Para decidir de antemano cuándo se acaba la sesión, en vez de que lo decida la rabia",
+      "Para pagar menos comisiones"
+    ],
+    "correcta": 2,
+    "explicacion": "Hace a escala diaria lo que el stop hace en cada operación."
+  },
+  {
+    "clave": "pt-f-36",
+    "leccion": "el-diario-como-herramienta-psicologica",
+    "enunciado": "¿Qué cuenta para el segundo sello del logro «Sangre Fría»?",
+    "opciones": [
+      "Aprobar el examen final",
+      "Ganar 21 operaciones",
+      "21 días con el ánimo apuntado en el Diario desde que empezaste el curso",
+      "Operar 21 días seguidos"
+    ],
+    "correcta": 2,
+    "explicacion": "Los días sin operar también cuentan: te dicen cómo estás cuando el mercado no te toca."
+  },
+  {
+    "clave": "pt-f-37",
+    "leccion": "la-revision-semanal",
+    "enunciado": "En tu revisión semanal, ¿qué reparto propone el curso para empezar?",
+    "opciones": [
+      "Todo el tiempo en los errores",
+      "Dos tercios mirando qué funcionó y por qué, un tercio en el error más caro",
+      "Solo mirar el saldo",
+      "No revisar las semanas malas"
+    ],
+    "correcta": 1,
+    "explicacion": "Revisar solo errores desgasta y no dice qué hacer en su lugar."
+  },
+  {
+    "clave": "pt-f-38",
+    "leccion": "euforia-rachas-y-drawdown",
+    "enunciado": "Llevas cuatro ganadas seguidas y Nova te avisa de cuidado con subir el tamaño por euforia. ¿Qué dice tu plan de fase?",
+    "opciones": [
+      "Aprovechar la racha y subir el riesgo",
+      "Operar sin lista porque estás en racha",
+      "Dejar de operar para siempre",
+      "Mantener el riesgo fijo y pasar la lista con el mismo cuidado"
+    ],
+    "correcta": 3,
+    "explicacion": "La operación que más se salta la lista es la que viene después de cinco aciertos."
+  },
+  {
+    "clave": "pt-f-39",
+    "leccion": "euforia-rachas-y-drawdown",
+    "enunciado": "Tu cuenta cae un 12 % desde su máximo, dentro de lo que habías calculado como caída normal. ¿Qué haces?",
+    "opciones": [
+      "Subir el tamaño para recuperar antes",
+      "Seguir con tu plan: es la caída que esperabas",
+      "Cambiar de método hoy mismo",
+      "Cerrar la cuenta"
+    ],
+    "correcta": 1,
+    "explicacion": "Escribir tu caída normal de antemano hace que, cuando llegue, sea «la que esperabas» y no una sorpresa."
+  },
+  {
+    "clave": "pt-f-40",
+    "leccion": "tu-plan-psicologico",
+    "enunciado": "¿Qué promete este curso, dicho con sus palabras?",
+    "opciones": [
+      "Un sistema para que tu cabeza no te quite la ventaja que tengas, y para que tu Diario te diga la verdad si no la tienes",
+      "Que ganarás dinero si aplicas todo",
+      "Señales de entrada y salida",
+      "Una estrategia que acierta el 90 %"
+    ],
+    "correcta": 0,
+    "explicacion": "No promete ganancias. Trabaja la ejecución, que es la parte que depende de tu cabeza."
+  }
+]

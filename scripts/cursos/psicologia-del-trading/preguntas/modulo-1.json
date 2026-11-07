@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "pt-m1-01",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "Según los análisis que la ESMA citó en 2018, ¿qué proporción de cuentas minoristas perdía dinero con CFD?",
+    "opciones": [
+      "Entre el 30 % y el 40 %",
+      "Entre el 50 % y el 60 %",
+      "Entre el 74 % y el 89 %",
+      "Más del 99 %"
+    ],
+    "correcta": 2,
+    "explicacion": "La ESMA citó análisis de los supervisores nacionales según los cuales entre el 74 % y el 89 % de las cuentas minoristas perdían dinero con CFD."
+  },
+  {
+    "clave": "pt-m1-02",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "¿Cuál de estas medidas tomó la ESMA en 2018 para los CFD vendidos a minoristas?",
+    "opciones": [
+      "Prohibirlos por completo",
+      "Obligar a operar solo en horario de bolsa",
+      "Limitar el apalancamiento e impedir perder más de lo depositado",
+      "Exigir un título universitario para operar"
+    ],
+    "correcta": 2,
+    "explicacion": "Limitó el apalancamiento, prohibió incentivos, introdujo la protección frente a saldo negativo y obligó a publicar el porcentaje de clientes que pierde. Las opciones binarias sí se prohibieron."
+  },
+  {
+    "clave": "pt-m1-03",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "En el estudio de la CNMV sobre 2015 y 2016, ¿qué porcentaje de clientes que operaron con CFD perdió dinero?",
+    "opciones": [
+      "El 18 %",
+      "El 50 %",
+      "El 82 %",
+      "El 97 %"
+    ],
+    "correcta": 2,
+    "explicacion": "El 82 %. Y buena parte de lo perdido se fue en comisiones y costes, no solo en malas operaciones."
+  },
+  {
+    "clave": "pt-m1-04",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "¿Qué concluyó el boletín del Banco de Pagos Internacionales de 2023 sobre las apps de criptomonedas?",
+    "opciones": [
+      "Que la mayoría de sus usuarios ganó dinero con bitcoin",
+      "Que las apps cripto no tienen usuarios minoristas",
+      "Que bitcoin no tuvo pérdidas entre 2015 y 2022",
+      "Que en casi todos los países estudiados la mayoría de sus usuarios perdió dinero con bitcoin"
+    ],
+    "correcta": 3,
+    "explicacion": "Con datos de agosto de 2015 a diciembre de 2022, la mayoría de los usuarios de apps cripto perdió dinero con sus bitcoins en casi todos los países estudiados."
+  },
+  {
+    "clave": "pt-m1-05",
+    "leccion": "lo-que-dicen-los-datos",
+    "enunciado": "¿Cuál es la lectura honesta de las cifras de pérdidas de los minoristas?",
+    "opciones": [
+      "Que ganar es imposible",
+      "Que a quien estudia un poco no le afectan",
+      "Que son cifras inventadas por los reguladores",
+      "Que especular a corto plazo con apalancamiento es una actividad en la que pierde la mayoría, y empezar es estar en ese grupo"
+    ],
+    "correcta": 3,
+    "explicacion": "No dicen que sea imposible ganar, sino que la mayoría pierde de forma repetida, en varios países y productos. Cada cifra va con su producto y su periodo."
+  },
+  {
+    "clave": "pt-m1-06",
+    "leccion": "operar-mas-no-es-operar-mejor",
+    "enunciado": "En el estudio de Barber y Odean (2000), ¿cuánto ganaron al año los hogares que más operaban, frente al mercado?",
+    "opciones": [
+      "Un 25 % frente a un 17,9 %",
+      "Un 17,9 % frente a un 11,4 %",
+      "Un 11,4 % frente a un 17,9 %",
+      "Lo mismo que el mercado"
+    ],
+    "correcta": 2,
+    "explicacion": "Los que más operaban obtuvieron un 11,4 % anual, frente al 17,9 % del mercado, en un periodo alcista."
+  },
+  {
+    "clave": "pt-m1-07",
+    "leccion": "operar-mas-no-es-operar-mejor",
+    "enunciado": "¿Qué encontró Odean (1999) al comparar lo que los inversores compraban con lo que vendían para comprarlo?",
+    "opciones": [
+      "Lo comprado rendía después peor, incluso antes de costes",
+      "Lo comprado rendía mejor, pero las comisiones lo anulaban",
+      "No había ninguna diferencia",
+      "Lo vendido quebraba siempre"
+    ],
+    "correcta": 0,
+    "explicacion": "Lo comprado rendía peor que lo vendido aun sin contar costes: de media, se cambiaba algo bueno por algo peor."
+  },
+  {
+    "clave": "pt-m1-08",
+    "leccion": "operar-mas-no-es-operar-mejor",
+    "enunciado": "¿Qué explicación psicológica proponen Barber y Odean para que la gente opere tanto?",
+    "opciones": [
+      "La aversión a la pérdida",
+      "El anclaje",
+      "El exceso de confianza",
+      "El efecto disposición"
+    ],
+    "correcta": 2,
+    "explicacion": "Quien cree que su criterio es mejor que el del mercado ve oportunidades en todas partes, y cada oportunidad es una operación."
+  },
+  {
+    "clave": "pt-m1-09",
+    "leccion": "se-puede-vivir-del-day-trading",
+    "enunciado": "En el estudio de Chague, De-Losso y Giovannetti sobre Brasil, ¿qué porcentaje de quienes insistieron más de 300 días en el day trading perdió dinero?",
+    "opciones": [
+      "El 50 %",
+      "El 75 %",
+      "El 97 %",
+      "El 100 %"
+    ],
+    "correcta": 2,
+    "explicacion": "El 97 %. Y es la parte más comprometida de la muestra: los que persistieron más de 300 días."
+  },
+  {
+    "clave": "pt-m1-10",
+    "leccion": "se-puede-vivir-del-day-trading",
+    "enunciado": "En ese mismo estudio, ¿qué proporción ganó más que el salario mínimo brasileño?",
+    "opciones": [
+      "El 1,1 %",
+      "El 11 %",
+      "El 25 %",
+      "El 40 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Solo el 1,1 %, y solo el 0,5 % superó el sueldo inicial de un cajero de banco."
+  },
+  {
+    "clave": "pt-m1-11",
+    "leccion": "se-puede-vivir-del-day-trading",
+    "enunciado": "¿Qué dijeron los autores del estudio brasileño sobre el aprendizaje?",
+    "opciones": [
+      "Que quien insiste un año acaba siendo rentable",
+      "Que los cursos garantizan el aprendizaje",
+      "Que el aprendizaje es rápido en los primeros tres meses",
+      "Que no encontraron pruebas de que la gente mejorara con la práctica"
+    ],
+    "correcta": 3,
+    "explicacion": "Operar más días no mejoraba los resultados. La experiencia sola no convertía a nadie en rentable."
+  },
+  {
+    "clave": "pt-m1-12",
+    "leccion": "se-puede-vivir-del-day-trading",
+    "enunciado": "Según Barber, Lee, Liu y Odean, ¿cuántos day traders de Taiwán batían al mercado de forma predecible en un año medio?",
+    "opciones": [
+      "La mayoría",
+      "Alrededor de la mitad",
+      "Del orden de un millar, entre unos 360.000",
+      "Ninguno"
+    ],
+    "correcta": 2,
+    "explicacion": "Una fracción mínima: del orden de un millar entre unos 360.000 que hacían day trading en un año medio."
+  },
+  {
+    "clave": "pt-m1-13",
+    "leccion": "que-puede-hacer-la-psicologia",
+    "enunciado": "¿Qué encontraron Lo, Repin y Steenbarger (2005) en su estudio con 80 day traders?",
+    "opciones": [
+      "Que quienes reaccionaban con más intensidad emocional a ganar y perder obtenían peores resultados",
+      "Que los traders más fríos emocionalmente ganaban siempre",
+      "Que la personalidad predice quién será rentable",
+      "Que las emociones no influyen en los resultados"
+    ],
+    "correcta": 0,
+    "explicacion": "Las reacciones emocionales intensas a las ganancias y pérdidas iban con resultados significativamente peores. Y no encontraron un perfil de personalidad de trader."
+  },
+  {
+    "clave": "pt-m1-14",
+    "leccion": "que-puede-hacer-la-psicologia",
+    "enunciado": "Tu método tiene esperanza negativa en una muestra de 200 operaciones. ¿Qué puede hacer la psicología del trading por ti?",
+    "opciones": [
+      "Convertirlo en rentable si controlas tus emociones",
+      "Nada sobre el método: ejecutarlo mejor solo hará que pierdas de forma más ordenada; hay que revisar el método",
+      "Duplicar su rentabilidad",
+      "Hacer que aciertes más operaciones"
+    ],
+    "correcta": 1,
+    "explicacion": "La psicología trabaja la ejecución. Sin una ventaja en el método, no hay nada que ejecutar bien."
+  },
+  {
+    "clave": "pt-m1-15",
+    "leccion": "que-puede-hacer-la-psicologia",
+    "enunciado": "Seguiste todas tus reglas y la operación terminó en −1R. ¿Qué tipo de problema es?",
+    "opciones": [
+      "Un problema de ejecución",
+      "Ninguno: es una pérdida normal de un método con ventaja",
+      "Una prueba de que el método no funciona",
+      "Un sesgo de confirmación"
+    ],
+    "correcta": 1,
+    "explicacion": "Si seguiste el plan, es parte del método. Toda estrategia tiene operaciones perdedoras. El método se juzga con una muestra grande."
+  }
+]

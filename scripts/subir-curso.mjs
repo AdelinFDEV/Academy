@@ -48,7 +48,10 @@ if (!existsSync(dir)) {
 
 // Los nombres válidos de `data-bloque`. Tiene que coincidir con el switch de
 // src/components/aula/Bloque.tsx: si añades un bloque allí, añádelo aquí.
-const BLOQUES = new Set(["grafico", "pregunta", "verdadero-falso", "clasificar", "ordenar", "tramos", "fifo"]);
+const BLOQUES = new Set(["grafico", "pregunta", "verdadero-falso", "clasificar", "ordenar", "tramos", "fifo", "prospectiva", "rachas", "calculadora-r"]);
+// Categorías propias de logro. Tiene que coincidir con CATEGORIAS_LOGRO_CURSO
+// de src/lib/logros.tsx. Sin categoría, el logro va a «Cursos».
+const CATEGORIAS_LOGRO = new Set(["temple"]);
 const PATRON_BLOQUE =
   /<div\s+data-bloque="([a-z0-9-]+)"\s*>\s*(?:<script\s+type="application\/json"\s*>([\s\S]*?)<\/script>)?\s*<\/div>/g;
 
@@ -69,6 +72,9 @@ const curso = leerJson(join(dir, "curso.json"));
 if (!curso) finalizar();
 if (curso.slug !== slug) errores.push(`curso.json: el slug es "${curso.slug}" y la carpeta "${slug}"`);
 for (const campo of ["titulo", "logro", "modulos"]) if (!curso[campo]) errores.push(`curso.json: falta "${campo}"`);
+if (curso.logro_categoria != null && !CATEGORIAS_LOGRO.has(curso.logro_categoria)) {
+  errores.push(`curso.json: "logro_categoria" tiene que ser una de: ${[...CATEGORIAS_LOGRO].join(", ")}`);
+}
 if (["verificar"].includes(slug)) errores.push(`"${slug}" no vale como slug: es una ruta reservada de /cursos`);
 
 const lecciones = new Map(); // slug → { modulo, html }
@@ -192,6 +198,9 @@ const { data: filaCurso, error: eCurso } = await db
       color: curso.color ?? "#e6b455",
       aviso: curso.aviso ?? "general",
       logro: curso.logro,
+      // Solo se envía si el curso la tiene: así los cursos sin categoría se
+      // siguen subiendo aunque aún no se haya ejecutado el SQL de la columna.
+      ...(curso.logro_categoria ? { logro_categoria: curso.logro_categoria } : {}),
       preguntas_final: curso.preguntas_final ?? 20,
       revisado: curso.revisado ?? null,
       orden: curso.orden ?? 0,

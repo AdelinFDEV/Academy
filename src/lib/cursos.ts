@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient, createAdminClientOpcional } from "@/lib/supabase/admin";
 import type { VarianteAviso } from "@/components/DisclaimerRiesgo";
 import { estadoCurso, type EstadoCurso, type IntentoBase, type ModuloBase } from "@/lib/cursos-progreso";
+import { esCategoriaLogroCurso } from "@/lib/logros";
+import { sellosTemple } from "@/lib/logroTemple";
 export { duracion } from "@/lib/cursos-progreso";
 
 /**
@@ -245,21 +247,85 @@ export async function contenidoLeccion(leccionId: string): Promise<string> {
 /** Los logros de los cursos: uno por curso publicado, y los que tiene el alumno. */
 export async function logrosDeCursos(userId: string) {
   const lector = createAdminClientOpcional() ?? (await createClient());
+  // `*` y no una lista: así, si `logro_categoria` aún no existe en la base de
+  // datos (falta el SQL), la consulta sigue funcionando y el curso va a «Cursos».
   const [{ data: cursos }, { data: certificados }] = await Promise.all([
-    lector.from("cursos").select("id, slug, titulo, logro, color").eq("published", true).order("orden"),
+    lector.from("cursos").select("*").eq("published", true).order("orden"),
     lector.from("curso_certificados").select("curso_id, nota_final, created_at").eq("user_id", userId),
   ]);
-  return (cursos ?? []).map((c) => {
+  return Promise.all(((cursos ?? []) as FilaLogroCurso[]).map(async (c) => {
     const cert = (certificados ?? []).find((x) => x.curso_id === c.id);
+    const categoria = esCategoriaLogroCurso(c.logro_categoria) ? c.logro_categoria : null;
+    const fechaCert = cert ? (cert.created_at as string) : null;
     return {
-      slug: c.slug as string,
-      titulo: c.titulo as string,
-      logro: c.logro as string,
-      color: c.color as string,
+      slug: c.slug,
+      titulo: c.titulo,
+      logro: c.logro,
+      color: c.color,
+      categoria,
+      sellos: categoria === "temple" ? await sellosTemple(userId, c.id, fechaCert) : null,
       conseguido: cert ? { fecha: cert.created_at as string, nota: Number(cert.nota_final) } : null,
     };
+  }));
+}
+
+// ── La vitrina de certificados ────────────────────────────────────────────
+
+/** Un certificado del alumno con los datos del curso que lo emitió. */
+export interface CertificadoVitrina extends Certificado {
+  curso: { slug: string; titulo: string; logro: string; color: string };
+}
+
+type FilaCertificado = Certificado & { curso_id: string };
+type FilaCursoCert = { id: string; slug: string; titulo: string; logro: string; color: string };
+
+/**
+ * Los certificados de un alumno, del más reciente al más antiguo.
+ *
+ * Los certificados se leen con la SESIÓN del alumno: la policy de
+ * `curso_certificados` solo le deja ver los suyos, así que nadie puede abrir el
+ * de otro aunque cambie el código en la URL. Los cursos, con la clave de
+ * servicio si la hay y **sin** filtrar por `published`: un certificado ganado
+ * sigue siendo del alumno aunque el curso se retire después.
+ *
+ * No exige Premium a propósito: lo que se ganó se descarga siempre.
+ */
+export async function certificadosDelAlumno(userId: string, codigo?: string): Promise<CertificadoVitrina[]> {
+  const supabase = await createClient();
+  let consulta = supabase
+    .from("curso_certificados")
+    .select("codigo, nota_final, nota_modulos, nota_examen, nombre, created_at, curso_id")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  if (codigo) consulta = consulta.eq("codigo", codigo);
+  const { data: certs } = await consulta;
+  const filas = (certs ?? []) as FilaCertificado[];
+  if (!filas.length) return [];
+
+  const lector = createAdminClientOpcional() ?? supabase;
+  const { data: cursos } = await lector
+    .from("cursos")
+    .select("id, slug, titulo, logro, color")
+    .in("id", [...new Set(filas.map((c) => c.curso_id))]);
+  const porId = new Map(((cursos ?? []) as FilaCursoCert[]).map((c) => [c.id, c]));
+
+  return filas.flatMap((c) => {
+    const curso = porId.get(c.curso_id);
+    if (!curso) return [];
+    return [{
+      codigo: c.codigo,
+      nombre: c.nombre,
+      created_at: c.created_at,
+      // `numeric` llega de PostgREST como texto.
+      nota_final: Number(c.nota_final),
+      nota_modulos: Number(c.nota_modulos),
+      nota_examen: Number(c.nota_examen),
+      curso: { slug: curso.slug, titulo: curso.titulo, logro: curso.logro, color: curso.color },
+    }];
   });
 }
+
+type FilaLogroCurso = { id: string; slug: string; titulo: string; logro: string; color: string; logro_categoria?: string | null };
 
 // ── El contexto del aula ──────────────────────────────────────────────────
 

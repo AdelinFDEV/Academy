@@ -89,6 +89,19 @@ export function IconoTrofeo({ size = 18 }: { size?: number }) {
   );
 }
 
+/** Certificados: un diploma con su sello y un destello (la misma animación que el trofeo). */
+export function IconoCertificado({ size = 18 }: { size?: number }) {
+  return (
+    <svg className="ia ia--certificado" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="15" height="11.5" rx="1.8" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M6.5 9h8M6.5 12h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="16" cy="16" r="3" fill="currentColor" />
+      <path d="M14.6 18.6 14 22l2-1.1 2 1.1-.6-3.4" fill="currentColor" />
+      <path className="ia-destello" d="M20.5 2.5v3M19 4h3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /** Privado: un candado cuyo arco se abre un poco y vuelve a cerrar. */
 export function IconoCandado({ size = 18 }: { size?: number }) {
   return (

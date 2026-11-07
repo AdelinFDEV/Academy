@@ -7,6 +7,9 @@ import Clasificar, { validarClasificar } from "./bloques/Clasificar";
 import Ordenar, { validarOrdenar } from "./bloques/Ordenar";
 import CalculadoraTramos, { validarTramos } from "./bloques/CalculadoraTramos";
 import SimuladorFifo, { validarFifo } from "./bloques/SimuladorFifo";
+import Prospectiva, { validarProspectiva } from "./bloques/Prospectiva";
+import Rachas, { validarRachas } from "./bloques/Rachas";
+import CalculadoraR, { validarCalculadoraR } from "./bloques/CalculadoraR";
 import { BloqueRoto } from "./bloques/comun";
 
 /**
@@ -50,6 +53,12 @@ export default function Bloque({
       return validarTramos(datos) ? <CalculadoraTramos datos={datos} /> : invalido();
     case "fifo":
       return validarFifo(datos) ? <SimuladorFifo datos={datos} /> : invalido();
+    case "prospectiva":
+      return validarProspectiva(datos) ? <Prospectiva datos={datos} /> : invalido();
+    case "rachas":
+      return validarRachas(datos) ? <Rachas datos={datos} /> : invalido();
+    case "calculadora-r":
+      return validarCalculadoraR(datos) ? <CalculadoraR datos={datos} /> : invalido();
     default:
       return <BloqueRoto bloque={bloque} motivo="No existe ningún bloque con ese nombre." esAdmin={esAdmin} />;
   }

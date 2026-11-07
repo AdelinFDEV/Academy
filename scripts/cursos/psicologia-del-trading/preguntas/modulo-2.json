@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "pt-m2-01",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "Según la teoría prospectiva, ¿cómo valoramos el resultado de una decisión con dinero?",
+    "opciones": [
+      "Por el patrimonio total que tendremos al final",
+      "Como ganancia o pérdida respecto a un punto de referencia",
+      "Por la media del mercado",
+      "Solo por la probabilidad de acertar"
+    ],
+    "correcta": 1,
+    "explicacion": "Kahneman y Tversky mostraron que importa el cambio respecto a un punto de referencia, no el total. En trading, ese punto suele ser el precio de entrada."
+  },
+  {
+    "clave": "pt-m2-02",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "¿Qué coeficiente de aversión a la pérdida estimaron Tversky y Kahneman en 1992?",
+    "opciones": [
+      "En torno a 0,5",
+      "Exactamente 1",
+      "En torno a 2,25",
+      "En torno a 10"
+    ],
+    "correcta": 2,
+    "explicacion": "Una pérdida pesaba de media algo más del doble que una ganancia igual. Es una media: cada persona tiene la suya."
+  },
+  {
+    "clave": "pt-m2-03",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "¿Qué describe el efecto reflejo de la teoría prospectiva?",
+    "opciones": [
+      "Que con ganancias buscamos seguridad y con pérdidas nos volvemos arriesgados",
+      "Que copiamos lo que hacen los demás",
+      "Que reaccionamos más rápido a las noticias buenas",
+      "Que la gente imita los gráficos de otros traders"
+    ],
+    "correcta": 0,
+    "explicacion": "Ante una ganancia segura preferimos asegurarla; ante una pérdida segura, preferimos jugárnosla a no perder."
+  },
+  {
+    "clave": "pt-m2-04",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "En el experimento de la moneda, solo aceptas arriesgar 100 € si puedes ganar 250 €. ¿Qué significa?",
+    "opciones": [
+      "Que eres neutral ante el riesgo",
+      "Que calculas mejor que la media",
+      "Que rechazas apuestas con esperanza positiva porque perder te pesa más que ganar",
+      "Que la moneda está trucada"
+    ],
+    "correcta": 2,
+    "explicacion": "Cualquier ganancia mayor de 100 € en una moneda justa tiene esperanza positiva. Exigir 250 € indica una aversión a la pérdida de en torno a 2,5."
+  },
+  {
+    "clave": "pt-m2-05",
+    "leccion": "teoria-prospectiva-y-aversion-a-la-perdida",
+    "enunciado": "¿Cuál es la forma más eficaz de combatir la aversión a la pérdida al operar?",
+    "opciones": [
+      "Conocer bien el sesgo; con eso desaparece",
+      "Operar solo cuando estés de buen humor",
+      "Decidir antes de entrar, en frío, dónde sales si pierdes y si ganas",
+      "No usar nunca stop-loss"
+    ],
+    "correcta": 2,
+    "explicacion": "Saber que existe no te inmuniza. Lo que funciona es convertir la decisión en una regla tomada antes de que haya algo en juego."
+  },
+  {
+    "clave": "pt-m2-06",
+    "leccion": "el-efecto-disposicion",
+    "enunciado": "¿Qué es el efecto disposición?",
+    "opciones": [
+      "Comprar lo que más ha subido",
+      "Operar solo cuando se tiene tiempo",
+      "Vender pronto lo que va ganando y aguantar lo que va perdiendo",
+      "Diversificar entre muchos activos"
+    ],
+    "correcta": 2,
+    "explicacion": "Lo bautizaron Shefrin y Statman en 1985: la disposición a vender las ganadoras demasiado pronto y aguantar las perdedoras demasiado tiempo."
+  },
+  {
+    "clave": "pt-m2-07",
+    "leccion": "el-efecto-disposicion",
+    "enunciado": "En el estudio de Odean (1998) con 10.000 cuentas, ¿en qué mes no se cumplía que los inversores realizaran más ganancias que pérdidas?",
+    "opciones": [
+      "Diciembre",
+      "Junio",
+      "Agosto",
+      "Enero"
+    ],
+    "correcta": 0,
+    "explicacion": "En diciembre, cuando se venden pérdidas para compensar impuestos. El resto del año hacían lo contrario de lo que les convenía fiscalmente."
+  },
+  {
+    "clave": "pt-m2-08",
+    "leccion": "el-efecto-disposicion",
+    "enunciado": "Un trader acierta el 60 %, pero cierra los aciertos en +0,5R y deja correr las pérdidas hasta −1,4R. En 100 operaciones, ¿cuál es su resultado?",
+    "opciones": [
+      "+20R",
+      "0R",
+      "−26R",
+      "+60R"
+    ],
+    "correcta": 2,
+    "explicacion": "60 × 0,5 = +30R; 40 × 1,4 = −56R. Total: −26R. El mismo acierto con ganancias de 1R y pérdidas de 1R daría +20R."
+  },
+  {
+    "clave": "pt-m2-09",
+    "leccion": "el-efecto-disposicion",
+    "enunciado": "¿Qué dos datos de tu Diario de Trading delatan el efecto disposición?",
+    "opciones": [
+      "El número de pares operados y la hora",
+      "El capital inicial y la racha de días",
+      "El día de la semana y la dirección de la operación",
+      "La parte del objetivo que capturas y si tus pérdidas superan el riesgo planeado"
+    ],
+    "correcta": 3,
+    "explicacion": "Capturar poco del objetivo es la mitad «vender pronto»; perder más de lo planeado es la mitad «aguantar las perdedoras». Nova avisa de las dos."
+  },
+  {
+    "clave": "pt-m2-10",
+    "leccion": "dinero-de-la-casa-y-querer-empatar",
+    "enunciado": "¿Qué describe el efecto «dinero de la casa» de Thaler y Johnson?",
+    "opciones": [
+      "Que tras una ganancia la gente arriesga más con lo ganado",
+      "Que la gente prefiere invertir en su propio país",
+      "Que los casinos siempre ganan",
+      "Que tras una pérdida la gente deja de operar"
+    ],
+    "correcta": 0,
+    "explicacion": "Lo ganado se siente como dinero que no es del todo tuyo, y arriesgarlo duele menos. En trading: subir el tamaño tras una racha ganadora."
+  },
+  {
+    "clave": "pt-m2-11",
+    "leccion": "dinero-de-la-casa-y-querer-empatar",
+    "enunciado": "Acabas de perder 150 € y abres otra operación sin señal «para recuperarlo». ¿Qué efecto es?",
+    "opciones": [
+      "Querer empatar",
+      "Dinero de la casa",
+      "Anclaje al máximo histórico",
+      "Exceso de precisión"
+    ],
+    "correcta": 0,
+    "explicacion": "Tras perder, atraen las jugadas que prometen devolverte a cero, aunque sean peores. Es la base del revenge trading."
+  },
+  {
+    "clave": "pt-m2-12",
+    "leccion": "dinero-de-la-casa-y-querer-empatar",
+    "enunciado": "¿Cuál es la defensa común contra el efecto dinero de la casa y el de querer empatar?",
+    "opciones": [
+      "Doblar el tamaño tras perder y reducirlo tras ganar",
+      "Operar más rápido para no pensar",
+      "Un tamaño por operación fijo, decidido antes, que no dependa de cómo te ha ido hoy",
+      "Retirar al banco todo lo ganado cada día"
+    ],
+    "correcta": 2,
+    "explicacion": "Un porcentaje fijo del capital no sube con la euforia ni con la revancha."
+  },
+  {
+    "clave": "pt-m2-13",
+    "leccion": "la-biologia-del-riesgo",
+    "enunciado": "¿Qué midieron Lo y Repin (2002) en 10 traders profesionales mientras operaban?",
+    "opciones": [
+      "Sus hormonas en saliva",
+      "Su conductancia de la piel y su pulso, junto a los precios del mercado",
+      "Su actividad cerebral con resonancia",
+      "Sus horas de sueño"
+    ],
+    "correcta": 1,
+    "explicacion": "La conductancia de la piel respondía a acontecimientos puntuales del mercado y el pulso seguía a la volatilidad, también en profesionales."
+  },
+  {
+    "clave": "pt-m2-14",
+    "leccion": "la-biologia-del-riesgo",
+    "enunciado": "¿Cuál es la lectura correcta del estudio de Coates y Herbert (2008) con 17 traders de Londres?",
+    "opciones": [
+      "Demuestra que subir la testosterona hace ganar más",
+      "No encontró ninguna relación",
+      "Demuestra que el cortisol hace perder dinero",
+      "Encontró asociaciones entre hormonas, resultados y volatilidad, pero no demuestra causas"
+    ],
+    "correcta": 3,
+    "explicacion": "La testosterona matinal iba con los días buenos y el cortisol subía con la incertidumbre. Con 17 traders y ocho días, son asociaciones, no causas."
+  },
+  {
+    "clave": "pt-m2-15",
+    "leccion": "la-biologia-del-riesgo",
+    "enunciado": "¿Qué conclusión práctica saca el curso de los estudios sobre biología del riesgo?",
+    "opciones": [
+      "Que hay que intentar no sentir nada al operar",
+      "Que hay que tomar suplementos hormonales",
+      "Que los profesionales no sienten nada",
+      "Que las reacciones del cuerpo no se apagan, pero se pueden registrar y usar como información"
+    ],
+    "correcta": 3,
+    "explicacion": "El cuerpo reacciona antes de que decidas, también en profesionales. Por eso tu Diario te pide apuntar el ánimo antes de operar."
+  }
+]

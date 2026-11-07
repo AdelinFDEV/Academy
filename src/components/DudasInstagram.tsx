@@ -21,7 +21,7 @@ const PREGUNTAS = [
   },
   {
     q: "¿Qué incluye Premium?",
-    a: "El Diario de Trading, mi Portfolio con mis compras reales y los cursos cuando se publiquen. Todo lo nuevo entra sin pagar más.",
+    a: "El Diario de Trading, mi Portfolio con mis compras reales y los cursos, con examen y certificado. Todo lo nuevo entra sin pagar más.",
   },
   {
     q: "¿Puedo cancelar cuando quiera?",

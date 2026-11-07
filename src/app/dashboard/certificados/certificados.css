@@ -1,0 +1,126 @@
+/*
+ * Mis certificados — solo /dashboard/certificados y /dashboard/certificados/<codigo>.
+ * El fondo y la cabecera son los imm-* compartidos de dashboard.css. Cada
+ * tarjeta pone el color de su curso en --cv-acento. El certificado a tamaño
+ * completo trae su propio CSS (components/aula/certificado.css), con la
+ * regla de impresión que deja solo el diploma en el PDF.
+ */
+
+.cv-page {
+  --imm-accent: #5ec8c4;
+  --imm-accent-2: #e6b455;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── Botones ── */
+.cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: var(--cv-acento, #5ec8c4);
+  color: #0a1628;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.cv-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.cv-btn--ghost { background: transparent; border-color: rgba(240, 244, 255, 0.16); color: rgba(240, 244, 255, 0.88); }
+.cv-btn--grande { padding: 0.85rem 1.35rem; font-size: 0.95rem; border-radius: 13px; }
+.cv-acciones { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+/* ── Vitrina vacía ── */
+.cv-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 1px dashed rgba(240, 244, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(15, 30, 57, 0.6);
+}
+.cv-vacio h2 { margin: 0; font: 800 1.25rem var(--font-display); color: #fff; }
+.cv-vacio p { margin: 0; max-width: 52ch; font-size: 0.92rem; line-height: 1.6; color: rgba(240, 244, 255, 0.55); }
+.cv-vacio-icono {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(94, 200, 196, 0.1);
+  color: #5ec8c4;
+}
+
+/* ── Las tarjetas ── */
+.cv-rejilla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 470px), 1fr)); gap: 1.1rem; }
+
+.cv-tarjeta {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--cv-acento) 22%, rgba(240, 244, 255, 0.08));
+  border-radius: 18px;
+  background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--cv-acento) 9%, transparent), transparent 60%), rgba(15, 30, 57, 0.85);
+  box-shadow: var(--card-shadow);
+}
+
+/* El diploma en miniatura: marco doble con el sello del curso y la nota. */
+.cv-diploma {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 170px;
+  padding: 0.8rem 0.6rem;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #fbf7ee, #efe6d2);
+  color: #1d2a3f;
+  box-shadow: inset 0 0 0 5px #fbf7ee, inset 0 0 0 6px color-mix(in srgb, var(--cv-acento) 70%, #8a6d2b);
+  text-align: center;
+}
+.cv-diploma-marca { font-size: 0.56rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6b5a33; }
+.cv-diploma-sello {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--cv-acento) 85%, #000);
+  color: #fff;
+}
+.cv-diploma-nota { font: 800 1.6rem var(--font-display); line-height: 1; }
+.cv-diploma-sobre { font-size: 0.62rem; color: #6b5a33; }
+
+.cv-info { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.cv-kicker { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cv-acento); }
+.cv-curso { margin: 0; font: 800 1.15rem/1.25 var(--font-display); color: #fff; }
+.cv-datos { margin: 0; display: grid; gap: 0.3rem; }
+.cv-datos div { display: flex; gap: 0.5rem; font-size: 0.82rem; }
+.cv-datos dt { min-width: 3.6rem; color: rgba(240, 244, 255, 0.45); }
+.cv-datos dd { margin: 0; color: rgba(240, 244, 255, 0.88); }
+.cv-codigo { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.04em; }
+.cv-info .cv-acciones { margin-top: auto; }
+
+@media (max-width: 560px) {
+  .cv-tarjeta { grid-template-columns: 1fr; }
+  .cv-diploma { min-height: 140px; }
+}
+
+/* ── El certificado a tamaño completo ── */
+.cv-detalle { display: flex; flex-direction: column; gap: 1.2rem; }
+.cv-volver { display: inline-flex; align-items: center; gap: 0.4rem; width: fit-content; font-size: 0.86rem; color: rgba(240, 244, 255, 0.6); text-decoration: none; }
+.cv-volver:hover { color: #fff; }
+.cv-detalle-cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+.cv-detalle-titulo { margin: 0 0 0.35rem; font: 800 1.6rem var(--font-display); color: #fff; }
+.cv-detalle-sub { margin: 0; max-width: 60ch; font-size: 0.9rem; line-height: 1.55; color: rgba(240, 244, 255, 0.55); }

@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "pt-m5-01",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "¿Cuántos momentos para regular una emoción describe el modelo de Gross (1998)?",
+    "opciones": [
+      "Dos",
+      "Cinco",
+      "Tres",
+      "Diez"
+    ],
+    "correcta": 1,
+    "explicacion": "Elegir la situación, modificarla, dirigir la atención, cambiar la interpretación y modular la respuesta."
+  },
+  {
+    "clave": "pt-m5-02",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "Los días que apuntas «muy mal» en tu Diario, no operas. ¿En qué momento del modelo de Gross actúa esta regla?",
+    "opciones": [
+      "Elegir la situación",
+      "Cambiar la interpretación",
+      "Modular la respuesta",
+      "En ninguno"
+    ],
+    "correcta": 0,
+    "explicacion": "Decides no ponerte en la situación. Es el primer momento, el más fácil de aplicar."
+  },
+  {
+    "clave": "pt-m5-03",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "Según Gross (2002), ¿qué pasa cuando reprimes una emoción?",
+    "opciones": [
+      "Desaparece por dentro y por fuera",
+      "Mejora tu memoria",
+      "Se convierte en la emoción contraria",
+      "Se nota menos por fuera, pero sigues sintiéndola y recuerdas peor lo que pasó"
+    ],
+    "correcta": 3,
+    "explicacion": "Reprimir reduce la expresión, no la experiencia, y empeora la memoria. Reinterpretar reduce las dos sin ese coste."
+  },
+  {
+    "clave": "pt-m5-04",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "¿Cuál de estas frases es una reinterpretación útil tras una pérdida dentro del plan?",
+    "opciones": [
+      "«Soy un desastre, nunca aprenderé»",
+      "«No pasa nada, no me importa»",
+      "«El mercado está manipulado contra mí»",
+      "«He perdido 1R, como estaba previsto en un método con ventaja»"
+    ],
+    "correcta": 3,
+    "explicacion": "Reinterpretar no es engañarse: es elegir una lectura que también es verdad y te deja pensar."
+  },
+  {
+    "clave": "pt-m5-05",
+    "leccion": "antes-durante-y-despues",
+    "enunciado": "¿Cuándo hay que apuntar el ánimo en el Diario para que el semáforo funcione?",
+    "opciones": [
+      "Antes de abrir la primera operación",
+      "Al final del día",
+      "Solo los días en que se pierde",
+      "Una vez a la semana"
+    ],
+    "correcta": 0,
+    "explicacion": "Si lo apuntas después de operar, el resultado del día te cambia la respuesta."
+  },
+  {
+    "clave": "pt-m5-06",
+    "leccion": "reglas-si-pasa-esto-hago-esto",
+    "enunciado": "¿Cuál de estas es una intención de implementación?",
+    "opciones": [
+      "«Si pierdo dos operaciones seguidas, cierro la plataforma hasta mañana»",
+      "«Quiero ser más disciplinado»",
+      "«Voy a operar mejor este mes»",
+      "«Tengo que controlar el FOMO»"
+    ],
+    "correcta": 0,
+    "explicacion": "Tiene la forma «si pasa X, hago Y», con un disparador reconocible y una acción concreta."
+  },
+  {
+    "clave": "pt-m5-07",
+    "leccion": "reglas-si-pasa-esto-hago-esto",
+    "enunciado": "¿Qué significa el valor d = 0,65 del metaanálisis de Gollwitzer y Sheeran (2006)?",
+    "opciones": [
+      "Que las reglas funcionan el 65 % de las veces",
+      "Que reducen las pérdidas un 65 %",
+      "Que el 65 % de la gente las usa",
+      "Un efecto de tamaño medio a grande sobre conseguir los objetivos"
+    ],
+    "correcta": 3,
+    "explicacion": "Es una medida estadística del tamaño del efecto, no un porcentaje de éxito."
+  },
+  {
+    "clave": "pt-m5-08",
+    "leccion": "reglas-si-pasa-esto-hago-esto",
+    "enunciado": "¿Qué encontró la revisión de 2024 sobre las intenciones de implementación?",
+    "opciones": [
+      "Que no tienen ningún efecto",
+      "Que solo funcionan en deportistas",
+      "Que el efecto es el doble de lo que se creía",
+      "Que, al corregir sesgos de publicación, el efecto es bastante más pequeño pero sigue siendo positivo"
+    ],
+    "correcta": 3,
+    "explicacion": "Una herramienta con un efecto real y modesto, barata y fácil de aplicar."
+  },
+  {
+    "clave": "pt-m5-09",
+    "leccion": "reglas-si-pasa-esto-hago-esto",
+    "enunciado": "¿Por qué funcionan las reglas «si-entonces», según Gollwitzer?",
+    "opciones": [
+      "Porque obligan a operar más",
+      "Porque eliminan las emociones",
+      "Porque trasladan la decisión al momento en que estás tranquilo",
+      "Porque las exige la ley"
+    ],
+    "correcta": 2,
+    "explicacion": "Cuando la situación aparece, la respuesta ya está decidida y asociada a ella."
+  },
+  {
+    "clave": "pt-m5-10",
+    "leccion": "la-lista-previa-a-operar",
+    "enunciado": "En el estudio de Haynes y otros (2009), ¿qué pasó tras introducir la lista de control de la OMS en los quirófanos?",
+    "opciones": [
+      "No cambió nada",
+      "Subieron las complicaciones",
+      "Bajaron las complicaciones y las muertes",
+      "Se dejó de operar"
+    ],
+    "correcta": 2,
+    "explicacion": "Las complicaciones pasaron del 11 % al 7 % y las muertes del 1,5 % al 0,8 % en ocho hospitales."
+  },
+  {
+    "clave": "pt-m5-11",
+    "leccion": "la-lista-previa-a-operar",
+    "enunciado": "¿Cómo usa el curso el estudio de la lista quirúrgica?",
+    "opciones": [
+      "Como prueba de que las listas hacen rentable a un trader",
+      "Como analogía: bajo presión, los expertos se saltan lo básico y una lista corta lo evita",
+      "Como estudio sobre traders",
+      "No lo usa"
+    ],
+    "correcta": 1,
+    "explicacion": "Es un estudio de cirugía, no de trading. Se usa para una idea concreta, no como prueba."
+  },
+  {
+    "clave": "pt-m5-12",
+    "leccion": "la-lista-previa-a-operar",
+    "enunciado": "Ves una entrada «clarísima» y el precio se escapa. ¿Qué haces con tu lista?",
+    "opciones": [
+      "La pasas entera: esas son las operaciones en las que más importa",
+      "Te la saltas para no perder la entrada",
+      "La pasas después de entrar",
+      "Solo compruebas el objetivo"
+    ],
+    "correcta": 0,
+    "explicacion": "La prisa y la confianza son justo las condiciones en las que se saltan pasos."
+  },
+  {
+    "clave": "pt-m5-13",
+    "leccion": "despues-de-una-perdida",
+    "enunciado": "¿Cuánto tiempo hay que esperar tras una pérdida para que cuente en el hito «Sin revancha» de tu Diario?",
+    "opciones": [
+      "5 minutos",
+      "15 minutos",
+      "60 minutos",
+      "Un día entero"
+    ],
+    "correcta": 2,
+    "explicacion": "60 minutos antes de volver a entrar. El primer nivel del hito son 5 esperas."
+  },
+  {
+    "clave": "pt-m5-14",
+    "leccion": "despues-de-una-perdida",
+    "enunciado": "¿Por qué el momento después de una pérdida es el más peligroso del día?",
+    "opciones": [
+      "Porque el mercado es más volátil",
+      "Porque las comisiones son mayores",
+      "Porque coinciden el impulso de empatar, la emoción más alta y el peor juicio sobre las entradas",
+      "Porque el broker cambia las condiciones"
+    ],
+    "correcta": 2,
+    "explicacion": "Es cuando peor estás para decidir y más ganas tienes de entrar: la combinación del revenge trading."
+  },
+  {
+    "clave": "pt-m5-15",
+    "leccion": "despues-de-una-perdida",
+    "enunciado": "¿A partir de cuántas pérdidas seguidas te avisa Nova de que es buen momento para bajar tamaño o parar?",
+    "opciones": [
+      "Tres",
+      "Dos",
+      "Una",
+      "Diez"
+    ],
+    "correcta": 0,
+    "explicacion": "A partir de tres pérdidas seguidas. Tu protocolo puede ser más exigente."
+  }
+]

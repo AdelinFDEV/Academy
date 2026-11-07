@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "pt-m4-01",
+    "leccion": "una-operacion-no-significa-nada",
+    "enunciado": "Según Mark Douglas, ¿qué es una ventaja en trading?",
+    "opciones": [
+      "La certeza de que una operación saldrá bien",
+      "Operar más rápido que los demás",
+      "Información privilegiada",
+      "Una probabilidad algo mayor de que pase una cosa que otra"
+    ],
+    "correcta": 3,
+    "explicacion": "Una ventaja no es una predicción ni una certeza: solo una probabilidad algo mayor a favor."
+  },
+  {
+    "clave": "pt-m4-02",
+    "leccion": "una-operacion-no-significa-nada",
+    "enunciado": "¿Qué dice la tercera verdad de Douglas sobre el orden de las ganancias y las pérdidas?",
+    "opciones": [
+      "Que primero llegan las pérdidas y luego las ganancias",
+      "Que tras tres pérdidas llega una ganancia",
+      "Que se alternan siempre",
+      "Que se reparten al azar dentro de una ventaja"
+    ],
+    "correcta": 3,
+    "explicacion": "Sabes que en cien operaciones ganarás más de lo que pierdes, pero no en qué orden llegarán."
+  },
+  {
+    "clave": "pt-m4-03",
+    "leccion": "una-operacion-no-significa-nada",
+    "enunciado": "¿Cuál es la casilla más peligrosa de la tabla decisión-resultado?",
+    "opciones": [
+      "Decisión buena, resultado bueno",
+      "Decisión mala, resultado bueno",
+      "Decisión buena, resultado malo",
+      "Decisión mala, resultado malo"
+    ],
+    "correcta": 1,
+    "explicacion": "Saltarte el plan y ganar te enseña que saltarte el plan funciona. Alimenta el exceso de confianza."
+  },
+  {
+    "clave": "pt-m4-04",
+    "leccion": "una-operacion-no-significa-nada",
+    "enunciado": "Llevas cinco pérdidas seguidas habiendo seguido tus reglas. ¿Qué es cierto?",
+    "opciones": [
+      "La siguiente operación tiene más probabilidad de ganar",
+      "Tu método ha dejado de funcionar",
+      "Debes doblar el tamaño",
+      "La siguiente tiene la misma probabilidad que cualquier otra; creer que «toca» ganar es la falacia del jugador"
+    ],
+    "correcta": 3,
+    "explicacion": "Cada operación es independiente. Las rachas no se compensan solas; solo se diluyen en una muestra grande."
+  },
+  {
+    "clave": "pt-m4-05",
+    "leccion": "piensa-en-r",
+    "enunciado": "Arriesgabas 50 € (1R) y la operación termina en +100 €. ¿Cuánto es en R?",
+    "opciones": [
+      "+0,5R",
+      "+1R",
+      "+2R",
+      "+100R"
+    ],
+    "correcta": 2,
+    "explicacion": "100 / 50 = 2. Has ganado el doble de lo que arriesgabas."
+  },
+  {
+    "clave": "pt-m4-06",
+    "leccion": "piensa-en-r",
+    "enunciado": "Arriesgabas 50 € y pierdes 80 € porque moviste el stop. ¿Cuánto es en R?",
+    "opciones": [
+      "−1R",
+      "−1,6R",
+      "−0,6R",
+      "−80R"
+    ],
+    "correcta": 1,
+    "explicacion": "80 / 50 = 1,6. Perder más de 1R delata que algo pasó entre la entrada y la salida, a menudo la aversión a la pérdida."
+  },
+  {
+    "clave": "pt-m4-07",
+    "leccion": "piensa-en-r",
+    "enunciado": "Un trader acierta el 35 %, gana 3R cuando acierta y pierde 1R cuando falla. ¿Cuál es su esperanza por operación?",
+    "opciones": [
+      "−0,3R",
+      "0R",
+      "+0,4R",
+      "+1,05R"
+    ],
+    "correcta": 2,
+    "explicacion": "0,35 × 3 − 0,65 × 1 = 1,05 − 0,65 = +0,4R por operación, aunque falle casi dos de cada tres."
+  },
+  {
+    "clave": "pt-m4-08",
+    "leccion": "piensa-en-r",
+    "enunciado": "¿Por qué perseguir un porcentaje de acierto alto es una trampa psicológica?",
+    "opciones": [
+      "Porque es ilegal",
+      "Porque el acierto no se puede medir",
+      "Porque los métodos que aciertan mucho siempre ganan",
+      "Porque empuja a cerrar pronto para apuntarse el acierto, que es el efecto disposición"
+    ],
+    "correcta": 3,
+    "explicacion": "Un método que acierta el 70 % puede perder dinero si cobra poco cuando acierta y paga mucho cuando falla."
+  },
+  {
+    "clave": "pt-m4-09",
+    "leccion": "piensa-en-r",
+    "enunciado": "¿Qué ventaja psicológica tiene medir los resultados en R en vez de en euros?",
+    "opciones": [
+      "Que se ganan más euros",
+      "Que evita las rachas de pérdidas",
+      "Que se pagan menos impuestos",
+      "Que separa la calidad de la decisión del tamaño de la cuenta"
+    ],
+    "correcta": 3,
+    "explicacion": "Un +2R vale lo mismo con 500 € que con 50.000 €. Deja de importar si hoy has ganado «mucho» o «poco»."
+  },
+  {
+    "clave": "pt-m4-10",
+    "leccion": "el-tamano-de-posicion-te-protege",
+    "enunciado": "¿En qué orden se decide el tamaño de una posición?",
+    "opciones": [
+      "Primero el tamaño, luego el stop",
+      "Según el apalancamiento máximo que permita el broker",
+      "Primero el objetivo, luego el tamaño",
+      "Primero lo que arriesgas, luego el stop; el tamaño sale de ahí"
+    ],
+    "correcta": 3,
+    "explicacion": "Decides tu 1R, fijas el stop donde tu idea queda invalidada y divides: el tamaño sale solo."
+  },
+  {
+    "clave": "pt-m4-11",
+    "leccion": "el-tamano-de-posicion-te-protege",
+    "enunciado": "Tienes 4.000 € y arriesgas el 1 %. Entras en 20 con el stop en 19. ¿Cuántas unidades compras?",
+    "opciones": [
+      "4",
+      "40",
+      "200",
+      "400"
+    ],
+    "correcta": 1,
+    "explicacion": "1R = 40 €. Distancia al stop = 1. 40 / 1 = 40 unidades, que valen 800 €."
+  },
+  {
+    "clave": "pt-m4-12",
+    "leccion": "el-tamano-de-posicion-te-protege",
+    "enunciado": "Con diez pérdidas seguidas, ¿cuánto pierde aproximadamente una cuenta que arriesga el 5 % por operación?",
+    "opciones": [
+      "Un 5 %",
+      "Un 10 %",
+      "Un 40 %",
+      "Un 90 %"
+    ],
+    "correcta": 2,
+    "explicacion": "0,95 elevado a 10 ≈ 0,60: la cuenta cae un 40 %. Con el 1 % por operación, la caída sería de menos del 10 %."
+  },
+  {
+    "clave": "pt-m4-13",
+    "leccion": "el-tamano-de-posicion-te-protege",
+    "enunciado": "¿A partir de qué riesgo por operación marca tu Diario de Trading una operación como agresiva?",
+    "opciones": [
+      "Del 0,5 %",
+      "Del 1 %",
+      "Del 2 %",
+      "Del 10 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Del 2 % de la cuenta. El hito «Disciplina de riesgo» cuenta las operaciones seguidas sin pasar ese límite."
+  },
+  {
+    "clave": "pt-m4-14",
+    "leccion": "muestra-ruido-y-rachas",
+    "enunciado": "Un método que acierta el 55 % y gana lo mismo que pierde, ¿con qué frecuencia va en negativo tras 20 operaciones, según la simulación del curso?",
+    "opciones": [
+      "Nunca",
+      "Una de cada mil veces",
+      "Siempre",
+      "En torno a una de cada cuatro veces"
+    ],
+    "correcta": 3,
+    "explicacion": "En torno a una de cada cuatro. Por eso 20 operaciones no bastan para juzgar un método."
+  },
+  {
+    "clave": "pt-m4-15",
+    "leccion": "muestra-ruido-y-rachas",
+    "enunciado": "¿A partir de cuántas operaciones empiezan a sostenerse tus estadísticas, según tu Diario de Trading?",
+    "opciones": [
+      "5",
+      "10",
+      "30",
+      "1.000"
+    ],
+    "correcta": 2,
+    "explicacion": "Es el primer nivel del hito «Muestra fiable». Por debajo, el Diario te avisa de que hay mucho ruido."
+  }
+]

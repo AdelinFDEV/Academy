@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "pt-m3-01",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "En el estudio «Boys will be boys» de Barber y Odean, ¿cuánto más operaron los hombres que las mujeres?",
+    "opciones": [
+      "Un 5 % más",
+      "Un 45 % más",
+      "El doble",
+      "Lo mismo"
+    ],
+    "correcta": 1,
+    "explicacion": "Un 45 % más, y operar les restó 2,65 puntos de rentabilidad neta al año frente a 1,72 en ellas."
+  },
+  {
+    "clave": "pt-m3-02",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "¿Por qué Barber y Odean usaron el sexo de los inversores en su estudio de 2001?",
+    "opciones": [
+      "Porque querían demostrar que las mujeres invierten mejor por naturaleza",
+      "Por casualidad",
+      "Porque el broker solo tenía clientes de un sexo",
+      "Como aproximación al exceso de confianza, que la psicología encuentra mayor en los hombres en temas financieros"
+    ],
+    "correcta": 3,
+    "explicacion": "El mensaje no es que un sexo invierta mejor: quien más confía en su criterio más opera, y más paga por ello."
+  },
+  {
+    "clave": "pt-m3-03",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "¿Qué encontraron Fenton-O'Creevy y sus colegas en 107 traders profesionales de Londres?",
+    "opciones": [
+      "Que la ilusión de control mejoraba los resultados",
+      "Que ningún profesional tenía ilusión de control",
+      "Que los traders con más ilusión de control rendían peor y gestionaban peor el riesgo",
+      "Que la ilusión de control solo afecta a principiantes"
+    ],
+    "correcta": 2,
+    "explicacion": "Ganaban menos y sus responsables los valoraban peor en gestión del riesgo, análisis y contribución a los beneficios."
+  },
+  {
+    "clave": "pt-m3-04",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "Pones el stop pegadísimo al precio porque «seguro que no baja de ahí». ¿Qué forma de exceso de confianza es?",
+    "opciones": [
+      "Ilusión de control",
+      "Exceso de precisión",
+      "Sobrestimación",
+      "Ninguna"
+    ],
+    "correcta": 1,
+    "explicacion": "Estar demasiado seguro de una previsión y no dejar margen para el error es exceso de precisión."
+  },
+  {
+    "clave": "pt-m3-05",
+    "leccion": "exceso-de-confianza-e-ilusion-de-control",
+    "enunciado": "¿Cuál es el antídoto práctico que propone el curso contra el exceso de confianza?",
+    "opciones": [
+      "Registrar todas las operaciones y mirar los números con una muestra grande",
+      "Repetirse frases de humildad cada mañana",
+      "Operar solo con dinero ganado",
+      "Seguir a traders más humildes en redes"
+    ],
+    "correcta": 0,
+    "explicacion": "La memoria guarda los aciertos y olvida los fallos. El Diario no olvida las perdedoras."
+  },
+  {
+    "clave": "pt-m3-06",
+    "leccion": "el-sesgo-de-confirmacion",
+    "enunciado": "¿Cómo define Nickerson (1998) el sesgo de confirmación?",
+    "opciones": [
+      "Confirmar las órdenes dos veces antes de enviarlas",
+      "Esperar a que el mercado confirme una tendencia",
+      "Buscar o interpretar las pruebas de forma parcial a favor de lo que ya creemos",
+      "Pedir confirmación a otros traders"
+    ],
+    "correcta": 2,
+    "explicacion": "Es la tendencia a buscar, interpretar y recordar la información que favorece nuestras creencias o la hipótesis que tenemos entre manos."
+  },
+  {
+    "clave": "pt-m3-07",
+    "leccion": "el-sesgo-de-confirmacion",
+    "enunciado": "En el experimento 2-4-6 de Wason, ¿qué serie habría aportado más información para descubrir la regla?",
+    "opciones": [
+      "8-10-12",
+      "20-22-24",
+      "1-7-30",
+      "4-6-8"
+    ],
+    "correcta": 2,
+    "explicacion": "La regla era «números en orden creciente». Solo una serie que rompe tu hipótesis puede decirte que te equivocas."
+  },
+  {
+    "clave": "pt-m3-08",
+    "leccion": "el-sesgo-de-confirmacion",
+    "enunciado": "¿En qué momento hace más daño el sesgo de confirmación al operar?",
+    "opciones": [
+      "Antes de elegir qué mercado seguir",
+      "Al calcular los impuestos",
+      "Al cerrar la plataforma",
+      "Con la operación ya abierta, sobre todo cuando va en contra"
+    ],
+    "correcta": 3,
+    "explicacion": "Con dinero en juego, la búsqueda de información deja de servir para decidir y pasa a justificar no cerrar."
+  },
+  {
+    "clave": "pt-m3-09",
+    "leccion": "el-sesgo-de-confirmacion",
+    "enunciado": "¿Qué técnica propone el curso contra el sesgo de confirmación?",
+    "opciones": [
+      "Leer más análisis antes de cada operación",
+      "Escribir antes de entrar la condición de invalidez y el mejor argumento en contra",
+      "Seguir solo a analistas que coincidan contigo",
+      "Cerrar todas las operaciones en tablas"
+    ],
+    "correcta": 1,
+    "explicacion": "Si solo lees lo que te da la razón, más información aumenta la seguridad sin mejorar la decisión."
+  },
+  {
+    "clave": "pt-m3-10",
+    "leccion": "el-anclaje",
+    "enunciado": "En el experimento de la rueda de Tversky y Kahneman (1974), ¿qué pasó con las estimaciones de los participantes?",
+    "opciones": [
+      "Quienes vieron un número alto dieron estimaciones más altas, aunque sabían que era aleatorio",
+      "No cambiaron con el número de la rueda",
+      "Todos acertaron la respuesta",
+      "Quienes vieron un número alto dieron estimaciones más bajas"
+    ],
+    "correcta": 0,
+    "explicacion": "Con un 10 en la rueda, la mediana fue 25 %; con un 65, 45 %. Un número aleatorio movió las estimaciones veinte puntos."
+  },
+  {
+    "clave": "pt-m3-11",
+    "leccion": "el-anclaje",
+    "enunciado": "¿Cuál de estas es el ancla más cara para un trader, según el curso?",
+    "opciones": [
+      "El volumen de la sesión",
+      "Su propio precio de entrada",
+      "La hora de apertura",
+      "El número de operaciones del día"
+    ],
+    "correcta": 1,
+    "explicacion": "«Vendo cuando vuelva a lo que pagué.» Al mercado le da igual tu precio de compra: ese número solo existe para ti."
+  },
+  {
+    "clave": "pt-m3-12",
+    "leccion": "el-anclaje",
+    "enunciado": "¿Qué pregunta propone el curso para desmontar el anclaje al precio de entrada?",
+    "opciones": [
+      "Si hoy no tuviera esta posición, ¿la abriría a este precio y con este tamaño?",
+      "¿Qué opina la mayoría?",
+      "¿Cuánto llevo perdido?",
+      "¿Cuándo volverá a mi precio?"
+    ],
+    "correcta": 0,
+    "explicacion": "Si la respuesta es no, lo único que te mantiene dentro es un coste hundido."
+  },
+  {
+    "clave": "pt-m3-13",
+    "leccion": "el-anclaje",
+    "enunciado": "¿Qué diferencia un soporte de un ancla?",
+    "opciones": [
+      "Ninguna, son lo mismo",
+      "El soporte se justifica por cómo se ha comportado el precio; el ancla, solo por lo que significa para ti",
+      "El ancla siempre está en un número redondo",
+      "El soporte solo existe en cripto"
+    ],
+    "correcta": 1,
+    "explicacion": "La prueba: ¿podrías explicar el nivel a alguien que no sabe a qué precio compraste?"
+  },
+  {
+    "clave": "pt-m3-14",
+    "leccion": "redes-finfluencers-y-copy-trading",
+    "enunciado": "¿Qué advirtieron en 2022 las autoridades europeas de supervisión (EBA, ESMA y EIOPA) sobre los criptoactivos?",
+    "opciones": [
+      "Que existe una posibilidad muy real de perder todo lo invertido y que hay que vigilar la publicidad engañosa en redes",
+      "Que son una inversión segura a largo plazo",
+      "Que solo deben comprarse con tarjeta",
+      "Que están garantizados por los bancos centrales"
+    ],
+    "correcta": 0,
+    "explicacion": "La advertencia conjunta hablaba de activos muy arriesgados y especulativos, de la posibilidad de perderlo todo y de la publicidad engañosa, también de influencers."
+  },
+  {
+    "clave": "pt-m3-15",
+    "leccion": "redes-finfluencers-y-copy-trading",
+    "enunciado": "¿Cuál es el problema psicológico de fondo del copy trading, según el curso?",
+    "opciones": [
+      "Que copias las entradas, pero no el capital, la tolerancia ni la forma de aguantar una caída de quien opera",
+      "Que las comisiones son altas",
+      "Que es ilegal en Europa",
+      "Que siempre pierde"
+    ],
+    "correcta": 0,
+    "explicacion": "Además, los perfiles que ves arriba del ranking son los que han tenido una buena racha. Muchos abandonan en mitad de un drawdown."
+  }
+]

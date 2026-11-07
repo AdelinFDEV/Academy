@@ -16,6 +16,7 @@
 .lg-cat--guias { --lg-cat: #8ea2ff; }
 .lg-cat--cursos { --lg-cat: #4ade80; }
 .lg-cat--diario { --lg-cat: #e6b455; }
+.lg-cat--temple { --lg-cat: #5ec8c4; }
 
 .lg-panel {
   padding: 1.5rem;
@@ -399,3 +400,14 @@
   .lg-ring-fill,
   .lg-bar i { transition: none; }
 }
+
+/* Sellos de los logros de la categoría Temple: certificado y práctica. */
+.lg-sellos { list-style: none; margin: 0.2rem 0 0.6rem; padding: 0; display: grid; gap: 0.35rem; }
+.lg-sellos li { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.76rem; line-height: 1.4; color: rgba(240, 244, 255, 0.55); }
+.lg-sellos li.is-hecho { color: rgba(240, 244, 255, 0.88); }
+.lg-sellos li svg { flex-shrink: 0; margin-top: 0.15rem; color: var(--lg-cat); }
+.lg-sello-num { flex-shrink: 0; min-width: 1.6rem; padding: 0.05rem 0.3rem; border: 1px solid rgba(240, 244, 255, 0.14); border-radius: 6px; font-size: 0.66rem; font-weight: 800; text-align: center; letter-spacing: 0.04em; }
+.lg-sellos li.is-hecho .lg-sello-num { border-color: var(--lg-cat); color: var(--lg-cat); }
+.lg-sello-txt { flex: 1; }
+.lg-sello-txt strong { color: inherit; font-weight: 700; }
+.lg-sello-txt em { font-style: normal; color: var(--lg-cat); }

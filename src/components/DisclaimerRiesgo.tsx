@@ -25,7 +25,7 @@ import { AlertTriangle } from "lucide-react";
  * quien se dirige la comunicación.
  */
 
-export type VarianteAviso = "portfolio" | "diario" | "general" | "fiscal";
+export type VarianteAviso = "portfolio" | "diario" | "general" | "fiscal" | "formacion";
 type Variante = VarianteAviso;
 
 /**
@@ -133,6 +133,34 @@ const TEXTO: Record<Variante, { titulo: string; cuerpo: React.ReactNode }> = {
           <strong>AdelinBTC Academy no presta asesoramiento fiscal.</strong>{" "}
           Ante un caso dudoso, una inspección o un requerimiento de Hacienda,
           acude a un profesional.
+        </p>
+      </>
+    ),
+  },
+
+  // Para los cursos de trading que no son fiscales (añadida el 08-11-2026 con
+  // el de psicología del trading): formación general, ni señales ni terapia.
+  formacion: {
+    titulo: "Formación, no asesoramiento ni terapia",
+    cuerpo: (
+      <>
+        <p>
+          Este curso es <strong>formación general</strong> sobre cómo se toman
+          las decisiones de inversión. No es asesoramiento financiero
+          personalizado, no recomienda ningún producto y no enseña una
+          estrategia: no conoce tu situación, tus ingresos ni tu tolerancia a la
+          pérdida.
+        </p>
+        <p>
+          <strong>Nada de lo que aprendas aquí garantiza ganancias.</strong>{" "}
+          La mayoría de los inversores minoristas que operan con productos
+          apalancados pierde dinero, y gestionar mejor las emociones no
+          convierte en rentable un método que no lo es.
+        </p>
+        <p>
+          <strong>Tampoco es terapia.</strong> Si el trading te causa ansiedad,
+          deudas o una conducta que no puedes controlar, habla con un
+          profesional de la salud.
         </p>
       </>
     ),

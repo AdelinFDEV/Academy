@@ -1,0 +1,80 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Con pocas operaciones, el azar lo explica casi todo: un método rentable puede pasar semanas en pérdidas y uno perdedor puede encadenar aciertos. Por eso tu Diario no saca conclusiones firmes por debajo de 30 operaciones. Hoy vas a simular cientos de operaciones de un método ganador y ver lo largas que salen sus rachas de pérdidas, sin que el método haya cambiado.</p>
+</div>
+
+<h2>El ruido que parece señal</h2>
+
+<p>Imagina un método que acierta el 55 % de las veces y gana lo mismo que pierde: 1R por acierto, −1R por fallo. Tiene <a href="/glosario/esperanza-matematica">esperanza</a> positiva, +0,1R por operación. A la larga gana. Ahora una pregunta: si alguien lo usa durante 20 operaciones, ¿qué probabilidad hay de que vaya perdiendo?</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">≈ 1 de cada 4</span>
+  <span class="prose-dato-texto">Veces que un método con un 55 % de acierto y ganancias iguales a las pérdidas va en negativo tras 20 operaciones. Simulado 100.000 veces. Tras 100 operaciones, todavía pasa en torno a 1 de cada 7.</span>
+</div>
+
+<p>Una de cada cuatro personas con un método ganador concluiría, tras 20 operaciones, que no funciona. Y lo cambiaría justo antes de que empezara a rendir. Al revés también pasa: métodos sin ventaja que, por suerte, empiezan con una buena racha y convencen a su dueño de que tiene un don. Es el <a href="/glosario/exceso-de-confianza">exceso de confianza</a> del módulo 3, alimentado por el ruido.</p>
+
+<h2>Lo largas que salen las rachas</h2>
+
+<p>La tercera verdad de Mark Douglas decía que, dentro de una ventaja, las ganancias y las pérdidas llegan en orden aleatorio. Pruébalo: este simulador lanza 100 operaciones de ese método del 55 %. Pulsa varias veces y mira la peor racha de pérdidas de cada serie.</p>
+
+<div data-bloque="rachas"><script type="application/json">
+{
+  "titulo": "100 operaciones de un método ganador",
+  "operaciones": 100,
+  "acierto": 55,
+  "ganancia_r": 1,
+  "perdida_r": 1,
+  "nota": "Cada casilla es una operación: verde si gana, roja si pierde. Todas las series salen del mismo método con la misma ventaja."
+}
+</script></div>
+
+<p>En nuestras simulaciones, la peor racha de pérdidas en 100 operaciones fue de <strong>cinco o más seguidas en casi dos de cada tres series</strong>, y en casi una de cada cinco llegó a siete o más. Con un método que acierta más de la mitad. Si no esperas esas rachas, cuando lleguen pensarás que algo se ha roto, y ahí empiezan los errores del módulo 2: subir el tamaño para recuperar, saltarte el plan, abandonar.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La otra cara es la falacia del jugador: creer que tras cinco pérdidas «toca» ganar. No toca. Cada operación tiene la misma probabilidad que la anterior. Las rachas no se compensan solas; solo se diluyen en una muestra grande.</div>
+</div>
+
+<h2>¿Cuántas operaciones hacen falta?</h2>
+
+<p>No hay un número mágico: depende de lo grande que sea tu ventaja y de lo variables que sean tus resultados. Cuanto más pequeña la ventaja, más operaciones necesitas para distinguirla del azar. Pero hay referencias prácticas, y tu Diario de Trading las usa:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Operaciones</th><th>Lo que puedes decir</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Menos de 30</td><td>Casi nada. El Diario te avisa de que las conclusiones aún no se sostienen.</td></tr>
+    <tr><td>30</td><td>Primer nivel del hito «Muestra fiable»: tus estadísticas empiezan a sostenerse.</td></tr>
+    <tr><td>100</td><td>Tu porcentaje de acierto ya dice algo de ti.</td></tr>
+    <tr><td>250 o más</td><td>Tus rachas y tus caídas tienen historia detrás.</td></tr>
+  </tbody>
+</table>
+
+<p>El estudio de Taiwán de la lección 1.3 lo ilustra a lo grande: en un año cualquiera, una parte de los day traders obtenía rentabilidades por encima de lo normal, pero los que lo repetían de forma predecible eran muchísimos menos. <strong>Un buen año puede ser suerte; varios años seguidos, mucho menos probable.</strong></p>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Muestra y rachas",
+  "afirmaciones": [
+    { "texto": "Si un método pierde en sus primeras 20 operaciones, está demostrado que no tiene ventaja.", "verdadero": false, "explicacion": "Un método con un 55 % de acierto va en negativo tras 20 operaciones en torno a una de cada cuatro veces." },
+    { "texto": "En 100 operaciones de un método que acierta el 55 %, es normal encontrar rachas de cinco pérdidas seguidas.", "verdadero": true, "explicacion": "En nuestras simulaciones, la peor racha fue de cinco o más en más de la mitad de las series." },
+    { "texto": "Después de cinco pérdidas seguidas, la siguiente operación tiene más probabilidad de salir ganadora.", "verdadero": false, "explicacion": "Es la falacia del jugador. Cada operación tiene la misma probabilidad que las demás." },
+    { "texto": "Una racha de aciertos al empezar puede convencerte de que tienes ventaja aunque no la tengas.", "verdadero": true, "explicacion": "El ruido de las muestras pequeñas alimenta el exceso de confianza." }
+  ]
+}
+</script></div>
+
+<h2>Cierre del ejercicio del módulo</h2>
+
+<p>Sigue con tus 20 operaciones en R y con tu riesgo fijo. Cuando las termines, no saques todavía conclusiones sobre tu método: 20 son pocas. Lo que sí puedes juzgar ya es tu ejecución. Responde en la nota del día, en tu Diario:</p>
+
+<ol class="prose-pasos">
+  <li><strong>¿Cuántas de las 20 acabaron por debajo de −1R?</strong> Tu objetivo es cero.</li>
+  <li><strong>¿Alguna pasó del 2 % de riesgo?</strong> Tu objetivo es cero.</li>
+  <li><strong>¿Cuál fue tu peor racha de pérdidas, y qué hiciste justo después?</strong> Lo usarás en el módulo 5.</li>
+</ol>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> con pocas operaciones manda el azar. Un método ganador puede ir perdiendo tras 20 operaciones y encadenar cinco o siete pérdidas seguidas. Juzga tu método con una muestra grande y tu ejecución desde el primer día.</div>
+</div>

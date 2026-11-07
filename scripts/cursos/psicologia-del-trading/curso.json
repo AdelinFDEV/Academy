@@ -1,0 +1,104 @@
+{
+  "slug": "psicologia-del-trading",
+  "titulo": "Psicología del trading",
+  "subtitulo": "Tus sesgos, tus emociones y tu riesgo, con datos y no con frases motivadoras.",
+  "descripcion": "Un curso para reconocer, con nombre y apellido, los errores de cabeza que la investigación documenta en casi todos los traders minoristas: cortar las ganancias y estirar las pérdidas, operar de más por exceso de confianza, perseguir lo perdido, ver solo lo que confirma tu idea. Cada lección se apoya en estudios contrastados —Kahneman y Tversky, Barber y Odean, la ESMA, el estudio brasileño del day trading— y cada módulo termina con un ejercicio en tu propio Diario de Trading. No te enseña una estrategia ni promete ganancias: te da un sistema para que tu cabeza no te quite la ventaja que tengas.",
+  "objetivos": [
+    "Leer con criterio los datos sobre cuántos traders minoristas pierden y por qué la psicología explica una parte, no todo.",
+    "Reconocer en tus propias operaciones la aversión a la pérdida, el efecto disposición y la búsqueda de empatar.",
+    "Detectar el exceso de confianza, el sesgo de confirmación y el anclaje antes de que decidan por ti.",
+    "Pensar cada operación en R-múltiplos y fijar un tamaño de posición que te proteja de ti mismo.",
+    "Escribir reglas «si pasa esto, hago esto», una lista previa a operar y un protocolo para después de una pérdida.",
+    "Montar tu revisión semanal y tu plan psicológico personal con los datos de tu Diario de Trading."
+  ],
+  "nivel": "intermedio",
+  "portada": null,
+  "color": "#5ec8c4",
+  "aviso": "formacion",
+  "logro": "Sangre Fría",
+  "logro_categoria": "temple",
+  "preguntas_final": 25,
+  "revisado": "2026-11-08",
+  "orden": 1,
+  "published": true,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Por qué pierde la mayoría",
+      "descripcion": "Los datos de los supervisores y de los estudios sobre traders minoristas, leídos con sus matices. Y la tesis honesta del curso: qué parte es psicología y qué parte no.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "lo-que-dicen-los-datos", "titulo": "Lo que dicen los datos", "resumen": "Las cifras oficiales de la ESMA, la CNMV y el Banco de Pagos Internacionales, y cómo leerlas sin exagerarlas ni quitarles peso.", "minutos": 13, "archivo": "01-01-lo-que-dicen-los-datos.html" },
+        { "slug": "operar-mas-no-es-operar-mejor", "titulo": "Operar más no es operar mejor", "resumen": "Lo que descubrieron Barber y Odean al seguir a decenas de miles de hogares: los que más operaban eran los que menos ganaban.", "minutos": 12, "archivo": "01-02-operar-mas-no-es-operar-mejor.html" },
+        { "slug": "se-puede-vivir-del-day-trading", "titulo": "¿Se puede vivir del day trading?", "resumen": "El estudio que siguió a todos los que empezaron en Brasil, y por qué la experiencia sola no te hace mejor.", "minutos": 13, "archivo": "01-03-se-puede-vivir-del-day-trading.html" },
+        { "slug": "que-puede-hacer-la-psicologia", "titulo": "Qué puede hacer la psicología, y qué no", "resumen": "La diferencia entre tener ventaja y ejecutarla bien. Por qué este curso no te va a prometer ganar dinero.", "minutos": 12, "archivo": "01-04-que-puede-hacer-la-psicologia.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Cómo decide tu cerebro con dinero en juego",
+      "descripcion": "La teoría prospectiva, el efecto disposición, el dinero de la casa y lo que le pasa a tu cuerpo cuando arriesgas.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "teoria-prospectiva-y-aversion-a-la-perdida", "titulo": "Teoría prospectiva y aversión a la pérdida", "resumen": "Por qué perder 100 € pesa más que ganarlos, y el experimento de la moneda para medir cuánto te pasa a ti.", "minutos": 15, "archivo": "02-01-teoria-prospectiva-y-aversion-a-la-perdida.html" },
+        { "slug": "el-efecto-disposicion", "titulo": "El efecto disposición", "resumen": "Vender pronto lo que gana y aguantar lo que pierde: el error que da la vuelta a un método rentable.", "minutos": 14, "archivo": "02-02-el-efecto-disposicion.html" },
+        { "slug": "dinero-de-la-casa-y-querer-empatar", "titulo": "Dinero de la casa y querer empatar", "resumen": "Cómo una ganancia te vuelve temerario y una pérdida te empuja a perseguirla.", "minutos": 12, "archivo": "02-03-dinero-de-la-casa-y-querer-empatar.html" },
+        { "slug": "la-biologia-del-riesgo", "titulo": "La biología del riesgo", "resumen": "Pulso, piel, hormonas y cerebro: lo que se ha medido en traders y lo que todavía no se sabe.", "minutos": 13, "archivo": "02-04-la-biologia-del-riesgo.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Los sesgos que te mienten",
+      "descripcion": "Exceso de confianza, ilusión de control, sesgo de confirmación, anclaje y el FOMO fabricado en redes.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "exceso-de-confianza-e-ilusion-de-control", "titulo": "Exceso de confianza e ilusión de control", "resumen": "Por qué creer que controlas el resultado te hace operar más y peor, también si eres profesional.", "minutos": 14, "archivo": "03-01-exceso-de-confianza-e-ilusion-de-control.html" },
+        { "slug": "el-sesgo-de-confirmacion", "titulo": "El sesgo de confirmación", "resumen": "Con la operación abierta, lo que lees deja de ser información y pasa a ser permiso.", "minutos": 12, "archivo": "03-02-el-sesgo-de-confirmacion.html" },
+        { "slug": "el-anclaje", "titulo": "El anclaje", "resumen": "Tu precio de entrada, el máximo histórico y los números redondos: anclas que deciden por ti.", "minutos": 12, "archivo": "03-03-el-anclaje.html" },
+        { "slug": "redes-finfluencers-y-copy-trading", "titulo": "Redes, finfluencers y copy trading", "resumen": "Lo que advierten los supervisores sobre el FOMO fabricado, las promesas en redes y copiar operaciones ajenas.", "minutos": 13, "archivo": "03-04-redes-finfluencers-y-copy-trading.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Pensar en probabilidades",
+      "descripcion": "Una operación no significa nada; una serie, sí. R-múltiplos, esperanza, tamaño de posición y rachas.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "una-operacion-no-significa-nada", "titulo": "Una operación no significa nada", "resumen": "Las cinco verdades de Mark Douglas y por qué el resultado de una operación no juzga tu decisión.", "minutos": 13, "archivo": "04-01-una-operacion-no-significa-nada.html" },
+        { "slug": "piensa-en-r", "titulo": "Piensa en R", "resumen": "Medir cada resultado en unidades de riesgo y calcular la esperanza de tu método.", "minutos": 14, "archivo": "04-02-piensa-en-r.html" },
+        { "slug": "el-tamano-de-posicion-te-protege", "titulo": "El tamaño de posición te protege de ti", "resumen": "Por qué decidir cuánto puedes perder antes de entrar es la regla psicológica más eficaz que existe.", "minutos": 14, "archivo": "04-03-el-tamano-de-posicion-te-protege.html" },
+        { "slug": "muestra-ruido-y-rachas", "titulo": "Muestra, ruido y rachas", "resumen": "Cuántas operaciones hacen falta para saber algo, y lo largas que salen las rachas por puro azar.", "minutos": 13, "archivo": "04-04-muestra-ruido-y-rachas.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Regular la emoción en tiempo real",
+      "descripcion": "Antes, durante y después de operar: reinterpretar en vez de reprimir, reglas «si-entonces», la lista previa y el protocolo tras una pérdida.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "antes-durante-y-despues", "titulo": "Antes, durante y después: el modelo de Gross", "resumen": "Los cinco momentos en los que se puede regular una emoción, y por qué reprimirla no funciona.", "minutos": 14, "archivo": "05-01-antes-durante-y-despues.html" },
+        { "slug": "reglas-si-pasa-esto-hago-esto", "titulo": "Reglas «si pasa esto, hago esto»", "resumen": "Las intenciones de implementación: qué dicen los estudios, con su matiz, y cómo escribir las tuyas.", "minutos": 13, "archivo": "05-02-reglas-si-pasa-esto-hago-esto.html" },
+        { "slug": "la-lista-previa-a-operar", "titulo": "La lista previa a operar", "resumen": "Lo que una lista de control de quirófano puede enseñar a un trader, y la tuya, paso a paso.", "minutos": 12, "archivo": "05-03-la-lista-previa-a-operar.html" },
+        { "slug": "despues-de-una-perdida", "titulo": "Después de una pérdida", "resumen": "El momento más peligroso de tu día y un protocolo para atravesarlo sin operar por revancha.", "minutos": 13, "archivo": "05-04-despues-de-una-perdida.html" }
+      ]
+    },
+    {
+      "orden": 6,
+      "titulo": "Tu sistema de mejora continua",
+      "descripcion": "El diario como herramienta psicológica, la revisión semanal, la euforia y el drawdown, y tu plan personal.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-diario-como-herramienta-psicologica", "titulo": "El diario como herramienta psicológica", "resumen": "Por qué escribir lo que sientes ayuda, cuáles son sus límites y qué apuntar cada día.", "minutos": 13, "archivo": "06-01-el-diario-como-herramienta-psicologica.html" },
+        { "slug": "la-revision-semanal", "titulo": "La revisión semanal centrada en soluciones", "resumen": "Preguntarte cuándo sí seguiste el plan, y qué fue distinto, en vez de solo por qué fallaste.", "minutos": 12, "archivo": "06-02-la-revision-semanal.html" },
+        { "slug": "euforia-rachas-y-drawdown", "titulo": "Euforia, rachas y drawdown", "resumen": "Las dos caras de la misma trampa: subir el tamaño cuando ganas y perseguir lo perdido cuando caes.", "minutos": 13, "archivo": "06-03-euforia-rachas-y-drawdown.html" },
+        { "slug": "tu-plan-psicologico", "titulo": "Proyecto final: tu plan psicológico", "resumen": "Todo el curso en un documento tuyo: tus sesgos, tus reglas, tu lista, tu riesgo y tu protocolo.", "minutos": 15, "archivo": "06-04-tu-plan-psicologico.html" }
+      ]
+    }
+  ]
+}

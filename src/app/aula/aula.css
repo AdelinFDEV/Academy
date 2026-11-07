@@ -1009,3 +1009,20 @@ a.aula-temario-item:hover { background: rgba(240, 244, 255, 0.045); color: var(-
   .aula-anillo-grande .relleno { animation: none; }
   .aula-barra i, .aula-temario, .aula-btn, .aula-continuar, .aula-ritmo-opcion { transition: none; }
 }
+
+/* Bloque «prospectiva»: apuestas de la moneda (curso de psicología del trading). */
+.aula-pros-lista { list-style: none; margin: 0 0 0.9rem; padding: 0; display: grid; gap: 0.45rem; }
+.aula-pros-lista li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding: 0.6rem 0.8rem; border: 1px solid var(--aula-linea); border-radius: 12px; transition: border-color 0.2s ease; }
+.aula-pros-lista li.is-si { border-color: color-mix(in srgb, var(--aula-bueno) 45%, transparent); }
+.aula-pros-lista li.is-no { border-color: color-mix(in srgb, var(--aula-malo) 35%, transparent); }
+.aula-pros-apuesta { font-size: 0.88rem; color: var(--aula-suave); }
+.aula-pros-pierde { color: var(--aula-malo); }
+.aula-pros-gana { color: var(--aula-bueno); }
+.aula-pros-botones { display: flex; gap: 0.4rem; }
+
+/* Bloque «rachas»: una casilla por operación simulada. */
+.aula-rachas-serie { display: grid; grid-template-columns: repeat(auto-fill, minmax(11px, 1fr)); gap: 3px; margin-bottom: 1rem; }
+.aula-rachas-serie i { aspect-ratio: 1; border-radius: 3px; }
+.aula-rachas-serie i.is-gana { background: color-mix(in srgb, var(--aula-bueno) 75%, transparent); }
+.aula-rachas-serie i.is-pierde { background: color-mix(in srgb, var(--aula-malo) 70%, transparent); }
+

@@ -88,8 +88,9 @@ export default async function DashboardPage() {
       tools: [
         { href: "/glosario", icon: "booka",         name: "Diccionario Cripto",   desc: "Términos clave explicados",      locked: false, soon: false },
         { href: "/guias",    icon: "map",           name: "Guías Interactivas",   desc: "Tu hoja de ruta de aprendizaje", locked: false, soon: false },
-        // "Pronto" hasta que se publique el primer curso; entonces, soon: false.
-        { href: "/cursos",   icon: "graduationcap", name: "Cursos",               desc: "Por módulos, con examen y certificado", locked: false, soon: true },
+        { href: "/cursos",   icon: "graduationcap", name: "Cursos",               desc: "Por módulos, con examen y certificado", locked: false, soon: false },
+        // Abierto a todos: un certificado ganado se descarga siempre, aunque ya no se sea Premium.
+        { href: "/dashboard/certificados", icon: "award", name: "Mis certificados", desc: "Tu vitrina: descárgalos cuando quieras", locked: false, soon: false },
       ],
     },
     {
@@ -238,7 +239,7 @@ export default async function DashboardPage() {
             <ul className="dh-premium-lista">
               <li><span><NotebookPen size={15} aria-hidden="true" /></span>Diario de Trading con diez estadísticas</li>
               <li><span><Wallet size={15} aria-hidden="true" /></span>Portfolio Adelin: mi cartera real, en vivo</li>
-              <li><span><GraduationCap size={15} aria-hidden="true" /></span>Cursos con certificado, cuando se publiquen</li>
+              <li><span><GraduationCap size={15} aria-hidden="true" /></span>Cursos con examen y certificado</li>
             </ul>
           </div>
           <div className="dh-premium-compra">

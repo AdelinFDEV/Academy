@@ -1,0 +1,90 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Medir cada operación en euros mezcla dos cosas: la calidad de la decisión y el tamaño de la cuenta. Medirla en R —unidades de lo que arriesgaste— las separa. Con tus resultados en R puedes calcular la esperanza de tu método: lo que deja de media cada operación. Y descubrirás que el porcentaje de acierto, solo, no dice casi nada. Tu Diario de Trading ya hace estas cuentas.</p>
+</div>
+
+<h2>Qué es una R</h2>
+
+<p>La idea la popularizó Van Tharp, psicólogo y formador de traders, en su libro <em>Trade Your Way to Financial Freedom</em>. Antes de entrar en una operación decides cuánto estás dispuesto a perder si sale mal: la distancia entre tu entrada y tu <a href="/glosario/stop-loss">stop-loss</a>, multiplicada por el tamaño. <strong>Esa cantidad es tu 1R.</strong> Todo resultado se expresa después como un múltiplo de ella.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Arriesgabas (1R)</th><th>Resultado en euros</th><th>Resultado en R</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>50 €</td><td>+100 €</td><td>+2R</td></tr>
+    <tr><td>50 €</td><td>−50 €</td><td>−1R</td></tr>
+    <tr><td>50 €</td><td>+25 €</td><td>+0,5R</td></tr>
+    <tr><td>50 €</td><td>−80 €</td><td>−1,6R (perdiste más de lo planeado)</td></tr>
+  </tbody>
+</table>
+
+<p>Un <a href="/glosario/r-multiplo">R-múltiplo</a> tiene una ventaja enorme para tu cabeza: un +2R vale lo mismo con una cuenta de 500 € que con una de 50.000 €. Deja de importar si hoy has ganado «mucho» o «poco» dinero; importa si tu decisión fue buena en relación con lo que arriesgabas.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La última fila de la tabla es la importante. Si tu pérdida real supera 1R, algo pasó entre la entrada y la salida: moviste el stop, no lo pusiste o el precio saltó. Si te pasa a menudo, es la aversión a la pérdida del módulo 2 hablando en números.</div>
+</div>
+
+<h2>La esperanza: lo que deja de media cada operación</h2>
+
+<p>Cuando tienes tus resultados en R, puedes responder la pregunta más importante de un trader: ¿mi método gana dinero a la larga? La respuesta es la <a href="/glosario/esperanza-matematica">esperanza matemática</a>, la media de tus R. Se puede calcular así:</p>
+
+<blockquote><strong>Esperanza = (% de acierto × ganancia media en R) − (% de fallo × pérdida media en R)</strong></blockquote>
+
+<p>Mira tres traders con perfiles muy distintos:</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Esperanza por operación, en R",
+  "subtitulo": "El que más acierta no es el que más gana.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Acierta 70 %, gana 0,5R, pierde 1,5R", "esperanza": -0.1 },
+    { "etiqueta": "Acierta 50 %, gana 1R, pierde 1R", "esperanza": 0 },
+    { "etiqueta": "Acierta 35 %, gana 3R, pierde 1R", "esperanza": 0.4 }
+  ],
+  "series": [{ "clave": "esperanza", "nombre": "R por operación", "color": "#5ec8c4" }],
+  "nota": "70 % × 0,5 − 30 % × 1,5 = −0,10 · 50 % × 1 − 50 % × 1 = 0 · 35 % × 3 − 65 % × 1 = +0,40"
+}
+</script></div>
+
+<p>El trader que acierta el 70 % pierde dinero. El que acierta solo el 35 % es el único rentable: <strong>deja 0,4R de media por operación</strong>. Por eso perseguir un porcentaje de acierto alto es una trampa psicológica: te empuja a cerrar pronto para «apuntarte» el acierto, que es justo el efecto disposición.</p>
+
+<h2>Lo que tu Diario ya calcula</h2>
+
+<p>Cuando registras una operación en tu Diario de Trading con su riesgo y su beneficio esperado, ya estás definiendo su R. Con eso, el Diario y Nova te dicen:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Tu esperanza por operación</strong>, en R y en euros. Nova te dirá si tu método tiene ventaja o si cada operación resta de media.</li>
+  <li><strong>Tu relación entre ganancia y pérdida media.</strong> Si aciertas menos de la mitad pero cada ganancia vale varias pérdidas, Nova te dirá que es un perfil rentable. Si aciertas mucho pero una pérdida borra varias ganancias, también te lo dirá.</li>
+  <li><strong>Si tus pérdidas superan lo planeado</strong>: la última fila de la tabla de arriba.</li>
+</ol>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un trader acierta el 40 % de sus operaciones. Cuando gana, gana de media 2R; cuando pierde, pierde 1R. ¿Cuál es su esperanza por operación?",
+  "opciones": [
+    "−0,2R: pierde dinero porque acierta menos de la mitad",
+    "+0,2R: 0,4 × 2 − 0,6 × 1",
+    "+0,8R: 0,4 × 2",
+    "0R: está exactamente en tablas"
+  ],
+  "correcta": 1,
+  "explicacion": "0,4 × 2 = 0,8 de lo que ganan los aciertos, menos 0,6 × 1 = 0,6 de lo que pierden los fallos. Deja +0,2R de media por operación aunque falle seis de cada diez."
+}
+</script></div>
+
+<h2>Dos avisos antes de sacar conclusiones</h2>
+
+<p>El primero: la esperanza de diez operaciones no significa casi nada. Con muestras pequeñas, el azar domina. Lo verás en la lección 4.4, con un simulador.</p>
+
+<p>El segundo, y es la tesis del módulo 1: <strong>si tu esperanza es negativa con una muestra grande, la psicología no la arregla</strong>. Ejecutar mejor un método perdedor solo hace que pierdas de forma más ordenada. En ese caso, lo que toca es revisar el método.</p>
+
+<h2>Ejercicio del módulo, primera parte: 20 operaciones en R</h2>
+
+<p>Durante las próximas 20 operaciones, regístralas todas en tu Diario con su riesgo y su beneficio esperado <strong>antes de entrar</strong>. Al revisarlas, mira solo la columna de R, no los euros. ¿Cuántas acabaron en −1R exacto y cuántas por debajo? Esa diferencia es lo primero que vas a corregir.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> 1R es lo que estás dispuesto a perder en una operación. Medir en R separa la decisión del tamaño de la cuenta. La esperanza —la media de tus R— dice si tu método gana; el porcentaje de acierto, solo, no.</div>
+</div>

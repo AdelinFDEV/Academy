@@ -1,0 +1,88 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El anclaje es tomar un número como punto de partida y ajustar poco desde él, aunque ese número no tenga nada que ver con la decisión. Tversky y Kahneman lo demostraron en 1974 con una ruleta trucada. En trading, las anclas más caras son tu precio de entrada, el máximo histórico y los números redondos. La pregunta que las desmonta: si hoy no tuvieras esta posición, ¿la abrirías a este precio?</p>
+</div>
+
+<h2>La ruleta trucada</h2>
+
+<p>En 1974, Amos Tversky y Daniel Kahneman publicaron en la revista <em>Science</em> el artículo <em>Judgment under uncertainty: heuristics and biases</em>, uno de los más citados de la historia de la psicología. Describía tres atajos mentales que usamos para juzgar cuando no tenemos certezas. Uno de ellos era el ajuste a partir de un ancla.</p>
+
+<p>Su demostración más famosa fue esta. Hacían girar delante de los participantes una rueda de la fortuna numerada del 0 al 100, preparada para pararse solo en el 10 o en el 65. Después les preguntaban si el porcentaje de países africanos en la ONU era mayor o menor que ese número, y luego que dieran su estimación.</p>
+
+<div class="prose-chart">
+  <div class="prose-chart-title">Estimación mediana del porcentaje de países africanos en la ONU</div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">La rueda marcó 10</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:56%"></div></div>
+    <span class="prose-chart-value">25 %</span>
+  </div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">La rueda marcó 65</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:100%"></div></div>
+    <span class="prose-chart-value">45 %</span>
+  </div>
+</div>
+
+<p>Un número que todos sabían que era aleatorio movió las estimaciones veinte puntos. Eso es el <a href="/glosario/anclaje">anclaje</a>: <strong>partimos del número que tenemos delante y nos quedamos cortos al ajustar</strong>, aunque sepamos que ese número no significa nada.</p>
+
+<h2>Las tres anclas del trader</h2>
+
+<p>En los mercados no hay ruletas, pero hay números que funcionan igual.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Tu precio de entrada.</strong> Es el ancla más cara. «Vendo cuando vuelva a lo que pagué.» Al mercado le da igual lo que pagaste: ese número solo existe para ti. Engancha directamente con el efecto disposición del módulo 2: es el punto de referencia que separa «ganar» de «perder» en tu cabeza.</li>
+  <li><strong>El máximo histórico.</strong> «Si llegó a 4 dólares, a 1 está regalado.» El <a href="/glosario/ath">ATH</a> de un activo no es su valor justo: es solo el precio más alto que alguien pagó, a veces en plena euforia. Muchos activos no vuelven nunca a su máximo.</li>
+  <li><strong>Los números redondos y el primer análisis que lees.</strong> Un objetivo en 100.000 porque «es un número bonito», o la cifra del primer vídeo que viste sobre esa moneda: se quedan pegados y condicionan todo lo que decides después.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">No todo nivel de precio es un ancla. Un <a href="/glosario/soporte">soporte</a> se justifica por cómo se ha comportado el precio en ese nivel; un ancla, solo por lo que significa para ti. La diferencia es si podrías explicar el nivel a alguien que no sabe a qué precio compraste.</div>
+</div>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Ancla o nivel con fundamento?",
+  "grupos": [
+    { "id": "ancla", "nombre": "Ancla" },
+    { "id": "nivel", "nombre": "Nivel con fundamento" }
+  ],
+  "elementos": [
+    { "texto": "«No vendo hasta recuperar mis 2,40 $ de entrada»", "grupo": "ancla", "explicacion": "Tu precio de compra no le dice nada al mercado." },
+    { "texto": "Stop debajo de un mínimo que el precio ha respetado varias veces", "grupo": "nivel" },
+    { "texto": "«Estuvo en 69.000, así que a 40.000 es una ganga»", "grupo": "ancla", "explicacion": "El máximo anterior no es un valor justo." },
+    { "texto": "Objetivo en la zona donde el precio se frenó en las tres últimas subidas", "grupo": "nivel" },
+    { "texto": "«Vendo en 100.000 porque es una cifra redonda»", "grupo": "ancla" },
+    { "texto": "Salida escrita en tu plan antes de entrar, según tus reglas", "grupo": "nivel" }
+  ]
+}
+</script></div>
+
+<h2>La pregunta que lo desmonta</h2>
+
+<p>Hay una pregunta que corta el anclaje al precio de entrada casi de raíz. Cuando dudes si mantener una posición que va en contra, pregúntate:</p>
+
+<blockquote><strong>Si hoy no tuviera esta posición, ¿la abriría a este precio, con este tamaño?</strong></blockquote>
+
+<p>Si la respuesta es no, tu precio de entrada es lo único que te mantiene dentro. Es lo que en economía se llama un coste hundido: algo que ya pagaste y que no puedes recuperar decidiendo distinto. Lo único que puedes decidir es qué haces a partir de ahora.</p>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Compraste a 3.000 y el precio está en 2.400. Analizando el gráfico de hoy, no abrirías una compra a este precio. ¿Qué dice la pregunta del anclaje?",
+  "opciones": [
+    "Mantener hasta 3.000, porque vender ahora sería aceptar la pérdida",
+    "Comprar más para bajar el precio medio",
+    "Que lo que te mantiene dentro es tu precio de entrada, no el análisis, y conviene aplicar tu plan de salida",
+    "Esperar a que el máximo histórico vuelva a marcar el camino"
+  ],
+  "correcta": 2,
+  "explicacion": "Si no la abrirías hoy, la posición solo se sostiene por el ancla de los 3.000. La pérdida ya existe: la decisión es qué hacer desde ahora, según tu plan."
+}
+</script></div>
+
+<h2>Ejercicio del módulo, tercera parte</h2>
+
+<p>Una vez a la semana, revisa en tu Diario las operaciones que cerraste o mantuviste fuera de tu plan. En cada una, pregúntate: <strong>¿el número que decidió la salida era un nivel con fundamento o un ancla?</strong> Si fue tu precio de entrada, un máximo anterior o un número redondo, apúntalo en la nota con la palabra «ancla».</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> un número cualquiera puede mover tus decisiones, como la ruleta de Tversky y Kahneman. En trading, las anclas más caras son tu precio de entrada, el máximo histórico y los números redondos. Pregúntate si abrirías hoy la posición a este precio.</div>
+</div>

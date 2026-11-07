@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Flame, Zap, Gem, Trophy,
-  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, type LucideIcon,
+  ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, GraduationCap, type LucideIcon,
 } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 import { MILESTONES, milestoneBadgeId } from "@/components/trading/tjStats";
@@ -31,10 +31,37 @@ export interface BadgeDef {
   guideTitle?: string;
   /** Logro de un curso: se gana al aprobar su examen final. Sale de `curso_certificados`. */
   cursoSlug?: string;
+  /** Logro con sellos (categoría Temple): el primero es el certificado; los demás, la práctica. */
+  sellos?: SelloLogro[];
   /** Hito del Diario de Trading: se guarda un logro por nivel ("diario-racha-2"). */
   diario?: { family: string; levels: number };
   /** Logro de actividad: qué contador mide y cuánto hace falta. /api/badges decide con esto. */
   progress?: { stat: keyof BadgeStats; target: number; unit: string };
+}
+
+/**
+ * Un sello de un logro de curso con práctica. Lo calcula SIEMPRE el servidor
+ * (`src/lib/logroTemple.ts`) y no se guarda en ningún sitio: se recalcula al
+ * abrir Logros, así que no hay fila en `user_badges` que alguien pueda insertar.
+ */
+export interface SelloLogro {
+  id: string;
+  nombre: string;
+  condicion: string;
+  hecho: boolean;
+  progreso?: { valor: number; meta: number; unidad: string };
+}
+
+/**
+ * Categorías propias para logros de curso. Un curso sin categoría va a
+ * «Cursos»; con ella, a la suya. Es el valor de `cursos.logro_categoria`, y
+ * `scripts/subir-curso.mjs` solo deja subir los que están aquí.
+ */
+export const CATEGORIAS_LOGRO_CURSO = ["temple"] as const;
+export type CategoriaLogroCurso = (typeof CATEGORIAS_LOGRO_CURSO)[number];
+
+export function esCategoriaLogroCurso(v: unknown): v is CategoriaLogroCurso {
+  return typeof v === "string" && (CATEGORIAS_LOGRO_CURSO as readonly string[]).includes(v);
 }
 
 /**
@@ -134,6 +161,17 @@ function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function TempleBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Un pulso agitado que se aplana: la emoción, regulada */}
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M4.5 12h2l1.4-4 2.2 8 1.6-5h1.6c.6 0 1-.1 1.5-.1H19.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="19.5" cy="11.9" r="1.1" fill="currentColor"/>
+    </svg>
+  );
+}
+
 /* ─── Las definiciones ─────────────────────────────────── */
 
 export const BADGE_DEFS: BadgeDef[] = [
@@ -184,6 +222,16 @@ const GUIDE_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
   "hyperliquid": (size) => <HyperliquidBadgeIcon size={size} />,
   "xrp": (size) => <XrpBadgeIcon size={size} />,
 };
+
+// Icono propio por curso. Sin entrada, el birrete genérico.
+const CURSO_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode> = {
+  "psicologia-del-trading": (size) => <TempleBadgeIcon size={size} />,
+};
+
+export function iconoCurso(slug: string, size: number): React.ReactNode {
+  const propio = CURSO_BADGE_ICON_BY_SLUG[slug];
+  return propio ? propio(size) : <GraduationCap size={size} aria-hidden="true" />;
+}
 
 // Derivado de GUIDES (fuente única de verdad) — cada guía nueva con su
 // `badge`/`badgeId` aparece aquí automáticamente, sin tocar este archivo.

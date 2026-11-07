@@ -1,0 +1,82 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El efecto disposición es la tendencia a vender pronto lo que va ganando y a aguantar lo que va perdiendo. Terrance Odean lo midió en 10.000 cuentas: los inversores realizaban sus ganancias con mucha más frecuencia que sus pérdidas, aunque fiscalmente les convenía lo contrario. Es el error que da la vuelta a un método rentable, y tu Diario de Trading ya sabe detectarlo.</p>
+</div>
+
+<h2>Un nombre para algo que todos hemos hecho</h2>
+
+<p>En 1985, Hersh Shefrin y Meir Statman publicaron un artículo cuyo título ya es la definición: <em>The disposition to sell winners too early and ride losers too long</em>, «la disposición a vender demasiado pronto las ganadoras y aguantar demasiado las perdedoras». Lo llamaron <a href="/glosario/efecto-disposicion">efecto disposición</a> y lo explicaron con dos piezas que ya conoces: la teoría prospectiva de la lección anterior y la contabilidad mental, la costumbre de llevar una cuenta separada para cada inversión.</p>
+
+<p>La lógica es esta. Cada posición tiene su punto de referencia, el precio de compra. Si va ganando, estás en la zona de las ganancias, donde buscamos seguridad: vendes para «asegurar». Si va perdiendo, estás en la zona de las pérdidas, donde nos volvemos arriesgados y donde cerrar significa convertir una pérdida «en papel» en una de verdad. Así que esperas.</p>
+
+<h2>La prueba: 10.000 cuentas</h2>
+
+<p>En 1998, Terrance Odean lo puso a prueba con los datos de 10.000 cuentas de un broker estadounidense entre 1987 y 1993. Para cada día en que un inversor vendía algo, comparó dos proporciones: cuántas de sus posiciones con ganancia vendía y cuántas de sus posiciones con pérdida. El resultado fue claro: <strong>los inversores realizaban sus ganancias a un ritmo mucho mayor que sus pérdidas</strong>, todos los meses salvo diciembre.</p>
+
+<p>Lo de diciembre tiene explicación: es cuando la gente vende pérdidas para compensar impuestos. Y es justo lo que hace más llamativo el resto del año, porque fiscalmente convenía lo contrario: aplazar las ganancias y adelantar las pérdidas. Los inversores hacían lo opuesto a lo que les convenía.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Odean comprobó además que no era una decisión acertada disfrazada de sesgo: las acciones ganadoras que vendían tendían a seguir comportándose mejor que las perdedoras que se quedaban. Mantener las perdedoras «hasta que vuelvan» no les salía a cuenta.</div>
+</div>
+
+<h2>Por qué arruina un método rentable</h2>
+
+<p>Aquí está lo que convierte este sesgo en uno de los más caros. Un método rentable no necesita acertar mucho: necesita que, de media, lo que gana cuando acierta compense con creces lo que pierde cuando falla. El efecto disposición hace exactamente lo contrario: <strong>encoge las ganancias y estira las pérdidas</strong>.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Mismo acierto, resultado opuesto",
+  "subtitulo": "Dos traders aciertan el 60 % de 100 operaciones. Resultado en R (1R = lo que arriesgan por operación).",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Respeta su plan", "ganadas": 60, "perdidas": -40, "total": 20 },
+    { "etiqueta": "Efecto disposición", "ganadas": 30, "perdidas": -56, "total": -26 }
+  ],
+  "series": [
+    { "clave": "ganadas", "nombre": "Lo que ganan las acertadas", "color": "#4ade80" },
+    { "clave": "perdidas", "nombre": "Lo que pierden las falladas", "color": "#f87171" },
+    { "clave": "total", "nombre": "Resultado", "color": "#e6b455" }
+  ],
+  "nota": "El primero gana 1R en cada acierto y pierde 1R en cada fallo. El segundo cierra los aciertos a la mitad del objetivo (+0,5R) y deja correr las pérdidas hasta −1,4R de media."
+}
+</script></div>
+
+<p>Los dos aciertan 60 de cada 100 operaciones. El primero termina con +20R. El segundo, con el mismo acierto, termina con −26R. No ha hecho falta que se equivocara más: ha bastado con <strong>cobrar poco cuando acierta y pagar mucho cuando falla</strong>. Para entender ese «R», mira la ficha de <a href="/glosario/r-multiplo">R-múltiplo</a>; lo trabajarás a fondo en el módulo 4.</p>
+
+<h2>Cómo se ve en tu Diario</h2>
+
+<p>El efecto disposición es difícil de ver desde dentro, porque cada cierre parece razonable en su momento («ya llevaba bastante», «seguro que rebota»). Se ve en los números. Tu Diario de Trading calcula dos cosas que lo delatan, y Nova te avisa de ambas:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Qué parte del objetivo capturas.</strong> Si apuntas tu beneficio esperado y luego cierras antes, Nova te dirá algo como «Cierras las ganadoras antes de tiempo: te quedas de media con el 45 % del objetivo». Es la mitad izquierda del sesgo.</li>
+  <li><strong>Si tus pérdidas superan el riesgo planeado.</strong> Si tus pérdidas reales son mayores que lo que arriesgabas al entrar, Nova te avisará de que revises si mueves el <a href="/glosario/stop-loss">stop</a>. Es la mitad derecha.</li>
+</ol>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "¿Es efecto disposición?",
+  "afirmaciones": [
+    { "texto": "Cierras una operación en +0,4R porque «más vale pájaro en mano», con el objetivo en +2R.", "verdadero": true, "explicacion": "Vender pronto lo que gana, sin que el plan lo pidiera, es la mitad clásica del efecto disposición." },
+    { "texto": "Cierras en −1R porque el precio tocó tu stop-loss.", "verdadero": false, "explicacion": "Eso es respetar el plan. Es una pérdida normal, no un sesgo." },
+    { "texto": "Quitas el stop porque «aún puede volver» y acabas en −2,3R.", "verdadero": true, "explicacion": "Aguantar una perdedora más allá de lo previsto es la otra mitad del efecto disposición." },
+    { "texto": "Cierras antes del objetivo porque se cumplió una regla de salida que tenías escrita.", "verdadero": false, "explicacion": "Si la regla estaba escrita antes de entrar, es parte de tu método, no un sesgo." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio del módulo: etiqueta tus cierres</h2>
+
+<p>Durante las próximas dos semanas, en la nota de cada operación que cierres en tu Diario, escribe una sola palabra al principio:</p>
+
+<ul>
+  <li><strong>Plan</strong>: cerraste donde decía tu plan (stop, objetivo o una regla escrita).</li>
+  <li><strong>Miedo</strong>: cerraste antes porque temías que se diera la vuelta.</li>
+  <li><strong>Esperanza</strong>: no cerraste donde debías porque creías que volvería.</li>
+</ul>
+
+<p>Al cabo de dos semanas, cuenta cuántas de cada tipo tienes y compáralo con lo que te dice Nova sobre el objetivo capturado y el riesgo real. Si «miedo» y «esperanza» suman más que «plan», ya sabes dónde está tu primer trabajo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el efecto disposición es vender pronto lo que gana y aguantar lo que pierde. Odean lo midió en 10.000 cuentas, incluso cuando iba contra los impuestos. Puede convertir en perdedor un método que acierta el 60 %. Tu Diario lo delata con el objetivo capturado y el riesgo real.</div>
+</div>

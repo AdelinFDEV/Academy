@@ -5,10 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookA, NotebookPen, Map, LayoutGrid, X, ChevronUp, Trophy, Target, PieChart, Lock, GraduationCap,
-  LayoutDashboard, Crown, ArrowRight, UserRound,
+  LayoutDashboard, Crown, ArrowRight, UserRound, Award,
 } from "lucide-react";
 import {
-  IconoCursos, IconoDiario, IconoPortfolio, IconoDiccionario, IconoGuias, IconoPrediccion, IconoTrofeo,
+  IconoCursos, IconoDiario, IconoPortfolio, IconoDiccionario, IconoGuias, IconoPrediccion, IconoTrofeo, IconoCertificado,
 } from "@/components/IconosAnimados";
 import AvatarUsuario from "@/components/AvatarUsuario";
 
@@ -16,7 +16,7 @@ import AvatarUsuario from "@/components/AvatarUsuario";
 const ICON_MAP = {
   booka: BookA, notebookpen: NotebookPen, map: Map,
   trophy: Trophy, target: Target, piechart: PieChart, graduationcap: GraduationCap,
-  user: UserRound,
+  user: UserRound, award: Award,
 } as const;
 
 /**
@@ -32,6 +32,7 @@ const ICONO_ANIMADO: Partial<Record<keyof typeof ICON_MAP, (p: { size?: number }
   map: IconoGuias,
   target: IconoPrediccion,
   trophy: IconoTrofeo,
+  award: IconoCertificado,
 };
 
 /**
@@ -48,6 +49,7 @@ const COLOR: Record<keyof typeof ICON_MAP, string> = {
   target: "#22d3ee",
   trophy: "#fbbf24",
   user: "#f0f4ff",
+  award: "#5ec8c4",
 };
 
 export type ToolItem = {

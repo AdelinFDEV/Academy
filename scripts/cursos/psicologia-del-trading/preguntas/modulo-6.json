@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "pt-m6-01",
+    "leccion": "el-diario-como-herramienta-psicologica",
+    "enunciado": "¿Por qué la memoria es un mal registro de tus operaciones?",
+    "opciones": [
+      "Porque se olvida todo en un día",
+      "Porque sesgos como el exceso de confianza y el de confirmación editan lo que recuerdas",
+      "Porque no se pueden recordar los números",
+      "No lo es: la memoria basta"
+    ],
+    "correcta": 1,
+    "explicacion": "Recordamos los aciertos y los análisis que nos daban la razón. Lo apuntado en el momento no se reescribe."
+  },
+  {
+    "clave": "pt-m6-02",
+    "leccion": "el-diario-como-herramienta-psicologica",
+    "enunciado": "Según la revisión de Pennebaker (1997), ¿qué predecía mejor los beneficios de escribir sobre experiencias emocionales?",
+    "opciones": [
+      "Escribir muy rápido",
+      "La longitud del texto",
+      "Escribir solo cosas positivas",
+      "Los cambios en cómo la gente organizaba y entendía lo que le había pasado"
+    ],
+    "correcta": 3,
+    "explicacion": "No bastaba con desahogarse: ayudaba entender lo vivido."
+  },
+  {
+    "clave": "pt-m6-03",
+    "leccion": "el-diario-como-herramienta-psicologica",
+    "enunciado": "¿Qué advirtió Richard Bootzin sobre la escritura emocional?",
+    "opciones": [
+      "Que no tiene ningún efecto",
+      "Que era prematuro recomendarla como tratamiento para problemas concretos",
+      "Que es mejor que la terapia",
+      "Que solo funciona en traders"
+    ],
+    "correcta": 1,
+    "explicacion": "Hay pruebas de efectos beneficiosos, pero no es un tratamiento. Un diario de trading no es terapia."
+  },
+  {
+    "clave": "pt-m6-04",
+    "leccion": "el-diario-como-herramienta-psicologica",
+    "enunciado": "¿Cuál de estas notas de operación es más útil?",
+    "opciones": [
+      "«Mal día.»",
+      "«Moví el stop porque sentí que me cazaba. Mañana: esperar 10 minutos antes de tocarlo.»",
+      "«−2R.»",
+      "«El mercado está loco.»"
+    ],
+    "correcta": 1,
+    "explicacion": "Dice qué pasó, por qué y qué cambiar. Las otras solo describen."
+  },
+  {
+    "clave": "pt-m6-05",
+    "leccion": "el-diario-como-herramienta-psicologica",
+    "enunciado": "¿Qué es Nova, la asistente del Diario de Trading?",
+    "opciones": [
+      "Un conjunto de reglas sobre tus datos que te avisa de riesgo, rachas, emociones e hitos",
+      "Una inteligencia artificial que lee tus notas y predice el mercado",
+      "Un servicio de señales",
+      "Un asesor financiero"
+    ],
+    "correcta": 0,
+    "explicacion": "No inventa nada ni predice el mercado: lee lo que registras y lo cuenta en avisos y en su pulso."
+  },
+  {
+    "clave": "pt-m6-06",
+    "leccion": "la-revision-semanal",
+    "enunciado": "¿Qué pregunta central propone la revisión centrada en soluciones de Steenbarger?",
+    "opciones": [
+      "¿Por qué siempre fallo?",
+      "¿Cuándo sí seguí el plan, y qué fue distinto esos días?",
+      "¿Quién tiene la culpa?",
+      "¿Cuánto he ganado esta semana?"
+    ],
+    "correcta": 1,
+    "explicacion": "Las excepciones contienen la solución: algo en esos días era diferente y se puede repetir."
+  },
+  {
+    "clave": "pt-m6-07",
+    "leccion": "la-revision-semanal",
+    "enunciado": "¿Por qué la revisión semanal termina en un solo cambio?",
+    "opciones": [
+      "Porque es más rápido",
+      "Porque los demás no importan",
+      "Porque solo se permite un cambio al mes",
+      "Porque un cambio concreto se puede aplicar y comprobar, y si cambias diez no sabes cuál funcionó"
+    ],
+    "correcta": 3,
+    "explicacion": "Una lista de propósitos no cambia la conducta. Un solo cambio, escrito como regla, sí se puede comprobar."
+  },
+  {
+    "clave": "pt-m6-08",
+    "leccion": "la-revision-semanal",
+    "enunciado": "Descubres que los días en que respetaste el plan operaste solo por la mañana. ¿Qué haría una revisión centrada en soluciones?",
+    "opciones": [
+      "Ignorarlo, porque es casualidad",
+      "Probarlo como cambio de la semana siguiente y comprobarlo después con los datos",
+      "Dejar de operar para siempre",
+      "Cambiar de estrategia de entrada"
+    ],
+    "correcta": 1,
+    "explicacion": "La excepción se convierte en un experimento, no en una conclusión definitiva."
+  },
+  {
+    "clave": "pt-m6-09",
+    "leccion": "la-revision-semanal",
+    "enunciado": "¿Qué apartado de Nova propone el curso leer al empezar la revisión semanal?",
+    "opciones": [
+      "El calendario de festivos",
+      "El ranking de otros usuarios",
+      "El precio de bitcoin",
+      "«Lo más importante»"
+    ],
+    "correcta": 3,
+    "explicacion": "Es lo que Nova considera prioritario entre todos sus avisos."
+  },
+  {
+    "clave": "pt-m6-10",
+    "leccion": "euforia-rachas-y-drawdown",
+    "enunciado": "¿Qué error tienen en común la euforia de una racha ganadora y la desesperación de un drawdown?",
+    "opciones": [
+      "Subir el tamaño de las posiciones",
+      "Dejar de operar",
+      "Operar solo por la noche",
+      "Cambiar de broker"
+    ],
+    "correcta": 0,
+    "explicacion": "La euforia sube el tamaño por el dinero de la casa; el drawdown, por querer empatar. Mismo error, dos caras."
+  },
+  {
+    "clave": "pt-m6-11",
+    "leccion": "euforia-rachas-y-drawdown",
+    "enunciado": "Tras una caída del 50 %, ¿cuánto hay que ganar para volver al punto de partida?",
+    "opciones": [
+      "Un 50 %",
+      "Un 75 %",
+      "Un 100 %",
+      "Un 150 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Si 1.000 € caen a 500 €, hay que ganar 500 € más, un 100 %, para recuperar los 1.000 €."
+  },
+  {
+    "clave": "pt-m6-12",
+    "leccion": "euforia-rachas-y-drawdown",
+    "enunciado": "¿Por qué arriesgar un porcentaje fijo de la cuenta ayuda en un drawdown?",
+    "opciones": [
+      "Porque el tamaño baja solo cuando la cuenta cae, sin que tengas que decidirlo",
+      "Porque garantiza recuperar la caída",
+      "Porque evita las rachas de pérdidas",
+      "Porque permite doblar el tamaño"
+    ],
+    "correcta": 0,
+    "explicacion": "Como es un porcentaje, la regla ajusta el tamaño por ti, en las rachas buenas y en las malas."
+  },
+  {
+    "clave": "pt-m6-13",
+    "leccion": "euforia-rachas-y-drawdown",
+    "enunciado": "¿Qué premia el hito «Vuelta a máximos» de tu Diario?",
+    "opciones": [
+      "Ganar en todas las operaciones",
+      "Arriesgar más de lo habitual",
+      "Operar todos los días",
+      "Recuperar hasta un nuevo máximo caídas de más del 5 %"
+    ],
+    "correcta": 3,
+    "explicacion": "Premia aguantar el drawdown con el método, no salir de él a la desesperada."
+  },
+  {
+    "clave": "pt-m6-14",
+    "leccion": "tu-plan-psicologico",
+    "enunciado": "¿Cómo pide el plan psicológico que identifiques tus sesgos?",
+    "opciones": [
+      "Con lo que sientas",
+      "Con un dato de tu propio Diario para cada uno",
+      "Con lo que opinen otros traders",
+      "Con un test de personalidad"
+    ],
+    "correcta": 1,
+    "explicacion": "Una impresión no se puede comprobar ni corregir; un dato sí."
+  },
+  {
+    "clave": "pt-m6-15",
+    "leccion": "tu-plan-psicologico",
+    "enunciado": "¿Cada cuánto conviene revisar tu plan psicológico, según el curso?",
+    "opciones": [
+      "Nunca: es definitivo",
+      "Cada mes, con los datos de tu Diario",
+      "Solo cuando pierdas dinero",
+      "Cada cinco años"
+    ],
+    "correcta": 1,
+    "explicacion": "Es la versión 1. Un plan que no cambia nunca suele ser un plan que no se lee."
+  }
+]

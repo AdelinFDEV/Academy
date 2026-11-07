@@ -26,7 +26,8 @@ export default async function CertificadoPage({ params }: Props) {
           <h1 className="aula-h1">Tu certificado</h1>
           <p className="aula-lead">
             Descárgalo en PDF desde el diálogo de impresión. Cualquiera puede comprobar que es auténtico en la
-            dirección que lleva al pie, con su código.
+            dirección que lleva al pie, con su código. Queda guardado en{" "}
+            <Link href="/dashboard/certificados">tu vitrina de certificados</Link>, para descargarlo siempre que quieras.
           </p>
           <div className="aula-cert-acciones">
             <BotonImprimir />

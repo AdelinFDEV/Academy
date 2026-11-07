@@ -89,7 +89,7 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Imágenes**: portada y las ilustraciones que hagan falta, con prompts de Gemini, en WebP.
 - [ ] **Comprobar DAC8 en el BOE** antes de publicar: en octubre de 2026 la orden de los modelos 042, 172, 175 y 721 seguía en tramitación (lección «Lo que Hacienda ya sabe de ti»).
 - [ ] **Escribir `CURSOS.md`** con el diseño definitivo: estructura de archivos, catálogo de bloques, reglas de examen y cómo se publica.
-- [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json` y volver a subir; `cursos` pasa a `acceso: "premium"` en `src/lib/herramientas.ts` (con su `tag` y su `resumen`), `soon: false` en el rail de `src/app/dashboard/page.tsx`, y ofrecer la auditoría SEO de la ficha.
+- [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json`, volver a subir y ofrecer la auditoría SEO de la ficha. (El catálogo ya está en `acceso: "premium"` desde el curso de psicología.)
 
 **Pedido por el admin el 05-11-2026: implementar el primer curso de punta a punta y comprobarlo todo antes de abrirlo.** No basta con que el contenido esté escrito; hay que recorrerlo como un alumno:
 
@@ -97,6 +97,14 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Exámenes:** preguntas sorteadas y corregidas en el servidor (`src/lib/cursos-examen.ts`), nota mínima 5, la espera de 24 h tras suspender, y que la nota guardada sea la que se enseña. Comprobar que la respuesta correcta no viaja al navegador antes de corregir.
 - [ ] **Certificado:** que se entregue completo al aprobar el examen final, con la nota (40 % media de módulos + 60 % final), descargable, y que el código abra su página pública de verificación (`/cursos/verificar/<codigo>`). Que el logro del curso salga en `/dashboard/logros`.
 - [ ] **Un apartado nuevo en el dashboard para todos los usuarios**, «Mis cursos»: los cursos en curso con su progreso por módulos, el siguiente paso, las notas y los certificados conseguidos. Quien no es Premium ve el catálogo y qué incluye. Hoy el dashboard solo tiene un enlace a `/cursos` en la barra lateral, marcado «Pronto».
+
+### 0c. Curso «Psicología del trading» — publicado el 08-11-2026
+
+Aprobado el diseño el 08-11-2026 (informe en [`informes/curso-psicologia-trading.md`](./informes/curso-psicologia-trading.md)). Escrito entero en `scripts/cursos/psicologia-del-trading/`: 6 módulos, 24 lecciones, 90 preguntas de módulo y 40 del final (salen 25). Hecho también: los 12 términos nuevos del diccionario, los bloques `prospectiva`, `rachas` y `calculadora-r`, el aviso «formacion» de `DisclaimerRiesgo.tsx` y la categoría de logros **Temple** con el logro «Sangre Fría» y sus tres sellos (`src/lib/logroTemple.ts`). **Publicado el 08-11-2026 con el «sí» del admin** (SQL de `scripts/cursos-logro-categoria.sql` ejecutado; `cursos` pasa a `acceso: "premium"` en `herramientas.ts` y sale del «Pronto» del dashboard). Su certificado se guarda en la vitrina `/dashboard/certificados`, abierta aunque se deje Premium. Falta, en orden:
+
+- [ ] **Recorrerlo como alumno** con las comprobaciones de la sección 0b (desbloqueo, exámenes, certificado) y además: los tres bloques nuevos en móvil y escritorio, los tres sellos en `/dashboard/logros` y la vitrina `/dashboard/certificados` con su descarga en PDF (el II cuenta días de `diario_dias` desde la inscripción; el III, esperas de «Sin revancha» después del certificado).
+- [ ] **Decidir el orden** frente al de fiscalidad antes de publicar ese: los dos tienen `"orden": 1`.
+- [ ] **Auditoría SEO de la ficha `/cursos/psicologia-del-trading`** (AUDITORIA-SEO.md entera): ofrecida al publicar, aún sin hacer. Al final, `npm run check:seo -- cursos/psicologia-del-trading "psicología del trading"`.
 
 ### 1. Foro de preguntas y respuestas
 

@@ -129,13 +129,12 @@ export const HERRAMIENTAS: Herramienta[] = [
     id: "cursos",
     icon: GraduationCap,
     label: "Cursos",
-    tag: "Próximamente",
+    tag: "Premium",
     color: "#e6b455",
     desc: "Cursos por módulos, a tu ritmo, con examen en cada módulo y certificado al aprobar el final.",
-    // "proximamente" mientras no haya ningún curso publicado: el menú, el
-    // slider y la sección de Premium le ponen la etiqueta «Próximamente». Al
-    // publicar el primero pasa a "premium", y con él cambia el `tag`.
-    acceso: "proximamente",
+    // "premium" desde el 08-11-2026, con el primer curso publicado («Psicología
+    // del trading»). El catálogo y las fichas son públicos; el aula, de pago.
+    acceso: "premium",
     chips: [
       { icon: ClipboardCheck, label: "Examen por módulo" },
       { icon: BadgeCheck, label: "Certificado" },

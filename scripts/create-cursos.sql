@@ -335,3 +335,27 @@ create trigger curso_lecciones_toca_curso
 alter table public.curso_preguntas add column if not exists clave text;
 create unique index if not exists curso_preguntas_clave_idx
   on public.curso_preguntas (curso_id, clave);
+
+-- 08-11-2026: categoría propia de logro y aviso «formacion» (curso de
+-- psicología del trading). Copia de scripts/cursos-logro-categoria.sql.
+alter table public.cursos add column if not exists logro_categoria text;
+
+alter table public.cursos drop constraint if exists cursos_logro_categoria_check;
+alter table public.cursos add constraint cursos_logro_categoria_check
+  check (logro_categoria is null or logro_categoria in ('temple'));
+
+-- El aviso «formacion» de DisclaimerRiesgo.tsx (cursos de trading no fiscales).
+-- La restricción antigua se creó sin nombre propio: se borra la que mire «aviso».
+do $$
+declare r record;
+begin
+  for r in
+    select conname from pg_constraint
+    where conrelid = 'public.cursos'::regclass and contype = 'c'
+      and pg_get_constraintdef(oid) ilike '%aviso%'
+  loop
+    execute format('alter table public.cursos drop constraint %I', r.conname);
+  end loop;
+end $$;
+alter table public.cursos add constraint cursos_aviso_check
+  check (aviso in ('general', 'fiscal', 'portfolio', 'directo', 'diario', 'formacion'));
