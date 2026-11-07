@@ -1,3 +1,17 @@
+/* El nav, fijo arriba en todo el panel (08-11-2026), igual que el aula.
+   No vale `position: sticky`: en globals.css la regla `html, body` lleva
+   `overflow-x: hidden` en los DOS, y eso vuelve al <body> una caja con scroll
+   propio que no se mueve; el sticky se pega a ella y el nav se va con la
+   página. `fixed` no depende de eso. El hueco que deja el nav lo reserva el
+   `padding-top` de `.blog-page`; el rail lateral ya empieza debajo del nav. */
+.blog-page { padding-top: var(--nav-h); }
+.blog-page > .blog-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 .dashboard-main {
   max-width: 1100px;
   margin: 0 auto;

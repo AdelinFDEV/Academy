@@ -31,37 +31,10 @@ export interface BadgeDef {
   guideTitle?: string;
   /** Logro de un curso: se gana al aprobar su examen final. Sale de `curso_certificados`. */
   cursoSlug?: string;
-  /** Logro con sellos (categoría Temple): el primero es el certificado; los demás, la práctica. */
-  sellos?: SelloLogro[];
   /** Hito del Diario de Trading: se guarda un logro por nivel ("diario-racha-2"). */
   diario?: { family: string; levels: number };
   /** Logro de actividad: qué contador mide y cuánto hace falta. /api/badges decide con esto. */
   progress?: { stat: keyof BadgeStats; target: number; unit: string };
-}
-
-/**
- * Un sello de un logro de curso con práctica. Lo calcula SIEMPRE el servidor
- * (`src/lib/logroTemple.ts`) y no se guarda en ningún sitio: se recalcula al
- * abrir Logros, así que no hay fila en `user_badges` que alguien pueda insertar.
- */
-export interface SelloLogro {
-  id: string;
-  nombre: string;
-  condicion: string;
-  hecho: boolean;
-  progreso?: { valor: number; meta: number; unidad: string };
-}
-
-/**
- * Categorías propias para logros de curso. Un curso sin categoría va a
- * «Cursos»; con ella, a la suya. Es el valor de `cursos.logro_categoria`, y
- * `scripts/subir-curso.mjs` solo deja subir los que están aquí.
- */
-export const CATEGORIAS_LOGRO_CURSO = ["temple"] as const;
-export type CategoriaLogroCurso = (typeof CATEGORIAS_LOGRO_CURSO)[number];
-
-export function esCategoriaLogroCurso(v: unknown): v is CategoriaLogroCurso {
-  return typeof v === "string" && (CATEGORIAS_LOGRO_CURSO as readonly string[]).includes(v);
 }
 
 /**
@@ -161,7 +134,7 @@ function BlockchainBadgeIcon({ size = 24 }: { size?: number }) {
   );
 }
 
-function TempleBadgeIcon({ size = 24 }: { size?: number }) {
+function PsicologiaBadgeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       {/* Un pulso agitado que se aplana: la emoción, regulada */}
@@ -225,7 +198,7 @@ const GUIDE_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
 
 // Icono propio por curso. Sin entrada, el birrete genérico.
 const CURSO_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode> = {
-  "psicologia-del-trading": (size) => <TempleBadgeIcon size={size} />,
+  "psicologia-del-trading": (size) => <PsicologiaBadgeIcon size={size} />,
 };
 
 export function iconoCurso(slug: string, size: number): React.ReactNode {

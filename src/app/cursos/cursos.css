@@ -1,143 +1,8 @@
-/* Catálogo /cursos.
+/* La ficha de cada curso, /cursos/[slug].
    El fondo técnico, el hero, las cabeceras numeradas y el cierre salen de
-   `herramientas/detalle.css`, que se importa junto a este archivo. Aquí solo
-   va lo propio de los cursos: las tarjetas, el estado vacío y los pasos.
-   El color de cada curso entra por `--cur-color` desde el TSX. */
-
-/* ── Tarjetas de curso ──────────────────────────────────────────────────── */
-
-.cur-grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.95rem;
-}
-
-@media (min-width: 700px) {
-  .cur-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-.cur-card {
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 17px;
-  overflow: hidden;
-  background:
-    radial-gradient(110% 85% at 50% -15%, color-mix(in srgb, var(--cur-color) 9%, transparent) 0%, transparent 62%),
-    rgba(9, 13, 24, 0.6);
-  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.cur-card:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--cur-color) 30%, transparent);
-  box-shadow: 0 18px 44px -26px rgba(0, 0, 0, 0.85);
-}
-
-.cur-card-link {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 1.45rem 1.35rem 1.25rem;
-  color: inherit;
-  text-decoration: none;
-}
-
-.cur-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.8rem;
-  margin-bottom: 1rem;
-}
-
-.cur-card-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  color: var(--cur-color);
-  background: color-mix(in srgb, var(--cur-color) 13%, transparent);
-}
-
-.cur-card-nivel {
-  padding: 0.26rem 0.62rem;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-size: 0.63rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(240, 244, 255, 0.55);
-}
-
-.cur-card-title {
-  margin: 0 0 0.5rem;
-  font-size: 1.12rem;
-  font-weight: 700;
-  line-height: 1.28;
-  letter-spacing: -0.017em;
-  color: rgba(240, 244, 255, 0.96);
-}
-
-.cur-card-text {
-  margin: 0 0 1rem;
-  font-size: 0.895rem;
-  line-height: 1.65;
-  color: rgba(240, 244, 255, 0.6);
-}
-
-.cur-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin-top: auto;
-  font-size: 0.79rem;
-  font-weight: 600;
-  color: color-mix(in srgb, var(--cur-color) 80%, #ffffff);
-}
-
-/* ── Sin cursos todavía ─────────────────────────────────────────────────── */
-
-.cur-vacio {
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  padding: 1.5rem 1.4rem;
-  border: 1px dashed rgba(240, 244, 255, 0.14);
-  border-radius: 17px;
-  background: rgba(9, 13, 24, 0.45);
-}
-
-.cur-vacio-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  color: var(--det-accent);
-  background: color-mix(in srgb, var(--det-accent) 12%, transparent);
-}
-
-.cur-vacio-text {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: rgba(240, 244, 255, 0.7);
-}
-
-.cur-vacio-text a {
-  color: var(--det-accent-2);
-}
-
-@media (max-width: 520px) {
-  .cur-vacio { flex-direction: column; align-items: flex-start; }
-}
+   `herramientas/detalle.css`, que se importa junto a este archivo. Aquí va lo
+   propio: los pasos de «Cómo funciona» y la ficha (prefijo cf-).
+   El catálogo /cursos tiene su propio archivo, `catalogo.css`, desde el 08-11-2026. */
 
 /* ── Cómo funciona ──────────────────────────────────────────────────────── */
 
@@ -200,11 +65,6 @@
   font-size: 0.87rem;
   line-height: 1.6;
   color: rgba(240, 244, 255, 0.6);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cur-card { transition: none; }
-  .cur-card:hover { transform: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

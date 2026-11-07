@@ -456,16 +456,16 @@
   },
   {
     "clave": "pt-f-36",
-    "leccion": "el-diario-como-herramienta-psicologica",
-    "enunciado": "¿Qué cuenta para el segundo sello del logro «Sangre Fría»?",
+    "leccion": "tu-plan-psicologico",
+    "enunciado": "¿Qué ganas al aprobar el examen final de este curso?",
     "opciones": [
-      "Aprobar el examen final",
-      "Ganar 21 operaciones",
-      "21 días con el ánimo apuntado en el Diario desde que empezaste el curso",
-      "Operar 21 días seguidos"
+      "Solo una nota, que no se guarda",
+      "Acceso gratis a Premium",
+      "Tu certificado verificable, guardado en tu vitrina, y el logro «Sangre Fría»",
+      "Señales de trading durante un mes"
     ],
     "correcta": 2,
-    "explicacion": "Los días sin operar también cuentan: te dicen cómo estás cuando el mercado no te toca."
+    "explicacion": "El certificado se queda en la vitrina de tu panel para descargarlo siempre que quieras, y el logro aparece en la categoría Cursos de tus logros."
   },
   {
     "clave": "pt-f-37",

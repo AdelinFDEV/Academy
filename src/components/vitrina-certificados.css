@@ -1,0 +1,338 @@
+/*
+ * La vitrina de certificados (components/VitrinaCertificados.tsx).
+ * La pintan la portada del dashboard (forma «estante») y /dashboard/certificados
+ * (forma «completa»). Cada pieza pone el color de su curso en --cv-acento.
+ */
+
+/* ── Estante: la portada del dashboard ─────────────────────────────────────
+   Una vitrina de exposición: fondo de terciopelo azul noche, un foco que cae
+   desde arriba, los certificados enmarcados en oro sobre una balda que brilla
+   y su reflejo. Vacía, el mensaje y la muestra con el nombre del alumno. */
+.cv-estante {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 1.8rem 1.8rem 2rem;
+  border: 1px solid rgba(230, 180, 85, 0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 70% at 50% 120%, rgba(230, 180, 85, 0.1), transparent 60%),
+    linear-gradient(180deg, #0f1f3c 0%, #0a1630 55%, #071023 100%);
+  box-shadow:
+    0 30px 70px -35px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 0 1px rgba(230, 180, 85, 0.05);
+}
+/* El foco: un cono de luz cálida desde el techo de la vitrina. */
+.cv-foco {
+  position: absolute;
+  z-index: -1;
+  top: -40%;
+  left: 50%;
+  width: 90%;
+  height: 120%;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 55% at 50% 0%, rgba(255, 226, 160, 0.16), rgba(255, 226, 160, 0.04) 55%, transparent 75%);
+  pointer-events: none;
+  animation: cv-respirar 7s ease-in-out infinite;
+}
+@keyframes cv-respirar {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+/* Textura de terciopelo: un tramado finísimo que da cuerpo al fondo. */
+.cv-terciopelo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 5px);
+  pointer-events: none;
+}
+
+.cv-estante-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e6b455;
+}
+.cv-estante-titulo { margin: 0.45rem 0 0; font: 800 clamp(1.25rem, 2.4vw, 1.55rem)/1.2 var(--font-display); letter-spacing: -0.02em; color: #fff; }
+.cv-estante-titulo span {
+  background: linear-gradient(100deg, #f5d48a, #e6b455 50%, #fff2cf);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.cv-estante-cab { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
+.cv-estante-enlace { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.86rem; font-weight: 700; color: #e6b455; text-decoration: none; white-space: nowrap; }
+.cv-estante-enlace:hover { text-decoration: underline; }
+
+/* El marco dorado que rodea cada certificado. */
+.cv-marco {
+  position: relative;
+  display: block;
+  padding: 7px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fbe6b0 0%, #c9952f 30%, #7a5418 55%, #e6b455 80%, #fff0c8 100%);
+  box-shadow:
+    0 24px 40px -18px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(0, 0, 0, 0.35),
+    0 0 40px -10px rgba(230, 180, 85, 0.35);
+}
+.cv-marco .cert { padding: 0; border-radius: 9px; box-shadow: none; background: none; }
+.cv-marco .cert-marco { border-radius: 8px; }
+
+/* ── Con certificados: el expositor ── */
+.cv-expositor { position: relative; padding: 0.4rem 0 0; }
+.cv-expositor-fila {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.8rem;
+  margin: 0;
+  padding: 0.6rem 0.4rem 1.2rem;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(230, 180, 85, 0.3) transparent;
+}
+.cv-expositor-fila > li { flex: 0 0 300px; }
+
+.cv-pieza { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; text-decoration: none; perspective: 900px; }
+.cv-pieza .cv-marco { width: 100%; transform: rotateX(4deg); transform-origin: bottom center; transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.45s ease; }
+.cv-pieza:hover .cv-marco {
+  transform: rotateX(0) translateY(-8px) scale(1.02);
+  box-shadow: 0 34px 50px -18px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(0, 0, 0, 0.35), 0 0 60px -6px rgba(230, 180, 85, 0.55);
+}
+/* Un destello de luz que cruza el cristal al pasar el ratón. */
+.cv-brillo {
+  position: absolute;
+  inset: 7px;
+  border-radius: 9px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.cv-brillo::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -60%;
+  width: 40%;
+  height: 140%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.8s ease;
+}
+.cv-pieza:hover .cv-brillo::before { left: 130%; }
+
+/* La placa de latón bajo cada certificado. */
+.cv-placa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 70%;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(230, 180, 85, 0.16), rgba(230, 180, 85, 0.06));
+  border: 1px solid rgba(230, 180, 85, 0.28);
+  text-align: center;
+}
+.cv-placa strong { font-size: 0.82rem; color: #fbe6b0; }
+.cv-placa span { font-size: 0.7rem; color: rgba(240, 244, 255, 0.5); }
+
+.cv-hueco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  aspect-ratio: 1.414;
+  border: 1.5px dashed rgba(230, 180, 85, 0.3);
+  border-radius: 14px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(230, 180, 85, 0.07), transparent 70%);
+  color: rgba(230, 180, 85, 0.7);
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+.cv-pieza--hueco .cv-placa { opacity: 0.6; }
+.cv-pieza--hueco:hover .cv-hueco { border-color: #e6b455; color: #f5d48a; background: radial-gradient(60% 60% at 50% 50%, rgba(230, 180, 85, 0.14), transparent 70%); }
+
+/* La balda: un listón dorado que brilla, con su reflejo hacia abajo. */
+.cv-balda,
+.cv-balda-corta {
+  position: relative;
+  display: block;
+  height: 12px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #f5d48a 0%, #b9822a 45%, #5c3f12 100%);
+  box-shadow: 0 -10px 30px -6px rgba(230, 180, 85, 0.5), 0 14px 26px -10px rgba(0, 0, 0, 0.9);
+}
+.cv-balda::after,
+.cv-balda-corta::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 4%;
+  right: 4%;
+  height: 40px;
+  background: radial-gradient(50% 100% at 50% 0%, rgba(230, 180, 85, 0.18), transparent 70%);
+}
+
+/* ── Vacía: el mensaje y la muestra con su nombre ── */
+.cv-estante-vacia {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 2.4rem;
+  align-items: center;
+}
+.cv-estante-p { margin: 0.9rem 0 0; max-width: 46ch; font-size: 0.95rem; line-height: 1.65; color: rgba(240, 244, 255, 0.62); }
+.cv-estante-lista { display: grid; gap: 0.55rem; margin: 1.2rem 0 1.5rem; padding: 0; list-style: none; }
+.cv-estante-lista li { display: flex; align-items: center; gap: 0.55rem; font-size: 0.88rem; color: rgba(240, 244, 255, 0.78); }
+.cv-estante-lista svg { color: #e6b455; flex-shrink: 0; }
+
+.cv-estante-muestra { position: relative; display: flex; flex-direction: column; align-items: stretch; padding-top: 1.4rem; }
+.cv-estante-muestra .cv-marco { transform: rotate(-2deg); animation: cv-flotar 6s ease-in-out infinite; }
+@keyframes cv-flotar {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+.cv-balda-corta { margin: 1.4rem 6% 0; }
+.cv-muestra-etiqueta {
+  position: absolute;
+  top: 0;
+  right: 0.6rem;
+  z-index: 2;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: #e6b455;
+  color: #0a1628;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 20px -6px rgba(230, 180, 85, 0.6);
+}
+
+@media (max-width: 860px) {
+  .cv-estante { padding: 1.4rem 1.1rem 1.6rem; }
+  .cv-estante-vacia { grid-template-columns: 1fr; gap: 1.6rem; }
+  .cv-expositor-fila > li { flex-basis: 250px; }
+}
+
+/* ── Botones ── */
+.cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: var(--cv-acento, #5ec8c4);
+  color: #0a1628;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+.cv-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.cv-btn--ghost { background: transparent; border-color: rgba(240, 244, 255, 0.16); color: rgba(240, 244, 255, 0.88); }
+.cv-btn--grande { padding: 0.85rem 1.35rem; font-size: 0.95rem; border-radius: 13px; }
+.cv-acciones { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+/* ── Vitrina vacía ── */
+.cv-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  border: 1px dashed rgba(240, 244, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(15, 30, 57, 0.6);
+}
+.cv-vacio h2 { margin: 0; font: 800 1.25rem var(--font-display); color: #fff; }
+.cv-vacio p { margin: 0; max-width: 52ch; font-size: 0.92rem; line-height: 1.6; color: rgba(240, 244, 255, 0.55); }
+.cv-vacio-icono {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(94, 200, 196, 0.1);
+  color: #5ec8c4;
+}
+
+/* ── Las tarjetas ── */
+.cv-rejilla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 470px), 1fr)); gap: 1.1rem; }
+
+.cv-tarjeta {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--cv-acento) 22%, rgba(240, 244, 255, 0.08));
+  border-radius: 18px;
+  background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--cv-acento) 9%, transparent), transparent 60%), rgba(15, 30, 57, 0.85);
+  box-shadow: var(--card-shadow);
+}
+
+/* El diploma en miniatura: marco doble con el sello del curso y la nota. */
+.cv-diploma {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  min-height: 170px;
+  padding: 0.8rem 0.6rem;
+  border-radius: 10px;
+  background: linear-gradient(160deg, #fbf7ee, #efe6d2);
+  color: #1d2a3f;
+  box-shadow: inset 0 0 0 5px #fbf7ee, inset 0 0 0 6px color-mix(in srgb, var(--cv-acento) 70%, #8a6d2b);
+  text-align: center;
+}
+.cv-diploma-marca { font-size: 0.56rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6b5a33; }
+.cv-diploma-sello {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--cv-acento) 85%, #000);
+  color: #fff;
+}
+.cv-diploma-nota { font: 800 1.6rem var(--font-display); line-height: 1; }
+.cv-diploma-sobre { font-size: 0.62rem; color: #6b5a33; }
+
+.cv-info { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.cv-kicker { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cv-acento); }
+.cv-curso { margin: 0; font: 800 1.15rem/1.25 var(--font-display); color: #fff; }
+.cv-datos { margin: 0; display: grid; gap: 0.3rem; }
+.cv-datos div { display: flex; gap: 0.5rem; font-size: 0.82rem; }
+.cv-datos dt { min-width: 3.6rem; color: rgba(240, 244, 255, 0.45); }
+.cv-datos dd { margin: 0; color: rgba(240, 244, 255, 0.88); }
+.cv-codigo { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.04em; }
+.cv-info .cv-acciones { margin-top: auto; }
+
+@media (max-width: 560px) {
+  .cv-tarjeta { grid-template-columns: 1fr; }
+  .cv-diploma { min-height: 140px; }
+}
+
+/* El botón dorado de la vitrina vacía. */
+.cv-btn--oro { padding: 0.8rem 1.25rem; background: linear-gradient(135deg, #f5d48a, #e6b455 55%, #d4952a); box-shadow: 0 12px 30px -12px rgba(230, 180, 85, 0.8); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-foco, .cv-estante-muestra .cv-marco { animation: none; }
+  .cv-pieza .cv-marco, .cv-brillo::before, .cv-hueco, .cv-btn { transition: none; }
+}

@@ -4,8 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient, createAdminClientOpcional } from "@/lib/supabase/admin";
 import type { VarianteAviso } from "@/components/DisclaimerRiesgo";
 import { estadoCurso, type EstadoCurso, type IntentoBase, type ModuloBase } from "@/lib/cursos-progreso";
-import { esCategoriaLogroCurso } from "@/lib/logros";
-import { sellosTemple } from "@/lib/logroTemple";
 export { duracion } from "@/lib/cursos-progreso";
 
 /**
@@ -247,26 +245,20 @@ export async function contenidoLeccion(leccionId: string): Promise<string> {
 /** Los logros de los cursos: uno por curso publicado, y los que tiene el alumno. */
 export async function logrosDeCursos(userId: string) {
   const lector = createAdminClientOpcional() ?? (await createClient());
-  // `*` y no una lista: así, si `logro_categoria` aún no existe en la base de
-  // datos (falta el SQL), la consulta sigue funcionando y el curso va a «Cursos».
   const [{ data: cursos }, { data: certificados }] = await Promise.all([
-    lector.from("cursos").select("*").eq("published", true).order("orden"),
+    lector.from("cursos").select("id, slug, titulo, logro, color").eq("published", true).order("orden"),
     lector.from("curso_certificados").select("curso_id, nota_final, created_at").eq("user_id", userId),
   ]);
-  return Promise.all(((cursos ?? []) as FilaLogroCurso[]).map(async (c) => {
+  return (cursos ?? []).map((c) => {
     const cert = (certificados ?? []).find((x) => x.curso_id === c.id);
-    const categoria = esCategoriaLogroCurso(c.logro_categoria) ? c.logro_categoria : null;
-    const fechaCert = cert ? (cert.created_at as string) : null;
     return {
-      slug: c.slug,
-      titulo: c.titulo,
-      logro: c.logro,
-      color: c.color,
-      categoria,
-      sellos: categoria === "temple" ? await sellosTemple(userId, c.id, fechaCert) : null,
+      slug: c.slug as string,
+      titulo: c.titulo as string,
+      logro: c.logro as string,
+      color: c.color as string,
       conseguido: cert ? { fecha: cert.created_at as string, nota: Number(cert.nota_final) } : null,
     };
-  }));
+  });
 }
 
 // ── La vitrina de certificados ────────────────────────────────────────────
@@ -324,8 +316,6 @@ export async function certificadosDelAlumno(userId: string, codigo?: string): Pr
     }];
   });
 }
-
-type FilaLogroCurso = { id: string; slug: string; titulo: string; logro: string; color: string; logro_categoria?: string | null };
 
 // ── El contexto del aula ──────────────────────────────────────────────────
 

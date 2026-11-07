@@ -5,7 +5,7 @@ import { BookOpen, CalendarClock, ClipboardCheck, Award } from "lucide-react";
  * de cada curso. Describe lo que hace el aula DE VERDAD (`cursos-progreso.ts`):
  * si cambia una regla, se cambia aquí también, o la página promete otra cosa.
  */
-const PASOS = [
+export const PASOS = [
   {
     icon: BookOpen,
     titulo: "Módulos y lecciones",

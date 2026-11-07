@@ -1,7 +1,7 @@
 # Informe · Curso «Psicología del trading» — propuesta para aprobar
 
 **Estado:** aprobado por el admin el 08-11-2026 tal cual («adelante»), con las recomendaciones de cada pregunta del punto 8: título «Psicología del trading», aprobado del final en 5, logro con tres sellos en la categoría Temple y los tres bloques nuevos. **Construido, sin subir**: ver `TAREAS.md`, sección 0c.
-Un cambio frente a este informe: el aviso legal no es la variante `"diario"` (habla de la herramienta, no de un curso), sino una nueva, `"formacion"`, dentro del mismo `DisclaimerRiesgo.tsx`.
+Cambios frente a este informe: el 08-11-2026 el admin retiró la categoría Temple y los sellos; «Sangre Fría» va en la categoría Cursos y se gana solo con aprobar el examen final. Y el aviso legal no es la variante `"diario"` (habla de la herramienta, no de un curso), sino una nueva, `"formacion"`, dentro del mismo `DisclaimerRiesgo.tsx`.
 
 ---
 

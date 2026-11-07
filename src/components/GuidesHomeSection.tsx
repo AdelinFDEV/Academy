@@ -35,8 +35,10 @@ function Dificultad({ g }: { g: GuideMeta }) {
  * Portfolio, Diario y Cursos, y las guías son la puerta gratuita, así que van
  * contenidas —una composición de revista— y no ocupan media portada.
  *
- * · A la izquierda, la más reciente, en grande y con su portada a sangre.
- * · A la derecha, las tres anteriores, en filas con miniatura.
+ * · A la izquierda, la más reciente, en grande: portada arriba y texto debajo.
+ * · A la derecha, las cuatro anteriores, en filas con miniatura. Son cuatro
+ *   (no tres) para que la columna llene la misma altura que la grande sin
+ *   que las filas se estiren y queden huecas (08-11-2026).
  * · Arriba, el titular y el paso al catálogo entero.
  *
  * Todo sale de src/lib/guides.ts: al añadir una guía allí, la nueva pasa a
@@ -44,7 +46,7 @@ function Dificultad({ g }: { g: GuideMeta }) {
  */
 export default function GuidesHomeSection() {
   const [nueva, ...resto] = GUIDES_NEWEST_FIRST;
-  const siguientes = resto.slice(0, 3);
+  const siguientes = resto.slice(0, 4);
   if (!nueva) return null;
 
   return (

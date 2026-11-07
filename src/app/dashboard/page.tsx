@@ -15,6 +15,8 @@ import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
 import GuiaPortada from "@/components/GuiaPortada";
 import AvatarUsuario from "@/components/AvatarUsuario";
+import VitrinaCertificados, { type EjemploVitrina } from "@/components/VitrinaCertificados";
+import { certificadosDelAlumno, cursoPorSlug, cursosPublicados } from "@/lib/cursos";
 
 /**
  * El panel de cada usuario.
@@ -62,6 +64,17 @@ export default async function DashboardPage() {
     // no existe, falla sola y sale la inicial.
     supabase.from("profiles").select("avatar").eq("id", user.id).maybeSingle(),
   ]);
+  // La vitrina: los certificados que ha ganado (solo los suyos, con su sesión).
+  const certificados = await certificadosDelAlumno(user.id);
+  // Vitrina vacía: una muestra con su nombre y el primer curso publicado.
+  let ejemploVitrina: EjemploVitrina | null = null;
+  if (certificados.length === 0) {
+    const [primero] = await cursosPublicados();
+    const curso = primero ? await cursoPorSlug(primero.slug) : null;
+    if (curso) {
+      ejemploVitrina = { titulo: curso.curso.titulo, logro: curso.curso.logro, color: curso.curso.color, fecha: curso.curso.updated_at };
+    }
+  }
 
   // La foto que eligió en «Mi perfil»: junto a su nombre en el saludo y en «Mi perfil» del rail.
   const avatar = (foto as { avatar?: string | null } | null)?.avatar ?? null;
@@ -169,6 +182,9 @@ export default async function DashboardPage() {
           </Link>
         </div>
       </section>
+
+      {/* ── La vitrina de certificados, justo debajo del perfil ── */}
+      <VitrinaCertificados certificados={certificados} forma="estante" nombre={name} ejemplo={ejemploVitrina} />
 
       <TwoFactorNudge />
 

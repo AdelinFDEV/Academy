@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { ArrowLeft, Check, Lock, Circle, ClipboardCheck, Award, Hourglass, PlayCircle } from "lucide-react";
-import TemarioMovil from "@/components/aula/TemarioMovil";
+import AulaCuerpo from "@/components/aula/AulaCuerpo";
 import type { ContextoAula } from "@/lib/cursos";
 import { formatoNota, type EstadoExamen } from "@/lib/cursos-progreso";
 
 /**
  * El esqueleto de todas las pantallas del aula: barra superior con el
- * progreso y el temario a la izquierda (en móvil, en un panel).
+ * progreso y el temario a la izquierda, que se puede plegar (en móvil, en un
+ * panel). Cómo se enseña lo decide AulaCuerpo.
  *
  * El temario dice en cada fila si está hecha, abierta o cerrada, y es el
  * mismo cálculo que decide si se puede entrar (`estadoCurso`): lo que se ve
@@ -32,19 +33,25 @@ function IconoExamen({ e }: { e: EstadoExamen }) {
   return <ClipboardCheck size={13} strokeWidth={2.4} />;
 }
 
-function Temario({ ctx, activo }: { ctx: ContextoAula; activo: Activo }) {
+/**
+ * El temario en tres piezas: la cabecera (curso y progreso), la lista de
+ * módulos y el cierre (examen final y certificado). AulaCuerpo fija la
+ * primera y la última y deja que solo la lista haga scroll.
+ */
+function piezasTemario(ctx: ContextoAula, activo: Activo) {
   const { curso, datos, estado } = ctx;
   const slug = curso.curso.slug;
   const final = etiquetaExamen(estado.final);
 
-  return (
-    <div className="aula-temario-cuerpo">
+  const cabecera = (
       <Link href={`/aula/${slug}`} className={`aula-temario-inicio${"inicio" in activo ? " is-activo" : ""}`}>
         <span className="aula-temario-curso">{curso.curso.titulo}</span>
         <span className="aula-temario-pct">{estado.porcentaje} % completado</span>
         <span className="aula-barra"><i style={{ width: `${estado.porcentaje}%` }} /></span>
       </Link>
+  );
 
+  const lista = (
       <ol className="aula-temario-modulos">
         {estado.modulos.map(({ modulo, desbloqueado, hechas, examen }) => {
           const ex = etiquetaExamen(examen);
@@ -109,7 +116,9 @@ function Temario({ ctx, activo }: { ctx: ContextoAula; activo: Activo }) {
           );
         })}
       </ol>
+  );
 
+  const cierre = (
       <div className="aula-temario-cierre">
         {estado.final.tipo === "bloqueado" ? (
           <span className={`aula-temario-item aula-temario-examen ${final.clase}`}>
@@ -139,8 +148,9 @@ function Temario({ ctx, activo }: { ctx: ContextoAula; activo: Activo }) {
           </span>
         )}
       </div>
-    </div>
   );
+
+  return { cabecera, lista, cierre };
 }
 
 export default function AulaShell({ ctx, activo, children }: { ctx: ContextoAula; activo: Activo; children: React.ReactNode }) {
@@ -170,12 +180,9 @@ export default function AulaShell({ ctx, activo, children }: { ctx: ContextoAula
         {ctx.sesion.esAdmin && <span className="aula-admin-chip" title="Ves todo abierto y sin esperas para revisar el curso">Modo admin</span>}
       </header>
 
-      <div className="aula-cuerpo">
-        <TemarioMovil>
-          <Temario ctx={ctx} activo={activo} />
-        </TemarioMovil>
-        <main className="aula-principal">{children}</main>
-      </div>
+      <AulaCuerpo {...piezasTemario(ctx, activo)} porcentaje={estado.porcentaje}>
+        {children}
+      </AulaCuerpo>
     </div>
   );
 }

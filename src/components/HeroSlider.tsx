@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useMotionValue, useReducedMotion } from "framer-motion";
 import NovaHead from "@/components/trading/NovaHead";
+import Certificado from "@/components/aula/Certificado";
 import {
-  ArrowRight, Award, Bitcoin, Check, ChevronLeft, ChevronRight, Crown, Lock,
+  ArrowRight, Award, Bitcoin, Check, ChevronLeft, ChevronRight, Crown, Lock, ShieldCheck,
 } from "lucide-react";
 import { herramienta, detalleDe, type Herramienta } from "@/lib/herramientas";
 import { PORTFOLIOS } from "@/lib/portfolios";
@@ -45,7 +46,7 @@ interface Props {
 const DIAPOSITIVAS: { id: string; corto: string; titulo?: string; lema: string; remate: string }[] = [
   { id: "portfolio", corto: "Portfolio", lema: "Mi cartera real", remate: "Qué compro, y a qué precio." },
   { id: "diario", corto: "Diario", lema: "Tu registro privado", remate: "Con bot inteligente, hitos y registro completo." },
-  { id: "cursos", corto: "Cursos", lema: "Formación por módulos", remate: "Con examen y certificado." },
+  { id: "cursos", corto: "Cursos", lema: "Formación por módulos", remate: "Y al final, tu certificado." },
 ];
 
 /** El icono animado grande de cada pieza, el mismo de la barra. */
@@ -80,8 +81,8 @@ function hechos(id: string, portfolio: ResumenHero): Hecho[] {
   }
   return [
     { icono: IconoAprobado, valor: "Examen", texto: "en cada módulo" },
-    { icono: IconoMedalla, valor: "Certificado", texto: "al aprobar el final" },
-    { icono: IconoReloj, valor: "A tu ritmo", texto: "sin horarios" },
+    { icono: IconoReloj, valor: "0 a 10", texto: "nota del examen final" },
+    { icono: IconoMedalla, valor: "Certificado", texto: "verificable y tuyo" },
   ];
 }
 
@@ -327,39 +328,53 @@ function VentanaDiario() {
   );
 }
 
-const MODULOS = [
-  { nombre: "Módulo 1", estado: "hecho" },
-  { nombre: "Módulo 2", estado: "hecho" },
-  { nombre: "Módulo 3", estado: "ahora" },
-  { nombre: "Examen final", estado: "cerrado" },
-] as const;
+/**
+ * La escena de Cursos (rehecha el 08-11-2026): el CERTIFICADO es el
+ * protagonista. Arriba, el camino que lleva a él —lecciones, examen por
+ * módulo, examen final— y en grande, la muestra del certificado de verdad,
+ * con tres datos flotando que son ciertos del producto: nota de 0 a 10,
+ * código de verificación único y el logro en el perfil.
+ * Fecha fija en la muestra: es un componente de cliente y una fecha «de hoy»
+ * no cuadraría al hidratar.
+ */
+const RUTA_CURSO = ["Lecciones", "Examen por módulo", "Examen final", "Certificado"];
 
-function VentanaCursos() {
+function EscenaCursos() {
   return (
-    <>
-      <ul className="hs-modulos">
-        {MODULOS.map((m) => (
-          <li key={m.nombre} className={`hs-modulo is-${m.estado}`}>
-            <span className="hs-modulo-marca" aria-hidden="true">
-              {m.estado === "hecho" && <Check size={12} strokeWidth={3.2} />}
-              {m.estado === "cerrado" && <Lock size={11} strokeWidth={2.6} />}
+    <div className="hs-cc">
+      <ol className="hs-cc-ruta" aria-label="Cómo se llega al certificado">
+        {RUTA_CURSO.map((paso, i) => (
+          <li key={paso} className={i === RUTA_CURSO.length - 1 ? "is-meta" : undefined} style={{ "--i": i } as React.CSSProperties}>
+            <span className="hs-cc-ruta-punto" aria-hidden="true">
+              {i === RUTA_CURSO.length - 1 ? <Award size={13} strokeWidth={2.4} /> : <Check size={12} strokeWidth={3} />}
             </span>
-            <span className="hs-modulo-nombre">{m.nombre}</span>
-            {m.estado === "hecho" && <span className="hs-modulo-nota">Aprobado</span>}
-            {m.estado === "ahora" && (
-              <span className="hs-modulo-barra" aria-hidden="true"><i /></span>
-            )}
+            <span>{paso}</span>
           </li>
         ))}
-      </ul>
-      <div className="hs-certificado">
-        <Award size={22} strokeWidth={1.9} aria-hidden="true" />
-        <span>
-          <b>Certificado verificable</b>
-          <span>Al aprobar el examen final</span>
-        </span>
+      </ol>
+
+      <div className="hs-cc-escena" aria-hidden="true">
+        <span className="hs-cc-foco" />
+        <div className="hs-cc-cert">
+          <Certificado
+            muestra
+            nombre="Tu nombre aquí"
+            curso="Tu curso, aprobado"
+            logro="El logro del curso"
+            notaFinal={8.75}
+            notaModulos={8.4}
+            notaExamen={9}
+            fecha="2026-11-08T12:00:00Z"
+            codigo="XXXXXXXXXX"
+            color="#e6b455"
+          />
+          <span className="hs-cc-brillo" />
+        </div>
+        <span className="hs-cc-chip hs-cc-chip--nota"><b>8,75</b><span>Nota final<br />sobre 10</span></span>
+        <span className="hs-cc-chip hs-cc-chip--codigo"><ShieldCheck size={15} /> Verificable con código único</span>
+        <span className="hs-cc-chip hs-cc-chip--logro"><Award size={15} /> Y un logro en tu perfil</span>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -371,7 +386,7 @@ function ventana(id: string, portfolio: ResumenHero, activo: boolean) {
   if (id === "diario") {
     return { ruta: "/dashboard/trading", vivo: false, cuerpo: <VentanaDiario /> };
   }
-  return { ruta: "/aula", vivo: false, cuerpo: <VentanaCursos /> };
+  return { ruta: "/aula", vivo: false, cuerpo: null };
 }
 
 /**
@@ -529,6 +544,11 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
                     </Link>
                   </div>
 
+                  {f.id === "cursos" ? (
+                    <div className="hs-app hs-app--cert hs-entra" style={{ "--d": 2 } as React.CSSProperties}>
+                      <EscenaCursos />
+                    </div>
+                  ) : (
                   <div className="hs-app hs-entra" style={{ "--d": 2 } as React.CSSProperties}>
                     <div className="hs-app-barra">
                       <span className="hs-app-luces" aria-hidden="true"><i /><i /><i /></span>
@@ -537,6 +557,7 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
                     </div>
                     <div className="hs-app-cuerpo">{v.cuerpo}</div>
                   </div>
+                  )}
                 </div>
               </div>
             );

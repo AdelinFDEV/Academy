@@ -336,13 +336,12 @@ alter table public.curso_preguntas add column if not exists clave text;
 create unique index if not exists curso_preguntas_clave_idx
   on public.curso_preguntas (curso_id, clave);
 
--- 08-11-2026: categoría propia de logro y aviso «formacion» (curso de
+-- 08-11-2026: aviso «formacion» y retirada de la categoría de logro «Temple» (curso de
 -- psicología del trading). Copia de scripts/cursos-logro-categoria.sql.
-alter table public.cursos add column if not exists logro_categoria text;
-
+-- La categoría propia de logro («Temple») se retiró el 08-11-2026: los logros
+-- de todos los cursos van juntos en «Cursos». Se borra la columna.
 alter table public.cursos drop constraint if exists cursos_logro_categoria_check;
-alter table public.cursos add constraint cursos_logro_categoria_check
-  check (logro_categoria is null or logro_categoria in ('temple'));
+alter table public.cursos drop column if exists logro_categoria;
 
 -- El aviso «formacion» de DisclaimerRiesgo.tsx (cursos de trading no fiscales).
 -- La restricción antigua se creó sin nombre propio: se borra la que mire «aviso».

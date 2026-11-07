@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { certificadosDelAlumno } from "@/lib/cursos";
 import Certificado from "@/components/aula/Certificado";
 import BotonImprimir from "@/components/aula/BotonImprimir";
+import "@/components/vitrina-certificados.css";
 import "../certificados.css";
 
 type Props = { params: Promise<{ codigo: string }> };

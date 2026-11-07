@@ -2,10 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Flame, Star, Trophy, Check, Lock, Target, ArrowRight, Zap, BookOpen, NotebookPen, GraduationCap, Activity } from "lucide-react";
+import { Flame, Star, Trophy, Check, Lock, Target, ArrowRight, Zap, BookOpen, NotebookPen, GraduationCap } from "lucide-react";
 import {
   BADGE_DEFS, DIARIO_BADGE_DEFS, GUIDE_BADGE_DEFS, diarioLevel, iconoCurso, isEarned,
-  type BadgeDef, type BadgeStats, type CategoriaLogroCurso, type SelloLogro,
+  type BadgeDef, type BadgeStats,
 } from "@/lib/logros";
 import type { UnlockEventDetail } from "@/components/BadgeNotifier";
 
@@ -20,7 +20,7 @@ export function FeaturedStar() {
 /** Logros guardados: id → fecha. null = concedido en esta visita, aún sin fecha leída. */
 type Earned = Map<string, string | null>;
 
-type CategoryId = "actividad" | "guias" | "cursos" | "diario" | CategoriaLogroCurso;
+type CategoryId = "actividad" | "guias" | "cursos" | "diario";
 
 /** Un curso publicado y, si lo aprobó, cuándo y con qué nota. Lo calcula el servidor. */
 export interface LogroCurso {
@@ -28,10 +28,6 @@ export interface LogroCurso {
   titulo: string;
   logro: string;
   color: string;
-  /** Con categoría propia (Temple), el logro sale ahí y no en «Cursos». */
-  categoria: CategoriaLogroCurso | null;
-  /** Solo en los logros con sellos. El primero es siempre el certificado. */
-  sellos: SelloLogro[] | null;
   conseguido: { fecha: string; nota: number } | null;
 }
 
@@ -90,21 +86,7 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
   const prog = !got ? progressOf(badge, stats) : null;
 
   let foot: React.ReactNode;
-  const sellosHechos = badge.sellos?.filter(x => x.hecho).length ?? 0;
-  if (badge.sellos) {
-    foot = (
-      <>
-        <span className="lg-levels" aria-hidden="true">
-          {badge.sellos.map(x => <i key={x.id} className={x.hecho ? "on" : undefined} />)}
-        </span>
-        <span className="lg-foot-text">
-          {got
-            ? `Sello ${sellosHechos} de ${badge.sellos.length}${date ? ` · ${dateStr(date)}` : ""}${notaCurso !== undefined ? ` · nota ${notaTexto(notaCurso)}` : ""}`
-            : <>{isPremium ? "Hacer el curso" : "Ver el curso"} <ArrowRight size={12} aria-hidden="true" /></>}
-        </span>
-      </>
-    );
-  } else if (badge.diario) {
+  if (badge.diario) {
     foot = (
       <>
         <span className="lg-levels" aria-hidden="true">
@@ -148,20 +130,6 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
       </div>
       <h3 className="lg-name">{badge.label}</h3>
       <p className="lg-cond">{badge.condition}</p>
-      {badge.sellos && (
-        <ul className="lg-sellos">
-          {badge.sellos.map((x, i) => (
-            <li key={x.id} className={x.hecho ? "is-hecho" : undefined}>
-              <span className="lg-sello-num" aria-hidden="true">{["I", "II", "III", "IV"][i] ?? i + 1}</span>
-              <span className="lg-sello-txt">
-                <strong>{x.nombre}</strong> {x.condicion}
-                {x.progreso && !x.hecho && <em> · {x.progreso.valor} de {x.progreso.meta} {x.progreso.unidad}</em>}
-              </span>
-              {x.hecho && <Check size={12} strokeWidth={3} aria-label="Conseguido" />}
-            </li>
-          ))}
-        </ul>
-      )}
       {badge.reward && (
         <p className="lg-reward"><Star size={11} fill="currentColor" aria-hidden="true" /> {badge.reward}</p>
       )}
@@ -175,18 +143,15 @@ function LogroCard({ badge, earned, ids, stats, isPremium, notaCurso }: {
   return card;
 }
 
-/** La tarjeta de logro de un curso; con sellos si es de una categoría propia. */
+/** La tarjeta de logro de un curso: se gana al aprobar su examen final. */
 function defCurso(c: LogroCurso): BadgeDef {
   return {
     id: `curso-${c.slug}`,
     label: c.logro,
-    condition: c.sellos
-      ? `Del curso «${c.titulo}». Se consigue con el primer sello; los otros dos son tu práctica en el Diario.`
-      : `Aprueba el examen final del curso «${c.titulo}»`,
+    condition: `Aprueba el examen final del curso «${c.titulo}»`,
     icon: iconoCurso(c.slug, 24),
     bigIcon: iconoCurso(c.slug, 48),
     cursoSlug: c.slug,
-    ...(c.sellos ? { sellos: c.sellos, special: true } : {}),
   };
 }
 
@@ -211,8 +176,7 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
     ...initialEarned.map((b): [string, string] => [b.badge_id, b.unlocked_at]),
     ...cursos.filter(c => c.conseguido).map((c): [string, string] => [`curso-${c.slug}`, c.conseguido!.fecha]),
   ]));
-  const cursoDefs = useMemo<BadgeDef[]>(() => cursos.filter(c => !c.categoria).map(defCurso), [cursos]);
-  const templeDefs = useMemo<BadgeDef[]>(() => cursos.filter(c => c.categoria === "temple").map(defCurso), [cursos]);
+  const cursoDefs = useMemo<BadgeDef[]>(() => cursos.map(defCurso), [cursos]);
   const notaPorCurso = useMemo(
     () => new Map(cursos.filter(c => c.conseguido).map(c => [c.slug, c.conseguido!.nota])),
     [cursos],
@@ -265,18 +229,13 @@ export default function Badges({ initialStreak, initialMax, initialFeatured, ini
     },
     {
       id: "cursos", num: "03", title: "Cursos", icon: <GraduationCap size={15} />,
-      sub: "Aprueba el examen final de un curso y gana su logro, con la nota que sacaste.",
+      sub: "Los logros de todos los cursos. Aprueba el examen final de un curso y gana el suyo, con la nota que sacaste.",
       defs: cursoDefs,
     },
     {
       id: "diario", num: "04", title: "Diario de Trading", icon: <NotebookPen size={15} />,
       sub: "Hitos que premian la disciplina al operar. Cada uno tiene varios niveles.",
       defs: diarioDefs,
-    },
-    {
-      id: "temple", num: "05", title: "Temple", icon: <Activity size={15} />,
-      sub: "Logros que se ganan dominando la cabeza, no el gráfico: un curso aprobado y su práctica en el Diario.",
-      defs: templeDefs,
     },
   ];
   const visible = categories.filter(c => c.defs.length > 0).map(c => ({ ...c, done: c.defs.filter(b => isEarned(ids, b)).length }));

@@ -183,7 +183,11 @@ const TEXTO: Record<Variante, { titulo: string; cuerpo: React.ReactNode }> = {
 };
 
 export default function DisclaimerRiesgo({ variante }: { variante: Variante }) {
-  const { titulo, cuerpo } = TEXTO[variante];
+  // La variante llega de la base de datos (`cursos.aviso`). Si trae una que
+  // este código aún no conoce —un despliegue a medias, un servidor de
+  // desarrollo sin recargar—, se usa el aviso general en vez de romper la
+  // página entera. El bloque de responsabilidad va en todas igualmente.
+  const { titulo, cuerpo } = TEXTO[variante] ?? TEXTO.general;
 
   return (
     <aside className="disclaimer" role="note" aria-label="Aviso legal y de riesgo">
