@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity, type AnimationPlaybackControls, type Variants } from "framer-motion";
+import { AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity, type AnimationPlaybackControls, type TargetAndTransition, type Variants } from "framer-motion";
 import NovaHead, { type NovaActivity, type NovaFace } from "./NovaHead";
 import NovaRoom from "./NovaRoom";
 import { NovaVuelo, cajaDe, cajaDeLaBarra, dejarSalida, llegarAlDiario, sinAnimaciones, type CajaNova } from "./novaVuelo";
@@ -132,6 +132,87 @@ function pickActivity(last: NovaActivity, top: number): NovaActivity {
   return options[Math.floor(Math.random() * options.length)] ?? "trade";
 }
 
+// ─────────────────────────── Vuelo al centro ───────────────────────────
+
+interface Escena {
+  from: Pt;
+  to: Pt;
+  scale: number;
+}
+
+/** Escritorio: en arco, inclinándose hacia donde va y agrandándose. */
+function vueloEscritorio(st: Escena, dir: number): TargetAndTransition {
+  return {
+    x: [st.from.x, (st.from.x + st.to.x) / 2, st.to.x],
+    y: [st.from.y, Math.max(0, (st.from.y + st.to.y) / 2 - 70), st.to.y],
+    scale: [1, (1 + st.scale) / 2, st.scale * 1.08, st.scale],
+    rotate: [0, dir * 14, -dir * 5, 0],
+    transition: {
+      x: { duration: 0.8, times: [0, 0.5, 1], ease: ["easeOut", "easeInOut"] },
+      y: { duration: 0.8, times: [0, 0.45, 1], ease: ["easeOut", "easeIn"] },
+      scale: { duration: 0.95, times: [0, 0.45, 0.82, 1], ease: "easeInOut" },
+      rotate: { duration: 0.9, times: [0, 0.4, 0.82, 1], ease: "easeInOut" },
+    },
+  };
+}
+
+function vueltaEscritorio(st: Escena, p: Pt, dir: number): TargetAndTransition {
+  return {
+    x: [st.to.x, (st.to.x + p.x) / 2, p.x],
+    y: [st.to.y, Math.max(0, (st.to.y + p.y) / 2 - 50), p.y],
+    scale: [st.scale, st.scale * 0.75, 1.06, 1],
+    rotate: [0, -dir * 12, dir * 4, 0],
+    transition: {
+      delay: 0.12,
+      x: { duration: 0.75, times: [0, 0.5, 1], ease: ["easeIn", "easeOut"] },
+      y: { duration: 0.75, times: [0, 0.4, 1], ease: ["easeOut", "easeIn"] },
+      scale: { duration: 0.8, times: [0, 0.45, 0.85, 1], ease: "easeInOut" },
+      rotate: { duration: 0.8, times: [0, 0.4, 0.85, 1], ease: "easeInOut" },
+    },
+  };
+}
+
+/*
+ * Móvil: un acercamiento corto y con intención. Primero coge impulso (baja un
+ * poco y se encoge), luego sale disparada casi en línea recta hacia arriba
+ * creciendo, se pasa un pelín de tamaño y se asienta con un rebote suave. Sin
+ * arco grande: en una pantalla estrecha el arco se sale por arriba.
+ */
+const EASE_DASH: [number, number, number, number] = [0.2, 0.9, 0.25, 1];
+
+function vueloMovil(st: Escena): TargetAndTransition {
+  const s = st.scale;
+  return {
+    x: [st.from.x, st.from.x, st.to.x, st.to.x],
+    y: [st.from.y, st.from.y + 10, st.to.y - 6, st.to.y],
+    scale: [1, 0.86, s * 1.14, s * 0.96, s],
+    rotate: [0, -4, 3, 0],
+    transition: {
+      x: { duration: 0.62, times: [0, 0.16, 0.78, 1], ease: ["easeOut", EASE_DASH, "easeOut"] },
+      y: { duration: 0.62, times: [0, 0.16, 0.78, 1], ease: ["easeOut", EASE_DASH, "easeOut"] },
+      scale: { duration: 0.78, times: [0, 0.16, 0.62, 0.84, 1], ease: "easeInOut" },
+      rotate: { duration: 0.62, times: [0, 0.16, 0.7, 1], ease: "easeInOut" },
+    },
+  };
+}
+
+function vueltaMovil(st: Escena, p: Pt): TargetAndTransition {
+  const s = st.scale;
+  return {
+    x: [st.to.x, st.to.x, p.x],
+    y: [st.to.y, st.to.y - 8, p.y],
+    scale: [s, s * 1.06, 1.04, 1],
+    rotate: [0, 3, 0],
+    transition: {
+      delay: 0.1,
+      x: { duration: 0.55, times: [0, 0.18, 1], ease: ["easeOut", EASE_DASH] },
+      y: { duration: 0.55, times: [0, 0.18, 1], ease: ["easeOut", EASE_DASH] },
+      scale: { duration: 0.6, times: [0, 0.18, 0.85, 1], ease: "easeInOut" },
+      rotate: { duration: 0.55, times: [0, 0.3, 1], ease: "easeInOut" },
+    },
+  };
+}
+
 // ─────────────────────────── El análisis ───────────────────────────
 
 const horaLocal = new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit" });
@@ -232,7 +313,8 @@ export default function TjBot({ report, onAction }: {
   const [flying, setFlying] = useState(false);
   // La escena del diálogo: desde dónde sale Nova, adónde vuela y cuánto se agranda;
   // `home` es adónde vuelve al cerrar; `arrived`, si ya está en el centro hablando.
-  const [stage, setStage] = useState<{ from: Pt; to: Pt; scale: number } | null>(null);
+  // `movil`: pantalla estrecha; vuelo corto y bocadillo sencillo, solo con flechas.
+  const [stage, setStage] = useState<{ from: Pt; to: Pt; scale: number; movil: boolean } | null>(null);
   const [home, setHome] = useState<Pt | null>(null);
   const [arrived, setArrived] = useState(false);
   // Al entrar al Diario, Nova llega volando desde su sitio en la barra de arriba.
@@ -414,7 +496,9 @@ export default function TjBot({ report, onAction }: {
     const r = triggerRef.current?.getBoundingClientRect();
     if (!r) return;
     const vw = window.innerWidth;
-    const scale = vw < 640 ? 1.25 : 1.6;
+    const movil = vw < 640;
+    // En el móvil Nova se queda algo más pequeña arriba: el bocadillo necesita la pantalla.
+    const scale = movil ? 0.78 : 1.6;
     markSeen(report.signature);
     setStep([0, 1]);
     setVisited(false);
@@ -424,8 +508,9 @@ export default function TjBot({ report, onAction }: {
     setHome(null);
     setStage({
       from: { x: r.left, y: r.top },
-      to: { x: vw / 2 - (HEAD * scale) / 2, y: Math.max(12, window.innerHeight * 0.03) },
+      to: { x: vw / 2 - (HEAD * scale) / 2, y: movil ? 10 : Math.max(12, window.innerHeight * 0.03) },
       scale,
+      movil,
     });
     setOpen(true);
   }
@@ -553,33 +638,10 @@ export default function TjBot({ report, onAction }: {
                 className="tjbot-flyer"
                 custom={home ?? stage.from}
                 initial={{ x: stage.from.x, y: stage.from.y, scale: 1, rotate: 0 }}
-                animate={{
-                  x: [stage.from.x, (stage.from.x + stage.to.x) / 2, stage.to.x],
-                  y: [stage.from.y, Math.max(0, (stage.from.y + stage.to.y) / 2 - 70), stage.to.y],
-                  scale: [1, (1 + stage.scale) / 2, stage.scale * 1.08, stage.scale],
-                  rotate: [0, flightDir * 14, -flightDir * 5, 0],
-                  transition: {
-                    x: { duration: 0.8, times: [0, 0.5, 1], ease: ["easeOut", "easeInOut"] },
-                    y: { duration: 0.8, times: [0, 0.45, 1], ease: ["easeOut", "easeIn"] },
-                    scale: { duration: 0.95, times: [0, 0.45, 0.82, 1], ease: "easeInOut" },
-                    rotate: { duration: 0.9, times: [0, 0.4, 0.82, 1], ease: "easeInOut" },
-                  },
-                }}
+                animate={stage.movil ? vueloMovil(stage) : vueloEscritorio(stage, flightDir)}
                 exit="back"
                 variants={{
-                  back: (p: Pt) => ({
-                    x: [stage.to.x, (stage.to.x + p.x) / 2, p.x],
-                    y: [stage.to.y, Math.max(0, (stage.to.y + p.y) / 2 - 50), p.y],
-                    scale: [stage.scale, stage.scale * 0.75, 1.06, 1],
-                    rotate: [0, -flightDir * 12, flightDir * 4, 0],
-                    transition: {
-                      delay: 0.12,
-                      x: { duration: 0.75, times: [0, 0.5, 1], ease: ["easeIn", "easeOut"] },
-                      y: { duration: 0.75, times: [0, 0.4, 1], ease: ["easeOut", "easeIn"] },
-                      scale: { duration: 0.8, times: [0, 0.45, 0.85, 1], ease: "easeInOut" },
-                      rotate: { duration: 0.8, times: [0, 0.4, 0.85, 1], ease: "easeInOut" },
-                    },
-                  }),
+                  back: (p: Pt) => (stage.movil ? vueltaMovil(stage, p) : vueltaEscritorio(stage, p, flightDir)),
                 }}
                 onAnimationComplete={def => { if (def !== "back") setArrived(true); }}
               >
@@ -609,7 +671,7 @@ export default function TjBot({ report, onAction }: {
           </AnimatePresence>
 
           {/* El popup, bajo Nova, con el piquito hacia ella. */}
-          <div className="tjbot-dialog" style={{ "--dlg-top": `${Math.round(stage.to.y + HEAD * stage.scale * 0.92)}px` } as React.CSSProperties}>
+          <div className={`tjbot-dialog${stage.movil ? " is-movil" : ""}`} style={{ "--dlg-top": `${Math.round(stage.to.y + HEAD * stage.scale * 0.92)}px` } as React.CSSProperties}>
             <AnimatePresence>
               {open && current && (
                 <motion.div
@@ -632,11 +694,11 @@ export default function TjBot({ report, onAction }: {
                     <div className="tjbot-greet">
                       <span className="tjbot-greet-kicker">{BOT_NAME} · tu asistente de trading</span>
                       <h2>{report.teasers[0]}</h2>
-                      <p>
+                      {!stage.movil && <p>
                         {report.messages.length === 1 ? "Tengo una cosa que contarte" : `Tengo ${report.messages.length} cosas que contarte`}
                         {report.highlights.length ? ` · ${report.highlights.length} ${report.highlights.length === 1 ? "es importante" : "son importantes"}` : " · nada urgente"}
-                      </p>
-                      <p className="tjbot-corte">{textoAnalisis(report)}</p>
+                      </p>}
+                      {!stage.movil && <p className="tjbot-corte">{textoAnalisis(report)}</p>}
                     </div>
                     <button type="button" className="tj-icon-btn tjbot-close" onClick={close} aria-label="Cerrar" title="Cerrar (Esc)">
                       <X size={16} />
@@ -645,7 +707,7 @@ export default function TjBot({ report, onAction }: {
 
                   <div className="tjbot-modal-grid">
                     {/* Índice: las secciones, con cuántas cosas tiene cada una; el resalte se desliza a la activa. */}
-                    <nav className="tjbot-index" aria-label="Secciones">
+                    {!stage.movil && <nav className="tjbot-index" aria-label="Secciones">
                       {sections.map((g, i) => {
                         const urgent = g.s !== "pulso" && g.items.some(m => m.priority >= IMPORTANT);
                         const count = g.s === "pulso" && report.pulse ? `${report.pulse.score}` : String(g.items.length);
@@ -665,7 +727,7 @@ export default function TjBot({ report, onAction }: {
                           </button>
                         );
                       })}
-                    </nav>
+                    </nav>}
 
                     {/* La sección abierta. En el móvil, arrastrar a un lado pasa de sección. */}
                     <div className="tjbot-main">
@@ -699,10 +761,10 @@ export default function TjBot({ report, onAction }: {
                             }}
                             aria-live="polite"
                           >
-                            <header className="tjbot-section-head">
+                            {!stage.movil && <header className="tjbot-section-head">
                               <span aria-hidden="true">{SECTION_EMOJI[current.s]}</span>
                               <h3>{SECTION_LABEL[current.s]}</h3>
-                            </header>
+                            </header>}
                             <motion.div className="tjbot-list" variants={listVariants} custom={!visited} initial="hidden" animate="show">
                               {current.s === "pulso" && report.pulse
                                 ? <PulseView pulse={report.pulse} highlights={current.items} renderMsg={renderMsg} />
@@ -714,7 +776,31 @@ export default function TjBot({ report, onAction }: {
                     </div>
                   </div>
 
-                  {/* Pie: puntos de progreso, atrás y un «siguiente» que enseña qué viene. */}
+                  {/* Pie del móvil: solo flechas y, entre ellas, dónde estás. */}
+                  {stage.movil ? (
+                    <footer className="tjbot-foot tjbot-foot-movil">
+                      <button type="button" className="tjbot-arrow" onClick={() => go(at - 1)} disabled={at === 0} aria-label="Sección anterior">
+                        <ChevronLeft size={20} />
+                      </button>
+                      <div className="tjbot-where">
+                        <strong><span aria-hidden="true">{SECTION_EMOJI[current.s]}</span> {SECTION_LABEL[current.s]}</strong>
+                        <span className="tjbot-dots" aria-label={`Sección ${at + 1} de ${sections.length}`}>
+                          {sections.map((g, i) => (
+                            <motion.i key={g.s} className={i === at ? "is-on" : i < at ? "is-done" : undefined} animate={{ width: i === at ? 18 : 6 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} />
+                          ))}
+                        </span>
+                      </div>
+                      {isLast ? (
+                        <button type="button" className="tjbot-arrow is-done" onClick={close} aria-label="Entendido, cerrar">
+                          <span aria-hidden="true">👍</span>
+                        </button>
+                      ) : (
+                        <button type="button" className="tjbot-arrow is-next" onClick={() => go(at + 1)} aria-label={`Siguiente: ${SECTION_LABEL[next.s]}`}>
+                          <ChevronRight size={20} />
+                        </button>
+                      )}
+                    </footer>
+                  ) : (
                   <footer className="tjbot-foot">
                     <button type="button" className="tjbot-back" onClick={() => go(at - 1)} disabled={at === 0} aria-label="Sección anterior">
                       <ChevronLeft size={16} />
@@ -738,6 +824,7 @@ export default function TjBot({ report, onAction }: {
                       </button>
                     )}
                   </footer>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

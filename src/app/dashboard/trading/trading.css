@@ -1153,6 +1153,49 @@
   .tjbot-panel.is-modal .tjbot-body { max-height: calc(100vh - var(--dlg-top) - 260px); }
 }
 
+/*
+ * Bocadillo en el móvil: ocupa desde debajo de Nova hasta el fondo de la
+ * pantalla, así se ve entero. Cabecera corta, el contenido se desplaza por
+ * dentro y abajo solo dos flechas con la sección en medio.
+ */
+.tjbot-dialog.is-movil { bottom: calc(10px + env(safe-area-inset-bottom)); align-items: flex-start; padding: 0 10px; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal { display: flex; flex-direction: column; width: 100%; max-height: 100%; border-radius: 20px; }
+.tjbot-dialog.is-movil .tjbot-modal-head { flex-shrink: 0; align-items: center; padding: 0.85rem 0.9rem 0.8rem 1rem; }
+.tjbot-dialog.is-movil .tjbot-greet h2 { margin: 0.2rem 0 0; font-size: 1.05rem; line-height: 1.3; }
+.tjbot-dialog.is-movil .tjbot-close { width: 34px; height: 34px; flex-shrink: 0; }
+.tjbot-dialog.is-movil .tjbot-modal-grid { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.tjbot-dialog.is-movil .tjbot-main { display: flex; flex: 1; min-height: 0; flex-direction: column; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-body { flex: 1; min-height: 0; max-height: none; padding: 0.95rem 0.9rem 0.6rem; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-msg { font-size: 0.9rem; padding: 0.75rem 0.85rem; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-gauge { width: 104px; height: 104px; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-gauge-value { padding-top: 36px; }
+.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-foot-movil { flex-shrink: 0; justify-content: space-between; gap: 0.5rem; padding: 0.65rem 0.7rem 0.75rem; }
+
+.tjbot-arrow {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--tj-surface);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.12s, opacity 0.15s;
+}
+
+.tjbot-arrow:active:not(:disabled) { transform: scale(0.92); }
+.tjbot-arrow:disabled { opacity: 0.3; cursor: default; }
+.tjbot-arrow.is-next,
+.tjbot-arrow.is-done { border-color: rgba(230, 180, 85, 0.55); background: linear-gradient(135deg, rgba(230, 180, 85, 0.28), rgba(230, 180, 85, 0.1)); color: var(--tj-accent); }
+
+.tjbot-where { display: flex; flex: 1; min-width: 0; flex-direction: column; align-items: center; gap: 0.4rem; }
+.tjbot-where strong { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: var(--font-display); font-size: 0.92rem; font-weight: 600; color: var(--text-primary); }
+.tjbot-where .tjbot-dots i { height: 6px; }
+
 @media (max-width: 520px) {
   .tjbot-pulse { flex-direction: column; align-items: stretch; }
   .tjbot-gauge { align-self: center; }
