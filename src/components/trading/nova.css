@@ -1,0 +1,322 @@
+/*
+ * Nova, la cabeza (NovaHead.tsx). Va aparte del CSS del Diario porque Nova
+ * vive en dos sitios: en el Diario de Trading y, fuera de él, en la barra de
+ * arriba junto a «Diario de Trading» (NovaNav.tsx). La importa NovaHead, así
+ * que llega a cualquier página que la pinte.
+ */
+
+/* ── La cabeza ── */
+
+.nh {
+  --look-x: 0px;
+  --look-y: 0px;
+  position: relative;
+  display: block;
+  width: 112px;
+  height: 112px;
+  filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.38));
+}
+
+.nh svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* Flotar: un vaivén lento con un leve balanceo. Al volar, más vivo. */
+.nh-float { transform-box: view-box; transform-origin: 60px 64px; animation: nh-hover 4.2s ease-in-out infinite; }
+.nh.is-flying .nh-float { animation: nh-fly 1.6s ease-in-out infinite; }
+.nh.is-joy .nh-float { animation: nh-joy 0.95s cubic-bezier(0.3, 0, 0.3, 1) infinite; }
+.nh.act-sleep .nh-float { animation: nh-doze 5s ease-in-out infinite; }
+.nh.act-music .nh-float { animation: nh-groove 0.9s ease-in-out infinite; }
+.nh.act-ball .nh-float { animation: nh-header 1.5s ease-in-out infinite; }
+
+/* La estela: tenue en reposo, viva al volar, apagada dormido. */
+.nh-thrust { transform-box: fill-box; transform-origin: 50% 0; opacity: 0.45; animation: nh-thrust 1.2s ease-in-out infinite; transition: opacity 0.4s; }
+.nh.is-flying .nh-thrust { opacity: 1; animation-duration: 0.35s; }
+.nh.act-sleep .nh-thrust { opacity: 0.15; }
+
+
+.nh-antenna,
+.nh-antenna-glow { transform-box: fill-box; transform-origin: center; transition: fill 0.5s; }
+.nh-antenna-glow { animation: nh-glow 2.4s ease-in-out infinite; }
+.nh.is-worried .nh-antenna-glow { animation-duration: 1.1s; }
+.nh.is-joy .nh-antenna-glow { animation-duration: 0.6s; }
+.nh.act-sleep .nh-antenna-glow { animation: none; opacity: 0.08; }
+
+/* Cabeza: inclinaciones de cada actividad, siempre con transición suave. */
+.nh-head { transform-box: view-box; transform-origin: 60px 64px; transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.nh.act-sleep .nh-head { transform: rotate(-9deg) translateY(4px); }
+.nh.act-trade .nh-head,
+.nh.act-study .nh-head { transform: rotate(5deg); }
+.nh.act-ball .nh-head { transform: translateY(1px); }
+
+/* Ojos: mirar, parpadear. Concentrado, la mirada se va al objeto. */
+/* Mirar: el ojo se mueve un poco y la pupila mucho más (dentro del ojo, recortada). */
+.nh-look { transform: translate(calc(var(--look-x) * 0.3), calc(var(--look-y) * 0.3)); transition: transform 0.25s ease-out; }
+.nh-pupil { transform: translate(calc(var(--look-x) * 1.3), calc(var(--look-y) * 1.3)); transition: transform 0.18s ease-out; }
+.nh-look-prop { transform: none; }
+.nh-look-prop .nh-pupil { transform: translate(3.4px, 2.6px); }
+/* Parpadeo: uno simple y, más tarde, uno doble, como una persona. */
+.nh-eyes { transform-box: fill-box; transform-origin: center; animation: nh-blink 9s infinite; }
+.nh-eye { transform-box: fill-box; transform-origin: center; }
+/* Los destellos de los ojos al celebrar: aparecen, giran un poco y se apagan. */
+.nh-glint { transform-box: fill-box; transform-origin: center; animation: nh-glint 1.8s ease-in-out infinite; }
+.nh-glint-2 { animation-delay: 0.9s; }
+.nh.act-ball .nh-pupil { transform: translate(0, -3.6px); }
+
+.nh-mouth { transform-box: fill-box; transform-origin: center; }
+.nh.is-talking .nh-mouth { animation: nh-talk 0.42s ease-in-out 5; }
+.nh-snore { transform-box: fill-box; transform-origin: center; animation: nh-snore 5s ease-in-out infinite; }
+.nh-hum { transform-box: fill-box; transform-origin: center; animation: nh-hum 0.9s ease-in-out infinite; }
+
+/* Accesorios. */
+.nh-cap { transform-box: fill-box; transform-origin: 30% 100%; animation: nh-prop-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nh-pompom { transform-box: fill-box; transform-origin: center; animation: nh-pompom 5s ease-in-out infinite; }
+.nh-phones { animation: nh-prop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nh-glasses { animation: nh-prop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* ── Actividades: lo que mueve «con la mente», flotando a su lado ── */
+
+.nh-prop { transform-box: fill-box; transform-origin: center; animation: nh-prop-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both, nh-prop-bob 3.2s ease-in-out 0.6s infinite; }
+.nh-candles rect { transform-box: fill-box; transform-origin: center bottom; animation: nh-candle 1.8s ease-in-out infinite; }
+.nh-candles rect:nth-child(2) { animation-delay: 0.35s; }
+.nh-candles rect:nth-child(3) { animation-delay: 0.7s; }
+.nh-candles rect:nth-child(4) { animation-delay: 1.05s; }
+.nh-price { stroke-dasharray: 60; animation: nh-price 3.6s ease-in-out infinite; }
+.nh-page { transform-box: fill-box; transform-origin: left center; animation: nh-page 4.5s ease-in-out infinite; }
+
+/* Pelota: rebota sobre la cabeza, que la acompaña con un cabeceo. */
+.nh-ball { animation: nh-ball 1.5s cubic-bezier(0.33, 0, 0.67, 1) infinite; transform-box: fill-box; transform-origin: center; }
+
+/* «z», notas, corazones y destellos: suben y se desvanecen. */
+.nh-zzz,
+.nh-notes { position: absolute; top: 4px; right: -4px; pointer-events: none; }
+
+.nh-zzz i,
+.nh-notes i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font: italic 700 0.9rem var(--font-display);
+  color: #9aa6ff;
+  opacity: 0;
+  animation: nh-float-up 3s ease-out infinite;
+}
+
+.nh-notes i { font-style: normal; color: #c9a2ff; font-size: 1rem; }
+.nh-zzz i:nth-child(2),
+.nh-notes i:nth-child(2) { font-size: 1.05rem; animation-delay: 1s; }
+.nh-zzz i:nth-child(3),
+.nh-notes i:nth-child(3) { font-size: 1.2rem; animation-delay: 2s; }
+
+.nh-hearts { position: absolute; top: 10px; left: 50%; pointer-events: none; }
+.nh-hearts i { position: absolute; left: 0; top: 0; font-size: 0.9rem; font-style: normal; opacity: 0; animation: nh-heart 1.6s ease-out infinite; }
+.nh-hearts i:nth-child(1) { --hx: -40px; }
+.nh-hearts i:nth-child(2) { --hx: -12px; animation-delay: 0.4s; font-size: 1.05rem; }
+.nh-hearts i:nth-child(3) { --hx: 14px; animation-delay: 0.8s; }
+.nh-hearts i:nth-child(4) { --hx: 40px; animation-delay: 1.2s; font-size: 0.8rem; }
+
+.nh-sparkles { position: absolute; inset: -8px; pointer-events: none; }
+.nh-sparkles i { position: absolute; font-style: normal; font-size: 0.85rem; color: #ffd76a; animation: nh-twinkle 1.6s ease-in-out infinite; }
+.nh-sparkles i:nth-child(1) { top: 10px; left: 2px; }
+.nh-sparkles i:nth-child(2) { top: 24px; right: -2px; font-size: 0.65rem; animation-delay: 0.5s; }
+.nh-sparkles i:nth-child(3) { bottom: 22px; left: -6px; font-size: 0.6rem; animation-delay: 1s; }
+
+/* Vaivén en forma de ocho: menos mecánico que subir y bajar. */
+@keyframes nh-hover { 0%, 100% { transform: translate(0, 0) rotate(-1.2deg); } 25% { transform: translate(2px, -4px) rotate(0.4deg); } 50% { transform: translate(0, -6px) rotate(1.2deg); } 75% { transform: translate(-2px, -3px) rotate(-0.2deg); } }
+@keyframes nh-fly { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-4px) rotate(1deg); } }
+@keyframes nh-joy { 0%, 100% { transform: translateY(0) scale(1, 1); } 18% { transform: translateY(1px) scale(1.07, 0.93); } 48% { transform: translateY(-14px) scale(0.96, 1.05) rotate(-4deg); } 72% { transform: translateY(-4px) scale(1, 1) rotate(4deg); } }
+@keyframes nh-doze { 0%, 100% { transform: translateY(2px) scale(1, 1); } 50% { transform: translateY(5px) scale(1.02, 0.98); } }
+@keyframes nh-groove { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-3px); } }
+@keyframes nh-header { 0%, 100% { transform: translateY(0); } 8% { transform: translateY(3px) scale(1.03, 0.97); } 20% { transform: translateY(-2px); } }
+@keyframes nh-thrust { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(0.85, 1.2); } }
+@keyframes nh-glow { 0%, 100% { transform: scale(1); opacity: 0.25; } 50% { transform: scale(1.35); opacity: 0.08; } }
+@keyframes nh-blink { 0%, 42%, 46%, 88%, 91%, 94%, 100% { transform: scaleY(1); } 44% { transform: scaleY(0.08); } 89.5% { transform: scaleY(0.08); } 92.5% { transform: scaleY(0.08); } }
+
+/* ── Gestos al azar (NovaHead pone .q-<gesto> unos segundos) ── */
+.nh.q-tilt .nh-head { animation: nh-q-tilt 1.7s ease-in-out; }
+.nh.q-nod .nh-head { animation: nh-q-nod 1.3s ease-in-out; }
+.nh.q-spin .nh-head { animation: nh-q-spin 1.3s cubic-bezier(0.65, 0, 0.35, 1); }
+.nh.q-wiggle .nh-head { animation: nh-q-wiggle 1s ease-in-out; }
+.nh.q-hop .nh-head { animation: nh-q-hop 1.1s cubic-bezier(0.3, 0, 0.3, 1); }
+.nh.q-wink .nh-eye-r { animation: nh-q-wink 0.9s ease-in-out; }
+.nh.q-look .nh-pupil-q { animation: nh-q-look 2.2s ease-in-out; }
+.nh.q-surprise .nh-eye { animation: nh-q-surprise 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes nh-q-tilt { 0%, 100% { transform: rotate(0deg); } 30%, 70% { transform: rotate(-12deg); } }
+@keyframes nh-q-nod { 0%, 100% { transform: translateY(0) rotate(0deg); } 25% { transform: translateY(3px) rotate(4deg); } 50% { transform: translateY(0) rotate(0deg); } 75% { transform: translateY(3px) rotate(4deg); } }
+@keyframes nh-q-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes nh-q-wiggle { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(-7deg); } 40% { transform: rotate(6deg); } 60% { transform: rotate(-4deg); } 80% { transform: rotate(2deg); } }
+@keyframes nh-q-hop { 0%, 100% { transform: translateY(0) scale(1, 1); } 20% { transform: translateY(1px) scale(1.06, 0.94); } 50% { transform: translateY(-12px) scale(0.97, 1.04); } 80% { transform: translateY(0) scale(1.03, 0.97); } }
+@keyframes nh-q-wink { 0%, 100% { transform: scaleY(1); } 30%, 65% { transform: scaleY(0.1); } }
+@keyframes nh-q-look { 0%, 100% { transform: translate(0, 0); } 25%, 40% { transform: translate(-3.5px, 0.5px); } 60%, 80% { transform: translate(3.5px, 0.5px); } }
+@keyframes nh-q-surprise { 0%, 100% { transform: scale(1); } 30%, 70% { transform: scale(1.18); } }
+@keyframes nh-glint { 0%, 100% { transform: scale(0.3) rotate(0deg); opacity: 0; } 45% { transform: scale(1.15) rotate(45deg); opacity: 1; } 70% { transform: scale(0.9) rotate(60deg); opacity: 0.9; } }
+@keyframes nh-talk { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.6); } }
+@keyframes nh-snore { 0%, 100% { transform: scale(0.7); } 50% { transform: scale(1.2); } }
+@keyframes nh-hum { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.15); } }
+@keyframes nh-pompom { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-2px, 3px); } }
+@keyframes nh-prop-in { from { opacity: 0; transform: translateY(8px) scale(0.8); } to { opacity: 1; transform: none; } }
+@keyframes nh-prop-bob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
+@keyframes nh-candle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.5); } }
+@keyframes nh-price { 0% { stroke-dashoffset: 60; } 60%, 100% { stroke-dashoffset: 0; } }
+@keyframes nh-page { 0%, 60%, 100% { transform: scaleX(1); } 75% { transform: scaleX(-1); } 88% { transform: scaleX(-1); opacity: 0; } 89% { transform: scaleX(1); opacity: 0; } 97% { opacity: 1; } }
+@keyframes nh-ball { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-34px) rotate(200deg); } }
+@keyframes nh-float-up { 0% { opacity: 0; transform: translate(0, 0) scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(18px, -40px) scale(1.15); } }
+@keyframes nh-heart { 0% { opacity: 0; transform: translate(0, 0) scale(0.5); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--hx), -52px) scale(1.2); } }
+@keyframes nh-twinkle { 0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(25deg); } }
+@keyframes nh-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.82); opacity: 0.65; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .nh *,
+  .nh-float,
+  .nh-glint { animation: none !important; }
+  .nh-look { transition: none; }
+}
+
+/* ── Nova en la barra de arriba (NovaNav.tsx) ──
+ * Su muelle, al final de la cápsula y separado por una línea fina. Sobrio
+ * desde la segunda vuelta del 07-11-2026 (el anillo en órbita y el halo
+ * permanente se quitaron por exagerados): Nova flotando, un brillo dorado muy
+ * suave solo al pasar el ratón y, con novedades sin leer, el punto rojo. Al
+ * pasarle el ratón, salta y saca su bocadillo. En el Diario el muelle se recoge (ancho 0):
+ * Nova está en su habitación. Mientras llega volando, el hueco espera vacío.
+ * Nova mide 34 px: tiene que coincidir con NOVA_NAV_SIZE en novaVuelo.tsx.
+ */
+.nav-principal li:has(> .nova-dock) { position: relative; display: flex; align-items: center; }
+
+.nova-dock {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+}
+
+.nova-dock.is-fuera { width: 0; overflow: hidden; }
+
+.nova-dock-sep {
+  width: 1px;
+  height: 22px;
+  margin: 0 8px 0 2px;
+  background: rgba(240, 244, 255, 0.12);
+}
+
+.nova-nav {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+.nova-nav .nh {
+  position: relative;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nova-dock.is-encima .nova-nav .nh { transform: translateY(-2px) scale(1.12); }
+.nova-nav.is-llegando .nh { visibility: hidden; }
+
+/* Los corazones están dibujados para la Nova grande: aquí se saldrían de la barra. */
+.nova-nav .nh-hearts { display: none; }
+
+/* El brillo: un círculo dorado muy suave detrás de Nova, solo con el ratón encima. */
+.nova-nav-halo {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 215, 106, 0.22), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.nova-dock.is-encima .nova-nav-halo { opacity: 1; }
+
+/* El punto rojo de «informe sin leer», con su latido. */
+.nova-nav-ping {
+  position: absolute;
+  top: 4px;
+  right: 3px;
+  z-index: 3;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #0b1426;
+  border-radius: 50%;
+  background: #ff6b6b;
+}
+
+.nova-nav-ping::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid #ff6b6b;
+  border-radius: 50%;
+  animation: nova-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes nova-ping {
+  75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* El bocadillo: cuelga bajo Nova, con el piquito hacia ella. */
+.nova-nav-bocadillo {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: -6px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.85rem 0.6rem;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #eef2ff 100%);
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.85);
+  white-space: nowrap;
+  transform-origin: calc(100% - 28px) 0;
+  pointer-events: none;
+}
+
+.nova-nav-bocadillo::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 22px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: #ffffff;
+  transform: rotate(45deg);
+}
+
+.nova-nav-bocadillo b {
+  position: relative;
+  font-size: 0.82rem;
+  color: #0b1426;
+}
+
+.nova-nav-bocadillo span {
+  position: relative;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #4a5675;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova-nav-ping::after { animation: none; }
+  .nova-nav-halo { transition: none; }
+  .nova-nav .nh { transition: none; }
+}
+
+/* La Nova que viaja entre la barra y el Diario: por encima de todo, sin estorbar. */
+.nova-vuelo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  transform-origin: 0 0;
+  pointer-events: none;
+  will-change: transform;
+}

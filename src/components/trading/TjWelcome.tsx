@@ -4,6 +4,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 import { pctStr, pnlStr, toneOf } from "./tjFormat";
 import { periodReads, type Trade } from "./tjStats";
+import AvatarUsuario from "@/components/AvatarUsuario";
 
 const noSubscribe = () => () => {};
 
@@ -21,6 +22,7 @@ function useGreeting(): string {
 
 export default function TjWelcome({
   name,
+  avatar,
   trades,
   capital,
   now,
@@ -28,6 +30,8 @@ export default function TjWelcome({
   bot,
 }: {
   name: string;
+  /** La foto que eligió en «Mi perfil»: sale junto a su nombre si la eligió. */
+  avatar: string | null;
   trades: Trade[];
   capital: number | null;
   now: Date;
@@ -43,9 +47,12 @@ export default function TjWelcome({
     <header className="tjw">
       <div className="tjw-top">
         <div className="tjw-hello">
-          <h1 className="tjw-title">
-            {greeting}, <span className="tjw-name">{name}</span>
-          </h1>
+          <div className="tjw-title-fila">
+            {avatar && <AvatarUsuario avatar={avatar} inicial={(name.charAt(0) || "U").toUpperCase()} className="tjw-foto" />}
+            <h1 className="tjw-title">
+              {greeting}, <span className="tjw-name">{name}</span>
+            </h1>
+          </div>
           {/* Nova: lo que antes era la frase de la cabecera ahora lo cuenta él, y mucho más. */}
           {bot}
         </div>

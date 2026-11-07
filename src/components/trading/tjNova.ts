@@ -13,6 +13,12 @@
  *
  * Son reglas sobre los datos, no un modelo de IA: instantáneo, gratis y sin
  * inventar nada. Los emojis van aquí a propósito: el admin los pidió (06-11-2026).
+ *
+ * Se rehace ENTERO con cada dato nuevo (una operación, un ánimo, el capital),
+ * decidido con el admin el 07-11-2026: lo primero que hace es reaccionar a lo
+ * último apuntado. Para no ser pesada, cada capítulo tiene un tope de mensajes
+ * (TOPE) y manda la prioridad; para no pasar nada por alto, «Lo más importante»
+ * se elige entre todos los mensajes antes de recortar.
  */
 
 import { MONTHS, WEEKDAY_NAMES, pctStr, pnlStr, rStr } from "./tjFormat";
@@ -70,9 +76,14 @@ export interface BotReport {
   expression: BotExpression;
   /** Huella de los mensajes: si cambia, hay algo nuevo que el usuario no ha visto. */
   signature: string;
+  /** Cuándo se hizo el análisis (ISO) y con cuántas operaciones. */
+  analizado: string;
+  operaciones: number;
 }
 
 export const BOT_NAME = "Nova";
+/** Dónde guarda el Diario la huella del último análisis (la lee NovaNav para avisar de novedades). */
+export const NOVA_FIRMA = "nova-firma";
 export const IMPORTANT = 75;
 
 export const SECTION_LABEL: Record<BotSection, string> = {
@@ -189,6 +200,43 @@ function buildPulse(trades: Trade[], dias: DiasMap, ctx: Map<string, TradeContex
 
 // ─────────────────────────── Informe ───────────────────────────
 
+/*
+ * Cuántos mensajes enseña cada capítulo como mucho. Nova se rehace con CADA
+ * dato nuevo, así que tiene que ser corta: dentro de cada capítulo manda la
+ * prioridad y lo que no cabe se queda fuera. Lo urgente nunca se pierde:
+ * «Lo más importante» se elige ANTES de recortar, entre todos los mensajes.
+ */
+const TOPE: Record<Exclude<BotSection, "pulso">, number> = {
+  hoy: 4,
+  animo: 3,
+  operaciones: 4,
+  hitos: 2,
+  consejos: 4,
+};
+
+/** Cuántos días atrás un día con operaciones sigue siendo «tu última sesión» (cubre un fin de semana). */
+const SESION_DIAS = 3;
+/** Cuántos días atrás lo último que apuntaste aún merece una reacción de Nova. */
+const NOVEDAD_DIAS = 3;
+/** Pérdida que supera el riesgo planeado en más de esto: el stop no se respetó. */
+const STOP_HOLGURA = 1.1;
+
+/** Prioridad y emoji de cada lectura del análisis (buildInsights), según lo que dice. */
+const INSIGHT: Record<string, { win: number; loss: number; be: number }> = {
+  stop: { win: 0, loss: 68, be: 0 },
+  corta: { win: 0, loss: 62, be: 0 },
+  esperanza: { win: 42, loss: 66, be: 0 },
+  direccion: { win: 0, loss: 54, be: 0 },
+  "par-low": { win: 0, loss: 52, be: 0 },
+  "par-top": { win: 36, loss: 0, be: 0 },
+  dia: { win: 0, loss: 48, be: 0 },
+  payoff: { win: 40, loss: 56, be: 0 },
+  muestra: { win: 0, loss: 0, be: 22 },
+};
+
+/** R de una operación (lo ganado o perdido en veces el riesgo), si tiene riesgo. */
+const rDe = (t: Trade) => (t.risk_amount > 0 ? t.pnl / t.risk_amount : null);
+
 export function buildBotReport({ name, trades, dias, milestones, ctx, stats, capital, now }: Input): BotReport {
   const out: BotMessage[] = [];
   const add = (m: Omit<BotMessage, "id"> & { key: string }) => {
@@ -196,12 +244,22 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
     out.push({ id: `${m.section}-${key}`, ...rest });
   };
 
-  const hoyKey = fechaKey(now);
   const porDia = pnlPorDia(trades);
-  const hoy = porDia.get(hoyKey);
+  const hoyKey = fechaKey(now);
+  // «Hoy» si hoy ya hay operaciones; si no, la última sesión, si fue hace poco.
+  const sesionKey = porDia.has(hoyKey) ? hoyKey : [...porDia.keys()].filter(k => k < hoyKey).sort().pop();
+  const sesion = sesionKey && daysBetween(fechaDate(sesionKey), now) <= SESION_DIAS
+    ? { key: sesionKey, hoy: sesionKey === hoyKey, dia: dayName(fechaDate(sesionKey)), ...porDia.get(sesionKey)! }
+    : null;
+  const cuando = sesion ? (sesion.hoy ? "hoy" : sesion.dia) : "";
   const animoHoy = dias[hoyKey]?.animo ? animoInfo(dias[hoyKey].animo!) : null;
+  const animoSesion = sesion && dias[sesion.key]?.animo ? animoInfo(dias[sesion.key].animo!) : null;
   const last = trades[trades.length - 1];
   const { tone: rachaTone, count: rachaN } = stats.currentStreak;
+
+  // Lo último que el usuario APUNTÓ (por cuándo lo guardó, no por la fecha de la operación).
+  const apuntada = trades.reduce<Trade | null>((a, t) => (!a || (t.created_at ?? "") > (a.created_at ?? "") ? t : a), null);
+  const novedad = apuntada && apuntada.created_at && daysBetween(new Date(apuntada.created_at), now) <= NOVEDAD_DIAS ? apuntada : null;
 
   // Curva de capital para máximos y caídas (solo con capital).
   let peak = capital ?? 0;
@@ -216,7 +274,7 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
   });
   const ddPct = capital && peak > 0 ? ((equity - peak) / peak) * 100 : null;
 
-  // ───────── Tu situación: hoy y esta semana ─────────
+  // ───────── Tu situación ─────────
   if (!trades.length) {
     add({
       section: "hoy", key: "vacio", emoji: "✍️", tone: "accent", priority: 95,
@@ -224,23 +282,51 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       teaser: "¡Empecemos tu diario! ✍️", action: { kind: "nuevo", label: "Apuntar mi primera operación" },
     });
   } else {
-    if (hoy) {
-      // Sobreoperar: hoy el doble (o más) de lo normal en un día con operaciones.
-      const otrosDias = [...porDia.entries()].filter(([k]) => k !== hoyKey).map(([, v]) => v.count);
+    /*
+     * HABILIDAD · Reacción a lo último apuntado. Lo primero que Nova mira cuando
+     * llega un dato nuevo: cómo salió en R, si respetó el plan (stop y objetivo)
+     * y si lleva su porqué. Todo en un mensaje: es una reacción, no un informe.
+     */
+    if (novedad) {
+      const r = rDe(novedad);
+      const partes: string[] = [`${novedad.pair} en ${novedad.direction}, ${pnlStr(novedad.pnl)}${r != null ? ` (${rStr(r)})` : ""}`];
+      let rompioPlan = false;
+      if (novedad.result === "loss" && novedad.risk_amount > 0 && -novedad.pnl > novedad.risk_amount * STOP_HOLGURA) {
+        partes.push(`perdiste un ${Math.round((-novedad.pnl / novedad.risk_amount - 1) * 100)} % más de lo que arriesgabas: ¿moviste el stop?`);
+        rompioPlan = true;
+      } else if (novedad.result === "win" && novedad.expected_gain > 0 && novedad.pnl < novedad.expected_gain * 0.5) {
+        partes.push(`te quedaste con el ${Math.round((novedad.pnl / novedad.expected_gain) * 100)} % de tu objetivo; si cerraste por miedo, apúntalo`);
+      } else if (novedad.result === "loss") {
+        partes.push("perdiste lo planeado: eso es respetar el stop 👏");
+      } else if (novedad.result === "win") {
+        partes.push("ejecutada según tu plan 👏");
+      }
+      if (!novedad.strategy && !novedad.notes) partes.push("le falta la estrategia o una nota, y sin porqué no hay de qué aprender");
+      add({
+        section: "hoy", key: "novedad", emoji: rompioPlan ? "🧐" : novedad.pnl > 0 ? "✅" : novedad.pnl < 0 ? "📝" : "➖",
+        tone: rompioPlan ? "loss" : novedad.pnl > 0 ? "win" : novedad.pnl < 0 ? "loss" : "be",
+        priority: rompioPlan ? 83 : 66,
+        text: `Acabo de ver tu última operación: ${partes.join("; ")}.`,
+        teaser: rompioPlan ? "Revisemos tu última operación 🧐" : "He visto tu nueva operación 👀",
+        action: { kind: "operaciones", label: "Ver mis operaciones" },
+      });
+    }
+
+    if (sesion) {
+      // Sobreoperar: el doble (o más) de lo normal en un día con operaciones.
+      const otrosDias = [...porDia.entries()].filter(([k]) => k !== sesion.key).map(([, v]) => v.count);
       const normal = avg(otrosDias);
-      if (normal != null && hoy.count >= 3 && hoy.count >= normal * 2) {
+      if (normal != null && sesion.count >= 3 && sesion.count >= normal * 2) {
         add({
           section: "hoy", key: "sobreoperar", emoji: "🌀", tone: "loss", priority: 85,
-          text: `Hoy llevas ${hoy.count} operaciones y un día normal tuyo tiene ${normal.toFixed(1).replace(".", ",")}. Operar de más suele salir caro: ¿cada entrada estaba en tu plan?`,
-          teaser: "Mucha actividad hoy… 👀",
+          text: `${cap(cuando)} ${sesion.hoy ? "llevas" : "hiciste"} ${sesion.count} operaciones y un día normal tuyo tiene ${normal.toFixed(1).replace(".", ",")}. Operar de más suele salir caro: ¿cada entrada estaba en tu plan?`,
+          teaser: "Mucha actividad… 👀",
         });
       }
       add({
-        section: "hoy", key: "hoy", emoji: hoy.pnl >= 0 ? "💪" : "🧘", tone: hoy.pnl >= 0 ? "win" : "loss", priority: 70,
-        text: hoy.pnl >= 0
-          ? `Hoy llevas ${plural(hoy.count, "operación", "operaciones")} y vas ${pnlStr(hoy.pnl)}. ¡Buen día!`
-          : `Hoy llevas ${plural(hoy.count, "operación", "operaciones")} y vas ${pnlStr(hoy.pnl)}. Respira: un mal día no define tu mes.`,
-        teaser: hoy.pnl > 0 ? "¡Buen día de trading! 💪" : undefined,
+        section: "hoy", key: "sesion", emoji: sesion.pnl >= 0 ? "💪" : "🧘", tone: sesion.pnl >= 0 ? "win" : "loss", priority: 58,
+        text: `${sesion.hoy ? "Hoy llevas" : `Tu última sesión fue ${sesion.dia}:`} ${plural(sesion.count, "operación", "operaciones")} y ${sesion.hoy ? "vas" : "cerraste"} en ${pnlStr(sesion.pnl)}. ${sesion.pnl >= 0 ? "¡Buen día!" : "Respira: un mal día no define tu mes."}`,
+        teaser: sesion.pnl > 0 ? "¡Buen día de trading! 💪" : undefined,
       });
     }
 
@@ -258,38 +344,46 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       });
     }
 
-    add({ section: "hoy", key: "lectura", emoji: "🗓️", tone: "be", priority: 30, text: welcomeReading(periodReads(trades, now), trades.length) });
-
     const sinOperar = last ? daysBetween(new Date(last.date), now) : 0;
     if (sinOperar >= 7) {
       add({ section: "hoy", key: "pausa", emoji: "😌", tone: "be", priority: 40, text: `Llevas ${plural(sinOperar, "día", "días")} sin operar. Esperar al momento bueno también es operar bien.` });
     }
+    add({ section: "hoy", key: "lectura", emoji: "🗓️", tone: "be", priority: 30, text: welcomeReading(periodReads(trades, now), trades.length) });
     if (capital) {
       const ret = (stats.totalPnl / capital) * 100;
       add({
-        section: "hoy", key: "cuenta", emoji: ret >= 0 ? "📈" : "📉", tone: ret > 0 ? "win" : ret < 0 ? "loss" : "be", priority: 35,
+        section: "hoy", key: "cuenta", emoji: ret >= 0 ? "📈" : "📉", tone: ret > 0 ? "win" : ret < 0 ? "loss" : "be", priority: 28,
         text: `Tu cuenta está en ${pctStr(ret, true, 2)} desde que empezaste (${pnlStr(stats.totalPnl)}).`,
       });
     }
   }
 
   // ───────── Tus sensaciones ─────────
-  if (!animoHoy) {
+  if (animoHoy) {
+    // Lo que contó HOY manda: es lo que pesa en las decisiones que aún puede tomar.
+    if (animoHoy.value <= 2) {
+      add({
+        section: "animo", key: "hoy-mal", emoji: animoHoy.emoji, tone: "loss", priority: sesion?.hoy ? 88 : 76,
+        text: sesion?.hoy
+          ? `Hoy te sientes «${animoHoy.label.toLowerCase()}» y estás operando. Con la cabeza cargada se toman peores decisiones: si dudas, para por hoy.`
+          : `Hoy no es tu mejor día (${animoHoy.label.toLowerCase()}). Si no te ves fino, no operar también es una decisión ganadora.`,
+        teaser: "Hoy cuídate un poco 🫶",
+      });
+    } else {
+      add({ section: "animo", key: "hoy-bien", emoji: animoHoy.emoji, tone: "win", priority: 30, text: `Hoy te sientes «${animoHoy.label.toLowerCase()}». ¡Aprovéchalo, pero sin saltarte tu plan!` });
+    }
+  } else if (sesion && !animoSesion) {
+    // Operó y no contó cómo estaba: se le pide, sin insistir si no ha operado.
     add({
-      section: "animo", key: "hoy-falta", emoji: "🙂", tone: "accent", priority: 55,
-      text: "Aún no me has contado cómo te sientes hoy. Me ayuda a entender tus resultados: elige un emoji al apuntar tu próxima operación.",
-      teaser: "¿Cómo te sientes hoy? 🙂", action: { kind: "nuevo", label: "Contarte cómo me siento" },
+      section: "animo", key: "falta", emoji: "🙂", tone: "accent", priority: sesion.hoy ? 56 : 46,
+      text: `No me contaste cómo te sentías ${cuando}. Me ayuda a entender tus resultados: elige un emoji al apuntar tu próxima operación.`,
+      teaser: "¿Cómo te sientes al operar? 🙂", action: { kind: "nuevo", label: "Contarte cómo me siento" },
     });
-  } else if (animoHoy.value <= 2) {
+  } else if (sesion && !sesion.hoy && animoSesion && animoSesion.value <= 2) {
     add({
-      section: "animo", key: "hoy-mal", emoji: animoHoy.emoji, tone: "loss", priority: hoy ? 90 : 75,
-      text: hoy
-        ? `Hoy te sientes «${animoHoy.label.toLowerCase()}» y has operado. Con la cabeza cargada se toman peores decisiones: si dudas, para por hoy.`
-        : `Hoy no es tu mejor día (${animoHoy.label.toLowerCase()}). Si no te ves fino, no operar también es una decisión ganadora.`,
-      teaser: "Hoy cuídate un poco 🫶",
+      section: "animo", key: "sesion-mal", emoji: animoSesion.emoji, tone: "loss", priority: 64,
+      text: `${cap(sesion.dia)} te sentías «${animoSesion.label.toLowerCase()}» y operaste (${pnlStr(sesion.pnl)}). Antes de la próxima sesión, comprueba cómo llegas.`,
     });
-  } else {
-    add({ section: "animo", key: "hoy-bien", emoji: animoHoy.emoji, tone: "win", priority: 30, text: `Hoy te sientes «${animoHoy.label.toLowerCase()}». ¡Aprovéchalo, pero sin saltarte tu plan!` });
   }
 
   // ¿Operar con mal ánimo le cuesta dinero? Solo con al menos 2 días de cada lado.
@@ -324,35 +418,27 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
     }
   }
 
-  // El último día reciente (dos semanas) en que operó sintiéndose mal y perdió.
+  // El último día reciente (dos semanas) en que operó sintiéndose mal y perdió, si no es el que ya se ha contado.
   const reciente = Object.values(dias)
     .filter(d => d.animo != null && d.animo <= 2 && (porDia.get(d.fecha)?.pnl ?? 0) < 0)
-    .filter(d => daysBetween(fechaDate(d.fecha), now) <= 14 && d.fecha !== hoyKey)
+    .filter(d => daysBetween(fechaDate(d.fecha), now) <= 14 && d.fecha !== hoyKey && d.fecha !== sesion?.key)
     .sort((a, b) => b.fecha.localeCompare(a.fecha))[0];
   if (reciente) {
     const a = animoInfo(reciente.animo!);
     const d = fechaDate(reciente.fecha);
     add({
-      section: "animo", key: "reciente", emoji: "🤔", tone: "loss", priority: 60,
+      section: "animo", key: "reciente", emoji: "🤔", tone: "loss", priority: 58,
       text: `${cap(dayName(d))} de ${MONTHS[d.getMonth()]} te sentías «${a.label.toLowerCase()}» ${a.emoji} y cerraste en ${pnlStr(porDia.get(reciente.fecha)!.pnl)}. ¿Casualidad?`,
     });
   }
 
   const racha = rachaDias(dias, now);
   if (racha >= 3) {
-    add({ section: "animo", key: "racha-diario", emoji: "📔", tone: "win", priority: 38, text: `Llevas ${racha} días seguidos contándome cómo te sientes. ¡Esa constancia es oro!` });
+    add({ section: "animo", key: "racha-diario", emoji: "📔", tone: "win", priority: 36, text: `Llevas ${racha} días seguidos contándome cómo te sientes. ¡Esa constancia es oro!` });
   }
 
   // ───────── Tus últimas operaciones ─────────
   if (last) {
-    const d = new Date(last.date);
-    add({
-      section: "operaciones", key: "ultima", emoji: last.result === "win" ? "✅" : last.result === "loss" ? "❌" : "➖",
-      tone: last.pnl > 0 ? "win" : last.pnl < 0 ? "loss" : "be", priority: 45,
-      text: `Tu última operación: ${last.pair} en ${last.direction}, ${dayName(d)}, cerró en ${pnlStr(last.pnl)}.`,
-      action: { kind: "operaciones", label: "Ver mis operaciones" },
-    });
-
     if (rachaTone === "loss" && rachaN >= 2) {
       add({
         section: "operaciones", key: "racha", emoji: "🛑", tone: "loss", priority: rachaN >= 3 ? 92 : 80,
@@ -375,6 +461,24 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       });
     }
 
+    /*
+     * HABILIDAD · Tamaño por euforia. La última arriesga bastante más de lo
+     * normal en él (la mediana de las 10 anteriores): suele pasar tras ganar.
+     */
+    const previas = trades.slice(-RECIENTES - 1, -1).map(t => t.risk_amount).filter(v => v > 0).sort((a, b) => a - b);
+    if (previas.length >= 5 && last.risk_amount > 0) {
+      const mediana = previas[Math.floor(previas.length / 2)];
+      const sube = last.risk_amount / mediana;
+      if (sube >= 1.5) {
+        const trasGanar = trades[trades.length - 2]?.result === "win";
+        add({
+          section: "operaciones", key: "tamano", emoji: "📏", tone: "loss", priority: trasGanar ? 79 : 70,
+          text: `En la última arriesgaste ${sube.toFixed(1).replace(".", ",")} veces lo que sueles${trasGanar ? ", justo después de una ganancia" : ""}. Si no estaba en tu plan, vuelve a tu tamaño de siempre: la euforia también hace perder.`,
+          teaser: "Has subido el tamaño 📏",
+        });
+      }
+    }
+
     const prev = trades[trades.length - 2];
     if (prev?.result === "loss") {
       const min = Math.round((new Date(last.date).getTime() - new Date(prev.date).getTime()) / 60_000);
@@ -387,6 +491,21 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       }
     }
 
+    /*
+     * HABILIDAD · Stop respetado en lo reciente. Entre las últimas 10, cuántas
+     * pérdidas fueron mayores que el riesgo planeado. Una sola puede ser
+     * deslizamiento; dos o más ya son una costumbre.
+     */
+    const recientes = trades.slice(-RECIENTES);
+    const saltados = recientes.filter(t => t.result === "loss" && t.risk_amount > 0 && -t.pnl > t.risk_amount * STOP_HOLGURA).length;
+    if (saltados >= 2) {
+      add({
+        section: "operaciones", key: "stop", emoji: "🧱", tone: "loss", priority: 81,
+        text: `En tus últimas ${recientes.length}, ${saltados} pérdidas fueron mayores que lo que arriesgabas. El stop es tu seguro: si lo mueves, el riesgo que apuntas deja de ser real.`,
+        teaser: "Hablemos de tu stop 🧱",
+      });
+    }
+
     const ult = trades.slice(-5);
     if (ult.length >= 3) {
       const w = ult.filter(t => t.result === "win").length;
@@ -395,11 +514,12 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       add({
         section: "operaciones", key: "ultimas", emoji: "📋", tone: p > 0 ? "win" : p < 0 ? "loss" : "be", priority: 40,
         text: `En tus últimas ${ult.length}: ${plural(w, "ganada", "ganadas")} y ${plural(l, "perdida", "perdidas")}, en total ${pnlStr(p)}.`,
+        action: { kind: "operaciones", label: "Ver mis operaciones" },
       });
     }
 
     // Riesgo medio reciente (con capital y al menos 5 operaciones).
-    const riesgos = trades.slice(-RECIENTES).map(t => ctx.get(t.id)?.riskPct).filter((r): r is number => r != null);
+    const riesgos = recientes.map(t => ctx.get(t.id)?.riskPct).filter((r): r is number => r != null);
     const rMedio = avg(riesgos);
     if (riesgos.length >= 5 && rMedio != null) {
       add(rMedio > RISK_LIMIT_PCT
@@ -408,8 +528,8 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
     }
 
     // Forma: las últimas 10 frente a las 10 anteriores, en R.
-    const rsDe = (v: Trade[]) => v.map(t => (t.risk_amount > 0 ? t.pnl / t.risk_amount : null)).filter((r): r is number => r != null);
-    const ahora = rsDe(trades.slice(-RECIENTES));
+    const rsDe = (v: Trade[]) => v.map(rDe).filter((r): r is number => r != null);
+    const ahora = rsDe(recientes);
     const antes = rsDe(trades.slice(-2 * RECIENTES, -RECIENTES));
     if (ahora.length >= 8 && antes.length >= 8) {
       const a = avg(ahora)!;
@@ -423,21 +543,6 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
   }
 
   // ───────── Tus hitos ─────────
-  const enCurso = milestones
-    .filter(m => !m.locked)
-    .map(m => ({ m, p: milestoneProgress(m) }))
-    .filter(x => x.p.next != null)
-    .sort((a, b) => b.p.progress - a.p.progress);
-  enCurso.slice(0, 2).forEach(({ m, p }, i) => {
-    const falta = p.next! - m.best;
-    const cerca = p.progress >= 75;
-    add({
-      section: "hitos", key: `cerca-${m.id}`, emoji: cerca ? "🔥" : i === 0 ? "🏆" : "🎯", tone: "accent", priority: cerca ? 72 : 45 - i * 5,
-      text: `Te ${Math.ceil(falta) === 1 && m.id !== "rentabilidad" ? "falta" : "faltan"} ${hitoFalta(m, falta)} para desbloquear «${m.title}», nivel ${p.level + 1}.`,
-      teaser: cerca ? "¡Tienes un hito muy cerca! 🏆" : undefined,
-      action: i === 0 ? { kind: "hitos", label: "Ver mis hitos" } : undefined,
-    });
-  });
   const recien = milestones
     .flatMap(m => m.reachedAt.map((at, i) => ({ m, level: i + 1, at })))
     .filter(x => x.at && daysBetween(new Date(x.at), now) <= 7)
@@ -448,6 +553,22 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       text: `¡Desbloqueaste «${recien.m.title}», nivel ${recien.level}, hace muy poco! Sigue así.`, teaser: "¡Tengo algo que celebrar! 🎉",
     });
   }
+  milestones
+    .filter(m => !m.locked)
+    .map(m => ({ m, p: milestoneProgress(m) }))
+    .filter(x => x.p.next != null)
+    .sort((a, b) => b.p.progress - a.p.progress)
+    .slice(0, 2)
+    .forEach(({ m, p }, i) => {
+      const falta = p.next! - m.best;
+      const cerca = p.progress >= 75;
+      add({
+        section: "hitos", key: `cerca-${m.id}`, emoji: cerca ? "🔥" : i === 0 ? "🏆" : "🎯", tone: "accent", priority: cerca ? 72 : 45 - i * 5,
+        text: `Te ${Math.ceil(falta) === 1 && m.id !== "rentabilidad" ? "falta" : "faltan"} ${hitoFalta(m, falta)} para desbloquear «${m.title}», nivel ${p.level + 1}.`,
+        teaser: cerca ? "¡Tienes un hito muy cerca! 🏆" : undefined,
+        action: i === 0 ? { kind: "hitos", label: "Ver mis hitos" } : undefined,
+      });
+    });
   const bloqueados = milestones.filter(m => m.locked).length;
   if (bloqueados) {
     add({
@@ -466,19 +587,32 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
       const low = franjas[franjas.length - 1];
       add({ section: "consejos", key: "franja", emoji: "🕐", tone: "be", priority: 48, text: `Tu mejor franja es ${top.label} (${pnlStr(top.pnl)}) y la peor, ${low.label} (${pnlStr(low.pnl)}). ¿Y si operas menos en la segunda?` });
     }
-    buildInsights(trades, stats, ctx)
-      .filter(i => !/^(Llevas|Racha)/.test(i.text))
-      .slice(0, 3)
-      .forEach((i, n) => add({
-        section: "consejos", key: String(n), emoji: i.tone === "win" ? "✅" : i.tone === "loss" ? "⚠️" : "💡",
-        tone: i.tone, priority: i.tone === "loss" ? 50 : i.tone === "win" ? 35 : 25, text: i.text,
-      }));
+    // Todas las lecturas del análisis, cada una con su prioridad. Fuera las que
+    // Nova ya cuenta a su manera (racha y riesgo) y, si ya avisó del stop en lo
+    // reciente, la del stop en todo el historial.
+    const yaStop = out.some(m => m.id === "operaciones-stop");
+    buildInsights(trades, stats, ctx, Infinity)
+      .filter(i => i.id !== "racha" && i.id !== "riesgo" && !(yaStop && i.id === "stop"))
+      .forEach(i => {
+        const priority = INSIGHT[i.id]?.[i.tone] || (i.tone === "loss" ? 50 : i.tone === "win" ? 35 : 25);
+        add({
+          section: "consejos", key: i.id, emoji: i.tone === "win" ? "✅" : i.tone === "loss" ? "⚠️" : "💡",
+          tone: i.tone, priority, text: i.text,
+        });
+      });
   }
 
-  // ───────── Pulso, destacados, cara y frases ─────────
+  // ───────── Pulso, destacados, recorte, cara y frases ─────────
   const pulse = buildPulse(trades, dias, ctx, now);
   const byPriority = [...out].sort((a, b) => b.priority - a.priority);
+  // Lo más importante se elige entre TODO, antes de recortar los capítulos.
   const highlights = byPriority.filter(m => m.priority >= IMPORTANT).slice(0, 3);
+  const enCapitulo = new Map<string, number>();
+  const messages = byPriority.filter(m => {
+    const n = (enCapitulo.get(m.section) ?? 0) + 1;
+    enCapitulo.set(m.section, n);
+    return n <= TOPE[m.section] || highlights.includes(m);
+  });
 
   const celebra = !!recien || newHighAtLast || (rachaTone === "win" && rachaN >= 3);
   const preocupa = (rachaTone === "loss" && rachaN >= 2) || (animoHoy != null && animoHoy.value <= 2) || (pulse != null && pulse.score < 40);
@@ -486,11 +620,13 @@ export function buildBotReport({ name, trades, dias, milestones, ctx, stats, cap
 
   const teasers = [`¡Hola, ${name}! 👋`];
   byPriority.filter(m => m.teaser).slice(0, 3).forEach(m => teasers.push(m.teaser!));
-  teasers.push(out.length > 1 ? `Tengo ${out.length} cosas que contarte 👀` : "Tengo algo que contarte 👀");
+  teasers.push(messages.length > 1 ? `Tengo ${messages.length} cosas que contarte 👀` : "Tengo algo que contarte 👀");
   if (pulse) teasers.push(`Tu pulso de hoy: ${pulse.score}/100 💓`);
 
   return {
-    teasers, messages: out, highlights, pulse, expression,
-    signature: hash(out.map(m => `${m.id}:${m.text}`).join("|")),
+    teasers, messages, highlights, pulse, expression,
+    signature: hash(messages.map(m => `${m.id}:${m.text}`).join("|")),
+    analizado: now.toISOString(),
+    operaciones: trades.length,
   };
 }

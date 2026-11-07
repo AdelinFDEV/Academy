@@ -27,7 +27,6 @@ export default function Footer() {
               /guias. Hasta el 31-10-2026 el footer las listaba todas, una a
               una: con muchas guías habría roto el diseño. */}
           <Link href="/guias">Guías</Link>
-          <Link href="/dashboard">Mi academia</Link>
         </div>
 
         <div className="footer-links-group">

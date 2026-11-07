@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity, type AnimationPlaybackControls, type Variants } from "framer-motion";
 import NovaHead, { type NovaActivity, type NovaFace } from "./NovaHead";
 import NovaRoom from "./NovaRoom";
+import { NovaVuelo, cajaDe, cajaDeLaBarra, dejarSalida, llegarAlDiario, sinAnimaciones, type CajaNova } from "./novaVuelo";
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import {
   BOT_NAME, IMPORTANT, SECTION_LABEL,
@@ -131,6 +132,19 @@ function pickActivity(last: NovaActivity, top: number): NovaActivity {
   return options[Math.floor(Math.random() * options.length)] ?? "trade";
 }
 
+// ─────────────────────────── El análisis ───────────────────────────
+
+const horaLocal = new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit" });
+
+/**
+ * Con qué y cuándo se hizo el análisis, en la hora del usuario. Se pinta solo
+ * con el popup abierto (en el navegador): no hay desajuste de hidratación.
+ */
+function textoAnalisis(report: BotReport): string {
+  const ops = report.operaciones === 1 ? "tu operación" : `tus ${report.operaciones} operaciones`;
+  return `🔄 Analizado a las ${horaLocal.format(new Date(report.analizado))} con ${ops} y tus sensaciones · me pongo al día cada vez que apuntas algo`;
+}
+
 // ─────────────────────────── Pulso ───────────────────────────
 
 /** Anillo con la nota de 0 a 100: el trazo y el número suben a la vez. */
@@ -221,7 +235,10 @@ export default function TjBot({ report, onAction }: {
   const [stage, setStage] = useState<{ from: Pt; to: Pt; scale: number } | null>(null);
   const [home, setHome] = useState<Pt | null>(null);
   const [arrived, setArrived] = useState(false);
+  // Al entrar al Diario, Nova llega volando desde su sitio en la barra de arriba.
+  const [aterrizaje, setAterrizaje] = useState<{ desde: CajaNova; hasta: CajaNova } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const aterrizandoRef = useRef(false);
   const flyerTheta = useMotionValue(0);
   const [activity, setActivity] = useState<NovaActivity>("none");
   // Posición en su espacio, ángulo de giro (0 de frente, 90 perfil, 180 de espaldas)
@@ -262,9 +279,31 @@ export default function TjBot({ report, onAction }: {
     turnRef.current = animate(theta, cur + delta, { type: "spring", stiffness: 40, damping: 14, mass: 1.1 });
   }
 
+  /*
+   * Llegar al Diario: la primera vez en cada visita, Nova vuela desde su hueco en
+   * la barra de arriba hasta aquí (en el móvil esa barra no se pinta y aparece
+   * sin más). Y al irse deja apuntado dónde estaba, para que la barra la reciba
+   * volando. Es de layout para medir antes de que React la quite de la página.
+   */
+  useLayoutEffect(() => {
+    const trigger = triggerRef.current;
+    if (llegarAlDiario() && !sinAnimaciones()) {
+      const desde = cajaDeLaBarra();
+      const hasta = cajaDe(trigger?.querySelector(".nh"));
+      if (desde && hasta) {
+        aterrizandoRef.current = true;
+        setAterrizaje({ desde, hasta });
+      }
+    }
+    return () => {
+      const caja = cajaDe(trigger?.querySelector(".nh"));
+      if (caja) dejarSalida(caja);
+    };
+  }, []);
+
   // Su vida: volar y hacer cosas. Sin animaciones (preferencia del sistema), se queda quieto.
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (sinAnimaciones()) return;
 
     const startActivity = () => {
       if (pausedRef.current) return;
@@ -306,7 +345,8 @@ export default function TjBot({ report, onAction }: {
     };
 
     flyRef.current = fly;
-    timerRef.current = window.setTimeout(fly, 1200);
+    // Si acaba de llegar volando desde la barra, descansa un poco más antes de echar a volar.
+    timerRef.current = window.setTimeout(fly, aterrizandoRef.current ? 2600 : 1200);
     return () => {
       window.clearTimeout(timerRef.current);
       flightRef.current.forEach(c => c.stop());
@@ -461,7 +501,7 @@ export default function TjBot({ report, onAction }: {
           <motion.button
             ref={triggerRef}
             type="button"
-            className={`tjbot-trigger${open ? " is-open" : ""}${hover ? " is-hover" : ""}${stage ? " is-away" : ""}`}
+            className={`tjbot-trigger${open ? " is-open" : ""}${hover ? " is-hover" : ""}${stage || aterrizaje ? " is-away" : ""}`}
             onClick={() => (open ? close() : openDialog())}
             onMouseEnter={() => { setHover(true); interrupt(); }}
             onMouseLeave={() => setHover(false)}
@@ -487,6 +527,8 @@ export default function TjBot({ report, onAction }: {
           </motion.button>
         </motion.div>
       </div>
+
+      {aterrizaje && <NovaVuelo desde={aterrizaje.desde} hasta={aterrizaje.hasta} onFin={() => setAterrizaje(null)} />}
 
       {stage && createPortal(
         <div className="tjbot-stage">
@@ -594,6 +636,7 @@ export default function TjBot({ report, onAction }: {
                         {report.messages.length === 1 ? "Tengo una cosa que contarte" : `Tengo ${report.messages.length} cosas que contarte`}
                         {report.highlights.length ? ` · ${report.highlights.length} ${report.highlights.length === 1 ? "es importante" : "son importantes"}` : " · nada urgente"}
                       </p>
+                      <p className="tjbot-corte">{textoAnalisis(report)}</p>
                     </div>
                     <button type="button" className="tj-icon-btn tjbot-close" onClick={close} aria-label="Cerrar" title="Cerrar (Esc)">
                       <X size={16} />

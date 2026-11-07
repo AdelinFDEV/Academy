@@ -3,6 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useTransform, type MotionValue } from "framer-motion";
 import type { BotExpression } from "./tjNova";
+// Sus estilos van con ella: Nova sale en el Diario y en la barra de toda la web.
+import "./nova.css";
 
 /*
  * Nova, versión 3: una cabeza que vuela.

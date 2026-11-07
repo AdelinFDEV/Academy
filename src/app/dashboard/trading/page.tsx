@@ -24,7 +24,7 @@ export default async function TradingPage() {
   const admin = createAdminClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, alias, role, trading_starting_capital")
+    .select("full_name, alias, avatar, role, trading_starting_capital")
     .eq("id", user.id)
     .single();
 
@@ -52,6 +52,7 @@ export default async function TradingPage() {
       <TradingJournal
         initialTrades={trades ?? []}
         userName={name}
+        userAvatar={profile?.avatar ?? null}
         initialCapital={profile?.trading_starting_capital ?? null}
         initialLogros={logros}
         initialDias={(dias ?? []) as DiaDiario[]}

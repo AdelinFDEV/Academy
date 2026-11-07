@@ -13,9 +13,9 @@ import "./listado.css";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/guias" },
-  title: "Aprende Criptomonedas Gratis: 7 Guías",
+  title: "Aprende Criptomonedas Gratis: 6 Guías",
   description:
-    "Aprende criptomonedas gratis desde cero: 7 guías interactivas sobre blockchain, ciclos de Bitcoin, proyectos reales y fiscalidad en España. Con quiz y badges.",
+    "Aprende criptomonedas gratis desde cero: 6 guías interactivas sobre blockchain, proyectos cripto reales y fiscalidad en España. Con quiz y badges.",
 };
 
 // Clase CSS por dificultad (las clases guides-diff--* ya existen en globals.css).
@@ -105,28 +105,33 @@ export default async function GuiasPage() {
             palabra que la gente busca —«aprender criptomonedas gratis»— entra
             aquí, en el título de Google y en los h2. Antes esta página tenía
             unas 80 palabras indexables: era un escaparate de tarjetas. */}
-        <section className="guias-pilar">
-          <h2 className="guias-pilar-title">Aprende criptomonedas gratis, empezando desde cero</h2>
-          <p>
-            Estas guías son el itinerario de formación gratuita de la academia. No hacen falta
-            conocimientos previos, ni tener dinero invertido, ni comprar nada: se leen enteras sin
-            registrarte. La cuenta gratuita solo la pide el quiz final, que guarda tu resultado.
-          </p>
-          <p>
-            Están pensadas para leerse <strong>en orden</strong>, aunque cada una funciona por su
-            cuenta. La primera explica qué es una blockchain y por qué resulta tan difícil de
-            falsificar. A partir de ahí cada guía añade una capa: cómo se mueve el mercado, qué
-            hace por dentro un proyecto concreto y cómo tributa todo esto en España.
-          </p>
-          <p>
-            <strong>Todas son gratuitas</strong> y entre todas suman unas dos horas de
-            lectura. Cada una termina con un quiz y un badge, que están ahí para que compruebes
-            que lo has entendido de verdad y no solo leído por encima.
-          </p>
+        <section className="guias-bloque guias-intro">
+          <div className="guias-intro-cabeza">
+            <span className="guias-kicker">Formación gratuita</span>
+            <h2 className="guias-pilar-title">Aprende criptomonedas gratis, empezando desde cero</h2>
+          </div>
+          <div className="guias-pilar">
+            <p>
+              Estas guías son el itinerario de formación gratuita de la academia. No hacen falta
+              conocimientos previos, ni tener dinero invertido, ni comprar nada: se leen enteras sin
+              registrarte. La cuenta gratuita solo la pide el quiz final, que guarda tu resultado.
+            </p>
+            <p>
+              Están pensadas para leerse <strong>en orden</strong>, aunque cada una funciona por su
+              cuenta. La primera explica qué es una blockchain y por qué resulta tan difícil de
+              falsificar. A partir de ahí cada guía añade una capa: qué hace por dentro un proyecto
+              concreto, cómo funciona una red sin minería y cómo tributa todo esto en España.
+            </p>
+            <p>
+              <strong>Todas son gratuitas</strong> y entre todas suman unas dos horas de
+              lectura. Cada una termina con un quiz y un badge, que están ahí para que compruebes
+              que lo has entendido de verdad y no solo leído por encima.
+            </p>
+          </div>
         </section>
 
         {/* Guías publicadas */}
-        <div className="guias-section">
+        <div className="guias-bloque guias-section">
           <h2 className="guias-section-title">Disponibles ahora</h2>
           <div className="guias-grid">
             {GUIDES_NEWEST_FIRST.map((g) => (
@@ -155,11 +160,13 @@ export default async function GuiasPage() {
 
         {/* Itinerario: los nombres y los tiempos salen de GUIDES, no escritos a
             mano, para que no se desincronicen si cambia una guía. */}
-        <section className="guias-pilar">
+        <section className="guias-bloque">
+          <span className="guias-kicker">El itinerario</span>
           <h2 className="guias-pilar-title">Por dónde empezar</h2>
 
           <div className="guias-ruta">
             <article className="guias-ruta-paso">
+              <span className="guias-ruta-num" aria-hidden="true">1</span>
               <span className="guias-ruta-nivel">Si empiezas de cero</span>
               <p>
                 Solo hay una imprescindible, y es esta. Cuenta de dónde sale todo esto, cómo
@@ -172,14 +179,14 @@ export default async function GuiasPage() {
             </article>
 
             <article className="guias-ruta-paso">
+              <span className="guias-ruta-num" aria-hidden="true">2</span>
               <span className="guias-ruta-nivel">Cuando ya entiendes la base</span>
               <p>
-                Aquí se pasa de la teoría a lo que ocurre de verdad. La de ciclos explica por qué
-                el mercado sube y baja siguiendo cierto patrón; las otras tres diseccionan un
-                proyecto real cada una, que es la mejor forma de aprender a mirar cualquier otro.
+                Aquí se pasa de la teoría a lo que ocurre de verdad. Cada una de estas tres
+                disecciona un proyecto real, que es la mejor forma de aprender a mirar cualquier
+                otro: qué problema resuelve, cómo funciona por dentro y qué riesgos tiene.
               </p>
               <ul className="guias-ruta-lista">
-                {enlaceGuia("ciclos-de-bitcoin")}
                 {enlaceGuia("worldcoin")}
                 {enlaceGuia("render")}
                 {enlaceGuia("hyperliquid")}
@@ -187,6 +194,7 @@ export default async function GuiasPage() {
             </article>
 
             <article className="guias-ruta-paso">
+              <span className="guias-ruta-num" aria-hidden="true">3</span>
               <span className="guias-ruta-nivel">Cuando ya te mueves solo</span>
               <p>
                 XRP entra en cómo funciona una red que no usa minería y en el juicio que marcó al
@@ -201,40 +209,51 @@ export default async function GuiasPage() {
           </div>
         </section>
 
-        <section className="guias-pilar">
+        <section className="guias-bloque">
+          <span className="guias-kicker">Preguntas frecuentes</span>
           <h2 className="guias-pilar-title">Lo que suele preguntar la gente</h2>
 
           <dl className="guias-faq">
-            <dt>¿Es gratis de verdad?</dt>
-            <dd>
-              Sí. Todas las guías se leen enteras gratis y sin registrarte. Solo el quiz final de
-              cada una pide una cuenta —también gratuita—, porque guarda tu resultado y te da su
-              badge.
-            </dd>
+            <div className="guias-faq-item">
+              <dt>¿Es gratis de verdad?</dt>
+              <dd>
+                Sí. Todas las guías se leen enteras gratis y sin registrarte. Solo el quiz final de
+                cada una pide una cuenta —también gratuita—, porque guarda tu resultado y te da su
+                badge.
+              </dd>
+            </div>
 
-            <dt>¿Necesito saber algo antes de empezar?</dt>
-            <dd>
-              No. La primera guía da por hecho que no has tocado una criptomoneda en tu vida y
-              empieza por explicar qué es la tecnología que hay debajo.
-            </dd>
+            <div className="guias-faq-item">
+              <dt>¿Necesito saber algo antes de empezar?</dt>
+              <dd>
+                No. La primera guía da por hecho que no has tocado una criptomoneda en tu vida y
+                empieza por explicar qué es la tecnología que hay debajo.
+              </dd>
+            </div>
 
-            <dt>¿Tengo que comprar criptomonedas para seguirlas?</dt>
-            <dd>
-              No hace falta invertir un euro. Ninguna guía te dice qué comprar ni cuándo: explican
-              cómo funcionan las cosas para que decidas tú con criterio.
-            </dd>
+            <div className="guias-faq-item">
+              <dt>¿Tengo que comprar criptomonedas para seguirlas?</dt>
+              <dd>
+                No hace falta invertir un euro. Ninguna guía te dice qué comprar ni cuándo: explican
+                cómo funcionan las cosas para que decidas tú con criterio.
+              </dd>
+            </div>
 
-            <dt>¿Cuánto tiempo me van a llevar?</dt>
-            <dd>
-              Las seis gratuitas suman unas dos horas en total, entre 15 y 25 minutos cada una. No
-              hay que hacerlas del tirón: el progreso se guarda y puedes retomarlas cuando quieras.
-            </dd>
+            <div className="guias-faq-item">
+              <dt>¿Cuánto tiempo me van a llevar?</dt>
+              <dd>
+                Las seis suman unas dos horas en total, entre 18 y 28 minutos cada una. No
+                hay que hacerlas del tirón: el progreso se guarda y puedes retomarlas cuando quieras.
+              </dd>
+            </div>
 
-            <dt>¿Y si me pierdo con alguna palabra?</dt>
-            <dd>
-              Para eso está el <Link href="/glosario">diccionario cripto</Link>, con los términos
-              del sector explicados uno a uno y en lenguaje llano.
-            </dd>
+            <div className="guias-faq-item">
+              <dt>¿Y si me pierdo con alguna palabra?</dt>
+              <dd>
+                Para eso está el <Link href="/glosario">diccionario cripto</Link>, con los términos
+                del sector explicados uno a uno y en lenguaje llano.
+              </dd>
+            </div>
           </dl>
         </section>
 

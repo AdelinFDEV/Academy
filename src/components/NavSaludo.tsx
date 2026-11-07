@@ -110,7 +110,7 @@ export default function NavSaludo({
             onClick={() => setAbierto(false)}
           >
             <LayoutDashboard size={15} strokeWidth={2.1} aria-hidden="true" />
-            Mi panel
+            Mi dashboard
           </Link>
           <Link
             href="/dashboard/perfil"

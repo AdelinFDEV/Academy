@@ -24,7 +24,9 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ### 00d. Nova, el bot del Diario: siguientes pasos (06-11-2026)
 
-Hecho el 06-11-2026 (versión 1): **Nova** vive en la cabecera del Resumen (`TjBot.tsx`, motor en `tjNova.ts`). Son reglas sobre los datos, sin IA. Da un **pulso** de 0 a 100 (riesgo, resultados, emociones y constancia, sobre lo reciente), prioriza sus mensajes (lo urgente sube a «Lo más importante»), propone acciones con botón y analiza hoy, sensaciones y su efecto en el dinero, tendencia del ánimo, rachas, riesgo, revancha, sobreoperar, caída desde el máximo y nuevos máximos, forma reciente, franjas horarias, hitos y las lecturas de `buildInsights`/`welcomeReading`. El personaje (`NovaHead.tsx`) es una cabeza que vuela por su espacio bajo el saludo, girándose en continuo; hace una actividad (dormir, pelota, trading, estudiar, música) durante 10 minutos o hasta que le interrumpan, y luego otra; cambia de cara según cómo va el usuario y se alegra al pasarle el ratón. La frase corta junto a él está quitada de momento (el motor sigue calculando `teasers`). Falta:
+Hecho el 06-11-2026 (versión 1): **Nova** vive en la cabecera del Resumen (`TjBot.tsx`, motor en `tjNova.ts`). Son reglas sobre los datos, sin IA. Da un **pulso** de 0 a 100 (riesgo, resultados, emociones y constancia, sobre lo reciente), prioriza sus mensajes (lo urgente sube a «Lo más importante»), propone acciones con botón y analiza hoy, sensaciones y su efecto en el dinero, tendencia del ánimo, rachas, riesgo, revancha, sobreoperar, caída desde el máximo y nuevos máximos, forma reciente, franjas horarias, hitos y las lecturas de `buildInsights`/`welcomeReading`. El personaje (`NovaHead.tsx`) es una cabeza que vuela por su espacio bajo el saludo, girándose en continuo; hace una actividad (dormir, pelota, trading, estudiar, música) durante 10 minutos o hasta que le interrumpan, y luego otra; cambia de cara según cómo va el usuario y se alegra al pasarle el ratón. La frase corta junto a él está quitada de momento (el motor sigue calculando `teasers`).
+
+Desde el 07-11-2026 **se rehace entero con cada dato nuevo** (operación, ánimo, capital, hito) y lo primero que hace es reaccionar a lo último apuntado; cada capítulo tiene un tope de mensajes y «Lo más importante» se elige antes de recortar. Fuera del Diario vive en la barra, junto a «Diario de Trading» (`NovaNav.tsx`), y vuela entre la barra y su habitación (`novaVuelo.tsx`). Falta:
 
 - [ ] **Ver con el admin si se le añade IA** encima de las reglas (por ejemplo, que redacte el resumen o responda preguntas), y con qué modelo y coste.
 - [ ] **Antes de anunciarlo en las fichas** (`/herramientas/diario`, `/premium`), abrir `tjNova.ts` y prometer solo lo que hace.
@@ -96,14 +98,6 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Certificado:** que se entregue completo al aprobar el examen final, con la nota (40 % media de módulos + 60 % final), descargable, y que el código abra su página pública de verificación (`/cursos/verificar/<codigo>`). Que el logro del curso salga en `/dashboard/logros`.
 - [ ] **Un apartado nuevo en el dashboard para todos los usuarios**, «Mis cursos»: los cursos en curso con su progreso por módulos, el siguiente paso, las notas y los certificados conseguidos. Quien no es Premium ve el catálogo y qué incluye. Hoy el dashboard solo tiene un enlace a `/cursos` en la barra lateral, marcado «Pronto».
 
-### 00c. Foto de portada para cada guía (31-10-2026)
-
-Pedido por el admin el 31-10-2026. El código ya está listo: cada guía admite el campo `portada` en `src/lib/guides.ts` y `GuiaPortada` la pinta en la sección de guías del home y en el listado `/guias`. Mientras falte, sale una portada provisional con la inicial de la guía.
-
-- [ ] **Hacer una imagen por guía**: hoy son las que salen con `grep -c "  slug: \"" src/lib/guides.ts`. Horizontal (16:9), y que funcione también recortada en miniatura, que es como sale en las filas del home.
-- [ ] **Convertirlas a WebP** a 1.600 px de ancho y calidad 82, como toda portada, y guardarlas en `public/guias/<slug>.webp`.
-- [ ] **Darlas de alta** con `portada: "/guias/<slug>.webp"` en cada guía de `GUIDES`. Con eso salen solas en el home y en `/guias`.
-
 ### 1. Foro de preguntas y respuestas
 
 **El plan entero está en [`FORO.md`](./FORO.md)**: lo decidido, los principios, permisos, límites, modelo de datos, seguridad capa a capa, moderación, me gusta y etiquetas, orden de respuestas y ganadora, puntos y ranking, avisos, Google, lo legal y las pruebas para romperlo. Aquí solo el estado; el detalle no se repite, para que no se desincronice.
@@ -113,7 +107,7 @@ Lo esencial (06-11-2026): **leer es de todos y participar es solo de Premium**, 
 **Por qué interesa:** es el único contenido que **crece sin que nadie lo escriba**, y cada pregunta bien titulada es una URL que responde a una búsqueda real (`QAPage`).
 
 - [ ] **Fase 0 — Cerrar las decisiones pendientes** del final de `FORO.md` (D2, D4–D9, D11–D14).
-  El perfil público (su fase 1) ya está hecho: es la tarea 3, y le falta ejecutar `scripts/create-perfil-publico.sql`.
+  El perfil público (su fase 1) ya está hecho: es la tarea 3.
 - [ ] **Fases 2 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: esquema, funciones atómicas, API, imágenes, moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
 
 ---
@@ -137,9 +131,8 @@ Niveles de usuario **en toda la web**. No confundir con los hitos del Diario de 
 
 ### 3. Perfil público y fotos de perfil — VA ANTES QUE EL FORO
 
-**Decidido por el admin el 06-11-2026: se hace antes que el foro, y son 4 fotos.** Montado el 06-11-2026: `/dashboard/perfil` («Mi perfil», en el rail del dashboard y en el menú del usuario) con la foto, el alias (`src/lib/perfilPublico.ts`, que valida igual en el navegador y en `/api/perfil`), la vista previa de cómo se verá en el foro, qué podrá hacer allí según sea Premium o no, y toda la cuenta (plan y suscripción, contraseña, verificación en dos pasos —destacada solo si no está activada—, soporte por Instagram y borrado). `/cuenta` redirige aquí. La foto ya sale en la barra. Falta:
+**Decidido por el admin el 06-11-2026: se hace antes que el foro, y son 4 fotos.** Montado el 06-11-2026: `/dashboard/perfil` («Mi perfil», en el rail del dashboard y en el menú del usuario) con la foto, el alias (`src/lib/perfilPublico.ts`, que valida igual en el navegador y en `/api/perfil`), la vista previa de cómo se verá en el foro, qué podrá hacer allí según sea Premium o no, y toda la cuenta (plan y suscripción, contraseña, verificación en dos pasos —destacada solo si no está activada—, soporte por Instagram y borrado). `/cuenta` redirige aquí. La foto sale junto al nombre en la barra, el menú, el dashboard y el Diario. Falta:
 
-- [ ] **Ejecutar `scripts/create-perfil-publico.sql`** (columnas `alias`, `avatar` y `alias_cambiado_at`, índice único y lectura pública). Hasta entonces la página dice que el perfil no está activado y no deja guardar.
 - [ ] **Las 4 fotos definitivas, si el admin las quiere de otro estilo.** Hoy son 4 personajes en SVG dibujados a mano (toro, oso, ballena y astronauta, en `public/avatares/`): se ven nítidos a cualquier tamaño. Si se hacen con Gemini, WebP de ~256 px en la misma carpeta y cambiar solo el `src` de cada una en `AVATARES`; el `id` no se toca. Decidir si alguna es solo para Premium.
 - [ ] **Los logros que el usuario elija mostrar** en su perfil público: se decide con el diseño del foro (fase G de `FORO.md`).
 

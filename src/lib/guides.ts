@@ -50,20 +50,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Origen e historia", "Cómo funciona", "Estado actual 2026", "Amenaza cuántica"],
     tags: ["EXPLICACIONES"],
-  },
-  {
-    slug: "ciclos-de-bitcoin",
-    title: "¿Por Qué Ahora Es el Momento de Comprar Bitcoin?",
-    shortTitle: "Ciclos de Bitcoin",
-    description: "El ciclo de 4 años del halving: por qué la fase bajista está terminando y qué esperar del próximo mercado alcista.",
-    difficulty: "intermedio",
-    sections: 5,
-    badge: "Cazador de Ciclos",
-    badgeId: "guide-ciclos-bitcoin",
-    readTime: "15 min",
-    color: "#e6b455",
-    topics: ["El ciclo de 4 años", "Dónde estamos ahora", "Señales de compra", "Estrategia de entrada"],
-    tags: ["EXPLICACIONES"],
+    portada: "/guias/que-es-la-blockchain.webp",
   },
   {
     slug: "worldcoin",
@@ -78,6 +65,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["El Orb y World ID", "Proof of Personhood", "Tokenomics de WLD", "Controversias y prohibiciones"],
     tags: ["CRIPTOMONEDAS"],
+    portada: "/guias/worldcoin.webp",
   },
   {
     slug: "render",
@@ -92,6 +80,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["GPUs ociosas en red", "Proof of Render", "Burn-and-Mint Equilibrium", "DePIN e IA"],
     tags: ["CRIPTOMONEDAS"],
+    portada: "/guias/render.webp",
   },
   {
     slug: "hyperliquid",
@@ -106,6 +95,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Libro de órdenes on-chain", "HyperBFT y HyperEVM", "El vault HLP", "Token HYPE y buybacks"],
     tags: ["CRIPTOMONEDAS"],
+    portada: "/guias/hyperliquid.webp",
   },
   {
     slug: "xrp",
@@ -120,6 +110,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Ripple vs XRP vs XRPL", "Consenso sin minería (RPCA/UNL)", "Moneda puente y ODL", "El caso SEC y el escrow"],
     tags: ["CRIPTOMONEDAS"],
+    portada: "/guias/xrp.webp",
   },
   {
     slug: "fiscalidad-cripto-espana",
@@ -134,6 +125,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Hechos imponibles", "FIFO y tramos del ahorro", "Staking, airdrops y minería", "Modelo 721 y Patrimonio"],
     tags: ["EXPLICACIONES"],
+    portada: "/guias/fiscalidad-cripto-espana.webp",
     imagenPropia: true,
   },
 ];

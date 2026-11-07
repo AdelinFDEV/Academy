@@ -14,6 +14,7 @@ import type { ToolSection } from "@/components/DashboardToolsSidebar";
 import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
 import { getEffectiveStreak } from "@/lib/streak";
 import GuiaPortada from "@/components/GuiaPortada";
+import AvatarUsuario from "@/components/AvatarUsuario";
 
 /**
  * El panel de cada usuario.
@@ -62,6 +63,9 @@ export default async function DashboardPage() {
     supabase.from("profiles").select("avatar").eq("id", user.id).maybeSingle(),
   ]);
 
+  // La foto que eligió en «Mi perfil»: junto a su nombre en el saludo y en «Mi perfil» del rail.
+  const avatar = (foto as { avatar?: string | null } | null)?.avatar ?? null;
+
   const savedTermsList = savedTermsData ?? [];
   const savedGuidesList = (savedGuidesData ?? [])
     .map((sg) => ({ slug: sg.guide_slug, savedAt: sg.saved_at, meta: GUIDES.find((g) => g.slug === sg.guide_slug) }))
@@ -105,7 +109,7 @@ export default async function DashboardPage() {
         // Alias y foto: lo que el foro enseñará de cada uno (FORO.md).
         {
           href: "/dashboard/perfil", icon: "user", name: "Mi perfil", desc: "Tu perfil, tu plan y tu seguridad", locked: false, soon: false,
-          foto: { avatar: (foto as { avatar?: string | null } | null)?.avatar ?? null, inicial: (name.trim().charAt(0) || "U").toUpperCase() },
+          foto: { avatar, inicial: (name.trim().charAt(0) || "U").toUpperCase() },
         },
       ],
     },
@@ -128,12 +132,15 @@ export default async function DashboardPage() {
             {isPremium && <Crown size={13} aria-hidden="true" />}
             {planLabel}
           </span>
-          <h1 className="dh-saludo">
-            Hola, <span>{name}</span>
-            {profile?.is_featured && (
-              <span className="dh-estrella" title="Usuario destacado: 30 días de racha">★</span>
-            )}
-          </h1>
+          <div className="dh-saludo-fila">
+            {avatar && <AvatarUsuario avatar={avatar} inicial={(name.trim().charAt(0) || "U").toUpperCase()} className="dh-saludo-foto" />}
+            <h1 className="dh-saludo">
+              Hola, <span>{name}</span>
+              {profile?.is_featured && (
+                <span className="dh-estrella" title="Usuario destacado: 30 días de racha">★</span>
+              )}
+            </h1>
+          </div>
           <p className="dh-sub">Tu academia: guías, diccionario y herramientas, todo en un sitio.</p>
           {!isPremium && (
             <Link href="/premium" className="dh-hero-cta">

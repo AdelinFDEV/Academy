@@ -18,6 +18,8 @@
  * `/herramientas/diario` siguen vivas: por eso se nombran rutas exactas y no
  * el prefijo `/herramientas/`.
  *
+ * El 07-11-2026 se retiró la guía de ciclos de Bitcoin: su URL responde 410.
+ *
  * Reglas:
  * - Solo rutas exactas, sin barra final (Next ya la quita con una redirección).
  * - No metas aquí una URL ni un prefijo que pueda volver a existir: si mañana
@@ -61,6 +63,10 @@ export const RETIRADAS: ReadonlySet<string> = new Set([
   "/dashboard/calculadora-riesgo",
   // El Trading en Directo, retirado el mismo día: el servicio ya no se ofrece
   "/trading-en-directo",
+  // La guía de ciclos («¿Por qué ahora es el momento de comprar Bitcoin?»),
+  // retirada el 07-11-2026 por decisión del admin. Su opengraph-image va con ella.
+  "/guias/ciclos-de-bitcoin",
+  "/guias/ciclos-de-bitcoin/opengraph-image",
 ]);
 
 /** La página que ve quien llega a una URL retirada: corta, y con salida a las guías. */

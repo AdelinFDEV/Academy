@@ -8,6 +8,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import LogoutButton from "./LogoutButton";
+import AvatarUsuario from "./AvatarUsuario";
 import GuideSearch from "./GuideSearch";
 import { destinoPorRuta, herramienta } from "@/lib/herramientas";
 
@@ -16,6 +17,8 @@ interface Props {
   isPremium?: boolean;
   userName?: string;
   isAdmin?: boolean;
+  /** La foto que eligió el usuario en «Mi perfil»; sin ella, su inicial. */
+  avatar?: string | null;
 }
 
 type Entrada = {
@@ -63,7 +66,7 @@ const GRATIS: Entrada[] = [
  * `destinoPorRuta`, según quién mire (la ficha pública a quien no tiene
  * acceso, la herramienta a quien sí).
  */
-export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false }: Props) {
+export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const primerEnlace = useRef<HTMLAnchorElement>(null);
@@ -116,7 +119,9 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
               {user ? (
                 <div className="mm-cuenta">
                   <div className="mm-cuenta-quien">
-                    <span className="mm-avatar" aria-hidden="true">{(userName || "U").charAt(0).toUpperCase()}</span>
+                    <span aria-hidden="true" className="mm-avatar-caja">
+                      <AvatarUsuario avatar={avatar} inicial={(userName || "U").charAt(0).toUpperCase()} className="mm-avatar" />
+                    </span>
                     <span>
                       <span className="mm-cuenta-nombre">{userName || "Tu cuenta"}</span>
                       <span className={`mm-rol${isPremium ? " is-premium" : ""}`}>

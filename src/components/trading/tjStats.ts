@@ -290,7 +290,12 @@ export interface Filters {
 export const NO_FILTERS: Filters = { range: "all", pair: "", strategy: "", direction: "" };
 export const NO_STRATEGY = "Sin estrategia";
 
-export const isFiltered = (f: Filters) => f.range !== "all" || !!f.pair || !!f.strategy || !!f.direction;
+/**
+ * ¿Hay un filtro de verdad? El periodo (Todo, 30 días…) NO cuenta: es una forma
+ * de moverse por el diario, no un filtro que haya que «limpiar» (decidido con el
+ * admin el 07-11-2026). Sí cuentan el par, la estrategia y la dirección.
+ */
+export const isFiltered = (f: Filters) => !!f.pair || !!f.strategy || !!f.direction;
 
 export function applyFilters(trades: Trade[], f: Filters, now: Date): Trade[] {
   let from = -Infinity;
@@ -397,6 +402,8 @@ export const BREAKDOWNS: Record<BreakdownId, { label: string; keyOf: (t: Trade) 
 // ─────────────────────────── Observaciones ───────────────────────────
 
 export interface Insight {
+  /** Qué lectura es: Nova la usa para darle prioridad y no repetir lo que ya cuenta ella. */
+  id: string;
   tone: "win" | "loss" | "be";
   text: string;
 }
@@ -407,70 +414,70 @@ const WEEKDAY_PLURAL = ["lunes", "martes", "miércoles", "jueves", "viernes", "s
  * Lecturas automáticas del diario. Solo se dice algo de un grupo cuando tiene
  * al menos MIN_GROUP operaciones: con tres, cualquier "patrón" es casualidad.
  */
-export function buildInsights(trades: Trade[], stats: Stats, ctx: Map<string, TradeContext>): Insight[] {
+export function buildInsights(trades: Trade[], stats: Stats, ctx: Map<string, TradeContext>, limite = 5): Insight[] {
   const out: Insight[] = [];
   if (!trades.length) return out;
 
   if (stats.count < MIN_SAMPLE) {
-    out.push({ tone: "be", text: `Con ${stats.count} ${stats.count === 1 ? "operación" : "operaciones"} aún hay mucho ruido: las conclusiones empiezan a sostenerse a partir de ${MIN_SAMPLE}.` });
+    out.push({ id: "muestra", tone: "be", text: `Con ${stats.count} ${stats.count === 1 ? "operación" : "operaciones"} aún hay mucho ruido: las conclusiones empiezan a sostenerse a partir de ${MIN_SAMPLE}.` });
   } else if (stats.expectancyR != null) {
     out.push(stats.expectancyR > 0
-      ? { tone: "win", text: `Tu método tiene ventaja: cada operación deja de media ${rStr(stats.expectancyR)} (${pnlStr(stats.avgPnl)}).` }
-      : { tone: "loss", text: `Ahora mismo cada operación resta ${rStr(stats.expectancyR)} de media: revisa entradas o tamaño antes de seguir.` });
+      ? { id: "esperanza", tone: "win", text: `Tu método tiene ventaja: cada operación deja de media ${rStr(stats.expectancyR)} (${pnlStr(stats.avgPnl)}).` }
+      : { id: "esperanza", tone: "loss", text: `Ahora mismo cada operación resta ${rStr(stats.expectancyR)} de media: revisa entradas o tamaño antes de seguir.` });
   }
 
   const { tone, count } = stats.currentStreak;
   if (tone === "loss" && count >= 3) {
-    out.push({ tone: "loss", text: `Llevas ${count} pérdidas seguidas. Buen momento para bajar tamaño o parar a revisar.` });
+    out.push({ id: "racha", tone: "loss", text: `Llevas ${count} pérdidas seguidas. Buen momento para bajar tamaño o parar a revisar.` });
   } else if (tone === "win" && count >= 4) {
-    out.push({ tone: "be", text: `Racha de ${count} ganadas: cuidado con subir el tamaño por euforia.` });
+    out.push({ id: "racha", tone: "be", text: `Racha de ${count} ganadas: cuidado con subir el tamaño por euforia.` });
   }
 
   const risks = trades.map(t => ctx.get(t.id)?.riskPct).filter((r): r is number => r != null);
   const risky = risks.filter(r => r > RISK_LIMIT_PCT);
   if (risky.length) {
-    out.push({ tone: "loss", text: `${risky.length} ${risky.length === 1 ? "operación arriesgó" : "operaciones arriesgaron"} más del ${RISK_LIMIT_PCT} % de la cuenta (la mayor, ${pctStr(Math.max(...risky), false)}).` });
+    out.push({ id: "riesgo", tone: "loss", text: `${risky.length} ${risky.length === 1 ? "operación arriesgó" : "operaciones arriesgaron"} más del ${RISK_LIMIT_PCT} % de la cuenta (la mayor, ${pctStr(Math.max(...risky), false)}).` });
   } else if (risks.length >= MIN_GROUP) {
     const avg = risks.reduce((s, r) => s + r, 0) / risks.length;
-    out.push({ tone: "win", text: `Riesgo bajo control: ninguna operación pasa del ${RISK_LIMIT_PCT} % de la cuenta (media ${pctStr(avg, false, 2)}).` });
+    out.push({ id: "riesgo", tone: "win", text: `Riesgo bajo control: ninguna operación pasa del ${RISK_LIMIT_PCT} % de la cuenta (media ${pctStr(avg, false, 2)}).` });
   }
 
   const exec = executionStats(trades);
   if (exec.losses >= MIN_GROUP && exec.lossVsStop! > 1.1) {
-    out.push({ tone: "loss", text: `Tus pérdidas superan de media el riesgo planeado en un ${Math.round((exec.lossVsStop! - 1) * 100)} %: revisa si mueves el stop o si el deslizamiento se come tu plan.` });
+    out.push({ id: "stop", tone: "loss", text: `Tus pérdidas superan de media el riesgo planeado en un ${Math.round((exec.lossVsStop! - 1) * 100)} %: revisa si mueves el stop o si el deslizamiento se come tu plan.` });
   }
   if (exec.wins >= MIN_GROUP && exec.captured! < 0.7) {
-    out.push({ tone: "loss", text: `Cierras las ganadoras antes de tiempo: te quedas de media con el ${Math.round(exec.captured! * 100)} % del objetivo.` });
+    out.push({ id: "corta", tone: "loss", text: `Cierras las ganadoras antes de tiempo: te quedas de media con el ${Math.round(exec.captured! * 100)} % del objetivo.` });
   }
 
   const pairs = groupStats(trades, BREAKDOWNS.pair.keyOf).filter(g => g.count >= MIN_GROUP).sort((a, b) => b.pnl - a.pnl);
   if (pairs.length > 1) {
     const top = pairs[0];
     const low = pairs[pairs.length - 1];
-    if (top.pnl > 0) out.push({ tone: "win", text: `Tu mejor par es ${top.label}: ${pnlStr(top.pnl)} en ${top.count} operaciones, con un ${Math.round(top.winRate)} % de acierto.` });
-    if (low.pnl < 0) out.push({ tone: "loss", text: `${low.label} te resta ${pnlStr(low.pnl)} en ${low.count} operaciones.` });
+    if (top.pnl > 0) out.push({ id: "par-top", tone: "win", text: `Tu mejor par es ${top.label}: ${pnlStr(top.pnl)} en ${top.count} operaciones, con un ${Math.round(top.winRate)} % de acierto.` });
+    if (low.pnl < 0) out.push({ id: "par-low", tone: "loss", text: `${low.label} te resta ${pnlStr(low.pnl)} en ${low.count} operaciones.` });
   }
 
   const dirs = groupStats(trades, BREAKDOWNS.direction.keyOf).filter(g => g.count >= MIN_GROUP);
   if (dirs.length === 2 && Math.sign(dirs[0].pnl) * Math.sign(dirs[1].pnl) < 0) {
     const [bad, good] = dirs[0].pnl < 0 ? dirs : [dirs[1], dirs[0]];
-    out.push({ tone: "loss", text: `Tus ${bad.label.toLowerCase()}s restan ${pnlStr(bad.pnl)} mientras los ${good.label.toLowerCase()}s suman ${pnlStr(good.pnl)}.` });
+    out.push({ id: "direccion", tone: "loss", text: `Tus ${bad.label.toLowerCase()}s restan ${pnlStr(bad.pnl)} mientras los ${good.label.toLowerCase()}s suman ${pnlStr(good.pnl)}.` });
   }
 
   const days = groupStats(trades, BREAKDOWNS.weekday.keyOf).filter(g => g.count >= MIN_GROUP && g.pnl < 0).sort((a, b) => a.pnl - b.pnl);
   if (days.length) {
-    out.push({ tone: "loss", text: `Los ${WEEKDAY_PLURAL[days[0].sort]} son tu peor día: ${pnlStr(days[0].pnl)} en ${days[0].count} operaciones.` });
+    out.push({ id: "dia", tone: "loss", text: `Los ${WEEKDAY_PLURAL[days[0].sort]} son tu peor día: ${pnlStr(days[0].pnl)} en ${days[0].count} operaciones.` });
   }
 
   if (stats.count >= 20 && stats.payoff != null) {
     if (stats.winRate < 50 && stats.payoff >= 1.5) {
-      out.push({ tone: "win", text: `Aciertas menos de la mitad, pero cada ganancia vale ${stats.payoff.toFixed(1).replace(".", ",")} veces una pérdida: es un perfil rentable.` });
+      out.push({ id: "payoff", tone: "win", text: `Aciertas menos de la mitad, pero cada ganancia vale ${stats.payoff.toFixed(1).replace(".", ",")} veces una pérdida: es un perfil rentable.` });
     } else if (stats.winRate >= 55 && stats.payoff < 0.8) {
-      out.push({ tone: "loss", text: `Aciertas mucho, pero una pérdida media borra ${(1 / stats.payoff).toFixed(1).replace(".", ",")} ganancias medias.` });
+      out.push({ id: "payoff", tone: "loss", text: `Aciertas mucho, pero una pérdida media borra ${(1 / stats.payoff).toFixed(1).replace(".", ",")} ganancias medias.` });
     }
   }
 
-  return out.slice(0, 5);
+  return out.slice(0, limite);
 }
 
 // ─────────────────────────── Hitos ───────────────────────────

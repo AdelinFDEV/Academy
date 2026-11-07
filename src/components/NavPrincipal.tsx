@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
 import { destinoPorRuta, herramienta } from "@/lib/herramientas";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
+import NovaNav from "@/components/trading/NovaNav";
 
 /**
  * Las tres piezas de pago, en el centro de la barra de escritorio. Sustituyen
@@ -26,7 +27,12 @@ const PIEZAS = [
   { id: "diario", ruta: "/dashboard/trading", label: "Diario de Trading", Icono: IconoDiario },
 ] as const;
 
-export default function NavPrincipal({ logueado, premium }: { logueado: boolean; premium: boolean }) {
+export default function NavPrincipal({ logueado, premium, conNova = false }: {
+  logueado: boolean;
+  premium: boolean;
+  /** Tiene el Diario de Trading: Nova vive en la barra fuera de él. */
+  conNova?: boolean;
+}) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
   const [encima, setEncima] = useState<string | null>(null);
@@ -65,6 +71,8 @@ export default function NavPrincipal({ logueado, premium }: { logueado: boolean;
             </span>
             <span className="nav-principal-texto">{e.label}</span>
           </Link>
+          {/* Nova, la asistente del Diario, al lado de su enlace: solo para quien lo tiene. */}
+          {e.id === "diario" && conNova && <NovaNav href={e.href} />}
         </li>
       ))}
     </ul>

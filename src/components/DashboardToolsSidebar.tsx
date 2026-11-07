@@ -163,7 +163,7 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
         >
           <span className="dtb-panel-icon" aria-hidden="true"><LayoutDashboard size={17} /></span>
           <span className="dtb-panel-texto">
-            <span className="dtb-panel-nombre">Mi panel</span>
+            <span className="dtb-panel-nombre">Mi dashboard</span>
             <span className="dtb-panel-sub">Tu progreso y lo guardado</span>
           </span>
         </Link>

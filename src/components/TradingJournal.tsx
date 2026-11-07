@@ -16,7 +16,7 @@ import TjCalendar from "@/components/trading/TjCalendar";
 import TjWelcome from "@/components/trading/TjWelcome";
 import TjBalance from "@/components/trading/TjBalance";
 import TjBot from "@/components/trading/TjBot";
-import { buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
+import { NOVA_FIRMA, buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
 import TjEmotions from "@/components/trading/TjEmotions";
 import { toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
 import {
@@ -69,6 +69,7 @@ const serverView = (): View => "resumen";
 export default function TradingJournal({
   initialTrades,
   userName,
+  userAvatar,
   initialCapital,
   initialLogros,
   initialDias,
@@ -76,6 +77,8 @@ export default function TradingJournal({
   initialTrades: Trade[];
   /** Nombre de pila para el saludo. */
   userName: string;
+  /** La foto que eligió en «Mi perfil», junto a su nombre en el saludo. */
+  userAvatar: string | null;
   initialCapital: number | null;
   /** Niveles de hito ya guardados como logro en user_badges. */
   initialLogros: DiarioLogrosSync["stored"];
@@ -263,13 +266,28 @@ export default function TradingJournal({
     <TjSummary stats={account.stats} drawdown={account.drawdown} />
   );
 
-  // Nova lee todo (operaciones, sensaciones, hitos) y lo cuenta desde la cabecera.
+  /*
+   * Nova lee todo (operaciones, sensaciones, hitos) y lo cuenta desde la cabecera.
+   * Se rehace ENTERO cada vez que cambia un dato: una operación nueva o editada,
+   * un ánimo, el capital o un hito. «Ahora» se toma en cada análisis, no al abrir
+   * la página: así la operación que se acaba de apuntar entra en todo.
+   */
   const botReport = useMemo(
     () => buildBotReport({
-      name: userName, trades, dias, milestones: account.milestones, ctx, stats: account.stats, capital, now,
+      name: userName, trades, dias, milestones: account.milestones, ctx, stats: account.stats, capital, now: new Date(),
     }),
-    [userName, trades, dias, account, ctx, capital, now],
+    [userName, trades, dias, account, ctx, capital],
   );
+
+  // La huella del último análisis, para que Nova en la barra sepa si hay algo sin leer.
+  useEffect(() => {
+    try {
+      localStorage.setItem(NOVA_FIRMA, botReport.signature);
+    } catch {
+      // Sin almacenamiento: la barra no podrá avisar de novedades, sin más.
+    }
+    window.dispatchEvent(new Event("tj-bot-visto"));
+  }, [botReport.signature]);
 
   /** Los botones de los mensajes de Nova: cada uno lleva a hacer lo que propone. */
   function onBotAction(kind: BotActionKind) {
@@ -291,6 +309,9 @@ export default function TradingJournal({
       onReset={openReset}
     />
   );
+
+  /** Quita los filtros de verdad (par, estrategia, dirección) y deja el periodo como estaba. */
+  const limpiarFiltros = () => setFilters(f => ({ ...NO_FILTERS, range: f.range }));
 
   const filterBar = (
     <div className="tj-card tj-filters">
@@ -314,16 +335,22 @@ export default function TradingJournal({
       {filtering && (
         <div className="tj-actions is-end">
           <span className="tj-count">{filtered.length} de {trades.length}</span>
-          <button type="button" className="tj-btn" onClick={() => setFilters(NO_FILTERS)}><X size={13} /> Limpiar</button>
+          <button type="button" className="tj-btn" onClick={limpiarFiltros}><X size={13} /> Limpiar</button>
         </div>
       )}
     </div>
   );
 
-  const noMatch = (
+  // Lo vacío se explica por lo que lo causa: un filtro de verdad o, si no lo hay, el periodo elegido.
+  const noMatch = filtering ? (
     <div className="tj-card tj-empty">
       <p>Ninguna operación coincide con estos filtros.</p>
-      <button type="button" className="tj-btn" onClick={() => setFilters(NO_FILTERS)}><X size={13} /> Quitar filtros</button>
+      <button type="button" className="tj-btn" onClick={limpiarFiltros}><X size={13} /> Quitar filtros</button>
+    </div>
+  ) : (
+    <div className="tj-card tj-empty">
+      <p>No hay operaciones en este periodo.</p>
+      <button type="button" className="tj-btn" onClick={() => setFilter("range", "all")}>Ver todas</button>
     </div>
   );
 
@@ -340,7 +367,7 @@ export default function TradingJournal({
           las vistas y el botón de apuntar, y se queda fija al hacer scroll. */}
       {/* La bienvenida abre el Resumen; en las demás vistas el título queda solo para lectores de pantalla. */}
       {view === "resumen" || trades.length === 0
-        ? <TjWelcome name={userName} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
+        ? <TjWelcome name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
         : <h1 className="sr-only">Diario de Trading</h1>}
       <div className="tj-topbar tj-scroll-anchor" ref={tabsRef}>
         {trades.length > 0 && (

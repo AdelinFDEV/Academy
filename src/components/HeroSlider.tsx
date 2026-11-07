@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useReducedMotion } from "framer-motion";
+import { useMotionValue, useReducedMotion } from "framer-motion";
+import NovaHead from "@/components/trading/NovaHead";
 import {
-  ArrowRight, Award, Bitcoin, Check, ChevronLeft, ChevronRight, Crown, Lock, Trophy,
+  ArrowRight, Award, Bitcoin, Check, ChevronLeft, ChevronRight, Crown, Lock,
 } from "lucide-react";
 import { herramienta, detalleDe, type Herramienta } from "@/lib/herramientas";
 import { PORTFOLIOS } from "@/lib/portfolios";
@@ -73,7 +74,7 @@ function hechos(id: string, portfolio: ResumenHero): Hecho[] {
   if (id === "diario") {
     return [
       { icono: IconoAnillo, valor: "10", texto: "estadísticas automáticas" },
-      { icono: IconoTrofeo, valor: "7", texto: "hitos con niveles" },
+      { icono: IconoTrofeo, valor: "7 + 1", texto: "hitos y un súper hito" },
       { icono: IconoCandado, valor: "Privado", texto: "solo lo ves tú" },
     ];
   }
@@ -227,7 +228,12 @@ const DJ_OPS = [
   { par: "SOL", lado: "Long", res: "+97 $", ok: true },
 ];
 
+/** La racha del súper hito en la maqueta: 9 meses válidos (uno en rojo) y 3 por llegar. */
+const DJ_MESES = ["ok", "ok", "rojo", "ok", "ok", "ok", "ok", "ok", "ok", "vacio", "vacio", "vacio"] as const;
+
 function VentanaDiario() {
+  // Nova mira de frente: aquí no se gira, solo hace sus gestos y sigue al cursor.
+  const novaTheta = useMotionValue(0);
   return (
     <div className="hs-dj" aria-hidden="true">
       <div className="hs-dj-kpis">
@@ -288,12 +294,33 @@ function VentanaDiario() {
         ))}
       </div>
 
-      {/* El aviso de hito, como sale en la herramienta al subir de nivel. */}
+      {/* Nova, la asistente del Diario, asomando por la esquina con su bocadillo:
+          en la herramienta abre con «Así te veo ahora» y lo que tiene que contarte. */}
+      <div className="hs-dj-nova">
+        <span className="hs-dj-bocadillo">
+          <b>¡Tengo novedades!</b>
+          <span>Así va tu trading ahora mismo</span>
+        </span>
+        <span className="hs-dj-nova-cabeza">
+          <NovaHead theta={novaTheta} face="happy" activity="none" flying={false} joy={false} talking={false} track />
+          <span className="hs-dj-nova-aviso" />
+        </span>
+      </div>
+
+      {/* El SÚPER HITO, como su tarjeta en la pestaña de hitos: corona y la racha
+          de los últimos 12 meses (verde, rojo o sin llegar a 10 operaciones).
+          La regla, en `tjStats.ts` (VIVIR_*): si cambia, cambia el texto de aquí. */}
       <div className="hs-dj-hito">
-        <span className="hs-dj-hito-icono"><Trophy size={14} strokeWidth={2.4} /></span>
-        <span>
-          <small>Hito conseguido</small>
-          <b>Disciplina de riesgo · Nivel 2</b>
+        <span className="hs-dj-hito-icono"><Crown size={16} strokeWidth={2.2} /></span>
+        <span className="hs-dj-hito-texto">
+          <small>Súper hito</small>
+          <b>Conseguiste vivir del trading</b>
+          <span className="hs-dj-meses">
+            {DJ_MESES.map((m, i) => (
+              <i key={i} className={`is-${m}`} style={{ "--i": i } as React.CSSProperties} />
+            ))}
+            <em>{DJ_MESES.filter((m) => m !== "vacio").length} de 12 meses</em>
+          </span>
         </span>
       </div>
     </div>

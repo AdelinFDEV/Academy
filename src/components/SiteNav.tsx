@@ -58,7 +58,8 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
         adelin<span>btc</span>
       </Link>
       <div className="blog-nav-center">
-        <NavPrincipal logueado={user} premium={!!isPremium} />
+        {/* Nova se decide por el plan leído aquí y no por `isPremium`: hay páginas que no lo pasan. */}
+        <NavPrincipal logueado={user} premium={!!isPremium} conNova={perfil.plan !== "free"} />
       </div>
       <div className="blog-nav-end">
         {/* Identidad y accesos personales, en un solo sitio. Pulsando el
@@ -79,7 +80,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
           </span>
         )}
 
-        <BlogMobileMenu user={user} isPremium={isPremium} userName={nombre} isAdmin={isAdmin} />
+        <BlogMobileMenu user={user} isPremium={isPremium} userName={nombre} isAdmin={isAdmin} avatar={perfil.avatar} />
       </div>
     </nav>
   );

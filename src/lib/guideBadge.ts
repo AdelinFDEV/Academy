@@ -1,4 +1,4 @@
-// Shared helper used by every guide quiz (GuideQuiz, GuideCycleQuiz,
+// Shared helper used by every guide quiz (GuideQuiz,
 // GuideWorldQuiz, ...) to persist a guide badge and trigger the unlock
 // popup. Centralizing this means new guides get the popup "for free" —
 // no need to remember to dispatch the event in each quiz component.

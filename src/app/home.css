@@ -1355,21 +1355,38 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* El aviso de hito flota sobre la parte baja de la curva, donde solo hay
-   relleno: arriba tapaba «Máximo histórico» y abajo, la última operación. */
+/* El SÚPER HITO flota sobre la parte baja de la curva, donde solo hay
+   relleno: arriba tapaba «Máximo histórico» y abajo, la última operación.
+   Más vistoso que un hito normal: borde y brillo dorados, corona y la racha
+   de 12 meses, como su tarjeta en el Diario. */
 .hs-dj-hito {
   position: absolute;
-  top: 11.4rem;
+  top: 10.6rem;
   right: -1.6rem;
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.9rem 0.6rem 0.65rem;
-  border: 1px solid rgba(230, 180, 85, 0.38);
-  border-radius: 13px;
-  background: linear-gradient(135deg, #1d1a12 0%, #0f1424 100%);
-  box-shadow: 0 22px 40px -14px rgba(0, 0, 0, 0.85);
+  gap: 0.7rem;
+  overflow: hidden;
+  padding: 0.65rem 0.95rem 0.7rem 0.7rem;
+  border: 1px solid rgba(255, 215, 106, 0.55);
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(255, 215, 106, 0.2) 0%, transparent 60%),
+    linear-gradient(135deg, #241d0e 0%, #0f1424 100%);
+  box-shadow:
+    0 22px 40px -14px rgba(0, 0, 0, 0.85),
+    0 0 30px -8px rgba(255, 215, 106, 0.45);
+}
+
+/* Un destello que cruza la tarjeta de vez en cuando, como en el Diario. */
+.hs-dj-hito::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.12) 50%, transparent 65%);
+  transform: translateX(-100%);
+  pointer-events: none;
 }
 
 /* Sin opacity: 0 de partida: el `both` de la entrada ya lo oculta durante el
@@ -1378,6 +1395,10 @@
   animation:
     hs-hito-entra 0.6s cubic-bezier(0.22, 1, 0.36, 1) 1.6s both,
     hs-flota 5s ease-in-out 2.2s infinite;
+}
+
+.hs-diapo.is-activa .hs-dj-hito::after {
+  animation: hs-destello 4.5s ease-in-out 2.4s infinite;
 }
 
 @keyframes hs-hito-entra {
@@ -1390,41 +1411,190 @@
   50% { transform: translateY(-6px); }
 }
 
+@keyframes hs-destello {
+  0% { transform: translateX(-100%); }
+  45%, 100% { transform: translateX(100%); }
+}
+
 .hs-dj-hito-icono {
   display: grid;
   place-items: center;
   flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
   color: #1a1204;
-  background: linear-gradient(135deg, #f6d58e, #e6b455);
+  background: radial-gradient(circle at 35% 30%, #fff1c2, #ffd76a 45%, #d99a2b 100%);
+  box-shadow: 0 0 0 3px rgba(255, 215, 106, 0.18), 0 0 16px -2px rgba(255, 215, 106, 0.7);
 }
 
-.hs-dj-hito > span:last-child {
+.hs-dj-hito-texto {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.12rem;
 }
 
 .hs-dj-hito small {
   font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
+  font-weight: 800;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #f6d58e;
+  color: #ffd76a;
 }
 
 .hs-dj-hito b {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   white-space: nowrap;
-  color: #fff;
+  color: #fff3cf;
+}
+
+/* La racha: un palito por mes. Verde, rojo (vale, pero en pérdidas) o por llegar. */
+.hs-dj-meses {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 0.3rem;
+}
+
+.hs-dj-meses i {
+  width: 7px;
+  height: 12px;
+  border-radius: 2px;
+  background: rgba(240, 244, 255, 0.1);
+}
+
+.hs-dj-meses i.is-ok { background: linear-gradient(180deg, #6ee7b7, #2fae7c); }
+.hs-dj-meses i.is-rojo { background: linear-gradient(180deg, #ff8f8f, #d9474f); }
+
+.hs-diapo.is-activa .hs-dj-meses i:not(.is-vacio) {
+  animation: hs-mes-entra 0.35s cubic-bezier(0.22, 1, 0.36, 1) calc(2s + var(--i) * 0.07s) both;
+}
+
+@keyframes hs-mes-entra {
+  from { transform: scaleY(0.2); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.hs-dj-meses em {
+  margin-left: 0.35rem;
+  font-size: 0.66rem;
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+  color: rgba(240, 244, 255, 0.6);
 }
 
 /* En una ventana estrecha el aviso no cabe fuera: se queda dentro. */
 @container (max-width: 420px) {
   .hs-dj-hito {
     right: 0.4rem;
+  }
+}
+
+/* ── Nova en la maqueta del Diario ──
+   La asistente asoma por la esquina de arriba, medio fuera de la ventana,
+   con su bocadillo a la izquierda. Entra cuando la diapositiva se activa. */
+.hs-dj-nova {
+  position: absolute;
+  top: -3.6rem;
+  right: -2rem;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  pointer-events: none;
+}
+
+.hs-dj-nova-cabeza {
+  position: relative;
+  flex: none;
+  pointer-events: auto;
+}
+
+.hs-dj-nova .nh {
+  width: 64px;
+  height: 64px;
+  filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.5));
+}
+
+/* El punto rojo de «tiene mensajes», como en el Diario. */
+.hs-dj-nova-aviso {
+  position: absolute;
+  top: 9px;
+  right: 4px;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #0f1e39;
+  border-radius: 50%;
+  background: #ff7a7a;
+}
+
+.hs-dj-bocadillo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  border-radius: 13px 13px 4px 13px;
+  background: #f5f7ff;
+  box-shadow: 0 16px 30px -12px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+}
+
+/* El piquito, hacia Nova. */
+.hs-dj-bocadillo::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: 8px;
+  width: 12px;
+  height: 12px;
+  background: #f5f7ff;
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+.hs-dj-bocadillo b {
+  font-size: 0.8rem;
+  color: #0b1426;
+}
+
+.hs-dj-bocadillo span {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #4a5675;
+}
+
+.hs-diapo.is-activa .hs-dj-nova-cabeza {
+  animation: hs-nova-entra 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.9s both;
+}
+
+.hs-diapo.is-activa .hs-dj-bocadillo {
+  transform-origin: right bottom;
+  animation: hs-bocadillo-entra 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s both;
+}
+
+@keyframes hs-nova-entra {
+  from { opacity: 0; transform: translate(14px, -10px) scale(0.6) rotate(12deg); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hs-bocadillo-entra {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Ventana estrecha: Nova se queda dentro, más pequeña. */
+@container (max-width: 420px) {
+  .hs-dj-nova {
+    top: -3.1rem;
+    right: 0.2rem;
+  }
+
+  .hs-dj-nova .nh {
+    width: 52px;
+    height: 52px;
   }
 }
 
@@ -1435,7 +1605,11 @@
     animation: none;
   }
 
-  .hs-diapo.is-activa .hs-dj-hito {
+  .hs-diapo.is-activa .hs-dj-hito,
+  .hs-diapo.is-activa .hs-dj-hito::after,
+  .hs-diapo.is-activa .hs-dj-meses i,
+  .hs-diapo.is-activa .hs-dj-nova-cabeza,
+  .hs-diapo.is-activa .hs-dj-bocadillo {
     animation: none;
   }
 }
@@ -2711,10 +2885,14 @@
 
   .hs-indice,
   .hs-dj-ops,
-  .hs-dj-hito,
   .hs-pf-cab,
   .hs-pf-fila:nth-child(n + 4) {
     display: none;
+  }
+
+  /* El súper hito sí se queda: en su sitio, bajo la curva, en vez de flotar. */
+  .hs-dj-hito {
+    position: static;
   }
 
   .hs-cabeza {

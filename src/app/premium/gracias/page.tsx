@@ -116,7 +116,7 @@ export default function GraciasPage() {
                   <ArrowRight size={15} aria-hidden="true" />
                 </Link>
                 <Link href="/dashboard" className="gracias-btn-secundario">
-                  Ir a mi academia
+                  Ir a mi dashboard
                 </Link>
               </div>
 
@@ -133,7 +133,7 @@ export default function GraciasPage() {
 
           {!active && (
             <div className="premium-gate-actions">
-              <Link href="/dashboard" className="btn-primary">Ir a mi academia →</Link>
+              <Link href="/dashboard" className="btn-primary">Ir a mi dashboard →</Link>
             </div>
           )}
         </div>

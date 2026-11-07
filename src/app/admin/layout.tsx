@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
         <AdminNav />
         <div className="admin-sidebar-footer">
-          <Link href="/dashboard" className="admin-nav-link-small">← Academia</Link>
+          <Link href="/dashboard" className="admin-nav-link-small">← Mi dashboard</Link>
           <LogoutButton />
         </div>
       </aside>
