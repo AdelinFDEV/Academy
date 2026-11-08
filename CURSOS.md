@@ -28,7 +28,7 @@ Lo que hay en este archivo:
 | **Cada afirmación, con su fuente fiable y su URL** en el informe, y con su matiz en la lección (muestra, país, periodo; correlación no es causa) | Todo el contenido es YMYL. Una cifra sin fuente o exagerada hunde la credibilidad del curso entero |
 | **Cada curso, su propia paleta de color**, distinta de la de los cursos anteriores. El certificado la hereda | Ver el [punto 4](#4--la-paleta-de-cada-curso). Que cada curso se reconozca de un vistazo, también su certificado |
 | **No se promete lo que el curso no hace.** Ni ganancias, ni «dominar», ni resultados garantizados | Normativa de consumo y YMYL. La promesa honesta vende mejor a largo plazo |
-| **Todo término técnico enlazado al diccionario en su primera aparición en cada lección.** Si el término no existe, se crea **antes** de publicar | Regla intocable de AGENTS.md. `subir-curso.mjs` avisa si una lección no enlaza ninguno |
+| **SIEMPRE: toda palabra técnica, o que merezca explicarse, se define en el diccionario y se enlaza** en su primera aparición en cada lección, en las preguntas no (ahí no hay enlaces). Si no existe, se crea **en el momento, sin esperar a que lo pida nadie**, con una definición buena, y antes de publicar. Ante la duda, se crea | Pedido expreso del admin (08-11-2026) y regla intocable de AGENTS.md. Así se hizo en el primer curso: 12 términos nuevos. `subir-curso.mjs` avisa si una lección no enlaza ninguno |
 | **Nada de emojis** en lecciones, bloques ni textos del curso. Los callouts van **sin** el icono-emoji | Dirección de diseño de la academia |
 | **Nunca se publica sin el «sí» explícito del admin.** `"published": true` en `curso.json` lo hace visible al subir | No hay paso intermedio para echarse atrás |
 | **El curso es contenido (filas), no código.** Si hace falta código nuevo (un bloque, un aviso), se pregunta antes y se reutiliza lo que ya hay | La web no crece con cada curso (decisión del admin, 06-10-2026) |
@@ -307,7 +307,14 @@ Tres barreras independientes protegen el aula: `src/proxy.ts` (sin sesión, al l
 
 ## 11 · Diccionario, aviso legal y textos
 
-- **Diccionario:** lista los términos técnicos del curso, comprueba cuáles existen (`grep '  slug: "' src/lib/glosario.ts`) y crea los que falten en `src/lib/glosario.ts` siguiendo [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) (Parte A: `extended` de 150-250 palabras, qué es / por qué importa / error típico, tres `seeAlso` que existan). `term` no se cambia jamás. Después, `npm run check:glosario`.
+- **Diccionario — siempre, sin que nadie lo pida.** Es parte del trabajo de escribir el curso, igual que las preguntas:
+  1. Al escribir cada lección, **apunta toda palabra técnica o que merezca explicarse** (siglas, anglicismos, conceptos de finanzas o psicología, nombres de sesgos, métricas…). Ante la duda, entra en la lista.
+  2. Comprueba cuáles existen: `grep '  slug: "' src/lib/glosario.ts`.
+  3. **Crea las que falten** en `src/lib/glosario.ts` con una **definición buena**, siguiendo [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) (Parte A): `definition` corta y clara, `extended` de 150-250 palabras con la estructura qué es / por qué importa / error típico, con datos con fuente si los hay, y tres `seeAlso` que existan. Cada ficha con frases propias: nunca copiadas de otra.
+  4. **Enlaza cada término en su primera aparición en cada lección**: `<a href="/glosario/<slug>">término</a>`. Comprueba que todos los enlaces apuntan a un `slug` que existe.
+  5. `npm run check:glosario`. `term` no se cambia jamás.
+  
+  En el primer curso se crearon así doce términos (`cfd`, `efecto-disposicion`, `r-multiplo`, `drawdown`…) y es lo que el admin quiere que pase siempre.
 - **Aviso legal:** el del campo `aviso`. Nunca un descargo escrito a mano en una lección.
 - **Textos que anuncian los cursos** (Premium, portada, dashboard): si un curso cambia lo que se puede prometer, revísalos. Nada de «próximamente» para algo que ya existe, ni «incluido» para algo que aún no.
 

@@ -63,7 +63,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | Regla | Detalle |
 |---|---|
 | **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**: no hay paso intermedio para echarse atrás. Ponle su `publicada` (la fecha) al darla de alta | `/admin/guias-instrucciones` |
-| **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
+| **SIEMPRE: toda palabra técnica, o que merezca explicarse, se define en el diccionario y se enlaza en su primera aparición**, en toda guía, curso o texto. Si no existe, **se crea en el momento con una definición buena** (Parte A de la plantilla), **sin esperar a que nadie lo pida**, y antes de publicar. Ante la duda, se crea. Es la que más se olvida, porque el texto «se entiende igual». El admin lo pidió expresamente el 08-11-2026 | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **Un curso no se escribe sin informe aprobado.** Primero la investigación con fuentes y URL en `informes/`, después el curso | [`CURSOS.md`](./CURSOS.md) |
 | **Cada curso, su propia paleta**, distinta de la de los anteriores (campo `color`); su certificado la hereda. Hay un registro de paletas usadas | [`CURSOS.md`](./CURSOS.md) |
