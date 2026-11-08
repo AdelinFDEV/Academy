@@ -1,0 +1,53 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>No hace falta que te roben la seed phrase para vaciarte la wallet. Basta con que firmes el permiso equivocado. Las aprobaciones de tokens autorizan a un contrato a mover tus tokens, y los estafadores las usan para robar sin conocer tu clave. Microsoft le puso nombre en 2022: ice phishing. La defensa es leer lo que firmas y revocar los permisos que ya no usas.</p>
+</div>
+
+<h2>Qué es una aprobación de token</h2>
+
+<p>Cuando usas una aplicación de <a href="/glosario/defi">DeFi</a>, por ejemplo un <a href="/glosario/dex">exchange descentralizado</a>, antes de cambiar un token tienes que darle permiso para moverlo. Es una <a href="/glosario/aprobacion-de-token">aprobación de token</a>: firmas en tu wallet que ese <a href="/glosario/smart-contract">smart contract</a> puede gastar tus tokens. Por comodidad, muchas aplicaciones piden un permiso <strong>ilimitado</strong>, para no tener que pedirlo cada vez.</p>
+
+<p>Es un mecanismo normal y necesario. El problema es que ese permiso sigue activo hasta que lo retiras, y que el contrato al que se lo das puede ser malicioso.</p>
+
+<h2>Cómo te roban sin tu clave</h2>
+
+<p>Microsoft describió en 2022 el llamado <strong>ice phishing</strong>: el atacante te engaña para que firmes una aprobación a su favor, normalmente en una web falsa o comprometida que parece legítima. Tu clave sigue a salvo, pero ya no hace falta: con el permiso firmado, el atacante puede llevarse tus tokens cuando quiera, incluso semanas después, y acumular permisos de muchas víctimas para vaciarlas a la vez.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">121 M$</span>
+  <span class="prose-dato-texto">Robados en el caso BadgerDAO (finales de 2021): una web comprometida pedía a los usuarios aprobaciones que acababan a favor de los atacantes.</span>
+</div>
+
+<p>Los llamados <em>drainers</em> son kits que los estafadores alquilan para montar estas webs: un <a href="/glosario/airdrop">airdrop</a> falso, una «comprobación de elegibilidad» o un NFT gratis que, al conectar la wallet, te piden firmar algo que no es lo que parece.</p>
+
+<h2>Cómo protegerte</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Lee lo que firmas.</strong> Tu wallet te dice qué tipo de operación es y a qué dirección das permiso. Si no lo entiendes, no firmes.</li>
+  <li><strong>Desconfía de las webs que te llegan por enlaces</strong> con airdrops, NFT gratis o urgencias. Es el escenario favorito de los drainers.</li>
+  <li><strong>Evita los permisos ilimitados</strong> cuando la wallet te deje fijar una cantidad.</li>
+  <li><strong>Revisa y revoca los permisos que no usas.</strong> Los <a href="/glosario/explorador-de-bloques">exploradores de bloques</a> tienen herramientas para ver qué permisos tienes activos y retirarlos. Revocar cuesta una pequeña comisión de <a href="/glosario/gas">gas</a>, mucho menos que un robo.</li>
+  <li><strong>Usa una wallet aparte para experimentar</strong>, con poco dinero, y no conectes nunca tu wallet de ahorro a webs nuevas.</li>
+</ol>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "Antes de firmar",
+  "instrucciones": "Ordena la rutina para decidir si firmas una aprobación.",
+  "pasos": [
+    "Comprobar que estás en la web oficial y no en una que te llegó por un enlace",
+    "Leer en la wallet qué tipo de operación es y a qué dirección das permiso",
+    "Limitar la cantidad si la wallet lo permite",
+    "Firmar solo si entiendes y esperabas lo que pide",
+    "Revocar el permiso cuando ya no uses esa aplicación"
+  ]
+}
+</script></div>
+
+<h2>Ejercicio del módulo, primera parte</h2>
+
+<p>Si usas alguna wallet con aplicaciones descentralizadas, revisa con un explorador de bloques qué permisos tienes activos. Revoca los de aplicaciones que ya no usas o que no reconoces.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una aprobación de token autoriza a un contrato a mover tus tokens, y un permiso firmado a un estafador le basta para vaciarte, sin tu clave. Lee lo que firmas, desconfía de los airdrops y los NFT gratis que te llegan por enlaces, evita los permisos ilimitados y revoca los que no uses.</div>
+</div>

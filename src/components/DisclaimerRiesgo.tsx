@@ -138,29 +138,28 @@ const TEXTO: Record<Variante, { titulo: string; cuerpo: React.ReactNode }> = {
     ),
   },
 
-  // Para los cursos de trading que no son fiscales (añadida el 08-11-2026 con
-  // el de psicología del trading): formación general, ni señales ni terapia.
+  // Para los cursos de formación que no son fiscales (añadida el 08-11-2026
+  // con el de psicología del trading y generalizada el mismo día con el de
+  // seguridad cripto): vale para cualquier curso, sin hablar de uno concreto.
   formacion: {
-    titulo: "Formación, no asesoramiento ni terapia",
+    titulo: "Formación, no asesoramiento",
     cuerpo: (
       <>
         <p>
-          Este curso es <strong>formación general</strong> sobre cómo se toman
-          las decisiones de inversión. No es asesoramiento financiero
-          personalizado, no recomienda ningún producto y no enseña una
-          estrategia: no conoce tu situación, tus ingresos ni tu tolerancia a la
-          pérdida.
+          Este curso es <strong>formación general</strong>. No es asesoramiento
+          financiero, jurídico ni de seguridad personalizado, y no recomienda
+          ningún producto, plataforma ni monedero concreto: no conoce tu
+          situación, tus ingresos ni tu tolerancia a la pérdida.
         </p>
         <p>
-          <strong>Nada de lo que aprendas aquí garantiza ganancias.</strong>{" "}
-          La mayoría de los inversores minoristas que operan con productos
-          apalancados pierde dinero, y gestionar mejor las emociones no
-          convierte en rentable un método que no lo es.
+          <strong>Los criptoactivos son de alto riesgo.</strong> Puedes perder
+          todo lo invertido, y nada de lo que aprendas aquí garantiza ganancias
+          ni te protege por completo de un robo o una estafa.
         </p>
         <p>
-          <strong>Tampoco es terapia.</strong> Si el trading te causa ansiedad,
-          deudas o una conducta que no puedes controlar, habla con un
-          profesional de la salud.
+          Si el trading te causa ansiedad, deudas o una conducta que no puedes
+          controlar, habla con un profesional de la salud. Si has sufrido un
+          fraude, denúncialo ante la Policía o la Guardia Civil.
         </p>
       </>
     ),

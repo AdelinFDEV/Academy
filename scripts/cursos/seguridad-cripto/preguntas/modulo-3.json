@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "sc-m3-01",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿Qué es una seed phrase?",
+    "opciones": [
+      "La contraseña de tu exchange",
+      "Una lista de 12 o 24 palabras de la que salen todas tus claves",
+      "El nombre de tu wallet",
+      "Un código que te manda tu banco"
+    ],
+    "correcta": 1,
+    "explicacion": "Es la llave maestra de tu wallet."
+  },
+  {
+    "clave": "sc-m3-02",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿Qué estándar siguen casi todas las wallets para la seed phrase?",
+    "opciones": [
+      "BIP39",
+      "MiCA",
+      "IC3",
+      "SMS"
+    ],
+    "correcta": 0,
+    "explicacion": "BIP39 define frases de 12 a 24 palabras de una lista de 2.048."
+  },
+  {
+    "clave": "sc-m3-03",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿De cuántas palabras es la lista de la que salen las palabras de BIP39?",
+    "opciones": [
+      "2.048",
+      "12",
+      "100",
+      "1.000.000"
+    ],
+    "correcta": 0,
+    "explicacion": "Una lista fija de 2.048 palabras."
+  },
+  {
+    "clave": "sc-m3-04",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿Quién puede pedirte legítimamente tu seed phrase?",
+    "opciones": [
+      "Nadie",
+      "El soporte de tu exchange",
+      "El fabricante de tu wallet",
+      "Una web de airdrops"
+    ],
+    "correcta": 0,
+    "explicacion": "Nadie legítimo te la pedirá jamás. Si alguien lo hace, es una estafa."
+  },
+  {
+    "clave": "sc-m3-05",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿Qué puede hacer alguien que tenga tu seed phrase?",
+    "opciones": [
+      "Nada sin tu DNI",
+      "Solo consultar tu saldo",
+      "Mover todos tus fondos, desde cualquier lugar",
+      "Solo enviarte dinero"
+    ],
+    "correcta": 2,
+    "explicacion": "Con tus palabras puede regenerar tus claves y vaciar tu wallet."
+  },
+  {
+    "clave": "sc-m3-06",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "Olvidas el PIN de tu wallet, pero tienes tu seed phrase. ¿Qué haces?",
+    "opciones": [
+      "Dar por perdidos los fondos",
+      "Restaurar la wallet con tus palabras",
+      "Pedir el PIN al exchange",
+      "Escribir las palabras en una web de recuperación"
+    ],
+    "correcta": 1,
+    "explicacion": "El PIN solo abre la app en ese dispositivo; con la seed phrase restauras todo."
+  },
+  {
+    "clave": "sc-m3-07",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "¿Cuáles son los dos peligros de los que hay que proteger la seed phrase a la vez?",
+    "opciones": [
+      "Que se moje y que se queme",
+      "Que te la roben y que la pierdas",
+      "Que caduque y que cambie",
+      "Que la vea el exchange y que la vea Hacienda"
+    ],
+    "correcta": 1,
+    "explicacion": "Más copias reducen un peligro pero aumentan el otro: se busca el equilibrio."
+  },
+  {
+    "clave": "sc-m3-08",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "¿Por qué es un error grave hacer una foto de tu seed phrase?",
+    "opciones": [
+      "No es un error: es lo recomendado",
+      "Porque las fotos pesan mucho",
+      "Porque la cámara cambia las palabras",
+      "Porque las fotos se sincronizan con la nube y pueden filtrarse"
+    ],
+    "correcta": 3,
+    "explicacion": "Una copia digital puede acabar en servidores ajenos o al alcance de un malware."
+  },
+  {
+    "clave": "sc-m3-09",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "¿Para qué sirve guardar la seed phrase en una placa de metal?",
+    "opciones": [
+      "Para que se pueda escanear",
+      "Para que resista el fuego y el agua",
+      "Para que el exchange la lea",
+      "Para que se vea mejor"
+    ],
+    "correcta": 1,
+    "explicacion": "El papel se destruye con un incendio o una inundación; el metal no."
+  },
+  {
+    "clave": "sc-m3-10",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "¿Cuál es la regla de oro con tus palabras?",
+    "opciones": [
+      "Se guardan en el gestor de contraseñas",
+      "Nunca se escriben en un teclado conectado a internet, salvo para restaurar en la app oficial",
+      "Se envían por correo a uno mismo",
+      "Se escriben en webs que comprueban si son válidas"
+    ],
+    "correcta": 1,
+    "explicacion": "Una web, un chat o un documento son las formas típicas en que se roban."
+  },
+  {
+    "clave": "sc-m3-11",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "Descubres que tuviste tu seed phrase guardada en una nota del móvil. ¿Qué es lo más seguro?",
+    "opciones": [
+      "Crear una wallet nueva, guardar bien sus palabras y mover allí los fondos",
+      "Borrar la nota y seguir igual",
+      "Cambiar el PIN de la wallet",
+      "Hacer una foto para tener otra copia"
+    ],
+    "correcta": 0,
+    "explicacion": "Si estuvo en digital, considérala comprometida."
+  },
+  {
+    "clave": "sc-m3-12",
+    "leccion": "passphrase-y-herencia",
+    "enunciado": "¿Qué es una passphrase?",
+    "opciones": [
+      "Un código del exchange",
+      "Otra forma de llamar al PIN",
+      "La primera palabra de la seed phrase",
+      "Una contraseña opcional que se añade a la seed phrase y crea una wallet distinta"
+    ],
+    "correcta": 3,
+    "explicacion": "También llamada «palabra 25»."
+  },
+  {
+    "clave": "sc-m3-13",
+    "leccion": "passphrase-y-herencia",
+    "enunciado": "¿Qué pasa si olvidas tu passphrase?",
+    "opciones": [
+      "El fabricante te la recuerda",
+      "Nada: con las palabras basta",
+      "Pierdes el acceso a esos fondos aunque tengas las palabras",
+      "La recuperas en el exchange"
+    ],
+    "correcta": 2,
+    "explicacion": "No se puede recuperar: es un nuevo punto de fallo."
+  },
+  {
+    "clave": "sc-m3-14",
+    "leccion": "passphrase-y-herencia",
+    "enunciado": "¿Por qué necesita un plan de herencia quien guarda sus propias claves?",
+    "opciones": [
+      "Porque si nadie sabe que existen o cómo llegar a ellas, se pierden para siempre",
+      "Porque la ley obliga a entregar la seed phrase al banco",
+      "Porque las criptomonedas caducan",
+      "No lo necesita"
+    ],
+    "correcta": 0,
+    "explicacion": "Nadie más puede acceder a tus fondos, tampoco tu familia, sin las instrucciones."
+  },
+  {
+    "clave": "sc-m3-15",
+    "leccion": "passphrase-y-herencia",
+    "enunciado": "¿Qué NO debe incluir el inventario de tu plan de herencia?",
+    "opciones": [
+      "Instrucciones sencillas de recuperación",
+      "La lista de plataformas y wallets",
+      "Dónde están las copias",
+      "Las palabras de tu seed phrase escritas"
+    ],
+    "correcta": 3,
+    "explicacion": "El inventario dice qué hay y dónde, sin escribir las palabras."
+  }
+]

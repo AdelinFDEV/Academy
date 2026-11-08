@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "sc-m1-01",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "Según Chainalysis, ¿cuánto se robó en hackeos de criptomonedas en 2024, aproximadamente?",
+    "opciones": [
+      "Unos 22 millones de dólares",
+      "Unos 2.200 millones de dólares",
+      "Unos 220.000 millones de dólares",
+      "Nada: los hackeos desaparecieron en 2024"
+    ],
+    "correcta": 1,
+    "explicacion": "El informe de Chainalysis de 2025 lo situó en unos 2.200 millones, un 21 % más que en 2023."
+  },
+  {
+    "clave": "sc-m1-02",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "¿Cuál fue la causa más frecuente de los robos en hackeos de 2024, según Chainalysis?",
+    "opciones": [
+      "Las claves privadas comprometidas",
+      "Romper el cifrado de la blockchain",
+      "Los fallos en la luz eléctrica",
+      "Adivinar las contraseñas de las wallets"
+    ],
+    "correcta": 0,
+    "explicacion": "Las claves privadas comprometidas supusieron un 43,8 % de lo robado."
+  },
+  {
+    "clave": "sc-m1-03",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "¿Qué ocurrió con el exchange Bybit en febrero de 2025?",
+    "opciones": [
+      "Cerró sin haber sufrido ningún incidente",
+      "Regaló bitcoins a todos sus clientes",
+      "Fue el primer exchange autorizado por MiCA",
+      "Sufrió el mayor robo de la historia de las criptomonedas, unos 1.500 millones de dólares"
+    ],
+    "correcta": 3,
+    "explicacion": "El FBI lo atribuyó a hackers vinculados a Corea del Norte."
+  },
+  {
+    "clave": "sc-m1-04",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "Según el FBI, ¿cuánto se perdió en Estados Unidos en 2024 por fraudes relacionados con criptomonedas?",
+    "opciones": [
+      "Unos 93 millones de dólares",
+      "Unos 9.300 millones de dólares",
+      "Unos 930.000 millones de dólares",
+      "Ninguna cantidad, porque no se denunciaron"
+    ],
+    "correcta": 1,
+    "explicacion": "El informe IC3 de 2024 recoge unos 9.300 millones, un 66 % más que el año anterior."
+  },
+  {
+    "clave": "sc-m1-05",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "De los fraudes con cripto que recogió el FBI en 2024, ¿qué tipo concentró más pérdidas?",
+    "opciones": [
+      "Los errores de envío",
+      "Las estafas de inversión",
+      "Las comisiones de los exchanges",
+      "Los fallos de las cold wallets"
+    ],
+    "correcta": 1,
+    "explicacion": "Unos 5.800 millones de los 9.300 fueron estafas de inversión."
+  },
+  {
+    "clave": "sc-m1-06",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "Tiras sin querer el papel con tu seed phrase y pierdes el acceso. ¿Qué tipo de pérdida es?",
+    "opciones": [
+      "Un hackeo a la blockchain",
+      "Un fallo de la plataforma",
+      "Un engaño",
+      "Un error propio"
+    ],
+    "correcta": 3,
+    "explicacion": "Es un error propio: se evita con hábitos, como tener una segunda copia."
+  },
+  {
+    "clave": "sc-m1-07",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "¿Se puede anular una transacción de cripto confirmada en la blockchain?",
+    "opciones": [
+      "Sí, llamando al soporte de la blockchain",
+      "No: queda escrita para siempre y nadie puede anularla",
+      "Sí, si se pide en las primeras 48 horas",
+      "Sí, pagando una comisión extra"
+    ],
+    "correcta": 1,
+    "explicacion": "La blockchain no tiene a nadie al mando que pueda deshacer una transacción."
+  },
+  {
+    "clave": "sc-m1-08",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "¿Qué advirtieron en 2022 las autoridades europeas de supervisión (EBA, ESMA y EIOPA) sobre los criptoactivos?",
+    "opciones": [
+      "Que están garantizados por los bancos centrales",
+      "Que existe la posibilidad real de perder todo lo invertido",
+      "Que son tan seguros como un depósito bancario",
+      "Que solo pueden subir de precio"
+    ],
+    "correcta": 1,
+    "explicacion": "Su advertencia conjunta hablaba de activos muy arriesgados y de la posibilidad de perderlo todo."
+  },
+  {
+    "clave": "sc-m1-09",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "Un estafador te convence de enviarle tus criptomonedas. ¿Te las devuelve MiCA?",
+    "opciones": [
+      "No: MiCA regula a las plataformas autorizadas, pero no devuelve lo que envías a un estafador",
+      "Sí, siempre",
+      "Sí, si lo denuncias antes de un mes",
+      "Sí, pero solo la mitad"
+    ],
+    "correcta": 0,
+    "explicacion": "MiCA protege frente a ciertos fallos de las plataformas, no frente a tus envíos voluntarios."
+  },
+  {
+    "clave": "sc-m1-10",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "Alguien tiene tu clave privada. ¿Qué puede hacer?",
+    "opciones": [
+      "Mover tus fondos sin tu permiso",
+      "Solo ver tu saldo",
+      "Nada, porque la blockchain le pide tu DNI",
+      "Solo enviarte dinero a ti"
+    ],
+    "correcta": 0,
+    "explicacion": "La blockchain obedece a quien firma con la clave, sea quien sea."
+  },
+  {
+    "clave": "sc-m1-11",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "Te escribe una empresa que promete recuperar tus criptomonedas robadas si pagas una comisión por adelantado. ¿Qué es lo más probable?",
+    "opciones": [
+      "Que sea tu exchange",
+      "Que sea la policía",
+      "Que sea un servicio oficial gratuito",
+      "Que sea otra estafa"
+    ],
+    "correcta": 3,
+    "explicacion": "Los falsos «recuperadores» son una estafa muy común contra quien ya ha perdido dinero."
+  },
+  {
+    "clave": "sc-m1-12",
+    "leccion": "tu-mapa-de-riesgos",
+    "enunciado": "¿Cuáles son los tres frentes por los que te pueden quitar tus criptomonedas?",
+    "opciones": [
+      "El banco, el notario y Hacienda",
+      "La blockchain, la luz y el clima",
+      "El precio, la inflación y los impuestos",
+      "La plataforma, tus dispositivos y cuentas, y tú"
+    ],
+    "correcta": 3,
+    "explicacion": "Plataforma, dispositivos y cuentas, y tú mismo, que es el frente más atacado."
+  },
+  {
+    "clave": "sc-m1-13",
+    "leccion": "tu-mapa-de-riesgos",
+    "enunciado": "¿Qué es la ingeniería social?",
+    "opciones": [
+      "Una forma de minar bitcoin",
+      "Un tipo de cold wallet",
+      "Manipular a una persona para que revele datos o haga algo que la perjudica",
+      "Un sistema de verificación de los exchanges"
+    ],
+    "correcta": 2,
+    "explicacion": "Es la base del phishing y de casi todas las estafas: atacar a la persona, no al sistema."
+  },
+  {
+    "clave": "sc-m1-14",
+    "leccion": "tu-mapa-de-riesgos",
+    "enunciado": "¿Cómo debe crecer tu esfuerzo de seguridad?",
+    "opciones": [
+      "Siempre igual, tengas lo que tengas",
+      "Con la cantidad que tienes",
+      "Solo cuando el precio baja",
+      "Solo si compras en un exchange extranjero"
+    ],
+    "correcta": 1,
+    "explicacion": "Para poca cantidad basta lo básico; para tus ahorros, merece más protección."
+  },
+  {
+    "clave": "sc-m1-15",
+    "leccion": "tu-mapa-de-riesgos",
+    "enunciado": "Empiezas con poca cantidad. ¿Qué es lo más urgente?",
+    "opciones": [
+      "Comprar la cold wallet más cara",
+      "Aprender a reconocer las estafas y no dar nunca tus palabras a nadie",
+      "Repartir tus fondos en diez exchanges",
+      "Activar una passphrase"
+    ],
+    "correcta": 1,
+    "explicacion": "Lo primero siempre es no caer en engaños, que es lo que más pérdidas causa."
+  }
+]

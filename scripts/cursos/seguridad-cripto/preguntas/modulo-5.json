@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "sc-m5-01",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "¿Para qué sirve un gestor de contraseñas?",
+    "opciones": [
+      "Para comprar criptomonedas",
+      "Para guardar tu seed phrase",
+      "Para generar y guardar una contraseña única por cuenta",
+      "Para recibir SMS"
+    ],
+    "correcta": 2,
+    "explicacion": "Evita repetir contraseñas, que es lo que permite a un atacante entrar en todo con una sola filtración."
+  },
+  {
+    "clave": "sc-m5-02",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "¿Debe ir tu seed phrase en el gestor de contraseñas?",
+    "opciones": [
+      "Solo la mitad de las palabras",
+      "Sí, es el mejor sitio",
+      "Solo si el gestor es de pago",
+      "No: las palabras se quedan fuera de cualquier dispositivo"
+    ],
+    "correcta": 3,
+    "explicacion": "El gestor es para las contraseñas de tus cuentas, nunca para la seed phrase."
+  },
+  {
+    "clave": "sc-m5-03",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "Ordenados de más a menos protección, ¿cuál es el orden correcto de los segundos factores?",
+    "opciones": [
+      "Todos protegen igual",
+      "SMS, app de autenticación, llave física",
+      "App de autenticación, SMS, llave física",
+      "Llave física, app de autenticación, SMS"
+    ],
+    "correcta": 3,
+    "explicacion": "El SMS es el más débil por el SIM swapping."
+  },
+  {
+    "clave": "sc-m5-04",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "¿Por qué hay que proteger especialmente el correo?",
+    "opciones": [
+      "Porque con él se pueden recuperar casi todas las demás cuentas",
+      "Porque es donde se guardan las criptomonedas",
+      "Porque lo lee el exchange",
+      "No hace falta protegerlo"
+    ],
+    "correcta": 0,
+    "explicacion": "Quien entra en tu correo puede pedir el cambio de contraseña de tu exchange."
+  },
+  {
+    "clave": "sc-m5-05",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "Al activar una app de autenticación, ¿qué no debes olvidar?",
+    "opciones": [
+      "Guardar en papel los códigos de recuperación",
+      "Hacer una foto del código QR y publicarla",
+      "Desactivar la contraseña",
+      "Compartir los códigos con el soporte"
+    ],
+    "correcta": 0,
+    "explicacion": "Si pierdes el teléfono, los códigos de recuperación son la forma de volver a entrar."
+  },
+  {
+    "clave": "sc-m5-06",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "¿De dónde debes copiar la dirección de destino?",
+    "opciones": [
+      "De un mensaje que te reenvían",
+      "Del historial de transacciones",
+      "De una fuente de confianza, como la libreta de tu wallet o la plataforma de destino",
+      "De un comentario en redes"
+    ],
+    "correcta": 2,
+    "explicacion": "El historial puede estar envenenado."
+  },
+  {
+    "clave": "sc-m5-07",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "¿Por qué hay que comprobar la red antes de enviar?",
+    "opciones": [
+      "Porque cada red tiene un precio distinto",
+      "Porque una misma moneda puede existir en varias redes y el destino puede no admitir esa",
+      "Porque la red cambia la dirección",
+      "No hace falta comprobarla"
+    ],
+    "correcta": 1,
+    "explicacion": "Enviar por una red que el destino no admite puede dejar los fondos inaccesibles."
+  },
+  {
+    "clave": "sc-m5-08",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "Vas a enviar una cantidad importante. ¿Cuál es el paso más importante?",
+    "opciones": [
+      "Pedir confirmación en un grupo",
+      "Enviarlo todo de golpe para ahorrar comisiones",
+      "Enviar primero una cantidad pequeña de prueba",
+      "Copiar la dirección del historial"
+    ],
+    "correcta": 2,
+    "explicacion": "La prueba es el seguro más barato contra un error de dirección o de red."
+  },
+  {
+    "clave": "sc-m5-09",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "Tu wallet te pide firmar algo que no esperabas. ¿Qué haces?",
+    "opciones": [
+      "Firmar para no perder la oportunidad",
+      "Rechazarlo y comprobarlo con calma",
+      "Firmar y revisarlo después",
+      "Pedir a un desconocido que lo firme por ti"
+    ],
+    "correcta": 1,
+    "explicacion": "Rechazar nunca rompe nada; una firma maliciosa puede vaciarte."
+  },
+  {
+    "clave": "sc-m5-10",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "¿Qué es el memo o etiqueta que piden algunas plataformas?",
+    "opciones": [
+      "Tu seed phrase",
+      "La contraseña de tu wallet",
+      "Un código extra para saber de quién es el ingreso",
+      "Un tipo de comisión"
+    ],
+    "correcta": 2,
+    "explicacion": "Si la plataforma lo pide y no lo pones, el ingreso puede no llegar a tu cuenta."
+  },
+  {
+    "clave": "sc-m5-11",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "Sospechas que tu seed phrase está comprometida. ¿Qué haces primero?",
+    "opciones": [
+      "Cambiar el fondo de pantalla del móvil",
+      "Esperar a ver si pasa algo",
+      "Publicarlo en redes",
+      "Crear una wallet nueva en un dispositivo limpio y mover allí lo que quede"
+    ],
+    "correcta": 3,
+    "explicacion": "Lo primero es poner a salvo lo que queda."
+  },
+  {
+    "clave": "sc-m5-12",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "¿Dónde se denuncia en España un robo o una estafa con criptomonedas?",
+    "opciones": [
+      "En el exchange de otro país",
+      "Ante la Policía Nacional o la Guardia Civil",
+      "En los comentarios de la web del estafador",
+      "En ningún sitio, porque no sirve"
+    ],
+    "correcta": 1,
+    "explicacion": "Con todas las pruebas: capturas, direcciones e identificadores de las transacciones."
+  },
+  {
+    "clave": "sc-m5-13",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "¿Qué es el 017?",
+    "opciones": [
+      "Un número de recuperadores de criptomonedas",
+      "El teléfono del soporte de un exchange",
+      "La Línea de Ayuda en Ciberseguridad de INCIBE, gratuita",
+      "El número de la CNMV para comprar"
+    ],
+    "correcta": 2,
+    "explicacion": "Ofrece orientación gratuita sobre qué hacer y cómo protegerte."
+  },
+  {
+    "clave": "sc-m5-14",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "Tras una estafa, alguien se ofrece a recuperar tu dinero si pagas por adelantado. ¿Qué es?",
+    "opciones": [
+      "Un servicio oficial",
+      "Otra estafa, dirigida a quien ya ha perdido dinero",
+      "La policía",
+      "Una ayuda del exchange"
+    ],
+    "correcta": 1,
+    "explicacion": "Ningún organismo público te cobra por recuperar fondos."
+  },
+  {
+    "clave": "sc-m5-15",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "¿Qué pruebas conviene guardar tras un robo?",
+    "opciones": [
+      "Tu seed phrase, para dársela a la policía",
+      "Solo el saldo que tenías",
+      "Nada, porque no sirven",
+      "Capturas, direcciones, identificadores de las transacciones y mensajes"
+    ],
+    "correcta": 3,
+    "explicacion": "Las pruebas permiten investigar y, a veces, congelar fondos en una plataforma."
+  }
+]

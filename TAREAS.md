@@ -85,7 +85,7 @@ La plataforma está hecha (06-10-2026): catálogo `/cursos`, ficha `/cursos/<slu
 Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borrador**; escritos el módulo 1 entero (3 lecciones + 15 preguntas) y la lección 2.1. Falta, en orden:
 
 - [ ] **Escribir el resto**: lecciones 2.2 a 7.3, los bancos de preguntas de los módulos 2 a 7 (15 cada uno) y el del examen final (30). Cada dato fiscal, contrastado con la AEAT, la DGT o el BOE.
-- [ ] **Crear en el diccionario** los términos fiscales que el curso necesita enlazar y que aún no existen: FIFO, permuta, ganancia patrimonial, base del ahorro, airdrop, lending, modelo 721… (regla del diccionario: antes de publicar).
+- [ ] **Crear en el diccionario** los términos fiscales que el curso necesita enlazar y que aún no existen: FIFO, permuta, ganancia patrimonial, base del ahorro, lending, modelo 721… (`airdrop` ya existe desde el curso de seguridad) (regla del diccionario: antes de publicar).
 - [ ] **Imágenes**: portada y las ilustraciones que hagan falta, con prompts de Gemini, en WebP.
 - [ ] **Comprobar DAC8 en el BOE** antes de publicar: en octubre de 2026 la orden de los modelos 042, 172, 175 y 721 seguía en tramitación (lección «Lo que Hacienda ya sabe de ti»).
 - [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json`, volver a subir y ofrecer la auditoría SEO de la ficha. (El catálogo ya está en `acceso: "premium"` desde el curso de psicología.)
@@ -96,6 +96,13 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Exámenes:** preguntas sorteadas y corregidas en el servidor (`src/lib/cursos-examen.ts`), nota mínima 5, la espera de 24 h tras suspender, y que la nota guardada sea la que se enseña. Comprobar que la respuesta correcta no viaja al navegador antes de corregir.
 - [ ] **Certificado:** que se entregue completo al aprobar el examen final, con la nota (40 % media de módulos + 60 % final), descargable, y que el código abra su página pública de verificación (`/cursos/verificar/<codigo>`). Que el logro del curso salga en `/dashboard/logros`.
 - [ ] **Un apartado nuevo en el dashboard para todos los usuarios**, «Mis cursos»: los cursos en curso con su progreso por módulos, el siguiente paso, las notas y los certificados conseguidos. Quien no es Premium ve el catálogo y qué incluye. Hoy el dashboard solo tiene un enlace a `/cursos` en la barra lateral, marcado «Pronto».
+
+### 0d. Curso «Seguridad cripto» — publicado el 08-11-2026
+
+Pedido por el admin el 08-11-2026, con la orden de publicarlo sin esperar su aprobación al terminar. Informe con fuentes en [`informes/curso-seguridad-cripto.md`](./informes/curso-seguridad-cripto.md). Escrito en `scripts/cursos/seguridad-cripto/`: 5 módulos, 17 lecciones, 75 preguntas de módulo y 40 del final (salen 25). Paleta violeta `#a78bfa`, logro «Caja Fuerte» (escudo con cerradura en `logros.tsx`), aviso «formacion» generalizado para cualquier curso y 12 términos nuevos en el diccionario (`autocustodia`, `sim-swapping`, `envenenamiento-de-direcciones`, `chiringuito-financiero`, `pig-butchering`, `aprobacion-de-token`, `passphrase`, `esquema-ponzi`, `ingenieria-social`, `airdrop`, `malware`, `explorador-de-bloques`). Certificado y logro entregados al admin. Falta:
+
+- [ ] **Recorrerlo como alumno** con las comprobaciones de la sección 0b, y los bloques de cada lección en móvil.
+- [ ] **Auditoría SEO de la ficha `/cursos/seguridad-cripto`** (AUDITORIA-SEO.md entera): no se ofreció antes de publicar porque el admin pidió no esperar. Al final, `npm run check:seo -- cursos/seguridad-cripto "seguridad cripto"`.
 
 ### 0c. Curso «Psicología del trading» — publicado el 08-11-2026
 

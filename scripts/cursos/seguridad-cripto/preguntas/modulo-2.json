@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "sc-m2-01",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "Dejas tus criptomonedas en un exchange. ¿Quién controla las claves?",
+    "opciones": [
+      "El banco central",
+      "Tú",
+      "Nadie",
+      "La plataforma"
+    ],
+    "correcta": 3,
+    "explicacion": "En la custodia, la plataforma tiene las claves y tú un saldo y un derecho a retirarlas."
+  },
+  {
+    "clave": "sc-m2-02",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "¿Qué ocurrió con Mt. Gox en 2014?",
+    "opciones": [
+      "Fue el primer exchange regulado por MiCA",
+      "Quebró y dijo que faltaban unos 850.000 bitcoins",
+      "Regaló bitcoins a sus clientes",
+      "Se convirtió en una cold wallet"
+    ],
+    "correcta": 1,
+    "explicacion": "Era el mayor exchange de su época y la mayoría de esos bitcoins eran de sus clientes."
+  },
+  {
+    "clave": "sc-m2-03",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "¿Qué se descubrió cuando quebró FTX en 2022?",
+    "opciones": [
+      "Que todos sus clientes tenían cold wallets",
+      "Que había regalado demasiados airdrops",
+      "Que su blockchain se había detenido",
+      "Que miles de millones de los depósitos de los clientes se habían desviado a Alameda Research"
+    ],
+    "correcta": 3,
+    "explicacion": "Su fundador fue condenado por fraude en 2023."
+  },
+  {
+    "clave": "sc-m2-04",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "¿Qué exige el artículo 75 de MiCA a las plataformas autorizadas que custodian criptoactivos?",
+    "opciones": [
+      "Prohibir las retiradas a wallets propias",
+      "Devolver siempre cualquier pérdida de sus clientes",
+      "Guardar la seed phrase de cada cliente",
+      "Separar los criptoactivos de los clientes de los de la propia empresa"
+    ],
+    "correcta": 3,
+    "explicacion": "Así, en caso de quiebra, los acreedores de la plataforma no pueden quedarse con lo de los clientes."
+  },
+  {
+    "clave": "sc-m2-05",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "¿Qué significa «not your keys, not your coins»?",
+    "opciones": [
+      "Que nadie puede tener bitcoins",
+      "Que las claves no sirven para nada",
+      "Que si no tienes tus claves, dependes de quien las tiene",
+      "Que hay que compartir las claves con el exchange"
+    ],
+    "correcta": 2,
+    "explicacion": "Si las claves son de la plataforma, tus monedas dependen de su solvencia y honestidad."
+  },
+  {
+    "clave": "sc-m2-06",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "¿Qué hace la lista blanca de direcciones de un exchange?",
+    "opciones": [
+      "Elimina las comisiones",
+      "Muestra las mejores criptomonedas",
+      "Solo permite retirar a direcciones que tú has aprobado antes",
+      "Garantiza que el exchange no quiebre"
+    ],
+    "correcta": 2,
+    "explicacion": "Si alguien entra en tu cuenta, no puede retirar a una dirección nueva al instante."
+  },
+  {
+    "clave": "sc-m2-07",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "¿Dónde están realmente tus criptomonedas?",
+    "opciones": [
+      "Registradas en la blockchain; la wallet guarda las claves",
+      "Dentro del móvil",
+      "Dentro del exchange, siempre",
+      "En la caja fuerte del fabricante de la wallet"
+    ],
+    "correcta": 0,
+    "explicacion": "Por eso, con la seed phrase, puedes recuperarlas en otra wallet aunque pierdas el móvil."
+  },
+  {
+    "clave": "sc-m2-08",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "¿Qué es una hot wallet?",
+    "opciones": [
+      "Un tipo de exchange",
+      "Un dispositivo sin conexión",
+      "Una cuenta en un banco",
+      "Una app conectada a internet que guarda tus claves en tu dispositivo"
+    ],
+    "correcta": 3,
+    "explicacion": "Cómoda para el día a día, pero tan segura como el dispositivo en el que vive."
+  },
+  {
+    "clave": "sc-m2-09",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "¿Por qué una cold wallet protege aunque tu ordenador esté infectado?",
+    "opciones": [
+      "Porque es más cara",
+      "Porque borra el malware del ordenador",
+      "Porque la firma se hace dentro del aparato y las claves nunca salen de él",
+      "Porque guarda una copia en la nube"
+    ],
+    "correcta": 2,
+    "explicacion": "El ordenador solo prepara la transacción; la clave nunca toca internet."
+  },
+  {
+    "clave": "sc-m2-10",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "Abres una cold wallet nueva y trae un papel con unas palabras ya escritas. ¿Qué haces?",
+    "opciones": [
+      "Llamar al número que viene en el papel",
+      "Usar esas palabras, que ya vienen preparadas",
+      "No usarla: una wallet legítima genera la seed phrase contigo",
+      "Escribir las palabras en la web del fabricante"
+    ],
+    "correcta": 2,
+    "explicacion": "Las palabras preimpresas las conoce otra persona: es una trampa."
+  },
+  {
+    "clave": "sc-m2-11",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "¿Dónde conviene guardar los ahorros cripto que no vas a tocar en años?",
+    "opciones": [
+      "En una foto en la nube",
+      "En una hot wallet del móvil",
+      "En una cold wallet",
+      "En cualquier exchange, sin pensarlo"
+    ],
+    "correcta": 2,
+    "explicacion": "Lo que no vas a mover es lo que más gana con estar fuera de línea."
+  },
+  {
+    "clave": "sc-m2-12",
+    "leccion": "la-autocustodia",
+    "enunciado": "¿Qué riesgo elimina la autocustodia?",
+    "opciones": [
+      "El de que una plataforma quiebre o te bloquee con tus fondos",
+      "El de las estafas",
+      "El de perder tu seed phrase",
+      "El de que el precio baje"
+    ],
+    "correcta": 0,
+    "explicacion": "Con tus claves, la quiebra de un intermediario no te afecta."
+  },
+  {
+    "clave": "sc-m2-13",
+    "leccion": "la-autocustodia",
+    "enunciado": "¿Te protege la autocustodia del phishing?",
+    "opciones": [
+      "Sí, si la wallet es cara",
+      "Sí, completamente",
+      "No: si te engañan para escribir tus palabras o firmar algo, la pierdes igual",
+      "Solo los fines de semana"
+    ],
+    "correcta": 2,
+    "explicacion": "La autocustodia cambia de sitio el riesgo, pero no te protege de los engaños."
+  },
+  {
+    "clave": "sc-m2-14",
+    "leccion": "la-autocustodia",
+    "enunciado": "Antes de pasar una cantidad grande a tu wallet propia, ¿qué conviene hacer?",
+    "opciones": [
+      "Nada: se mueve todo de golpe",
+      "Compartir tus palabras con un amigo para que las revise",
+      "Hacer una foto de las palabras por si acaso",
+      "Practicar una recuperación con poca cantidad"
+    ],
+    "correcta": 3,
+    "explicacion": "Si recuperas bien una cantidad pequeña, sabes que tu copia funciona."
+  },
+  {
+    "clave": "sc-m2-15",
+    "leccion": "como-repartir-tus-criptomonedas",
+    "enunciado": "¿Cuál es la idea del reparto por capas?",
+    "opciones": [
+      "Tener todo en un solo sitio para controlarlo mejor",
+      "Que ningún fallo único se lleve todo",
+      "Cambiar de exchange cada semana",
+      "Guardar la seed phrase en varios correos"
+    ],
+    "correcta": 1,
+    "explicacion": "Exchange para operar, hot wallet para el día a día y cold wallet para el ahorro."
+  }
+]

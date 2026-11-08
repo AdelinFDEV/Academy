@@ -1,0 +1,87 @@
+{
+  "slug": "seguridad-cripto",
+  "titulo": "Seguridad cripto",
+  "subtitulo": "Protege tu dinero desde el primer día.",
+  "descripcion": "Un curso para principiantes que quieren guardar sus criptomonedas sin sustos: dónde tenerlas (exchange, hot wallet o cold wallet), cómo cuidar tu seed phrase, cómo blindar tus cuentas y cómo reconocer las estafas que más dinero roban, del phishing al falso soporte, las inversiones falsas, los permisos de tokens o el robo de tu número de teléfono. Cada lección se apoya en datos de Chainalysis, el FBI, la CNMV, INCIBE o la Autoridad Bancaria Europea, y termina con algo que hacer en tu propia configuración. No recomienda ninguna plataforma ni promete seguridad total: te da criterio y hábitos para no perder tu dinero por un error evitable.",
+  "objetivos": [
+    "Entender cómo se pierde el dinero en cripto y por qué una transacción no se puede deshacer.",
+    "Elegir con criterio dónde guardar tus criptomonedas: exchange, hot wallet, cold wallet o una combinación.",
+    "Guardar tu seed phrase de forma segura y saber qué es una passphrase y cómo dejar un plan de herencia.",
+    "Reconocer el phishing, el falso soporte, las inversiones falsas, los chiringuitos y el pig butchering.",
+    "Protegerte de los permisos de tokens maliciosos, el envenenamiento de direcciones y el SIM swapping.",
+    "Montar tu propio plan de seguridad y saber qué hacer si algo sale mal."
+  ],
+  "nivel": "básico",
+  "portada": null,
+  "color": "#a78bfa",
+  "aviso": "formacion",
+  "logro": "Caja Fuerte",
+  "preguntas_final": 25,
+  "revisado": "2026-11-08",
+  "orden": 2,
+  "published": true,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Cómo se pierde el dinero en cripto",
+      "descripcion": "Hackeos, estafas y errores propios, con cifras de verdad. Por qué en cripto no hay botón de deshacer y por dónde te pueden atacar.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "hackeos-estafas-y-errores", "titulo": "Hackeos, estafas y errores: lo que dicen los datos", "resumen": "Cuánto se roba cada año, quién lo roba y por qué la mayoría de las pérdidas de particulares empieza con un engaño.", "minutos": 12, "archivo": "01-01-hackeos-estafas-y-errores.html" },
+        { "slug": "lo-que-no-se-puede-deshacer", "titulo": "Lo que no se puede deshacer", "resumen": "En cripto no hay banco que anule un pago. Qué significa eso para ti y por qué la seguridad es tu responsabilidad.", "minutos": 11, "archivo": "01-02-lo-que-no-se-puede-deshacer.html" },
+        { "slug": "tu-mapa-de-riesgos", "titulo": "Tu mapa de riesgos", "resumen": "La plataforma, tus dispositivos y tú: los tres frentes por los que te pueden quitar tus criptomonedas.", "minutos": 11, "archivo": "01-03-tu-mapa-de-riesgos.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Dónde guardar tus criptomonedas",
+      "descripcion": "Exchange, hot wallet y cold wallet: qué significa cada una, qué riesgos tiene y cómo repartir según el uso.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-exchange-y-la-custodia", "titulo": "El exchange y la custodia", "resumen": "Qué pasa con tus monedas cuando las dejas en una plataforma, y lo que enseñaron Mt. Gox y FTX.", "minutos": 13, "archivo": "02-01-el-exchange-y-la-custodia.html" },
+        { "slug": "hot-wallet-y-cold-wallet", "titulo": "Hot wallet y cold wallet", "resumen": "La wallet del móvil y la de un dispositivo desconectado: para qué sirve cada una.", "minutos": 12, "archivo": "02-02-hot-wallet-y-cold-wallet.html" },
+        { "slug": "la-autocustodia", "titulo": "La autocustodia, sin mitos", "resumen": "Más control y más responsabilidad: cuándo tiene sentido guardar tú tus claves.", "minutos": 11, "archivo": "02-03-la-autocustodia.html" },
+        { "slug": "como-repartir-tus-criptomonedas", "titulo": "Cómo repartir tus criptomonedas", "resumen": "Un reparto sencillo según cuánto tengas y para qué lo uses.", "minutos": 11, "archivo": "02-04-como-repartir-tus-criptomonedas.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Tu seed phrase y tus claves",
+      "descripcion": "Las palabras que valen tanto como tu dinero: qué son, cómo guardarlas y qué pasa con ellas si a ti te pasa algo.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-es-una-seed-phrase", "titulo": "Qué es una seed phrase", "resumen": "Doce o veinticuatro palabras que son la llave maestra de tu wallet.", "minutos": 11, "archivo": "03-01-que-es-una-seed-phrase.html" },
+        { "slug": "como-guardar-tu-seed-phrase", "titulo": "Cómo guardar tu seed phrase", "resumen": "Papel, metal, copias y escondites: lo que funciona y los errores que más dinero cuestan.", "minutos": 12, "archivo": "03-02-como-guardar-tu-seed-phrase.html" },
+        { "slug": "passphrase-y-herencia", "titulo": "Passphrase y herencia", "resumen": "Una capa extra de protección, y un plan para que tus criptomonedas no desaparezcan contigo.", "minutos": 12, "archivo": "03-03-passphrase-y-herencia.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Las estafas, una a una",
+      "descripcion": "Las trampas que más dinero roban a particulares y cómo reconocerlas antes de caer.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "phishing-y-falso-soporte", "titulo": "Phishing y falso soporte", "resumen": "Webs clonadas, correos urgentes y «asistentes» que solo quieren tus palabras.", "minutos": 12, "archivo": "04-01-phishing-y-falso-soporte.html" },
+        { "slug": "inversiones-falsas-y-chiringuitos", "titulo": "Inversiones falsas y chiringuitos", "resumen": "Rentabilidades imposibles, plataformas sin autorización y el engaño que empieza con una amistad.", "minutos": 13, "archivo": "04-02-inversiones-falsas-y-chiringuitos.html" },
+        { "slug": "permisos-de-tokens", "titulo": "Permisos de tokens: la firma que te vacía", "resumen": "Cómo te roban sin conocer tu clave, y cómo revisar y revocar lo que firmaste.", "minutos": 12, "archivo": "04-03-permisos-de-tokens.html" },
+        { "slug": "direcciones-falsas-y-sim-swapping", "titulo": "Direcciones falsas y robo de tu número", "resumen": "El copia y pega envenenado y el duplicado de SIM: dos ataques silenciosos.", "minutos": 12, "archivo": "04-04-direcciones-falsas-y-sim-swapping.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Tu plan de seguridad",
+      "descripcion": "Los hábitos que te protegen cada día y qué hacer si algo sale mal.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "cuentas-blindadas", "titulo": "Cuentas blindadas", "resumen": "Contraseñas, segundo factor y correo: la configuración que frena la mayoría de los ataques.", "minutos": 12, "archivo": "05-01-cuentas-blindadas.html" },
+        { "slug": "enviar-y-firmar-sin-errores", "titulo": "Enviar y firmar sin errores", "resumen": "Dirección, red y cantidad de prueba: la rutina que evita perder un envío.", "minutos": 11, "archivo": "05-02-enviar-y-firmar-sin-errores.html" },
+        { "slug": "si-algo-sale-mal", "titulo": "Si algo sale mal, y tu plan", "resumen": "Qué hacer en la primera hora, a quién denunciar, de qué «recuperadores» huir, y tu plan escrito.", "minutos": 13, "archivo": "05-03-si-algo-sale-mal.html" }
+      ]
+    }
+  ]
+}

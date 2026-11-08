@@ -1,0 +1,67 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Muchas pérdidas no son robos: son envíos mal hechos. Una dirección equivocada, una red que no corresponde o una firma que no se leyó. Como en cripto no hay botón de deshacer, la defensa es una rutina de cinco pasos que, repetida, se vuelve automática. El paso más importante: enviar primero una cantidad pequeña de prueba.</p>
+</div>
+
+<h2>Los tres errores de envío más comunes</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Error</th><th>Qué pasa</th><th>Cómo se evita</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Dirección equivocada</td><td>Un carácter mal copiado o una dirección envenenada</td><td>Copiar de una fuente de confianza y comprobarla entera</td></tr>
+    <tr><td>Red equivocada</td><td>Envías por una red que el destino no admite y los fondos pueden quedar inaccesibles</td><td>Comprobar que el destino admite esa moneda en esa red</td></tr>
+    <tr><td>Falta la etiqueta (memo)</td><td>Algunas plataformas piden un código extra para saber de quién es el ingreso</td><td>Copiar el memo si la plataforma lo pide</td></tr>
+  </tbody>
+</table>
+
+<p>Lo de la red confunde mucho al principio: una misma moneda, como una <a href="/glosario/stablecoin">stablecoin</a>, puede existir en varias blockchains a la vez. Si envías desde una red a una dirección que solo funciona en otra, los fondos pueden perderse o requerir un trámite largo para recuperarlos.</p>
+
+<h2>La rutina de los cinco pasos</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Copia la dirección de una fuente de confianza:</strong> la libreta de tu wallet o la propia plataforma de destino, nunca del historial ni de un mensaje.</li>
+  <li><strong>Comprueba la dirección completa</strong>, carácter a carácter, o al menos bloques del principio, del medio y del final.</li>
+  <li><strong>Comprueba la red y el memo:</strong> que el destino admite esa moneda en esa red, y si pide etiqueta.</li>
+  <li><strong>Envía una cantidad pequeña de prueba</strong> y espera a que llegue.</li>
+  <li><strong>Envía el resto</strong>, revisando otra vez la dirección antes de confirmar.</li>
+</ol>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">1 envío de prueba</span>
+  <span class="prose-dato-texto">Cuesta una pequeña comisión extra. Te protege de perder el envío entero por una dirección o una red equivocadas.</span>
+</div>
+
+<h2>Firmar: lee antes de aceptar</h2>
+
+<p>Con una wallet propia no solo envías: también firmas mensajes y permisos al usar aplicaciones. Viste en la lección 4.3 que una firma puede vaciarte la wallet. La regla es sencilla: <strong>si tu wallet te pide firmar algo que no esperabas o que no entiendes, rechaza</strong>. Nada legítimo se rompe por decir que no y comprobarlo con calma.</p>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Vas a enviar una cantidad importante a tu cold wallet. ¿Qué haces primero?",
+  "opciones": [
+    "Copiar la dirección de la última transacción del historial para ir más rápido",
+    "Enviarlo todo de golpe para pagar una sola comisión",
+    "Enviar una cantidad pequeña de prueba y comprobar que llega a la dirección correcta",
+    "Pedir a alguien en un grupo que te confirme la dirección"
+  ],
+  "correcta": 2,
+  "explicacion": "La cantidad de prueba es el seguro más barato contra una dirección o una red equivocadas."
+}
+</script></div>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Envíos sin sustos",
+  "afirmaciones": [
+    { "texto": "Una misma stablecoin puede existir en varias redes a la vez.", "verdadero": true, "explicacion": "Por eso hay que comprobar que el destino admite esa moneda en esa red concreta." },
+    { "texto": "Si la dirección empieza y acaba igual que la mía, ya está comprobada.", "verdadero": false, "explicacion": "Es justo lo que aprovecha el envenenamiento de direcciones. Compruébala entera." },
+    { "texto": "Si mi wallet me pide firmar algo que no esperaba, lo mejor es rechazarlo y comprobar.", "verdadero": true, "explicacion": "Una firma maliciosa puede vaciarte la wallet. Decir que no no rompe nada." }
+  ]
+}
+</script></div>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> copia la dirección de una fuente de confianza, compruébala entera, verifica la red y el memo, envía primero una cantidad de prueba y después el resto. Y no firmes nada que no esperabas o no entiendes: rechazar siempre es seguro.</div>
+</div>

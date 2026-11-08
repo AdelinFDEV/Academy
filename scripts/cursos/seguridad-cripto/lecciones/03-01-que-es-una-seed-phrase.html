@@ -1,0 +1,56 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>La seed phrase es una lista de 12 o 24 palabras que tu wallet te da al crearla. De ella salen todas tus claves privadas: quien tenga esas palabras tiene tus criptomonedas, en cualquier wallet y desde cualquier lugar del mundo. Por eso vale exactamente lo mismo que tu dinero, y por eso nadie legítimo te la pedirá jamás.</p>
+</div>
+
+<h2>La llave maestra</h2>
+
+<p>Cuando creas una wallet, te muestra una lista de palabras corrientes en inglés: <em>apple, river, magic…</em> Esa es tu <a href="/glosario/seed-phrase">seed phrase</a>, también llamada frase semilla o frase de recuperación. A partir de ella, la wallet calcula tu <a href="/glosario/clave-privada">clave privada</a> y todas tus direcciones.</p>
+
+<p>Casi todas las wallets siguen el mismo estándar, llamado <strong>BIP39</strong>. Define frases de entre 12 y 24 palabras, elegidas de una lista fija de 2.048 palabras. Gracias a ese estándar, puedes restaurar tus fondos en otra wallet distinta con las mismas palabras: no dependes de una marca concreta.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">12 o 24</span>
+  <span class="prose-dato-texto">Palabras de una lista de 2.048 (estándar BIP39). Las combinaciones posibles son tantas que es imposible adivinarlas. La única forma de conseguirlas es que tú las entregues o las dejes a la vista.</span>
+</div>
+
+<h2>Qué puede hacer quien la tenga</h2>
+
+<ul>
+  <li><strong>Mover todos tus fondos</strong> a su propia wallet, en segundos, desde cualquier país.</li>
+  <li><strong>Sin tu permiso y sin dejar rastro de quién es</strong>: la blockchain no sabe si quien firma eres tú.</li>
+  <li><strong>En todas las redes y monedas</strong> que cuelgan de esa frase, no solo en una.</li>
+</ul>
+
+<p>Por eso la regla más importante de todo el curso es esta:</p>
+
+<blockquote><strong>Nadie legítimo te pedirá nunca tu seed phrase.</strong> Ni el soporte del exchange, ni el fabricante de tu wallet, ni una web para «verificar» o «sincronizar» tu cartera, ni ningún formulario de premios o <a href="/glosario/airdrop">airdrops</a>. Si alguien te la pide, es una estafa.</blockquote>
+
+<h2>Seed phrase, clave privada y contraseña</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Qué es</th><th>Para qué sirve</th><th>Si la pierdes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Seed phrase</strong></td><td>Recuperar toda tu wallet en cualquier dispositivo</td><td>Si también pierdes el dispositivo, pierdes los fondos</td></tr>
+    <tr><td><strong>Clave privada</strong></td><td>Firmar las transacciones de una dirección</td><td>Sale de la seed phrase: con ella la regeneras</td></tr>
+    <tr><td><strong>PIN o contraseña de la app</strong></td><td>Abrir la wallet en ese dispositivo</td><td>Restauras la wallet con la seed phrase</td></tr>
+  </tbody>
+</table>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "¿Lo harías?",
+  "afirmaciones": [
+    { "texto": "El soporte del exchange me pide mis palabras para resolver un problema. Se las doy porque son oficiales.", "verdadero": false, "explicacion": "Nadie legítimo pide nunca la seed phrase. Es una estafa siempre." },
+    { "texto": "Con mis 12 palabras puedo recuperar mis fondos en otra wallet de otra marca compatible.", "verdadero": true, "explicacion": "El estándar BIP39 lo permite: no dependes de una marca concreta." },
+    { "texto": "Si alguien tiene mis palabras, solo puede ver mi saldo, no moverlo.", "verdadero": false, "explicacion": "Con tus palabras puede mover todos tus fondos." },
+    { "texto": "Una web me pide mis palabras para darme un airdrop gratis. Es una estafa.", "verdadero": true, "explicacion": "Ningún airdrop legítimo necesita tus palabras." }
+  ]
+}
+</script></div>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> tu seed phrase son 12 o 24 palabras de las que salen todas tus claves. Quien la tenga tiene tus criptomonedas, en cualquier wallet y en cualquier lugar. Nadie legítimo te la pedirá jamás: si alguien lo hace, es una estafa, sin excepciones.</div>
+</div>

@@ -1,0 +1,62 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Dos ataques silenciosos para terminar el módulo. El envenenamiento de direcciones te cuela en el historial una dirección casi igual a una que usas, para que la copies por error. El SIM swapping roba tu número de teléfono para recibir tus códigos por SMS. Ninguno necesita que hagas nada raro: se aprovechan de costumbres normales. Por eso las defensas son hábitos.</p>
+</div>
+
+<h2>El envenenamiento de direcciones</h2>
+
+<p>Las direcciones de una wallet son largas y difíciles de leer, así que casi todo el mundo hace lo mismo: copiarlas del historial y comprobar solo los primeros y los últimos caracteres. El <a href="/glosario/envenenamiento-de-direcciones">envenenamiento de direcciones</a> se aprovecha de eso.</p>
+
+<ol class="prose-pasos">
+  <li>El atacante ve en la blockchain a qué direcciones envías a menudo.</li>
+  <li>Genera una dirección que empieza y termina igual que una de ellas.</li>
+  <li>Te envía una transferencia de valor cero o una cantidad mínima desde esa dirección, para que aparezca en tu historial.</li>
+  <li>La próxima vez que copias «la de siempre» del historial, copias la suya.</li>
+</ol>
+
+<p>Ha habido víctimas que han perdido millones de dólares en <a href="/glosario/stablecoin">stablecoins</a> por un solo copia y pega. Exploradores como Etherscan ya marcan estas transferencias de valor cero con un aviso, pero tu wallet puede no hacerlo.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Nunca copies una dirección del historial de transacciones. Guarda las direcciones que usas en la libreta de direcciones de tu wallet, compruébalas completas y envía primero una cantidad pequeña de prueba.</div>
+</div>
+
+<h2>El SIM swapping</h2>
+
+<p>El <a href="/glosario/sim-swapping">SIM swapping</a> es quedarse con tu número de teléfono: el estafador convence a tu operadora, con tus datos o engañando a un empleado, de que pase tu línea a una SIM suya. Desde ese momento recibe tus llamadas y tus SMS, incluidos los códigos de verificación de tu correo y tu exchange.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">68 M$</span>
+  <span class="prose-dato-texto">Perdidos en Estados Unidos por SIM swapping en 2021, en más de 1.600 denuncias, según el FBI. Más de cinco veces las de los tres años anteriores juntos.</span>
+</div>
+
+<p>El FBI recomendó no depender de los SMS como segundo factor y usar en su lugar apps de autenticación o llaves físicas; no publicar tu teléfono ni presumir de tus criptomonedas en redes; y, si de repente tu móvil se queda sin cobertura sin motivo, llamar enseguida a tu operadora.</p>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Contra qué ataque te protege?",
+  "grupos": [
+    { "id": "envenenamiento", "nombre": "Envenenamiento de direcciones" },
+    { "id": "sim", "nombre": "SIM swapping" }
+  ],
+  "elementos": [
+    { "texto": "Guardar las direcciones habituales en la libreta de la wallet", "grupo": "envenenamiento" },
+    { "texto": "Usar una app de autenticación en vez de SMS", "grupo": "sim" },
+    { "texto": "Comprobar la dirección completa, no solo el principio y el final", "grupo": "envenenamiento" },
+    { "texto": "Pedir a tu operadora un PIN para cualquier cambio de SIM", "grupo": "sim" },
+    { "texto": "No copiar nunca direcciones del historial", "grupo": "envenenamiento" },
+    { "texto": "No presumir en redes de tus criptomonedas", "grupo": "sim" }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio del módulo, segunda parte</h2>
+
+<ol class="prose-pasos">
+  <li>Mira en tu exchange y en tu correo <strong>qué segundo factor usas</strong>. Si es SMS, apúntalo: lo cambiarás en el módulo 5.</li>
+  <li>Pregunta a tu operadora si puedes añadir un PIN o una clave para cambios de SIM.</li>
+  <li>Guarda en la libreta de tu wallet las direcciones a las que envías a menudo.</li>
+</ol>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el envenenamiento de direcciones te cuela una dirección casi igual en el historial; nunca copies de ahí y comprueba la dirección completa. El SIM swapping roba tu número para recibir tus códigos; usa una app de autenticación en vez de SMS y no presumas de tus criptomonedas.</div>
+</div>

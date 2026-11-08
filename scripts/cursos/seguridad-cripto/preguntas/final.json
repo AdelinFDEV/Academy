@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "sc-f-01",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "¿Por qué conviene proteger tus claves por encima de todo, según los datos de 2024?",
+    "opciones": [
+      "Porque las claves caducan cada año",
+      "Porque las claves comprometidas fueron la causa más frecuente de los robos",
+      "Porque la blockchain se rompe sin ellas",
+      "Porque lo exige Hacienda"
+    ],
+    "correcta": 1,
+    "explicacion": "Casi la mitad de lo robado en hackeos fue por claves comprometidas."
+  },
+  {
+    "clave": "sc-f-02",
+    "leccion": "hackeos-estafas-y-errores",
+    "enunciado": "¿Qué causó más pérdidas a los particulares en Estados Unidos en 2024, según el FBI?",
+    "opciones": [
+      "Las estafas de inversión con cripto",
+      "Los fallos de las cold wallets",
+      "Las comisiones de red",
+      "Los errores de las blockchains"
+    ],
+    "correcta": 0,
+    "explicacion": "Unos 5.800 millones de dólares."
+  },
+  {
+    "clave": "sc-f-03",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "Te equivocas de dirección al enviar. ¿Qué puedes esperar?",
+    "opciones": [
+      "Que, una vez confirmada, la transacción no se pueda deshacer",
+      "Que la blockchain la anule sola en 24 horas",
+      "Que el banco te devuelva el dinero",
+      "Que el destinatario esté obligado por ley a devolverlo al instante"
+    ],
+    "correcta": 0,
+    "explicacion": "Por eso la cantidad de prueba es tan importante."
+  },
+  {
+    "clave": "sc-f-04",
+    "leccion": "lo-que-no-se-puede-deshacer",
+    "enunciado": "¿Qué protege MiCA y qué no?",
+    "opciones": [
+      "Solo protege a las plataformas, no a los clientes",
+      "Lo protege todo",
+      "No protege nada",
+      "Protege frente a ciertos fallos de las plataformas autorizadas, pero no frente a tus errores ni a los estafadores"
+    ],
+    "correcta": 3,
+    "explicacion": "MiCA regula a las plataformas; tus envíos y tus claves siguen siendo cosa tuya."
+  },
+  {
+    "clave": "sc-f-05",
+    "leccion": "tu-mapa-de-riesgos",
+    "enunciado": "¿Cuál es el frente más atacado?",
+    "opciones": [
+      "Tú, mediante la ingeniería social",
+      "La blockchain",
+      "El precio",
+      "La electricidad"
+    ],
+    "correcta": 0,
+    "explicacion": "Convencerte a ti es más fácil que romper un sistema."
+  },
+  {
+    "clave": "sc-f-06",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "Tienes todos tus ahorros en un exchange que quiebra y no separa los fondos de sus clientes. ¿Qué te pasa?",
+    "opciones": [
+      "Pasan solos a tu cold wallet",
+      "Nada, porque son tuyos",
+      "El banco central te los devuelve",
+      "Puedes perderlos, como les ocurrió a los clientes de Mt. Gox y FTX"
+    ],
+    "correcta": 3,
+    "explicacion": "Por eso MiCA exige separar los fondos de los clientes."
+  },
+  {
+    "clave": "sc-f-07",
+    "leccion": "el-exchange-y-la-custodia",
+    "enunciado": "¿Qué conviene dejar en un exchange?",
+    "opciones": [
+      "Nada nunca, bajo ningún concepto",
+      "Todos tus ahorros",
+      "Lo que vas a usar para comprar, vender u operar pronto",
+      "Tu seed phrase"
+    ],
+    "correcta": 2,
+    "explicacion": "La custodia es cómoda para operar; el riesgo crece con la cantidad."
+  },
+  {
+    "clave": "sc-f-08",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "Pierdes el móvil con tu hot wallet. ¿Qué te salva?",
+    "opciones": [
+      "Nada, se pierde todo",
+      "Tener el ticket de compra del móvil",
+      "Tener tu seed phrase bien guardada",
+      "El número de serie del móvil"
+    ],
+    "correcta": 2,
+    "explicacion": "Con la seed phrase restauras la wallet en otro dispositivo."
+  },
+  {
+    "clave": "sc-f-09",
+    "leccion": "hot-wallet-y-cold-wallet",
+    "enunciado": "¿Dónde conviene comprar una cold wallet?",
+    "opciones": [
+      "De segunda mano, por precio",
+      "En la web oficial del fabricante o en un distribuidor autorizado",
+      "A un desconocido en un grupo",
+      "En cualquier web que salga primero en un anuncio"
+    ],
+    "correcta": 1,
+    "explicacion": "Una cold wallet manipulada puede venir preparada para robarte."
+  },
+  {
+    "clave": "sc-f-10",
+    "leccion": "la-autocustodia",
+    "enunciado": "¿Cuándo tiene más sentido la autocustodia?",
+    "opciones": [
+      "Para cantidades importantes y a largo plazo, cuando ya sabes guardar tu seed phrase",
+      "Siempre, desde el primer euro y sin aprender nada",
+      "Nunca",
+      "Solo para operar a diario"
+    ],
+    "correcta": 0,
+    "explicacion": "Te pasa toda la responsabilidad: conviene dominar lo básico antes."
+  },
+  {
+    "clave": "sc-f-11",
+    "leccion": "como-repartir-tus-criptomonedas",
+    "enunciado": "¿Qué regla evita acabar con todo en el exchange sin darte cuenta?",
+    "opciones": [
+      "Comprar todo de golpe",
+      "Retirar a tu wallet propia cuando el saldo supere una cantidad decidida",
+      "Cambiar de exchange cada mes",
+      "No mirar nunca el saldo"
+    ],
+    "correcta": 1,
+    "explicacion": "Si compras poco a poco, el saldo del exchange crece solo."
+  },
+  {
+    "clave": "sc-f-12",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "Una web te pide tu seed phrase para darte un airdrop. ¿Qué haces?",
+    "opciones": [
+      "No dársela: ningún airdrop legítimo la necesita",
+      "Dársela, porque es gratis",
+      "Darle solo la mitad",
+      "Dársela si la web tiene un candado"
+    ],
+    "correcta": 0,
+    "explicacion": "Es una de las formas más comunes de robar wallets."
+  },
+  {
+    "clave": "sc-f-13",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿Por qué puedes restaurar tu wallet en otra marca distinta?",
+    "opciones": [
+      "Porque el exchange guarda una copia",
+      "Porque casi todas siguen el estándar BIP39",
+      "Porque la seed phrase se sincroniza sola",
+      "No se puede"
+    ],
+    "correcta": 1,
+    "explicacion": "No dependes de una marca concreta."
+  },
+  {
+    "clave": "sc-f-14",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "¿Cuál de estas formas de guardar la seed phrase es correcta?",
+    "opciones": [
+      "En un correo a ti mismo",
+      "En una foto del móvil",
+      "Escrita a mano en papel, en un lugar seguro, con otra copia en otro sitio",
+      "En el gestor de contraseñas"
+    ],
+    "correcta": 2,
+    "explicacion": "Fuera de cualquier dispositivo conectado y a salvo de un único accidente."
+  },
+  {
+    "clave": "sc-f-15",
+    "leccion": "como-guardar-tu-seed-phrase",
+    "enunciado": "Un papel con tu seed phrase lleva escrito encima «MIS PALABRAS DE BITCOIN». ¿Qué problema tiene?",
+    "opciones": [
+      "Ninguno, así no se pierde",
+      "Que dice lo que es a quien lo encuentre",
+      "Que la tinta se borra",
+      "Que el exchange no lo acepta"
+    ],
+    "correcta": 1,
+    "explicacion": "Mejor que no diga lo que es."
+  },
+  {
+    "clave": "sc-f-16",
+    "leccion": "passphrase-y-herencia",
+    "enunciado": "Alguien encuentra el papel con tus 24 palabras, pero usas passphrase. ¿Qué ve?",
+    "opciones": [
+      "Todos tus fondos",
+      "Una wallet distinta, vacía o casi vacía, sin tus fondos",
+      "Tu passphrase escrita",
+      "Nada, porque las palabras no sirven"
+    ],
+    "correcta": 1,
+    "explicacion": "Sin la passphrase correcta, las palabras abren otra wallet."
+  },
+  {
+    "clave": "sc-f-17",
+    "leccion": "passphrase-y-herencia",
+    "enunciado": "¿Qué debe saber tu persona de confianza en un plan de herencia?",
+    "opciones": [
+      "Tu seed phrase de memoria",
+      "Que existe un documento con las instrucciones y dónde está",
+      "Tu contraseña del correo",
+      "Nada"
+    ],
+    "correcta": 1,
+    "explicacion": "No se le dan las palabras hoy: se le deja la forma de llegar a ellas."
+  },
+  {
+    "clave": "sc-f-18",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "Necesitas ayuda con tu exchange. ¿Qué haces?",
+    "opciones": [
+      "Publicar tu problema con tu número de cuenta en redes",
+      "Aceptar la ayuda de quien te escribe por privado",
+      "Entrar en la web oficial desde tus favoritos y abrir una consulta allí",
+      "Instalar el programa de acceso remoto que te recomiendan"
+    ],
+    "correcta": 2,
+    "explicacion": "El soporte real nunca te escribe primero por privado."
+  },
+  {
+    "clave": "sc-f-19",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "Un anuncio en el buscador lleva a una web con un nombre casi igual al de tu wallet. ¿Qué es lo más probable?",
+    "opciones": [
+      "Un airdrop legítimo",
+      "La web oficial",
+      "Una actualización de tu wallet",
+      "Una web de phishing"
+    ],
+    "correcta": 3,
+    "explicacion": "Los estafadores compran anuncios para aparecer arriba."
+  },
+  {
+    "clave": "sc-f-20",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "Una plataforma te promete un 2 % diario garantizado. ¿Qué piensas?",
+    "opciones": [
+      "Que hay que invertir rápido",
+      "Que es una gran oportunidad",
+      "Que es normal en cripto",
+      "Que nadie puede garantizar algo así: es una señal de estafa"
+    ],
+    "correcta": 3,
+    "explicacion": "Las rentabilidades garantizadas son la marca de los Ponzi y los chiringuitos."
+  },
+  {
+    "clave": "sc-f-21",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "Alguien que conociste hace un mes en una app de citas te anima a invertir en su plataforma. ¿Qué haces?",
+    "opciones": [
+      "Invertir poco para probar",
+      "No invertir: es el patrón del pig butchering",
+      "Invertir mucho porque confías en esa persona",
+      "Pedirle que invierta por ti"
+    ],
+    "correcta": 1,
+    "explicacion": "Nunca inviertas por recomendación de alguien que solo conoces por internet."
+  },
+  {
+    "clave": "sc-f-22",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "Ya te han pagado dos veces los «beneficios» prometidos. ¿Demuestra eso que la plataforma es legítima?",
+    "opciones": [
+      "Sí, si la web es bonita",
+      "Sí, ya está demostrado",
+      "Sí, si los pagos llegan puntuales",
+      "No: pagar al principio forma parte del engaño de un Ponzi"
+    ],
+    "correcta": 3,
+    "explicacion": "El Ponzi paga a los primeros con el dinero de los siguientes."
+  },
+  {
+    "clave": "sc-f-23",
+    "leccion": "permisos-de-tokens",
+    "enunciado": "Conectas tu wallet a una web de NFT gratis y te pide firmar una aprobación que no entiendes. ¿Qué haces?",
+    "opciones": [
+      "Firmar, porque el NFT es gratis",
+      "No firmar",
+      "Firmar y revocar mañana",
+      "Escribir tu seed phrase para verificar"
+    ],
+    "correcta": 1,
+    "explicacion": "Es el escenario típico de los drainers."
+  },
+  {
+    "clave": "sc-f-24",
+    "leccion": "permisos-de-tokens",
+    "enunciado": "¿Por qué es peligroso un permiso de token ilimitado a un contrato malicioso?",
+    "opciones": [
+      "No es peligroso",
+      "Porque hace subir las comisiones",
+      "Porque bloquea tu wallet para siempre",
+      "Porque puede vaciarte esos tokens cuando quiera, incluso meses después"
+    ],
+    "correcta": 3,
+    "explicacion": "El permiso sigue activo hasta que lo revocas."
+  },
+  {
+    "clave": "sc-f-25",
+    "leccion": "permisos-de-tokens",
+    "enunciado": "¿Qué ocurrió en el caso BadgerDAO?",
+    "opciones": [
+      "Un exchange quebró por falta de clientes",
+      "Una web comprometida pedía aprobaciones que acabaron a favor de los atacantes, unos 121 millones",
+      "Se perdió una seed phrase",
+      "Un airdrop legítimo salió mal"
+    ],
+    "correcta": 1,
+    "explicacion": "Es un ejemplo clásico de robo por aprobaciones."
+  },
+  {
+    "clave": "sc-f-26",
+    "leccion": "direcciones-falsas-y-sim-swapping",
+    "enunciado": "¿Cuál es la mejor defensa contra el envenenamiento de direcciones?",
+    "opciones": [
+      "Comprobar solo los primeros caracteres",
+      "Guardar las direcciones en la libreta de tu wallet y no copiar nunca del historial",
+      "Cambiar de wallet cada día",
+      "Usar SMS como segundo factor"
+    ],
+    "correcta": 1,
+    "explicacion": "Y comprobar la dirección completa antes de enviar."
+  },
+  {
+    "clave": "sc-f-27",
+    "leccion": "direcciones-falsas-y-sim-swapping",
+    "enunciado": "Tu móvil se queda sin cobertura de repente y sin motivo. ¿Qué puede estar pasando?",
+    "opciones": [
+      "Nada importante",
+      "Que la blockchain está saturada",
+      "Que tu wallet se ha actualizado",
+      "Un SIM swapping: conviene llamar enseguida a la operadora"
+    ],
+    "correcta": 3,
+    "explicacion": "Un duplicado de tu SIM deja tu teléfono sin línea."
+  },
+  {
+    "clave": "sc-f-28",
+    "leccion": "direcciones-falsas-y-sim-swapping",
+    "enunciado": "¿Qué recomendó el FBI frente al SIM swapping?",
+    "opciones": [
+      "Desactivar el segundo factor",
+      "Usar solo SMS",
+      "Publicar tu teléfono en redes",
+      "No depender del SMS y usar apps de autenticación o llaves físicas"
+    ],
+    "correcta": 3,
+    "explicacion": "También no presumir de tus criptomonedas en redes."
+  },
+  {
+    "clave": "sc-f-29",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "Usas la misma contraseña en tu exchange y en un foro que sufre una filtración. ¿Qué riesgo corres?",
+    "opciones": [
+      "Ninguno",
+      "Que entren en tu exchange con esa contraseña",
+      "Que el foro te cobre",
+      "Que la blockchain te bloquee"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso cada cuenta importante necesita una contraseña única."
+  },
+  {
+    "clave": "sc-f-30",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "¿Qué ventaja extra tiene una llave física frente al phishing?",
+    "opciones": [
+      "Es más barata que un SMS",
+      "Solo funciona en la web verdadera",
+      "Guarda tu seed phrase",
+      "Hace las compras más rápidas"
+    ],
+    "correcta": 1,
+    "explicacion": "Aunque caigas en una web clonada, la llave no la reconoce."
+  },
+  {
+    "clave": "sc-f-31",
+    "leccion": "cuentas-blindadas",
+    "enunciado": "¿Por qué conviene un correo dedicado solo a tus cuentas financieras?",
+    "opciones": [
+      "Porque, al no publicarlo, es más difícil de atacar",
+      "Porque es obligatorio",
+      "Porque así no pagas comisiones",
+      "No tiene ninguna ventaja"
+    ],
+    "correcta": 0,
+    "explicacion": "Es la llave para recuperar tus otras cuentas: cuanto menos expuesto, mejor."
+  },
+  {
+    "clave": "sc-f-32",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "Envías una stablecoin a una plataforma por una red que esa plataforma no admite. ¿Qué puede pasar?",
+    "opciones": [
+      "Que se dupliquen",
+      "Que lleguen igual, siempre",
+      "Que los fondos queden inaccesibles o requieran un trámite largo",
+      "Que se conviertan en bitcoin"
+    ],
+    "correcta": 2,
+    "explicacion": "Una misma moneda puede existir en varias redes."
+  },
+  {
+    "clave": "sc-f-33",
+    "leccion": "enviar-y-firmar-sin-errores",
+    "enunciado": "¿Cuál es el orden correcto para enviar una cantidad importante?",
+    "opciones": [
+      "Copiar del historial y enviarlo todo",
+      "Enviarlo todo y comprobar después",
+      "Copiar de fuente de confianza, comprobar la dirección y la red, enviar una prueba y después el resto",
+      "Pedir la dirección a un grupo y enviarla"
+    ],
+    "correcta": 2,
+    "explicacion": "La rutina de los cinco pasos."
+  },
+  {
+    "clave": "sc-f-34",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "¿Qué haces primero si sospechas que te han robado acceso a tu wallet?",
+    "opciones": [
+      "Mover lo que queda a una wallet nueva en un dispositivo limpio",
+      "Esperar unos días",
+      "Contestar a quien te ofrece recuperar el dinero",
+      "Borrar todas las pruebas"
+    ],
+    "correcta": 0,
+    "explicacion": "Primero se pone a salvo lo que queda."
+  },
+  {
+    "clave": "sc-f-35",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "Un «hacker ético» te promete recuperar tus fondos robados por una comisión por adelantado. ¿Qué haces?",
+    "opciones": [
+      "Pagar, porque es tu única opción",
+      "No pagar: es otra estafa",
+      "Darle tu seed phrase para que trabaje",
+      "Pagar la mitad"
+    ],
+    "correcta": 1,
+    "explicacion": "Los falsos recuperadores atacan a quien ya ha sido víctima."
+  },
+  {
+    "clave": "sc-f-36",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "¿Qué organismo publica advertencias sobre chiringuitos financieros en España?",
+    "opciones": [
+      "La CNMV",
+      "La DGT",
+      "El INE",
+      "El Banco Mundial"
+    ],
+    "correcta": 0,
+    "explicacion": "Y tiene un buscador para comprobar si una entidad está autorizada."
+  },
+  {
+    "clave": "sc-f-37",
+    "leccion": "si-algo-sale-mal",
+    "enunciado": "¿Qué recoge tu plan de seguridad del curso?",
+    "opciones": [
+      "Dónde están tus fondos y tus copias, tus reglas fijas, tus cuentas, tu rutina de envío, qué hacer si algo sale mal y tu herencia",
+      "Solo tu contraseña del exchange",
+      "Tu seed phrase escrita",
+      "Nada: no hace falta escribirlo"
+    ],
+    "correcta": 0,
+    "explicacion": "Todo el curso en una hoja, sin escribir las palabras."
+  },
+  {
+    "clave": "sc-f-38",
+    "leccion": "tu-mapa-de-riesgos",
+    "enunciado": "Tienes 50 euros en una app para aprender. ¿Qué protección es la prioritaria?",
+    "opciones": [
+      "Una cuenta bien protegida y no caer en estafas",
+      "Comprar tres cold wallets",
+      "Grabar la seed phrase en titanio",
+      "Contratar un abogado"
+    ],
+    "correcta": 0,
+    "explicacion": "El esfuerzo crece con la cantidad; lo primero siempre es no caer en engaños."
+  },
+  {
+    "clave": "sc-f-39",
+    "leccion": "que-es-una-seed-phrase",
+    "enunciado": "¿Qué relación hay entre la seed phrase y la clave privada?",
+    "opciones": [
+      "Son lo mismo que el PIN",
+      "La clave privada se calcula a partir de la seed phrase",
+      "La clave privada es la contraseña del exchange",
+      "No tienen relación"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso, con la seed phrase, regeneras todas tus claves."
+  },
+  {
+    "clave": "sc-f-40",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "¿Qué señal es típica de un esquema Ponzi o piramidal?",
+    "opciones": [
+      "Pagarte más cuantas más personas traigas",
+      "Mostrarte los riesgos con claridad",
+      "Estar en el registro de la CNMV",
+      "No prometer ninguna rentabilidad"
+    ],
+    "correcta": 0,
+    "explicacion": "Premiar por captar a otros es una marca clásica."
+  }
+]

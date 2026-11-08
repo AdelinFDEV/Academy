@@ -196,9 +196,22 @@ const GUIDE_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
   "xrp": (size) => <XrpBadgeIcon size={size} />,
 };
 
+function SeguridadBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Un escudo con una cerradura: la caja fuerte de tus criptomonedas */}
+      <path d="M12 2.5 4.5 5.5v6c0 4.6 3.2 8.4 7.5 10 4.3-1.6 7.5-5.4 7.5-10v-6L12 2.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <rect x="8.75" y="10.5" width="6.5" height="5.5" rx="1.2" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M10.25 10.5V9a1.75 1.75 0 0 1 3.5 0v1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="12" cy="13.2" r="0.9" fill="currentColor"/>
+    </svg>
+  );
+}
+
 // Icono propio por curso. Sin entrada, el birrete genérico.
 const CURSO_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode> = {
   "psicologia-del-trading": (size) => <PsicologiaBadgeIcon size={size} />,
+  "seguridad-cripto": (size) => <SeguridadBadgeIcon size={size} />,
 };
 
 export function iconoCurso(slug: string, size: number): React.ReactNode {

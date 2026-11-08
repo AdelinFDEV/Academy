@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "sc-m4-01",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "¿Qué es el phishing?",
+    "opciones": [
+      "Un engaño con una web o mensaje que imita a una empresa de confianza para robarte datos",
+      "Una forma de minar criptomonedas",
+      "Un tipo de cold wallet",
+      "Un impuesto"
+    ],
+    "correcta": 0,
+    "explicacion": "Te lleva a una copia casi perfecta de una web conocida."
+  },
+  {
+    "clave": "sc-m4-02",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "Tras preguntar en un grupo, alguien te escribe por privado: «soy del soporte, te ayudo». ¿Qué es lo más probable?",
+    "opciones": [
+      "Un amigo",
+      "El soporte oficial",
+      "Un falso soporte",
+      "Un error del grupo"
+    ],
+    "correcta": 2,
+    "explicacion": "El soporte real nunca te escribe primero por privado."
+  },
+  {
+    "clave": "sc-m4-03",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "¿Cuál es la forma más segura de entrar en la web de tu exchange?",
+    "opciones": [
+      "Desde un anuncio del buscador",
+      "Desde el enlace de un correo urgente",
+      "Desde tus favoritos o escribiendo tú la dirección",
+      "Desde un enlace que te pasa alguien en un grupo"
+    ],
+    "correcta": 2,
+    "explicacion": "Los estafadores usan anuncios y enlaces que llevan a webs clonadas."
+  },
+  {
+    "clave": "sc-m4-04",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "¿Para qué sirve el código antiphishing de un exchange?",
+    "opciones": [
+      "Para recuperar la seed phrase",
+      "Para no pagar comisiones",
+      "Para reconocer sus correos reales, que llevan una palabra tuya",
+      "Para comprar más rápido"
+    ],
+    "correcta": 2,
+    "explicacion": "Si un correo no lleva tu código, es falso."
+  },
+  {
+    "clave": "sc-m4-05",
+    "leccion": "phishing-y-falso-soporte",
+    "enunciado": "«Tu cuenta se bloqueará en 24 horas si no verificas tus datos.» ¿Qué resorte usa este mensaje?",
+    "opciones": [
+      "La paciencia",
+      "La codicia",
+      "La urgencia",
+      "La confianza"
+    ],
+    "correcta": 2,
+    "explicacion": "La urgencia busca que actúes antes de pensar."
+  },
+  {
+    "clave": "sc-m4-06",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "¿Qué es un chiringuito financiero?",
+    "opciones": [
+      "Un bar donde se paga con bitcoin",
+      "Un exchange autorizado por MiCA",
+      "Un tipo de wallet",
+      "Una empresa que ofrece servicios de inversión sin estar autorizada"
+    ],
+    "correcta": 3,
+    "explicacion": "No tiene supervisor ni garantías si desaparece con tu dinero."
+  },
+  {
+    "clave": "sc-m4-07",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "¿Dónde puedes comprobar en España si una empresa de inversión está autorizada o tiene advertencias?",
+    "opciones": [
+      "En los comentarios de su web",
+      "En el registro de la propiedad",
+      "En el ayuntamiento",
+      "En la CNMV"
+    ],
+    "correcta": 3,
+    "explicacion": "La CNMV publica advertencias y tiene un buscador de entidades."
+  },
+  {
+    "clave": "sc-m4-08",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "¿Cómo paga un esquema Ponzi a los primeros inversores?",
+    "opciones": [
+      "Con los beneficios de un negocio real",
+      "Con el dinero de los que llegan después",
+      "Con dinero del banco central",
+      "No les paga nunca"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso se hunde cuando deja de entrar dinero nuevo."
+  },
+  {
+    "clave": "sc-m4-09",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "¿En qué consiste el pig butchering?",
+    "opciones": [
+      "Una wallet de hardware",
+      "Un robo de tu número de teléfono",
+      "Ganarse tu confianza durante semanas antes de llevarte a una plataforma falsa",
+      "Un airdrop oficial"
+    ],
+    "correcta": 2,
+    "explicacion": "A menudo empieza como una amistad o un romance por internet."
+  },
+  {
+    "clave": "sc-m4-10",
+    "leccion": "inversiones-falsas-y-chiringuitos",
+    "enunciado": "Para retirar tus ganancias, la plataforma te pide pagar antes unos «impuestos». ¿Qué significa?",
+    "opciones": [
+      "Que es la fase final de una estafa",
+      "Que es un trámite normal",
+      "Que has ganado un premio",
+      "Que el exchange está autorizado"
+    ],
+    "correcta": 0,
+    "explicacion": "Una plataforma legítima descuenta comisiones del saldo; pedirte pagar para retirar es la estafa."
+  },
+  {
+    "clave": "sc-m4-11",
+    "leccion": "permisos-de-tokens",
+    "enunciado": "¿Qué es una aprobación de token?",
+    "opciones": [
+      "Un airdrop gratuito",
+      "La contraseña de tu wallet",
+      "Un permiso que firmas para que un contrato pueda mover tus tokens",
+      "Una comisión del exchange"
+    ],
+    "correcta": 2,
+    "explicacion": "Es necesaria para usar DeFi, pero un permiso a un estafador te puede vaciar."
+  },
+  {
+    "clave": "sc-m4-12",
+    "leccion": "permisos-de-tokens",
+    "enunciado": "¿Qué es el ice phishing, según Microsoft?",
+    "opciones": [
+      "Congelar el precio de una moneda",
+      "Robar la seed phrase con una cámara",
+      "Engañarte para que firmes una aprobación a favor del atacante",
+      "Un tipo de cold wallet"
+    ],
+    "correcta": 2,
+    "explicacion": "El atacante no necesita tu clave: le basta tu firma."
+  },
+  {
+    "clave": "sc-m4-13",
+    "leccion": "permisos-de-tokens",
+    "enunciado": "¿Cómo se retira un permiso de token que ya no usas?",
+    "opciones": [
+      "Cambiando el PIN",
+      "Borrando la app del móvil",
+      "Revocándolo con una herramienta de un explorador de bloques",
+      "No se puede retirar nunca"
+    ],
+    "correcta": 2,
+    "explicacion": "Revocar cuesta una pequeña comisión, mucho menos que un robo."
+  },
+  {
+    "clave": "sc-m4-14",
+    "leccion": "direcciones-falsas-y-sim-swapping",
+    "enunciado": "¿En qué consiste el envenenamiento de direcciones?",
+    "opciones": [
+      "Enviarte un correo falso del banco",
+      "Robar tu número de teléfono",
+      "Romper el cifrado de la blockchain",
+      "Colarte en el historial una dirección casi igual a una que usas"
+    ],
+    "correcta": 3,
+    "explicacion": "Se aprovecha de copiar del historial y de mirar solo el principio y el final."
+  },
+  {
+    "clave": "sc-m4-15",
+    "leccion": "direcciones-falsas-y-sim-swapping",
+    "enunciado": "¿Por qué el SMS es un segundo factor débil?",
+    "opciones": [
+      "Porque los SMS son de pago",
+      "Porque un SIM swapping permite al atacante recibir tus SMS",
+      "Porque el exchange no los lee",
+      "Porque solo funcionan en España"
+    ],
+    "correcta": 1,
+    "explicacion": "El FBI recomienda apps de autenticación o llaves físicas en lugar del SMS."
+  }
+]

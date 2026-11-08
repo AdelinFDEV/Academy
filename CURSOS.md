@@ -103,9 +103,10 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 | Curso | Slug | `color` | Familia | Estado |
 |---|---|---|---|---|
 | Psicología del trading | `psicologia-del-trading` | `#5ec8c4` | Verde azulado (turquesa) | Publicado 08-11-2026 |
+| Seguridad cripto | `seguridad-cripto` | `#a78bfa` | Violeta | Publicado 08-11-2026 |
 | Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Borrador |
 
-Ideas libres para los siguientes: violeta `#a78bfa`, coral `#ff8a7a`, azul cobalto `#6f9bff`, verde lima `#a3e635`, rosa `#f472b6`, ámbar `#fbbf24`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
+Ideas libres para los siguientes: coral `#ff8a7a`, azul cobalto `#6f9bff`, verde lima `#a3e635`, rosa `#f472b6`, ámbar `#fbbf24`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
 
 ---
 

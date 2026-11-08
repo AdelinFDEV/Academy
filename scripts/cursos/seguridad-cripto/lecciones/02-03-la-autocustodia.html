@@ -1,0 +1,53 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>La autocustodia es guardar tú mismo tus claves. Te quita el riesgo de que un intermediario quiebre o te bloquee, pero te pasa a ti toda la responsabilidad: si pierdes tus palabras, nadie te las puede recuperar. No es mejor ni peor que la custodia: es otro reparto del riesgo, y tiene sentido cuando sabes guardar bien tus claves.</p>
+</div>
+
+<h2>Cambias un riesgo por otro</h2>
+
+<p>Con la <a href="/glosario/autocustodia">autocustodia</a> no desaparece el riesgo: cambia de sitio. Dejas de depender de la plataforma y pasas a depender de ti.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Riesgo</th><th>Con custodia (exchange)</th><th>Con autocustodia</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Quiebra o fraude de la plataforma</td><td>Te afecta</td><td>No te afecta</td></tr>
+    <tr><td>Bloqueo de tu cuenta</td><td>Puede pasar</td><td>Nadie puede bloquearte</td></tr>
+    <tr><td>Olvidar la contraseña</td><td>Se recupera</td><td>Sin la seed phrase, no hay nada que hacer</td></tr>
+    <tr><td>Perder o filtrar tu seed phrase</td><td>No aplica</td><td>Pérdida total</td></tr>
+    <tr><td>Estafas y firmas maliciosas</td><td>Te afectan</td><td>Te afectan, y sin nadie que pueda frenarlas</td></tr>
+  </tbody>
+</table>
+
+<p>Fíjate en la última fila: la autocustodia <strong>no te protege de las estafas</strong>. Si te convencen de escribir tus palabras en una web falsa, da igual que tengas la mejor cold wallet del mundo.</p>
+
+<h2>Cuándo tiene sentido</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Cuando la cantidad es importante para ti.</strong> Si perderla te haría daño, merece el esfuerzo de no depender de un tercero.</li>
+  <li><strong>Cuando no la vas a tocar a menudo.</strong> Lo que guardas a largo plazo es lo que más gana con estar fuera del exchange.</li>
+  <li><strong>Cuando ya sabes guardar una seed phrase.</strong> Es el módulo 3. Antes de mover una cantidad grande, practica con una pequeña.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Una buena forma de empezar: crea una wallet propia, guarda bien la seed phrase, envía una cantidad pequeña y después <strong>practica una recuperación</strong>: bórrala del dispositivo y restáurala con tus palabras. Si funciona con poco, funcionará con mucho.</div>
+</div>
+
+<h2>Los mitos más comunes</h2>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Autocustodia: verdad o mito",
+  "afirmaciones": [
+    { "texto": "Con autocustodia, si olvido mis palabras, el fabricante de la wallet me las puede recuperar.", "verdadero": false, "explicacion": "Nadie más tiene tus palabras. Si las pierdes, los fondos son irrecuperables." },
+    { "texto": "La autocustodia me protege de que una plataforma quiebre con mis fondos.", "verdadero": true, "explicacion": "Si las claves son tuyas, la quiebra de un intermediario no te afecta." },
+    { "texto": "Con una cold wallet ya no tengo que preocuparme del phishing.", "verdadero": false, "explicacion": "Si te engañan para que escribas tus palabras o firmes algo malicioso, la cold wallet no te salva." },
+    { "texto": "Antes de mover mucho, conviene practicar una recuperación con poca cantidad.", "verdadero": true, "explicacion": "Es la mejor prueba de que tu copia de la seed phrase funciona." }
+  ]
+}
+</script></div>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la autocustodia elimina el riesgo de la plataforma y te pasa a ti el de perder o filtrar tus claves. No te protege de las estafas. Tiene sentido para cantidades importantes y a largo plazo, cuando ya sabes guardar tu seed phrase y has practicado una recuperación.</div>
+</div>
