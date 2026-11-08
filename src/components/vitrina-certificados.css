@@ -1,7 +1,8 @@
 /*
  * La vitrina de certificados (components/VitrinaCertificados.tsx).
  * La pintan la portada del dashboard (forma «estante») y /dashboard/certificados
- * (forma «completa»). Cada pieza pone el color de su curso en --cv-acento.
+ * (forma «completa»: resumen y galería de fichas). Cada pieza pone el color
+ * de su curso en --cv-acento.
  */
 
 /* ── Estante: la portada del dashboard ─────────────────────────────────────
@@ -120,14 +121,16 @@
   content: "";
   position: absolute;
   top: -20%;
-  left: -60%;
+  left: 0;
   width: 40%;
   height: 140%;
   background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-  transform: skewX(-18deg);
-  transition: left 0.8s ease;
+  /* Con transform y no con `left`: en el iPhone, `left` va a tirones. */
+  transform: translate3d(-150%, 0, 0) skewX(-18deg);
+  transition: transform 0.8s ease;
+  will-change: transform;
 }
-.cv-pieza:hover .cv-brillo::before { left: 130%; }
+.cv-pieza:hover .cv-brillo::before { transform: translate3d(330%, 0, 0) skewX(-18deg); }
 
 /* La placa de latón bajo cada certificado. */
 .cv-placa {
@@ -247,86 +250,156 @@
 .cv-btn--grande { padding: 0.85rem 1.35rem; font-size: 0.95rem; border-radius: 13px; }
 .cv-acciones { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
-/* ── Vitrina vacía ── */
-.cv-vacio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* ── Página completa: resumen y galería (rehecha el 08-11-2026) ──────────── */
+
+/* El resumen: cuatro casillas con las cifras de su vitrina. */
+.cv-resumen {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.8rem;
-  padding: 3rem 1.5rem;
-  text-align: center;
-  border: 1px dashed rgba(240, 244, 255, 0.14);
-  border-radius: 18px;
-  background: rgba(15, 30, 57, 0.6);
+  margin: 0;
 }
-.cv-vacio h2 { margin: 0; font: 800 1.25rem var(--font-display); color: #fff; }
-.cv-vacio p { margin: 0; max-width: 52ch; font-size: 0.92rem; line-height: 1.6; color: rgba(240, 244, 255, 0.55); }
-.cv-vacio-icono {
+.cv-resumen div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 16px;
+  background: radial-gradient(120% 120% at 0% 0%, rgba(230, 180, 85, 0.08), transparent 60%), rgba(12, 24, 47, 0.8);
+}
+.cv-resumen dt { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240, 244, 255, 0.45); }
+.cv-resumen dd { display: flex; align-items: center; gap: 0.35rem; margin: 0; font: 800 1.7rem/1.1 var(--font-display); color: #fff; font-variant-numeric: tabular-nums; }
+.cv-resumen dd small { font-size: 0.9rem; font-weight: 600; color: rgba(240, 244, 255, 0.45); }
+.cv-resumen dd.is-texto { font-size: 0.98rem; font-weight: 700; }
+.cv-resumen dd svg { color: #e6b455; flex-shrink: 0; }
+
+/* La galería: una ficha grande por certificado. */
+.cv-galeria {
   display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(94, 200, 196, 0.1);
-  color: #5ec8c4;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
+  gap: 1.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-/* ── Las tarjetas ── */
-.cv-rejilla { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 470px), 1fr)); gap: 1.1rem; }
-
-.cv-tarjeta {
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 1.2rem;
-  padding: 1.2rem;
-  border: 1px solid color-mix(in srgb, var(--cv-acento) 22%, rgba(240, 244, 255, 0.08));
-  border-radius: 18px;
-  background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--cv-acento) 9%, transparent), transparent 60%), rgba(15, 30, 57, 0.85);
-  box-shadow: var(--card-shadow);
-}
-
-/* El diploma en miniatura: marco doble con el sello del curso y la nota. */
-.cv-diploma {
-  position: relative;
+.cv-ficha {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.3rem;
-  min-height: 170px;
-  padding: 0.8rem 0.6rem;
-  border-radius: 10px;
-  background: linear-gradient(160deg, #fbf7ee, #efe6d2);
-  color: #1d2a3f;
-  box-shadow: inset 0 0 0 5px #fbf7ee, inset 0 0 0 6px color-mix(in srgb, var(--cv-acento) 70%, #8a6d2b);
-  text-align: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--cv-acento) 28%, rgba(240, 244, 255, 0.08));
+  border-radius: 24px;
+  background: linear-gradient(180deg, #0f1e3b 0%, #0a1429 100%);
+  box-shadow: 0 30px 70px -35px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
-.cv-diploma-marca { font-size: 0.56rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6b5a33; }
-.cv-diploma-sello {
+.cv-ficha:hover {
+  border-color: color-mix(in srgb, var(--cv-acento) 55%, transparent);
+  box-shadow: 0 40px 80px -35px rgba(0, 0, 0, 0.95), 0 0 70px -30px var(--cv-acento);
+  transform: translateY(-3px);
+}
+
+/* El escaparate: fondo de terciopelo con el foco en el color del curso, y el
+   certificado de verdad enmarcado en oro. */
+.cv-escaparate {
+  position: relative;
+  isolation: isolate;
+  display: block;
+  padding: 2rem 2.2rem 2.2rem;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.012) 0 2px, transparent 2px 5px),
+    radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--cv-acento) 24%, transparent), transparent 70%),
+    linear-gradient(180deg, #13284e 0%, #0b1832 100%);
+  border-bottom: 1px solid color-mix(in srgb, var(--cv-acento) 25%, rgba(240, 244, 255, 0.06));
+}
+.cv-escaparate-foco {
+  position: absolute;
+  z-index: -1;
+  top: -30%;
+  left: 15%;
+  right: 15%;
+  height: 90%;
+  background: radial-gradient(50% 60% at 50% 0%, rgba(255, 236, 190, 0.16), transparent 75%);
+  pointer-events: none;
+}
+.cv-escaparate .cv-marco { transform: rotate(-1.2deg); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cv-escaparate:hover .cv-marco,
+.cv-escaparate:focus-visible .cv-marco { transform: rotate(0) scale(1.02); }
+.cv-escaparate:hover .cv-brillo::before,
+.cv-escaparate:focus-visible .cv-brillo::before { transform: translate3d(330%, 0, 0) skewX(-18deg); }
+.cv-escaparate:focus-visible { outline: 2px solid var(--cv-acento); outline-offset: -2px; }
+
+.cv-ficha-cuerpo { display: flex; flex: 1; flex-direction: column; gap: 1rem; padding: 1.4rem 1.5rem 1.5rem; }
+.cv-ficha-cab { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.cv-kicker { display: block; margin-bottom: 0.3rem; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cv-acento); }
+.cv-curso { margin: 0; font: 800 1.35rem/1.2 var(--font-display); letter-spacing: -0.02em; color: #fff; }
+
+/* La nota, en un sello redondo con el color del curso. */
+.cv-nota {
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  align-content: center;
+  flex-shrink: 0;
+  width: 68px;
+  height: 68px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--cv-acento) 85%, #000);
-  color: #fff;
+  background:
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--cv-acento) 30%, transparent), transparent 70%),
+    #0c1a35;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--cv-acento) 70%, transparent), 0 0 30px -10px var(--cv-acento);
+  text-align: center;
 }
-.cv-diploma-nota { font: 800 1.6rem var(--font-display); line-height: 1; }
-.cv-diploma-sobre { font-size: 0.62rem; color: #6b5a33; }
+.cv-nota strong { font: 800 1.35rem/1 var(--font-display); color: #fff; }
+.cv-nota small { font-size: 0.66rem; color: rgba(240, 244, 255, 0.5); }
 
-.cv-info { display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
-.cv-kicker { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cv-acento); }
-.cv-curso { margin: 0; font: 800 1.15rem/1.25 var(--font-display); color: #fff; }
-.cv-datos { margin: 0; display: grid; gap: 0.3rem; }
-.cv-datos div { display: flex; gap: 0.5rem; font-size: 0.82rem; }
-.cv-datos dt { min-width: 3.6rem; color: rgba(240, 244, 255, 0.45); }
-.cv-datos dd { margin: 0; color: rgba(240, 244, 255, 0.88); }
-.cv-codigo { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.04em; }
-.cv-info .cv-acciones { margin-top: auto; }
+.cv-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.cv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.78rem;
+  color: rgba(240, 244, 255, 0.75);
+}
+.cv-chip--logro {
+  border-color: color-mix(in srgb, var(--cv-acento) 45%, transparent);
+  background: color-mix(in srgb, var(--cv-acento) 12%, transparent);
+  color: #fff;
+  font-weight: 700;
+}
+.cv-chip-icono { display: inline-grid; place-items: center; color: var(--cv-acento); }
 
+.cv-codigo-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed rgba(240, 244, 255, 0.14);
+  border-radius: 12px;
+  background: rgba(6, 13, 28, 0.5);
+}
+.cv-codigo-fila span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(240, 244, 255, 0.45); }
+.cv-codigo { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.95rem; letter-spacing: 0.14em; color: #fff; }
+
+.cv-ficha .cv-acciones { margin-top: auto; }
+.cv-ficha .cv-acciones .cv-btn { flex: 1; justify-content: center; padding: 0.75rem 1rem; }
+.cv-ficha .cv-acciones .cv-btn:not(.cv-btn--ghost) { flex: 1.6; font-weight: 800; }
+
+@media (max-width: 860px) {
+  .cv-resumen { grid-template-columns: 1fr 1fr; }
+}
 @media (max-width: 560px) {
-  .cv-tarjeta { grid-template-columns: 1fr; }
-  .cv-diploma { min-height: 140px; }
+  .cv-escaparate { padding: 1.4rem 1.2rem 1.6rem; }
+  .cv-ficha-cuerpo { padding: 1.2rem; }
+  .cv-curso { font-size: 1.15rem; }
+  .cv-nota { width: 58px; height: 58px; }
+  .cv-ficha .cv-acciones { flex-direction: column; }
+  .cv-resumen dd { font-size: 1.4rem; }
 }
 
 /* El botón dorado de la vitrina vacía. */
@@ -334,5 +407,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cv-foco, .cv-estante-muestra .cv-marco { animation: none; }
-  .cv-pieza .cv-marco, .cv-brillo::before, .cv-hueco, .cv-btn { transition: none; }
+  .cv-pieza .cv-marco, .cv-brillo::before, .cv-hueco, .cv-btn, .cv-ficha, .cv-escaparate .cv-marco { transition: none; }
 }

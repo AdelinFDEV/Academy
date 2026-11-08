@@ -36,8 +36,10 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       scriptSrc,
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      // Las fuentes se sirven desde el propio dominio (next/font): ni
+      // fonts.googleapis.com ni fonts.gstatic.com hacen falta (08-11-2026).
+      "style-src 'self' 'unsafe-inline'",
+      "font-src 'self'",
       "img-src 'self' data: https:",
       // GA4 no manda los datos al mismo dominio del que carga el script: la
       // etiqueta viene de googletagmanager.com y las medidas salen hacia

@@ -30,7 +30,7 @@ const PIEZAS = [
 export default function NavPrincipal({ logueado, premium, conNova = false }: {
   logueado: boolean;
   premium: boolean;
-  /** Tiene el Diario de Trading: Nova vive en la barra fuera de él. */
+  /** Tiene el Diario de Trading. Sin él, Nova sale igual en la barra, pero bloqueada. */
   conNova?: boolean;
 }) {
   const pathname = usePathname();
@@ -71,8 +71,9 @@ export default function NavPrincipal({ logueado, premium, conNova = false }: {
             </span>
             <span className="nav-principal-texto">{e.label}</span>
           </Link>
-          {/* Nova, la asistente del Diario, al lado de su enlace: solo para quien lo tiene. */}
-          {e.id === "diario" && conNova && <NovaNav href={e.href} />}
+          {/* Nova, la asistente del Diario, al lado de su enlace. La ve todo el
+              mundo; quien no tiene el Diario la ve bloqueada (08-11-2026). */}
+          {e.id === "diario" && <NovaNav href={e.href} bloqueada={!conNova} />}
         </li>
       ))}
     </ul>

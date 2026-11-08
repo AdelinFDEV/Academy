@@ -1,0 +1,357 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   FICHA DEL DIARIO · solo /herramientas/diario (se importa en su page.tsx)
+   ══════════════════════════════════════════════════════════════════════════
+
+   Rehecha el 08-11-2026 para vender: Nova en grande en la cabecera, la sección
+   de Nova, las sensaciones y el SÚPER HITO. Lo común con la ficha del
+   Portfolio sigue en ../ficha.css; aquí solo lo propio de esta (prefijo dj-).
+   Nada se anima con filtros: en iPhone van a tirones.
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.dj-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fh-acento);
+}
+.dj-p { margin: 0.9rem 0 0; max-width: 60ch; font-size: 1rem; line-height: 1.7; color: var(--fh-suave); }
+.dj-h3 { margin: 2.6rem 0 1rem; font: 700 1.15rem var(--font-display); color: var(--fh-texto); }
+.dj-centro { text-align: center; }
+.dj-centro .fh-h2 { margin-inline: auto; }
+.dj-icono {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--fh-acento) 15%, transparent);
+  color: var(--fh-acento);
+}
+
+/* ── Cabecera ───────────────────────────────────────────────────────────── */
+
+.dj-incluye-corto { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.6rem 0 0; padding: 0; list-style: none; }
+.dj-incluye-corto li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--fh-linea);
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--fh-texto);
+}
+.dj-incluye-corto svg { color: var(--fh-acento); }
+
+/* Nova en su habitación: una tarjeta alta con la sala de fondo, el bocadillo
+   arriba, Nova en grande en el centro y su pulso abajo. */
+.dj-saludo {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 470px;
+  padding: 1.6rem 1.4rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(14, 28, 58, 0.96), rgba(8, 18, 38, 0.98)) padding-box,
+    linear-gradient(150deg, color-mix(in srgb, var(--fh-acento) 70%, transparent), rgba(240, 244, 255, 0.07) 40%, color-mix(in srgb, var(--fh-acento) 35%, transparent)) border-box;
+  box-shadow: 0 50px 90px -50px color-mix(in srgb, var(--fh-acento) 70%, transparent), 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+.dj-saludo-sala { position: absolute; inset: 0; z-index: -1; opacity: 0.55; }
+.dj-saludo-sala .tjbot-room { position: absolute; inset: 0; }
+.dj-saludo-sala svg { display: block; width: 100%; height: 100%; }
+/* La sala se intuye, no compite: velo oscuro arriba (bajo el bocadillo) y en los bordes. */
+.dj-saludo-sala::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8, 18, 38, 0.9), rgba(8, 18, 38, 0.2) 45%, rgba(8, 18, 38, 0.75)),
+    radial-gradient(120% 90% at 50% 55%, transparent 40%, rgba(6, 12, 26, 0.7));
+}
+
+.dj-saludo-bocadillo {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-width: 380px;
+  padding: 1rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--fh-acento) 35%, transparent);
+  border-radius: 20px;
+  background: rgba(10, 20, 42, 0.92);
+  box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.8);
+  text-align: center;
+}
+/* El piquito del bocadillo, apuntando a Nova. */
+.dj-saludo-bocadillo::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-right: 1px solid color-mix(in srgb, var(--fh-acento) 35%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--fh-acento) 35%, transparent);
+  background: rgba(10, 20, 42, 0.92);
+  transform: translateX(-50%) rotate(45deg);
+}
+.dj-saludo-bocadillo strong { font: 800 1.3rem var(--font-display); letter-spacing: -0.02em; color: #fff; }
+.dj-saludo-bocadillo span { font-size: 0.9rem; line-height: 1.55; color: var(--fh-suave); }
+
+.dj-saludo-nova { position: relative; z-index: 1; margin: 0.6rem 0 0.2rem; }
+.dj-saludo-nova::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--fh-acento) 30%, transparent), transparent);
+}
+.dj-saludo-nova .nh { width: 190px; height: 190px; }
+
+.dj-saludo-pulso {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin-top: auto;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--fh-linea);
+  border-radius: 18px;
+  background: rgba(6, 14, 30, 0.85);
+}
+.dj-saludo-pulso-cab { display: flex; flex-direction: column; }
+.dj-saludo-pulso-cab small { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fh-tenue); }
+.dj-saludo-pulso-cab b { font: 800 2rem/1 var(--font-display); color: var(--fh-acento); font-variant-numeric: tabular-nums; }
+.dj-saludo-pulso-cab i { font-size: 0.85rem; font-style: normal; color: var(--fh-tenue); }
+.dj-saludo-partes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 0.9rem; }
+.dj-saludo-partes > span { display: flex; flex-direction: column; gap: 0.25rem; }
+.dj-saludo-partes small { font-size: 0.68rem; color: var(--fh-suave); }
+.dj-saludo-partes i { height: 5px; border-radius: 99px; background: rgba(240, 244, 255, 0.08); overflow: hidden; }
+.dj-saludo-partes b { display: block; height: 100%; border-radius: inherit; background: var(--fh-acento); }
+
+/* ── Nova ───────────────────────────────────────────────────────────────── */
+
+.dj-nova { display: grid; gap: 2.4rem; align-items: center; }
+.dj-nova-puntos { display: grid; gap: 1.1rem; margin-top: 1.8rem; }
+.dj-nova-punto { display: flex; gap: 0.9rem; }
+.dj-nova-punto h3 { margin: 0.1rem 0 0.25rem; font: 700 1rem var(--font-display); color: var(--fh-texto); }
+.dj-nova-punto p { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--fh-suave); }
+
+.dj-nova-panel {
+  padding: 1.5rem;
+  border: 1px solid var(--fh-linea);
+  border-radius: 24px;
+  background: linear-gradient(170deg, rgba(18, 34, 66, 0.95), rgba(9, 19, 40, 0.98));
+  box-shadow: 0 40px 80px -40px color-mix(in srgb, var(--fh-acento) 55%, transparent);
+}
+.dj-nova-panel-cab { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.1rem; }
+.dj-nova-panel-cab span { display: flex; flex-direction: column; }
+.dj-nova-panel-cab strong { font: 700 1.05rem var(--font-display); color: #fff; }
+.dj-nova-panel-cab small { font-size: 0.78rem; color: var(--fh-tenue); }
+.dj-nova-panel-cab b { font: 800 2rem/1 var(--font-display); color: var(--fh-acento); }
+.dj-nova-panel-cab i { font-size: 0.85rem; font-style: normal; color: var(--fh-tenue); }
+.dj-nova-mensajes { display: grid; gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
+.dj-nova-mensajes li {
+  padding: 0.85rem 1rem;
+  border-left: 3px solid rgba(240, 244, 255, 0.18);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--fh-texto);
+}
+.dj-nova-mensajes li.es-bien { border-left-color: var(--fh-sube); }
+.dj-nova-mensajes li.es-aviso { border-left-color: var(--fh-acento); }
+.dj-nova-accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--fh-acento) 16%, transparent);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--fh-acento-2);
+}
+
+/* ── El panel ───────────────────────────────────────────────────────────── */
+
+.dj-ventana { max-width: 760px; margin: 2rem auto 0; }
+
+/* ── Sensaciones ────────────────────────────────────────────────────────── */
+
+.dj-animo { display: grid; gap: 2.4rem; align-items: center; }
+.dj-animo-visual {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--fh-linea);
+  border-radius: 24px;
+  background: linear-gradient(170deg, rgba(18, 34, 66, 0.95), rgba(9, 19, 40, 0.98));
+}
+.dj-animo-titulo { margin-bottom: 0.3rem; font: 700 1rem var(--font-display); color: #fff; }
+.dj-animo-fila { display: grid; grid-template-columns: 28px 84px minmax(0, 1fr) 62px; gap: 0.7rem; align-items: center; }
+.dj-animo-cara { font-size: 1.3rem; line-height: 1; }
+.dj-animo-nombre { font-size: 0.85rem; color: var(--fh-suave); }
+.dj-animo-barra { height: 10px; border-radius: 99px; background: rgba(240, 244, 255, 0.06); overflow: hidden; }
+.dj-animo-barra i { display: block; height: 100%; border-radius: inherit; }
+.dj-animo-barra i.es-sube { background: var(--fh-sube); }
+.dj-animo-barra i.es-baja { background: var(--fh-baja); }
+.dj-animo-valor { font-size: 0.85rem; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── EL SÚPER HITO ──────────────────────────────────────────────────────── */
+
+/* La sección más importante de la página: dorada, con rayos detrás de la
+   corona, como la tarjeta legendaria del propio diario. */
+.dj-super {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5.5rem;
+  padding: 3.6rem 2rem 3rem;
+  border: 1px solid transparent;
+  border-radius: 34px;
+  background:
+    radial-gradient(70% 55% at 50% 0%, rgba(230, 180, 85, 0.22), transparent 70%) padding-box,
+    linear-gradient(180deg, #14213f, #0a1428) padding-box,
+    linear-gradient(160deg, var(--fh-oro-2), rgba(230, 180, 85, 0.15) 35%, rgba(230, 180, 85, 0.1) 65%, var(--fh-oro)) border-box;
+  box-shadow: 0 60px 120px -60px rgba(230, 180, 85, 0.55);
+  text-align: center;
+  overflow: hidden;
+}
+.dj-super-rayos {
+  position: absolute;
+  top: -260px;
+  left: 50%;
+  z-index: -1;
+  width: 720px;
+  height: 720px;
+  transform: translateX(-50%);
+  background: repeating-conic-gradient(from 0deg, rgba(246, 213, 142, 0.09) 0deg 6deg, transparent 6deg 18deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent 75%);
+  mask-image: radial-gradient(closest-side, #000 30%, transparent 75%);
+  animation: dj-girar 60s linear infinite;
+}
+@keyframes dj-girar { to { transform: translateX(-50%) rotate(360deg); } }
+
+.dj-super-corona { margin-bottom: 1.3rem; }
+.dj-super-medalla {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff1c9, var(--fh-oro-2) 30%, var(--fh-oro) 60%, #a8741f);
+  color: #3a2608;
+  box-shadow: 0 0 0 6px rgba(230, 180, 85, 0.18), 0 0 0 14px rgba(230, 180, 85, 0.07), 0 24px 50px -16px rgba(230, 180, 85, 0.8);
+}
+.dj-super-kicker { font-size: 0.76rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fh-oro-2); }
+.dj-super-titulo {
+  margin: 0.7rem 0 0;
+  font: 800 clamp(2rem, 5vw, 3.4rem)/1.05 var(--font-display);
+  letter-spacing: -0.035em;
+  background: linear-gradient(180deg, #fff, var(--fh-oro-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.dj-super-lead { margin: 1.1rem auto 0; max-width: 60ch; font-size: 1.04rem; line-height: 1.7; color: var(--fh-suave); }
+.dj-super-lead strong { color: var(--fh-oro-2); }
+
+.dj-super-reglas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; width: 100%; max-width: 760px; margin: 2rem 0 0; padding: 0; list-style: none; }
+.dj-super-reglas li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 1.1rem 0.9rem;
+  border: 1px solid rgba(230, 180, 85, 0.22);
+  border-radius: 18px;
+  background: rgba(230, 180, 85, 0.06);
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: var(--fh-texto);
+}
+.dj-super-reglas span { font: 800 1.9rem/1 var(--font-display); color: var(--fh-oro-2); }
+
+.dj-super-racha { width: 100%; max-width: 560px; margin-top: 1.8rem; padding: 1.1rem 1.2rem; border: 1px solid var(--fh-linea); border-radius: 18px; background: rgba(6, 12, 26, 0.6); }
+.dj-super-racha-cab { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fh-tenue); }
+.dj-super-racha-cab b { font: 800 1.3rem var(--font-display); letter-spacing: 0; text-transform: none; color: #fff; }
+.dj-super-racha-cab i { font-size: 0.8rem; font-style: normal; font-weight: 600; color: var(--fh-tenue); }
+.dj-super-meses { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 5px; }
+.dj-super-meses span { height: 30px; border-radius: 8px; background: rgba(240, 244, 255, 0.06); }
+.dj-super-meses .es-ok { background: linear-gradient(180deg, #4ade80, #16a34a); }
+.dj-super-meses .es-red { background: linear-gradient(180deg, #f87171, #b91c1c); }
+.dj-super-meses .es-pend { border: 1px dashed rgba(246, 213, 142, 0.35); background: transparent; }
+
+.dj-super-hitos { margin-top: 2.4rem; }
+.dj-super-hitos h3 { margin: 0 0 0.9rem; font: 700 1.05rem var(--font-display); color: var(--fh-texto); }
+.dj-super-hitos ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+.dj-super-hitos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--fh-linea);
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.04);
+  font-size: 0.82rem;
+  color: var(--fh-texto);
+}
+.dj-super-hitos li svg { color: var(--fh-acento); }
+.dj-super-hitos p { margin: 0.9rem 0 0; font-size: 0.86rem; color: var(--fh-tenue); }
+.dj-super-cta { margin-top: 2rem; }
+
+/* ── Precio ─────────────────────────────────────────────────────────────── */
+
+.dj-precio-dia { margin: -0.3rem 0 1rem; font-size: 0.86rem; color: var(--fh-suave); }
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (min-width: 900px) {
+  .dj-nova { grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); gap: 3.4rem; }
+  .dj-animo { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr); gap: 3.4rem; }
+}
+
+@media (max-width: 760px) {
+  .dj-saludo { min-height: 0; padding: 1.2rem 1rem 1rem; border-radius: 22px; }
+  .dj-saludo-bocadillo strong { font-size: 1.1rem; }
+  .dj-saludo-bocadillo span { font-size: 0.84rem; }
+  .dj-saludo-nova .nh { width: 140px; height: 140px; }
+  .dj-saludo-pulso { grid-template-columns: 1fr; gap: 0.7rem; }
+
+  .dj-animo-fila { grid-template-columns: 24px 70px minmax(0, 1fr) 54px; gap: 0.5rem; }
+  .dj-super { margin-top: 3.8rem; padding: 2.6rem 1.1rem 2.2rem; border-radius: 24px; }
+  .dj-super-medalla { width: 88px; height: 88px; }
+  .dj-super-rayos { animation: none; }
+  .dj-super-reglas { grid-template-columns: 1fr; }
+  .dj-super-meses span { height: 24px; border-radius: 6px; }
+  .dj-super-cta .fh-btn { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dj-super-rayos { animation: none; }
+}

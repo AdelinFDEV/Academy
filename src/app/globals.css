@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@300;400;500;600;700&family=Caveat:wght@500;700&display=swap');
-
 :root {
   --bg-dark: #0a1628;
   --bg-card: #112240;
@@ -124,6 +122,12 @@ html {
   pointer-events: none;
   filter: blur(80px);
   animation: pulse 8s ease-in-out infinite alternate;
+}
+
+/* En móvil, sin el blur ni la animación: es un degradado que ya se desvanece
+   solo, y el blur de 80 px animado pesaba en cada fotograma (08-11-2026). */
+@media (max-width: 760px) {
+  .bg-ambient { filter: none; animation: none; opacity: 0.8; }
 }
 
 @keyframes pulse {
@@ -5205,22 +5209,6 @@ select {
    Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
 /* Ã¢â€â‚¬Ã¢â€â‚¬ Compact hero banner Ã¢â€â‚¬Ã¢â€â‚¬ */
-
-.text-gradient {
-  background: linear-gradient(135deg, #ff9a00 0%, #ff6b2b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  display: inline-block;
-  text-shadow: none;
-  font-family: var(--font-kalam), 'Kalam', cursive;
-  font-size: 1.1em;
-  /* Ajuste para Kalam */
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0;
-  padding: 0 5px 0.2em 5px;
-}
 
 .home-feature {
   display: flex;

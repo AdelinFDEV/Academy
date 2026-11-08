@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins, DM_Sans, Kalam } from "next/font/google";
+import { Poppins, DM_Sans, Fraunces } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
@@ -26,11 +26,19 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const kalam = Kalam({
-  weight: ["700"],
+// Fraunces: la serif del certificado de los cursos. Antes llegaba con un
+// @import a fonts.googleapis.com en globals.css: una petición a Google que
+// bloqueaba el pintado de TODAS las páginas, cargaba dos familias que no se
+// usaban (Space Grotesk y Caveat) y mandaba la IP del visitante a Google antes
+// del consentimiento. next/font la sirve desde el propio dominio (08-11-2026).
+// Kalam se quitó a la vez: solo la usaba una clase que ya no existía.
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-kalam",
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-fraunces",
   display: "swap",
+  preload: false,
 });
 
 const siteUrl = SITE_URL;
@@ -77,7 +85,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${kalam.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
+    <html lang="es" className={`${poppins.variable} ${dmSans.variable} ${fraunces.variable}`} style={{ fontFamily: "var(--font-dm-sans, sans-serif)" }}>
       <head>
       </head>
       <body suppressHydrationWarning>

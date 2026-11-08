@@ -29,7 +29,14 @@ export default async function HomePage() {
 
   // YouTube no se pide aquí: va a youtube.com (lento y poco fiable) y se
   // resuelve en su propio <Suspense> más abajo, sin frenar la página.
-  const { data: { user } } = await supabase.auth.getUser();
+  //
+  // La cartera pública no depende de quién mire: se pide A LA VEZ que la
+  // sesión, no después (antes eran tres esperas en fila: sesión, perfil y
+  // cartera). La cartera tiene su propia caché; aquí solo se deja de esperar.
+  const [{ data: { user } }, resumenCompleto] = await Promise.all([
+    supabase.auth.getUser(),
+    resumenPortfolioPublico(),
+  ]);
 
   const profileRes = user
     ? await supabase.from("profiles").select("role, full_name").eq("id", user.id).single()
@@ -45,7 +52,6 @@ export default async function HomePage() {
   // Recortadas a lo que se enseña: HeroSlider es de cliente, y lo que recibe
   // viaja en el HTML. Pasarle el resumen entero publicaba los importes
   // invertidos aunque `MOSTRAR_IMPORTES` diga que no (arreglado el 04-11-2026).
-  const resumenCompleto = await resumenPortfolioPublico();
   const resumenPortfolio: ResumenHero = resumenCompleto && {
     posiciones: resumenCompleto.posiciones,
     rentabilidadPct: resumenCompleto.rentabilidadPct,

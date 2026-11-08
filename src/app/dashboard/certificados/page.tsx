@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { certificadosDelAlumno } from "@/lib/cursos";
-import VitrinaCertificados from "@/components/VitrinaCertificados";
+import { certificadosDelAlumno, cursoPorSlug, cursosPublicados } from "@/lib/cursos";
+import VitrinaCertificados, { type EjemploVitrina } from "@/components/VitrinaCertificados";
 import "./certificados.css";
 
 export const metadata: Metadata = {
@@ -23,7 +23,19 @@ export default async function CertificadosPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/dashboard/certificados");
 
-  const certificados = await certificadosDelAlumno(user.id);
+  const [certificados, { data: perfil }] = await Promise.all([
+    certificadosDelAlumno(user.id),
+    supabase.from("profiles").select("full_name").eq("id", user.id).single(),
+  ]);
+  const nombre = perfil?.full_name || user.email?.split("@")[0] || undefined;
+
+  // Vitrina vacía: una muestra con su nombre y el primer curso publicado.
+  let ejemplo: EjemploVitrina | null = null;
+  if (certificados.length === 0) {
+    const [primero] = await cursosPublicados();
+    const curso = primero ? await cursoPorSlug(primero.slug) : null;
+    if (curso) ejemplo = { titulo: curso.curso.titulo, logro: curso.curso.logro, color: curso.curso.color, fecha: curso.curso.updated_at };
+  }
 
   return (
     <main className="dashboard-main">
@@ -50,7 +62,7 @@ export default async function CertificadosPage() {
           </p>
         </header>
 
-        <VitrinaCertificados certificados={certificados} forma="completa" />
+        <VitrinaCertificados certificados={certificados} forma="completa" nombre={nombre} ejemplo={ejemplo} />
       </div>
     </main>
   );

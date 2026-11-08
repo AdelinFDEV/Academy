@@ -10,6 +10,17 @@ export default function HeroVideo() {
   const [loadVideo, setLoadVideo] = useState(false);
 
   useEffect(() => {
+    // En móvil, con ahorro de datos o con movimiento reducido, el vídeo NO se
+    // descarga: se queda el póster. Son ~2 MB por visita para un fondo casi
+    // transparente, y en el teléfono el ancho de banda y la batería cuentan
+    // más que un movimiento que apenas se ve (08-11-2026).
+    const conexion = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const sinVideo =
+      window.matchMedia("(max-width: 760px)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      conexion?.saveData === true;
+    if (sinVideo) return;
+
     if (document.readyState === "complete") {
       setLoadVideo(true);
       return;

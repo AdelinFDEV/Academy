@@ -5,6 +5,8 @@ import { ArrowLeft, Clock, Lock, CalendarCheck } from "lucide-react";
 import AulaShell from "@/components/aula/AulaShell";
 import BotonCompletar from "@/components/aula/BotonCompletar";
 import Bloque from "@/components/aula/Bloque";
+import GlosarioPopup, { type TerminoCorto } from "@/components/aula/GlosarioPopup";
+import { buscarTermino } from "@/lib/glosario";
 import { exigirAula } from "../../contexto";
 import { contenidoLeccion, cursoPorSlug } from "@/lib/cursos";
 import { leccionAbierta, fechaLarga } from "@/lib/cursos-progreso";
@@ -63,6 +65,15 @@ export default async function LeccionPage({ params }: Props) {
 
   const contenido = await contenidoLeccion(leccion.id);
   const trozos = trocear(contenido);
+
+  // Las definiciones cortas de los términos del diccionario que enlaza esta
+  // lección, para el popup: así el alumno los entiende sin salir del curso.
+  // Solo los que existen y tienen página propia (si no, el «ver más» daría 404).
+  const terminos: Record<string, TerminoCorto> = {};
+  for (const [, slugTermino] of contenido.matchAll(/href="\/glosario\/([a-z0-9-]+)"/g)) {
+    const t = buscarTermino(slugTermino);
+    if (t?.extended) terminos[slugTermino] = { term: t.term, definition: t.definition };
+  }
   const hecha = datos.completadas.has(leccion.id);
 
   const anterior = modulo.lecciones[indice - 1];
@@ -89,6 +100,7 @@ export default async function LeccionPage({ params }: Props) {
           </div>
         </header>
 
+        <GlosarioPopup terminos={terminos}>
         <div className="aula-leccion-cuerpo">
           {trozos.map((t, i) =>
             t.tipo === "html" ? (
@@ -101,6 +113,7 @@ export default async function LeccionPage({ params }: Props) {
             <p className="aula-bloque-roto">Esta lección todavía no tiene contenido. (Solo lo ves tú, como admin.)</p>
           )}
         </div>
+        </GlosarioPopup>
 
         <footer className="aula-leccion-pie">
           {anterior ? (

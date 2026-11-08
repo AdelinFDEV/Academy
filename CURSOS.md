@@ -28,7 +28,7 @@ Lo que hay en este archivo:
 | **Cada afirmación, con su fuente fiable y su URL** en el informe, y con su matiz en la lección (muestra, país, periodo; correlación no es causa) | Todo el contenido es YMYL. Una cifra sin fuente o exagerada hunde la credibilidad del curso entero |
 | **Cada curso, su propia paleta de color**, distinta de la de los cursos anteriores. El certificado la hereda | Ver el [punto 4](#4--la-paleta-de-cada-curso). Que cada curso se reconozca de un vistazo, también su certificado |
 | **No se promete lo que el curso no hace.** Ni ganancias, ni «dominar», ni resultados garantizados | Normativa de consumo y YMYL. La promesa honesta vende mejor a largo plazo |
-| **SIEMPRE: toda palabra técnica, o que merezca explicarse, se define en el diccionario y se enlaza** en su primera aparición en cada lección, en las preguntas no (ahí no hay enlaces). Si no existe, se crea **en el momento, sin esperar a que lo pida nadie**, con una definición buena, y antes de publicar. Ante la duda, se crea | Pedido expreso del admin (08-11-2026) y regla intocable de AGENTS.md. Así se hizo en el primer curso: 12 términos nuevos. `subir-curso.mjs` avisa si una lección no enlaza ninguno |
+| **SIEMPRE: toda palabra técnica, o que merezca explicarse, se define en el diccionario y se enlaza** en su primera aparición en cada lección, en las preguntas no (ahí no hay enlaces). Si no existe, se crea **en el momento, sin esperar a que lo pida nadie**, con una definición buena, y antes de publicar. Ante la duda, se crea. En el aula, el enlace abre **un popup con la definición** sin salir de la lección (punto 11) | Pedido expreso del admin (08-11-2026) y regla intocable de AGENTS.md. Así se hizo en el primer curso: 12 términos nuevos. `subir-curso.mjs` avisa si una lección no enlaza ninguno |
 | **Nada de emojis** en lecciones, bloques ni textos del curso. Los callouts van **sin** el icono-emoji | Dirección de diseño de la academia |
 | **Nunca se publica sin el «sí» explícito del admin.** `"published": true` en `curso.json` lo hace visible al subir | No hay paso intermedio para echarse atrás |
 | **El curso es contenido (filas), no código.** Si hace falta código nuevo (un bloque, un aviso), se pregunta antes y se reutiliza lo que ya hay | La web no crece con cada curso (decisión del admin, 06-10-2026) |
@@ -40,7 +40,7 @@ Lo que hay en este archivo:
 
 ```
 Fase 1  Investigar → informe en informes/curso-<slug>.md → el admin lo aprueba
-Fase 2  Paleta y logro → términos del diccionario que falten
+Fase 2  Paleta, logro e ilustración de la portada → términos del diccionario que falten
 Fase 3  curso.json → lecciones → bancos de preguntas
 Fase 4  subir-curso.mjs --probar → subir como BORRADOR → recorrerlo como alumno
 Fase 5  Auditoría SEO de la ficha (se pregunta siempre) → «sí» del admin → publicar
@@ -95,6 +95,7 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 - Que **no se parezca** a la de ningún curso del registro de abajo. Busca otra familia (si ya hay un turquesa, no otro verde azulado).
 - Que **case con el tema** (verde azulado de calma para psicología, dorado para fiscalidad…).
 - Que se lea bien sobre el azul noche de la web: tonos medios y luminosos (luminosidad media-alta), nunca colores muy oscuros.
+- **El texto que va ENCIMA del color del curso (botones rellenos, etiquetas) es siempre oscuro (`#0a1628`), nunca blanco**: sobre un tono claro como el turquesa, el blanco no se lee. Revisa cada botón nuevo con este criterio (pasó con el popup del diccionario el 08-11-2026).
 - **No uses el dorado `#e6b455`** para un curso nuevo: es el acento de la casa y ya lo tiene el de fiscalidad.
 - Propónla en el informe y que el admin la apruebe.
 
@@ -107,6 +108,46 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 | Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Borrador |
 
 Ideas libres para los siguientes: coral `#ff8a7a`, azul cobalto `#6f9bff`, verde lima `#a3e635`, rosa `#f472b6`, ámbar `#fbbf24`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
+
+### La tarjeta del curso en `/cursos` — el mismo formato para todos
+
+Rehecha el 08-11-2026 a petición del admin, que pidió que **todos los cursos futuros salgan con este mismo formato y esta misma lógica**. La página `/cursos` es: una cabecera breve con los totales de todos los cursos (cursos, módulos, lecciones, exámenes y horas, que se suman solos) y **justo debajo, el listado**, una tarjeta por curso. Nunca una portada gigante de un curso concreto. Todo lo pinta `src/app/cursos/page.tsx` desde Supabase, **sin tocar código por curso**, salvo la ilustración (abajo).
+
+**Cómo es cada tarjeta, de arriba abajo:**
+
+1. **Portada** de su color: la ilustración del curso (o el arte SVG si no tiene), las etiquetas de nivel y de estado arriba a la izquierda y el número del curso arriba a la derecha. Si el alumno aprobó, **su certificado real asoma** abajo a la derecha y lleva a su vitrina.
+2. **El sello** con el icono del logro (`CURSO_BADGE_ICON_BY_SLUG` en `logros.tsx`), montado entre la portada y el cuerpo.
+3. Título (enlaza a la ficha), subtítulo y tres datos: módulos, lecciones y duración.
+4. **Según cómo lo lleve el alumno** (`avanceDe()`, que usa `estadoCurso()`, el mismo cálculo que el aula):
+   - **Sin empezar** (y quien no ha iniciado sesión): los títulos de los módulos en pequeño.
+   - **Empezado**: etiqueta «En curso», anillo con el porcentaje, «X de Y lecciones», el siguiente paso y una pista con un tramo por módulo.
+   - **Aprobado**: etiqueta «Aprobado», anillo al 100 %, la nota y el logro conseguido.
+5. Botones: el principal según el caso («Empezar el curso», «Continuar el curso», «Entrar al curso»; sin Premium, a `/premium`; sin Premium pero con certificado, a su certificado) y «Ver temario».
+
+Detrás del listado, una aurora con **los colores de todos los cursos** (se rehace sola) y un grano fino; cada tarjeta lleva borde con degradado de su color, un foco de su color por debajo y un brillo que sigue al ratón (`TarjetaCurso.tsx`, solo con ratón). Todo estático en el móvil. Los estilos, en `src/app/cursos/catalogo.css`.
+
+**Lo único que se hace a mano por cada curso nuevo — la ilustración de la portada** (paso obligatorio de la Fase 2):
+
+1. Escribe el prompt **completo y desde cero** con la base de abajo, con el objeto y el color del curso, y dáselo al admin, que genera la imagen.
+2. Conviértela tú a WebP de 1600 px de ancho (proporción 20:7, unos 20 KB), sin recortar si el objeto ya está en el centro-derecha:
+   ```bash
+   node -e "require('sharp')('RUTA/imagen.jpg').resize({width:1600}).webp({quality:82,effort:6}).toFile('public/cursos/<slug>/portada.webp')"
+   ```
+3. Dala de alta en `PORTADA_IMAGEN` (`src/app/cursos/PortadaCurso.tsx`). Si aún no hay imagen, la tarjeta sale con el arte SVG (un motivo propio en `MOTIVO` o el genérico) y nunca vacía, pero **el curso no se da por terminado sin su ilustración**.
+4. Comprueba la imagen antes de darla de alta: objeto en el centro-derecha, tercio izquierdo despejado (ahí van las etiquetas y el sello), sin texto ni marcas.
+
+El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no se usa): la ilustración del catálogo va en `public/` y en `PORTADA_IMAGEN`.
+
+**La base del prompt** (sustituye lo que va entre corchetes y escríbelo entero, nunca como edición de otro):
+
+> Ilustración horizontal panorámica de 1600 × 560 píxeles (proporción 20:7) para la portada de un curso online premium sobre [TEMA]. Fondo: azul noche muy oscuro, casi negro (#0a1628), liso y limpio. En la esquina superior izquierda, un degradado muy suave hacia [COLOR DEL CURSO, nombre y HEX] con poca intensidad, que se funde con el fondo. Objeto principal, situado en el centro-derecha de la imagen, ocupando aproximadamente un tercio del ancho: [OBJETO, de cristal translúcido esmerilado y/o metal satinado, girado tres cuartos], con una luz interior del color del curso. [DETALLE SECUNDARIO tenue detrás o alrededor]. Iluminación: de estudio, cinematográfica, con luz principal suave desde arriba a la izquierda y un resplandor del color del curso que sale del objeto. Reflejos sutiles, profundidad de campo ligera, sombras suaves. Estilo: render 3D minimalista y editorial, elegante y sobrio, de calidad premium, paleta reducida a azul noche y el color del curso. Composición: el tercio izquierdo prácticamente vacío, solo fondo con el degradado, y la franja inferior izquierda despejada. Prohibido: texto, letras, números, logotipos, marcas de agua, firmas, personas, caras, manos, [LO QUE SE CONFUNDA CON EL TEMA].
+
+| Curso | Objeto | Detalle | Color |
+|---|---|---|---|
+| Psicología del trading | Un cerebro de cristal translúcido | Una línea de pulso que lo atraviesa y anillos finos como órbitas | `#5ec8c4` |
+| Seguridad cripto | Un escudo geométrico de cristal con una cerradura de metal | Una malla hexagonal tenue detrás | `#a78bfa` |
+
+Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
 
 ---
 
@@ -239,6 +280,7 @@ El catálogo vive en `src/components/aula/Bloque.tsx` (una sola lista) y en `BLO
 - Nota de 0 a 10: cada acierto suma 1 y **cada fallo resta 1/(opciones − 1)**. Contestar al azar da de media 0.
 - **Certificado = 40 % media de los módulos + 60 % examen final.**
 - El admin lo ve todo abierto y sin esperas, para revisar.
+- **Rehacer el curso** (08-11-2026): quien ya tiene el certificado puede rehacerlo para mejorar la nota, con el botón de la portada del aula (`BotonRehacer` → `api/cursos/rehacer`). Se borran sus lecciones completadas y sus intentos de ese curso y el cronograma vuelve a empezar; **el certificado se conserva** mientras tanto. Al aprobar de nuevo el final, `emitirCertificado` lo **sobrescribe con la nueva nota, aunque sea más baja, y conserva el mismo código** (su verificación sigue valiendo).
 - Las respuestas correctas **nunca** llegan al navegador: `curso_preguntas` no tiene policies y todo se corrige en el servidor (`src/lib/cursos-examen.ts`).
 
 **Los bancos:**
@@ -316,6 +358,11 @@ Tres barreras independientes protegen el aula: `src/proxy.ts` (sin sesión, al l
   5. `npm run check:glosario`. `term` no se cambia jamás.
   
   En el primer curso se crearon así doce términos (`cfd`, `efecto-disposicion`, `r-multiplo`, `drawdown`…) y es lo que el admin quiere que pase siempre.
+
+- **El alumno no sale del curso para entender un término** (sistema del 08-11-2026, pedido por el admin). En el aula, cada enlace a `/glosario/<slug>` se ve con subrayado punteado y un libro pequeño, y **al pulsarlo abre un popup en el centro de la pantalla** con el término y su definición corta (`definition`), con dos botones: «Cerrar» y «Ver explicación detallada», que abre la ficha completa del diccionario **en otra pestaña** para que la lección siga donde estaba.
+  - Lo hace `src/components/aula/GlosarioPopup.tsx`, que envuelve el cuerpo de cada lección; los estilos, en `src/app/aula/aula.css`.
+  - El servidor (`src/app/aula/[curso]/[leccion]/page.tsx`) busca en el HTML de la lección los enlaces al diccionario y le pasa **solo** las definiciones de esos términos, y solo si tienen ficha (`extended`).
+  - **Para que funcione no hay que hacer nada especial al escribir**: basta con enlazar el término de la forma de siempre, `<a href="/glosario/<slug>">término</a>`. Por eso la `definition` de cada término tiene que **entenderse sola**, en una o dos frases, sin depender del resto de la ficha: es lo que lee el alumno en el popup.
 - **Aviso legal:** el del campo `aviso`. Nunca un descargo escrito a mano en una lección.
 - **Textos que anuncian los cursos** (Premium, portada, dashboard): si un curso cambia lo que se puede prometer, revísalos. Nada de «próximamente» para algo que ya existe, ni «incluido» para algo que aún no.
 
@@ -345,7 +392,8 @@ node --env-file=.env.local scripts/subir-curso.mjs <slug>            # comprueba
 2. `"published": true` en `curso.json` y vuelve a subir.
 3. **Si el curso usa código nuevo** (un bloque, un aviso), despliega primero el código y publica después: la web en producción tiene que conocerlo antes de que el curso exista en la base de datos.
 4. Comprueba en producción la ficha, `/cursos` y que el aula pide sesión.
-5. Actualiza el registro de paletas (punto 4) y `TAREAS.md`.
+5. Comprueba la tarjeta en `/cursos`: con su ilustración, su color y los totales de la cabecera sumando el curso nuevo.
+6. Actualiza el registro de paletas y la tabla de ilustraciones (punto 4) y `TAREAS.md`.
 
 El SQL que haga falta se da **completo, en un solo bloque**, repetible (`if not exists`, `drop … if exists`), y se copia también a `scripts/create-cursos.sql`.
 
@@ -357,9 +405,9 @@ Todo sale solo de Supabase al publicarlo; no hay que tocar estas páginas:
 
 | Dónde | Qué |
 |---|---|
-| `/cursos` | El catálogo: el primero publicado va de portada, con su certificado de muestra; con más de uno, la rejilla de todos |
+| `/cursos` | El catálogo: cabecera con los totales de todos los cursos y, debajo, una tarjeta por curso con su ilustración y el progreso del alumno (punto 4) |
 | `/cursos/<slug>` | La ficha pública (indexable, entra sola en el sitemap) |
-| `/aula/<slug>` | El aula: temario fijo y plegable (tecla T), lecciones, exámenes, certificado |
+| `/aula/<slug>` | El aula: temario fijo y plegable (tecla T), lecciones con el diccionario en popup, exámenes, certificado |
 | `/premium` | La lista de cursos publicados y la muestra del certificado |
 | `/dashboard` | La vitrina de certificados |
 | `/dashboard/logros` | El logro, en «Cursos» |

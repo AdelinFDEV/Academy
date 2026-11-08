@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Clock, CalendarCheck, TrendingUp, TrendingDown, Gauge, Award, Check, Lock, ClipboardCheck, Hourglass } from "lucide-react";
 import AulaShell from "@/components/aula/AulaShell";
+import BotonRehacer from "@/components/aula/BotonRehacer";
 import RitmoSelector from "@/components/aula/RitmoSelector";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { exigirAula } from "../contexto";
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AulaCursoPage({ params }: Props) {
   const { curso: slug } = await params;
   const ctx = await exigirAula(slug, `/aula/${slug}`);
-  const { curso, datos, estado } = ctx;
+  const { curso, datos, estado, sesion } = ctx;
   const total = minutosTotales(curso.modulos);
 
   if (!datos.inscripcion) {
@@ -51,7 +52,11 @@ export default async function AulaCursoPage({ params }: Props) {
     minutosSemana: datos.inscripcion.minutos_semana,
   });
   const s = estado.siguiente;
-  const terminado = !!datos.certificado;
+  // Con certificado pero sin el final aprobado en los intentos: lo está
+  // REHACIENDO para mejorar la nota (api/cursos/rehacer borra los intentos y
+  // conserva el certificado). Entonces se le guía como a quien empieza.
+  const rehaciendo = !!datos.certificado && estado.final.tipo !== "aprobado" && !sesion.esAdmin;
+  const terminado = !!datos.certificado && !rehaciendo;
   const desfase = plan.desfaseDias;
 
   const continuar =
@@ -73,8 +78,15 @@ export default async function AulaCursoPage({ params }: Props) {
         <div className="aula-portada-texto">
           <span className="aula-kicker">{curso.curso.titulo}</span>
           <h1 className="aula-h1">
-            {terminado ? "Curso terminado" : estado.leccionesHechas === 0 ? "Todo listo para empezar" : "Sigue donde lo dejaste"}
+            {terminado ? "Curso terminado" : rehaciendo ? "Rehaciendo el curso" : estado.leccionesHechas === 0 ? "Todo listo para empezar" : "Sigue donde lo dejaste"}
           </h1>
+          {rehaciendo && datos.certificado && (
+            <p className="aula-lead">
+              Tu certificado sigue vigente con su nota actual ({formatoNota(datos.certificado.nota_final)}). Cuando
+              apruebes de nuevo el examen final, se actualizará con la nueva nota, aunque sea más baja, y conservará el
+              mismo código.
+            </p>
+          )}
           {continuar && (
             <Link href={continuar.href} className="aula-continuar">
               <span>
@@ -92,6 +104,9 @@ export default async function AulaCursoPage({ params }: Props) {
               </span>
               <Award size={20} aria-hidden="true" />
             </Link>
+          )}
+          {terminado && datos.certificado && (
+            <BotonRehacer curso={slug} notaActual={formatoNota(datos.certificado.nota_final)} />
           )}
         </div>
       </section>

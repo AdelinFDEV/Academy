@@ -38,9 +38,9 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
     : !sesion.esPremium
       ? { href: "/premium", texto: "Hazte Premium para empezar", secundario: null }
       : alumno?.certificado
-        ? { href: `/aula/${slug}/certificado`, texto: "Ver tu certificado", secundario: { href: `/aula/${slug}`, texto: "Volver al aula" } }
+        ? { href: `/aula/${slug}/certificado`, texto: "Ver tu certificado", secundario: { href: `/aula/${slug}`, texto: "Entrar al curso" } }
         : alumno?.inscripcion
-          ? { href: `/aula/${slug}`, texto: "Continuar en el aula", secundario: null }
+          ? { href: `/aula/${slug}`, texto: "Continuar el curso", secundario: null }
           : { href: `/aula/${slug}`, texto: "Empezar el curso", secundario: null };
 
   const incluye = [

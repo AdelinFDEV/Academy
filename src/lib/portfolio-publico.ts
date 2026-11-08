@@ -89,6 +89,8 @@ async function preciosDe(ids: string[]): Promise<Precios> {
 }
 
 export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> {
+  // El DCA no depende de la cartera spot: se pide a la vez, no al final.
+  const dcaPromesa = resumenDCA().catch(() => null);
   try {
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -134,7 +136,7 @@ export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> 
       valorActual,
       rentabilidadPct: ((valorActual - invertido) / invertido) * 100,
       desdeAnio: anioMin,
-      dca: await resumenDCA(),
+      dca: await dcaPromesa,
     };
   } catch {
     return null;

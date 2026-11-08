@@ -13,23 +13,14 @@ import "./vitrina-certificados.css";
  *    los certificados de verdad, enmarcados sobre una balda iluminada, y un
  *    hueco para el siguiente. Vacía, un mensaje y una MUESTRA con el nombre
  *    del alumno y el primer curso publicado (con la marca de agua «Muestra»).
- *  · `completa` — /dashboard/certificados: una tarjeta por certificado con
- *    sus datos y los botones de descarga y verificación.
+ *  · `completa` — /dashboard/certificados: un resumen arriba y una ficha por
+ *    certificado, con el certificado de verdad en su escaparate, la nota, el
+ *    logro, el código y los botones de descarga y verificación (rehecha el
+ *    08-11-2026). Vacía, enseña lo mismo que el estante vacío.
  *
  * Los datos los trae el servidor con `certificadosDelAlumno()` (solo los del
  * propio alumno, con su sesión). No exige Premium: lo ganado se queda.
  */
-
-function Diploma({ c }: { c: CertificadoVitrina }) {
-  return (
-    <span className="cv-diploma" aria-hidden="true">
-      <span className="cv-diploma-marca">AdelinBTC Academy</span>
-      <span className="cv-diploma-sello">{iconoCurso(c.curso.slug, 24)}</span>
-      <span className="cv-diploma-nota">{formatoNota(c.nota_final)}</span>
-      <span className="cv-diploma-sobre">sobre 10</span>
-    </span>
-  );
-}
 
 /** El curso con el que se pinta la muestra cuando la vitrina está vacía. */
 export interface EjemploVitrina {
@@ -47,9 +38,9 @@ export default function VitrinaCertificados({
 }: {
   certificados: CertificadoVitrina[];
   forma: "estante" | "completa";
-  /** Solo en el estante: el nombre del alumno, para la muestra con su nombre. */
+  /** Para la muestra de la vitrina vacía: el nombre del alumno. */
   nombre?: string;
-  /** Solo en el estante vacío: el curso publicado con el que se hace la muestra. */
+  /** Para la muestra de la vitrina vacía: el curso publicado con el que se hace. */
   ejemplo?: EjemploVitrina | null;
 }) {
   if (forma === "estante") {
@@ -161,46 +152,79 @@ export default function VitrinaCertificados({
     );
   }
 
+  // Vacía, la página completa enseña lo mismo que el estante: el mensaje y la muestra con su nombre.
   if (certificados.length === 0) {
-    return (
-      <section className="cv-vacio">
-        <span className="cv-vacio-icono" aria-hidden="true"><Award size={30} strokeWidth={1.6} /></span>
-        <h2>Tu vitrina está esperando su primer certificado</h2>
-        <p>
-          Aprueba el examen final de un curso y su certificado aparecerá aquí, con tu nota y su código de
-          verificación, listo para descargar.
-        </p>
-        <Link href="/cursos" className="cv-btn">
-          <GraduationCap size={16} aria-hidden="true" /> Ver los cursos
-        </Link>
-      </section>
-    );
+    return <VitrinaCertificados certificados={certificados} forma="estante" nombre={nombre} ejemplo={ejemplo} />;
   }
 
+  const media = certificados.reduce((t, c) => t + c.nota_final, 0) / certificados.length;
+  const ultimo = certificados[0];
+
   return (
-    <ul className="cv-rejilla">
-      {certificados.map((c) => (
-        <li key={c.codigo} className="cv-tarjeta" style={{ "--cv-acento": c.curso.color } as React.CSSProperties}>
-          <Diploma c={c} />
-          <div className="cv-info">
-            <span className="cv-kicker">Certificado de aprovechamiento</span>
-            <h2 className="cv-curso">{c.curso.titulo}</h2>
-            <dl className="cv-datos">
-              <div><dt>Logro</dt><dd>{c.curso.logro}</dd></div>
-              <div><dt>Fecha</dt><dd>{fechaLarga(new Date(c.created_at))}</dd></div>
-              <div><dt>Código</dt><dd className="cv-codigo">{c.codigo}</dd></div>
-            </dl>
-            <div className="cv-acciones">
-              <Link href={`/dashboard/certificados/${c.codigo}`} className="cv-btn">
-                <Download size={15} aria-hidden="true" /> Ver y descargar
-              </Link>
-              <Link href={`/cursos/verificar/${c.codigo}`} className="cv-btn cv-btn--ghost">
-                <ShieldCheck size={15} aria-hidden="true" /> Verificar <ArrowRight size={13} aria-hidden="true" />
-              </Link>
+    <>
+      <dl className="cv-resumen">
+        <div><dt>Certificados</dt><dd>{certificados.length}</dd></div>
+        <div><dt>Nota media</dt><dd>{formatoNota(media)}<small>/10</small></dd></div>
+        <div><dt>El último</dt><dd className="is-texto">{fechaLarga(new Date(ultimo.created_at))}</dd></div>
+        <div><dt>Verificables</dt><dd className="is-texto"><ShieldCheck size={16} aria-hidden="true" /> Todos, con su código</dd></div>
+      </dl>
+
+      <ul className="cv-galeria">
+        {certificados.map((c) => (
+          <li key={c.codigo} className="cv-ficha" style={{ "--cv-acento": c.curso.color } as React.CSSProperties}>
+            {/* El escaparate: el certificado de verdad, enmarcado y con su foco. */}
+            <Link href={`/dashboard/certificados/${c.codigo}`} className="cv-escaparate" aria-label={`Ver y descargar el certificado de ${c.curso.titulo}`}>
+              <span className="cv-escaparate-foco" aria-hidden="true" />
+              <span className="cv-marco">
+                <Certificado
+                  nombre={c.nombre}
+                  curso={c.curso.titulo}
+                  logro={c.curso.logro}
+                  notaFinal={c.nota_final}
+                  notaModulos={c.nota_modulos}
+                  notaExamen={c.nota_examen}
+                  fecha={c.created_at}
+                  codigo={c.codigo}
+                  color={c.curso.color}
+                />
+                <span className="cv-brillo" aria-hidden="true" />
+              </span>
+            </Link>
+
+            <div className="cv-ficha-cuerpo">
+              <div className="cv-ficha-cab">
+                <div>
+                  <span className="cv-kicker">Certificado de aprovechamiento</span>
+                  <h2 className="cv-curso">{c.curso.titulo}</h2>
+                </div>
+                <span className="cv-nota" aria-label={`Nota final ${formatoNota(c.nota_final)} sobre 10`}>
+                  <strong>{formatoNota(c.nota_final)}</strong>
+                  <small>/10</small>
+                </span>
+              </div>
+
+              <div className="cv-chips">
+                <span className="cv-chip cv-chip--logro"><span className="cv-chip-icono">{iconoCurso(c.curso.slug, 14)}</span> {c.curso.logro}</span>
+                <span className="cv-chip">Emitido el {fechaLarga(new Date(c.created_at))}</span>
+              </div>
+
+              <div className="cv-codigo-fila">
+                <span>Código</span>
+                <strong className="cv-codigo">{c.codigo}</strong>
+              </div>
+
+              <div className="cv-acciones">
+                <Link href={`/dashboard/certificados/${c.codigo}`} className="cv-btn">
+                  <Download size={15} aria-hidden="true" /> Ver y descargar en PDF
+                </Link>
+                <Link href={`/cursos/verificar/${c.codigo}`} className="cv-btn cv-btn--ghost">
+                  <ShieldCheck size={15} aria-hidden="true" /> Verificar
+                </Link>
+              </div>
             </div>
-          </div>
-        </li>
-      ))}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

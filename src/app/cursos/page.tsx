@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  ArrowRight, Award, BookOpenText, Check, ClipboardCheck, Clock3, Crown, GraduationCap, Layers, ShieldCheck, Sparkles,
+  ArrowRight, Award, BookOpenText, Check, ClipboardCheck, Clock3, CreditCard, Crown, GraduationCap, Layers, Lock, Play, ShieldCheck, Zap,
 } from "lucide-react";
 import { PASOS } from "@/components/aula/ComoFunciona";
 import Certificado from "@/components/aula/Certificado";
@@ -10,17 +10,28 @@ import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/schema";
 import { cursoPorSlug, cursosPublicados, datosAlumno, duracion, sesionActual, type CursoCompleto } from "@/lib/cursos";
+import { estadoCurso, formatoNota } from "@/lib/cursos-progreso";
 import { iconoCurso } from "@/lib/logros";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
+import PortadaCurso from "./PortadaCurso";
+import TarjetaCurso from "./TarjetaCurso";
 import "./catalogo.css";
 
 /**
- * Catálogo de cursos — rehecho el 08-11-2026 para que la página trate solo de
- * los cursos: arriba, la portada del curso destacado; después, lo que vas a
- * aprender, el temario, el catálogo, cómo funciona y el certificado.
+ * Catálogo de cursos — rehecho el 08-11-2026, a petición del admin, para que
+ * lo PRIMERO que se vea debajo de la cabecera sea el listado de cursos, cada
+ * uno con su progreso si el alumno ya lo empezó y el botón para entrar. Nada
+ * de una portada gigante de un curso concreto: con varios cursos, eso mandaba
+ * a todos al mismo.
+ *
+ * En la cabecera, los totales de todos los cursos juntos (cursos, módulos,
+ * lecciones, exámenes y horas), que se suman solos al publicar uno nuevo.
+ * Debajo del listado, lo común a todos: cómo funciona y el certificado.
  *
  * El contenido no vive aquí: cada curso es una fila de `cursos` en Supabase y
  * esta página solo lo pinta. **Todo lo que se cuenta sale de esos datos**
- * (módulos, lecciones, minutos, objetivos, logro): ni una cifra de adorno.
+ * (módulos, lecciones, minutos, logro): ni una cifra de adorno. El progreso
+ * sale de `estadoCurso()`, el mismo cálculo que usan el aula y la ficha.
  *
  * Sin ningún curso publicado, la página sale con `noindex` y sin canónica,
  * y enseña solo un estado vacío: una página vacía indexada es contenido pobre.
@@ -40,33 +51,85 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const nf = (n: number) => new Intl.NumberFormat("es-ES").format(n);
+
+// El precio sale de la misma constante que cobra Stripe: nunca a mano.
+const PRECIO = precioEur(PREMIUM_PRICE_EUR);
+const PRECIO_DIA = precioEur(Math.round((PREMIUM_PRICE_EUR / 30) * 100) / 100);
+
+/**
+ * Lo que incluye Premium, para el cierre de venta. Sale de la tarjeta de precio
+ * de `/premium`: si cambia allí, se cambia aquí. Nada que el producto no haga.
+ */
+const INCLUYE = [
+  "Todos los cursos, con examen y certificado, también los que se publiquen",
+  "Diario de Trading con Nova",
+  "Portfolio Adelin: spot y DCA en directo",
+  "Insignia de Miembro Fundador en tu perfil",
+];
+
+type Sesion = Awaited<ReturnType<typeof sesionActual>>;
+
+/**
+ * Cómo lleva el alumno un curso, para la tarjeta del listado. `tramos` es el
+ * relleno (0-100) de cada módulo, para la pista de la tarjeta.
+ */
+type Avance =
+  | { tipo: "nuevo"; tramos: number[] }
+  | { tipo: "empezado"; tramos: number[]; porcentaje: number; hechas: number; total: number; siguiente: string | null }
+  | { tipo: "aprobado"; tramos: number[]; nota: number; cert: NonNullable<Awaited<ReturnType<typeof datosAlumno>>["certificado"]> };
+
 /** El botón principal de un curso según quién mire y cómo lo lleva. */
-function ctaDe(slug: string, sesion: Awaited<ReturnType<typeof sesionActual>>, estado: "nuevo" | "empezado" | "aprobado") {
-  if (!sesion) return { href: "/premium", texto: "Desbloquear con Premium" };
-  if (!sesion.esPremium) return { href: "/premium", texto: "Hazte Premium para empezar" };
-  if (estado === "aprobado") return { href: "/dashboard/certificados", texto: "Ver tu certificado" };
-  if (estado === "empezado") return { href: `/aula/${slug}`, texto: "Continuar el curso" };
+function ctaDe(slug: string, sesion: Sesion, avance: Avance) {
+  if (avance.tipo === "aprobado" && sesion && !sesion.esPremium) return { href: "/dashboard/certificados", texto: "Ver tu certificado" };
+  if (!sesion || !sesion.esPremium) return { href: "/premium", texto: "Desbloquear con Premium", bloqueado: true };
+  if (avance.tipo === "aprobado") return { href: `/aula/${slug}`, texto: "Entrar al curso" };
+  if (avance.tipo === "empezado") return { href: `/aula/${slug}`, texto: "Continuar el curso" };
   return { href: `/aula/${slug}`, texto: "Empezar el curso" };
 }
 
-const nf = (n: number) => new Intl.NumberFormat("es-ES").format(n);
+async function avanceDe(sesion: Sesion, curso: CursoCompleto): Promise<Avance> {
+  const vacios = curso.modulos.map(() => 0);
+  if (!sesion) return { tipo: "nuevo", tramos: vacios };
+  const datos = await datosAlumno(sesion.userId, curso);
+  if (datos.certificado) return { tipo: "aprobado", tramos: curso.modulos.map(() => 100), nota: datos.certificado.nota_final, cert: datos.certificado };
+  if (!datos.inscripcion && datos.completadas.size === 0) return { tipo: "nuevo", tramos: vacios };
+  const estado = estadoCurso(curso.modulos, datos.completadas, datos.intentos, { esAdmin: sesion.esAdmin });
+  const tramos = estado.modulos.map((m) =>
+    m.examen.tipo === "aprobado" ? 100 : m.modulo.lecciones.length ? Math.round((m.hechas / m.modulo.lecciones.length) * 100) : 0,
+  );
+  const sig = estado.siguiente;
+  const siguiente = !sig ? null : sig.tipo === "final" ? "el examen final" : sig.tipo === "examen" ? `examen del módulo ${sig.moduloOrden}` : sig.titulo;
+  return { tipo: "empezado", tramos, porcentaje: estado.porcentaje, hechas: estado.leccionesHechas, total: estado.leccionesTotales, siguiente };
+}
 
 export default async function CursosPage() {
   const [sesion, resumen] = await Promise.all([sesionActual(), cursosPublicados()]);
   const completos = (await Promise.all(resumen.map((r) => cursoPorSlug(r.slug)))).filter(
     (c): c is CursoCompleto => c !== null,
   );
+  const avances = await Promise.all(completos.map((c) => avanceDe(sesion, c)));
+  const muestra = completos[0] ?? null;
 
-  const destacado = completos[0] ?? null;
-  const resDestacado = resumen[0] ?? null;
+  // El primer curso que el alumno tiene a medias, para «Continúa donde lo dejaste».
+  const iEnMarcha = avances.findIndex((a) => a.tipo === "empezado");
+  const avEnMarcha = iEnMarcha >= 0 ? avances[iEnMarcha] : null;
+  const enMarcha =
+    avEnMarcha && avEnMarcha.tipo === "empezado"
+      ? { curso: completos[iEnMarcha].curso, porcentaje: avEnMarcha.porcentaje, siguiente: avEnMarcha.siguiente }
+      : null;
 
-  // Cómo lleva el alumno Premium el curso destacado, para el botón.
-  let estado: "nuevo" | "empezado" | "aprobado" = "nuevo";
-  if (destacado && sesion?.esPremium) {
-    const datos = await datosAlumno(sesion.userId, destacado);
-    estado = datos.certificado ? "aprobado" : datos.inscripcion ? "empezado" : "nuevo";
-  }
+  // La aurora del escaparate, con los colores de todos los cursos: cambia sola
+  // al publicar uno nuevo. Una mancha por curso, repartidas a lo ancho.
+  const aurora = completos
+    .map((c, i) => {
+      const x = completos.length === 1 ? 50 : Math.round(10 + (80 * i) / (completos.length - 1));
+      return `radial-gradient(45% 60% at ${x}% ${i % 2 ? 70 : 35}%, color-mix(in srgb, ${c.curso.color} 22%, transparent), transparent 70%)`;
+    })
+    .join(", ");
 
+  // Los totales de TODOS los cursos publicados: se suman solos con cada curso
+  // nuevo, porque salen de `cursosPublicados()`. Un examen por módulo + el final.
   const totalModulos = resumen.reduce((t, c) => t + c.modulos, 0);
   const totalLecciones = resumen.reduce((t, c) => t + c.lecciones, 0);
   const totalMinutos = resumen.reduce((t, c) => t + c.minutos, 0);
@@ -86,7 +149,7 @@ export default async function CursosPage() {
 
       <SiteNav user={!!sesion} isPremium={sesion?.esPremium} userName={sesion?.nombre} isAdmin={sesion?.esAdmin} />
 
-      {!destacado || !resDestacado ? (
+      {!muestra ? (
         <main className="cx-main">
           <section className="cx-vacio">
             <span className="cx-vacio-icono" aria-hidden="true"><GraduationCap size={30} strokeWidth={1.6} /></span>
@@ -98,224 +161,223 @@ export default async function CursosPage() {
           </section>
         </main>
       ) : (
-        <main className="cx-main" style={{ "--cx-c": destacado.curso.color } as React.CSSProperties}>
-          {/* ── Hero: la portada del curso destacado ── */}
-          <section className="cx-hero">
-            <div className="cx-hero-fondo" aria-hidden="true">
+        <main className="cx-main">
+          {/* ── Cabecera: título, frase y los totales de todos los cursos ── */}
+          <header className="cx-cabecera">
+            <div className="cx-cabecera-fondo" aria-hidden="true">
               <span className="cx-rejilla" />
-              <span className="cx-luz cx-luz--1" />
-              <span className="cx-luz cx-luz--2" />
+              <span className="cx-halo" />
             </div>
 
-            <div className="cx-hero-texto">
-              <nav className="cx-migas" aria-label="Migas de pan">
-                <Link href="/">Inicio</Link>
-                <span aria-hidden="true">/</span>
-                <span>Cursos</span>
-              </nav>
+            <nav className="cx-migas" aria-label="Migas de pan">
+              <Link href="/">Inicio</Link>
+              <span aria-hidden="true">/</span>
+              <span>Cursos</span>
+            </nav>
 
-              <span className="cx-pildora">
-                <span className="cx-pildora-punto" aria-hidden="true" />
-                Nuevo curso · Incluido en Premium
-              </span>
-
-              <h1 className="cx-titulo">
-                Aprende con método.
-                <span className="cx-titulo-grad">Demuéstralo con examen.</span>
-              </h1>
-
-              <p className="cx-lead">
-                Cursos completos, módulo a módulo, a tu ritmo. Cada módulo se cierra con un examen y el último te da
-                un certificado verificable. El primero ya está abierto: <strong>{destacado.curso.titulo}</strong>.
-              </p>
-
-              <div className="cx-acciones">
-                {(() => {
-                  const cta = ctaDe(destacado.curso.slug, sesion, estado);
-                  return (
-                    <Link href={cta.href} className="cx-btn">
-                      {cta.texto} <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />
-                    </Link>
-                  );
-                })()}
-                <Link href={`/cursos/${destacado.curso.slug}`} className="cx-btn cx-btn--ghost">
-                  Ver el temario completo
-                </Link>
-              </div>
-
-              <dl className="cx-cifras">
-                <div><dt>Módulos</dt><dd>{nf(totalModulos)}</dd></div>
-                <div><dt>Lecciones</dt><dd>{nf(totalLecciones)}</dd></div>
-                <div><dt>Exámenes</dt><dd>{nf(totalExamenes)}</dd></div>
-                <div><dt>De contenido</dt><dd>{duracion(totalMinutos)}</dd></div>
-              </dl>
-            </div>
-
-            {/* La portada: el curso como un objeto, con sus módulos apilados. */}
-            <Link href={`/cursos/${destacado.curso.slug}`} className="cx-portada" aria-label={`Ver el curso ${destacado.curso.titulo}`}>
-              <span className="cx-orbita cx-orbita--1" aria-hidden="true" />
-              <span className="cx-orbita cx-orbita--2" aria-hidden="true" />
-              {/* Detrás de la carta asoma la muestra del certificado que se gana al aprobar. */}
-              <span className="cx-portada-cert" aria-hidden="true">
-                <span className="cx-portada-cert-etiqueta"><Award size={12} /> Tu certificado al aprobar</span>
-                <Certificado
-                  muestra
-                  nombre={sesion?.nombre ?? "Tu nombre aquí"}
-                  curso={destacado.curso.titulo}
-                  logro={destacado.curso.logro}
-                  notaFinal={8.75}
-                  notaModulos={8.4}
-                  notaExamen={9}
-                  fecha={destacado.curso.updated_at}
-                  codigo="XXXXXXXXXX"
-                  color={destacado.curso.color}
-                />
-              </span>
-              <span className="cx-portada-carta">
-                <span className="cx-portada-cab">
-                  <span className="cx-portada-sello" aria-hidden="true">{iconoCurso(destacado.curso.slug, 26)}</span>
-                  <span className="cx-portada-nivel">{destacado.curso.nivel}</span>
+            <div className="cx-cabecera-fila">
+              <div className="cx-cabecera-texto">
+                <span className="cx-sobretitulo">
+                  <GraduationCap size={15} aria-hidden="true" /> Formación con examen y certificado
                 </span>
-                <span className="cx-portada-kicker">Curso Premium</span>
-                <span className="cx-portada-titulo">{destacado.curso.titulo}</span>
-                {destacado.curso.subtitulo && <span className="cx-portada-sub">{destacado.curso.subtitulo}</span>}
-                <span className="cx-portada-modulos" aria-hidden="true">
-                  {destacado.modulos.map((m) => (
-                    <span key={m.id} className="cx-portada-mod">
-                      <span>{String(m.orden).padStart(2, "0")}</span>
-                      <span>{m.titulo}</span>
-                    </span>
-                  ))}
-                </span>
-                <span className="cx-portada-pie">
-                  <span><Award size={14} aria-hidden="true" /> Logro «{destacado.curso.logro}»</span>
-                  <span>{duracion(resDestacado.minutos)}</span>
-                </span>
-              </span>
-            </Link>
-          </section>
-
-          {/* ── Franja: lo que vas a aprender ── */}
-          {destacado.curso.objetivos.length > 0 && (
-            <section className="cx-franja" aria-label="Lo que vas a aprender">
-              <div className="cx-franja-pista">
-                {[0, 1].map((copia) => (
-                  <ul key={copia} className="cx-franja-lista" aria-hidden={copia === 1 ? true : undefined}>
-                    {destacado.curso.objetivos.map((o) => (
-                      <li key={o}><Sparkles size={14} aria-hidden="true" /> {o}</li>
-                    ))}
-                  </ul>
-                ))}
+                <h1 className="cx-titulo">
+                  Cursos<span className="cx-titulo-punto">.</span>
+                </h1>
+                <p className="cx-lead">
+                  Módulo a módulo y a tu ritmo. Cada módulo se cierra con un examen y el final te da un certificado
+                  verificable con tu nota.
+                </p>
               </div>
-            </section>
-          )}
-
-          {/* ── 01 · El curso, a fondo ── */}
-          <section className="cx-seccion cx-destacado">
-            <header className="cx-cab">
-              <span className="cx-num">01</span>
-              <div>
-                <span className="cx-kicker">El curso del momento</span>
-                <h2 className="cx-h2">{destacado.curso.titulo}</h2>
-                {destacado.curso.descripcion && <p className="cx-p">{destacado.curso.descripcion}</p>}
-              </div>
-            </header>
-
-            <div className="cx-destacado-rejilla">
-              <div className="cx-panel">
-                <h3 className="cx-h3">Al terminar sabrás</h3>
-                <ul className="cx-objetivos">
-                  {destacado.curso.objetivos.map((o) => (
-                    <li key={o}><span className="cx-check" aria-hidden="true"><Check size={13} strokeWidth={3} /></span>{o}</li>
-                  ))}
-                </ul>
-                <ul className="cx-incluye">
-                  <li><Layers size={16} aria-hidden="true" /><strong>{destacado.modulos.length} módulos</strong> en orden</li>
-                  <li><BookOpenText size={16} aria-hidden="true" /><strong>{resDestacado.lecciones} lecciones</strong> con minijuegos</li>
-                  <li><ClipboardCheck size={16} aria-hidden="true" /><strong>{destacado.modulos.length + 1} exámenes</strong> corregidos al momento</li>
-                  <li><Clock3 size={16} aria-hidden="true" /><strong>{duracion(resDestacado.minutos)}</strong> a tu ritmo</li>
-                </ul>
-              </div>
-
-              <div className="cx-panel cx-temario">
-                <h3 className="cx-h3">El temario</h3>
-                <ol className="cx-temario-lista">
-                  {destacado.modulos.map((m) => (
-                    <li key={m.id}>
-                      <span className="cx-temario-num">{String(m.orden).padStart(2, "0")}</span>
-                      <span className="cx-temario-txt">
-                        <strong>{m.titulo}</strong>
-                        <span>{m.lecciones.length} lecciones · {duracion(m.lecciones.reduce((t, l) => t + l.minutos, 0))} · examen al final</span>
-                      </span>
-                    </li>
-                  ))}
-                  <li className="is-final">
-                    <span className="cx-temario-num"><Award size={15} aria-hidden="true" /></span>
-                    <span className="cx-temario-txt">
-                      <strong>Examen final y certificado</strong>
-                      <span>{destacado.curso.preguntas_final} preguntas · nota de 0 a 10</span>
-                    </span>
-                  </li>
-                </ol>
-                <Link href={`/cursos/${destacado.curso.slug}`} className="cx-enlace">
-                  Ver todas las lecciones <ArrowRight size={14} aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </section>
-
-          {/* ── 02 · Catálogo (solo si hay más de un curso) ── */}
-          {completos.length > 1 && (
-            <section className="cx-seccion">
-              <header className="cx-cab">
-                <span className="cx-num">02</span>
-                <div>
-                  <span className="cx-kicker">Catálogo</span>
-                  <h2 className="cx-h2">Todos los cursos</h2>
-                  <p className="cx-p">Todos van incluidos en la misma suscripción.</p>
+              {!sesion?.esPremium ? (
+                /* Sin Premium: el precio y la llamada, a la vista desde el principio. */
+                <div className="cx-oferta">
+                  <span className="cx-oferta-cab"><Crown size={14} aria-hidden="true" /> Todos incluidos en Premium</span>
+                  <span className="cx-oferta-precio"><strong>{PRECIO}</strong>/mes · sin permanencia</span>
+                  <Link href="/api/checkout" prefetch={false} className="cx-btn cx-oferta-btn">
+                    Desbloquear {resumen.length === 1 ? "el curso" : `los ${nf(resumen.length)} cursos`}
+                    <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
+                  </Link>
+                  <Link href="/premium" className="cx-oferta-enlace">Ver todo lo que incluye</Link>
                 </div>
-              </header>
-              <ul className="cx-catalogo">
-                {completos.map((c, i) => {
-                  const r = resumen[i];
-                  return (
-                    <li key={c.curso.slug} style={{ "--cx-c": c.curso.color } as React.CSSProperties}>
-                      <Link href={`/cursos/${c.curso.slug}`} className="cx-tarjeta">
-                        <span className="cx-tarjeta-cab">
-                          <span className="cx-portada-sello" aria-hidden="true">{iconoCurso(c.curso.slug, 22)}</span>
-                          <span className="cx-portada-nivel">{c.curso.nivel}</span>
-                        </span>
-                        <span className="cx-tarjeta-titulo">{c.curso.titulo}</span>
-                        {c.curso.subtitulo && <span className="cx-tarjeta-sub">{c.curso.subtitulo}</span>}
-                        <span className="cx-tarjeta-barras" aria-hidden="true">
-                          {c.modulos.map((m) => <i key={m.id} />)}
-                        </span>
-                        <span className="cx-tarjeta-pie">
-                          <span>{r?.modulos} módulos · {r?.lecciones} lecciones · {duracion(r?.minutos ?? 0)}</span>
-                          <ArrowRight size={16} aria-hidden="true" />
-                        </span>
+              ) : enMarcha ? (
+                /* Con Premium y un curso empezado: volver a él en un clic. */
+                <Link
+                  href={`/aula/${enMarcha.curso.slug}`}
+                  className="cx-reanudar"
+                  style={{ "--cx-c": enMarcha.curso.color, "--pct": enMarcha.porcentaje } as React.CSSProperties}
+                >
+                  <span className="cx-reanudar-anillo" aria-hidden="true"><Play size={16} fill="currentColor" /></span>
+                  <span className="cx-reanudar-texto">
+                    <small>Continúa donde lo dejaste · {enMarcha.porcentaje}%</small>
+                    <strong>{enMarcha.curso.titulo}</strong>
+                    {enMarcha.siguiente && <span>Siguiente: {enMarcha.siguiente}</span>}
+                  </span>
+                  <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
+                </Link>
+              ) : (
+                <span className="cx-pildora"><Crown size={13} aria-hidden="true" /> Incluidos en tu Premium</span>
+              )}
+            </div>
+
+            <dl className="cx-cifras" aria-label="Todos los cursos juntos">
+              <div>
+                <dt><GraduationCap size={14} aria-hidden="true" /> {resumen.length === 1 ? "Curso" : "Cursos"}</dt>
+                <dd>{nf(resumen.length)}</dd>
+              </div>
+              <div>
+                <dt><Layers size={14} aria-hidden="true" /> Módulos</dt>
+                <dd>{nf(totalModulos)}</dd>
+              </div>
+              <div>
+                <dt><BookOpenText size={14} aria-hidden="true" /> Lecciones</dt>
+                <dd>{nf(totalLecciones)}</dd>
+              </div>
+              <div>
+                <dt><ClipboardCheck size={14} aria-hidden="true" /> Exámenes</dt>
+                <dd>{nf(totalExamenes)}</dd>
+              </div>
+              <div>
+                <dt><Clock3 size={14} aria-hidden="true" /> De contenido</dt>
+                <dd>{duracion(totalMinutos)}</dd>
+              </div>
+            </dl>
+          </header>
+
+          {/* ── El listado, en su escaparate: una aurora con los colores de todos
+               los cursos, un grano fino y un foco bajo cada tarjeta ── */}
+          <div className="cx-escaparate" style={{ "--cx-aurora": aurora } as React.CSSProperties}>
+          <span className="cx-escaparate-fondo" aria-hidden="true" />
+          <ul className="cx-lista">
+            {completos.map((c, i) => {
+              const r = resumen[i];
+              const avance = avances[i];
+              const cta = ctaDe(c.curso.slug, sesion, avance);
+              const pct = avance.tipo === "aprobado" ? 100 : avance.tipo === "empezado" ? avance.porcentaje : 0;
+              return (
+                <TarjetaCurso key={c.curso.slug} className={`cx-curso cx-curso--${avance.tipo}`} style={{ "--cx-c": c.curso.color } as React.CSSProperties}>
+                  <span className="cx-curso-brillo" aria-hidden="true" />
+                  {/* La portada: el color del curso, su sello y su número. */}
+                  <div className="cx-curso-portada">
+                    <PortadaCurso slug={c.curso.slug} titulo={c.curso.titulo} />
+                    {avance.tipo === "aprobado" ? (
+                      /* El certificado del alumno, asomando: premia al que termina. */
+                      <Link href="/dashboard/certificados" className="cx-curso-cert" aria-label={`Ver tu certificado de ${c.curso.titulo}`}>
+                        <Certificado
+                          nombre={avance.cert.nombre}
+                          curso={c.curso.titulo}
+                          logro={c.curso.logro}
+                          notaFinal={avance.cert.nota_final}
+                          notaModulos={avance.cert.nota_modulos}
+                          notaExamen={avance.cert.nota_examen}
+                          fecha={avance.cert.created_at}
+                          codigo={avance.cert.codigo}
+                          color={c.curso.color}
+                        />
                       </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          )}
+                    ) : sesion?.esPremium ? (
+                      <span className="cx-curso-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                    ) : null}
+                    {!sesion?.esPremium && avance.tipo !== "aprobado" && (
+                      <span className="cx-curso-candado"><Lock size={12} strokeWidth={2.6} aria-hidden="true" /> Premium</span>
+                    )}
+                    <span className="cx-curso-chips">
+                      <span className="cx-chip">{c.curso.nivel}</span>
+                      {avance.tipo === "aprobado" && (
+                        <span className="cx-chip cx-chip--ok"><Check size={12} strokeWidth={3} aria-hidden="true" /> Aprobado</span>
+                      )}
+                      {avance.tipo === "empezado" && <span className="cx-chip cx-chip--curso">En curso</span>}
+                      {avance.tipo === "nuevo" && completos.length > 1 && i === completos.length - 1 && (
+                        <span className="cx-chip cx-chip--nuevo">El más reciente</span>
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="cx-curso-cuerpo">
+                    <span className="cx-curso-sello" aria-hidden="true">{iconoCurso(c.curso.slug, 26)}</span>
+                    <h2 className="cx-curso-titulo">
+                      <Link href={`/cursos/${c.curso.slug}`}>{c.curso.titulo}</Link>
+                    </h2>
+                    {c.curso.subtitulo && <p className="cx-curso-sub">{c.curso.subtitulo}</p>}
+
+                    <ul className="cx-curso-meta">
+                      <li><Layers size={14} aria-hidden="true" /> {r?.modulos} módulos</li>
+                      <li><BookOpenText size={14} aria-hidden="true" /> {r?.lecciones} lecciones</li>
+                      <li><Clock3 size={14} aria-hidden="true" /> {duracion(r?.minutos ?? 0)}</li>
+                    </ul>
+
+                    {avance.tipo === "nuevo" ? (
+                      /* Sin empezar: lo que se aprende, módulo a módulo. */
+                      <ol className="cx-curso-temario" aria-label={`Módulos de ${c.curso.titulo}`}>
+                        {c.modulos.map((m) => (
+                          <li key={m.id}>
+                            <span>{String(m.orden).padStart(2, "0")}</span>
+                            {m.titulo}
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      /* El progreso: un anillo con el porcentaje y una pista con un tramo por módulo. */
+                      <div className="cx-progreso">
+                        <span
+                          className="cx-anillo"
+                          style={{ "--pct": pct } as React.CSSProperties}
+                          role="progressbar"
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={pct}
+                          aria-label={`Progreso en ${c.curso.titulo}`}
+                        >
+                          <strong>{pct}%</strong>
+                        </span>
+                        <span className="cx-progreso-texto">
+                          <strong>
+                            {avance.tipo === "aprobado"
+                              ? `Completado con un ${formatoNota(avance.nota)}`
+                              : `${avance.hechas} de ${avance.total} lecciones`}
+                          </strong>
+                          <span>
+                            {avance.tipo === "aprobado"
+                              ? <><Award size={13} aria-hidden="true" /> Logro «{c.curso.logro}» conseguido</>
+                              : avance.siguiente
+                                ? `Siguiente: ${avance.siguiente}`
+                                : <><Award size={13} aria-hidden="true" /> Al aprobar: certificado y logro «{c.curso.logro}»</>}
+                          </span>
+                          <span className="cx-tramos" aria-hidden="true">
+                            {avance.tramos.map((t, k) => (
+                              <i key={k}><b style={{ width: `${t}%` }} /></i>
+                            ))}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="cx-curso-acciones">
+                      <Link href={cta.href} className="cx-btn">
+                        {"bloqueado" in cta && <Lock size={15} strokeWidth={2.4} aria-hidden="true" />}
+                        {cta.texto} <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
+                      </Link>
+                      <Link href={`/cursos/${c.curso.slug}`} className="cx-btn cx-btn--ghost">
+                        Ver temario
+                      </Link>
+                    </div>
+                  </div>
+                </TarjetaCurso>
+              );
+            })}
+          </ul>
+          </div>
 
           {/* ── Cómo funciona ── */}
           <section className="cx-seccion">
             <header className="cx-cab">
-              <span className="cx-num">{completos.length > 1 ? "03" : "02"}</span>
-              <div>
-                <span className="cx-kicker">Cómo funciona</span>
-                <h2 className="cx-h2">Pensado para que termines lo que empiezas</h2>
-              </div>
+              <span className="cx-kicker">Cómo funciona</span>
+              <h2 className="cx-h2">Pensado para que termines lo que empiezas</h2>
             </header>
             <ol className="cx-pasos">
               {PASOS.map((p, i) => {
                 const Icon = p.icon;
                 return (
-                  <li key={p.titulo} className="cx-paso" style={{ "--i": i } as React.CSSProperties}>
+                  <li key={p.titulo} className="cx-paso">
                     <span className="cx-paso-icono" aria-hidden="true"><Icon size={20} strokeWidth={1.9} /></span>
                     <span className="cx-paso-num">Paso {i + 1}</span>
                     <strong className="cx-paso-titulo">{p.titulo}</strong>
@@ -327,18 +389,18 @@ export default async function CursosPage() {
           </section>
 
           {/* ── El certificado ── */}
-          <section className="cx-seccion cx-cert">
+          <section className="cx-seccion cx-cert" style={{ "--cx-c": muestra.curso.color } as React.CSSProperties}>
             <div className="cx-cert-texto">
               <span className="cx-kicker">La recompensa</span>
               <h2 className="cx-h2">Un certificado con tu nombre, que cualquiera puede verificar</h2>
               <p className="cx-p">
-                Al aprobar el examen final recibes tu certificado con la nota, un código único y una página pública
-                de verificación. Se guarda en tu vitrina del panel para descargarlo en PDF siempre que quieras, y
-                desbloquea el logro del curso en tu perfil.
+                Al aprobar el examen final de un curso recibes su certificado con la nota, un código único y una página
+                pública de verificación. Se guarda en tu vitrina del panel para descargarlo en PDF siempre que quieras,
+                y desbloquea el logro del curso en tu perfil.
               </p>
               <ul className="cx-cert-lista">
                 <li><ShieldCheck size={16} aria-hidden="true" /> Código de verificación único</li>
-                <li><Award size={16} aria-hidden="true" /> Logro «{destacado.curso.logro}» en tu perfil</li>
+                <li><Award size={16} aria-hidden="true" /> El logro de cada curso, en tu perfil</li>
                 <li><GraduationCap size={16} aria-hidden="true" /> Tuyo para siempre, también si cambias de plan</li>
               </ul>
             </div>
@@ -346,39 +408,64 @@ export default async function CursosPage() {
               <Certificado
                 muestra
                 nombre="Tu nombre aquí"
-                curso={destacado.curso.titulo}
-                logro={destacado.curso.logro}
+                curso={muestra.curso.titulo}
+                logro={muestra.curso.logro}
                 notaFinal={8.75}
                 notaModulos={8.4}
                 notaExamen={9}
-                fecha={destacado.curso.updated_at}
+                fecha={muestra.curso.updated_at}
                 codigo="XXXXXXXXXX"
-                color={destacado.curso.color}
+                color={muestra.curso.color}
               />
             </div>
           </section>
 
-          {/* ── Cierre ── */}
-          <section className="cx-final">
-            <span className="cx-final-glow" aria-hidden="true" />
-            <span className="cx-pildora"><Crown size={13} aria-hidden="true" /> Incluido en Premium</span>
-            <h2 className="cx-final-titulo">
-              {sesion?.esPremium ? "Tu curso te está esperando" : "Todos los cursos, en una sola suscripción"}
-            </h2>
-            <p className="cx-p">
-              {sesion?.esPremium
-                ? "Ya lo tienes incluido: entra al aula y empieza por el primer módulo."
-                : "Sin compras sueltas: cada curso que se publique entra en la misma suscripción que el Diario de Trading y el Portfolio Adelin."}
-            </p>
-            {(() => {
-              const cta = ctaDe(destacado.curso.slug, sesion, estado);
-              return (
-                <Link href={cta.href} className="cx-btn cx-btn--grande">
-                  {cta.texto} <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
+          {/* ── Cierre de venta: solo para quien aún no tiene los cursos ── */}
+          {!sesion?.esPremium && (
+            <section className="cx-final" aria-labelledby="cx-final-titulo">
+              <span className="cx-final-glow" aria-hidden="true" />
+              <div className="cx-final-texto">
+                <span className="cx-pildora"><Crown size={13} aria-hidden="true" /> Un solo plan, todo incluido</span>
+                <h2 id="cx-final-titulo" className="cx-final-titulo">Todos los cursos, en una sola suscripción</h2>
+                <p className="cx-p">
+                  Sin compras sueltas: cada curso que se publique entra en la misma suscripción que el Diario de Trading
+                  y el Portfolio Adelin. Y tu precio queda fijado mientras la mantengas.
+                </p>
+                <ul className="cx-final-lista">
+                  {INCLUYE.map((t) => (
+                    <li key={t}><span className="cx-check" aria-hidden="true"><Check size={13} strokeWidth={3} /></span>{t}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="cx-final-precio">
+                <span className="cx-final-sello">Premium</span>
+                <div className="cx-final-importe">{PRECIO}<small>/mes</small></div>
+                <p className="cx-final-dia">Unos {PRECIO_DIA} al día · sin permanencia</p>
+                <Link href="/api/checkout" prefetch={false} className="cx-btn cx-btn--grande cx-final-btn">
+                  <Crown size={18} aria-hidden="true" /> {sesion ? "Hazme Premium" : "Empezar ahora"}
+                  <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
                 </Link>
-              );
-            })()}
-          </section>
+                <ul className="cx-confianza">
+                  <li><CreditCard size={14} aria-hidden="true" /> Pago seguro con Stripe</li>
+                  <li><Zap size={14} aria-hidden="true" /> Acceso inmediato</li>
+                  <li><ShieldCheck size={14} aria-hidden="true" /> Cancela cuando quieras</li>
+                </ul>
+                {!sesion && (
+                  <p className="cx-final-login">¿Ya tienes cuenta? <Link href="/login?next=/api/checkout">Inicia sesión</Link></p>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* ── Barra fija en el móvil, sin Premium: el precio y el botón siempre a mano ── */}
+          {!sesion?.esPremium && (
+            <div className="cx-barra-movil">
+              <span><strong>{PRECIO}</strong>/mes · todos los cursos</span>
+              <Link href="/api/checkout" prefetch={false} className="cx-btn">
+                Desbloquear <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+              </Link>
+            </div>
+          )}
         </main>
       )}
 

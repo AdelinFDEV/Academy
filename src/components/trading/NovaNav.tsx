@@ -50,25 +50,34 @@ const AVISADO = "nova-nav-avisado";
  * de al lado (por eso no entra en el orden del teclado: el enlace ya lo está).
  *
  * Al salir del Diario llega volando desde donde estaba (ver novaVuelo.tsx).
+ *
+ * BLOQUEADA (08-11-2026, pedido por el admin): quien no tiene el Diario
+ * —sin cuenta o sin Premium— también ve a Nova en la barra, pero no puede
+ * usarla: lleva un candado, no avisa de novedades (no tiene análisis) y al
+ * pasarle el ratón dice «Nos vemos en tu Diario de Trading». Pulsarla lleva a
+ * donde lleva el enlace de al lado para quien no tiene acceso: la ficha
+ * pública del Diario, que explica qué es y cómo conseguirlo.
  */
-export default function NovaNav({ href }: { href: string }) {
+export default function NovaNav({ href, bloqueada = false }: { href: string; bloqueada?: boolean }) {
   const pathname = usePathname();
   const enDiario = pathname === DIARIO || pathname.startsWith(DIARIO + "/");
   const theta = useMotionValue(0);
   const [hover, setHover] = useState(false);
   const [aviso, setAviso] = useState(false);
   const [vuelo, setVuelo] = useState<{ desde: CajaNova; hasta: CajaNova } | null>(null);
-  const novedades = useSyncExternalStore(suscribirNovedades, hayNovedades, () => false);
+  const conNovedades = useSyncExternalStore(suscribirNovedades, hayNovedades, () => false);
+  // Bloqueada no hay análisis que leer: ni punto rojo ni aviso.
+  const novedades = !bloqueada && conNovedades;
   const ref = useRef<HTMLAnchorElement>(null);
 
   // Fuera del Diario: si Nova acaba de salir de él, vuela hasta aquí.
   useEffect(() => {
-    if (enDiario) return;
+    if (enDiario || bloqueada) return;
     salirDelDiario();
     const desde = tomarSalida();
     const hasta = cajaDe(ref.current?.querySelector(".nh"));
     if (desde && hasta && !sinAnimaciones()) setVuelo({ desde, hasta });
-  }, [enDiario]);
+  }, [enDiario, bloqueada]);
 
   // Con novedades, avisa sola una vez por análisis: aparece el bocadillo y se va.
   useEffect(() => {
@@ -97,7 +106,7 @@ export default function NovaNav({ href }: { href: string }) {
 
   return (
     <span
-      className={`nova-dock${enDiario ? " is-fuera" : ""}${hover ? " is-encima" : ""}${novedades ? " con-novedades" : ""}`}
+      className={`nova-dock${enDiario ? " is-fuera" : ""}${hover ? " is-encima" : ""}${novedades ? " con-novedades" : ""}${bloqueada ? " is-bloqueada" : ""}`}
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => setHover(false)}
     >
@@ -109,7 +118,7 @@ export default function NovaNav({ href }: { href: string }) {
         data-nova-nav=""
         tabIndex={-1}
         aria-hidden="true"
-        title={`${BOT_NAME}, tu asistente del Diario de Trading`}
+        title={bloqueada ? `${BOT_NAME}, la asistente del Diario de Trading (Premium)` : `${BOT_NAME}, tu asistente del Diario de Trading`}
       >
         <span className="nova-nav-halo" />
         {!enDiario && (
@@ -124,6 +133,14 @@ export default function NovaNav({ href }: { href: string }) {
           />
         )}
         {novedades && !enDiario && <span className="nova-nav-ping" />}
+        {bloqueada && !enDiario && (
+          <span className="nova-nav-candado">
+            <svg viewBox="0 0 24 24" width="9" height="9" fill="none">
+              <path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+              <rect x="5" y="11" width="14" height="10" rx="2.6" fill="currentColor" />
+            </svg>
+          </span>
+        )}
       </Link>
 
       <AnimatePresence>
@@ -136,7 +153,13 @@ export default function NovaNav({ href }: { href: string }) {
             animate={{ opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 460, damping: 26 } }}
             exit={{ opacity: 0, y: -4, scale: 0.92, transition: { duration: 0.15 } }}
           >
-            {novedades ? (
+            {bloqueada ? (
+              <>
+                <b>¡Hola! Soy {BOT_NAME} 👋</b>
+                <span>Nos vemos en tu Diario de Trading</span>
+                <span className="nova-nav-bocadillo-premium">Incluida en Premium</span>
+              </>
+            ) : novedades ? (
               <>
                 <b>¡Tengo novedades! 👀</b>
                 <span>Tengo un análisis nuevo de tu diario</span>

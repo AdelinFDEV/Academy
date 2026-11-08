@@ -304,6 +304,37 @@
   color: #4a5675;
 }
 
+/* Bloqueada: para quien no tiene el Diario. Nova un poco apagada, con un
+   candado dorado, y en el bocadillo la etiqueta de Premium. */
+.nova-dock.is-bloqueada .nova-nav .nh { filter: saturate(0.55) brightness(0.92); transition: filter 0.25s ease; }
+.nova-dock.is-bloqueada.is-encima .nova-nav .nh { filter: none; }
+.nova-nav-candado {
+  position: absolute;
+  right: 1px;
+  bottom: 3px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border: 2px solid #0b1426;
+  border-radius: 50%;
+  background: #e6b455;
+  color: #1a1204;
+}
+.nova-nav-bocadillo .nova-nav-bocadillo-premium {
+  align-self: flex-start;
+  margin-top: 0.3rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: #e6b455;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #1a1204;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nova-nav-ping::after { animation: none; }
   .nova-nav-halo { transition: none; }

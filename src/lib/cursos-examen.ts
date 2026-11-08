@@ -263,11 +263,10 @@ async function emitirCertificado(sesion: Sesion, curso: CursoCompleto, notaExame
   const db = createAdminClient();
   const { data: existente } = await db
     .from("curso_certificados")
-    .select("codigo, nota_final")
+    .select("id, codigo")
     .eq("user_id", sesion.userId)
     .eq("curso_id", curso.curso.id)
     .maybeSingle();
-  if (existente) return { codigo: existente.codigo as string, notaFinal: Number(existente.nota_final) };
 
   // La nota de cada módulo es la del intento que lo aprobó.
   const { data: aprobados } = await db
@@ -285,6 +284,28 @@ async function emitirCertificado(sesion: Sesion, curso: CursoCompleto, notaExame
   }
   const notas = curso.modulos.map((m) => notaPorModulo.get(m.id) ?? 0);
   const { notaModulos, notaFinal } = notaCertificado(notas, notaExamen);
+
+  // Ya tenía certificado: está REHACIENDO el curso (api/cursos/rehacer). Se
+  // sobrescribe con la nota nueva —aunque sea más baja, decisión del admin del
+  // 08-11-2026— y se conserva el MISMO código, así que su página de
+  // verificación sigue valiendo. La fecha pasa a ser la del nuevo aprobado.
+  if (existente) {
+    const { error } = await db
+      .from("curso_certificados")
+      .update({
+        nota_final: notaFinal,
+        nota_modulos: notaModulos,
+        nota_examen: notaExamen,
+        nombre: sesion.nombre,
+        created_at: new Date().toISOString(),
+      })
+      .eq("id", existente.id);
+    if (error) {
+      console.error("[cursos] No se pudo actualizar el certificado:", error.message);
+      return null;
+    }
+    return { codigo: existente.codigo as string, notaFinal };
+  }
 
   const fila = {
     user_id: sesion.userId,

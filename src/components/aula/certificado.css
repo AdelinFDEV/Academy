@@ -17,7 +17,7 @@
   --cert-noche: #0b1a33;
   --cert-tinta: #121b2c;
   --cert-gris: #5e6676;
-  --cert-serif: "Fraunces", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --cert-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
   position: relative;
   padding: 0.9cqw;
   border-radius: 1.6cqw;
