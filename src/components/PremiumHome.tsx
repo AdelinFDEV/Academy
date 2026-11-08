@@ -1,124 +1,309 @@
 import Link from "next/link";
-import { ArrowRight, Crown, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowRight, ArrowUpRight, Award, BookOpenText, CalendarRange, Check, ChevronDown, Crown, LineChart, Lock,
+  Medal, ShieldCheck, Smile, Sparkles, Target, Zap,
+} from "lucide-react";
 import { detalleDe, herramienta } from "@/lib/herramientas";
+import type { CursoResumen } from "@/lib/cursos";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
+import { PREGUNTAS_FRECUENTES } from "@/lib/preguntas-frecuentes";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
+import { InstagramIcon } from "@/components/SocialLinks";
+import NovaMini from "@/components/NovaMini";
 import type { ResumenHero } from "@/components/HeroSlider";
+import "./premium-home.css";
 
 /**
- * La sección de Premium del home.
+ * El cierre de la portada: Premium, lo gratuito y las preguntas frecuentes.
  *
- * Rehecha el 04-11-2026: la anterior (31-10) tenía un párrafo de entrada, tres
- * puntos por tarjeta y otro párrafo junto al precio, y se leía como un folleto.
- * Esta se queda con lo que se ve de un golpe: un titular, tres tarjetas con su
- * icono animado, UNA cifra y una frase, y una barra con el precio y el botón.
- * Compactas, caben apiladas en el móvil, así que ya no hace falta carrusel.
+ * Rehecho de cero el 08-11-2026. Sustituye a la sección de tres tarjetas del
+ * 04-11 y absorbe el popup flotante de dudas (`DudasInstagram`), que se quitó
+ * de toda la web: sus preguntas viven ahora aquí, al final de la portada, con
+ * el enlace a Instagram para lo que no esté.
  *
- * Todo lo que dice existe y está comprobado en su código: las diez
- * estadísticas del diario, la rentabilidad real de la cartera (de
- * `resumenPortfolioPublico()`, la misma que el slider) y el certificado de los
- * cursos, que se anuncian como «próximamente» hasta que se publique el primero.
- * No se enseña a quien ya es Premium.
+ * Tres bloques:
+ *  1. Un bento con las tres piezas de pago y una franja con lo gratuito.
+ *  2. La oferta: precio, lo que entra y el botón. Solo para quien no es Premium.
+ *  3. Preguntas frecuentes y contacto. Para todos.
+ *
+ * Todo lo que dice es verdad y sale de su fuente:
+ *  · La rentabilidad de la cartera, de `resumenPortfolioPublico()` (la misma
+ *    del slider del hero). Sin importes: solo porcentajes.
+ *  · Cursos, lecciones y horas, de `cursosPublicados()` en Supabase.
+ *  · Las preguntas, de `preguntas-frecuentes.ts`, compartidas con /premium.
+ *  · El panel del Diario es un dibujo y lo dice («Ejemplo»): no son datos de
+ *    nadie.
+ * Ni reseñas ni contadores de usuarios: se quitaron de /premium el 06-11-2026
+ * por inventados, y no vuelven por aquí.
  */
 
-type Pieza = {
-  id: "diario" | "portfolio" | "cursos";
-  Icono: (p: { size?: number }) => React.ReactNode;
-  titulo: string;
-  frase: string;
-  cifra: string;
-  cifraTexto: string;
-};
+const PRECIO = precioEur(PREMIUM_PRICE_EUR);
+const PRECIO_DIA = precioEur(Math.round((PREMIUM_PRICE_EUR / 30) * 100) / 100);
 
-function piezas(portfolio: ResumenHero): Pieza[] {
-  const pct = portfolio
-    ? `${portfolio.rentabilidadPct >= 0 ? "+" : ""}${portfolio.rentabilidadPct.toFixed(1).replace(".", ",")} %`
-    : null;
-  return [
-    {
-      id: "diario",
-      Icono: IconoDiario,
-      titulo: "Diario de Trading",
-      frase: "Cada operación, registrada y medida.",
-      cifra: "10",
-      cifraTexto: "estadísticas automáticas",
-    },
-    {
-      id: "portfolio",
-      Icono: IconoPortfolio,
-      titulo: "Portfolio Adelin",
-      frase: "Mis compras reales, al momento.",
-      cifra: pct ?? "En vivo",
-      cifraTexto: pct ? "rentabilidad real de la cartera" : "precio de entrada y rentabilidad",
-    },
-    {
-      id: "cursos",
-      Icono: IconoCursos,
-      titulo: "Cursos",
-      frase: "Por módulos, a tu ritmo.",
-      cifra: "Certificado",
-      cifraTexto: "al aprobar el examen final",
-    },
-  ];
+const pct = (n: number) => `${n >= 0 ? "+" : ""}${n.toFixed(1).replace(".", ",")} %`;
+
+/** Lo que se queda gratis para siempre, con cuenta o sin ella. */
+const GRATIS = [
+  { href: "/guias", Icono: BookOpenText, titulo: "Guías interactivas", texto: "Con quiz y logro" },
+  { href: "/glosario", Icono: Sparkles, titulo: "Diccionario cripto", texto: "Cada término, explicado" },
+  { href: "/calculadora", Icono: Target, titulo: "Predicción de Precio", texto: "Market cap objetivo" },
+  { href: "/logros", Icono: Medal, titulo: "Logros y rachas", texto: "Con cuenta gratuita" },
+];
+
+const INCLUYE = [
+  "Diario de Trading con Nova",
+  "Portfolio Adelin: spot y DCA de bitcoin",
+  "Todos los cursos, con examen y certificado",
+  "Insignia de Miembro Fundador",
+  "Todo lo que se añada, sin pagar más",
+];
+
+interface Props {
+  portfolio: ResumenHero;
+  cursos: CursoResumen[];
+  isPremium: boolean;
 }
 
-export default function PremiumHome({ portfolio }: { portfolio: ResumenHero }) {
+export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
+  const diario = herramienta("diario");
+  const cartera = herramienta("portfolio");
+  const aula = herramienta("cursos");
+  // Quien ya es Premium va a la herramienta; el resto, a su ficha pública.
+  const destino = (h: typeof diario) => (isPremium && h.premiumHref ? h.premiumHref : detalleDe(h));
+
+  const lecciones = cursos.reduce((t, c) => t + c.lecciones, 0);
+  const minutos = cursos.reduce((t, c) => t + c.minutos, 0);
+  const preguntas = PREGUNTAS_FRECUENTES.filter((p) => p.portada);
+
   return (
-    <section className="ph" aria-labelledby="ph-titulo">
-      <div className="ph-inner">
-        <header className="ph-cabecera">
-          <span className="ph-sello"><Crown size={14} aria-hidden="true" /> Premium</span>
-          <h2 id="ph-titulo" className="ph-titulo">
-            Una suscripción. <span>Tres piezas.</span>
+    <section className="pf" aria-labelledby="pf-titulo">
+      <div className="pf-fondo" aria-hidden="true">
+        <span className="pf-rejilla" />
+        <span className="pf-luz pf-luz--oro" />
+        <span className="pf-luz pf-luz--azul" />
+      </div>
+
+      <div className="pf-inner">
+        <header className="pf-cabecera">
+          <span className="pf-sello"><Crown size={13} aria-hidden="true" /> AdelinBTC Premium</span>
+          <h2 id="pf-titulo" className="pf-titulo">
+            Opera con método.
+            <span>Aprende con certificado.</span>
           </h2>
+          <p className="pf-lead">
+            Tu diario con una asistente que te avisa de lo que se te escapa, mi cartera real en directo y cursos con
+            examen. Una suscripción, las tres piezas.
+          </p>
         </header>
 
-        <ul className="ph-piezas">
-          {piezas(portfolio).map((p) => {
-            const h = herramienta(p.id);
-            const pronto = h.acceso === "proximamente";
-            return (
-              <li key={p.id} style={{ "--c": h.color } as React.CSSProperties}>
-                {/* Toda la tarjeta lleva a la ficha pública de la pieza. */}
-                <Link href={detalleDe(h)} className="ph-pieza">
-                  <span className="ph-pieza-cab">
-                    <span className="ph-pieza-icono" aria-hidden="true"><p.Icono size={26} /></span>
-                    {pronto && <span className="ph-pronto">Próximamente</span>}
-                  </span>
+        {/* ── 1 · El bento ───────────────────────────────────────────────── */}
+        <div className="pf-bento">
+          {/* Diario: la pieza grande */}
+          <Link href={destino(diario)} className="pf-celda pf-celda--diario" style={{ "--c": diario.color } as React.CSSProperties}>
+            <span className="pf-celda-cab">
+              <span className="pf-icono" aria-hidden="true"><IconoDiario size={22} /></span>
+              <span className="pf-kicker">Diario de Trading</span>
+              <ArrowUpRight className="pf-ir" size={18} aria-hidden="true" />
+            </span>
+            <span className="pf-celda-titulo">Deja de operar de memoria</span>
+            <span className="pf-celda-texto">
+              Apuntas cada operación en un minuto y el diario hace las cuentas. Nova lee tus datos y te avisa.
+            </span>
 
-                  <span className="ph-cifra">{p.cifra}</span>
-                  <span className="ph-cifra-texto">{p.cifraTexto}</span>
+            {/* Un dibujo del panel, no datos reales: lo dice la etiqueta. */}
+            <span className="pf-panel" aria-hidden="true">
+              <span className="pf-panel-cab">
+                <span className="pf-puntos"><i /><i /><i /></span>
+                <span className="pf-ejemplo">Ejemplo</span>
+              </span>
+              <span className="pf-kpis">
+                <span><small>Win rate</small><strong>58 %</strong></span>
+                <span><small>Ratio R</small><strong>1,8</strong></span>
+                <span><small>P&amp;L</small><strong className="is-verde">+12,4 %</strong></span>
+                <span><small>Pulso Nova</small><strong>82</strong></span>
+              </span>
+              <svg className="pf-curva" viewBox="0 0 320 90" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="pf-relleno" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="#ff9a4d" stopOpacity=".38" />
+                    <stop offset="1" stopColor="#ff9a4d" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path d="M0 78 L28 72 L56 75 L84 62 L112 66 L140 52 L168 56 L196 41 L224 45 L252 30 L280 33 L320 14 L320 90 L0 90 Z" fill="url(#pf-relleno)" />
+                <path className="pf-curva-linea" d="M0 78 L28 72 L56 75 L84 62 L112 66 L140 52 L168 56 L196 41 L224 45 L252 30 L280 33 L320 14" pathLength={1} fill="none" stroke="#ff9a4d" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round" />
+              </svg>
+              <span className="pf-nova">
+                <NovaMini size={30} />
+                <span><strong>Nova</strong> · Cierras las ganadoras antes de tiempo: te quedas con el 45 % del objetivo.</span>
+              </span>
+            </span>
 
-                  <span className="ph-pieza-pie">
-                    <span>
-                      <strong className="ph-pieza-titulo">{p.titulo}</strong>
-                      <span className="ph-pieza-frase">{p.frase}</span>
+            <span className="pf-chips">
+              <span><LineChart size={13} aria-hidden="true" /> 10 estadísticas</span>
+              <span><CalendarRange size={13} aria-hidden="true" /> Calendario</span>
+              <span><Smile size={13} aria-hidden="true" /> Emociones</span>
+              <span><Lock size={13} aria-hidden="true" /> Privado</span>
+            </span>
+          </Link>
+
+          {/* Portfolio: la cifra real */}
+          <Link href={destino(cartera)} className="pf-celda pf-celda--cartera" style={{ "--c": cartera.color } as React.CSSProperties}>
+            <span className="pf-celda-cab">
+              <span className="pf-icono" aria-hidden="true"><IconoPortfolio size={22} /></span>
+              <span className="pf-kicker">Portfolio Adelin</span>
+              <span className="pf-directo"><span className="pf-directo-punto" aria-hidden="true" /> En directo</span>
+            </span>
+
+            {portfolio ? (
+              <>
+                <span className="pf-cifra">{pct(portfolio.rentabilidadPct)}</span>
+                <span className="pf-cifra-texto">
+                  rentabilidad real de la cartera spot
+                  {portfolio.desdeAnio ? `, desde ${portfolio.desdeAnio}` : ""}
+                </span>
+                <span className="pf-datos">
+                  <span><strong>{portfolio.posiciones}</strong> posiciones</span>
+                  {portfolio.dca && (
+                    <span><strong>{pct(portfolio.dca.rentabilidadPct)}</strong> DCA de bitcoin</span>
+                  )}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="pf-cifra">En vivo</span>
+                <span className="pf-cifra-texto">precio de entrada y rentabilidad de cada compra</span>
+              </>
+            )}
+
+            <span className="pf-celda-pie">
+              <span>Mis compras reales, también las que pierden.</span>
+              <ArrowUpRight className="pf-ir" size={18} aria-hidden="true" />
+            </span>
+          </Link>
+
+          {/* Cursos: lo publicado, de Supabase */}
+          <Link href={destino(aula)} className="pf-celda pf-celda--cursos" style={{ "--c": aula.color } as React.CSSProperties}>
+            <span className="pf-celda-cab">
+              <span className="pf-icono" aria-hidden="true"><IconoCursos size={22} /></span>
+              <span className="pf-kicker">Cursos</span>
+              <span className="pf-sello-cert"><Award size={13} aria-hidden="true" /> Certificado</span>
+            </span>
+
+            {cursos.length > 0 ? (
+              <>
+                <span className="pf-cifras">
+                  <span><strong>{cursos.length}</strong><small>{cursos.length === 1 ? "curso" : "cursos"}</small></span>
+                  <span><strong>{lecciones}</strong><small>lecciones</small></span>
+                  <span><strong>{minutos >= 60 ? `${Math.round(minutos / 60)} h` : `${minutos} min`}</strong><small>de contenido</small></span>
+                </span>
+                <span className="pf-lista-cursos">
+                  {cursos.slice(0, 3).map((c) => (
+                    <span key={c.slug} style={{ "--cc": c.color } as React.CSSProperties}>
+                      <i aria-hidden="true" /> {c.titulo}
                     </span>
-                    <span className="ph-pieza-flecha" aria-hidden="true">
-                      <ArrowRight size={16} strokeWidth={2.4} />
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                  ))}
+                </span>
+              </>
+            ) : (
+              <span className="pf-cifra-texto">Por módulos, con examen en cada uno y certificado al aprobar el final.</span>
+            )}
 
-        <div className="ph-barra">
-          <p className="ph-incluye">
-            <Sparkles size={16} aria-hidden="true" />
-            <span><strong>Todo lo que añada, incluido.</strong> Herramientas y cursos nuevos, sin pagar más.</span>
-          </p>
+            <span className="pf-celda-pie">
+              <span>Examen por módulo y certificado verificable.</span>
+              <ArrowUpRight className="pf-ir" size={18} aria-hidden="true" />
+            </span>
+          </Link>
 
-          <div className="ph-compra">
-            <p className="ph-precio">49,99 €<small>/mes</small></p>
-            <div className="ph-compra-accion">
-              <Link href="/premium" className="ph-cta">
-                Hazte Premium <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />
-              </Link>
-              <p className="ph-garantia">
-                <ShieldCheck size={13} aria-hidden="true" /> Sin permanencia · Cancela cuando quieras
+          {/* Lo gratuito, para siempre */}
+          <div className="pf-celda pf-celda--gratis">
+            <p className="pf-gratis-cab">
+              <span className="pf-gratis-sello">Gratis</span>
+              <span>Y esto, para todo el mundo. Sin tarjeta.</span>
+            </p>
+            <ul className="pf-gratis">
+              {GRATIS.map(({ href, Icono, titulo, texto }) => (
+                <li key={href}>
+                  <Link href={href} className="pf-gratis-item">
+                    <span className="pf-gratis-icono" aria-hidden="true"><Icono size={17} /></span>
+                    <span><strong>{titulo}</strong><small>{texto}</small></span>
+                    <ArrowRight className="pf-gratis-flecha" size={15} aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* ── 2 · La oferta ──────────────────────────────────────────────── */}
+        {!isPremium && (
+          <div className="pf-oferta">
+            <span className="pf-oferta-borde" aria-hidden="true" />
+            <div className="pf-oferta-precio">
+              <span className="pf-oferta-plan"><Crown size={15} aria-hidden="true" /> Premium</span>
+              <p className="pf-precio">
+                {PRECIO}<small>/mes</small>
               </p>
+              <p className="pf-precio-dia">Unos {PRECIO_DIA} al día · el precio se te queda fijado</p>
             </div>
+
+            <ul className="pf-incluye">
+              {INCLUYE.map((t) => (
+                <li key={t}><span className="pf-check" aria-hidden="true"><Check size={13} strokeWidth={3} /></span> {t}</li>
+              ))}
+            </ul>
+
+            <div className="pf-oferta-accion">
+              <Link href="/premium" className="pf-cta">
+                Hazte Premium <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
+              </Link>
+              <ul className="pf-garantias">
+                <li><Lock size={13} aria-hidden="true" /> Pago seguro con Stripe</li>
+                <li><Zap size={13} aria-hidden="true" /> Acceso inmediato</li>
+                <li><ShieldCheck size={13} aria-hidden="true" /> Sin permanencia</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* ── 3 · Preguntas frecuentes y contacto ───────────────────────── */}
+        <div className="pf-faq" id="preguntas">
+          <div className="pf-faq-lado">
+            <span className="pf-kicker pf-kicker--oro">Dudas</span>
+            <h3 className="pf-faq-titulo">Lo que más me preguntan</h3>
+            <p className="pf-faq-texto">
+              Si la tuya no está, escríbeme. Te contesto yo, de tú a tú.
+            </p>
+
+            <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" className="pf-contacto">
+              <span className="pf-contacto-avatar" aria-hidden="true">
+                A<span className="pf-contacto-online" />
+              </span>
+              <span className="pf-contacto-texto">
+                <strong>Escríbeme por Instagram</strong>
+                <small>@adelinbtc · mensaje directo</small>
+              </span>
+              <span className="pf-contacto-ig" aria-hidden="true"><InstagramIcon size={17} /></span>
+            </a>
+
+            {!isPremium && (
+              <Link href="/premium" className="pf-faq-mas">
+                Todas las preguntas en Premium <ArrowRight size={14} aria-hidden="true" />
+              </Link>
+            )}
+          </div>
+
+          <div className="pf-faq-lista">
+            {preguntas.map((p, i) => (
+              <details key={p.q} className="pf-pregunta" open={i === 0}>
+                <summary>
+                  <span className="pf-pregunta-num" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="pf-pregunta-q">{p.q}</span>
+                  <span className="pf-pregunta-icono" aria-hidden="true"><ChevronDown size={16} /></span>
+                </summary>
+                <p>{p.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </div>

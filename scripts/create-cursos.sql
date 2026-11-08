@@ -358,3 +358,9 @@ begin
 end $$;
 alter table public.cursos add constraint cursos_aviso_check
   check (aviso in ('general', 'fiscal', 'portfolio', 'directo', 'diario', 'formacion'));
+
+-- 08-11-2026: fuera la variante de aviso «directo». Era la del Trading en Directo,
+-- retirado el 31-10-2026; DisclaimerRiesgo.tsx ya no la tiene y ningún curso la usa.
+alter table public.cursos drop constraint if exists cursos_aviso_check;
+alter table public.cursos add constraint cursos_aviso_check
+  check (aviso in ('general', 'fiscal', 'portfolio', 'diario', 'formacion'));

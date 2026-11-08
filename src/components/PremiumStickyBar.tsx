@@ -9,10 +9,6 @@ import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
  * La barra de compra de /premium, fija abajo. Aparece cuando el hero (y su
  * botón) sale de la vista, y se va al volver arriba.
  *
- * Mientras está en pantalla lleva `.pr-barra.is-visible`: con eso, en móvil,
- * el botón de dudas (`DudasInstagram`) sube por encima de ella en vez de
- * tapar «Empezar ahora» (regla en `src/app/premium/premium.css`).
- *
  * Rehecha el 06-11-2026 sin framer-motion: una transición de CSS hace lo
  * mismo y no carga una librería por una barra.
  */

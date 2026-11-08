@@ -64,7 +64,7 @@ export default async function TerminoVideo() {
         </h2>
 
         <p className="tvid-sub">
-          Análisis, operativa en directo y lo que se mueve en el mercado,
+          Análisis, operativa y lo que se mueve en el mercado,
           explicado sin humo.
         </p>
 

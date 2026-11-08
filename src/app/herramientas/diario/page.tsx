@@ -15,6 +15,7 @@ import { ANIMOS } from "@/components/trading/tjDias";
 import { VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import NovaSaludo from "./NovaSaludo";
+import NovaMini from "@/components/NovaMini";
 import "../ficha.css";
 import "./diario.css";
 
@@ -100,10 +101,10 @@ const NOVA_PUNTOS = [
 ];
 
 /** Cómo funciona, en el orden en que pasa. */
-const PASOS = [
+const PASOS: { icon: typeof Sparkles; nova?: boolean; title: string; text: string }[] = [
   { icon: NotebookPen, title: "Apuntas la operación", text: "Par, dirección, riesgo, resultado, por qué entraste y cómo te sentías. Un minuto." },
   { icon: BarChart3, title: "El diario hace las cuentas", text: "Diez estadísticas, tu curva de capital y tu riesgo, al día con cada operación." },
-  { icon: Sparkles, title: "Nova te lo cuenta", text: "Lo que va bien, lo que se tuerce y qué hacer, en frases cortas." },
+  { icon: Sparkles, nova: true, title: "Nova te lo cuenta", text: "Lo que va bien, lo que se tuerce y qué hacer, en frases cortas." },
 ];
 
 /** Las diez métricas reales del panel, con lo que dicen en una línea. */
@@ -322,7 +323,7 @@ export default async function FichaDiarioPage() {
         {/* ── Nova ── */}
         <section className="fh-bloque dj-nova">
           <div className="dj-nova-texto">
-            <span className="dj-kicker"><Sparkles size={14} aria-hidden="true" /> Tu asistente de trading</span>
+            <span className="dj-kicker"><NovaMini size={22} /> Tu asistente de trading</span>
             <h2 className="fh-h2">Nova lee tu diario y te dice lo que importa</h2>
             <p className="dj-p">
               Un diario lleno de números no sirve si nadie los lee. Nova los lee por ti cada vez que apuntas algo, y
@@ -519,7 +520,9 @@ export default async function FichaDiarioPage() {
               return (
                 <article key={d.title} className="fh-paso">
                   <span className="fh-paso-num" aria-hidden="true">{i + 1}</span>
-                  <span className="fh-paso-icono" aria-hidden="true"><Icon size={20} strokeWidth={1.9} /></span>
+                  <span className="fh-paso-icono" aria-hidden="true">
+                    {d.nova ? <NovaMini size={30} /> : <Icon size={20} strokeWidth={1.9} />}
+                  </span>
                   <h3>{d.title}</h3>
                   <p>{d.text}</p>
                 </article>

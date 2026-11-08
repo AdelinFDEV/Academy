@@ -10,6 +10,7 @@ import HeroVideo from "@/components/HeroVideo";
 import HeroSlider, { type ResumenHero } from "@/components/HeroSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
 import { resumenPortfolioPublico } from "@/lib/portfolio-publico";
+import { cursosPublicados } from "@/lib/cursos";
 import "./home.css";
 
 /**
@@ -33,9 +34,10 @@ export default async function HomePage() {
   // La cartera pública no depende de quién mire: se pide A LA VEZ que la
   // sesión, no después (antes eran tres esperas en fila: sesión, perfil y
   // cartera). La cartera tiene su propia caché; aquí solo se deja de esperar.
-  const [{ data: { user } }, resumenCompleto] = await Promise.all([
+  const [{ data: { user } }, resumenCompleto, cursos] = await Promise.all([
     supabase.auth.getUser(),
     resumenPortfolioPublico(),
+    cursosPublicados(),
   ]);
 
   const profileRes = user
@@ -133,9 +135,10 @@ export default async function HomePage() {
 
       </div>
 
-      {/* ── Premium: una sola sección para todos los anchos, y solo para quien
-          aún no lo es ── */}
-      {!isPremium && <PremiumHome portfolio={resumenPortfolio} />}
+      {/* ── Cierre: Premium, lo gratuito y las preguntas frecuentes. Para
+          todos: a quien ya es Premium no se le enseña la oferta, pero sí las
+          piezas (que le llevan a sus herramientas) y las dudas. ── */}
+      <PremiumHome portfolio={resumenPortfolio} cursos={cursos} isPremium={isPremium} />
 
       <Footer />
     </div>

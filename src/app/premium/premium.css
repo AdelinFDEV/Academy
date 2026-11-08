@@ -230,8 +230,8 @@
   border-radius: 18px;
   background: rgba(10, 18, 36, 0.7);
 }
-.pm-franja span { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.88rem; font-weight: 600; color: rgba(240, 244, 255, 0.82); }
-.pm-franja svg { color: var(--pr-oro); }
+.pm-franja > span { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.88rem; font-weight: 600; color: rgba(240, 244, 255, 0.82); }
+.pm-franja > span > svg { color: var(--pr-oro); }
 
 /* ── Las tres piezas ── */
 .pm-pieza {
@@ -625,14 +625,6 @@
   font-weight: 800;
   text-decoration: none;
   color: #1a1306;
-}
-
-/* El botón de dudas (DudasInstagram) va fijo abajo a la derecha: con la
-   barra en pantalla, sube por encima para no tapar «Empezar ahora». La
-   misma solución que en las fichas (`herramientas/ficha.css`). */
-body:has(.pr-barra.is-visible) .dudas {
-  bottom: calc(5.8rem + env(safe-area-inset-bottom, 0px));
-  transition: bottom 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (max-width: 600px) {

@@ -1,0 +1,1190 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   CIERRE DE LA PORTADA (PremiumHome.tsx)
+   ══════════════════════════════════════════════════════════════════════════
+
+   Rehecho de cero el 08-11-2026: un bento con las tres piezas de pago y lo
+   gratuito, la oferta con un borde de luz que gira y las preguntas
+   frecuentes (antes en el popup flotante `DudasInstagram`, retirado).
+
+   Cada celda lleva el color de su pieza del catálogo en `--c`; el oro es el
+   color de Premium en toda la web. Todo con prefijo `pf-`. */
+
+.pf {
+  position: relative;
+  isolation: isolate;
+  padding: 5rem 1.25rem 5.5rem;
+  overflow: hidden;
+}
+
+.pf-inner {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+/* ── Fondo: rejilla que se desvanece y dos luces ─────────────────────────── */
+
+.pf-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.pf-rejilla {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 55% at 50% 30%, #000 20%, transparent 75%);
+}
+
+.pf-luz {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+.pf-luz--oro {
+  top: 2%;
+  left: 50%;
+  width: 640px;
+  height: 320px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(230, 180, 85, 0.32), transparent);
+}
+
+.pf-luz--azul {
+  bottom: 18%;
+  right: -8%;
+  width: 520px;
+  height: 420px;
+  background: radial-gradient(closest-side, rgba(79, 157, 255, 0.18), transparent);
+}
+
+/* ── Cabecera ─────────────────────────────────────────────────────────────── */
+
+.pf-cabecera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  max-width: 760px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.pf-sello {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.95rem;
+  border: 1px solid rgba(230, 180, 85, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(230, 180, 85, 0.14), rgba(230, 180, 85, 0.04));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #f6d58e;
+}
+
+.pf-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+
+.pf-titulo span {
+  display: block;
+  background: linear-gradient(100deg, #f6d58e 0%, #e6b455 45%, #ff9a4d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pf-lead {
+  max-width: 600px;
+  margin: 0;
+  font-size: clamp(0.98rem, 1.6vw, 1.08rem);
+  line-height: 1.65;
+  color: rgba(226, 232, 240, 0.68);
+}
+
+/* ── 1 · Bento ────────────────────────────────────────────────────────────── */
+
+.pf-bento {
+  display: grid;
+  gap: 1rem;
+}
+
+.pf-celda {
+  --c: #e6b455;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
+  padding: 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--c) 13%, transparent), transparent 55%),
+    linear-gradient(180deg, rgba(20, 27, 48, 0.85), rgba(10, 15, 30, 0.92));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 50px -30px rgba(0, 0, 0, 0.8);
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Un brillo que sigue el borde de arriba */
+.pf-celda::before {
+  content: "";
+  position: absolute;
+  inset: 0 18% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--c) 70%, #fff), transparent);
+  opacity: 0.55;
+}
+
+a.pf-celda:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--c) 45%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 30px 60px -30px color-mix(in srgb, var(--c) 45%, transparent);
+}
+
+a.pf-celda:focus-visible {
+  outline: 2px solid var(--c);
+  outline-offset: 3px;
+}
+
+.pf-celda-cab {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pf-icono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--c) 95%, #fff), color-mix(in srgb, var(--c) 70%, #000));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 8px 22px -6px color-mix(in srgb, var(--c) 70%, transparent);
+  color: #0b1020;
+}
+
+.pf-kicker {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--c, #e6b455) 80%, #fff);
+}
+
+.pf-kicker--oro {
+  --c: #e6b455;
+}
+
+.pf-ir {
+  margin-left: auto;
+  flex: none;
+  color: rgba(255, 255, 255, 0.4);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+a.pf-celda:hover .pf-ir {
+  transform: translate(2px, -2px);
+  color: var(--c);
+}
+
+.pf-celda-titulo {
+  margin-top: 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.pf-celda-texto {
+  max-width: 460px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 240, 0.62);
+}
+
+.pf-celda-pie {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  font-size: 0.88rem;
+  color: rgba(226, 232, 240, 0.6);
+}
+
+/* Diario: el panel dibujado */
+
+.pf-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 0.6rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(6, 10, 22, 0.7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.pf-panel-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pf-puntos {
+  display: flex;
+  gap: 5px;
+}
+
+.pf-puntos i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.pf-ejemplo {
+  padding: 0.18rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 240, 0.45);
+}
+
+.pf-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.pf-kpis > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.pf-kpis small {
+  font-size: 0.68rem;
+  color: rgba(226, 232, 240, 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf-kpis strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-kpis .is-verde {
+  color: #34d399;
+}
+
+.pf-curva {
+  display: block;
+  width: 100%;
+  height: 92px;
+}
+
+.pf-curva-linea {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: pf-trazo 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards;
+}
+
+@keyframes pf-trazo {
+  to { stroke-dashoffset: 0; }
+}
+
+.pf-nova {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.8rem 0.55rem 0.6rem;
+  border: 1px solid rgba(255, 154, 77, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 154, 77, 0.07);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(255, 228, 205, 0.85);
+}
+
+.pf-nova strong {
+  color: #fff;
+}
+
+.pf-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 0.6rem;
+}
+
+.pf-chips > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.pf-chips svg {
+  color: var(--c);
+}
+
+/* Portfolio: la cifra */
+
+.pf-directo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.08);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #6ee7b7;
+  white-space: nowrap;
+}
+
+.pf-directo-punto {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+}
+
+.pf-directo-punto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #34d399;
+  animation: pf-latido 1.8s ease-out infinite;
+}
+
+@keyframes pf-latido {
+  to { transform: scale(2.8); opacity: 0; }
+}
+
+.pf-cifra {
+  margin-top: 0.8rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  background: linear-gradient(180deg, #fff 10%, color-mix(in srgb, var(--c) 75%, #fff));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-cifra-texto {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(226, 232, 240, 0.6);
+}
+
+.pf-datos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.3rem;
+}
+
+.pf-datos > span {
+  padding: 0.4rem 0.7rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.8rem;
+  color: rgba(226, 232, 240, 0.65);
+}
+
+.pf-datos strong {
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cursos */
+
+.pf-sello-cert {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid rgba(230, 180, 85, 0.32);
+  border-radius: 999px;
+  background: rgba(230, 180, 85, 0.08);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #f6d58e;
+  white-space: nowrap;
+}
+
+.pf-cifras {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.pf-cifras > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.pf-cifras strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-cifras small {
+  font-size: 0.78rem;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.pf-lista-cursos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.pf-lista-cursos > span {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.85);
+}
+
+.pf-lista-cursos i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--cc);
+  box-shadow: 0 0 10px var(--cc);
+}
+
+/* Gratis */
+
+.pf-celda--gratis {
+  --c: #34d399;
+  gap: 1rem;
+}
+
+.pf-gratis-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.85);
+}
+
+.pf-gratis-sello {
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.14);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6ee7b7;
+}
+
+.pf-gratis {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-gratis-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.pf-gratis-item:hover {
+  border-color: rgba(52, 211, 153, 0.3);
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.pf-gratis-item:focus-visible {
+  outline: 2px solid #34d399;
+  outline-offset: 2px;
+}
+
+.pf-gratis-icono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(52, 211, 153, 0.12);
+  color: #6ee7b7;
+}
+
+.pf-gratis-item > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pf-gratis-item strong {
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.pf-gratis-item small {
+  font-size: 0.78rem;
+  color: rgba(226, 232, 240, 0.5);
+}
+
+.pf-gratis-flecha {
+  margin-left: auto;
+  flex: none;
+  color: rgba(255, 255, 255, 0.3);
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.pf-gratis-item:hover .pf-gratis-flecha {
+  transform: translateX(3px);
+  color: #6ee7b7;
+}
+
+/* ── 2 · Oferta ───────────────────────────────────────────────────────────── */
+
+.pf-oferta {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 1.6rem;
+  margin-top: 1.25rem;
+  padding: 2rem 1.6rem;
+  border-radius: 28px;
+  background:
+    radial-gradient(90% 120% at 0% 0%, rgba(230, 180, 85, 0.16), transparent 55%),
+    linear-gradient(180deg, rgba(24, 28, 46, 0.95), rgba(12, 15, 28, 0.97));
+  box-shadow: 0 40px 80px -40px rgba(230, 180, 85, 0.35);
+}
+
+/* El borde de luz: un degradado cónico que gira, recortado a 1,5 px. */
+.pf-oferta-borde {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--pf-giro, 0deg), rgba(230, 180, 85, 0.15), #f6d58e, #ff9a4d, rgba(230, 180, 85, 0.15) 40%, rgba(230, 180, 85, 0.15));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: pf-giro 7s linear infinite;
+}
+
+@property --pf-giro {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes pf-giro {
+  to { --pf-giro: 360deg; }
+}
+
+.pf-oferta-plan {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f6d58e;
+}
+
+.pf-precio {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 5.5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-precio small {
+  margin-left: 0.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.pf-precio-dia {
+  margin: 0.55rem 0 0;
+  font-size: 0.85rem;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.pf-incluye {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-incluye li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.93rem;
+  color: rgba(241, 245, 249, 0.88);
+}
+
+.pf-check {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #f6d58e, #e6b455);
+  color: #1a1306;
+}
+
+.pf-oferta-accion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.pf-cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 1.05rem 1.6rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f6d58e 0%, #e6b455 55%, #d99a3c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 14px 34px -10px rgba(230, 180, 85, 0.6);
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: #1a1306;
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Un destello que cruza el botón cada pocos segundos */
+.pf-cta::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  animation: pf-destello 4.5s ease-in-out 1.5s infinite;
+}
+
+@keyframes pf-destello {
+  0%, 70% { left: -60%; }
+  100% { left: 130%; }
+}
+
+.pf-cta:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 20px 44px -10px rgba(230, 180, 85, 0.75);
+}
+
+.pf-cta:focus-visible {
+  outline: 2px solid #f6d58e;
+  outline-offset: 3px;
+}
+
+.pf-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.pf-cta:hover svg {
+  transform: translateX(3px);
+}
+
+.pf-garantias {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pf-garantias li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: rgba(226, 232, 240, 0.55);
+}
+
+.pf-garantias svg {
+  color: #e6b455;
+}
+
+/* ── 3 · Preguntas frecuentes ─────────────────────────────────────────────── */
+
+.pf-faq {
+  display: grid;
+  gap: 2rem;
+  margin-top: 4.5rem;
+  scroll-margin-top: 6rem;
+}
+
+.pf-faq-lado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.pf-faq-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.pf-faq-texto {
+  max-width: 360px;
+  margin: 0;
+  font-size: 0.97rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 240, 0.62);
+}
+
+.pf-contacto {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 380px;
+  margin-top: 0.6rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(24, 30, 52, 0.9), rgba(13, 18, 34, 0.9));
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pf-contacto:hover {
+  transform: translateY(-2px);
+  border-color: rgba(221, 42, 123, 0.45);
+  box-shadow: 0 18px 40px -20px rgba(221, 42, 123, 0.55);
+}
+
+.pf-contacto:focus-visible {
+  outline: 2px solid #dd2a7b;
+  outline-offset: 3px;
+}
+
+.pf-contacto-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ff9a00, #ff6b2b);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.pf-contacto-online {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 13px;
+  height: 13px;
+  border: 2.5px solid #0f1528;
+  border-radius: 50%;
+  background: #34d399;
+}
+
+.pf-contacto-texto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pf-contacto-texto strong {
+  font-size: 0.95rem;
+  color: #fff;
+}
+
+.pf-contacto-texto small {
+  font-size: 0.8rem;
+  color: rgba(226, 232, 240, 0.5);
+}
+
+/* El degradado de Instagram, solo en su icono: donde se reconoce. */
+.pf-contacto-ig {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  margin-left: auto;
+  border-radius: 12px;
+  background: linear-gradient(45deg, #f58529, #dd2a7b 50%, #8134af);
+  color: #fff;
+}
+
+.pf-faq-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #f6d58e;
+  text-decoration: none;
+}
+
+.pf-faq-mas:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pf-faq-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pf-pregunta {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+  background: rgba(15, 21, 40, 0.6);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.pf-pregunta[open] {
+  border-color: rgba(230, 180, 85, 0.3);
+  background: linear-gradient(180deg, rgba(230, 180, 85, 0.06), rgba(15, 21, 40, 0.75));
+}
+
+.pf-pregunta summary {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.05rem 1.15rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.pf-pregunta summary::-webkit-details-marker {
+  display: none;
+}
+
+.pf-pregunta summary:focus-visible {
+  outline: 2px solid #e6b455;
+  outline-offset: -2px;
+  border-radius: 18px;
+}
+
+.pf-pregunta-num {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: rgba(230, 180, 85, 0.55);
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-pregunta-q {
+  flex: 1;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pf-pregunta-icono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(226, 232, 240, 0.7);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, color 0.3s ease;
+}
+
+.pf-pregunta[open] .pf-pregunta-icono {
+  transform: rotate(180deg);
+  background: rgba(230, 180, 85, 0.16);
+  color: #f6d58e;
+}
+
+.pf-pregunta p {
+  margin: 0;
+  padding: 0 1.15rem 1.15rem 3.05rem;
+  font-size: 0.93rem;
+  line-height: 1.65;
+  color: rgba(226, 232, 240, 0.68);
+  animation: pf-respuesta 0.35s ease both;
+}
+
+@keyframes pf-respuesta {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+
+/* ── Tableta (≥ 700 px) ───────────────────────────────────────────────────── */
+
+@media (min-width: 700px) {
+  .pf-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pf-celda--diario,
+  .pf-celda--gratis {
+    grid-column: 1 / -1;
+  }
+
+  .pf-gratis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pf-oferta {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 2.2rem 2.2rem;
+  }
+
+  .pf-oferta-accion {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── Escritorio (≥ 1024 px) ───────────────────────────────────────────────── */
+
+@media (min-width: 1024px) {
+  .pf {
+    padding: 6.5rem 1.5rem 7rem;
+  }
+
+  .pf-bento {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.1rem;
+  }
+
+  .pf-celda {
+    padding: 1.9rem;
+  }
+
+  .pf-celda--diario {
+    grid-column: 1 / 8;
+    grid-row: 1 / 3;
+  }
+
+  .pf-celda--cartera,
+  .pf-celda--cursos {
+    grid-column: 8 / 13;
+  }
+
+  .pf-celda--gratis {
+    grid-column: 1 / 13;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.3rem 1.5rem;
+  }
+
+  .pf-gratis-cab {
+    flex-direction: column;
+    align-items: flex-start;
+    flex: none;
+    max-width: 170px;
+    gap: 0.5rem;
+  }
+
+  .pf-gratis {
+    flex: 1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .pf-oferta {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 0.9fr);
+    gap: 2.5rem;
+    padding: 2.4rem 2.6rem;
+  }
+
+  .pf-incluye {
+    padding-left: 2.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .pf-oferta-accion {
+    grid-column: auto;
+  }
+
+  .pf-faq {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 4rem;
+    margin-top: 6rem;
+  }
+
+  .pf-faq-lado {
+    position: sticky;
+    top: 7rem;
+    align-self: start;
+  }
+}
+
+/* ── Móvil estrecho (≤ 420 px) ────────────────────────────────────────────── */
+
+@media (max-width: 420px) {
+  .pf {
+    padding: 3.5rem 1rem 4rem;
+  }
+
+  .pf-celda {
+    padding: 1.25rem;
+    border-radius: 20px;
+  }
+
+  .pf-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pf-oferta {
+    padding: 1.6rem 1.25rem;
+  }
+
+  .pf-pregunta p {
+    padding-left: 1.15rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-curva-linea,
+  .pf-directo-punto::after,
+  .pf-oferta-borde,
+  .pf-cta::after,
+  .pf-pregunta p {
+    animation: none;
+  }
+
+  .pf-curva-linea {
+    stroke-dashoffset: 0;
+  }
+
+  .pf-celda,
+  .pf-cta,
+  .pf-contacto,
+  .pf-ir,
+  .pf-gratis-flecha,
+  .pf-pregunta-icono {
+    transition: none;
+  }
+
+  a.pf-celda:hover,
+  .pf-cta:hover,
+  .pf-contacto:hover {
+    transform: none;
+  }
+}

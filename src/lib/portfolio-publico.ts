@@ -43,6 +43,14 @@ export interface ResumenPublico {
   /** Año de la compra más antigua: sirve para decir "desde 2024". */
   desdeAnio: number | null;
   /**
+   * Cuántas posiciones van en ganancias y cuántas en pérdidas ahora mismo.
+   * Solo cuenta las que tienen precio de mercado. Es un recuento, no dice
+   * cuáles: la ficha lo usa para probar que se publican también las que
+   * pierden.
+   */
+  enGanancias: number;
+  enPerdidas: number;
+  /**
    * El DCA de Bitcoin, si hay compras cargadas.
    *
    * Va aparte y no sumado al spot a propósito: son dos estrategias distintas
@@ -111,6 +119,8 @@ export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> 
     let invertido = 0;
     let valorActual = 0;
     let anioMin: number | null = null;
+    let enGanancias = 0;
+    let enPerdidas = 0;
 
     for (const p of posiciones) {
       const cantidad = p.quantity ?? 0;
@@ -121,6 +131,10 @@ export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> 
 
       const actual = p.coingecko_id ? precios[p.coingecko_id]?.usd : undefined;
       valorActual += (typeof actual === "number" ? actual : compra) * cantidad;
+      if (typeof actual === "number") {
+        if (actual >= compra) enGanancias++;
+        else enPerdidas++;
+      }
 
       if (p.buy_date) {
         const anio = new Date(p.buy_date).getFullYear();
@@ -136,6 +150,8 @@ export async function resumenPortfolioPublico(): Promise<ResumenPublico | null> 
       valorActual,
       rentabilidadPct: ((valorActual - invertido) / invertido) * 100,
       desdeAnio: anioMin,
+      enGanancias,
+      enPerdidas,
       dca: await dcaPromesa,
     };
   } catch {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Check, X, ArrowRight, Crown, ShieldCheck, Lock, Zap, CreditCard, LineChart, CalendarRange, Trophy,
-  EyeOff, Radio, Coins, Layers, GraduationCap, Smile, Sparkles, BookOpenText, ClipboardCheck,
+  EyeOff, Radio, Coins, Layers, GraduationCap, Smile, BookOpenText, ClipboardCheck,
   Award, Clock3, Infinity as Siempre,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -11,11 +11,12 @@ import SiteNav from "@/components/SiteNav";
 import PremiumStickyBar from "@/components/PremiumStickyBar";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import Certificado from "@/components/aula/Certificado";
-import NovaCara from "./NovaCara";
+import NovaMini from "@/components/NovaMini";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 import { CoinGeckoGlyph } from "@/components/BrandMarks";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import { cursoPorSlug, cursosPublicados, duracion } from "@/lib/cursos";
+import { PREGUNTAS_FRECUENTES } from "@/lib/preguntas-frecuentes";
 import "./premium.css";
 
 export const metadata: Metadata = {
@@ -56,41 +57,6 @@ const COMPARA: { label: string; free: boolean; premium: boolean | "pronto" }[] =
   { label: "Cursos con examen y certificado", free: false, premium: true },
   { label: "Insignia de Miembro Fundador", free: false, premium: true },
   { label: "Preguntar y responder en el foro", free: false, premium: "pronto" },
-];
-
-const FAQS = [
-  {
-    q: "¿Puedo cancelar cuando quiera?",
-    a: "Sí, sin permanencia ni preguntas. Cancelas desde «Mi perfil», en el portal seguro de Stripe, y mantienes el acceso hasta el final del periodo que ya has pagado.",
-  },
-  {
-    q: "¿Los cursos se pagan aparte?",
-    a: "No. Todos los cursos van incluidos en la suscripción, también los que se publiquen más adelante. Sin compras sueltas.",
-  },
-  {
-    q: "Si cancelo, ¿pierdo mis certificados?",
-    a: "No. Los certificados que hayas ganado se quedan en la vitrina de tu panel y puedes descargarlos siempre, aunque ya no seas Premium. Cualquiera puede verificarlos con su código.",
-  },
-  {
-    q: "¿El precio me subirá más adelante?",
-    a: "A ti no. El precio al que te suscribes queda fijado mientras mantengas la suscripción activa, aunque suba para quien entre después. Si cancelas y vuelves más adelante, entrarías con la tarifa que haya entonces.",
-  },
-  {
-    q: "¿Qué es Nova?",
-    a: "La asistente de tu Diario de Trading. Lee lo que apuntas —operaciones, emociones y capital— y te avisa de lo importante: riesgo, rachas, si cierras las ganadoras antes de tiempo o si operas por revancha. Son reglas sobre tus datos: no inventa nada ni te da señales.",
-  },
-  {
-    q: "¿Mi diario lo ve alguien más?",
-    a: "No. Tu diario es privado: solo lo ves tú. Ni otros usuarios ni la academia lo enseñan en ninguna parte.",
-  },
-  {
-    q: "¿Cómo se paga?",
-    a: "Con tarjeta, a través de Stripe. El pago va cifrado y nosotros nunca vemos los datos de tu tarjeta.",
-  },
-  {
-    q: "¿Esto es asesoramiento financiero?",
-    a: "No. Es formación y herramientas para que tomes tus propias decisiones con criterio. Nadie puede garantizarte rentabilidad: quien lo haga, te está mintiendo.",
-  },
 ];
 
 /** El botón de compra: va al checkout de Stripe (que manda al login si hace falta). */
@@ -213,7 +179,7 @@ export default async function PremiumPage() {
                     <path d="M0 70 L30 64 L60 67 L90 54 L120 58 L150 44 L180 48 L210 34 L240 38 L270 22 L300 12 L300 80 L0 80 Z" fill="url(#pm-relleno)" />
                     <path className="pm-carta-linea" d="M0 70 L30 64 L60 67 L90 54 L120 58 L150 44 L180 48 L210 34 L240 38 L270 22 L300 12" pathLength={1} fill="none" stroke="#ff9a4d" strokeWidth="2.5" strokeLinejoin="round" />
                   </svg>
-                  <div className="pm-carta-nova"><Sparkles size={13} /> Nova: «Riesgo bajo control esta semana»</div>
+                  <div className="pm-carta-nova"><NovaMini size={20} /> Nova: «Riesgo bajo control esta semana»</div>
                 </div>
 
                 <div className="pm-carta pm-carta--portfolio">
@@ -261,7 +227,7 @@ export default async function PremiumPage() {
             {/* ── Franja: todo lo que entra ── */}
             <section className="pm-franja" aria-label="Qué incluye Premium">
               <span><IconoDiario size={18} /> Diario de Trading</span>
-              <span><Sparkles size={17} /> Nova, tu asistente</span>
+              <span><NovaMini size={22} /> Nova, tu asistente</span>
               <span><IconoPortfolio size={18} /> Portfolio Adelin</span>
               <span><IconoCursos size={18} /> Cursos</span>
               <span><Award size={17} /> Certificados</span>
@@ -282,7 +248,7 @@ export default async function PremiumPage() {
                   <li><LineChart size={17} /> <span><strong>Diez estadísticas</strong> y tu curva de capital</span></li>
                   <li><CalendarRange size={17} /> <span><strong>Calendario</strong> y desglose por par, estrategia, día y hora</span></li>
                   <li><Smile size={17} /> <span><strong>Tus emociones</strong> de cada día, junto a tus resultados</span></li>
-                  <li><Sparkles size={17} /> <span><strong>Nova</strong>: tu pulso de 0 a 100 y avisos de riesgo, rachas y revancha</span></li>
+                  <li><NovaMini size={22} /> <span><strong>Nova</strong>: tu pulso de 0 a 100 y avisos de riesgo, rachas y revancha</span></li>
                   <li><Trophy size={17} /> <span><strong>Hitos con niveles</strong> que premian la disciplina</span></li>
                   <li><EyeOff size={17} /> <span><strong>Privado</strong>: solo lo ves tú</span></li>
                 </ul>
@@ -291,7 +257,7 @@ export default async function PremiumPage() {
               <div className="pm-pieza-arte" aria-hidden="true">
                 <div className="pm-panel pm-nova">
                   <div className="pm-nova-cab">
-                    <span className="pm-nova-cara"><NovaCara /></span>
+                    <span className="pm-nova-cara"><NovaMini size={58} sigue /></span>
                     <span><strong>Nova</strong><small>Lo más importante</small></span>
                     <span className="pm-nova-pulso">82<small>/100</small></span>
                   </div>
@@ -476,7 +442,7 @@ export default async function PremiumPage() {
                 <h2 id="pm-faq" className="pm-h2">Preguntas frecuentes</h2>
               </header>
               <div className="pm-faq">
-                {FAQS.map((f) => (
+                {PREGUNTAS_FRECUENTES.filter((f) => !f.soloPortada).map((f) => (
                   <details key={f.q} className="pm-faq-item">
                     <summary>{f.q}</summary>
                     <p>{f.a}</p>

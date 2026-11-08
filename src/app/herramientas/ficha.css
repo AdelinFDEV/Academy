@@ -258,77 +258,28 @@
   color: var(--fh-suave);
 }
 
-.fh-vivo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-left: auto;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fh-sube);
-}
 
-.fh-vivo span {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--fh-sube);
-  animation: fh-latido 1.8s ease-in-out infinite;
-}
+
+
 
 @keyframes fh-latido {
   0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
   50% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
 }
 
-.fh-ventana-tabs {
-  display: flex;
-  gap: 0.4rem;
-  padding: 0.9rem 1rem 0;
-}
 
-.fh-ventana-tabs span {
-  padding: 0.38rem 0.85rem;
-  border: 1px solid var(--fh-linea);
-  border-radius: 999px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: var(--fh-tenue);
-}
 
-.fh-ventana-tabs span.is-activa {
-  border-color: color-mix(in srgb, var(--fh-tab) 50%, transparent);
-  background: color-mix(in srgb, var(--fh-tab) 14%, transparent);
-  color: #fff;
-}
 
-.fh-resumen {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.6rem;
-  padding: 0.9rem 1rem;
-}
 
-@media (min-width: 560px) {
-  .fh-resumen { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
 
-.fh-cifra {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.8rem 0.85rem;
-  border: 1px solid var(--fh-linea);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.025);
-}
 
-.fh-cifra--real {
-  border-color: color-mix(in srgb, var(--fh-acento) 35%, transparent);
-  background: color-mix(in srgb, var(--fh-acento) 8%, transparent);
-}
+
+
+
+
+
+
+
 
 .fh-cifra-label {
   font-size: 0.68rem;
@@ -338,174 +289,7 @@
   color: var(--fh-tenue);
 }
 
-.fh-cifra-valor {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 800;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
 
-/* Las barras veladas: el hueco donde está el dato de pago. */
-.fh-velo {
-  display: block;
-  height: 10px;
-  border-radius: 6px;
-  background: linear-gradient(90deg, rgba(240, 244, 255, 0.16), rgba(240, 244, 255, 0.07));
-  filter: blur(1.5px);
-}
-
-.fh-velo--cifra {
-  width: 75%;
-  height: 18px;
-}
-
-.fh-velo--pl {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--fh-acento) 35%, transparent), color-mix(in srgb, var(--fh-acento) 12%, transparent));
-}
-
-.fh-tabla {
-  margin: 0 1rem;
-  border: 1px solid var(--fh-linea);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.fh-tabla-cab,
-.fh-tabla-fila {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 0.8fr;
-  gap: 0.9rem;
-  align-items: center;
-  padding: 0.7rem 0.9rem;
-}
-
-.fh-tabla-cab {
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--fh-tenue);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.fh-tabla-fila {
-  border-top: 1px solid var(--fh-linea);
-}
-
-.fh-moneda {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.fh-moneda i {
-  flex: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(240, 244, 255, 0.12);
-  filter: blur(1px);
-}
-
-/* El candado va sobre la parte baja de la tabla, con un degradado que la
-   funde: se intuye que hay filas debajo, pero no se leen. */
-.fh-candado {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem 0.9rem;
-  margin-top: -3.4rem;
-  padding: 3.6rem 1rem 1.2rem;
-  text-align: center;
-  background: linear-gradient(180deg, transparent 0%, rgba(8, 15, 30, 0.92) 45%, #080f1e 100%);
-}
-
-.fh-candado p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--fh-suave);
-}
-
-.fh-candado strong { color: #fff; }
-
-.fh-candado-icono {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(230, 180, 85, 0.14);
-  color: var(--fh-oro-2);
-}
-
-.fh-candado-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.5rem 0.9rem;
-  border-radius: 10px;
-  font-size: 0.82rem;
-  font-weight: 800;
-  text-decoration: none;
-  color: #1a1204;
-  background: var(--fh-oro);
-}
-
-.fh-candado-btn:hover { background: var(--fh-oro-2); }
-
-/* ── Prueba: las cifras reales ──────────────────────────────────────────── */
-
-.fh-prueba {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  border: 1px solid var(--fh-linea);
-  border-radius: 18px;
-  background: var(--fh-linea);
-}
-
-@media (min-width: 760px) {
-  .fh-prueba { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-}
-
-.fh-dato {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 1.3rem 1.2rem;
-  background: #0a1324;
-}
-
-.fh-dato-valor {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 3vw, 2.1rem);
-  font-weight: 800;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  color: #fff;
-}
-
-.fh-dato-label {
-  font-size: 0.8rem;
-  color: var(--fh-tenue);
-}
-
-.fh-prueba-nota {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  margin: 0;
-  padding: 0.75rem 1rem;
-  font-size: 0.76rem;
-  color: var(--fh-tenue);
-  background: #0a1324;
-}
 
 /* ── Bloques ────────────────────────────────────────────────────────────── */
 
@@ -598,39 +382,6 @@
 .fh-paso p {
   margin: 0;
   font-size: 0.92rem;
-  line-height: 1.55;
-  color: var(--fh-suave);
-}
-
-/* ── Dos carteras ── */
-
-.fh-carteras {
-  display: grid;
-  gap: 1rem;
-}
-
-@media (min-width: 720px) {
-  .fh-carteras { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
-.fh-cartera {
-  padding: 1.4rem 1.4rem 1.3rem;
-  border: 1px solid color-mix(in srgb, var(--fh-color) 28%, transparent);
-  border-left: 3px solid var(--fh-color);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--fh-color) 6%, transparent);
-}
-
-.fh-cartera-label {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--fh-color);
-}
-
-.fh-cartera p {
-  margin: 0.5rem 0 0;
-  font-size: 0.94rem;
   line-height: 1.55;
   color: var(--fh-suave);
 }
@@ -876,13 +627,6 @@
 @media (max-width: 760px) {
   .fh--con-barra { padding-bottom: 7rem; }
 
-  /* El botón de dudas (DudasInstagram) también va fijo abajo a la derecha:
-     sin esto caía encima del botón «Desbloquear». Se sube por encima de la
-     barra solo en las páginas que la llevan. */
-  body:has(.fh-barra) .dudas {
-    bottom: calc(5.6rem + env(safe-area-inset-bottom, 0px));
-  }
-
   .fh-barra {
     position: fixed;
     left: 0.75rem;
@@ -930,15 +674,9 @@
     background: linear-gradient(135deg, var(--fh-oro-2) 0%, var(--fh-oro) 100%);
   }
 
-  .fh-tabla-cab,
-  .fh-tabla-fila {
-    grid-template-columns: 1.3fr 1fr 0.8fr;
-  }
+  
 
-  .fh-tabla-cab span:nth-child(3),
-  .fh-tabla-fila > span:nth-child(3) {
-    display: none;
-  }
+  
 }
 
 /* ══ Piezas del Diario ═════════════════════════════════════════════════════ */
@@ -1382,37 +1120,18 @@
   color: var(--fh-suave);
 }
 
-.fh-hitos {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 
-.fh-hitos li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.6rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--fh-acento) 30%, transparent);
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #fff;
-  background: color-mix(in srgb, var(--fh-acento) 9%, transparent);
-}
 
-.fh-hitos svg { color: var(--fh-acento-2); }
+
+
+
 
 /* ── Movimiento reducido ────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   .fh-btn::after,
-  .fh-vivo span,
-  .fh-dj-punto,
-  .fh-dj-hito { animation: none; }
+.fh-dj-punto,
+.fh-dj-hito { animation: none; }
 
   .fh-btn,
   .fh-paso { transition: none; }

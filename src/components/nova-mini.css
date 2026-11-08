@@ -1,0 +1,17 @@
+/* Nova en pequeño (NovaMini.tsx). El tamaño llega en `--nm`. */
+
+.nova-mini {
+  position: relative;
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: var(--nm, 24px);
+  height: var(--nm, 24px);
+  vertical-align: middle;
+}
+
+.nova-mini .nh {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.45));
+}

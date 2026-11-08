@@ -36,7 +36,7 @@ Desde el 07-11-2026 **se rehace entero con cada dato nuevo** (operación, ánimo
 Pedido por el admin el 31-10-2026: grabar un vídeo corto de cada herramienta que enseñe cómo se usa, y colocarlo en el home.
 
 - [ ] **Grabar los vídeos** (los graba el admin): Diario de Trading, Portfolio Adelin y Predicción de Precio, y los Cursos cuando se publique el primero.
-- [ ] **Decidir dónde van en el home.** Lo natural es la sección Premium (`PremiumHome`, rehecha el 04-11-2026): cada tarjeta lleva a la ficha de su pieza, y el vídeo podría abrirse desde ella o ir en la propia ficha. La Predicción de Precio no está en esa sección: si lleva vídeo, necesita sitio propio.
+- [ ] **Decidir dónde van en el home.** Lo natural es la sección Premium (`PremiumHome`, rehecha el 08-11-2026 como bento con FAQ): cada celda lleva a la ficha de su pieza, y el vídeo podría abrirse desde ella o ir en la propia ficha. La Predicción de Precio solo sale ahí como enlace en la franja «Gratis»: si lleva vídeo, necesita sitio propio.
 - [ ] **Al montarlos**: alojarlos en YouTube y servirlos desde `youtube-nocookie.com`, que ya está permitido en la CSP (`next.config.ts`). Ojo: `GuideVideoEmbed` mete el iframe nada más cargar; en el home conviene una portada con botón de play que solo cargue el vídeo al pulsar, para no frenar la página.
 
 
@@ -57,7 +57,15 @@ Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho
 
 Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el Trading en Directo, con su CSS, sus APIs, sus textos y sus menús; sus URLs responden 410 (`src/lib/retiradas.ts`). Falta:
 
-- [ ] **Reenviar el sitemap en Search Console** y comprobar en producción que `/herramientas`, `/radar-diario`, `/calendario-de-liberaciones` y `/trading-en-directo` dan 410.
+- [ ] **Borrar de Google el rastro del Trading en Directo** (pedido por el admin el 08-11-2026).
+  - **Por qué:** el servicio ya no existe y no se ofrece, y no se puede anunciar en ningún sitio (`AGENTS.md`). Pero el 08-11-2026, al buscar la web en Google, debajo de la portada seguían saliendo como enlaces destacados «Trading en Directo» y «Herramientas de trading e…» (la landing `/herramientas`, también retirada). Quien llega por ahí cree que el servicio sigue, pulsa y se encuentra «Esta página ya no existe». Es una promesa falsa en el escaparate más visible de la web, y el admin la quiere fuera.
+  - **Lo que ya está hecho, y no hay que repetir:** en la web no queda nada. Comprobado el 08-11-2026 en producción: `/trading-en-directo`, `/herramientas`, `/radar-diario` y `/calendario-de-liberaciones` responden **410 Gone** con `X-Robots-Tag: noindex` (`src/lib/retiradas.ts` + `src/proxy.ts`), ninguna está en el sitemap, el código del servicio se borró el 31-10-2026 y la última frase que hablaba de «operativa en directo» (`TerminoVideo.tsx`) se cambió ese día. Lo que enseña Google es su caché de antes del 31-10.
+  - **Lo que falta, y solo puede hacerlo el admin desde Search Console** (Claude no tiene acceso):
+    1. *Indexación → Retiradas → Nueva solicitud → Quitar temporalmente la URL*, una por una: `https://adelinacademy.com/trading-en-directo` y `https://adelinacademy.com/herramientas`. Las saca de los resultados en uno o dos días; sin esto, Google tarda semanas en volver a pasar.
+    2. *Sitemaps*: reenviar `sitemap.xml`.
+    3. Opcional: *Inspección de URLs* de cada una para confirmar que Google ya ve el 410.
+  - **Cómo se cierra:** buscar `site:adelinacademy.com directo` y `site:adelinacademy.com herramientas` en Google. Si no sale ninguna de las dos, se borra esta tarea. La retirada temporal dura unos seis meses; para entonces el 410 ya las habrá sacado para siempre.
+  - **Ligado:** el SQL que quita la variante de aviso `directo` de `cursos.aviso` (está al final de `scripts/create-cursos.sql`; el admin lo tiene en el chat del 08-11-2026). No toca a Google, pero es el último resto del servicio en la base de datos.
 
 
 ### 00. La web es solo guías (empezado el 10-10-2026)
