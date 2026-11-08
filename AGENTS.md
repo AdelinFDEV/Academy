@@ -14,6 +14,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Vas a hacer… | Lee **antes** de empezar |
 |---|---|
 | Una **guía** interactiva | `/admin/guias-instrucciones` |
+| Un **curso de pago** nuevo, o tocar uno: temario, lecciones, exámenes, certificado, logro | [`CURSOS.md`](./CURSOS.md) — **entero, antes de empezar** |
 | Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | La **auditoría SEO** de lo que acabas de montar | [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) · ver el punto 2 |
 | Tocar el **limitador por IP**, el middleware (`src/proxy.ts`) o **añadir un webhook** | [`SEGURIDAD-RATE-LIMIT.md`](./SEGURIDAD-RATE-LIMIT.md) |
@@ -64,6 +65,8 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 | **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**: no hay paso intermedio para echarse atrás. Ponle su `publicada` (la fecha) al darla de alta | `/admin/guias-instrucciones` |
 | **Todo término técnico va enlazado al diccionario en su primera aparición**, en toda guía. Si no existe, **se crea antes de publicar**. Es la que más se olvida, porque el texto «se entiende igual» | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
+| **Un curso no se escribe sin informe aprobado.** Primero la investigación con fuentes y URL en `informes/`, después el curso | [`CURSOS.md`](./CURSOS.md) |
+| **Cada curso, su propia paleta**, distinta de la de los anteriores (campo `color`); su certificado la hereda. Hay un registro de paletas usadas | [`CURSOS.md`](./CURSOS.md) |
 | **Comprueba el destino antes de enlazarlo.** Un término sin `extended` da **404** y una guía que no esté en `GUIDES` no existe | paneles de `/admin` |
 
 ### Plataforma

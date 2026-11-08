@@ -88,7 +88,6 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Crear en el diccionario** los términos fiscales que el curso necesita enlazar y que aún no existen: FIFO, permuta, ganancia patrimonial, base del ahorro, airdrop, lending, modelo 721… (regla del diccionario: antes de publicar).
 - [ ] **Imágenes**: portada y las ilustraciones que hagan falta, con prompts de Gemini, en WebP.
 - [ ] **Comprobar DAC8 en el BOE** antes de publicar: en octubre de 2026 la orden de los modelos 042, 172, 175 y 721 seguía en tramitación (lección «Lo que Hacienda ya sabe de ti»).
-- [ ] **Escribir `CURSOS.md`** con el diseño definitivo: estructura de archivos, catálogo de bloques, reglas de examen y cómo se publica.
 - [ ] **Al publicarlo** (con el «sí» del admin): `"published": true` en `curso.json`, volver a subir y ofrecer la auditoría SEO de la ficha. (El catálogo ya está en `acceso: "premium"` desde el curso de psicología.)
 
 **Pedido por el admin el 05-11-2026: implementar el primer curso de punta a punta y comprobarlo todo antes de abrirlo.** No basta con que el contenido esté escrito; hay que recorrerlo como un alumno:
