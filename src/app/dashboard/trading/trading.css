@@ -6,7 +6,13 @@
  * chip, una métrica o un botón no necesitan su propio .win/.loss/.breakeven.
  */
 
-.trading-journal {
+/*
+ * Las variables del diario. También en .tjbot-stage: el popup de Nova se pinta
+ * en un portal (en <body>), fuera de .trading-journal, y sin ellas se quedaban
+ * sin color el anillo, las barras y los filos.
+ */
+.trading-journal,
+.tjbot-stage {
   /* Mismos valores que TJ_COLORS en tjFormat.ts (los gráficos SVG los necesitan literales). */
   --tj-win: #5fd39a;
   --tj-loss: #ff5c5c;
@@ -41,6 +47,9 @@
     0 1px 2px rgba(0, 0, 0, 0.45),
     0 16px 32px -18px rgba(0, 0, 0, 0.92),
     0 40px 80px -44px rgba(2, 6, 16, 0.9);
+}
+
+.trading-journal {
   position: relative;
   z-index: 2;
   display: flex;
@@ -818,9 +827,11 @@
   position: fixed;
   top: var(--dlg-top);
   right: 0;
+  bottom: clamp(20px, 4vh, 44px);
   left: 0;
   z-index: 1;
   display: flex;
+  align-items: flex-start;
   justify-content: center;
   padding: 0 3vw;
   pointer-events: none;
@@ -830,11 +841,18 @@
   position: relative;
   top: auto;
   left: auto;
+  display: flex;
+  flex-direction: column;
   width: min(860px, 100%);
+  max-height: 100%;
   border-radius: 24px;
   pointer-events: auto;
   transform-origin: 50% 0;
 }
+
+/* Cabecera y pie fijos; lo de en medio se encoge y se desplaza por dentro. */
+.tjbot-panel.is-modal .tjbot-modal-head,
+.tjbot-panel.is-modal .tjbot-foot { flex-shrink: 0; }
 
 /* Cabecera: el saludo de Nova. */
 .tjbot-modal-head {
@@ -854,7 +872,7 @@
 .tjbot-close { width: 36px; height: 36px; border-radius: 12px; }
 
 /* Índice a la izquierda, sección a la derecha. */
-.tjbot-modal-grid { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 0; }
+.tjbot-modal-grid { display: grid; flex: 1; grid-template-columns: 232px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); min-height: 0; }
 
 .tjbot-index {
   display: flex;
@@ -903,7 +921,7 @@
 .tjbot-index-count { min-width: 22px; padding: 0.08rem 0.4rem; border-radius: 999px; background: var(--tj-surface-2); text-align: center; font-size: 0.68rem; font-weight: 700; color: var(--text-muted); }
 .tjbot-index-item.is-on .tjbot-index-count { background: rgba(230, 180, 85, 0.22); color: var(--text-primary); }
 
-.tjbot-main { min-width: 0; }
+.tjbot-main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
 
 .tjbot-section-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
 .tjbot-section-head span { font-size: 1.35rem; line-height: 1; }
@@ -919,11 +937,10 @@
 }
 
 .tjbot-panel.is-modal .tjbot-tail { left: 50%; margin-left: -8px; }
-.tjbot-panel.is-modal .tjbot-body { min-height: 300px; max-height: calc(100vh - var(--dlg-top) - 230px); padding: 1.2rem 1.4rem 0.8rem; }
+.tjbot-panel.is-modal .tjbot-body { flex: 1; min-height: min(300px, 30vh); max-height: none; padding: 1.2rem 1.4rem 0.8rem; }
 .tjbot-panel.is-modal .tjbot-foot { padding: 0.9rem 1.2rem 1.05rem; }
 .tjbot-panel.is-modal .tjbot-msg { font-size: 0.92rem; padding: 0.85rem 1rem; }
 .tjbot-panel.is-modal .tjbot-gauge { width: 120px; height: 120px; }
-.tjbot-panel.is-modal .tjbot-gauge-value { padding-top: 43px; }
 
 /* ── Bocadillo ── */
 
@@ -980,19 +997,20 @@
 .tjbot-list { display: flex; flex-direction: column; gap: 0.5rem; }
 
 .tjbot-kicker { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--tj-accent-2); }
-.tjbot-kicker-row { margin: 0.5rem 0 0.1rem; }
 
-/* Mensajes: burbujas de chat con su emoji, un filo del color de lo que dicen y, si toca, un botón. */
+/* Mensajes: tarjeta con el emoji en su pastilla, un filo del color de lo que dicen y, si toca, un botón. */
 .tjbot-msg {
   --bot-tone: var(--text-muted);
   display: flex;
   align-items: flex-start;
-  gap: 0.7rem;
-  padding: 0.75rem 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--bot-tone) 22%, transparent);
-  border-radius: 4px 14px 14px 14px;
-  background: color-mix(in srgb, var(--bot-tone) 7%, rgba(240, 244, 255, 0.03));
-  font-size: 0.86rem;
+  gap: 0.8rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--bot-tone) 20%, rgba(240, 244, 255, 0.06));
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--bot-tone) 9%, transparent), transparent 70%),
+    rgba(7, 14, 30, 0.55);
+  font-size: 0.88rem;
   line-height: 1.55;
   color: var(--text-secondary);
 }
@@ -1003,8 +1021,20 @@
 .tjbot-msg.is-be { --bot-tone: #8ab8ff; }
 .tjbot-msg.is-important { border-color: color-mix(in srgb, var(--bot-tone) 45%, transparent); box-shadow: inset 3px 0 0 var(--bot-tone); }
 
-.tjbot-emoji { flex-shrink: 0; font-size: 1.15rem; line-height: 1.3; }
-.tjbot-msg-body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; min-width: 0; }
+.tjbot-emoji {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bot-tone) 14%, rgba(240, 244, 255, 0.04));
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.tjbot-msg-body { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; min-width: 0; padding-top: 0.15rem; }
+.tjbot-msg-text { color: var(--text-primary); opacity: 0.88; text-wrap: pretty; }
 
 .tjbot-flag {
   padding: 0.08rem 0.45rem;
@@ -1040,43 +1070,70 @@
 .tjbot-pulse {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
-  padding: 0.9rem;
-  border: 1px solid rgba(230, 180, 85, 0.2);
-  border-radius: 16px;
-  background: linear-gradient(150deg, rgba(230, 180, 85, 0.08), rgba(7, 12, 24, 0.3));
+  gap: 1.2rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(230, 180, 85, 0.22);
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 120% at 0% 0%, rgba(230, 180, 85, 0.13), transparent 60%),
+    rgba(7, 14, 30, 0.55);
 }
 
 .tjbot-gauge { position: relative; flex-shrink: 0; width: 104px; height: 104px; }
 .tjbot-gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.tjbot-gauge-track { fill: none; stroke: var(--tj-surface-2); stroke-width: 9; }
+.tjbot-gauge-track { fill: none; stroke: rgba(240, 244, 255, 0.08); stroke-width: 9; }
 .tjbot-gauge-arc { fill: none; stroke: var(--gauge, var(--tj-accent)); stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--gauge, var(--tj-accent)) 55%, transparent)); }
 .tjbot-gauge.is-win { --gauge: var(--tj-win); }
 .tjbot-gauge.is-accent { --gauge: var(--tj-accent); }
 .tjbot-gauge.is-loss { --gauge: var(--tj-loss); }
 
-.tjbot-gauge-value { position: absolute; inset: 0; display: flex; align-items: baseline; justify-content: center; padding-top: 37px; line-height: 1; }
-.tjbot-gauge-value strong { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
-.tjbot-gauge-value small { margin-left: 2px; font-size: 0.68rem; font-weight: 600; color: var(--text-muted); }
+/* El número, centrado de verdad en el anillo; «/100» pequeño, a la altura de su base. */
+.tjbot-gauge-value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 2px; line-height: 1; }
+.tjbot-gauge-value strong { font-family: var(--font-display); font-size: 1.85rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+.tjbot-gauge-value small { position: relative; top: 0.45rem; font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
 
-.tjbot-pulse-text { display: flex; flex: 1; flex-direction: column; gap: 0.25rem; min-width: 0; }
-.tjbot-pulse-text > strong { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+.tjbot-pulse-text { display: flex; flex: 1; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.tjbot-pulse-text > strong { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text-primary); }
+.tjbot-pulse-text > p { margin: 0; font-size: 0.84rem; line-height: 1.5; color: var(--text-secondary); text-wrap: pretty; }
 
-.tjbot-parts { display: flex; flex-direction: column; gap: 0.4rem; margin: 0.4rem 0 0; padding: 0; list-style: none; }
+/* Las cuatro partes: tarjetas de dos en dos, cada una con su estado y su barra. */
+.tjbot-parts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; margin: 0; padding: 0; list-style: none; }
 
-.tjbot-parts li {
-  display: grid;
-  grid-template-columns: 5.2rem minmax(0, 1fr);
-  grid-template-areas: "label bar" "hint hint";
-  align-items: center;
-  gap: 0.1rem 0.6rem;
+.tjbot-part {
+  --part: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.8rem 0.85rem 0.85rem;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 14px;
+  background: rgba(7, 14, 30, 0.45);
 }
 
-.tjbot-part-label { grid-area: label; font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); }
-.tjbot-part-bar { grid-area: bar; height: 6px; overflow: hidden; border-radius: 999px; background: var(--tj-surface-2); }
-.tjbot-part-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c98f35, var(--tj-accent)); }
-.tjbot-part-bar.is-empty { background: repeating-linear-gradient(90deg, var(--tj-surface-2) 0 4px, transparent 4px 8px); }
-.tjbot-part-hint { grid-area: hint; overflow: hidden; font-size: 0.66rem; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+.tjbot-part.is-win { --part: var(--tj-win); }
+.tjbot-part.is-accent { --part: var(--tj-accent); }
+.tjbot-part.is-loss { --part: var(--tj-loss); }
+
+.tjbot-part-top { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+.tjbot-part-ic { font-size: 0.95rem; line-height: 1; }
+.tjbot-part-label { flex: 1; min-width: 0; font-size: 0.86rem; font-weight: 700; color: var(--text-primary); }
+.tjbot-part-state {
+  flex-shrink: 0;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--part) 15%, transparent);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--part);
+}
+
+.tjbot-part-bar { height: 6px; overflow: hidden; border-radius: 999px; background: rgba(240, 244, 255, 0.08); }
+.tjbot-part-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--part) 60%, transparent), var(--part)); }
+.tjbot-part-bar.is-empty { background: repeating-linear-gradient(90deg, rgba(240, 244, 255, 0.1) 0 4px, transparent 4px 8px); }
+.tjbot-part-hint { font-size: 0.76rem; line-height: 1.45; color: var(--text-secondary); text-wrap: pretty; }
+
+.tjbot-kicker-row { margin: 0.7rem 0 0.1rem; }
 
 /* ── Pie ── */
 
@@ -1150,7 +1207,7 @@
   .tjbot-index-item { flex-shrink: 0; padding: 0.5rem 0.65rem; }
   .tjbot-index-label { display: none; }
   .tjbot-index-item.is-on .tjbot-index-label { display: inline; }
-  .tjbot-panel.is-modal .tjbot-body { max-height: calc(100vh - var(--dlg-top) - 260px); }
+  .tjbot-modal-grid { grid-template-rows: auto minmax(0, 1fr); }
 }
 
 /*
@@ -1168,7 +1225,6 @@
 .tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-body { flex: 1; min-height: 0; max-height: none; padding: 0.95rem 0.9rem 0.6rem; }
 .tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-msg { font-size: 0.9rem; padding: 0.75rem 0.85rem; }
 .tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-gauge { width: 104px; height: 104px; }
-.tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-gauge-value { padding-top: 36px; }
 .tjbot-dialog.is-movil .tjbot-panel.is-modal .tjbot-foot-movil { flex-shrink: 0; justify-content: space-between; gap: 0.5rem; padding: 0.65rem 0.7rem 0.75rem; }
 
 .tjbot-arrow {
@@ -1197,10 +1253,15 @@
 .tjbot-where .tjbot-dots i { height: 6px; }
 
 @media (max-width: 520px) {
-  .tjbot-pulse { flex-direction: column; align-items: stretch; }
+  .tjbot-pulse { flex-direction: column; align-items: stretch; gap: 0.8rem; }
+  .tjbot-pulse-text { align-items: center; text-align: center; }
   .tjbot-gauge { align-self: center; }
   .tjbot-next-kicker { display: none; }
   .tjbot-next { grid-template-areas: "label icon arrow"; }
+}
+
+@media (max-width: 400px) {
+  .tjbot-parts { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

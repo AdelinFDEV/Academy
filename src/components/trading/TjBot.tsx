@@ -8,7 +8,7 @@ import NovaRoom from "./NovaRoom";
 import { NovaVuelo, cajaDe, cajaDeLaBarra, dejarSalida, llegarAlDiario, sinAnimaciones, type CajaNova } from "./novaVuelo";
 import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import {
-  BOT_NAME, IMPORTANT, SECTION_LABEL,
+  BOT_NAME, IMPORTANT, NOVA_FIRMA, SECTION_LABEL,
   type BotActionKind, type BotMessage, type BotPulse, type BotReport, type BotSection,
 } from "./tjNova";
 
@@ -57,6 +57,20 @@ function markSeen(signature: string) {
     localStorage.setItem(SEEN_KEY, signature);
   } catch {
     // Sin almacenamiento (modo privado estricto): el aviso volverá a salir, sin más.
+  }
+  window.dispatchEvent(new Event(SEEN_EVENT));
+}
+
+/**
+ * Al reiniciar el diario: Nova olvida lo que guarda el navegador (qué mensajes
+ * viste y la huella para el aviso de la barra) y vuelve a saludar como nueva.
+ */
+export function reiniciarNova() {
+  try {
+    localStorage.removeItem(SEEN_KEY);
+    localStorage.removeItem(NOVA_FIRMA);
+  } catch {
+    // Sin almacenamiento no hay nada que olvidar.
   }
   window.dispatchEvent(new Event(SEEN_EVENT));
 }
@@ -256,6 +270,27 @@ function PulseGauge({ pulse }: { pulse: BotPulse }) {
   );
 }
 
+/** Icono de cada parte del pulso. */
+const PART_EMOJI: Record<string, string> = { riesgo: "🛡️", resultados: "📈", emociones: "💭", constancia: "📅" };
+
+/** Cómo va una parte (vale de 0 a 25), en una palabra y con su tono. */
+function estadoParte(v: number | null): { txt: string; tone: "win" | "accent" | "loss" | "none" } {
+  if (v == null) return { txt: "Sin datos", tone: "none" };
+  const r = v / 25;
+  return r >= 0.7 ? { txt: "Bien", tone: "win" } : r >= 0.4 ? { txt: "Mejorable", tone: "accent" } : { txt: "Flojo", tone: "loss" };
+}
+
+/** Una frase bajo la nota: lo que mejor va y lo que más pesa. */
+function resumenPulso(pulse: BotPulse): string {
+  const medidas = pulse.parts.filter(p => p.value != null);
+  if (medidas.length < 2) return "Cuantos más datos apuntes, más fino te leo.";
+  const orden = [...medidas].sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+  const mejor = orden[0];
+  const peor = orden[orden.length - 1];
+  if ((peor.value ?? 0) / 25 >= 0.7) return `Todo en verde. Lo más fuerte: ${mejor.label.toLowerCase()}.`;
+  return `Lo más fuerte: ${mejor.label.toLowerCase()} · A mejorar: ${peor.label.toLowerCase()}`;
+}
+
 function PulseView({ pulse, highlights, renderMsg }: {
   pulse: BotPulse;
   highlights: BotMessage[];
@@ -263,35 +298,47 @@ function PulseView({ pulse, highlights, renderMsg }: {
 }) {
   return (
     <>
+      {/* La nota y lo que significa. */}
       <motion.div className="tjbot-pulse" variants={itemVariants}>
         <PulseGauge pulse={pulse} />
         <div className="tjbot-pulse-text">
           <span className="tjbot-kicker">Así te veo ahora</span>
           <strong>{pulse.label}</strong>
-          <ul className="tjbot-parts">
-            {pulse.parts.map((p, i) => (
-              <li key={p.id} title={p.hint}>
-                <span className="tjbot-part-label">{p.label}</span>
-                <span className={`tjbot-part-bar${p.value == null ? " is-empty" : ""}`}>
-                  <motion.i
-                    initial={{ width: 0 }}
-                    animate={{ width: `${((p.value ?? 0) / 25) * 100}%` }}
-                    transition={{ delay: 0.3 + i * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  />
-                </span>
-                <span className="tjbot-part-hint">{p.hint}</span>
-              </li>
-            ))}
-          </ul>
+          <p>{resumenPulso(pulse)}</p>
         </div>
       </motion.div>
+
+      {/* Las cuatro piezas de la nota, cada una en su tarjeta. */}
+      <motion.ul className="tjbot-parts" variants={itemVariants}>
+        {pulse.parts.map((p, i) => {
+          const est = estadoParte(p.value);
+          return (
+            <li key={p.id} className={`tjbot-part is-${est.tone}`}>
+              <div className="tjbot-part-top">
+                <span className="tjbot-part-ic" aria-hidden="true">{PART_EMOJI[p.id] ?? "•"}</span>
+                <span className="tjbot-part-label">{p.label}</span>
+                <span className="tjbot-part-state">{est.txt}</span>
+              </div>
+              <span className={`tjbot-part-bar${p.value == null ? " is-empty" : ""}`} aria-hidden="true">
+                <motion.i
+                  initial={{ width: 0 }}
+                  animate={{ width: `${((p.value ?? 0) / 25) * 100}%` }}
+                  transition={{ delay: 0.3 + i * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                />
+              </span>
+              <span className="tjbot-part-hint">{p.hint}</span>
+            </li>
+          );
+        })}
+      </motion.ul>
+
       <motion.span className="tjbot-kicker tjbot-kicker-row" variants={itemVariants}>Lo más importante</motion.span>
       {highlights.length
         ? highlights.map(renderMsg)
         : (
           <motion.div variants={itemVariants} className="tjbot-msg is-win">
             <span className="tjbot-emoji" aria-hidden="true">🙌</span>
-            <span className="tjbot-msg-body"><span>Nada urgente por ahora. ¡Buen trabajo! Repasa los capítulos cuando quieras.</span></span>
+            <span className="tjbot-msg-body"><span className="tjbot-msg-text">Nada urgente por ahora. ¡Buen trabajo! Repasa los demás apartados cuando quieras.</span></span>
           </motion.div>
         )}
     </>
@@ -498,7 +545,7 @@ export default function TjBot({ report, onAction }: {
     const vw = window.innerWidth;
     const movil = vw < 640;
     // En el móvil Nova se queda algo más pequeña arriba: el bocadillo necesita la pantalla.
-    const scale = movil ? 0.78 : 1.6;
+    const scale = movil ? 0.78 : window.innerHeight < 860 ? 1.2 : 1.6;
     markSeen(report.signature);
     setStep([0, 1]);
     setVisited(false);
@@ -554,7 +601,7 @@ export default function TjBot({ report, onAction }: {
         <span className="tjbot-emoji" aria-hidden="true">{m.emoji}</span>
         <span className="tjbot-msg-body">
           {m.priority >= IMPORTANT && <span className="tjbot-flag">Importante</span>}
-          <span>{m.text}</span>
+          <span className="tjbot-msg-text">{m.text}</span>
           {m.action && (
             <button type="button" className="tjbot-action" onClick={() => act(m.action!.kind)}>
               {m.action.label} <ArrowRight size={13} aria-hidden="true" />

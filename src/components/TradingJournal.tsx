@@ -15,7 +15,7 @@ import TjTradeLog, { TjRecentTrades } from "@/components/trading/TjTradeLog";
 import TjCalendar from "@/components/trading/TjCalendar";
 import TjWelcome from "@/components/trading/TjWelcome";
 import TjBalance from "@/components/trading/TjBalance";
-import TjBot from "@/components/trading/TjBot";
+import TjBot, { reiniciarNova } from "@/components/trading/TjBot";
 import { NOVA_FIRMA, buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
 import TjEmotions from "@/components/trading/TjEmotions";
 import { toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
@@ -240,7 +240,10 @@ export default function TradingJournal({
       if (!res.ok) throw new Error((await res.json()).error ?? "Error al resetear");
       setTrades([]);
       setCapital(null);
+      setDias({});
+      setLogros([]);
       setFilters(NO_FILTERS);
+      reiniciarNova();
       closeForm();
       setResetOpen(false);
     } catch (err) {
@@ -252,6 +255,7 @@ export default function TradingJournal({
 
   const setFilter = <K extends keyof Filters>(k: K, v: Filters[K]) => setFilters(f => ({ ...f, [k]: v }));
   const openReset = () => { setResetOpen(true); setResetError(""); };
+  const diasApuntados = Object.keys(dias).length;
 
   const calendar = (
     <TjCalendar
@@ -386,8 +390,10 @@ export default function TradingJournal({
       {resetOpen && (
         <div className="tj-card tj-alert">
           <p>
-            Se borrarán las {trades.length} {trades.length === 1 ? "operación registrada" : "operaciones registradas"} y tu
-            capital inicial. <strong>Esta acción no se puede deshacer.</strong>
+            Empezarás de cero: se borrarán {trades.length === 1 ? "tu operación" : `tus ${trades.length} operaciones`}, tu capital
+            inicial, {diasApuntados === 1 ? "el día con emociones y notas" : `los ${diasApuntados} días con emociones y notas`} y
+            los hitos del diario que hayas conseguido. Nova también olvidará todo lo que sabía de ti.
+            {" "}<strong>Esta acción no se puede deshacer.</strong>
           </p>
           {resetError && <p className="auth-error">{resetError}</p>}
           <div className="tj-actions">

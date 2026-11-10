@@ -173,23 +173,32 @@ function buildPulse(trades: Trade[], dias: DiasMap, ctx: Map<string, TradeContex
   const conPorque = ult.filter(t => t.strategy || t.notes).length / ult.length;
   const constancia = (apuntados / 14) * 12.5 + conPorque * 12.5;
 
+  // Frases para leer de un vistazo: qué se mide y cómo vas, sin jerga de tabla.
+  const nR = riesgos.length;
+  const bajoLimite = riesgos.filter(r => r <= RISK_LIMIT_PCT).length;
+  const hintRiesgo = riesgo == null
+    ? "Define tu capital y lo mido"
+    : nR === 1
+      ? bajoLimite ? `Tu última operación arriesgó ${RISK_LIMIT_PCT} % o menos` : `Tu última operación arriesgó más del ${RISK_LIMIT_PCT} %`
+      : bajoLimite === nR ? `Tus últimas ${nR} arriesgan ${RISK_LIMIT_PCT} % o menos` : `${bajoLimite} de tus últimas ${nR} arriesgan ${RISK_LIMIT_PCT} % o menos`;
+  const hintResultados = rMedia != null
+    ? ult.length === 1
+      ? `Tu última operación: ${rStr(rMedia)}`
+      : `${rMedia >= 0 ? "Ganas" : "Pierdes"} ${rStr(Math.abs(rMedia)).replace("+", "")} de media por operación`
+    : `Aciertas el ${Math.round(computeStats(ult).winRate)} % de tus últimas ${ult.length}`;
+  const hintEmociones = aMedia != null
+    ? `Esta semana te sientes ${animoInfo(Math.round(aMedia) as 1 | 2 | 3 | 4).label.toLowerCase()} de media`
+    : "Apunta cómo te sientes y lo mido";
+  const pctPorque = Math.round(conPorque * 100);
+  const hintConstancia = apuntados === 0
+    ? `Sin ánimo apuntado en 2 semanas · ${pctPorque} % con estrategia o nota`
+    : `${apuntados} de 14 días con tu ánimo · ${pctPorque} % con estrategia o nota`;
+
   const parts: PulsePart[] = [
-    {
-      id: "riesgo", label: "Riesgo", value: riesgo,
-      hint: riesgo == null ? "Define tu capital para medirlo" : `${riesgos.filter(r => r <= RISK_LIMIT_PCT).length} de ${riesgos.length} con ≤ ${RISK_LIMIT_PCT} % de la cuenta`,
-    },
-    {
-      id: "resultados", label: "Resultados", value: resultados,
-      hint: rMedia != null ? `${rStr(rMedia)} de media en tus últimas ${ult.length}` : `${Math.round(computeStats(ult).winRate)} % de acierto en tus últimas ${ult.length}`,
-    },
-    {
-      id: "emociones", label: "Emociones", value: emociones,
-      hint: aMedia != null ? `Tu ánimo medio esta semana: ${animoInfo(Math.round(aMedia) as 1 | 2 | 3 | 4).label.toLowerCase()}` : "Cuéntame cómo te sientes para medirlo",
-    },
-    {
-      id: "constancia", label: "Constancia", value: constancia,
-      hint: `${apuntados} de 14 días apuntados · ${Math.round(conPorque * 100)} % con porqué`,
-    },
+    { id: "riesgo", label: "Riesgo", value: riesgo, hint: hintRiesgo },
+    { id: "resultados", label: "Resultados", value: resultados, hint: hintResultados },
+    { id: "emociones", label: "Emociones", value: emociones, hint: hintEmociones },
+    { id: "constancia", label: "Constancia", value: constancia, hint: hintConstancia },
   ];
 
   // Lo que aún no se puede medir cuenta como la mitad: ni premia ni castiga.
