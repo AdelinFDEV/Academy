@@ -11,6 +11,7 @@ import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
+import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import GuideDiarioCalc from "./GuideDiarioCalc";
 import GuideDiarioQuiz from "./GuideDiarioQuiz";
 import "./como-hacer-un-diario-de-trading.css";
@@ -42,6 +43,7 @@ export const metadata: Metadata = {
 };
 
 const SECTIONS = [
+  { id: "pasos", label: "En 5 pasos" },
   { id: "que-es", label: "Qué es" },
   { id: "que-apuntar", label: "Qué apuntar" },
   { id: "cifras", label: "Las cifras" },
@@ -49,6 +51,7 @@ const SECTIONS = [
   { id: "revisar", label: "Revisarlo" },
   { id: "errores", label: "Errores" },
   { id: "donde", label: "Dónde llevarlo" },
+  { id: "hacienda", label: "Hacienda" },
   { id: "glosario", label: "Glosario" },
   { id: "quiz", label: "Quiz" },
 ];
@@ -60,17 +63,28 @@ const HERO_STATS = [
   { prefix: "", value: 4, suffix: "", dec: 0, label: "Cifras que deciden\nsi tu método funciona" },
 ];
 
+/** La respuesta corta, arriba: quien busca «cómo hacer…» quiere los pasos. */
+const PASOS_RESUMEN = [
+  { t: "Elige dónde", d: "Un cuaderno, una hoja de cálculo o una herramienta. Vale el que vayas a abrir cada día." },
+  { t: "Fija la plantilla", d: "Los mismos campos en cada operación: activo, entrada, stop, riesgo, motivo, ánimo y resultado." },
+  { t: "Apunta en el momento", d: "El plan y el motivo al entrar; el resultado y si seguiste el plan, al salir." },
+  { t: "Calcula cuatro cifras", d: "Win rate, ganancia y pérdida medias, resultado en R y esperanza por operación." },
+  { t: "Revísalo con calendario", d: "Cada semana, las que se saltaron el plan; cada mes, las cifras; cada 30 operaciones, los desgloses." },
+];
+
 /** Los campos de cada operación: los de antes de entrar y los de después. */
-const CAMPOS_ANTES: [string, string][] = [
+const CAMPOS_ANTES: [string, React.ReactNode][] = [
   ["Fecha y hora", "Para ver luego a qué horas y qué días operas mejor."],
-  ["Activo y dirección", "Por ejemplo, BTC/USDT long. Sin esto no puedes desglosar por par."],
+  ["Activo y dirección", <>Por ejemplo, <Link href="/glosario/bitcoin">BTC</Link>/USDT <Link href="/glosario/long-short">long</Link>. Sin esto no puedes desglosar por par.</>],
+  ["Temporalidad", "El gráfico en el que decides: 15 minutos, 4 horas, diario. Mezclarlas falsea las cifras."],
   ["Precio de entrada", "El precio real al que entraste, no el que querías."],
-  ["Stop-loss", "Dónde sales si te equivocas. Define tu riesgo."],
-  ["Objetivo", "Dónde piensas recoger beneficios, si lo tienes."],
+  ["Stop-loss", <>Dónde sales si te equivocas: tu <Link href="/glosario/stop-loss">stop-loss</Link>. Define tu riesgo.</>],
+  ["Objetivo", <>Dónde piensas recoger beneficios, tu <Link href="/glosario/take-profit">take-profit</Link>, si lo tienes.</>],
   ["Tamaño y riesgo", "Cuánto dinero pones y cuánto pierdes si salta el stop."],
   ["Estrategia", "La configuración que operas: ruptura, rango, tendencia…"],
   ["Por qué entras", "Una frase. Si no sabes escribirla, no tienes motivo."],
   ["Cómo te sientes", "Tranquilo, eufórico, cansado, con ganas de recuperar."],
+  ["Captura del gráfico", "Una imagen de cómo estaba el precio al entrar. Al revisar, vale más que cualquier nota."],
 ];
 
 const CAMPOS_DESPUES: [string, string][] = [
@@ -223,19 +237,41 @@ export default async function DiarioTradingGuidePage() {
           <span className="gbc-hero-gold">Qué apuntar, qué cifras mirar y cómo revisarlo.</span>
         </h1>
         <p className="gbc-hero-desc">
-          Un diario de trading es la diferencia entre creer que operas bien y saberlo. Esta guía te enseña a montar
-          el tuyo desde cero: los campos que lleva cada operación, las cuatro cifras que dicen si tu método gana
-          dinero, cómo apuntar las emociones y la rutina para revisarlo. Sirve igual con un cuaderno, con un Excel o
-          con una herramienta.
+          Un diario de trading es la diferencia entre creer que operas bien y saberlo. Aquí tienes cómo hacer un
+          diario de trading desde cero: los campos que lleva cada operación, las cuatro cifras que dicen si tu
+          método gana dinero, cómo apuntar las emociones y la rutina para revisarlo. Sirve igual con un cuaderno,
+          con un Excel o con una herramienta.
         </p>
         <div className="gbc-hero-pills">
-          <span className="gbc-pill">7 secciones</span>
+          <span className="gbc-pill">8 secciones</span>
           <span className="gbc-pill">Calculadora de R y esperanza</span>
           <span className="gbc-pill">Glosario interactivo</span>
           <span className="gbc-pill">Quiz + Badge</span>
         </div>
         <GuideHeroStats stats={HERO_STATS} />
       </header>
+
+      {/* ── LA RESPUESTA CORTA ── */}
+      <section id="pasos" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">En resumen</div>
+          <h2 className="gbc-title">Cómo hacer un diario de trading en 5 pasos</h2>
+          <div className="gbc-body">
+            <p>
+              Si solo tienes un minuto, esto es cómo hacer un diario de trading que sirva. El resto de la guía
+              desarrolla cada paso con ejemplos y una calculadora.
+            </p>
+          </div>
+          <ol className="dtg-pasos">
+            {PASOS_RESUMEN.map((p) => (
+              <li key={p.t}>
+                <strong>{p.t}</strong>
+                <span>{p.d}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
       {/* ── SECCIÓN 1: QUÉ ES ── */}
       <section id="que-es" className="gbc-section">
@@ -275,11 +311,11 @@ export default async function DiarioTradingGuidePage() {
       <section id="que-apuntar" className="gbc-section">
         <div className="gbc-gc">
           <div className="gbc-ey">Sección 2</div>
-          <h2 className="gbc-title">Qué apuntar en cada operación</h2>
+          <h2 className="gbc-title">Qué apuntar en cada operación: la plantilla</h2>
           <div className="gbc-body">
             <p>
-              Un buen diario de trading tiene dos momentos: lo que apuntas antes de entrar y lo que apuntas al
-              salir. Lo primero es tu plan para esa operación; lo segundo, lo que pasó. Si solo rellenas lo segundo,
+              La plantilla es la parte central de cómo hacer un diario de trading. Tiene dos momentos: lo que
+              apuntas antes de entrar y lo que apuntas al salir. Lo primero es tu plan para esa operación; lo segundo, lo que pasó. Si solo rellenas lo segundo,
               tienes una lista de resultados, no un diario.
             </p>
           </div>
@@ -305,8 +341,8 @@ export default async function DiarioTradingGuidePage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              Tres campos merecen una explicación. El <Link href="/glosario/stop-loss">stop-loss</Link> es lo que
-              convierte una operación en un riesgo medible: sin él no sabes cuánto podías perder. El tamaño importa
+              Tres campos merecen una explicación. El stop-loss es lo que convierte una operación en un riesgo
+              medible: sin él no sabes cuánto podías perder. El tamaño importa
               porque el mismo acierto con el doble de dinero es el doble de riesgo; el{" "}
               <Link href="/glosario/tamano-de-posicion">tamaño de posición</Link> se decide a partir del stop, no al
               revés. Y la columna «¿seguiste el plan?» es la que más enseña a medio plazo: separa las pérdidas que
@@ -317,10 +353,13 @@ export default async function DiarioTradingGuidePage() {
           <div className="gbc-box gbc-box--green" style={{ marginTop: 28 }}>
             <div className="gbc-box-title">Un ejemplo apuntado</div>
             <div className="gbc-box-body">
-              <p>BTC/USDT <Link href="/glosario/long-short">long</Link> · entrada 60.000 · stop 58.800 · objetivo
-              63.600 · 1.000 € de posición, 20 € de riesgo (1 % de una cuenta de 2.000 €) · ruptura de rango · «rompe
-              el máximo de la semana con volumen» · tranquilo. Salida a 63.000 por objetivo ajustado · +50 € · +2,5 R
-              · plan cumplido: sí · «moví el objetivo antes de tiempo por miedo; dejé 10 € en la mesa».</p>
+              <p>Así se ve en la práctica cómo hacer un diario de trading: una operación inventada, apuntada de
+              principio a fin.</p>
+              <p>Antes de entrar: BTC/USDT long en 4 horas. Entrada a 60.000, stop a 58.800 y objetivo a 63.600.
+              Posición de 1.000 €, con 20 € de riesgo: el 1 % de una cuenta de 2.000 €. Estrategia: ruptura de
+              rango. Motivo: «rompe el máximo de la semana con volumen». Ánimo: tranquilo.</p>
+              <p>Al salir: 63.000, por un objetivo ajustado a mano. Resultado: +50 €, es decir, +2,5 R. Plan
+              cumplido: sí. Nota: «moví el objetivo antes de tiempo por miedo; dejé 10 € en la mesa».</p>
             </div>
           </div>
         </div>
@@ -333,8 +372,9 @@ export default async function DiarioTradingGuidePage() {
           <h2 className="gbc-title">Las cuatro cifras que dicen si tu método funciona</h2>
           <div className="gbc-body">
             <p>
-              Con treinta o cuarenta operaciones apuntadas, el diario empieza a dar cifras con sentido. Hay muchas
-              posibles, pero cuatro deciden casi todo, y se leen juntas.
+              Saber cómo hacer un diario de trading incluye saber qué medir con él. Con treinta o cuarenta
+              operaciones apuntadas, el diario empieza a dar cifras con sentido. Hay muchas posibles, pero cuatro
+              deciden casi todo, y se leen juntas.
             </p>
             <p>
               <strong>1. El <Link href="/glosario/win-rate">win rate</Link></strong>: qué parte de tus operaciones
@@ -373,7 +413,8 @@ export default async function DiarioTradingGuidePage() {
           <h2 className="gbc-title">Apuntar las emociones: la columna que nadie rellena</h2>
           <div className="gbc-body">
             <p>
-              La mayoría de los diarios de trading se quedan en los números. Es una pena, porque las decisiones que
+              Casi todo lo que se explica sobre cómo hacer un diario de trading se queda en los números. Es una
+              pena, porque las decisiones que
               más dinero cuestan casi nunca son técnicas. Son entrar justo después de una pérdida para recuperarla,
               subir el tamaño tras una racha buena o cerrar una ganadora por miedo a que se dé la vuelta.
             </p>
@@ -408,8 +449,8 @@ export default async function DiarioTradingGuidePage() {
           <h2 className="gbc-title">Cómo revisar tu diario: la rutina</h2>
           <div className="gbc-body">
             <p>
-              Un diario que no se lee es un archivo. Lo que convierte las anotaciones en mejoras es la revisión, y
-              funciona mejor con un calendario fijo que cuando apetece.
+              Un diario que no se lee es un archivo. Saber cómo hacer un diario de trading es la mitad; la otra
+              mitad es revisarlo, y funciona mejor con un calendario fijo que cuando apetece.
             </p>
           </div>
 
@@ -438,7 +479,8 @@ export default async function DiarioTradingGuidePage() {
           <div className="gbc-ey">Sección 6</div>
           <h2 className="gbc-title">Los errores que vuelven inútil un diario de trading</h2>
           <div className="gbc-body">
-            <p>Seis fallos muy comunes. Todos tienen arreglo, y casi todos cuestan menos de un minuto al día.</p>
+            <p>Seis fallos muy comunes, incluso en quien ya sabe cómo hacer un diario de trading. Todos tienen
+            arreglo, y casi todos cuestan menos de un minuto al día.</p>
           </div>
           <div className="gbc-fc-section" style={{ padding: 0 }}>
             <GuideFlipCards cards={ERRORES} />
@@ -453,7 +495,8 @@ export default async function DiarioTradingGuidePage() {
           <h2 className="gbc-title">Cuaderno, Excel o herramienta: dónde llevarlo</h2>
           <div className="gbc-body">
             <p>
-              El mejor sitio para llevar un diario de trading es el que vas a usar todos los días. Las tres opciones
+              La última decisión sobre cómo hacer un diario de trading es dónde llevarlo. El mejor sitio es el que
+              vas a usar todos los días. Las tres opciones
               funcionan; cambian el trabajo que te cuesta y lo que te cuentan.
             </p>
           </div>
@@ -480,20 +523,45 @@ export default async function DiarioTradingGuidePage() {
             <p>
               Si empiezas, una hoja de cálculo con los campos de la sección 2 es suficiente. Si prefieres no montar
               nada, el <Link href="/herramientas/diario">Diario de Trading</Link> de la academia hace estas cuentas
-              solo, cruza tu ánimo con tus resultados y no se conecta a ningún exchange: las operaciones las apuntas
-              tú. Lo que importa no es la herramienta, sino apuntar todas las operaciones durante el tiempo
-              suficiente.
+              solo, cruza tu ánimo con tus resultados y no se conecta a ningún{" "}
+              <Link href="/glosario/exchange">exchange</Link>: las operaciones las apuntas tú. Lo que importa no es
+              la herramienta, sino apuntar todas las operaciones durante el tiempo suficiente.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SECCIÓN 8: HACIENDA ── El ángulo que no tienen las webs de los
+          brókeres: el diario como base de la declaración en España. */}
+      <section id="hacienda" className="gbc-section">
+        <div className="gbc-gc">
+          <div className="gbc-ey">Sección 8 · Si declaras en España</div>
+          <h2 className="gbc-title">Tu diario de trading y la declaración de la renta</h2>
+          <div className="gbc-body">
+            <p>
+              Ninguna norma te obliga a llevar un diario de trading, pero en España casi todo lo que apuntas acaba
+              haciendo falta en junio. Cada venta de una criptomoneda, y también cada cambio de una por otra,
+              produce una ganancia o una pérdida que se declara. Para calcularla, Hacienda exige el método FIFO: lo
+              primero que compraste es lo primero que vendes.
+            </p>
+            <p>
+              Si tu plantilla guarda la fecha, la cantidad, el precio y la comisión de cada compra y cada venta,
+              tienes la materia prima de ese cálculo. Lo que no sustituye es el histórico oficial que descargas del
+              exchange: ese es el que respalda tus cifras si te las piden. La guía de{" "}
+              <Link href="/guias/fiscalidad-cripto-espana">fiscalidad cripto en España</Link> explica el cálculo
+              entero, con un simulador FIFO.
             </p>
           </div>
 
           <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
-            <div className="gbc-box-title">Educación, no asesoramiento</div>
+            <div className="gbc-box-title">Un hábito que ahorra un susto</div>
             <div className="gbc-box-body">
-              <p>Esta guía explica cómo registrar y medir tus propias operaciones. No recomienda ningún activo,
-              estrategia ni plataforma, y no es consejo de inversión. Operar con criptomonedas, y más con{" "}
-              <Link href="/glosario/apalancamiento">apalancamiento</Link>, puede hacerte perder todo el capital.</p>
+              <p>Una vez al trimestre, cuadra el total de operaciones de tu diario con el extracto del exchange. Si
+              falta alguna, la encuentras en marzo, no la víspera de presentar la declaración.</p>
             </div>
           </div>
+
+          <DisclaimerRiesgo variante="guia" />
         </div>
       </section>
 
@@ -512,7 +580,7 @@ export default async function DiarioTradingGuidePage() {
           <div className="gbc-ey">Quiz final</div>
           <h2 className="gbc-title">Demuestra lo que sabes — 5 preguntas, badge en juego</h2>
           <div className="gbc-body" style={{ marginBottom: 32 }}>
-            <p>Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Bitácora al Día</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
+            <p>Comprueba si ya sabes cómo hacer un diario de trading. Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Bitácora al Día</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideDiarioQuiz /> : <GuideQuizCuenta slug={SLUG} />}
         </div>

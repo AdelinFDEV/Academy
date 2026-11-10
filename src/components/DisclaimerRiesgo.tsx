@@ -25,7 +25,7 @@ import { AlertTriangle } from "lucide-react";
  * quien se dirige la comunicación.
  */
 
-export type VarianteAviso = "portfolio" | "diario" | "general" | "fiscal" | "formacion";
+export type VarianteAviso = "portfolio" | "diario" | "general" | "fiscal" | "formacion" | "guia";
 type Variante = VarianteAviso;
 
 /**
@@ -51,7 +51,7 @@ function Responsabilidad() {
         comprar, ni cuándo, ni a qué precio, y{" "}
         <strong>no se recomienda copiar ninguna operación</strong>. Lo que se
         publica se publica para explicar cómo se toma una decisión, no para que
-        la repitas: replicar la operativa de otra persona sin conocer su
+        la repitas. Replicar la operativa de otra persona sin conocer su
         capital, su horizonte ni su tolerancia a la pérdida es una forma
         habitual de perder dinero.
       </p>
@@ -160,6 +160,28 @@ const TEXTO: Record<Variante, { titulo: string; cuerpo: React.ReactNode }> = {
           Si el trading te causa ansiedad, deudas o una conducta que no puedes
           controlar, habla con un profesional de la salud. Si has sufrido un
           fraude, denúncialo ante la Policía o la Guardia Civil.
+        </p>
+      </>
+    ),
+  },
+
+  // Para las guías que tocan cómo operar (añadida el 10-11-2026 con «Cómo
+  // hacer un diario de trading»). Las guías son gratuitas y explicativas: el
+  // aviso dice eso, sin hablar de una herramienta ni de un curso.
+  guia: {
+    titulo: "Educación, no asesoramiento",
+    cuerpo: (
+      <>
+        <p>
+          Esta guía es <strong>contenido educativo</strong>. Explica cómo
+          registrar y medir tus propias decisiones; no recomienda ningún activo,
+          estrategia, plataforma ni momento para operar, y no conoce tu
+          situación ni tu tolerancia a la pérdida.
+        </p>
+        <p>
+          <strong>Operar con criptoactivos es de alto riesgo</strong>, y más
+          con apalancamiento: puedes perder todo el capital. Los ejemplos con
+          cifras son ilustrativos y no anticipan ningún resultado.
         </p>
       </>
     ),

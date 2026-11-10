@@ -183,7 +183,7 @@ const FAQ = [
   },
   {
     q: "¿Por qué no usar una plantilla de Excel?",
-    a: "Un Excel bien llevado funciona, y es mucho mejor que no apuntar nada. La diferencia está en el trabajo: aquí las estadísticas, la curva de capital, el riesgo en múltiplos de R y el cruce con tu ánimo se calculan solos con cada operación, y Nova te avisa de lo importante sin que tengas que buscarlo entre fórmulas.",
+    a: "Un Excel bien llevado funciona, y es mucho mejor que no apuntar nada. La diferencia está en el trabajo. Aquí las estadísticas, la curva de capital, el riesgo en múltiplos de R y el cruce con tu ánimo se calculan solos con cada operación. Y Nova te avisa de lo importante sin que tengas que buscarlo entre fórmulas.",
   },
   {
     q: "¿Usa inteligencia artificial?",
@@ -316,7 +316,7 @@ export default async function FichaDiarioPage() {
             </h1>
 
             <p className="fh-lead">
-              Apunta cada operación y cómo te sentías. El diario calcula diez estadísticas, tu curva de capital y tu
+              Apunta cada operación y cómo te sentías. Este diario de trading calcula diez estadísticas, tu curva de capital y tu
               riesgo, y Nova te dice cada día lo más importante, en frases cortas.
             </p>
 

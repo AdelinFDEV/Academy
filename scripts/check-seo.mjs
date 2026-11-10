@@ -38,15 +38,16 @@ const BASE = process.env.SEO_BASE || "http://localhost:3000";
  */
 let ruta = (process.argv[2] ?? "").trim();
 // Por si aun así llega manglada.
-const manglada = ruta.match(/^[A-Za-z]:[\\/].*?[\\/]((?:post|guias|glosario)[\\/].+)$/);
+const manglada = ruta.match(/^[A-Za-z]:[\\/].*?[\\/]((?:post|guias|glosario|herramientas)[\\/].+)$/);
 if (manglada) ruta = "/" + manglada[1].replace(/\\/g, "/");
 if (ruta && !ruta.startsWith("/")) ruta = "/" + ruta;
 
-if (!ruta || !/^\/(post|guias|glosario)\/[a-z0-9-]+$/.test(ruta)) {
+if (!ruta || !/^\/(post|guias|glosario|herramientas)\/[a-z0-9-]+$/.test(ruta)) {
   console.log(`
 Uso:  npm run check:seo -- guias/mi-slug
       npm run check:seo -- guias/xrp
       npm run check:seo -- glosario/exchange
+      npm run check:seo -- herramientas/diario
 
   Sin la barra inicial: Git Bash la convierte en una ruta de Windows.
 `);
@@ -58,6 +59,9 @@ const PERFILES = {
   post: { min: 500, max: 1800, h2: 3, enlaces: 2, visuales: 1, nombre: "entrada" },
   guias: { min: 800, max: 6000, h2: 4, enlaces: 2, visuales: 1, nombre: "guía" },
   glosario: { min: 1200, max: 2200, h2: 4, enlaces: 5, visuales: 5, nombre: "ficha del diccionario" },
+  // Las fichas públicas de las herramientas (10-11-2026): son páginas de venta,
+  // pero compiten en Google igual que una guía, así que se miden como ella.
+  herramientas: { min: 800, max: 6000, h2: 4, enlaces: 2, visuales: 1, nombre: "ficha de herramienta" },
 };
 const tipo = ruta.split("/")[1];
 const P = PERFILES[tipo] ?? PERFILES.post;
@@ -354,30 +358,36 @@ ok(densidad <= 2.5, "TECHO de densidad ≤ 2,5 %", `${densidad.toFixed(2)} %`);
 ok(keyword && cubre(title), "keyword en el title");
 ok(keyword && cubre(h1[0]?.t ?? ""), "keyword en el H1");
 ok(keyword && cubre(desc), "keyword en la description");
-const primer = texto(cuerpo.match(/<p(?:s[^>]*)?>([\s\S]*?)<\/p>/)?.[1] ?? "");
+const primer = texto(cuerpo.match(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/)?.[1] ?? "");
 cubre(primer) ? ok(true, "keyword en el primer párrafo") : aviso("keyword en el primer párrafo", "no aparece entera");
 
-// Ojo con la expresion: `<p(?:s...)?>` y no `<p[^>]*>`. La segunda tambien
+// Ojo con la expresion: `<p(?:\s...)?>` y no `<p[^>]*>`. (Hasta el 10-11-2026
+// estaba escrita con una `s` suelta en vez de `\s`, y se saltaba todo <p> con
+// clase: la entradilla de una ficha no contaba como primer párrafo.) La segunda tambien
 // casa con los <path> de los iconos SVG del menu, y entonces el «parrafo» iba
 // desde un icono hasta el primer </p> de la pagina, tragandose el menu entero.
 // Daba por malos un parrafo de 123 palabras y una frase de 45 que no existian.
 // Lo cazo la auditoria de la guia de fiscalidad.
 // Legibilidad. Se mide párrafo a párrafo: las listas y las etiquetas de los
 // gráficos no llevan punto y al concatenarlas salen «frases» que no existen.
-const frases = [...cuerpo.matchAll(/<p(?:s[^>]*)?>([\s\S]*?)<\/p>/g)]
+const frases = [...cuerpo.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)]
   .flatMap((m) => texto(m[1]).split(/(?<=[.!?])\s+/))
   .filter((f) => f.split(/\s+/).length > 3);
 const media = frases.length ? Math.round(frases.reduce((a, f) => a + f.split(/\s+/).length, 0) / frases.length) : 0;
 const largas = frases.filter((f) => f.split(/\s+/).length > 40).length;
 ok(media <= 24, "frase media ≤ 24 palabras", `${media}`);
 ok(largas === 0, "sin frases de más de 40 palabras", `${largas}`);
-const parrafosLargos = [...cuerpo.matchAll(/<p(?:s[^>]*)?>([\s\S]*?)<\/p>/g)]
+const parrafosLargos = [...cuerpo.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/g)]
   .filter((m) => texto(m[1]).split(/\s+/).length > 120).length;
 ok(parrafosLargos === 0, "sin párrafos de más de 120 palabras", `${parrafosLargos}`);
 
 // ── 4. Enlazado ───────────────────────────────────────────────────────────
 seccion("ENLAZADO");
-const salientes = [...new Set([...cuerpo.matchAll(/href="(\/[^"#]+)"/g)].map((m) => m[1]))];
+// Fuera los de /api/: son acciones, no páginas (el «Empezar mi diario» va a
+// /api/checkout, que redirige al pago a propósito). robots.txt ya los bloquea,
+// así que Google no los sigue, y medirlos como enlaces daba un 307 por «roto».
+const salientes = [...new Set([...cuerpo.matchAll(/href="(\/[^"#]+)"/g)].map((m) => m[1]))]
+  .filter((h) => !h.startsWith("/api/"));
 ok(salientes.length >= P.enlaces, `≥ ${P.enlaces} enlaces internos salientes`, `${salientes.length}`);
 let rotos = 0;
 for (const h of salientes) {

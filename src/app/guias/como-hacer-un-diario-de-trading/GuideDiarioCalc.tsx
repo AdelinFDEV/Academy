@@ -156,7 +156,7 @@ export default function GuideDiarioCalc() {
         </div>
       </div>
 
-      <p className="dtg-pie">Cálculo orientativo, sin comisiones ni deslizamiento. No se guarda nada.</p>
+      <p className="dtg-pie">Cálculo orientativo, sin comisiones ni diferencias en el precio de ejecución. No se guarda nada.</p>
     </div>
   );
 }

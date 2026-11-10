@@ -91,7 +91,7 @@ export default function Footer() {
             <p className="footer-disclaimer-text">
               <strong>Tú decides y tú respondes.</strong> El uso que hagas de cualquier información publicada en
               esta web —cifras, operaciones, análisis, estadísticas o herramientas— es responsabilidad
-              exclusivamente tuya, y ninguna decisión de inversión que tomes a partir de este contenido genera
+              exclusivamente tuya. Ninguna decisión de inversión que tomes a partir de este contenido genera
               responsabilidad alguna para AdelinBTC Academy ni para su autor. <strong>Esto no es un grupo de
               señales</strong>: no se te dice qué comprar, ni cuándo, ni a qué precio, y no se recomienda copiar
               ninguna operación.

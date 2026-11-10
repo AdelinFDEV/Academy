@@ -28,7 +28,8 @@ Hecho el 10-11-2026: la ficha `/herramientas/diario` tiene título y descripció
 
 - [ ] **Portada de la guía** (la pasa el admin): `public/guias/como-hacer-un-diario-de-trading.webp`, WebP a 1.600 px y calidad 82, y descomentar `portada` en su entrada de `GUIDES`.
 - [ ] **Capturas reales del Diario** (las pasa el admin) para la ficha, con su `alt`: hoy todo son maquetas decorativas y Google Imágenes no ve nada.
-- [ ] **Auditoría SEO** (`AUDITORIA-SEO.md` entera) de la guía y de la ficha. Al final, `npm run check:seo -- guias/como-hacer-un-diario-de-trading "como hacer un diario de trading"` y `npm run check:seo -- herramientas/diario "diario de trading"`.
+- [ ] **Una experiencia propia en la guía** (fase 8 de la auditoría, la única que no se puede escribir sin el admin): una operación suya apuntada, un error que el diario le enseñó o una captura de su propio diario. Hoy todo el ejemplo es inventado y así lo dice.
+- [ ] **`check:seo` de las demás guías** con el script corregido el 10-11-2026 (antes se saltaba los `<p>` con clase). Como control, `guias/xrp "xrp"` da tres fallos que ya estaban: densidad 2,69 % (techo 2,5), una frase de más de 40 palabras y un solo enlace entrante (huérfana).
 - [ ] **Mirar en Search Console** qué consultas trae `/herramientas/diario` a las 4-6 semanas del despliegue, y ajustar la palabra clave a los datos.
 
 ### 00d. Nova, el bot del Diario: siguientes pasos (06-11-2026)
