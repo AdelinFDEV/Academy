@@ -128,6 +128,22 @@ export const GUIDES: GuideMeta[] = [
     portada: "/guias/fiscalidad-cripto-espana.webp",
     imagenPropia: true,
   },
+  {
+    slug: "como-hacer-un-diario-de-trading",
+    title: "Cómo hacer un diario de trading",
+    shortTitle: "Diario de trading",
+    description: "Qué apuntar en cada operación, las cuatro cifras que dicen si tu método gana dinero, cómo registrar las emociones y la rutina para revisarlo. Con calculadora de R y esperanza.",
+    difficulty: "básico",
+    sections: 7,
+    badge: "Bitácora al Día",
+    badgeId: "guide-diario-trading",
+    readTime: "14 min",
+    color: "#e6b455",
+    topics: ["Qué apuntar", "Win rate, R y esperanza", "Emociones", "Rutina de revisión"],
+    tags: ["EXPLICACIONES"],
+    // portada: "/guias/como-hacer-un-diario-de-trading.webp" — la pasa el admin.
+    publicada: "2026-11-10",
+  },
 ];
 
 /**

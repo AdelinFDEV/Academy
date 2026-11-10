@@ -143,6 +143,8 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
           return (
             <article key={t.term} className="gl-termino" hidden={!enPagina}>
               <div className="gl-termino-head">
+                {/* `data-sin-popup`: aquí la definición ya está a la vista, así
+                    que el enlace va directo a la ficha (GlosarioPopupGlobal). */}
                 {/* Solo enlazan los términos que ya tienen desarrollo largo. El
                     resto se queda sin enlace, que si no daría un 404. */}
                 {/* El nombre es un <h2>: cada término es una sección de esta
@@ -150,7 +152,7 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
                     un muro de enlaces sueltos. Antes era un span. */}
                 <h2 className="gl-termino-nombre">
                   {t.extended ? (
-                    <Link href={`/glosario/${t.slug}`} className="gl-termino-link">
+                    <Link href={`/glosario/${t.slug}`} className="gl-termino-link" data-sin-popup>
                       {t.term}
                     </Link>
                   ) : (
@@ -183,7 +185,7 @@ export default function GlosarioClient({ isLoggedIn, initialSaved }: Props) {
               <p className="gl-termino-def">{t.definition}</p>
 
               {t.extended && (
-                <Link href={`/glosario/${t.slug}`} className="gl-termino-mas">
+                <Link href={`/glosario/${t.slug}`} className="gl-termino-mas" data-sin-popup>
                   Leer la explicación completa
                   <ChevronRight size={13} strokeWidth={2.6} aria-hidden="true" />
                 </Link>

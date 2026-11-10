@@ -194,7 +194,19 @@ const GUIDE_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
   "render": (size) => <RenderBadgeIcon size={size} />,
   "hyperliquid": (size) => <HyperliquidBadgeIcon size={size} />,
   "xrp": (size) => <XrpBadgeIcon size={size} />,
+  "como-hacer-un-diario-de-trading": (size) => <DiarioGuiaBadgeIcon size={size} />,
 };
+
+function DiarioGuiaBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Un cuaderno abierto con una curva que sube: la bitácora al día */}
+      <path d="M3.5 5.5c2.6-.9 5.4-.7 8.5 1 3.1-1.7 5.9-1.9 8.5-1v13c-2.6-.9-5.4-.7-8.5 1-3.1-1.7-5.9-1.9-8.5-1v-13Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M12 6.5v13" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="m14.2 14.6 1.7-1.9 1.4 1 1.7-2.4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
 
 function SeguridadBadgeIcon({ size = 24 }: { size?: number }) {
   return (

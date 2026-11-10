@@ -353,7 +353,7 @@ Tres barreras independientes protegen el aula: `src/proxy.ts` (sin sesión, al l
 - **Diccionario — siempre, sin que nadie lo pida.** Es parte del trabajo de escribir el curso, igual que las preguntas:
   1. Al escribir cada lección, **apunta toda palabra técnica o que merezca explicarse** (siglas, anglicismos, conceptos de finanzas o psicología, nombres de sesgos, métricas…). Ante la duda, entra en la lista.
   2. Comprueba cuáles existen: `grep '  slug: "' src/lib/glosario.ts`.
-  3. **Crea las que falten** en `src/lib/glosario.ts` con una **definición buena**, siguiendo [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) (Parte A): `definition` corta y clara, `extended` de 150-250 palabras con la estructura qué es / por qué importa / error típico, con datos con fuente si los hay, y tres `seeAlso` que existan. Cada ficha con frases propias: nunca copiadas de otra.
+  3. **Crea las que falten** en `src/lib/glosario.ts` **ya como ficha detallada**, siguiendo [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) (Parte B entera: 1.200-1.600 palabras, sus `<h2>`, piezas visuales, FAQ, `seoTitle` y `seoDescription`), con `definition` corta y clara, datos con fuente si los hay, y tres `seeAlso` que existan. **Nunca la versión corta de 150-250 palabras** (decisión del admin, 10-11-2026). Cada ficha con frases propias: nunca copiadas de otra.
   4. **Enlaza cada término en su primera aparición en cada lección**: `<a href="/glosario/<slug>">término</a>`. Comprueba que todos los enlaces apuntan a un `slug` que existe.
   5. `npm run check:glosario`. `term` no se cambia jamás.
   

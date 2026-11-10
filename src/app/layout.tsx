@@ -10,6 +10,8 @@ import CookieBanner from "@/components/CookieBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
 import StreakTracker from "@/components/StreakTracker";
+import GlosarioPopupGlobal, { type TerminoCorto } from "@/components/GlosarioPopupGlobal";
+import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -39,6 +41,14 @@ const fraunces = Fraunces({
   display: "swap",
   preload: false,
 });
+
+// Las definiciones cortas para el popup del diccionario de toda la web. Solo
+// los términos con ficha propia: el «ver explicación detallada» de los demás
+// daría 404. Son unos 15 KB sin comprimir y van en el layout, que en la
+// navegación interna no se vuelve a pedir: se pagan una vez por visita.
+const TERMINOS_POPUP: Record<string, TerminoCorto> = Object.fromEntries(
+  GLOSARIO_CON_PAGINA.map((t) => [t.slug, { term: t.term, definition: t.definition }]),
+);
 
 const siteUrl = SITE_URL;
 const description =
@@ -98,6 +108,7 @@ export default function RootLayout({
         <CookieBanner />
         <SiteVisitTracker />
         <StreakTracker />
+        <GlosarioPopupGlobal terminos={TERMINOS_POPUP} />
         {/* Cloudflare Web Analytics: sin cookies, así que no depende del
             banner y mide siempre. Es la red de seguridad si alguien no acepta. */}
         <Script

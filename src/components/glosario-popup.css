@@ -1,0 +1,90 @@
+/* ── El popup del diccionario en toda la web (GlosarioPopupGlobal, 10-11-2026) ──
+   Copia del de las lecciones (aula.css, «Diccionario sin salir de la lección»)
+   con el naranja de la web en vez del color del curso. Si cambias uno, mira el
+   otro: tienen que parecer el mismo popup. */
+
+.gpop-velo {
+  --gpop-acento: var(--accent-orange, #ff6b2b);
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+  background: rgba(3, 7, 15, 0.62);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: gpop-velo 0.2s ease both;
+}
+.gpop-tarjeta {
+  position: relative;
+  width: min(100%, 460px);
+  padding: 1.6rem 1.5rem 1.3rem;
+  border: 1px solid color-mix(in srgb, var(--gpop-acento) 40%, rgba(240, 244, 255, 0.08));
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 70% at 0% 0%, color-mix(in srgb, var(--gpop-acento) 14%, transparent), transparent 60%),
+    linear-gradient(170deg, #12213e, #0a1426);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.9), 0 0 60px -30px var(--gpop-acento);
+  text-align: left;
+  animation: gpop-entrar 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.gpop-x {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(240, 244, 255, 0.04);
+  color: rgba(240, 244, 255, 0.6);
+  cursor: pointer;
+}
+.gpop-x:hover { color: rgba(240, 244, 255, 0.92); }
+.gpop-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gpop-acento);
+}
+.gpop-termino { margin: 0.5rem 2.4rem 0.7rem 0; font: 800 1.45rem/1.2 var(--font-display); color: #fff; }
+.gpop-def { margin: 0; font-size: 0.98rem; line-height: 1.65; color: rgba(240, 244, 255, 0.82); }
+.gpop-acciones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.6rem; margin-top: 1.4rem; }
+.gpop-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.68rem 1.15rem;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: var(--gpop-acento);
+  color: #0a1628;
+  font: 800 0.9rem var(--font-family);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+.gpop-btn:hover { filter: brightness(1.08); transform: translateY(-1px); color: #0a1628; }
+.gpop-btn--ghost { background: transparent; border-color: rgba(240, 244, 255, 0.16); color: rgba(240, 244, 255, 0.92); font-weight: 700; }
+.gpop-btn--ghost:hover { color: #fff; }
+.gpop-nota { margin: 0.8rem 0 0; font-size: 0.74rem; color: rgba(240, 244, 255, 0.4); text-align: right; }
+
+@keyframes gpop-velo { from { opacity: 0; } }
+@keyframes gpop-entrar { from { opacity: 0; transform: translateY(12px) scale(0.96); } }
+
+@media (max-width: 520px) {
+  .gpop-acciones { flex-direction: column-reverse; }
+  .gpop-btn { width: 100%; }
+  .gpop-nota { text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gpop-velo, .gpop-tarjeta { animation: none; }
+}

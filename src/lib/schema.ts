@@ -104,6 +104,45 @@ export function guideSchema(guia: {
 }
 
 /**
+ * Una herramienta de pago del sitio como aplicación web — hoy, el Diario de
+ * Trading en su ficha pública (10-11-2026).
+ *
+ * El precio va porque está a la vista en la ficha y sale de la misma constante
+ * que cobra Stripe: no se escribe a mano. Sin `aggregateRating` ni `review`:
+ * no hay valoraciones reales que enseñar, y declararlas sería spam. Eso hace
+ * que Google no pinte estrellas; lo que sí gana es entender que la página es
+ * un producto, no un artículo.
+ */
+export function webAppSchema(app: {
+  path: string;
+  name: string;
+  description: string;
+  /** Precio mensual en euros, el mismo número que cobra Stripe. */
+  precioMensualEur: number;
+}): JsonLdNode {
+  const url = `${SITE_URL}${app.path}`;
+  return {
+    "@type": "WebApplication",
+    "@id": `${url}#app`,
+    name: app.name,
+    description: app.description,
+    url,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Web",
+    inLanguage: "es-ES",
+    publisher: { "@id": ORG_ID },
+    isPartOf: { "@id": WEBSITE_ID },
+    offers: {
+      "@type": "Offer",
+      price: app.precioMensualEur.toFixed(2),
+      priceCurrency: "EUR",
+      category: "subscription",
+      url,
+    },
+  };
+}
+
+/**
  * Una lista ordenada de páginas del sitio — hoy, las guías en `/guias`.
  *
  * Se declara solo si esa misma lista está a la vista y en ese mismo orden: es

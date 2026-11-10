@@ -9,7 +9,7 @@ import {
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { breadcrumbSchema } from "@/lib/schema";
+import { breadcrumbSchema, webAppSchema } from "@/lib/schema";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { ANIMOS } from "@/components/trading/tjDias";
 import { VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS } from "@/components/trading/tjStats";
@@ -46,10 +46,14 @@ import "./diario.css";
  * decisión del admin (04-11-2026); las cifras son redondas y no se atribuyen a
  * nadie.
  */
+// Título y descripción rehechos el 10-11-2026: «Nova» no lo busca nadie, y
+// gastaba la parte del título que Google enseña. Delante, lo que se busca.
+const DESCRIPCION =
+  "Diario de trading online en español: apunta cada operación y cómo te sentías, y ve tu win rate, tu curva de capital y tu riesgo calculados solos.";
+
 export const metadata: Metadata = {
-  title: "Diario de trading con Nova y 10 estadísticas",
-  description:
-    "Anota cada operación y tus sensaciones: diez estadísticas, tu curva de capital, tu riesgo y Nova, que te dice cada día lo más importante. Privado y solo tuyo.",
+  title: "Diario de trading online: estadísticas y riesgo",
+  description: DESCRIPCION,
   alternates: { canonical: "/herramientas/diario" },
 };
 
@@ -170,6 +174,22 @@ const NO_ES = [
 
 const FAQ = [
   {
+    q: "¿Qué es un diario de trading?",
+    a: "El registro de todas tus operaciones (qué compraste o vendiste, cuánto arriesgaste, cómo salió y por qué entraste) para medir cómo operas de verdad en vez de fiarte de la memoria. También se le llama trading journal o registro de operaciones. Sin él no sabes si ganas por método o por suerte.",
+  },
+  {
+    q: "¿El diario de trading es gratis?",
+    a: `No. Forma parte de Premium, que cuesta ${PRECIO} al mes sin permanencia e incluye también el Portfolio Adelin y todos los cursos. Lo que sí es gratis es la guía para hacer tu propio diario, con o sin esta herramienta.`,
+  },
+  {
+    q: "¿Por qué no usar una plantilla de Excel?",
+    a: "Un Excel bien llevado funciona, y es mucho mejor que no apuntar nada. La diferencia está en el trabajo: aquí las estadísticas, la curva de capital, el riesgo en múltiplos de R y el cruce con tu ánimo se calculan solos con cada operación, y Nova te avisa de lo importante sin que tengas que buscarlo entre fórmulas.",
+  },
+  {
+    q: "¿Usa inteligencia artificial?",
+    a: "No, y es a propósito. Nova funciona con reglas sobre tus propios datos: lo que te dice sale de las operaciones que has apuntado, al instante y sin inventarse nada. Un modelo de IA puede sonar convincente diciendo algo que tus números no respaldan.",
+  },
+  {
     q: "¿Qué es Nova?",
     a: "La asistente que vive dentro del diario. Lee lo que apuntas (operaciones, sensaciones e hitos) y te cuenta lo más importante en frases cortas, con una nota de 0 a 100 de cómo vas ahora, repartida en riesgo, resultados, emociones y constancia. Son reglas sobre tus propios datos, no una IA que se inventa respuestas: no opera por ti ni te dice qué comprar.",
   },
@@ -253,6 +273,12 @@ export default async function FichaDiarioPage() {
             { name: "Inicio", path: "/" },
             { name: "Diario de Trading", path: "/herramientas/diario" },
           ]),
+          webAppSchema({
+            path: "/herramientas/diario",
+            name: "Diario de Trading",
+            description: DESCRIPCION,
+            precioMensualEur: PREMIUM_PRICE_EUR,
+          }),
           {
             "@type": "FAQPage",
             mainEntity: FAQ.map((f) => ({
@@ -318,6 +344,25 @@ export default async function FichaDiarioPage() {
           </div>
 
           <NovaSaludo />
+        </section>
+
+        {/* ── La respuesta, arriba (10-11-2026): quien busca «diario de trading»
+            casi siempre quiere saber qué es antes que comprar. Se le contesta
+            aquí en dos frases, y quien quiere aprender a llevarlo tiene la guía
+            gratuita. ── */}
+        <section className="fh-bloque fh-bloque--estrecho dj-que-es">
+          <h2 className="fh-h2">Qué es un diario de trading</h2>
+          <p className="dj-p">
+            Un <Link href="/glosario/diario-de-trading">diario de trading</Link> es el registro de todas tus
+            operaciones: qué hiciste, cuánto arriesgaste, cómo salió y por qué entraste. En inglés se le llama{" "}
+            <em>trading journal</em>; también se le conoce como registro de operaciones. Sirve para medir cómo
+            operas de verdad, porque la memoria recuerda los aciertos y olvida las pérdidas.
+          </p>
+          <p className="dj-p">
+            Puedes llevarlo en un cuaderno o en un Excel, y en la guía{" "}
+            <Link href="/guias/como-hacer-un-diario-de-trading">cómo hacer un diario de trading</Link> te explico
+            qué apuntar y qué cifras mirar. Este diario hace las cuentas por ti.
+          </p>
         </section>
 
         {/* ── Nova ── */}
@@ -472,7 +517,7 @@ export default async function FichaDiarioPage() {
             ))}
           </dl>
           <p className="fh-nota">
-            Se leen en pareja: un 58 % de acierto es malo si ganas 40 € y
+            Se leen en pareja: un <Link href="/glosario/win-rate">win rate</Link> del 58 % es malo si ganas 40 € y
             pierdes 120 €. Y tu racha perdedora por la pérdida media dice si
             tu <Link href="/glosario/tamano-de-posicion">tamaño de posición</Link> es
             demasiado grande para tu capital.

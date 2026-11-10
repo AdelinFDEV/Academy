@@ -22,6 +22,15 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00c. SEO del Diario de Trading: lo que falta (10-11-2026)
+
+Hecho el 10-11-2026: la ficha `/herramientas/diario` tiene título y descripción centrados en «diario de trading» (sin «Nova», que no se busca), la respuesta «Qué es un diario de trading» arriba, cuatro preguntas nuevas (qué es, si es gratis, por qué no un Excel, si usa IA: **no**, y así se dice) y su `WebApplication` con el precio de Stripe en el JSON-LD. Términos nuevos en el diccionario: `diario-de-trading` y `win-rate`, enlazados desde `revenge-trading` y `efecto-disposicion`. Guía nueva y gratuita `/guias/como-hacer-un-diario-de-trading`, con calculadora de R y esperanza, quiz y logro «Bitácora al Día». **Nunca se anuncia el Diario como «con IA»**: Nova son reglas. Falta, en orden:
+
+- [ ] **Portada de la guía** (la pasa el admin): `public/guias/como-hacer-un-diario-de-trading.webp`, WebP a 1.600 px y calidad 82, y descomentar `portada` en su entrada de `GUIDES`.
+- [ ] **Capturas reales del Diario** (las pasa el admin) para la ficha, con su `alt`: hoy todo son maquetas decorativas y Google Imágenes no ve nada.
+- [ ] **Auditoría SEO** (`AUDITORIA-SEO.md` entera) de la guía y de la ficha. Al final, `npm run check:seo -- guias/como-hacer-un-diario-de-trading "como hacer un diario de trading"` y `npm run check:seo -- herramientas/diario "diario de trading"`.
+- [ ] **Mirar en Search Console** qué consultas trae `/herramientas/diario` a las 4-6 semanas del despliegue, y ajustar la palabra clave a los datos.
+
 ### 00d. Nova, el bot del Diario: siguientes pasos (06-11-2026)
 
 Hecho el 06-11-2026 (versión 1): **Nova** vive en la cabecera del Resumen (`TjBot.tsx`, motor en `tjNova.ts`). Son reglas sobre los datos, sin IA. Da un **pulso** de 0 a 100 (riesgo, resultados, emociones y constancia, sobre lo reciente), prioriza sus mensajes (lo urgente sube a «Lo más importante»), propone acciones con botón y analiza hoy, sensaciones y su efecto en el dinero, tendencia del ánimo, rachas, riesgo, revancha, sobreoperar, caída desde el máximo y nuevos máximos, forma reciente, franjas horarias, hitos y las lecturas de `buildInsights`/`welcomeReading`. El personaje (`NovaHead.tsx`) es una cabeza que vuela por su espacio bajo el saludo, girándose en continuo; hace una actividad (dormir, pelota, trading, estudiar, música) durante 10 minutos o hasta que le interrumpan, y luego otra; cambia de cara según cómo va el usuario y se alegra al pasarle el ratón. La frase corta junto a él está quitada de momento (el motor sigue calculando `teasers`).

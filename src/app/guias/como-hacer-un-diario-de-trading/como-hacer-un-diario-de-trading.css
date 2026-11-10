@@ -1,0 +1,227 @@
+/* ==========================================================================
+   como-hacer-un-diario-de-trading.css — estilos EXCLUSIVOS de esta guía
+   Las tablas de campos, la rutina, la comparativa y la calculadora de R y
+   esperanza. Las clases compartidas (gbc-*, wq-*) viven en guias.css y se
+   reutilizan tal cual. Ver CODIGO.md → «cada guía, su propio archivo CSS».
+   ========================================================================== */
+
+/* ── Qué apuntar: dos tablas de campos ── */
+.dtg-tablas {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  margin-top: 28px;
+}
+.dtg-tabla {
+  padding: 20px 22px;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
+}
+.dtg-tabla h3 {
+  margin: 0 0 12px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.dtg-tabla dl { margin: 0; }
+.dtg-tabla dl > div {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid rgba(240, 244, 255, 0.06);
+}
+.dtg-tabla dl > div:first-child { border-top: 0; }
+.dtg-tabla dt { font-weight: 700; color: var(--text-primary); font-size: 0.9rem; }
+.dtg-tabla dd { margin: 0; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.55; }
+
+/* ── La rutina de revisión ── */
+.dtg-pasos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: dtg-paso;
+}
+.dtg-pasos li {
+  position: relative;
+  padding: 44px 18px 18px;
+  border: 1px solid var(--gold-border);
+  border-radius: 16px;
+  background: rgba(230, 180, 85, 0.04);
+  counter-increment: dtg-paso;
+}
+.dtg-pasos li::before {
+  content: counter(dtg-paso);
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0a1628;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.dtg-pasos strong { display: block; margin-bottom: 6px; color: var(--text-primary); }
+.dtg-pasos span { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+/* ── Cuaderno, Excel o herramienta ── */
+.dtg-compara {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 28px;
+}
+.dtg-compara > div {
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.dtg-compara h3 { margin: 0 0 10px; font-size: 1.02rem; color: var(--text-primary); }
+.dtg-compara p { margin: 0; font-size: 0.88rem; line-height: 1.55; padding-left: 1.2rem; position: relative; }
+.dtg-compara p + p { margin-top: 8px; }
+.dtg-compara-pro { color: var(--text-secondary); }
+.dtg-compara-contra { color: var(--text-muted); }
+.dtg-compara-pro::before,
+.dtg-compara-contra::before { position: absolute; left: 0; font-weight: 800; }
+.dtg-compara-pro::before { content: "+"; color: #4ade80; }
+.dtg-compara-contra::before { content: "−"; color: #f87171; }
+
+/* ── La calculadora ── */
+.dtg-calc {
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid var(--gold-border);
+  border-radius: 18px;
+  background: linear-gradient(160deg, #0f2040 0%, #0a1628 100%);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+.dtg-calc-bloque + .dtg-calc-bloque {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--gold-border);
+}
+.dtg-calc-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.dtg-calc-ey {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.dtg-dir {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+}
+.dtg-dir button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  font: 700 0.82rem var(--font-family);
+  cursor: pointer;
+}
+.dtg-dir button.is-activo { background: var(--accent-orange); color: #fff; }
+
+.dtg-campos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.dtg-campo { display: flex; flex-direction: column; gap: 6px; }
+.dtg-campo > span:first-child { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+.dtg-campo-caja {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.dtg-campo-caja:focus-within { border-color: var(--accent-orange); }
+.dtg-campo input {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 11px;
+  border: 0;
+  background: none;
+  color: var(--text-primary);
+  font: 600 0.95rem var(--font-family);
+  outline: none;
+}
+.dtg-campo i { padding-right: 11px; font-style: normal; color: var(--text-muted); font-size: 0.85rem; }
+
+.dtg-resultados {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.dtg-resultados--dos { grid-template-columns: repeat(2, 1fr); }
+.dtg-resultados > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(230, 180, 85, 0.06);
+}
+.dtg-resultados small { font-size: 0.74rem; font-weight: 600; color: var(--text-muted); }
+.dtg-resultados b { font: 800 1.35rem/1.2 var(--font-display); color: var(--text-primary); }
+.dtg-resultados span { font-size: 0.8rem; color: var(--text-secondary); }
+.dtg-resultado-r { border: 1px solid var(--gold-border); }
+.dtg-calc .es-bien { color: #4ade80; }
+.dtg-calc .es-mal { color: #f87171; }
+
+.dtg-slider { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.dtg-slider > span { font-size: 0.9rem; color: var(--text-secondary); }
+.dtg-slider b { color: var(--text-primary); }
+.dtg-slider input { width: 100%; accent-color: var(--accent-orange); }
+
+.dtg-aviso,
+.dtg-nota {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+.dtg-aviso { background: rgba(239, 68, 68, 0.08); color: #fca5a5; }
+.dtg-nota { background: rgba(255, 107, 43, 0.08); color: var(--text-secondary); }
+.dtg-pie { margin: 18px 0 0; font-size: 0.76rem; color: var(--text-muted); text-align: right; }
+
+@media (max-width: 820px) {
+  .dtg-tablas,
+  .dtg-compara,
+  .dtg-resultados { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .dtg-tabla dl > div { grid-template-columns: 1fr; gap: 2px; }
+  .dtg-resultados--dos { grid-template-columns: 1fr; }
+}

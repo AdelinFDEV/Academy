@@ -4,7 +4,7 @@ Este archivo cubre el diccionario entero, y son **dos trabajos distintos**:
 
 | | Qué es | Dónde está |
 |---|---|---|
-| **Término** | El campo `extended` de ~150-250 palabras. Es lo mínimo para que el término **exista como URL** | [Parte A](#parte-a--el-término), aquí abajo |
+| **Término** | Los campos del término y la regla de que sin `extended` no existe como URL | [Parte A](#parte-a--el-término), aquí abajo |
 | **Ficha ampliada** | Llevarlo a 1.200-2.200 palabras para competir con Binance y Bit2Me | [Parte B](#parte-b--la-ficha-ampliada), la plantilla |
 
 Los dos guardarraíles:
@@ -28,9 +28,13 @@ Sin ese campo no aparece en `/glosario/[termino]` —la ruta usa `dynamicParams 
 
 No es una limitación técnica, es una decisión: **una URL con 25 palabras es contenido escaso**, y publicar cincuenta de golpe arrastra al dominio entero. Hoy todos tienen su `extended`; la regla sigue viva para los que se añadan.
 
-## Al añadir un término nuevo
+## Al añadir un término nuevo: nace como ficha detallada
 
-`term` (visible, y clave de los guardados) · `slug` · `category` · `definition` corta · `extended` de ~150-250 palabras en HTML, con la estructura **qué es / por qué importa / error típico** · `seeAlso` con **tres slugs que existan y tengan `extended`** — si apuntas a uno sin él, el enlace no se pinta.
+🔴 **Desde el 10-11-2026, todo término nuevo se escribe directamente como ficha ampliada: la [Parte B](#parte-b--la-ficha-ampliada) entera.** 1.200-1.600 palabras, el resumen de entrada, sus `<h2>`, cinco tipos de pieza visual, 5-7 preguntas en `faq`, `seoTitle` si hace falta y `seoDescription`. **Nunca la versión corta de 150-250 palabras**, ni «de momento corta y luego se amplía»: lo pidió el admin expresamente. Vale igual para los términos que se crean al vuelo para una guía, un curso o una ficha de herramienta.
+
+Los campos: `term` (visible, y clave de los guardados) · `slug` · `category` · `definition` corta · `extended` · `seeAlso` con **tres slugs que existan y tengan `extended`** — si apuntas a uno sin él, el enlace no se pinta · `faq` · `seoTitle` · `seoDescription`.
+
+Las fichas cortas que ya existen siguen la regla de abajo: se amplían por orden de Search Console, una a una.
 
 Con eso queda publicado. No hay que tocar el sitemap ni el listado: se enteran solos.
 
