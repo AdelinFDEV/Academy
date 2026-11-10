@@ -82,7 +82,9 @@ type Avance =
 /** El botón principal de un curso según quién mire y cómo lo lleva. */
 function ctaDe(slug: string, sesion: Sesion, avance: Avance) {
   if (avance.tipo === "aprobado" && sesion && !sesion.esPremium) return { href: "/dashboard/certificados", texto: "Ver tu certificado" };
-  if (!sesion || !sesion.esPremium) return { href: "/premium", texto: "Desbloquear con Premium", bloqueado: true };
+  // Directo al pago (10-11-2026, pedido por el admin): /api/checkout manda
+  // antes al registro si no hay sesión y vuelve solo a Stripe.
+  if (!sesion || !sesion.esPremium) return { href: "/api/checkout", texto: "Desbloquear con Premium", bloqueado: true };
   if (avance.tipo === "aprobado") return { href: `/aula/${slug}`, texto: "Entrar al curso" };
   if (avance.tipo === "empezado") return { href: `/aula/${slug}`, texto: "Continuar el curso" };
   return { href: `/aula/${slug}`, texto: "Empezar el curso" };
@@ -352,7 +354,7 @@ export default async function CursosPage() {
                     )}
 
                     <div className="cx-curso-acciones">
-                      <Link href={cta.href} className="cx-btn">
+                      <Link href={cta.href} prefetch={cta.href.startsWith("/api/") ? false : undefined} className="cx-btn">
                         {"bloqueado" in cta && <Lock size={15} strokeWidth={2.4} aria-hidden="true" />}
                         {cta.texto} <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
                       </Link>

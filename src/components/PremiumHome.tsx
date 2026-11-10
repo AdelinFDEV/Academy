@@ -7,6 +7,7 @@ import { detalleDe, herramienta } from "@/lib/herramientas";
 import type { CursoResumen } from "@/lib/cursos";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import { INSTAGRAM_DM_URL } from "@/lib/contacto";
+import { AVATAR_ADMIN } from "@/lib/perfilPublico";
 import { PREGUNTAS_FRECUENTES } from "@/lib/preguntas-frecuentes";
 import { IconoCursos, IconoDiario, IconoPortfolio } from "@/components/IconosAnimados";
 import { InstagramIcon } from "@/components/SocialLinks";
@@ -254,7 +255,10 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
             </ul>
 
             <div className="pf-oferta-accion">
-              <Link href="/premium" className="pf-cta">
+              {/* Directo al pago: /api/checkout manda antes al registro si no hay
+                  sesión y vuelve sola a Stripe (10-11-2026, pedido por el admin:
+                  antes llevaba a /premium, un paso de más). */}
+              <Link href="/api/checkout" prefetch={false} className="pf-cta">
                 Hazte Premium <ArrowRight size={18} strokeWidth={2.4} aria-hidden="true" />
               </Link>
               <ul className="pf-garantias">
@@ -277,7 +281,9 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
 
             <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" className="pf-contacto">
               <span className="pf-contacto-avatar" aria-hidden="true">
-                A<span className="pf-contacto-online" />
+                {/* eslint-disable-next-line @next/next/no-img-element -- estático, 256 px, ya optimizado */}
+                <img src={AVATAR_ADMIN.src ?? ""} alt="" width={46} height={46} className="pf-contacto-foto" />
+                <span className="pf-contacto-online" />
               </span>
               <span className="pf-contacto-texto">
                 <strong>Escríbeme por Instagram</strong>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -76,14 +76,49 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
   // enseña la tarjeta de abajo, sin pedirle a la página un prop más.
   const hayBloqueadas = sections.some((s) => s.tools.some((t) => t.locked));
 
-  // Cierre animado: reproduce la salida y desmonta al terminar.
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const arrastre = useRef<{ y0: number; dy: number } | null>(null);
+
+  // Cierre animado: reproduce la salida y desmonta al terminar. Si ya se está
+  // cerrando, no hace nada (antes un segundo toque podía dejarlo a medias).
+  const cerrando = useRef(false);
   const close = useCallback(() => {
+    if (cerrando.current) return;
+    cerrando.current = true;
     setClosing(true);
     window.setTimeout(() => {
       setOpen(false);
       setClosing(false);
-    }, 260);
+      cerrando.current = false;
+    }, 280);
   }, []);
+
+  // Arrastrar el panel hacia abajo para cerrarlo, desde el asa o la cabecera.
+  const alEmpezarArrastre = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest("button, a")) return;
+    arrastre.current = { y0: e.clientY, dy: 0 };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+  const alArrastrar = (e: React.PointerEvent) => {
+    const a = arrastre.current;
+    const sheet = sheetRef.current;
+    if (!a || !sheet) return;
+    a.dy = Math.max(0, e.clientY - a.y0);
+    sheet.style.transition = "none";
+    sheet.style.transform = `translateY(${a.dy}px)`;
+  };
+  const alSoltar = () => {
+    const a = arrastre.current;
+    const sheet = sheetRef.current;
+    arrastre.current = null;
+    if (!a || !sheet) return;
+    sheet.style.transition = "";
+    if (a.dy > 90) {
+      close();
+    } else {
+      sheet.style.transform = "";
+    }
+  };
 
   // Con el sheet abierto: bloquea el scroll del fondo y permite cerrar con Escape.
   useEffect(() => {
@@ -180,7 +215,7 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
         ))}
 
         {hayBloqueadas && (
-          <Link href="/premium" className="dtb-premium">
+          <Link href="/api/checkout" prefetch={false} className="dtb-premium">
             <span className="dtb-premium-icono" aria-hidden="true"><Crown size={16} /></span>
             <span className="dtb-premium-titulo">Desbloquea el Diario y el Portfolio</span>
             <span className="dtb-premium-cta">
@@ -190,44 +225,85 @@ export default function DashboardToolsSidebar({ sections }: { sections: ToolSect
         )}
       </aside>
 
-      {/* ── Barra inferior en móvil: sólida y pegada al borde del dispositivo,
-             no flotante. La flecha indica que despliega hacia arriba. ── */}
+      {/* ── Móvil: una pastilla flotante abajo que abre un panel desde abajo.
+             Rehecho el 10-11-2026: antes era una barra a todo el ancho que
+             abría un panel a pantalla completa con la X debajo de la barra
+             superior (z-index 400), así que se abría pero no se podía cerrar. ── */}
       <button
-        className="dtb-dock"
+        type="button"
+        className={`dtb-pill${open ? " is-abierta" : ""}`}
         onClick={() => setOpen(true)}
-        aria-label="Ver herramientas"
+        aria-label="Abrir herramientas"
         aria-expanded={open}
+        aria-controls="dtb-hoja"
       >
-        <span className="dtb-dock-icon" aria-hidden="true">
-          <LayoutGrid size={16} />
-        </span>
-        <span className="dtb-dock-label">Herramientas</span>
-        <span className="dtb-dock-chevron" aria-hidden="true">
-          <ChevronUp size={18} strokeWidth={2.5} />
-        </span>
+        <span className="dtb-pill-icon" aria-hidden="true"><LayoutGrid size={15} /></span>
+        <span className="dtb-pill-label">Herramientas</span>
+        <ChevronUp size={16} strokeWidth={2.5} className="dtb-pill-chevron" aria-hidden="true" />
       </button>
 
-      {/* ── Panel a pantalla completa ── */}
       {open && (
-        <div className={`dtb-overlay${closing ? " dtb-overlay--closing" : ""}`} onClick={close}>
-          <div className={`dtb-sheet${closing ? " dtb-sheet--closing" : ""}`} onClick={(e) => e.stopPropagation()}>
-            <div className="dtb-sheet-head">
-              <span className="dtb-sheet-title">
-                <LayoutGrid size={16} aria-hidden="true" />
-                Herramientas
-              </span>
-              <button className="dtb-sheet-close" onClick={close} aria-label="Cerrar">
-                <X size={18} />
-              </button>
+        <div className={`dtb-overlay${closing ? " is-cerrando" : ""}`} onClick={close}>
+          <div
+            id="dtb-hoja"
+            ref={sheetRef}
+            className={`dtb-sheet${closing ? " is-cerrando" : ""}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Herramientas"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="dtb-sheet-agarre"
+              onPointerDown={alEmpezarArrastre}
+              onPointerMove={alArrastrar}
+              onPointerUp={alSoltar}
+              onPointerCancel={alSoltar}
+            >
+              <span className="dtb-sheet-asa" aria-hidden="true" />
+              <div className="dtb-sheet-head">
+                <span className="dtb-sheet-title">
+                  <span className="dtb-pill-icon" aria-hidden="true"><LayoutGrid size={15} /></span>
+                  Herramientas
+                </span>
+                <button type="button" className="dtb-sheet-close" onClick={close} aria-label="Cerrar herramientas">
+                  <X size={18} />
+                </button>
+              </div>
             </div>
+
             <div className="dtb-sheet-body">
+              <Link
+                href="/dashboard"
+                className={`dtb-panel dtb-sheet-panel${ruta === "/dashboard" ? " is-activa" : ""}`}
+                onClick={close}
+                aria-current={ruta === "/dashboard" ? "page" : undefined}
+              >
+                <span className="dtb-panel-icon" aria-hidden="true"><LayoutDashboard size={17} /></span>
+                <span className="dtb-panel-texto">
+                  <span className="dtb-panel-nombre">Mi dashboard</span>
+                  <span className="dtb-panel-sub">Tu progreso y lo guardado</span>
+                </span>
+              </Link>
+
               {sections.map((s) => (
-                <div key={s.label} className="dtb-section">
-                  <div className="dtb-section-tools">
+                <div key={s.label} className="dtb-sheet-seccion">
+                  <span className="dtb-section-label">{s.label}</span>
+                  <div className="dtb-sheet-rejilla">
                     {s.tools.map((t) => renderTool(t))}
                   </div>
                 </div>
               ))}
+
+              {hayBloqueadas && (
+                <Link href="/api/checkout" prefetch={false} className="dtb-premium dtb-sheet-premium" onClick={close}>
+                  <span className="dtb-premium-icono" aria-hidden="true"><Crown size={16} /></span>
+                  <span className="dtb-premium-titulo">Desbloquea el Diario y el Portfolio</span>
+                  <span className="dtb-premium-cta">
+                    Hazte Premium <ArrowRight size={14} strokeWidth={2.4} aria-hidden="true" />
+                  </span>
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -642,7 +642,7 @@
   transition: transform 0.25s ease, border-color 0.2s ease;
 }
 
-.det-faq-item[open] summary::after {
+.det-faq-item[open]:not([data-acordeon="cerrando"]) summary::after {
   transform: translateY(-20%) rotate(-135deg);
   border-color: var(--det-accent);
 }

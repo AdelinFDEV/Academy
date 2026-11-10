@@ -2,6 +2,7 @@ import React from "react";
 import {
   Flame, Zap, Gem, Trophy,
   ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, GraduationCap, type LucideIcon,
+  CalendarRange, Anchor, Crosshair,
 } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 import { MILESTONES, milestoneBadgeId } from "@/components/trading/tjStats";
@@ -257,6 +258,9 @@ export const DIARIO_ICONS: Record<string, LucideIcon> = {
   meses: CalendarCheck,
   rentabilidad: TrendingUp,
   recuperacion: RefreshCw,
+  semanas: CalendarRange,
+  control: Anchor,
+  objetivo: Crosshair,
   vivir: Crown,
 };
 

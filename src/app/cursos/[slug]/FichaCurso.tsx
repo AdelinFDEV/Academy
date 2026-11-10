@@ -36,7 +36,7 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
   const cta = !sesion
     ? { href: "/premium", texto: "Ver qué incluye Premium", secundario: { href: `/login?next=/cursos/${slug}`, texto: "Ya tengo cuenta" } }
     : !sesion.esPremium
-      ? { href: "/premium", texto: "Hazte Premium para empezar", secundario: null }
+      ? { href: "/api/checkout", texto: "Hazte Premium para empezar", secundario: null }
       : alumno?.certificado
         ? { href: `/aula/${slug}/certificado`, texto: "Ver tu certificado", secundario: { href: `/aula/${slug}`, texto: "Entrar al curso" } }
         : alumno?.inscripcion
@@ -91,7 +91,7 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
             {curso.descripcion && <p className="cf-lead">{curso.descripcion}</p>}
 
             <div className="cf-acciones">
-              <Link href={cta.href} className="cf-btn">
+              <Link href={cta.href} prefetch={cta.href.startsWith("/api/") ? false : undefined} className="cf-btn">
                 {cta.texto}
                 <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />
               </Link>
@@ -314,7 +314,7 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
               ? "Elige tu ritmo y empieza por el primer módulo. Puedes cambiar el ritmo cuando quieras."
               : "Todos los cursos entran en la misma suscripción que las herramientas y la comunidad."}
           </p>
-          <Link href={cta.href} className="cf-btn">
+          <Link href={cta.href} prefetch={cta.href.startsWith("/api/") ? false : undefined} className="cf-btn">
             {cta.texto}
             <ArrowRight size={17} strokeWidth={2.4} aria-hidden="true" />
           </Link>

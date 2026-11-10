@@ -581,7 +581,7 @@
   transition: border-color 0.2s ease;
 }
 
-.fh-faq-item[open] { border-color: color-mix(in srgb, var(--fh-acento) 30%, transparent); }
+.fh-faq-item[open]:not([data-acordeon="cerrando"]) { border-color: color-mix(in srgb, var(--fh-acento) 30%, transparent); }
 
 .fh-faq-item summary {
   display: flex;
@@ -608,7 +608,7 @@
   transition: transform 0.2s ease;
 }
 
-.fh-faq-item[open] summary::after { transform: rotate(45deg); }
+.fh-faq-item[open]:not([data-acordeon="cerrando"]) summary::after { transform: rotate(45deg); }
 
 .fh-faq-item p {
   margin: 0;

@@ -1360,6 +1360,10 @@
 
 .tj-scroll-anchor { scroll-margin-top: calc(var(--nav-h) + 1rem); }
 
+/* La marca de encima de las pestañas (TradingJournal, anclaRef): sin alto y
+   sin sumar el hueco del flex del diario, para que no mueva nada. */
+.tj-ancla-vista { height: 0; margin-bottom: -1.75rem; }
+
 /* ── Resumen ──
  * Un panel de control: el calendario manda, la cuenta va a su lado, y debajo la
  * curva, las últimas operaciones, el próximo hito y las lecturas.
@@ -2681,6 +2685,9 @@
 .tjh-ic-rentabilidad { animation: tjh-rise 2s ease-in-out infinite; }
 .tjh-ic-recuperacion { animation: tjh-spin 3.4s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
 .tjh-ic-vivir { animation: tjh-crown 3s ease-in-out infinite; }
+.tjh-ic-semanas { animation: tjh-pop 2.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; }
+.tjh-ic-control { animation: tjh-anchor 3s ease-in-out infinite; transform-origin: 50% 15%; }
+.tjh-ic-objetivo { animation: tjh-tick 2s ease-in-out infinite; }
 
 @keyframes tjh-tick { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.14) rotate(-4deg); } 60% { transform: scale(0.96) rotate(2deg); } }
 @keyframes tjh-shield { 0%, 100% { transform: rotate(0deg); filter: drop-shadow(0 0 0 transparent); } 50% { transform: rotate(-6deg) scale(1.06); filter: drop-shadow(0 0 6px currentColor); } }
@@ -2689,6 +2696,7 @@
 @keyframes tjh-pop { 0%, 70%, 100% { transform: scale(1) translateY(0); } 80% { transform: scale(1.18) translateY(-2px); } 90% { transform: scale(0.95) translateY(0); } }
 @keyframes tjh-rise { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(3px, -3px); } }
 @keyframes tjh-spin { 0% { transform: rotate(0deg); } 70%, 100% { transform: rotate(360deg); } }
+@keyframes tjh-anchor { 0%, 100% { transform: rotate(0deg); } 30% { transform: rotate(-8deg); } 65% { transform: rotate(6deg); } }
 @keyframes tjh-crown { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
 
 /* ── Tarjetas ── */
@@ -3138,10 +3146,20 @@
   .tjh-legend-months { width: 100%; }
   .tjh-rules li { justify-content: center; }
   .tjh-grid { grid-template-columns: 1fr; }
-  .tjo-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Rejilla de 6 para que no sobre ningún hueco: la cifra grande arriba, tres
+     recuadros (operaciones, acierto, R) y dos (mejor, peor). Con 2 columnas
+     «Peor» se quedaba solo y su hueco salía gris (10-11-2026). */
+  .tjo-band { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .tjo-band .tjo-band-main { grid-column: 1 / -1; }
+  .tjo-band > div:nth-child(n + 2):nth-child(-n + 4) { grid-column: span 2; }
+  .tjo-band > div:nth-child(n + 5) { grid-column: span 3; }
+  .tjo-band > div { padding: 0.75rem 0.8rem; }
   .tjo { padding: 0.9rem; }
   .tjo-line { grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.6rem; padding: 0.65rem 0.6rem 0.65rem 0.75rem; }
+  /* El par y el Long/Short no cabían en una línea y se salían de su columna,
+     encima de las ganancias: ahora la etiqueta baja debajo si hace falta. */
+  .tjo-main { overflow: hidden; }
+  .tjo-pair { flex-wrap: wrap; row-gap: 0.25rem; min-width: 0; max-width: 100%; }
   .tjo-time,
   .tjo-r { display: none; }
   .tjo-actions .tj-icon-btn:not(.tjo-toggle) { opacity: 1; }

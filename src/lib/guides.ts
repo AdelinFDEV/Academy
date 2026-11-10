@@ -141,7 +141,7 @@ export const GUIDES: GuideMeta[] = [
     color: "#e6b455",
     topics: ["Qué apuntar", "Win rate, R y esperanza", "Emociones", "Rutina de revisión"],
     tags: ["EXPLICACIONES"],
-    // portada: "/guias/como-hacer-un-diario-de-trading.webp" — la pasa el admin.
+    portada: "/guias/como-hacer-un-diario-de-trading.webp",
     publicada: "2026-11-10",
   },
 ];

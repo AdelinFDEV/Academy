@@ -42,8 +42,25 @@ export const AVATARES: readonly VarianteAvatar[] = [
   { id: "astronauta", nombre: "Astronauta", src: "/avatares/astronauta.svg", color: "#5b3fb5", color2: "#1e1747", icono: "diamante" },
 ];
 
+/**
+ * La foto real del admin (10-11-2026, pedido suyo): la única foto personalizada
+ * de la web. **No está en `AVATARES` a propósito**, así que no sale en el
+ * selector de nadie; el editor solo la enseña al admin, y /api/perfil rechaza
+ * guardarla a cualquier otro rol. La usa también el bloque «Escríbeme por
+ * Instagram» de la portada.
+ */
+export const AVATAR_ADMIN: VarianteAvatar = {
+  id: "adelin",
+  nombre: "Tu foto",
+  src: "/avatares/adelin.webp",
+  color: "#ff6b2b",
+  color2: "#ffb07a",
+  icono: "bitcoin",
+};
+
 export function avatarPorId(id: string | null | undefined): VarianteAvatar | null {
   if (!id) return null;
+  if (id === AVATAR_ADMIN.id) return AVATAR_ADMIN;
   return AVATARES.find((a) => a.id === id) ?? null;
 }
 

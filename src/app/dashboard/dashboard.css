@@ -787,12 +787,6 @@
 
 .dash-saved-thumb--guide { background: rgba(230,180,85,0.08); border: 1px solid rgba(230,180,85,0.2); color: var(--gold); display: flex; align-items: center; justify-content: center; border-radius: 10px; flex-shrink: 0; width: 52px; height: 52px; }
 
-@media (max-width: 400px) {
-  .dtb-dock {
-    padding: 11px 14px calc(11px + env(safe-area-inset-bottom, 0px));
-  }
-  .dtb-dock-label { font-size: 0.84rem; }
-}
 
 /* ── El armazón del dashboard ───────────────────────────────────────────────
  *
@@ -1179,224 +1173,238 @@ a.dtb-tool:hover .ia-linea { animation-duration: 1.8s; }
   .dtb-premium:hover { transform: none; }
 }
 
-/* ── Barra inferior de herramientas (móvil) ──────────────────────────────
-   Sólida y anclada al borde inferior del dispositivo, no flotante: se lee
-   como parte del chasis de la app y no tapa contenido al azar. Los colores
-   son los de la web —superficie oscura del sitio y hairline— y el naranja
-   se reserva para el acento: el icono y la flecha. */
-.dtb-dock {
+/* ── Herramientas en el móvil: pastilla flotante + panel desde abajo ──────
+   Rehecho el 10-11-2026, a petición del admin. Antes: una barra a todo el
+   ancho que abría un panel a pantalla completa con z-index 200, por DEBAJO de
+   la barra superior (400), así que la X de cerrar quedaba tapada y el menú se
+   abría pero no se cerraba. Ahora el panel va por encima de todo (z-index
+   500), ocupa como mucho el 82 % de la pantalla y se cierra con la X,
+   tocando el fondo, arrastrándolo hacia abajo o con Escape. */
+
+.dtb-pill {
   display: none;
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 18px calc(13px + env(safe-area-inset-bottom, 0px));
-  border: none;
-  border-top: 1px solid rgba(255, 107, 43, 0.18);
-  background: linear-gradient(180deg, rgba(17, 34, 64, 0.98) 0%, rgba(10, 22, 40, 0.99) 100%);
-  color: var(--text-primary);
-  cursor: pointer;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   z-index: 100;
-  box-shadow: 0 -12px 30px -18px rgba(0, 0, 0, 0.9);
-  transition: background 0.18s;
-}
-
-.dtb-dock-icon {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: 9px;
-  background: rgba(255, 107, 43, 0.12);
-  border: 1px solid rgba(255, 107, 43, 0.22);
-  color: var(--accent-orange);
+  gap: 0.55rem;
+  padding: 0.45rem 0.95rem 0.45rem 0.45rem;
+  border: 1px solid rgba(255, 107, 43, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(22, 40, 74, 0.94), rgba(11, 22, 42, 0.96));
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 14px 34px -12px rgba(0, 0, 0, 0.85),
+    0 0 0 6px rgba(10, 22, 40, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font: 700 0.88rem var(--font-family);
+  color: #fff;
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease, box-shadow 0.2s ease;
 }
+.dtb-pill:active { transform: translateX(-50%) scale(0.96); }
+/* Con el panel abierto la pastilla se esconde hacia abajo: el panel ya está ahí. */
+.dtb-pill.is-abierta { opacity: 0; transform: translateX(-50%) translateY(140%); pointer-events: none; }
 
-.dtb-dock-label {
-  flex: 1;
-  text-align: left;
-  font-size: 0.9rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
+.dtb-pill-icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-orange), #ff9a4d);
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgba(255, 107, 43, 0.8);
 }
-
-/* La flecha es el único indicio de que esto despliega: se mueve un poco
-   para invitar al toque, y se queda quieta si se pide menos animación. */
-.dtb-dock-chevron {
-  display: flex;
-  flex-shrink: 0;
-  color: var(--accent-orange);
-  animation: dtb-chevron-hint 2.6s ease-in-out infinite;
-}
+.dtb-pill-label { letter-spacing: 0.01em; white-space: nowrap; }
+.dtb-pill-chevron { color: var(--accent-orange-soft, #ff8552); animation: dtb-chevron-hint 2.6s ease-in-out infinite; }
 
 @keyframes dtb-chevron-hint {
   0%, 100% { transform: translateY(1px); }
   50%      { transform: translateY(-2px); }
 }
 
-.dtb-dock:active {
-  background: linear-gradient(180deg, rgba(22, 43, 78, 0.99) 0%, rgba(13, 28, 51, 1) 100%);
-}
-
+/* El fondo: por encima de TODO, también de la barra superior. */
 .dtb-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(4,12,30,0.7);
-  z-index: 200;
+  z-index: 500;
   display: flex;
-  animation: dtb-fade-in 0.28s ease both;
+  align-items: flex-end;
+  background: rgba(3, 9, 22, 0.62);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: dtb-fade-in 0.3s ease both;
 }
+.dtb-overlay.is-cerrando { animation: dtb-fade-out 0.28s ease forwards; }
 
-/* Panel a pantalla completa: al desplegarse ocupa todo el dispositivo, así
-   la lista entera se ve sin competir con el contenido de detrás. */
 .dtb-sheet {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(170deg, var(--bg-card) 0%, var(--bg-dark) 55%);
-  border: none;
-  border-radius: 0;
-  padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 14px);
-  animation: dtb-sheet-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
-  transform-origin: bottom center;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-height: 82vh;
+  max-height: 82dvh;
+  border: 1px solid rgba(240, 244, 255, 0.1);
+  border-bottom: 0;
+  border-radius: 26px 26px 0 0;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(255, 107, 43, 0.1), transparent 60%),
+    linear-gradient(180deg, #13243f 0%, #0a1628 100%);
+  box-shadow: 0 -24px 60px -20px rgba(0, 0, 0, 0.9);
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  animation: dtb-sheet-in 0.48s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  touch-action: pan-y;
 }
+.dtb-sheet.is-cerrando { animation: dtb-sheet-out 0.28s cubic-bezier(0.4, 0, 1, 1) forwards; }
 
+/* El asa y la cabecera: de aquí se arrastra para cerrar. */
+.dtb-sheet-agarre { flex-shrink: 0; padding-top: 10px; cursor: grab; touch-action: none; }
+.dtb-sheet-agarre:active { cursor: grabbing; }
+.dtb-sheet-asa {
+  display: block;
+  width: 42px;
+  height: 5px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: rgba(240, 244, 255, 0.22);
+}
 .dtb-sheet-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 14px;
-  flex-shrink: 0;
-  border-bottom: 1px solid rgba(240,244,255,0.07);
-  background: rgba(10, 22, 40, 0.6);
+  padding: 10px 16px 12px 18px;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.07);
 }
-
 .dtb-sheet-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  gap: 0.6rem;
+  font: 700 1.08rem var(--font-display);
+  color: #fff;
 }
-
-.dtb-sheet-title svg { color: var(--accent-orange); flex-shrink: 0; }
-
 .dtb-sheet-close {
-  background: rgba(240,244,255,0.06);
-  border: 1px solid rgba(240,244,255,0.1);
-  border-radius: 10px;
+  display: grid;
+  place-items: center;
   width: 38px;
   height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.05);
+  color: rgba(240, 244, 255, 0.75);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-
-.dtb-sheet-close:hover { background: rgba(240,244,255,0.12); }
+.dtb-sheet-close:hover,
+.dtb-sheet-close:active { background: rgba(240, 244, 255, 0.12); color: #fff; }
 
 .dtb-sheet-body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  padding: 10px 14px 8px;
+  padding: 6px 16px 10px;
 }
 
-.dtb-sheet .dtb-section { padding: 12px 4px 8px; }
+.dtb-sheet .dtb-sheet-panel { margin: 10px 0 4px; }
 
-.dtb-sheet .dtb-tool { padding: 11px 10px; }
+.dtb-sheet-seccion { margin-top: 14px; animation: dtb-item-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.dtb-sheet-seccion:nth-of-type(1) { animation-delay: 0.1s; }
+.dtb-sheet-seccion:nth-of-type(2) { animation-delay: 0.16s; }
+.dtb-sheet-seccion:nth-of-type(n + 3) { animation-delay: 0.22s; }
+.dtb-sheet .dtb-section-label { padding: 0 2px 8px; }
 
-.dtb-sheet .dtb-tool-icon { width: 36px; height: 36px; border-radius: 10px; }
+/* Las herramientas, en baldosas de dos en dos: se ven todas de un vistazo. */
+.dtb-sheet-rejilla { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.dtb-sheet .dtb-tool {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  min-height: 88px;
+  padding: 12px;
+  border: 1px solid rgba(240, 244, 255, 0.07);
+  border-radius: 16px;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--dtb-c) 9%, transparent), transparent 70%),
+    rgba(240, 244, 255, 0.025);
+}
+.dtb-sheet .dtb-tool::before { display: none; }
+.dtb-sheet a.dtb-tool:active { transform: scale(0.97); }
+.dtb-sheet .dtb-tool.is-activa {
+  border-color: color-mix(in srgb, var(--dtb-c) 45%, transparent);
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--dtb-c) 20%, transparent), transparent 75%),
+    rgba(240, 244, 255, 0.03);
+}
+.dtb-sheet .dtb-tool-icon { width: 38px; height: 38px; border-radius: 12px; }
+.dtb-sheet .dtb-tool-name { font-size: 0.86rem; font-weight: 600; line-height: 1.25; white-space: normal; }
+.dtb-sheet .dtb-badge { position: absolute; top: 10px; right: 10px; }
 
-.dtb-sheet .dtb-tool-name { font-size: 0.88rem; }
+.dtb-sheet .dtb-sheet-premium { margin: 16px 0 4px; }
 
 @media (max-width: 960px) {
   .dtb-sidebar { display: none; }
-  .dtb-dock    { display: flex; animation: dtb-dock-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .dtb-pill    { display: inline-flex; animation: dtb-pill-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 
   /* Sin rail no hay hueco que reservar a la izquierda, y abajo se deja sitio
-     para que la barra flotante no se coma el final de la página. */
+     para que la pastilla no tape el final de la página. */
   .dash-page-wrap {
     margin-left: 0;
     padding: 0 1.25rem;
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dtb-dock,
-  .dtb-dock-chevron,
-  .dtb-overlay,
-  .dtb-sheet { animation: none !important; }
 }
 
 @media (max-width: 640px) {
   .dash-page-wrap {
     padding: 0 1rem;
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (max-width: 400px) {
   .dash-page-wrap {
     padding: 0 0.875rem;
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   }
+  .dtb-sheet-rejilla { gap: 6px; }
 }
 
-@keyframes dtb-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .dtb-pill,
+  .dtb-pill-chevron,
+  .dtb-overlay,
+  .dtb-sheet,
+  .dtb-sheet-seccion { animation: none !important; }
+  .dtb-sheet, .dtb-pill { transition: none; }
 }
 
-@keyframes dtb-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
-}
+@keyframes dtb-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dtb-fade-out { from { opacity: 1; } to { opacity: 0; } }
 
-/* Apertura del sheet: sube con fade + un ligero "crecer" desde la base */
 @keyframes dtb-sheet-in {
-  from { transform: translateY(100%) scale(0.97); opacity: 0.35; }
-  to   { transform: translateY(0) scale(1); opacity: 1; }
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
 }
-
+/* Sin «from»: si se ha arrastrado, sale desde donde lo soltaste. */
 @keyframes dtb-sheet-out {
-  from { transform: translateY(0) scale(1); opacity: 1; }
-  to   { transform: translateY(100%) scale(0.98); opacity: 0.4; }
+  to { transform: translateY(100%); }
 }
 
-/* Revelado escalonado de cada sección de herramientas al abrir */
 @keyframes dtb-item-in {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
 }
 
-@keyframes dtb-dock-in {
-  from { opacity: 0; transform: translateY(100%); }
-  to   { opacity: 1; transform: none; }
+@keyframes dtb-pill-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(120%); }
+  to   { opacity: 1; transform: translateX(-50%); }
 }
-
-.dtb-overlay--closing { animation: dtb-fade-out 0.24s ease forwards; }
-.dtb-sheet--closing { animation: dtb-sheet-out 0.26s cubic-bezier(0.4, 0, 1, 1) forwards; }
-
-.dtb-sheet-body .dtb-section {
-  animation: dtb-item-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.dtb-sheet-body .dtb-section:nth-child(1) { animation-delay: 0.13s; }
-.dtb-sheet-body .dtb-section:nth-child(2) { animation-delay: 0.2s; }
-.dtb-sheet-body .dtb-section:nth-child(3) { animation-delay: 0.27s; }
-.dtb-sheet-body .dtb-section:nth-child(4) { animation-delay: 0.34s; }
-.dtb-sheet-body .dtb-section:nth-child(n + 5) { animation-delay: 0.4s; }
 
 /* Al cerrar, las secciones no re-animan (se van con el sheet) */
 .dtb-sheet--closing .dtb-section { animation: none; }
@@ -1516,6 +1524,11 @@ a.dtb-tool:hover .ia-linea { animation-duration: 1.8s; }
 
 .imm-title-grad {
   display: block;
+  /* El degradado se recorta a la caja de la línea, y con un interlineado tan
+     justo (1.06) se comía los rasgos que bajan: la «j» de «deja» salía cortada.
+     El relleno abajo amplía la caja y el margen negativo devuelve el sitio. */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
   background: linear-gradient(100deg, var(--imm-accent) 0%, var(--imm-accent-2) 60%, #ffffff 100%);
   -webkit-background-clip: text;
   background-clip: text;

@@ -887,10 +887,15 @@ a.pf-celda:hover .pf-ir {
   height: 46px;
   border-radius: 14px;
   background: linear-gradient(135deg, #ff9a00, #ff6b2b);
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #fff;
+}
+
+/* La foto del admin (antes una «A»). Recortada a la forma del marco; el punto
+   verde de «en línea» va por encima, fuera del recorte. */
+.pf-contacto-foto {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 
 .pf-contacto-online {
@@ -962,7 +967,7 @@ a.pf-celda:hover .pf-ir {
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 
-.pf-pregunta[open] {
+.pf-pregunta[open]:not([data-acordeon="cerrando"]) {
   border-color: rgba(230, 180, 85, 0.3);
   background: linear-gradient(180deg, rgba(230, 180, 85, 0.06), rgba(15, 21, 40, 0.75));
 }
@@ -1014,7 +1019,7 @@ a.pf-celda:hover .pf-ir {
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, color 0.3s ease;
 }
 
-.pf-pregunta[open] .pf-pregunta-icono {
+.pf-pregunta[open]:not([data-acordeon="cerrando"]) .pf-pregunta-icono {
   transform: rotate(180deg);
   background: rgba(230, 180, 85, 0.16);
   color: #f6d58e;

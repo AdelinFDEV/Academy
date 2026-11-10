@@ -602,6 +602,8 @@ const count = (v: number) => String(Math.round(v));
 const perTrade = (trades: Trade[], valueOf: (t: Trade, i: number) => number): Point[] =>
   trades.map((t, i) => ({ date: t.date, value: valueOf(t, i) }));
 const monthIndex = (d: Date) => d.getFullYear() * 12 + d.getMonth();
+/** Número de semana (de lunes a domingo) contado desde 1970, en la hora local. */
+const weekIndex = (d: Date) => Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5 + 3) / 7);
 
 /*
  * Premian el proceso antes que el resultado. Dos ideas que se descartaron a
@@ -646,6 +648,42 @@ export const MILESTONES: MilestoneDef[] = [
         if (prev?.result === "loss" && new Date(t.date).getTime() - new Date(prev.date).getTime() >= COOLDOWN_MIN * 60_000) n++;
         return n;
       });
+    },
+  },
+  // Tres más el 10-11-2026, pedidos por el admin para motivar: sencillos, con
+  // el primer nivel cerca, y premiando el proceso (ninguno sube operando más).
+  {
+    id: "semanas", group: "proceso", title: "Semanas apuntando", desc: "Semanas distintas con alguna operación apuntada",
+    tiers: [2, 4, 12, 26], format: count,
+    tierNotes: [
+      "El hábito empieza a coger forma",
+      "Un mes entero sin soltar el diario",
+      "Tres meses de constancia",
+      "Medio año apuntando: ya es parte de tu método",
+    ],
+    series: trades => {
+      const semanas = new Set<number>();
+      return perTrade(trades, t => {
+        semanas.add(weekIndex(new Date(t.date)));
+        return semanas.size;
+      });
+    },
+  },
+  {
+    id: "control", group: "proceso", title: "Pérdidas controladas", desc: "Pérdidas que no pasaron de lo que arriesgabas",
+    tiers: [3, 10, 30, 75], format: count,
+    series: trades => {
+      let n = 0;
+      // Un 2 % de margen: un stop que salta un poco por debajo sigue siendo respetarlo.
+      return perTrade(trades, t => (t.result === "loss" && -t.pnl <= t.risk_amount * 1.02 ? ++n : n));
+    },
+  },
+  {
+    id: "objetivo", group: "proceso", title: "Objetivos cumplidos", desc: "Ganadoras que llegaron a su objetivo sin cerrarlas antes",
+    tiers: [3, 10, 30, 75], format: count,
+    series: trades => {
+      let n = 0;
+      return perTrade(trades, t => (t.result === "win" && t.expected_gain > 0 && t.pnl >= t.expected_gain * 0.98 ? ++n : n));
     },
   },
   {

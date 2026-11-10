@@ -331,7 +331,7 @@
   overflow: hidden;
   transition: border-color 0.25s ease;
 }
-.cf-mod-card[open], .cf-mod-card:hover { border-color: color-mix(in srgb, var(--cf-acento) 30%, transparent); }
+.cf-mod-card[open]:not([data-acordeon="cerrando"]), .cf-mod-card:hover { border-color: color-mix(in srgb, var(--cf-acento) 30%, transparent); }
 .cf-mod--final .cf-mod-card {
   padding: 1.15rem 1.25rem;
   border-color: color-mix(in srgb, var(--cf-acento) 45%, transparent);
@@ -371,7 +371,7 @@
   color: rgba(240, 244, 255, 0.6);
   transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
 }
-.cf-mod-card[open] .cf-mod-flecha { transform: rotate(180deg); background: color-mix(in srgb, var(--cf-acento) 16%, transparent); color: var(--cf-acento); }
+.cf-mod-card[open]:not([data-acordeon="cerrando"]) .cf-mod-flecha { transform: rotate(180deg); background: color-mix(in srgb, var(--cf-acento) 16%, transparent); color: var(--cf-acento); }
 
 .cf-lecciones { list-style: none; margin: 0; padding: 0 1.25rem 1rem; display: grid; gap: 0.2rem; }
 .cf-lecciones li {

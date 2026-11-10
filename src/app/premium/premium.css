@@ -444,7 +444,7 @@
 .pm-faq-item summary { position: relative; padding: 1.05rem 3rem 1.05rem 1.2rem; font-weight: 700; color: #fff; cursor: pointer; list-style: none; }
 .pm-faq-item summary::-webkit-details-marker { display: none; }
 .pm-faq-item summary::after { content: "+"; position: absolute; right: 1.2rem; top: 50%; translate: 0 -50%; font-size: 1.3rem; color: var(--pr-oro); transition: rotate 0.25s ease; }
-.pm-faq-item[open] summary::after { rotate: 45deg; }
+.pm-faq-item[open]:not([data-acordeon="cerrando"]) summary::after { rotate: 45deg; }
 .pm-faq-item p { margin: 0; padding: 0 1.2rem 1.1rem; font-size: 0.93rem; line-height: 1.65; color: var(--pr-suave); }
 
 /* ── Cierre ── */

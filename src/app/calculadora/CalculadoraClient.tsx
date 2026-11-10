@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import Link from "next/link";
-import { RefreshCw, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
+import { RefreshCw, CheckCircle, AlertTriangle, XCircle, Lock, Calculator } from "lucide-react";
+import "./calculadora.css";
 
 /**
  * Cálculos que puede hacer alguien sin cuenta antes de pedirle el registro.
@@ -283,111 +284,137 @@ export default function CalculadoraClient({ isLoggedIn }: { isLoggedIn: boolean 
 
   const maxMC = Math.max(btcMC, neededMC, 1);
 
+  // Dónde caen los cambios de zona en el medidor: los mismos umbrales que
+  // getFeasibility, puestos en la misma escala logarítmica que el marcador.
+  const zonas = btcMC > 0
+    ? [10e9, 100e9, btcMC * 0.5, btcMC].map((v) => gaugePosition(v, btcMC))
+    : [25, 50, 75, 100];
+  const degradado = `linear-gradient(90deg, #34d399 0%, #34d399 ${zonas[0]}%, #fbbf24 ${zonas[0]}%, #fbbf24 ${zonas[1]}%, #f97316 ${zonas[1]}%, #f97316 ${zonas[2]}%, #f87171 ${zonas[2]}%, #f87171 100%)`;
+
+  const probar = (precio: string, oferta: string) => {
+    setPriceRaw(precio);
+    setSupplyRaw(oferta);
+  };
+
+  const hora = lastUpdated?.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+
   return (
-    <div className="calc-wrap">
+    <div className="pc">
 
-      {/* Header */}
-      <div className="calc-page-header">
-        <span className="calc-eyebrow">
-          <span className="calc-eyebrow-dot" />
-          Herramienta · Datos en tiempo real
+      {/* ── Cabecera ── */}
+      <header className="pc-cab">
+        <span className="pc-eyebrow">
+          <span className="pc-eyebrow-punto" aria-hidden="true" />
+          Herramienta gratuita · Datos en directo
         </span>
-        <h1 className="calc-page-title">Predicción de Precio</h1>
-        <p className="calc-page-sub">
-          ¿A qué precio puede llegar un token? Calcula el Market Cap que necesitaría y descubre si es realista comparándolo con Bitcoin, Ethereum y Solana en tiempo real.
+        <h1 className="pc-titulo">Predicción de Precio</h1>
+        <p className="pc-lead">
+          ¿Puede un token llegar al precio que esperas? Calcula la{" "}
+          <Link href="/glosario/market-cap">capitalización de mercado</Link> que necesitaría y compárala al momento
+          con la de Bitcoin, Ethereum y Solana.
         </p>
-      </div>
+      </header>
 
-      {/* Live price ticker */}
-      <div className="calc-ticker">
-        {(["bitcoin", "ethereum", "solana"] as (keyof LiveData)[]).map(id => {
+      {/* ── Mercado en directo ── */}
+      <div className="pc-mercado" aria-label="Precios en directo">
+        {(["bitcoin", "ethereum", "solana"] as (keyof LiveData)[]).map((id) => {
           const coin = liveData?.[id];
-          const chg  = coin?.usd_24h_change ?? 0;
-          const up   = chg >= 0;
+          const chg = coin?.usd_24h_change ?? 0;
+          const up = chg >= 0;
           return (
-            <div key={id} className="calc-ticker-item">
-              <span className="calc-ticker-dot" style={{ background: COIN_COLORS[id] }} />
-              <div className="calc-ticker-body">
-                <div className="calc-ticker-top">
-                  <span className="calc-ticker-sym">{COIN_SYMBOLS[id]}</span>
-                  <span className="calc-ticker-name">{COIN_NAMES[id]}</span>
-                </div>
-                {coin ? (
-                  <div className="calc-ticker-figures">
-                    <span className="calc-ticker-price">{fmtPrice(coin.usd)}</span>
-                    <span className={`calc-ticker-chg ${up ? "up" : "down"}`}>
-                      {up ? "▲" : "▼"} {Math.abs(chg).toFixed(2)}%
-                    </span>
-                  </div>
-                ) : (
-                  <span className="calc-ticker-loading">
-                    {liveError ? "Sin datos" : "Cargando…"}
-                  </span>
-                )}
-              </div>
+            <div key={id} className="pc-moneda" style={{ "--c": COIN_COLORS[id] } as React.CSSProperties}>
+              <span className="pc-moneda-icono" aria-hidden="true">{COIN_SYMBOLS[id].charAt(0)}</span>
+              <span className="pc-moneda-nombre">
+                <strong>{COIN_SYMBOLS[id]}</strong>
+                <small>{COIN_NAMES[id]}</small>
+              </span>
+              {coin ? (
+                <span className="pc-moneda-cifras">
+                  <strong>{fmtPrice(coin.usd)}</strong>
+                  <small className={up ? "es-sube" : "es-baja"}>
+                    {up ? "+" : "−"}{Math.abs(chg).toFixed(2)} %
+                  </small>
+                </span>
+              ) : (
+                <span className="pc-moneda-cargando">{liveError ? "Sin datos" : "Cargando…"}</span>
+              )}
             </div>
           );
         })}
+        <button
+          type="button"
+          className="pc-actualizar"
+          onClick={fetchLive}
+          disabled={fetching}
+          aria-label="Actualizar los precios"
+          title={hora ? `Actualizado a las ${hora}` : "Actualizar"}
+        >
+          <RefreshCw size={14} className={fetching ? "pc-gira" : ""} aria-hidden="true" />
+          <span>{liveError ? "Reintentar" : hora ?? "…"}</span>
+        </button>
       </div>
 
-      {/* Formula */}
-      <div className="calc-formula-bar">
-        <span className="calc-formula-pill">Market Cap Necesario</span>
-        <span className="calc-formula-eq">=</span>
-        <span className="calc-formula-pill">Precio Objetivo</span>
-        <span className="calc-formula-div">×</span>
-        <span className="calc-formula-pill">Supply Circulante</span>
-      </div>
+      {/* ── La calculadora: datos a la izquierda, resultado a la derecha ── */}
+      <section className="pc-panel" aria-label="Calculadora">
 
-      {/* Grid */}
-      <div className="calc-grid">
+        <div className="pc-datos">
+          <p className="pc-formula">
+            <span>Capitalización</span>
+            <i aria-hidden="true">=</i>
+            <span>Precio</span>
+            <i aria-hidden="true">×</i>
+            <span>Monedas en circulación</span>
+          </p>
 
-        {/* ── Inputs ── */}
-        <div className="calc-inputs-col">
-
-          {/* Price */}
-          <div className="calc-field">
-            <label className="calc-label">
+          <div className="pc-campo">
+            <label className="pc-etiqueta" htmlFor="pc-precio">
+              <span className="pc-paso" aria-hidden="true">1</span>
               Precio objetivo
-              <span className="calc-label-hint">¿A qué precio quieres que llegue el token?</span>
             </label>
-            <div className="calc-input-wrap calc-input-wrap--dollar">
-              <span className="calc-input-prefix">$</span>
+            <p className="pc-ayuda">El precio al que te gustaría ver el token, en dólares.</p>
+            <div className="pc-caja">
+              <span className="pc-caja-prefijo" aria-hidden="true">$</span>
               <input
+                id="pc-precio"
                 type="text"
                 inputMode="decimal"
-                className="calc-input calc-input--has-prefix calc-input--hero"
+                autoComplete="off"
+                className="pc-input"
                 placeholder="10"
                 value={priceRaw}
-                onChange={e => setPriceRaw(e.target.value.replace(/\$/g, ""))}
+                onChange={(e) => setPriceRaw(e.target.value.replace(/\$/g, ""))}
               />
             </div>
           </div>
 
-          {/* Supply */}
-          <div className="calc-field">
-            <label className="calc-label">
-              Supply circulante
-              <span className="calc-label-hint">Número de tokens en circulación</span>
+          <div className="pc-campo">
+            <label className="pc-etiqueta" htmlFor="pc-oferta">
+              <span className="pc-paso" aria-hidden="true">2</span>
+              Monedas en circulación
             </label>
-            <div className="calc-input-wrap">
+            <p className="pc-ayuda">
+              Su <Link href="/glosario/oferta-circulante">oferta circulante</Link>. Admite abreviaturas: 500M, 55.5B, 1T.
+            </p>
+            <div className="pc-caja">
               <input
+                id="pc-oferta"
                 type="text"
                 inputMode="decimal"
-                className="calc-input calc-input--hero"
-                placeholder="Ej: 55.5B o 55,500,000,000"
+                autoComplete="off"
+                className="pc-input"
+                placeholder="55.5B"
                 value={supplyRaw}
-                onChange={e => setSupplyRaw(e.target.value)}
+                onChange={(e) => setSupplyRaw(e.target.value)}
               />
-              {supply > 0 && (
-                <span className="calc-input-parsed">{fmtSupply(supply)}</span>
-              )}
+              {supply > 0 && <span className="pc-caja-lectura">{fmtSupply(supply)}</span>}
             </div>
-            <div className="calc-presets">
-              {SUPPLY_PRESETS.map(p => (
+            <div className="pc-atajos" role="group" aria-label="Cantidades habituales">
+              {SUPPLY_PRESETS.map((p) => (
                 <button
                   key={p.label}
-                  className={`calc-preset-btn${supply === p.value ? " active" : ""}`}
+                  type="button"
+                  className={`pc-atajo${supply === p.value ? " is-activo" : ""}`}
+                  aria-pressed={supply === p.value}
                   onClick={() => setSupplyRaw(p.value.toString())}
                 >
                   {p.label}
@@ -396,206 +423,158 @@ export default function CalculadoraClient({ isLoggedIn }: { isLoggedIn: boolean 
             </div>
           </div>
 
-          {/* Tip */}
-          <div className="calc-tip">
-            <strong>Ejemplo:</strong> XRP a $10 con supply de 55.5B = Market Cap necesario de <strong>$555B</strong> — más que Ethereum.
+          <div className="pc-ejemplos">
+            <span>¿No sabes por dónde empezar?</span>
+            <button type="button" onClick={() => probar("10", "55.5B")}>XRP a $10</button>
+            <button type="button" onClick={() => probar("1", "1T")}>1T de monedas a $1</button>
           </div>
         </div>
 
-        {/* ── Result ── */}
-        <div className="calc-result-col">
+        <div className={`pc-resultado${hasResult && !agotado ? " is-activo" : ""}`} aria-live="polite">
+          {agotado ? (
+            /* Muro suave: se enseña DESPUÉS de tres resultados, nunca antes,
+               para que quien llega de una búsqueda vea funcionar la
+               herramienta antes de que se le pida nada. */
+            <div className="pc-muro">
+              <span className="pc-muro-icono" aria-hidden="true"><Lock size={20} /></span>
+              <p className="pc-muro-titulo">Has usado tus tres cálculos gratis</p>
+              <p className="pc-muro-texto">
+                Crea una cuenta gratuita y sigue calculando sin límite. También te abre el quiz de cada guía y sus
+                logros, sin pagar nada.
+              </p>
+              <Link href="/register?next=/calculadora" className="pc-boton">Crear cuenta gratuita</Link>
+              <p className="pc-muro-alt">
+                ¿Ya tienes una? <Link href="/login?next=/calculadora">Entrar</Link>
+              </p>
+            </div>
+          ) : !hasResult ? (
+            <div className="pc-vacio">
+              <span className="pc-vacio-icono" aria-hidden="true"><Calculator size={22} /></span>
+              <p className="pc-vacio-titulo">Tu resultado aparecerá aquí</p>
+              <p className="pc-vacio-texto">
+                Escribe un precio y cuántas monedas hay en circulación. El cálculo se hace al momento, mientras
+                escribes.
+              </p>
+            </div>
+          ) : (
+            <>
+              <span className="pc-res-rotulo">Capitalización necesaria</span>
+              <p className="pc-res-cifra">{fmtMC(displayMC)}</p>
+              <p className="pc-res-cuenta">
+                {fmtPrice(targetPrice)} <i>×</i> {fmtShort(supply)} monedas
+              </p>
+
+              {feasCfg && (
+                <div className="pc-veredicto" style={{ "--v": feasCfg.color } as React.CSSProperties}>
+                  <div className="pc-veredicto-cab">
+                    <span className="pc-veredicto-icono" aria-hidden="true">
+                      {feasCfg.icon === "check" && <CheckCircle size={16} />}
+                      {feasCfg.icon === "warn" && <AlertTriangle size={16} />}
+                      {feasCfg.icon === "x" && <XCircle size={16} />}
+                    </span>
+                    <strong>{feasCfg.label}</strong>
+                  </div>
+                  <p>{feasCfg.desc}</p>
+
+                  <div className="pc-medidor" aria-hidden="true">
+                    <div className="pc-medidor-pista" style={{ background: degradado }}>
+                      <span className="pc-medidor-marca" style={{ left: `${gaugePct}%` }} />
+                    </div>
+                    <div className="pc-medidor-escala">
+                      <span>Factible</span>
+                      <span>Difícil</span>
+                      <span>Supera a BTC</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {liveData && (vsEth !== null || vsBtc !== null) && (
+                <div className="pc-frente">
+                  {vsEth !== null && (
+                    <div>
+                      <small>Frente a Ethereum</small>
+                      <strong>{vsEth >= 1 ? `${vsEth.toFixed(2)}×` : `${(vsEth * 100).toFixed(0)} %`}</strong>
+                      <span>{vsEth >= 1 ? "su capitalización" : "de su capitalización"}</span>
+                    </div>
+                  )}
+                  {vsBtc !== null && (
+                    <div>
+                      <small>Frente a Bitcoin</small>
+                      <strong>{vsBtc >= 1 ? `${vsBtc.toFixed(2)}×` : `${(vsBtc * 100).toFixed(0)} %`}</strong>
+                      <span>{vsBtc >= 1 ? "su capitalización" : "de su capitalización"}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+
           {/* Se avisa solo cuando queda poco: decir "te quedan 3" nada más
               entrar suena a cuenta atrás y espanta antes de aportar nada. */}
           {!isLoggedIn && !agotado && restantes <= 2 && (
-            <p className="calc-restantes">
+            <p className="pc-restantes">
               Te {restantes === 1 ? "queda 1 cálculo gratis" : `quedan ${restantes} cálculos gratis`}.{" "}
               <Link href="/register?next=/calculadora">Crea una cuenta</Link> y sigue sin límite.
             </p>
           )}
-
-          <div className={`calc-result-card${hasResult ? " calc-result-card--active" : ""}`}>
-
-            {agotado ? (
-              /* Muro suave: se enseña DESPUÉS de tres resultados, nunca antes,
-                 para que quien llega de una búsqueda vea funcionar la
-                 herramienta antes de que se le pida nada. */
-              <div className="calc-gate">
-                <p className="calc-gate-title">Has usado tus tres cálculos gratis</p>
-                <p className="calc-gate-text">
-                  Crea una cuenta gratuita y sigue calculando sin límite. También
-                  te abre el quiz de cada guía y sus logros, sin pagar nada.
-                </p>
-                <Link href="/register?next=/calculadora" className="calc-gate-cta">
-                  Crear cuenta gratuita
-                </Link>
-                <p className="calc-gate-alt">
-                  ¿Ya tienes una? <Link href="/login?next=/calculadora">Entrar</Link>
-                </p>
-              </div>
-            ) : !hasResult ? (
-              <div className="calc-result-empty">
-                <div className="calc-result-empty-icon">
-                  <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-                    <circle cx="22" cy="22" r="21" stroke="rgba(240,244,255,0.08)" strokeWidth="2"/>
-                    <text x="22" y="30" textAnchor="middle" fontSize="22" fill="rgba(240,244,255,0.1)" fontFamily="monospace">$</text>
-                  </svg>
-                </div>
-                <p>Introduce precio y supply<br/>para ver el resultado</p>
-              </div>
-            ) : (
-              <>
-                <span className="calc-result-label">Market Cap necesario</span>
-
-                <div className="calc-result-price">{fmtMC(displayMC)}</div>
-
-                {/* Breakdown */}
-                <div className="calc-breakdown">
-                  <span className="calc-breakdown-val">{fmtPrice(targetPrice)}</span>
-                  <span className="calc-breakdown-op">×</span>
-                  <span className="calc-breakdown-val">{fmtShort(supply)}</span>
-                  <span className="calc-breakdown-op">=</span>
-                  <span className="calc-breakdown-result">{fmtMC(neededMC)}</span>
-                </div>
-
-                {/* Difficulty gauge */}
-                {feasCfg && (
-                  <div className="calc-gauge">
-                    <div className="calc-gauge-track">
-                      <div
-                        className="calc-gauge-marker"
-                        style={{ left: `${gaugePct}%`, borderColor: feasCfg.color }}
-                      />
-                    </div>
-                    <div className="calc-gauge-scale">
-                      <span>Factible</span>
-                      <span>Difícil</span>
-                      <span>Imposible</span>
-                    </div>
-                    <div
-                      className="calc-feasibility-label calc-gauge-verdict"
-                      style={{ color: feasCfg.color }}
-                    >
-                      {feasCfg.icon === "check" && <CheckCircle size={14} />}
-                      {feasCfg.icon === "warn"  && <AlertTriangle size={14} />}
-                      {feasCfg.icon === "x"     && <XCircle size={14} />}
-                      {feasCfg.label}
-                    </div>
-                    <span className="calc-feasibility-desc">{feasCfg.desc}</span>
-                  </div>
-                )}
-
-                {/* Vs live */}
-                {liveData && (
-                  <div className="calc-result-stats">
-                    {vsEth !== null && (
-                      <div className="calc-result-stat">
-                        <span className="calc-result-stat-l">vs. Ethereum</span>
-                        <span className="calc-result-stat-v">
-                          {vsEth >= 1
-                            ? `${vsEth.toFixed(2)}× el MC de ETH`
-                            : `${(vsEth * 100).toFixed(0)}% del MC de ETH`}
-                        </span>
-                      </div>
-                    )}
-                    {vsBtc !== null && (
-                      <div className="calc-result-stat">
-                        <span className="calc-result-stat-l">vs. Bitcoin</span>
-                        <span className="calc-result-stat-v">
-                          {vsBtc >= 1
-                            ? `${vsBtc.toFixed(2)}× el MC de BTC`
-                            : `${(vsBtc * 100).toFixed(0)}% del MC de BTC`}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── Comparison bars ── */}
+      {/* ── Comparativa ── */}
       {barItems.length > 0 && (
-        <div className="calc-comparison">
-          <div className="calc-comparison-head">
-            <div>
-              <h2 className="calc-comparison-title">Comparativa en tiempo real</h2>
-              <p className="calc-comparison-sub">
-                {hasResult
-                  ? "Dónde quedaría el Market Cap necesario respecto a las principales criptomonedas"
-                  : "Market caps actuales de referencia"}
-              </p>
-            </div>
-            <div className="calc-comparison-live">
-              <span className="calc-live-dot-small" />
-              <span>
-                {liveError
-                  ? <span style={{ color: "#f87171" }}>Error al cargar</span>
-                  : lastUpdated
-                    ? `${lastUpdated.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}`
-                    : "Cargando..."
-                }
-              </span>
-              <button
-                className="calc-refresh-btn"
-                onClick={fetchLive}
-                disabled={fetching}
-                aria-label="Actualizar datos"
-              >
-                <RefreshCw size={12} className={fetching ? "calc-spin" : ""} />
-              </button>
-            </div>
+        <section className="pc-compara" aria-labelledby="pc-compara-titulo">
+          <div className="pc-compara-cab">
+            <h2 id="pc-compara-titulo">Dónde quedaría frente a las grandes</h2>
+            <p>
+              {hasResult && !agotado
+                ? "La capitalización que necesitaría tu token, al lado de las de hoy."
+                : "Capitalización de mercado actual de las tres principales."}
+            </p>
           </div>
 
-          <div className="calc-bars">
-            {barItems.map(item => {
-              const pct = Math.max((item.mc / maxMC) * 100, 0.8);
-              return (
-                <div key={item.key} className={`calc-bar-row${item.isTarget ? " calc-bar-row--target" : ""}`}>
-                  <div className="calc-bar-meta">
-                    <span className="calc-bar-dot" style={{ background: item.isTarget ? "var(--accent-orange)" : item.color }} />
-                    <span className="calc-bar-symbol" style={{ color: item.isTarget ? "var(--accent-orange)" : item.color }}>
-                      {item.symbol}
+          <div className="pc-barras">
+            {barItems
+              .filter((item) => !(item.isTarget && agotado))
+              .map((item) => {
+                const pct = Math.max((item.mc / maxMC) * 100, 0.8);
+                return (
+                  <div
+                    key={item.key}
+                    className={`pc-barra${item.isTarget ? " es-tuyo" : ""}`}
+                    style={{ "--c": item.isTarget ? "var(--accent-orange)" : item.color } as React.CSSProperties}
+                  >
+                    <span className="pc-barra-nombre">
+                      <strong>{item.isTarget ? "Tu token" : item.symbol}</strong>
+                      {!item.isTarget && <small>{item.label}</small>}
                     </span>
-                    <span className="calc-bar-label">{item.label}</span>
+                    <span className="pc-barra-pista">
+                      <span className="pc-barra-relleno" style={{ width: `${pct}%` }} />
+                    </span>
+                    <span className="pc-barra-valor">{fmtMC(item.mc)}</span>
                   </div>
-                  <div className="calc-bar-track">
-                    <div
-                      className="calc-bar-fill"
-                      style={{
-                        width: `${pct}%`,
-                        background: item.isTarget
-                          ? "linear-gradient(90deg, var(--accent-orange-soft), var(--accent-orange))"
-                          : `linear-gradient(90deg, ${item.color}99, ${item.color})`,
-                      }}
-                    />
-                  </div>
-                  <span className={`calc-bar-value${item.isTarget ? " calc-bar-value--target" : ""}`}>
-                    {fmtMC(item.mc)}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
 
-          {/* Context sentence */}
           {/* La comparación también queda tras el muro: si no, el cálculo se
               lee igual en las barras y el tope no serviría de nada. */}
           {hasResult && liveData && !agotado && (
-            <div className="calc-context">
+            <div className="pc-conclusion">
               {neededMC > btcMC ? (
-                <p>Para alcanzar ese precio, el token necesitaría <strong>{fmtMC(neededMC)}</strong> de Market Cap — superando a Bitcoin ({fmtMC(btcMC)}). Esto nunca ha ocurrido en la historia del crypto.</p>
+                <p>Para alcanzar ese precio, el token necesitaría <strong>{fmtMC(neededMC)}</strong> de capitalización: más que Bitcoin ({fmtMC(btcMC)}). Esto nunca ha ocurrido en la historia de las criptomonedas.</p>
               ) : neededMC > ethMC ? (
-                <p>El Market Cap necesario (<strong>{fmtMC(neededMC)}</strong>) superaría a Ethereum ({fmtMC(ethMC)}) y representaría el {((neededMC / btcMC) * 100).toFixed(0)}% del Market Cap de Bitcoin.</p>
+                <p>La capitalización necesaria (<strong>{fmtMC(neededMC)}</strong>) superaría a Ethereum ({fmtMC(ethMC)}) y sería el {((neededMC / btcMC) * 100).toFixed(0)} % de la de Bitcoin.</p>
               ) : neededMC > solMC ? (
-                <p>El Market Cap necesario (<strong>{fmtMC(neededMC)}</strong>) estaría entre Solana ({fmtMC(solMC)}) y Ethereum ({fmtMC(ethMC)}). Territorio top-10 del mercado.</p>
+                <p>La capitalización necesaria (<strong>{fmtMC(neededMC)}</strong>) quedaría entre Solana ({fmtMC(solMC)}) y Ethereum ({fmtMC(ethMC)}): territorio de las diez mayores del mercado.</p>
               ) : (
-                <p>El Market Cap necesario (<strong>{fmtMC(neededMC)}</strong>) es inferior al de Solana ({fmtMC(solMC)}). Un objetivo más accesible dentro del mercado actual.</p>
+                <p>La capitalización necesaria (<strong>{fmtMC(neededMC)}</strong>) es inferior a la de Solana ({fmtMC(solMC)}). Un objetivo más accesible dentro del mercado actual.</p>
               )}
             </div>
           )}
-        </div>
+
+          <p className="pc-nota">Datos de CoinGecko, en dólares. Se actualizan solos cada minuto.</p>
+        </section>
       )}
     </div>
   );

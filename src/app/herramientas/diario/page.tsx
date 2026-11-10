@@ -33,7 +33,7 @@ import "./diario.css";
  * capital, rendimiento por periodo, calendario, desglose por par/estrategia/
  * día/hora, análisis del riesgo en múltiplos de R, sensaciones por día (ánimo y
  * nota, `tjDias.ts`), Nova con su pulso de 0 a 100 en cuatro partes y mensajes
- * priorizados (`tjNova.ts`, reglas sobre los datos, no IA), siete hitos con
+ * priorizados (`tjNova.ts`, reglas sobre los datos, no IA), diez hitos con
  * niveles y el súper hito «Conseguiste vivir del trading» (`tjStats.ts`: sus
  * reglas salen de las mismas constantes, para que no se desincronicen).
  *
@@ -88,7 +88,7 @@ const [CURVA_X, CURVA_Y] = CURVA[CURVA.length - 1];
 const ANILLO = 2 * Math.PI * 15.9;
 
 /** Lo que trae, en una línea, bajo el botón de la cabecera. */
-const INCLUYE_CORTO = ["Nova y su pulso", "10 estadísticas", "Sensaciones", "7 hitos + el súper hito"];
+const INCLUYE_CORTO = ["Nova y su pulso", "10 estadísticas", "Sensaciones", "10 hitos + el súper hito"];
 
 /** Los mensajes de Nova de la maqueta: los tres tonos que usa (bien, aviso, dato). */
 const NOVA_MENSAJES = [
@@ -149,6 +149,9 @@ const HITOS = [
   "Disciplina de riesgo",
   "Diario con porqué",
   "Sin revancha",
+  "Semanas apuntando",
+  "Pérdidas controladas",
+  "Objetivos cumplidos",
   "Meses en verde",
   "Rentabilidad sobre tu capital",
   "Vuelta a máximos",
@@ -207,7 +210,7 @@ const FAQ = [
   },
   {
     q: "¿Tiene más niveles o recompensas?",
-    a: "Además del súper hito, siete hitos con niveles y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde.",
+    a: "Además del súper hito, diez hitos con niveles y un aviso cada vez que subes uno. Premian cómo operas más que cuánto: arriesgar poco de forma constante, esperar después de una pérdida antes de volver a entrar, anotar el porqué o cerrar meses en verde.",
   },
   {
     q: "¿Puedo usarlo si opero en varios mercados?",
@@ -628,7 +631,7 @@ export default async function FichaDiarioPage() {
           </div>
 
           <div className="dj-super-hitos">
-            <h3>Y siete hitos con niveles para el camino</h3>
+            <h3>Y diez hitos con niveles para el camino</h3>
             <ul>
               {HITOS.map((h) => (
                 <li key={h}><Trophy size={14} strokeWidth={2} aria-hidden="true" />{h}</li>
@@ -679,7 +682,7 @@ export default async function FichaDiarioPage() {
             <h2 className="fh-precio-titulo">Tu mejor operación empieza por apuntar la próxima</h2>
             <ul className="fh-incluye">
               <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El Diario de Trading completo, con Nova y su pulso</li>
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Sensaciones, análisis del riesgo, siete hitos y el súper hito</li>
+              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Sensaciones, análisis del riesgo, diez hitos y el súper hito</li>
               <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA en directo</li>
               <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
             </ul>

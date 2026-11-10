@@ -102,6 +102,10 @@ export default function TradingJournal({
   const view = useSyncExternalStore(subscribeHash, readView, serverView);
   const formRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  // Marca fija justo encima de las pestañas: ellas son sticky y nunca «salen»
+  // de la pantalla, así que su posición no dice dónde empieza el contenido.
+  const anclaRef = useRef<HTMLDivElement>(null);
+  const vistaPrevia = useRef(view);
 
   useEffect(() => {
     if (formOpen) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -130,10 +134,22 @@ export default function TradingJournal({
     // Salir del Resumen descarta una operación nueva a medias (las ediciones siguen).
     if (v !== "resumen" && formOpen && !editing) setFormOpen(false);
     window.location.hash = v;
-    // Si se cambia de vista desde abajo del todo, sube a las pestañas.
-    const tabs = tabsRef.current;
-    if (tabs && tabs.getBoundingClientRect().top < 0) tabs.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+
+  // Al cambiar de vista, si la barra ya iba fija encima del contenido, se sube
+  // hasta que la vista nueva empiece justo debajo de ella. Antes se miraba la
+  // posición de la propia barra, que al ser sticky nunca está por encima de la
+  // pantalla, y al pasar del Resumen (con bienvenida) a Emociones la barra
+  // quedaba flotando sobre la primera tarjeta (10-11-2026).
+  useEffect(() => {
+    if (vistaPrevia.current === view) return;
+    vistaPrevia.current = view;
+    const ancla = anclaRef.current;
+    const tabs = tabsRef.current;
+    if (!ancla || !tabs) return;
+    const fija = parseFloat(getComputedStyle(tabs).top) || 0;
+    if (ancla.getBoundingClientRect().top < fija) ancla.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [view]);
 
   // Cuenta completa: lo que no cambia al filtrar.
   const ctx = useMemo(() => accountContext(trades, capital), [trades, capital]);
@@ -373,7 +389,8 @@ export default function TradingJournal({
       {view === "resumen" || trades.length === 0
         ? <TjWelcome name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
         : <h1 className="sr-only">Diario de Trading</h1>}
-      <div className="tj-topbar tj-scroll-anchor" ref={tabsRef}>
+      <div ref={anclaRef} className="tj-scroll-anchor tj-ancla-vista" aria-hidden="true" />
+      <div className="tj-topbar" ref={tabsRef}>
         {trades.length > 0 && (
           <div className="tj-tabs">
             <TjSegmented label="Vista del diario" value={view} onChange={goTo} options={VIEWS} />

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Check, Crown, Loader2, AtSign } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
-import { ALIAS_MAX, AVATARES, problemaDelAlias } from "@/lib/perfilPublico";
+import { ALIAS_MAX, AVATARES, AVATAR_ADMIN, problemaDelAlias } from "@/lib/perfilPublico";
 
 type Estado = { tipo: "nada" } | { tipo: "guardando" } | { tipo: "ok" } | { tipo: "error"; texto: string };
 
@@ -87,7 +87,8 @@ export default function PerfilEditor({
         <fieldset className="mp-campo" disabled={!activo}>
           <legend className="mp-campo-titulo">Foto de perfil</legend>
           <div className="mp-fotos" role="radiogroup" aria-label="Foto de perfil">
-            {AVATARES.map((v) => {
+            {/* La foto real del admin solo se le ofrece a él (ver AVATAR_ADMIN). */}
+            {(esAdmin ? [AVATAR_ADMIN, ...AVATARES] : AVATARES).map((v) => {
               const elegida = avatar === v.id;
               return (
                 <button

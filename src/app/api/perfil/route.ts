@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { ALIAS_DIAS_ENTRE_CAMBIOS, avatarPorId, problemaDelAlias } from "@/lib/perfilPublico";
+import { ALIAS_DIAS_ENTRE_CAMBIOS, AVATAR_ADMIN, avatarPorId, problemaDelAlias } from "@/lib/perfilPublico";
 
 /**
  * Guarda el perfil público: alias y foto (ver FORO.md y
@@ -50,6 +50,9 @@ export async function POST(request: Request) {
   if (avatar !== undefined) {
     if (avatar === null) {
       cambios.avatar = null;
+    } else if (avatar === AVATAR_ADMIN.id && actual.role !== "admin") {
+      // La foto real del admin no la puede llevar nadie más.
+      return error("Esa foto de perfil no existe.");
     } else if (typeof avatar === "string" && avatarPorId(avatar)) {
       cambios.avatar = avatar;
     } else {

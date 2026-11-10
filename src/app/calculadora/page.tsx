@@ -64,8 +64,8 @@ export default async function CalculadoraPage() {
           el buscador al que queremos responder. Los enlaces van al diccionario,
           con el ancla sobre palabras que ya estaban en el texto (ver AGENTS.md).
         */}
-        <section className="calc-explica">
-          <h2 className="calc-explica-title">
+        <section className="pc-explica">
+          <h2 className="pc-explica-titulo">
             Por qué una moneda no sube solo porque sea barata
           </h2>
           <p>
@@ -83,7 +83,7 @@ export default async function CalculadoraPage() {
             cualquier empresa cotizada. Visto así, la pregunta se responde sola.
           </p>
 
-          <h2 className="calc-explica-title">Cómo se usa esta calculadora</h2>
+          <h2 className="pc-explica-titulo">Cómo se usa esta calculadora</h2>
           <p>
             Escribe cuántas monedas hay en circulación y el precio al que te
             gustaría verla. La calculadora te dice qué capitalización haría

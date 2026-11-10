@@ -11,6 +11,7 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import SiteVisitTracker from "@/components/SiteVisitTracker";
 import StreakTracker from "@/components/StreakTracker";
 import GlosarioPopupGlobal, { type TerminoCorto } from "@/components/GlosarioPopupGlobal";
+import AcordeonesSuaves from "@/components/AcordeonesSuaves";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
 
 const poppins = Poppins({
@@ -109,6 +110,7 @@ export default function RootLayout({
         <SiteVisitTracker />
         <StreakTracker />
         <GlosarioPopupGlobal terminos={TERMINOS_POPUP} />
+        <AcordeonesSuaves />
         {/* Cloudflare Web Analytics: sin cookies, así que no depende del
             banner y mide siempre. Es la red de seguridad si alguien no acepta. */}
         <Script
