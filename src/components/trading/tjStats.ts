@@ -602,6 +602,16 @@ const count = (v: number) => String(Math.round(v));
 const perTrade = (trades: Trade[], valueOf: (t: Trade, i: number) => number): Point[] =>
   trades.map((t, i) => ({ date: t.date, value: valueOf(t, i) }));
 const monthIndex = (d: Date) => d.getFullYear() * 12 + d.getMonth();
+const quarterIndex = (d: Date) => d.getFullYear() * 4 + Math.floor(d.getMonth() / 3);
+/** Clave de día local (AAAA-M-D), para contar días con operaciones. */
+const dayOf = (t: Trade) => {
+  const d = new Date(t.date);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+};
+/** Un día con más de esto es sobreoperar. */
+const CALMA_MAX_OPS = 3;
+/** Ratio planeado mínimo (ganancia objetivo / riesgo) para contar como buen ratio. */
+const RATIO_MIN = 1.5;
 /** Número de semana (de lunes a domingo) contado desde 1970, en la hora local. */
 const weekIndex = (d: Date) => Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 864e5 + 3) / 7);
 
@@ -611,6 +621,19 @@ const weekIndex = (d: Date) => Math.floor((Date.UTC(d.getFullYear(), d.getMonth(
  * ganadoras (premian el azar). La racha sigue siendo una estadística en Análisis.
  */
 export const MILESTONES: MilestoneDef[] = [
+  // Siete más el 10-11-2026, pedidos por el admin para motivar desde el primer
+  // día: el primero cae con la primera operación, y los de resultado ponen
+  // escalones entre «un mes en verde» y el súper hito.
+  {
+    id: "arranque", group: "proceso", title: "Primeros pasos", desc: "Tus primeras operaciones apuntadas",
+    tiers: [1, 3, 10], format: count,
+    tierNotes: [
+      "Tu diario ha empezado",
+      "Ya hay con qué empezar a leerte",
+      "Diez operaciones: el diario empieza a hablar",
+    ],
+    series: trades => perTrade(trades, (_, i) => i + 1),
+  },
   {
     id: "muestra", group: "proceso", title: "Muestra fiable", desc: "Operaciones registradas",
     tiers: [30, 100, 250, 500], format: count,
@@ -653,6 +676,41 @@ export const MILESTONES: MilestoneDef[] = [
   // Tres más el 10-11-2026, pedidos por el admin para motivar: sencillos, con
   // el primer nivel cerca, y premiando el proceso (ninguno sube operando más).
   {
+    id: "ratio", group: "proceso", title: "Buen ratio", desc: `Operaciones planeadas con un ratio de 1:${String(RATIO_MIN).replace(".", ",")} o mejor`,
+    tiers: [5, 25, 75, 200], format: count,
+    tierNotes: [
+      "Empiezas a buscar más de lo que arriesgas",
+      "Con este ratio te basta acertar 4 de cada 10",
+      "El buen ratio ya es tu costumbre",
+      "Doscientas entradas bien planeadas",
+    ],
+    series: trades => {
+      let n = 0;
+      return perTrade(trades, t => (t.risk_amount > 0 && t.expected_gain / t.risk_amount >= RATIO_MIN ? ++n : n));
+    },
+  },
+  {
+    id: "calma", group: "proceso", title: "Sin sobreoperar", desc: `Días operados con ${CALMA_MAX_OPS} operaciones o menos`,
+    tiers: [5, 20, 50, 120], format: count,
+    tierNotes: [
+      "Cinco días eligiendo en vez de disparar",
+      "Un mes de sesiones con cabeza",
+      "La calma ya forma parte de tu método",
+      "Más de un año de sesiones sin exceso",
+    ],
+    series: trades => {
+      // Un día cuenta mientras no pase del tope; si una cuarta operación lo rompe, deja de contar.
+      const porDia = new Map<string, number>();
+      return perTrade(trades, t => {
+        const k = dayOf(t);
+        porDia.set(k, (porDia.get(k) ?? 0) + 1);
+        let n = 0;
+        porDia.forEach(v => { if (v <= CALMA_MAX_OPS) n++; });
+        return n;
+      });
+    },
+  },
+  {
     id: "semanas", group: "proceso", title: "Semanas apuntando", desc: "Semanas distintas con alguna operación apuntada",
     tiers: [2, 4, 12, 26], format: count,
     tierNotes: [
@@ -684,6 +742,75 @@ export const MILESTONES: MilestoneDef[] = [
     series: trades => {
       let n = 0;
       return perTrade(trades, t => (t.result === "win" && t.expected_gain > 0 && t.pnl >= t.expected_gain * 0.98 ? ++n : n));
+    },
+  },
+  {
+    id: "verdes", group: "resultado", title: "Días en verde", desc: "Días operados que cerraron en positivo",
+    tiers: [5, 20, 50, 120], format: count,
+    series: trades => {
+      const pnlDia = new Map<string, number>();
+      return perTrade(trades, t => {
+        const k = dayOf(t);
+        pnlDia.set(k, (pnlDia.get(k) ?? 0) + t.pnl);
+        let n = 0;
+        pnlDia.forEach(v => { if (v > 0) n++; });
+        return n;
+      });
+    },
+  },
+  {
+    id: "ventaja", group: "resultado", title: "Ventaja en R", desc: "R acumulada: lo ganado en veces tu riesgo, sumando todas",
+    tiers: [10, 25, 50, 100], format: v => `${Math.round(v)}R`,
+    tierNotes: [
+      "Diez veces tu riesgo, ganado",
+      "Tu método ya deja huella",
+      "Cincuenta R: esto no es suerte",
+      "Cien R: la ventaja de un profesional",
+    ],
+    series: trades => {
+      let r = 0;
+      return perTrade(trades, t => (r += rOf(t) ?? 0));
+    },
+  },
+  {
+    id: "maximos", group: "resultado", title: "Nuevos máximos", desc: "Veces que tu cuenta marcó un máximo nuevo",
+    tiers: [3, 10, 25, 50], format: count, needsCapital: true,
+    series: (trades, capital) => {
+      let equity = capital!, peak = equity, n = 0;
+      return perTrade(trades, t => {
+        equity += t.pnl;
+        if (equity > peak) {
+          peak = equity;
+          n++;
+        }
+        return n;
+      });
+    },
+  },
+  {
+    id: "trimestres", group: "resultado", title: "Trimestres en verde", desc: "Trimestres ya cerrados con P&L positivo",
+    tiers: [1, 2, 4, 8], format: count,
+    tierNotes: [
+      "Tres meses seguidos que suman",
+      "Medio año en positivo",
+      "Un año entero de trimestres en verde",
+      "Dos años: ya no es una racha, es un oficio",
+    ],
+    series: (trades, _c, _x, now) => {
+      // Como los meses: un trimestre solo cuenta cerrado, el día 1 del siguiente.
+      if (!trades.length) return [];
+      const sums = new Map<number, number>();
+      for (const t of trades) {
+        const q = quarterIndex(new Date(t.date));
+        sums.set(q, (sums.get(q) ?? 0) + t.pnl);
+      }
+      const points: Point[] = [];
+      let green = 0;
+      for (let q = Math.min(...sums.keys()) + 1; q <= quarterIndex(now); q++) {
+        if ((sums.get(q - 1) ?? 0) > 0) green++;
+        points.push({ date: new Date(Math.floor(q / 4), (q % 4) * 3, 1).toISOString(), value: green });
+      }
+      return points;
     },
   },
   {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useMotionValue } from "framer-motion";
 import NovaHead from "./NovaHead";
-import { BOT_NAME, NOVA_FIRMA } from "./tjNova";
+import { BOT_NAME, NOVA_FIRMA, NOVA_RESUMEN, type BotResumen } from "./tjNova";
 import { NovaVuelo, cajaDe, salirDelDiario, sinAnimaciones, tomarSalida, type CajaNova } from "./novaVuelo";
 
 /** La ruta del Diario de Trading: dentro de ella Nova está en su habitación, no aquí. */
@@ -33,6 +33,27 @@ function hayNovedades(): boolean {
     return !firma || firma !== localStorage.getItem("tj-bot-visto");
   } catch {
     return false;
+  }
+}
+
+/** El resumen del último análisis, tal cual lo guardó el Diario (texto: la referencia es estable). */
+function leerResumen(): string | null {
+  try {
+    return localStorage.getItem(NOVA_RESUMEN);
+  } catch {
+    return null;
+  }
+}
+
+function parseResumen(raw: string | null): BotResumen | null {
+  if (!raw) return null;
+  try {
+    const r = JSON.parse(raw) as Partial<BotResumen>;
+    return typeof r.frase === "string" && typeof r.total === "number"
+      ? { importantes: r.importantes ?? 0, total: r.total, frase: r.frase }
+      : null;
+  } catch {
+    return null;
   }
 }
 
@@ -66,6 +87,7 @@ export default function NovaNav({ href, bloqueada = false }: { href: string; blo
   const [aviso, setAviso] = useState(false);
   const [vuelo, setVuelo] = useState<{ desde: CajaNova; hasta: CajaNova } | null>(null);
   const conNovedades = useSyncExternalStore(suscribirNovedades, hayNovedades, () => false);
+  const resumen = parseResumen(useSyncExternalStore(suscribirNovedades, leerResumen, () => null));
   // Bloqueada no hay análisis que leer: ni punto rojo ni aviso.
   const novedades = !bloqueada && conNovedades;
   const ref = useRef<HTMLAnchorElement>(null);
@@ -132,7 +154,11 @@ export default function NovaNav({ href, bloqueada = false }: { href: string; blo
             track={!vuelo}
           />
         )}
-        {novedades && !enDiario && <span className="nova-nav-ping" />}
+        {novedades && !enDiario && (
+          <span className={`nova-nav-ping${resumen ? " con-cifra" : ""}`}>
+            {resumen && <b>{resumen.total > 9 ? "9+" : resumen.total}</b>}
+          </span>
+        )}
         {bloqueada && !enDiario && (
           <span className="nova-nav-candado">
             <svg viewBox="0 0 24 24" width="9" height="9" fill="none">
@@ -161,8 +187,12 @@ export default function NovaNav({ href, bloqueada = false }: { href: string; blo
               </>
             ) : novedades ? (
               <>
-                <b>¡Tengo novedades! 👀</b>
-                <span>Tengo un análisis nuevo de tu diario</span>
+                <b>{resumen?.frase ?? "¡Tengo novedades! 👀"}</b>
+                <span>
+                  {resumen
+                    ? `${resumen.total === 1 ? "1 cosa nueva" : `${resumen.total} cosas nuevas`}${resumen.importantes ? ` · ${resumen.importantes} importante${resumen.importantes === 1 ? "" : "s"}` : ""}`
+                    : "Tengo un análisis nuevo de tu diario"}
+                </span>
               </>
             ) : (
               <>

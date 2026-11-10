@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import TjPeriodSummary from "./TjPeriodSummary";
 import TjBreakdown from "./TjBreakdown";
 import { TjInfo } from "./TjControls";
@@ -166,8 +167,8 @@ export default function TjAnalysis({ trades, ctx }: { trades: Trade[]; ctx: Map<
           </div>
         </header>
         <div className="tjn-duel-bars" aria-hidden="true">
-          <span className="tone-win"><i style={{ width: `${(stats.grossProfit / grossMax) * 100}%` }} /></span>
-          <span className="tone-loss"><i style={{ width: `${(stats.grossLoss / grossMax) * 100}%` }} /></span>
+          <span className="tone-win"><motion.i initial={{ width: 0 }} animate={{ width: `${(stats.grossProfit / grossMax) * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }} /></span>
+          <span className="tone-loss"><motion.i initial={{ width: 0 }} animate={{ width: `${(stats.grossLoss / grossMax) * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }} /></span>
         </div>
         <table className="tjn-duel-table">
           <thead>
@@ -200,10 +201,14 @@ export default function TjAnalysis({ trades, ctx }: { trades: Trade[]; ctx: Map<
             </div>
           </header>
           <div className="tjn-hist-bars">
-            {histogram.map(b => (
+            {histogram.map((b, i) => (
               <div key={b.label} className={`tone-${b.tone}${b.count ? "" : " is-zero"}`} title={plural(b.count, "operación", "operaciones")}>
                 <strong>{b.count || ""}</strong>
-                <i style={{ height: `${Math.max((b.count / histMax) * 100, b.count ? 4 : 0)}%` }} />
+                <motion.i
+                  initial={{ height: 0 }}
+                  animate={{ height: `${Math.max((b.count / histMax) * 100, b.count ? 4 : 0)}%` }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 + i * 0.06 }}
+                />
               </div>
             ))}
           </div>

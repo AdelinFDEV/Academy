@@ -14,6 +14,8 @@ import GuideQuizCuenta from "@/components/GuideQuizCuenta";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import GuideDiarioCalc from "./GuideDiarioCalc";
 import GuideDiarioQuiz from "./GuideDiarioQuiz";
+import GuiaDiarioCta, { type EstadoLector } from "./GuiaDiarioCta";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 import "./como-hacer-un-diario-de-trading.css";
 
 /**
@@ -22,9 +24,15 @@ import "./como-hacer-un-diario-de-trading.css";
  * Nace de la mejora SEO de la ficha del Diario: quien busca «diario de
  * trading» casi siempre quiere aprender a llevarlo, no comprar nada, y una
  * página de venta no compite con esa intención. Esta guía la responde entera
- * —sirve con cuaderno o con Excel— y menciona la herramienta una sola vez, como
- * una de las tres formas de llevarlo. No la conviertas en un anuncio: si deja
+ * —sirve con cuaderno o con Excel—. No la conviertas en un anuncio: si deja
  * de responder a la pregunta, deja de posicionar.
+ *
+ * Desde el 11-11-2026 (pedido por el admin) lleva LLAMADAS al Diario y a Nova
+ * para que quien llegue sepa que existen y se registre (GuiaDiarioCta.tsx).
+ * La regla para que convivan con el SEO: van DESPUÉS de responder, como
+ * bloques aparte, y el texto de la guía no cambia por ellas. Una línea bajo el
+ * hero, una franja tras los 5 pasos, el escaparate en «Dónde llevarlo» y el
+ * cierre tras el quiz. Ninguna antes de los 5 pasos.
  */
 
 const SLUG = "como-hacer-un-diario-de-trading";
@@ -200,6 +208,8 @@ export default async function DiarioTradingGuidePage() {
   const isAdmin = role === "admin";
   const userName = profileData?.full_name || user?.email?.split("@")[0] || "Usuario";
   const isRegistered = !!user;
+  const lector: EstadoLector = isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo";
+  const precio = precioEur(PREMIUM_PRICE_EUR);
 
   let initialLiked = false;
   if (user) {
@@ -249,6 +259,7 @@ export default async function DiarioTradingGuidePage() {
           <span className="gbc-pill">Quiz + Badge</span>
         </div>
         <GuideHeroStats stats={HERO_STATS} />
+        <GuiaDiarioCta variante="aviso" estado={lector} precio={precio} />
       </header>
 
       {/* ── LA RESPUESTA CORTA ── */}
@@ -270,6 +281,7 @@ export default async function DiarioTradingGuidePage() {
               </li>
             ))}
           </ol>
+          <GuiaDiarioCta variante="banner" estado={lector} precio={precio} />
         </div>
       </section>
 
@@ -528,6 +540,8 @@ export default async function DiarioTradingGuidePage() {
               la herramienta, sino apuntar todas las operaciones durante el tiempo suficiente.
             </p>
           </div>
+
+          <GuiaDiarioCta variante="escaparate" estado={lector} precio={precio} />
         </div>
       </section>
 
@@ -583,6 +597,13 @@ export default async function DiarioTradingGuidePage() {
             <p>Comprueba si ya sabes cómo hacer un diario de trading. Necesitas <strong>5/5</strong> respuestas correctas para desbloquear el badge <strong style={{ color: "var(--gold)" }}>Bitácora al Día</strong>. Sin prisa — puedes releer cualquier sección antes de responder.</p>
           </div>
           {isRegistered ? <GuideDiarioQuiz /> : <GuideQuizCuenta slug={SLUG} />}
+        </div>
+      </section>
+
+      {/* ── LA ÚLTIMA LLAMADA: el Diario y Nova, antes del cierre fijo de toda guía ── */}
+      <section className="gbc-section">
+        <div className="gbc-gc">
+          <GuiaDiarioCta variante="cierre" estado={lector} precio={precio} />
         </div>
       </section>
 

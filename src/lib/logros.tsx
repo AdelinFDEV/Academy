@@ -2,7 +2,7 @@ import React from "react";
 import {
   Flame, Zap, Gem, Trophy,
   ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, GraduationCap, type LucideIcon,
-  CalendarRange, Anchor, Crosshair,
+  CalendarRange, Anchor, Crosshair, Footprints, Scale, Wind, Sun, Sigma, Mountain, CalendarDays,
 } from "lucide-react";
 import { GUIDES } from "@/lib/guides";
 import { MILESTONES, milestoneBadgeId } from "@/components/trading/tjStats";
@@ -251,6 +251,13 @@ export const GUIDE_BADGE_DEFS: BadgeDef[] = GUIDES.map((g) => {
 // Los hitos del Diario de Trading. Salen de MILESTONES (tjStats.ts), la misma
 // definición que usa el diario: un hito nuevo allí aparece aquí solo.
 export const DIARIO_ICONS: Record<string, LucideIcon> = {
+  arranque: Footprints,
+  ratio: Scale,
+  calma: Wind,
+  verdes: Sun,
+  ventaja: Sigma,
+  maximos: Mountain,
+  trimestres: CalendarDays,
   muestra: ListChecks,
   disciplina: ShieldCheck,
   porque: NotebookPen,

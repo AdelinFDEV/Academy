@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useMotionValue } from "framer-motion";
 import NovaHead from "@/components/trading/NovaHead";
 import NovaRoom from "@/components/trading/NovaRoom";
@@ -14,30 +14,23 @@ import NovaRoom from "@/components/trading/NovaRoom";
  * hidratación sale «Hola», y en el navegador el que toca (como TjWelcome).
  * Al pasar el ratón brinca de alegría, igual que en el diario.
  *
- * El pulso de abajo es una maqueta: el de verdad sale de las operaciones de
- * cada uno. Las cuatro partes sí son las reales (tjNova.ts).
+ * El objetivo de la semana de abajo es una maqueta: el de verdad lo pone Nova
+ * cada lunes según lo que más flojo vaya (tjNova.ts).
  */
-function saludoDeHora(h: number): string {
+function saludoDeHora(h: number | null): string {
+  if (h == null) return "Hola";
   if (h >= 6 && h < 14) return "Buenos días";
   if (h >= 14 && h < 21) return "Buenas tardes";
   return "Buenas noches";
 }
 
-const PARTES: [string, number][] = [
-  ["Riesgo", 23],
-  ["Resultados", 19],
-  ["Emociones", 20],
-  ["Constancia", 20],
-];
+const sinSuscripcion = () => () => {};
 
 export default function NovaSaludo() {
   const theta = useMotionValue(0);
-  const [saludo, setSaludo] = useState("Hola");
+  // La hora del visitante: en el servidor (y al hidratar) no hay, y sale «Hola».
+  const saludo = saludoDeHora(useSyncExternalStore(sinSuscripcion, () => new Date().getHours(), () => null));
   const [alegre, setAlegre] = useState(false);
-
-  useEffect(() => {
-    setSaludo(saludoDeHora(new Date().getHours()));
-  }, []);
 
   return (
     <div className="dj-saludo">
@@ -62,18 +55,15 @@ export default function NovaSaludo() {
         <NovaHead theta={theta} face={alegre ? "joy" : "happy"} activity="none" flying={false} joy={alegre} talking={false} track />
       </div>
 
-      <div className="dj-saludo-pulso" aria-hidden="true">
-        <span className="dj-saludo-pulso-cab">
-          <small>Tu pulso</small>
-          <b>82<i>/100</i></b>
+      <div className="dj-saludo-objetivo" aria-hidden="true">
+        <span className="dj-saludo-objetivo-cab">
+          <small>Objetivo de la semana</small>
+          <b>4<i>/5</i></b>
         </span>
-        <span className="dj-saludo-partes">
-          {PARTES.map(([nombre, v]) => (
-            <span key={nombre}>
-              <small>{nombre}</small>
-              <i><b style={{ width: `${(v / 25) * 100}%` }} /></i>
-            </span>
-          ))}
+        <span className="dj-saludo-objetivo-texto">
+          <strong>Arriesga 2 % o menos en todas tus operaciones</strong>
+          <i><b style={{ width: "80%" }} /></i>
+          <small>Te falta 1 operación dentro del límite</small>
         </span>
       </div>
     </div>

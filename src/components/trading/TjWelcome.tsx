@@ -4,7 +4,23 @@ import { useMemo, useSyncExternalStore } from "react";
 import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
 import { pctStr, pnlStr, toneOf } from "./tjFormat";
 import { periodReads, type Trade } from "./tjStats";
+import { Sparkline } from "./TjCharts";
 import AvatarUsuario from "@/components/AvatarUsuario";
+
+/** Días de cada ventana móvil, para dibujar su curva. */
+const PERIOD_DAYS = { "7d": 7, "30d": 30, "90d": 90, "365d": 365 } as const;
+
+/** P&L acumulado dentro de una ventana, punto a punto: la forma del periodo. */
+function curvaDe(trades: Trade[], days: number, now: Date): number[] {
+  const from = now.getTime() - days * 864e5;
+  const out = [0];
+  let acc = 0;
+  for (const t of trades) {
+    const ms = new Date(t.date).getTime();
+    if (ms > from && ms <= now.getTime()) out.push((acc += t.pnl));
+  }
+  return out;
+}
 
 const noSubscribe = () => () => {};
 
@@ -86,6 +102,9 @@ export default function TjWelcome({
                     <dd className="tjw-pnl">{pnlStr(p.pnl)}</dd>
                     <dd className="tjw-meta">
                       {p.count} {p.count === 1 ? "operación" : "operaciones"} · {Math.round(p.winRate)} %
+                    </dd>
+                    <dd className="tjw-curva" aria-hidden="true">
+                      <Sparkline values={curvaDe(trades, PERIOD_DAYS[p.id], now)} base={0} />
                     </dd>
                     <dd className="tjw-foot" aria-hidden="true">
                       <span className="tjw-bar"><i style={{ width: `${p.winRate}%` }} /></span>

@@ -2,14 +2,17 @@
 
 import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity, type AnimationPlaybackControls, type TargetAndTransition, type Variants } from "framer-motion";
+import {
+  AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity,
+  type AnimationPlaybackControls, type TargetAndTransition, type Variants,
+} from "framer-motion";
 import NovaHead, { type NovaActivity, type NovaFace } from "./NovaHead";
 import NovaRoom from "./NovaRoom";
-import { NovaVuelo, cajaDe, cajaDeLaBarra, dejarSalida, llegarAlDiario, sinAnimaciones, type CajaNova } from "./novaVuelo";
-import { X, ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { NovaEstela, NovaVuelo, cajaDe, cajaDeLaBarra, dejarSalida, llegarAlDiario, sinAnimaciones, type CajaNova } from "./novaVuelo";
+import { X, ChevronLeft, ChevronRight, ArrowRight, Check } from "lucide-react";
 import {
-  BOT_NAME, IMPORTANT, NOVA_FIRMA, SECTION_LABEL,
-  type BotActionKind, type BotMessage, type BotPulse, type BotReport, type BotSection,
+  BOT_NAME, IMPORTANT, NOVA_FIRMA, NOVA_RESUMEN, SECTION_LABEL,
+  type BotActionKind, type BotMessage, type BotReport, type BotSection, type Objetivo,
 } from "./tjNova";
 
 /*
@@ -20,10 +23,13 @@ import {
  *     10 minutos, o hasta que el usuario le interrumpa. Al pasarle el ratón deja
  *     lo que hace, se gira hacia ti y brinca de alegría; cuando te vas, vuela a
  *     otro sitio y empieza otra actividad distinta, al azar.
- *   · El bocadillo: capítulos (el primero, «Tu pulso»), una sección cada vez,
- *     con mensajes priorizados y botones que llevan a hacer lo que proponen.
- * La frase corta junto al personaje está quitada de momento (el motor sigue
- * calculando `teasers` por si vuelve).
+ *   · El bocadillo: capítulos (el primero, «Lo más importante»), una sección
+ *     cada vez, con mensajes priorizados y botones que llevan a hacer lo que
+ *     proponen. Sin scroll: cada capítulo lleva pocos mensajes (TOPE en tjNova).
+ *
+ * Desde el 10-11-2026, cuando el análisis cambia (apuntaste algo), Nova lo
+ * ANUNCIA: deja lo que hace, se gira hacia ti y saca un bocadillo corto con lo
+ * que ha visto; el punto rojo dice cuántas cosas nuevas tiene.
  */
 
 const SEEN_KEY = "tj-bot-visto";
@@ -69,6 +75,7 @@ export function reiniciarNova() {
   try {
     localStorage.removeItem(SEEN_KEY);
     localStorage.removeItem(NOVA_FIRMA);
+    localStorage.removeItem(NOVA_RESUMEN);
   } catch {
     // Sin almacenamiento no hay nada que olvidar.
   }
@@ -80,7 +87,7 @@ export function reiniciarNova() {
 // El popup grande: entra cuando Nova ya está llegando al centro.
 const modalVariants: Variants = {
   hidden: { opacity: 0, y: 26, scale: 0.94 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 28, delay: 0.32 } },
+  show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 300, damping: 28, delay: 0.38 } },
   exit: { opacity: 0, y: 18, scale: 0.96, transition: { duration: 0.18 } },
 };
 
@@ -108,11 +115,12 @@ const slideVariants: Variants = {
   leave: (dir: number) => ({ opacity: 0, x: dir * -44, transition: { duration: 0.15 } }),
 };
 
-const ORDER: BotSection[] = ["pulso", "hoy", "animo", "operaciones", "hitos", "consejos"];
+const ORDER: BotSection[] = ["importante", "semana", "hoy", "animo", "operaciones", "hitos", "consejos"];
 
 /** El icono de cada capítulo, en la barra de arriba y en el botón «siguiente». */
 const SECTION_EMOJI: Record<BotSection, string> = {
-  pulso: "💓",
+  importante: "⭐",
+  semana: "🎯",
   hoy: "📍",
   animo: "💭",
   operaciones: "📋",
@@ -139,6 +147,8 @@ const ACTIVITY_MS = 10 * 60 * 1000;
 const HEAD = 112;
 const PROP_W = 50;
 const ACTIVITIES: NovaActivity[] = ["trade", "study", "ball", "sleep", "music"];
+/** Cuánto dura el bocadillo con el que Nova anuncia lo nuevo. */
+const ANUNCIO_MS = 7000;
 
 /** Otra actividad distinta de la anterior; la pelota solo si hay sitio por encima. */
 function pickActivity(last: NovaActivity, top: number): NovaActivity {
@@ -154,34 +164,45 @@ interface Escena {
   scale: number;
 }
 
-/** Escritorio: en arco, inclinándose hacia donde va y agrandándose. */
+/**
+ * Escritorio: coge impulso (se encoge y baja un pelo), sale en arco inclinándose
+ * hacia donde va y creciendo, se pasa un poco de tamaño al llegar y se asienta
+ * con un rebote. La estela (NovaEstela) sigue estos mismos valores con retraso.
+ */
 function vueloEscritorio(st: Escena, dir: number): TargetAndTransition {
+  const s = st.scale;
+  const midX = (st.from.x + st.to.x) / 2;
+  const apex = Math.max(0, Math.min(st.from.y, st.to.y) - 90);
   return {
-    x: [st.from.x, (st.from.x + st.to.x) / 2, st.to.x],
-    y: [st.from.y, Math.max(0, (st.from.y + st.to.y) / 2 - 70), st.to.y],
-    scale: [1, (1 + st.scale) / 2, st.scale * 1.08, st.scale],
-    rotate: [0, dir * 14, -dir * 5, 0],
+    x: [st.from.x, st.from.x, midX, st.to.x],
+    y: [st.from.y, st.from.y + 12, apex, st.to.y],
+    scale: [1, 0.86, (1 + s) / 2 * 1.05, s * 1.1, s * 0.96, s],
+    rotate: [0, -dir * 7, dir * 16, -dir * 6, dir * 2, 0],
     transition: {
-      x: { duration: 0.8, times: [0, 0.5, 1], ease: ["easeOut", "easeInOut"] },
-      y: { duration: 0.8, times: [0, 0.45, 1], ease: ["easeOut", "easeIn"] },
-      scale: { duration: 0.95, times: [0, 0.45, 0.82, 1], ease: "easeInOut" },
-      rotate: { duration: 0.9, times: [0, 0.4, 0.82, 1], ease: "easeInOut" },
+      x: { duration: 1.05, times: [0, 0.14, 0.56, 1], ease: ["easeOut", "easeOut", "easeInOut"] },
+      y: { duration: 1.05, times: [0, 0.14, 0.5, 1], ease: ["easeOut", "easeOut", "easeIn"] },
+      scale: { duration: 1.2, times: [0, 0.14, 0.5, 0.84, 0.93, 1], ease: "easeInOut" },
+      rotate: { duration: 1.15, times: [0, 0.14, 0.45, 0.8, 0.92, 1], ease: "easeInOut" },
     },
   };
 }
 
+/** La vuelta: un salto corto hacia arriba, el arco contrario encogiéndose y un rebote en su sitio. */
 function vueltaEscritorio(st: Escena, p: Pt, dir: number): TargetAndTransition {
+  const s = st.scale;
+  const midX = (st.to.x + p.x) / 2;
+  const apex = Math.max(0, Math.min(st.to.y, p.y) - 60);
   return {
-    x: [st.to.x, (st.to.x + p.x) / 2, p.x],
-    y: [st.to.y, Math.max(0, (st.to.y + p.y) / 2 - 50), p.y],
-    scale: [st.scale, st.scale * 0.75, 1.06, 1],
-    rotate: [0, -dir * 12, dir * 4, 0],
+    x: [st.to.x, st.to.x, midX, p.x],
+    y: [st.to.y, st.to.y - 14, apex, p.y],
+    scale: [s, s * 1.06, s * 0.7, 1.08, 0.96, 1],
+    rotate: [0, dir * 4, -dir * 14, dir * 5, -dir * 2, 0],
     transition: {
-      delay: 0.12,
-      x: { duration: 0.75, times: [0, 0.5, 1], ease: ["easeIn", "easeOut"] },
-      y: { duration: 0.75, times: [0, 0.4, 1], ease: ["easeOut", "easeIn"] },
-      scale: { duration: 0.8, times: [0, 0.45, 0.85, 1], ease: "easeInOut" },
-      rotate: { duration: 0.8, times: [0, 0.4, 0.85, 1], ease: "easeInOut" },
+      delay: 0.1,
+      x: { duration: 0.95, times: [0, 0.16, 0.55, 1], ease: ["easeOut", "easeIn", "easeOut"] },
+      y: { duration: 0.95, times: [0, 0.16, 0.45, 1], ease: ["easeOut", "easeOut", "easeIn"] },
+      scale: { duration: 1.1, times: [0, 0.16, 0.5, 0.84, 0.93, 1], ease: "easeInOut" },
+      rotate: { duration: 1.05, times: [0, 0.16, 0.45, 0.8, 0.92, 1], ease: "easeInOut" },
     },
   };
 }
@@ -240,107 +261,45 @@ function textoAnalisis(report: BotReport): string {
   return `🔄 Analizado a las ${horaLocal.format(new Date(report.analizado))} con ${ops} y tus sensaciones · me pongo al día cada vez que apuntas algo`;
 }
 
-// ─────────────────────────── Pulso ───────────────────────────
+// ─────────────────────────── Objetivo de la semana ───────────────────────────
 
-/** Anillo con la nota de 0 a 100: el trazo y el número suben a la vez. */
-function PulseGauge({ pulse }: { pulse: BotPulse }) {
-  const value = useMotionValue(0);
-  const shown = useTransform(value, v => Math.round(v));
-  const R = 46;
+const OBJ_EMOJI: Record<Objetivo["id"], string> = { riesgo: "🛡️", resultados: "📈", emociones: "💭", constancia: "✏️", muestra: "✍️" };
+
+function ObjetivoView({ objetivo }: { objetivo: Objetivo }) {
+  const R = 40;
   const C = 2 * Math.PI * R;
-  const offset = useTransform(value, v => C - (v / 100) * C);
-
-  useEffect(() => {
-    const controls = animate(value, pulse.score, { duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.15 });
-    return () => controls.stop();
-  }, [pulse.score, value]);
-
-  const tone = pulse.score >= 65 ? "win" : pulse.score >= 40 ? "accent" : "loss";
-  return (
-    <div className={`tjbot-gauge is-${tone}`}>
-      <svg viewBox="0 0 110 110" aria-hidden="true">
-        <circle cx="55" cy="55" r={R} className="tjbot-gauge-track" />
-        <motion.circle cx="55" cy="55" r={R} className="tjbot-gauge-arc" strokeDasharray={C} style={{ strokeDashoffset: offset }} />
-      </svg>
-      <span className="tjbot-gauge-value">
-        <motion.strong>{shown}</motion.strong>
-        <small>/100</small>
-      </span>
-    </div>
-  );
-}
-
-/** Icono de cada parte del pulso. */
-const PART_EMOJI: Record<string, string> = { riesgo: "🛡️", resultados: "📈", emociones: "💭", constancia: "📅" };
-
-/** Cómo va una parte (vale de 0 a 25), en una palabra y con su tono. */
-function estadoParte(v: number | null): { txt: string; tone: "win" | "accent" | "loss" | "none" } {
-  if (v == null) return { txt: "Sin datos", tone: "none" };
-  const r = v / 25;
-  return r >= 0.7 ? { txt: "Bien", tone: "win" } : r >= 0.4 ? { txt: "Mejorable", tone: "accent" } : { txt: "Flojo", tone: "loss" };
-}
-
-/** Una frase bajo la nota: lo que mejor va y lo que más pesa. */
-function resumenPulso(pulse: BotPulse): string {
-  const medidas = pulse.parts.filter(p => p.value != null);
-  if (medidas.length < 2) return "Cuantos más datos apuntes, más fino te leo.";
-  const orden = [...medidas].sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
-  const mejor = orden[0];
-  const peor = orden[orden.length - 1];
-  if ((peor.value ?? 0) / 25 >= 0.7) return `Todo en verde. Lo más fuerte: ${mejor.label.toLowerCase()}.`;
-  return `Lo más fuerte: ${mejor.label.toLowerCase()} · A mejorar: ${peor.label.toLowerCase()}`;
-}
-
-function PulseView({ pulse, highlights, renderMsg }: {
-  pulse: BotPulse;
-  highlights: BotMessage[];
-  renderMsg: (m: BotMessage) => React.ReactNode;
-}) {
+  const desde = new Date(`${objetivo.desde}T12:00:00`);
   return (
     <>
-      {/* La nota y lo que significa. */}
-      <motion.div className="tjbot-pulse" variants={itemVariants}>
-        <PulseGauge pulse={pulse} />
-        <div className="tjbot-pulse-text">
-          <span className="tjbot-kicker">Así te veo ahora</span>
-          <strong>{pulse.label}</strong>
-          <p>{resumenPulso(pulse)}</p>
+      <motion.div className={`tjbot-obj${objetivo.cumplido ? " is-done" : ""}`} variants={itemVariants}>
+        <div className="tjbot-obj-ring" aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r={R} className="tjbot-obj-track" />
+            <motion.circle
+              cx="50" cy="50" r={R} className="tjbot-obj-arc" strokeDasharray={C}
+              initial={{ strokeDashoffset: C }} animate={{ strokeDashoffset: C - (objetivo.progreso / 100) * C }}
+              transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            />
+          </svg>
+          <span className="tjbot-obj-ring-value">
+            {objetivo.cumplido ? <Check size={26} /> : <><strong>{objetivo.hecho}</strong><small>/{objetivo.meta}</small></>}
+          </span>
+        </div>
+        <div className="tjbot-obj-text">
+          <span className="tjbot-kicker">{objetivo.cumplido ? "Cumplido" : "Esta semana"} · desde el lunes {desde.getDate()}</span>
+          <strong><span aria-hidden="true">{OBJ_EMOJI[objetivo.id]}</span> {objetivo.titulo}</strong>
+          <p>{objetivo.porque}</p>
+          <span className={`tjbot-obj-estado${objetivo.cumplido ? " is-done" : ""}`}>{objetivo.estado}</span>
         </div>
       </motion.div>
-
-      {/* Las cuatro piezas de la nota, cada una en su tarjeta. */}
-      <motion.ul className="tjbot-parts" variants={itemVariants}>
-        {pulse.parts.map((p, i) => {
-          const est = estadoParte(p.value);
-          return (
-            <li key={p.id} className={`tjbot-part is-${est.tone}`}>
-              <div className="tjbot-part-top">
-                <span className="tjbot-part-ic" aria-hidden="true">{PART_EMOJI[p.id] ?? "•"}</span>
-                <span className="tjbot-part-label">{p.label}</span>
-                <span className="tjbot-part-state">{est.txt}</span>
-              </div>
-              <span className={`tjbot-part-bar${p.value == null ? " is-empty" : ""}`} aria-hidden="true">
-                <motion.i
-                  initial={{ width: 0 }}
-                  animate={{ width: `${((p.value ?? 0) / 25) * 100}%` }}
-                  transition={{ delay: 0.3 + i * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                />
-              </span>
-              <span className="tjbot-part-hint">{p.hint}</span>
-            </li>
-          );
-        })}
-      </motion.ul>
-
-      <motion.span className="tjbot-kicker tjbot-kicker-row" variants={itemVariants}>Lo más importante</motion.span>
-      {highlights.length
-        ? highlights.map(renderMsg)
-        : (
-          <motion.div variants={itemVariants} className="tjbot-msg is-win">
-            <span className="tjbot-emoji" aria-hidden="true">🙌</span>
-            <span className="tjbot-msg-body"><span className="tjbot-msg-text">Nada urgente por ahora. ¡Buen trabajo! Repasa los demás apartados cuando quieras.</span></span>
-          </motion.div>
-        )}
+      <motion.div className="tjbot-msg is-be" variants={itemVariants}>
+        <span className="tjbot-emoji" aria-hidden="true">🧠</span>
+        <span className="tjbot-msg-body">
+          <span className="tjbot-msg-text">
+            Cada lunes miro cómo vas en riesgo, resultados, emociones y constancia, y te pongo UN objetivo para la semana: lo que más te cueste entonces. Lo mido con lo que apuntas desde ese día: {objetivo.hecho} de {objetivo.meta} {objetivo.unidad} por ahora.
+          </span>
+        </span>
+      </motion.div>
     </>
   );
 }
@@ -366,9 +325,15 @@ export default function TjBot({ report, onAction }: {
   const [arrived, setArrived] = useState(false);
   // Al entrar al Diario, Nova llega volando desde su sitio en la barra de arriba.
   const [aterrizaje, setAterrizaje] = useState<{ desde: CajaNova; hasta: CajaNova } | null>(null);
+  // Lo que Nova anuncia sobre su cabeza cuando el análisis cambia.
+  const [anuncio, setAnuncio] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const aterrizandoRef = useRef(false);
   const flyerTheta = useMotionValue(0);
+  // Los valores del vuelo al centro: los anima el flyer y los sigue la estela.
+  const fx = useMotionValue(0);
+  const fy = useMotionValue(0);
+  const fscale = useMotionValue(1);
   const [activity, setActivity] = useState<NovaActivity>("none");
   // Posición en su espacio, ángulo de giro (0 de frente, 90 perfil, 180 de espaldas)
   // y una inclinación leve según la velocidad al volar.
@@ -380,11 +345,18 @@ export default function TjBot({ report, onAction }: {
   const flightRef = useRef<AnimationPlaybackControls[]>([]);
   const turnRef = useRef<AnimationPlaybackControls | null>(null);
   const timerRef = useRef(0);
+  const anuncioRef = useRef(0);
   const pausedRef = useRef(false);
   const interruptedRef = useRef(false);
   const lastActivityRef = useRef<NovaActivity>("none");
   const flyRef = useRef<() => void>(() => {});
+  const primeraFirma = useRef(true);
   const panelRef = useRef<HTMLDivElement>(null);
+  // El ajuste al alto de la pantalla: el hueco del popup, su cuerpo y lo que lleva dentro.
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const fitRef = useRef<HTMLDivElement>(null);
+  const [fit, setFit] = useState<{ s: number; h: number | null; scroll: boolean }>({ s: 1, h: null, scroll: false });
   const panelId = useId();
   const seen = useSyncExternalStore(subscribeSeen, readSeen, () => report.signature);
   const unseen = seen !== report.signature;
@@ -392,9 +364,9 @@ export default function TjBot({ report, onAction }: {
   const sections = ORDER
     .map(s => ({
       s,
-      items: s === "pulso" ? report.highlights : report.messages.filter(m => m.section === s).sort((a, b) => b.priority - a.priority),
+      items: s === "importante" ? report.highlights : s === "semana" ? [] : report.messages.filter(m => m.section === s).sort((a, b) => b.priority - a.priority),
     }))
-    .filter(g => (g.s === "pulso" ? report.pulse != null : g.items.length > 0));
+    .filter(g => (g.s === "semana" ? report.objetivo != null : g.items.length > 0));
   const at = Math.min(step, sections.length - 1);
   const current = sections[at];
   const next = sections[at + 1];
@@ -496,16 +468,16 @@ export default function TjBot({ report, onAction }: {
     return () => ro.disconnect();
   }, [x]);
 
-  // Quieto mientras tiene el ratón encima o el bocadillo abierto. Cuando el usuario
-  // se va tras interrumpirle, al rato vuela a otro sitio y empieza otra cosa.
+  // Quieto mientras tiene el ratón encima, el bocadillo abierto o algo que anunciar.
+  // Cuando el usuario se va tras interrumpirle, al rato vuela a otro sitio y empieza otra cosa.
   useEffect(() => {
-    pausedRef.current = open || hover;
-    if (!open && !hover && interruptedRef.current) {
+    pausedRef.current = open || hover || anuncio != null;
+    if (!open && !hover && anuncio == null && interruptedRef.current) {
       interruptedRef.current = false;
       window.clearTimeout(timerRef.current);
       timerRef.current = window.setTimeout(() => flyRef.current(), 1800);
     }
-  }, [open, hover]);
+  }, [open, hover, anuncio]);
 
   /** Interrumpirle: deja lo que hacía, se para donde esté y se gira hacia ti. */
   function interrupt() {
@@ -517,6 +489,26 @@ export default function TjBot({ report, onAction }: {
     setActivity("none");
     turnTo(0);
   }
+
+  /*
+   * ANUNCIAR LO NUEVO. Cuando el análisis cambia y el usuario aún no lo ha
+   * abierto, Nova deja lo que hace, se gira y saca un bocadillo con la frase
+   * más importante unos segundos. Al entrar con novedades pendientes, también:
+   * espera a aterrizar. Con el popup abierto no hace falta.
+   */
+  useEffect(() => {
+    if (!unseen || open || sinAnimaciones()) return;
+    const espera = primeraFirma.current ? (aterrizandoRef.current ? 2200 : 900) : 250;
+    primeraFirma.current = false;
+    window.clearTimeout(anuncioRef.current);
+    anuncioRef.current = window.setTimeout(() => {
+      interrupt();
+      setAnuncio(report.resumen.frase);
+      anuncioRef.current = window.setTimeout(() => setAnuncio(null), ANUNCIO_MS);
+    }, espera);
+    return () => window.clearTimeout(anuncioRef.current);
+    // Solo cuando cambia la huella del análisis: es el momento en que hay algo nuevo.
+  }, [report.signature, unseen]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Abierto: el foco va al popup (para las flechas) y Esc cierra desde cualquier sitio.
   useEffect(() => {
@@ -538,6 +530,52 @@ export default function TjBot({ report, onAction }: {
     };
   }, [stage]);
 
+  /*
+   * QUE QUEPA SIEMPRE (10-11-2026). El popup no lleva scroll: si lo de dentro
+   * es más alto que el hueco que queda en la pantalla, se reduce lo justo
+   * (escala, con el ancho compensado para que el texto se recoloque) hasta
+   * caber. Se mide el hueco del popup (fijo: de debajo de Nova al borde de
+   * abajo) menos lo que ocupan la cabecera y el pie, y el alto natural del
+   * contenido. Solo si haría falta bajar del 72 % se deja desplazar, como
+   * último recurso en pantallas diminutas.
+   */
+  useLayoutEffect(() => {
+    if (!open) return;
+    const dialog = dialogRef.current;
+    const panel = panelRef.current;
+    const body = bodyRef.current;
+    const inner = fitRef.current;
+    if (!dialog || !panel || !body || !inner) return;
+    const MIN = 0.72;
+    let frame = 0;
+    const medir = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const cs = getComputedStyle(body);
+        const pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+        const resto = panel.offsetHeight - body.offsetHeight;
+        const hueco = dialog.clientHeight - resto - pad;
+        const natural = inner.offsetHeight;
+        if (hueco <= 0 || natural <= 0) return;
+        setFit(prev => {
+          const s = Math.min(1, hueco / natural);
+          const next = s >= MIN ? { s, h: s < 1 ? natural * s : null, scroll: false } : { s: MIN, h: hueco, scroll: true };
+          return Math.abs(next.s - prev.s) < 0.005 && next.scroll === prev.scroll && Math.abs((next.h ?? 0) - (prev.h ?? 0)) < 1 ? prev : next;
+        });
+      });
+    };
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(inner);
+    ro.observe(dialog);
+    window.addEventListener("resize", medir);
+    return () => {
+      cancelAnimationFrame(frame);
+      ro.disconnect();
+      window.removeEventListener("resize", medir);
+    };
+  }, [open, at]);
+
   /** Abrir: Nova vuela rápido a lo alto del centro de la pantalla, agrandándose, y se abre el popup. */
   function openDialog() {
     const r = triggerRef.current?.getBoundingClientRect();
@@ -545,14 +583,21 @@ export default function TjBot({ report, onAction }: {
     const vw = window.innerWidth;
     const movil = vw < 640;
     // En el móvil Nova se queda algo más pequeña arriba: el bocadillo necesita la pantalla.
-    const scale = movil ? 0.78 : window.innerHeight < 860 ? 1.2 : 1.6;
+    const vh = window.innerHeight;
+    const scale = movil ? (vh < 640 ? 0.6 : 0.78) : vh < 700 ? 0.85 : vh < 860 ? 1.1 : 1.45;
     markSeen(report.signature);
+    window.clearTimeout(anuncioRef.current);
+    setAnuncio(null);
     setStep([0, 1]);
     setVisited(false);
+    setFit({ s: 1, h: null, scroll: false });
     interrupt();
     setHover(false);
     setArrived(false);
     setHome(null);
+    fx.set(r.left);
+    fy.set(r.top);
+    fscale.set(1);
     setStage({
       from: { x: r.left, y: r.top },
       to: { x: vw / 2 - (HEAD * scale) / 2, y: movil ? 10 : Math.max(12, window.innerHeight * 0.03) },
@@ -597,10 +642,15 @@ export default function TjBot({ report, onAction }: {
 
   function renderMsg(m: BotMessage) {
     return (
-      <motion.div key={m.id} variants={itemVariants} className={`tjbot-msg is-${m.tone}${m.priority >= IMPORTANT ? " is-important" : ""}`}>
+      <motion.div key={m.id} variants={itemVariants} className={`tjbot-msg is-${m.tone}${m.priority >= IMPORTANT ? " is-important" : ""}${m.persistente ? " is-persistente" : ""}`}>
         <span className="tjbot-emoji" aria-hidden="true">{m.emoji}</span>
         <span className="tjbot-msg-body">
-          {m.priority >= IMPORTANT && <span className="tjbot-flag">Importante</span>}
+          {(m.priority >= IMPORTANT || m.persistente) && (
+            <span className="tjbot-flags">
+              {m.priority >= IMPORTANT && <span className="tjbot-flag">Importante</span>}
+              {m.persistente && <span className="tjbot-flag is-memoria" title="Nova ya lo vio hace una semana">Sigue igual</span>}
+            </span>
+          )}
           <span className="tjbot-msg-text">{m.text}</span>
           {m.action && (
             <button type="button" className="tjbot-action" onClick={() => act(m.action!.kind)}>
@@ -640,8 +690,8 @@ export default function TjBot({ report, onAction }: {
             whileTap={{ scale: 0.93 }}
             aria-expanded={open}
             aria-controls={panelId}
-            aria-label={`${BOT_NAME}, tu asistente de trading.${unseen ? " Tiene mensajes nuevos." : ""} ${open ? "Cerrar" : "Abrir"} sus mensajes`}
-            title={`${BOT_NAME} · pulsa para hablar con él`}
+            aria-label={`${BOT_NAME}, tu asistente de trading.${unseen ? ` Tiene ${report.resumen.total === 1 ? "un mensaje nuevo" : `${report.resumen.total} mensajes nuevos`}.` : ""} ${open ? "Cerrar" : "Abrir"} sus mensajes`}
+            title={`${BOT_NAME} · pulsa para hablar con ella`}
           >
             <motion.span className="tjbot-avatar-wrap" style={{ rotate: tilt }}>
               <NovaHead
@@ -650,13 +700,35 @@ export default function TjBot({ report, onAction }: {
                 activity={activity}
                 flying={flying}
                 joy={hover}
-                talking={open}
+                talking={open || (anuncio != null && unseen)}
                 track={activity === "none" && !flying}
               />
-              {unseen && !open && <span className="tjbot-ping" aria-hidden="true" />}
+              {unseen && !open && (
+                <span className="tjbot-ping" aria-hidden="true">
+                  <b>{report.resumen.total > 9 ? "9+" : report.resumen.total}</b>
+                </span>
+              )}
               <span className="tjbot-shadow" aria-hidden="true" />
             </motion.span>
           </motion.button>
+
+          {/* El bocadillo corto con el que anuncia lo nuevo, sobre su cabeza. */}
+          <AnimatePresence>
+            {/* Leído (aquí o en otra pestaña), el bocadillo se va aunque su tiempo no haya acabado. */}
+            {anuncio && unseen && !hover && (
+              <motion.span
+                key="anuncio"
+                className="tjbot-anuncio"
+                aria-hidden="true"
+                initial={{ opacity: 0, y: 8, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 420, damping: 24 } }}
+                exit={{ opacity: 0, y: 6, scale: 0.9, transition: { duration: 0.2 } }}
+              >
+                <b>{anuncio}</b>
+                <span>Pulsa y te lo cuento</span>
+              </motion.span>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
 
@@ -674,9 +746,10 @@ export default function TjBot({ report, onAction }: {
           />
 
           {/*
-            Nova volando EN ARCO: sube y baja describiendo una curva, se inclina hacia
-            donde va, se agranda («se acerca») y al llegar rebota un poco y deja un
-            anillo de luz. La vuelta, el arco contrario, encogiéndose.
+            Nova volando EN ARCO: coge impulso, sube y baja describiendo una curva,
+            se inclina hacia donde va, se agranda («se acerca») y al llegar rebota
+            un poco y deja un anillo de luz. Detrás, su estela. La vuelta, el arco
+            contrario, encogiéndose.
           */}
           <AnimatePresence custom={home ?? stage.from} onExitComplete={() => setStage(null)}>
             {open && (
@@ -684,6 +757,7 @@ export default function TjBot({ report, onAction }: {
                 key="nova"
                 className="tjbot-flyer"
                 custom={home ?? stage.from}
+                style={{ x: fx, y: fy, scale: fscale }}
                 initial={{ x: stage.from.x, y: stage.from.y, scale: 1, rotate: 0 }}
                 animate={stage.movil ? vueloMovil(stage) : vueloEscritorio(stage, flightDir)}
                 exit="back"
@@ -716,9 +790,12 @@ export default function TjBot({ report, onAction }: {
               </motion.div>
             )}
           </AnimatePresence>
+          <AnimatePresence>
+            {!arrived && <NovaEstela key="estela" x={fx} y={fy} scale={fscale} />}
+          </AnimatePresence>
 
           {/* El popup, bajo Nova, con el piquito hacia ella. */}
-          <div className={`tjbot-dialog${stage.movil ? " is-movil" : ""}`} style={{ "--dlg-top": `${Math.round(stage.to.y + HEAD * stage.scale * 0.92)}px` } as React.CSSProperties}>
+          <div ref={dialogRef} className={`tjbot-dialog${stage.movil ? " is-movil" : ""}`} style={{ "--dlg-top": `${Math.round(stage.to.y + HEAD * stage.scale * 0.92)}px` } as React.CSSProperties}>
             <AnimatePresence>
               {open && current && (
                 <motion.div
@@ -735,11 +812,15 @@ export default function TjBot({ report, onAction }: {
                   onKeyDown={onPanelKey}
                 >
                   <span className="tjbot-tail" aria-hidden="true" />
+                  {/* La barra de progreso por capítulos, en el borde de arriba. */}
+                  <span className="tjbot-progress" aria-hidden="true">
+                    <motion.i animate={{ width: `${((at + 1) / sections.length) * 100}%` }} transition={{ type: "spring", stiffness: 260, damping: 30 }} />
+                  </span>
 
                   {/* Cabecera: lo que Nova te dice al llegar. */}
                   <header className="tjbot-modal-head">
                     <div className="tjbot-greet">
-                      <span className="tjbot-greet-kicker">{BOT_NAME} · tu asistente de trading</span>
+                      <span className="tjbot-greet-kicker"><i className="tjbot-greet-dot" aria-hidden="true" />{BOT_NAME} · tu asistente de trading</span>
                       <h2>{report.teasers[0]}</h2>
                       {!stage.movil && <p>
                         {report.messages.length === 1 ? "Tengo una cosa que contarte" : `Tengo ${report.messages.length} cosas que contarte`}
@@ -756,13 +837,15 @@ export default function TjBot({ report, onAction }: {
                     {/* Índice: las secciones, con cuántas cosas tiene cada una; el resalte se desliza a la activa. */}
                     {!stage.movil && <nav className="tjbot-index" aria-label="Secciones">
                       {sections.map((g, i) => {
-                        const urgent = g.s !== "pulso" && g.items.some(m => m.priority >= IMPORTANT);
-                        const count = g.s === "pulso" && report.pulse ? `${report.pulse.score}` : String(g.items.length);
+                        const urgent = g.s !== "importante" && g.items.some(m => m.priority >= IMPORTANT);
+                        const count = g.s === "semana" && report.objetivo
+                          ? report.objetivo.cumplido ? "✓" : `${Math.round(report.objetivo.progreso)} %`
+                          : String(g.items.length);
                         return (
                           <button
                             key={g.s}
                             type="button"
-                            className={`tjbot-index-item${i === at ? " is-on" : ""}`}
+                            className={`tjbot-index-item${i === at ? " is-on" : ""}${i < at ? " is-done" : ""}`}
                             onClick={() => go(i)}
                             aria-current={i === at ? "step" : undefined}
                           >
@@ -778,7 +861,14 @@ export default function TjBot({ report, onAction }: {
 
                     {/* La sección abierta. En el móvil, arrastrar a un lado pasa de sección. */}
                     <div className="tjbot-main">
-                      <div className="tjbot-body">
+                      <div ref={bodyRef} className={`tjbot-body${fit.scroll ? " is-scroll" : ""}`}>
+                      {/* El ajuste: la caja de fuera mide lo que se ve; la de dentro se reduce si hace falta. */}
+                      <div className="tjbot-fit" style={fit.h != null ? { height: fit.h } : undefined}>
+                      <div
+                        ref={fitRef}
+                        className="tjbot-fit-inner"
+                        style={fit.s < 1 ? { transform: `scale(${fit.s})`, width: `${100 / fit.s}%` } : undefined}
+                      >
                         {!visited && (
                           <motion.div
                             className="tjbot-typing"
@@ -811,14 +901,20 @@ export default function TjBot({ report, onAction }: {
                             {!stage.movil && <header className="tjbot-section-head">
                               <span aria-hidden="true">{SECTION_EMOJI[current.s]}</span>
                               <h3>{SECTION_LABEL[current.s]}</h3>
+                              <small>{at + 1} de {sections.length}</small>
                             </header>}
-                            <motion.div className="tjbot-list" variants={listVariants} custom={!visited} initial="hidden" animate="show">
-                              {current.s === "pulso" && report.pulse
-                                ? <PulseView pulse={report.pulse} highlights={current.items} renderMsg={renderMsg} />
+                            <motion.div
+                              className={`tjbot-list${current.s !== "semana" && current.items.length >= 2 ? " is-grid" : ""}`}
+                              variants={listVariants} custom={!visited} initial="hidden" animate="show"
+                            >
+                              {current.s === "semana" && report.objetivo
+                                ? <ObjetivoView objetivo={report.objetivo} />
                                 : current.items.map(renderMsg)}
                             </motion.div>
                           </motion.section>
                         </AnimatePresence>
+                      </div>
+                      </div>
                       </div>
                     </div>
                   </div>

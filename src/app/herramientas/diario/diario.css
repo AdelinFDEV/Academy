@@ -52,7 +52,7 @@
 .dj-incluye-corto svg { color: var(--fh-acento); }
 
 /* Nova en su habitación: una tarjeta alta con la sala de fondo, el bocadillo
-   arriba, Nova en grande en el centro y su pulso abajo. */
+   arriba, Nova en grande en el centro y su objetivo de la semana abajo. */
 .dj-saludo {
   position: relative;
   isolation: isolate;
@@ -71,7 +71,7 @@
   overflow: hidden;
 }
 .dj-saludo-sala { position: absolute; inset: 0; z-index: -1; opacity: 0.55; }
-.dj-saludo-sala .tjbot-room { position: absolute; inset: 0; }
+.dj-saludo-sala .tjbot-room { position: absolute; inset: 0; background: linear-gradient(180deg, #172c58 0%, #0f1d3c 79%, #1d2e5a 79.2%, #1d2e5a 80.8%, #0d1933 81%, #080f22 100%); }
 .dj-saludo-sala svg { display: block; width: 100%; height: 100%; }
 /* La sala se intuye, no compite: velo oscuro arriba (bajo el bocadillo) y en los bordes. */
 .dj-saludo-sala::after {
@@ -124,7 +124,7 @@
 }
 .dj-saludo-nova .nh { width: 190px; height: 190px; }
 
-.dj-saludo-pulso {
+.dj-saludo-objetivo {
   position: relative;
   z-index: 2;
   display: grid;
@@ -132,22 +132,22 @@
   gap: 1.1rem;
   align-items: center;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   margin-top: auto;
   padding: 0.9rem 1.1rem;
   border: 1px solid var(--fh-linea);
   border-radius: 18px;
   background: rgba(6, 14, 30, 0.85);
 }
-.dj-saludo-pulso-cab { display: flex; flex-direction: column; }
-.dj-saludo-pulso-cab small { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fh-tenue); }
-.dj-saludo-pulso-cab b { font: 800 2rem/1 var(--font-display); color: var(--fh-acento); font-variant-numeric: tabular-nums; }
-.dj-saludo-pulso-cab i { font-size: 0.85rem; font-style: normal; color: var(--fh-tenue); }
-.dj-saludo-partes { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem 0.9rem; }
-.dj-saludo-partes > span { display: flex; flex-direction: column; gap: 0.25rem; }
-.dj-saludo-partes small { font-size: 0.68rem; color: var(--fh-suave); }
-.dj-saludo-partes i { height: 5px; border-radius: 99px; background: rgba(240, 244, 255, 0.08); overflow: hidden; }
-.dj-saludo-partes b { display: block; height: 100%; border-radius: inherit; background: var(--fh-acento); }
+.dj-saludo-objetivo-cab { display: flex; flex-direction: column; }
+.dj-saludo-objetivo-cab small { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fh-tenue); white-space: nowrap; }
+.dj-saludo-objetivo-cab b { font: 800 2rem/1 var(--font-display); color: var(--fh-acento); font-variant-numeric: tabular-nums; }
+.dj-saludo-objetivo-cab i { font-size: 0.85rem; font-style: normal; color: var(--fh-tenue); }
+.dj-saludo-objetivo-texto { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.dj-saludo-objetivo-texto strong { font: 700 0.92rem/1.3 var(--font-display); color: #fff; }
+.dj-saludo-objetivo-texto small { font-size: 0.7rem; color: var(--fh-suave); }
+.dj-saludo-objetivo-texto i { display: block; height: 5px; border-radius: 99px; background: rgba(240, 244, 255, 0.08); overflow: hidden; }
+.dj-saludo-objetivo-texto b { display: block; height: 100%; border-radius: inherit; background: var(--fh-acento); }
 
 /* ── Nova ───────────────────────────────────────────────────────────────── */
 
@@ -341,7 +341,7 @@
   .dj-saludo-bocadillo strong { font-size: 1.1rem; }
   .dj-saludo-bocadillo span { font-size: 0.84rem; }
   .dj-saludo-nova .nh { width: 140px; height: 140px; }
-  .dj-saludo-pulso { grid-template-columns: 1fr; gap: 0.7rem; }
+  .dj-saludo-objetivo { grid-template-columns: 1fr; gap: 0.7rem; }
 
   .dj-animo-fila { grid-template-columns: 24px 70px minmax(0, 1fr) 54px; gap: 0.5rem; }
   .dj-super { margin-top: 3.8rem; padding: 2.6rem 1.1rem 2.2rem; border-radius: 24px; }

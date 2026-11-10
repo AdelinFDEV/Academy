@@ -122,7 +122,7 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
                 <span><small>Win rate</small><strong>58 %</strong></span>
                 <span><small>Ratio R</small><strong>1,8</strong></span>
                 <span><small>P&amp;L</small><strong className="is-verde">+12,4 %</strong></span>
-                <span><small>Pulso Nova</small><strong>82</strong></span>
+                <span><small>Objetivo</small><strong>4/5</strong></span>
               </span>
               <svg className="pf-curva" viewBox="0 0 320 90" preserveAspectRatio="none">
                 <defs>

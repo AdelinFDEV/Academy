@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { animate, motion, useMotionValue } from "framer-motion";
+import { animate, motion, useMotionValue, useSpring, type MotionValue } from "framer-motion";
 import NovaHead from "./NovaHead";
 
 /*
@@ -16,6 +16,9 @@ import NovaHead from "./NovaHead";
  *     montarse en la página siguiente, la hace volar desde ahí hasta la barra.
  * Lo apuntado vive en el módulo: sobrevive a la navegación de cliente y no a
  * una recarga, que es justo lo que se quiere (al recargar no hay viaje).
+ *
+ * Desde el 10-11-2026 todos los vuelos llevan ESTELA (NovaEstela): cinco luces
+ * que siguen a Nova con muelles cada vez más perezosos y dibujan su trayectoria.
  */
 
 /** El hueco de Nova en la barra. Lo pinta NovaNav. */
@@ -86,24 +89,65 @@ export function sinAnimaciones() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+// ─────────────────────────── La estela ───────────────────────────
+
+/*
+ * Cinco luces que siguen la posición de Nova con muelles cada vez más
+ * perezosos: se quedan atrás y dibujan la trayectoria. Son cajas del tamaño
+ * de la cabeza (112 px) con una luz en el centro, así comparten origen con
+ * ella y la escala las acompaña. Quien vuela le pasa sus valores de movimiento.
+ */
+const ESTELA = [
+  { stiffness: 420, damping: 30, size: 22, opacity: 0.55 },
+  { stiffness: 300, damping: 28, size: 18, opacity: 0.42 },
+  { stiffness: 210, damping: 26, size: 14, opacity: 0.3 },
+  { stiffness: 150, damping: 24, size: 11, opacity: 0.2 },
+  { stiffness: 105, damping: 22, size: 8, opacity: 0.12 },
+];
+
+function Luz({ x, y, scale, cfg }: { x: MotionValue<number>; y: MotionValue<number>; scale: MotionValue<number>; cfg: (typeof ESTELA)[number] }) {
+  const sx = useSpring(x, { stiffness: cfg.stiffness, damping: cfg.damping });
+  const sy = useSpring(y, { stiffness: cfg.stiffness, damping: cfg.damping });
+  const ss = useSpring(scale, { stiffness: cfg.stiffness, damping: cfg.damping });
+  return (
+    <motion.span className="nova-estela" style={{ x: sx, y: sy, scale: ss, width: HEAD, height: HEAD }} aria-hidden="true">
+      <i style={{ width: cfg.size, height: cfg.size, opacity: cfg.opacity }} />
+    </motion.span>
+  );
+}
+
+export function NovaEstela({ x, y, scale }: { x: MotionValue<number>; y: MotionValue<number>; scale: MotionValue<number> }) {
+  return (
+    <motion.span className="nova-estelas" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.35 } }}>
+      {ESTELA.map((cfg, i) => <Luz key={i} x={x} y={y} scale={scale} cfg={cfg} />)}
+    </motion.span>
+  );
+}
+
+// ─────────────────────────── El viaje ───────────────────────────
+
 /**
- * Nova volando de una caja a otra, en arco, por encima de todo. Se agranda o
- * se encoge por el camino, se inclina hacia donde va y se gira de lado al
- * volar; al llegar se pone de frente. Quien la usa esconde a la Nova de
- * destino mientras tanto y la enseña en `onFin`.
+ * Nova volando de una caja a otra, en arco, por encima de todo. Coge impulso,
+ * se agranda o se encoge por el camino, se inclina hacia donde va y se gira de
+ * lado al volar; al llegar se pone de frente y se asienta con un rebote. Lleva
+ * su estela. Quien la usa esconde a la Nova de destino mientras tanto y la
+ * enseña en `onFin`.
  */
 export function NovaVuelo({ desde, hasta, onFin }: { desde: CajaNova; hasta: CajaNova; onFin: () => void }) {
   const theta = useMotionValue(0);
+  const x = useMotionValue(desde.x);
+  const y = useMotionValue(desde.y);
+  const scale = useMotionValue(desde.size / HEAD);
   const dir = hasta.x >= desde.x ? 1 : -1;
   const s0 = desde.size / HEAD;
   const s1 = hasta.size / HEAD;
   // El punto alto del arco: por encima de los dos extremos, sin salirse mucho de la pantalla.
-  const cimaY = Math.max(-10, Math.min(desde.y, hasta.y) - 50);
+  const cimaY = Math.max(-10, Math.min(desde.y, hasta.y) - 60);
   const mitadX = (desde.x + hasta.x) / 2;
 
   useEffect(() => {
-    const giro = animate(theta, dir * 65, { type: "spring", stiffness: 60, damping: 14 });
-    const frente = window.setTimeout(() => animate(theta, 0, { type: "spring", stiffness: 70, damping: 14 }), 750);
+    const giro = animate(theta, dir * 65, { type: "spring", stiffness: 60, damping: 14, delay: 0.1 });
+    const frente = window.setTimeout(() => animate(theta, 0, { type: "spring", stiffness: 70, damping: 14 }), 850);
     return () => {
       giro.stop();
       window.clearTimeout(frente);
@@ -111,26 +155,30 @@ export function NovaVuelo({ desde, hasta, onFin }: { desde: CajaNova; hasta: Caj
   }, [theta, dir]);
 
   return createPortal(
-    <motion.div
-      className="nova-vuelo"
-      initial={{ x: desde.x, y: desde.y, scale: s0, rotate: 0 }}
-      animate={{
-        x: [desde.x, mitadX, hasta.x],
-        y: [desde.y, cimaY, hasta.y],
-        scale: [s0, Math.max(s0, s1) * 1.08, s1],
-        rotate: [0, dir * 12, -dir * 4, 0],
-      }}
-      transition={{
-        x: { duration: 1.05, times: [0, 0.45, 1], ease: ["easeOut", "easeInOut"] },
-        y: { duration: 1.05, times: [0, 0.4, 1], ease: ["easeOut", "easeIn"] },
-        scale: { duration: 1.05, times: [0, 0.5, 1], ease: "easeInOut" },
-        rotate: { duration: 1.05, times: [0, 0.4, 0.8, 1], ease: "easeInOut" },
-      }}
-      onAnimationComplete={onFin}
-      aria-hidden="true"
-    >
-      <NovaHead theta={theta} face="joy" activity="none" flying joy={false} talking={false} track={false} />
-    </motion.div>,
+    <>
+      <NovaEstela x={x} y={y} scale={scale} />
+      <motion.div
+        className="nova-vuelo"
+        style={{ x, y, scale }}
+        initial={{ x: desde.x, y: desde.y, scale: s0, rotate: 0 }}
+        animate={{
+          x: [desde.x, desde.x, mitadX, hasta.x],
+          y: [desde.y, desde.y + 6, cimaY, hasta.y],
+          scale: [s0, s0 * 0.9, Math.max(s0, s1) * 1.08, s1 * 1.08, s1 * 0.97, s1],
+          rotate: [0, -dir * 5, dir * 14, -dir * 5, dir * 2, 0],
+        }}
+        transition={{
+          x: { duration: 1.2, times: [0, 0.12, 0.5, 1], ease: ["easeOut", "easeOut", "easeInOut"] },
+          y: { duration: 1.2, times: [0, 0.12, 0.45, 1], ease: ["easeOut", "easeOut", "easeIn"] },
+          scale: { duration: 1.32, times: [0, 0.12, 0.5, 0.86, 0.94, 1], ease: "easeInOut" },
+          rotate: { duration: 1.28, times: [0, 0.12, 0.45, 0.82, 0.92, 1], ease: "easeInOut" },
+        }}
+        onAnimationComplete={onFin}
+        aria-hidden="true"
+      >
+        <NovaHead theta={theta} face="joy" activity="none" flying joy={false} talking={false} track={false} />
+      </motion.div>
+    </>,
     document.body,
   );
 }

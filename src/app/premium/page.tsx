@@ -167,7 +167,7 @@ export default async function PremiumPage() {
                   <div className="pm-carta-kpis">
                     <div><small>Win rate</small><strong>58 %</strong></div>
                     <div><small>P&amp;L</small><strong className="is-verde">+12,4 %</strong></div>
-                    <div><small>Pulso Nova</small><strong>82</strong></div>
+                    <div><small>Objetivo</small><strong>4/5</strong></div>
                   </div>
                   <svg className="pm-carta-curva" viewBox="0 0 300 80" preserveAspectRatio="none">
                     <defs>
@@ -248,7 +248,7 @@ export default async function PremiumPage() {
                   <li><LineChart size={17} /> <span><strong>Diez estadísticas</strong> y tu curva de capital</span></li>
                   <li><CalendarRange size={17} /> <span><strong>Calendario</strong> y desglose por par, estrategia, día y hora</span></li>
                   <li><Smile size={17} /> <span><strong>Tus emociones</strong> de cada día, junto a tus resultados</span></li>
-                  <li><NovaMini size={22} /> <span><strong>Nova</strong>: tu pulso de 0 a 100 y avisos de riesgo, rachas y revancha</span></li>
+                  <li><NovaMini size={22} /> <span><strong>Nova</strong>: avisos de riesgo, rachas y revancha, y tu objetivo de cada semana</span></li>
                   <li><Trophy size={17} /> <span><strong>Hitos con niveles</strong> que premian la disciplina</span></li>
                   <li><EyeOff size={17} /> <span><strong>Privado</strong>: solo lo ves tú</span></li>
                 </ul>
@@ -259,7 +259,6 @@ export default async function PremiumPage() {
                   <div className="pm-nova-cab">
                     <span className="pm-nova-cara"><NovaMini size={58} sigue /></span>
                     <span><strong>Nova</strong><small>Lo más importante</small></span>
-                    <span className="pm-nova-pulso">82<small>/100</small></span>
                   </div>
                   <p className="pm-nova-msg is-bien">Riesgo bajo control: ninguna operación pasa del 2 % de la cuenta.</p>
                   <p className="pm-nova-msg is-ojo">Cierras las ganadoras antes de tiempo: te quedas con el 45 % del objetivo.</p>

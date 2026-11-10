@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
 import { TjInfo } from "./TjControls";
 import { factorStr, pctStr, pnlStr, rStr, toneOf, type Tone } from "./tjFormat";
@@ -25,15 +26,18 @@ function WinRing({ stats }: { stats: Stats }) {
     <div className="tja-ring">
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r={R} className="tja-ring-track" />
-        {parts.map(p => {
+        {parts.map((p, i) => {
           const len = (p.n / total) * C;
+          // Un hueco de 3 entre tramos; con un solo tramo, el anillo se cierra entero.
+          const dash = p.n === stats.count ? C : Math.max(len - 3, 0.5);
           const el = p.n ? (
-            <circle
+            <motion.circle
               key={p.tone} cx="60" cy="60" r={R}
               className={`tja-ring-arc tone-${p.tone}`}
-              // Un hueco de 3 entre tramos; con un solo tramo, el anillo se cierra entero.
-              strokeDasharray={`${p.n === stats.count ? C : Math.max(len - 3, 0.5)} ${C}`}
               strokeDashoffset={-offset}
+              initial={{ strokeDasharray: `0 ${C}` }}
+              animate={{ strokeDasharray: `${dash} ${C}` }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 + i * 0.12 }}
             />
           ) : null;
           offset += len;

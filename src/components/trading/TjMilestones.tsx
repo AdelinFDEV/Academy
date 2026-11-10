@@ -4,7 +4,7 @@ import { motion, type Variants } from "framer-motion";
 import { Trophy, Lock, Crown, Check, Minus } from "lucide-react";
 import type { UnlockNotice } from "@/components/BadgeNotifier";
 import { DIARIO_ICONS as ICONS } from "@/lib/logros";
-import { dateLong, pnlStr } from "./tjFormat";
+import { MONTHS, dateLong, pnlStr } from "./tjFormat";
 import {
   VIVIR_MAX_RED, VIVIR_MIN_OPS, VIVIR_MONTHS, milestoneProgress, nextMilestone, parseStoredLevels, vivirWindow,
   type Milestone, type MilestoneGroup, type Trade,
@@ -74,7 +74,11 @@ export function TjMilestoneTeaser({ milestones, onOpen }: { milestones: Mileston
         <div className="tjm-ring" aria-hidden="true">
           <svg viewBox="0 0 80 80" className="tjm-ring-svg">
             <circle cx="40" cy="40" r={R} className="tjm-ring-track" />
-            <circle cx="40" cy="40" r={R} className="tjm-ring-arc" strokeDasharray={`${(p.progress / 100) * C} ${C}`} />
+            <motion.circle
+              cx="40" cy="40" r={R} className="tjm-ring-arc" strokeDasharray={C}
+              initial={{ strokeDashoffset: C }} animate={{ strokeDashoffset: C - (p.progress / 100) * C }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+            />
           </svg>
           <Icon size={22} />
         </div>
@@ -88,7 +92,7 @@ export function TjMilestoneTeaser({ milestones, onOpen }: { milestones: Mileston
         <strong>{m.format(m.best)} <span>/ {m.format(p.next!)}</span></strong>
         <span>te faltan {m.format(Math.max(0, p.next! - m.best))}</span>
       </div>
-      <span className="tj-bar is-accent"><i style={{ width: `${p.progress}%` }} /></span>
+      <span className="tj-bar is-accent"><motion.i initial={{ width: 0 }} animate={{ width: `${p.progress}%` }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.25 }} /></span>
       {note && <p className="tjm-note">Al llegar: {note.toLowerCase()}.</p>}
       <button type="button" className="tj-btn tjm-all" onClick={onOpen}>Ver todos los hitos</button>
     </section>
@@ -201,7 +205,13 @@ function MilestoneCard({ m, onDefineCapital }: { m: Milestone; onDefineCapital: 
   );
 }
 
-/** El súper hito: tarjeta legendaria con corona, rayos y los últimos 12 meses. */
+/**
+ * El súper hito (rehecho el 10-11-2026 para que dé ganas solo con verlo): un
+ * escenario con auroras doradas y partículas, la corona en el centro de un
+ * anillo de doce tramos (uno por mes, cada uno con su estado), el título en
+ * grande, un lema, las tres reglas como píldoras y, a la derecha, la cuenta
+ * de meses con el siguiente paso concreto.
+ */
 function LegendCard({ m, trades, now }: { m: Milestone; trades: Trade[]; now: Date }) {
   const done = milestoneProgress(m).next == null;
   const win = vivirWindow(trades, now);
@@ -216,23 +226,60 @@ function LegendCard({ m, trades, now }: { m: Milestone; trades: Trade[]; now: Da
     few: `Menos de ${VIVIR_MIN_OPS} operaciones`,
     empty: "Sin operaciones",
   };
+  // El anillo: doce tramos con un hueco entre ellos, del color de cada mes.
+  const R = 68;
+  const C = 2 * Math.PI * R;
+  const seg = C / VIVIR_MONTHS;
+  const faltan = VIVIR_MONTHS - win.run;
+  const cierre = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+  const esteMes = trades.filter(t => {
+    const d = new Date(t.date);
+    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+  });
+  const pnlMes = esteMes.reduce((s, t) => s + t.pnl, 0);
+  const faltanOps = Math.max(0, VIVIR_MIN_OPS - esteMes.length);
+  const siguiente = done
+    ? "Un año entero viviendo de tu método. Es tuyo para siempre."
+    : `${faltan === 1 ? "Te falta un mes válido" : `Te faltan ${faltan} meses válidos`}. ${MONTHS[now.getMonth()]} cierra el 1 de ${MONTHS[cierre.getMonth()]}: ${faltanOps ? `${faltanOps} ${faltanOps === 1 ? "operación" : "operaciones"} más para que cuente` : `ya cuenta (${esteMes.length} op.)`}${esteMes.length ? `, y va en ${pnlStr(pnlMes)}` : ""}.`;
 
   return (
     <motion.section className={`tjh-legend${done ? " is-done" : ""}`} variants={cardVariants}>
+      <span className="tjh-legend-aurora" aria-hidden="true" />
       <span className="tjh-legend-glow" aria-hidden="true" />
+      <span className="tjh-legend-stars" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /></span>
+
       <div className="tjh-legend-crown" aria-hidden="true">
         <span className="tjh-rays" />
+        <svg className="tjh-legend-ring" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r={R} className="tjh-legend-ring-track" />
+          {win.months.map((x, i) => (
+            <motion.circle
+              key={x.key}
+              cx="80" cy="80" r={R}
+              className={`tjh-legend-seg is-${done ? "ok" : x.status}`}
+              strokeDasharray={`${seg - 5} ${C}`}
+              strokeDashoffset={-(i * seg)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 + i * 0.05 }}
+            />
+          ))}
+        </svg>
         <span className="tjh-legend-medal">
-          <Crown className="tjh-ic tjh-ic-vivir" size={46} strokeWidth={1.8} />
+          <Crown className="tjh-ic tjh-ic-vivir" size={48} strokeWidth={1.8} />
         </span>
         {!done && <span className="tjh-lock is-big"><Lock size={14} /></span>}
         {done && <span className="tjh-legend-sparks"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></span>}
       </div>
 
       <div className="tjh-legend-text">
-        <span className="tjh-kicker is-legend">{done ? "Súper hito conseguido" : "Súper hito"}</span>
+        <span className="tjh-kicker is-legend">{done ? "Súper hito conseguido" : "El súper hito"}</span>
         <h3>{m.title}</h3>
-        <p>{m.desc}. Una vez conseguido, es tuyo para siempre.</p>
+        <p className="tjh-legend-lema">
+          {done
+            ? "Doce meses seguidos operando con método y en beneficio. Lo que separa a quien prueba de quien vive de esto, y lo has hecho."
+            : "Doce meses seguidos operando con método y en beneficio. Es lo que separa a quien prueba de quien vive de esto."}
+        </p>
         <ul className="tjh-rules">
           {rules.map(r => (
             <li key={r.text} className={r.ok ? "is-ok" : undefined}>
@@ -240,6 +287,7 @@ function LegendCard({ m, trades, now }: { m: Milestone; trades: Trade[]; now: Da
             </li>
           ))}
         </ul>
+        <p className={`tjh-legend-next${done ? " is-done" : ""}`}>{siguiente}</p>
       </div>
 
       <div className="tjh-legend-months">

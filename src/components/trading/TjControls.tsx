@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from "lucide-react";
 import { WEEKDAYS, MONTHS } from "./tjFormat";
 
@@ -45,6 +46,11 @@ export function TjInfo({ label, children }: { label: string; children: React.Rea
 
 // ─────────────────────────── Segmented ───────────────────────────
 
+/**
+ * Opciones en fila con una sola activa. La píldora dorada de la activa se
+ * DESLIZA de una opción a otra (layoutId, único por cada segmentado), en vez
+ * de aparecer y desaparecer.
+ */
 export function TjSegmented<T extends string>({
   value,
   onChange,
@@ -56,6 +62,7 @@ export function TjSegmented<T extends string>({
   options: { value: T; label: string }[];
   label: string;
 }) {
+  const id = useId();
   return (
     <div className="tj-seg" role="tablist" aria-label={label}>
       {options.map(o => (
@@ -67,7 +74,10 @@ export function TjSegmented<T extends string>({
           className={o.value === value ? "active" : undefined}
           onClick={() => onChange(o.value)}
         >
-          {o.label}
+          {o.value === value && (
+            <motion.span layoutId={`tj-seg-${id}`} className="tj-seg-pill" transition={{ type: "spring", stiffness: 520, damping: 40 }} aria-hidden="true" />
+          )}
+          <span className="tj-seg-label">{o.label}</span>
         </button>
       ))}
     </div>

@@ -23,7 +23,7 @@ import "./diario.css";
  * Ficha pública del Diario de Trading — punto 13 del plan SEO.
  *
  * Rehecha el 08-11-2026, a petición del admin, para vender: Nova en grande en
- * la cabecera con su saludo, una sección para Nova y su pulso, otra para las
+ * la cabecera con su saludo, una sección para Nova y su objetivo semanal, otra para las
  * sensaciones, el SÚPER HITO como protagonista y la llamada a suscribirse en la
  * cabecera, en el cierre y en la barra del móvil. Lo común con la ficha del
  * Portfolio sigue en `../ficha.css`; lo propio de esta, en `./diario.css`.
@@ -32,15 +32,16 @@ import "./diario.css";
  * `src/components/trading/`: capital inicial, diez estadísticas, curva de
  * capital, rendimiento por periodo, calendario, desglose por par/estrategia/
  * día/hora, análisis del riesgo en múltiplos de R, sensaciones por día (ánimo y
- * nota, `tjDias.ts`), Nova con su pulso de 0 a 100 en cuatro partes y mensajes
- * priorizados (`tjNova.ts`, reglas sobre los datos, no IA), diez hitos con
+ * nota, `tjDias.ts`), Nova con sus mensajes priorizados y el objetivo de la
+ * semana (`tjNova.ts`, reglas sobre los datos, no IA; el «pulso» de 0 a 100 se
+ * retiró el 10-11-2026), diecisiete hitos con
  * niveles y el súper hito «Conseguiste vivir del trading» (`tjStats.ts`: sus
  * reglas salen de las mismas constantes, para que no se desincronicen).
  *
  * **Hitos, no retos.** No hay "retos" (objetivos que se aceptan o se
  * proponen): no los anuncies.
  *
- * Las maquetas (ventana del panel, mensajes de Nova, pulso, ánimos, racha del
+ * Las maquetas (ventana del panel, mensajes de Nova, objetivo, ánimos, racha del
  * súper hito) son decorativas (`aria-hidden`): el diario es de cada usuario,
  * así que no hay datos reales que enseñar. Sin rótulo de «ejemplo» por
  * decisión del admin (04-11-2026); las cifras son redondas y no se atribuyen a
@@ -88,7 +89,7 @@ const [CURVA_X, CURVA_Y] = CURVA[CURVA.length - 1];
 const ANILLO = 2 * Math.PI * 15.9;
 
 /** Lo que trae, en una línea, bajo el botón de la cabecera. */
-const INCLUYE_CORTO = ["Nova y su pulso", "10 estadísticas", "Sensaciones", "10 hitos + el súper hito"];
+const INCLUYE_CORTO = ["Nova y tu objetivo semanal", "10 estadísticas", "Sensaciones", "17 hitos + el súper hito"];
 
 /** Los mensajes de Nova de la maqueta: los tres tonos que usa (bien, aviso, dato). */
 const NOVA_MENSAJES = [
@@ -98,7 +99,7 @@ const NOVA_MENSAJES = [
 ];
 
 const NOVA_PUNTOS = [
-  { icon: Gauge, title: "Tu pulso, de 0 a 100", text: "Cómo vas ahora mismo, en cuatro partes de 25: riesgo, resultados, emociones y constancia. Desglosado, para que sepas qué mejorar." },
+  { icon: Gauge, title: "Tu objetivo de la semana", text: "Cada lunes mira lo que más flojo va (riesgo, resultados, emociones o constancia) y te pone un solo objetivo medible, que avanza con lo que apuntas." },
   { icon: ListChecks, title: "Lo importante, primero", text: "Lo urgente sale antes y destacado. Nada de leer veinte gráficos para enterarte de lo que importa." },
   { icon: MousePointerClick, title: "Consejos con botón", text: "Cuando tiene sentido, el consejo trae un botón que te lleva a hacer justo lo que propone." },
   { icon: Cpu, title: "Sin inventarse nada", text: "Reglas sobre tus propios datos, no una IA que se lo imagina: instantáneo, y siempre sobre lo que has apuntado." },
@@ -681,8 +682,8 @@ export default async function FichaDiarioPage() {
             </span>
             <h2 className="fh-precio-titulo">Tu mejor operación empieza por apuntar la próxima</h2>
             <ul className="fh-incluye">
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El Diario de Trading completo, con Nova y su pulso</li>
-              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Sensaciones, análisis del riesgo, diez hitos y el súper hito</li>
+              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El Diario de Trading completo, con Nova y tu objetivo semanal</li>
+              <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Sensaciones, análisis del riesgo, diecisiete hitos y el súper hito</li>
               <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />El <Link href="/herramientas/portfolio">Portfolio Adelin</Link>: spot y DCA en directo</li>
               <li><Check size={16} strokeWidth={2.6} aria-hidden="true" />Todos los <Link href="/cursos">cursos</Link>, con examen y certificado</li>
             </ul>

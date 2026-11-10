@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { Search, Flame } from "lucide-react";
 import { MONTHS, WEEKDAYS, WEEKDAY_NAMES, pnlStr, toneOf } from "./tjFormat";
 import type { Trade } from "./tjStats";
@@ -172,7 +173,7 @@ export default function TjEmotions({ trades, dias, now, onOpenToday }: {
               <li key={r.value} className={`mood-${r.value}`}>
                 <span className="tjm2-emoji" aria-hidden="true">{r.emoji}</span>
                 <span className="tjm2-dist-label">{r.label}</span>
-                <span className="tjm2-dist-bar" aria-hidden="true"><i style={{ width: `${(r.n / maxReparto) * 100}%` }} /></span>
+                <span className="tjm2-dist-bar" aria-hidden="true"><motion.i initial={{ width: 0 }} animate={{ width: `${(r.n / maxReparto) * 100}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }} /></span>
                 <strong>{totalAnimo ? Math.round((r.n / totalAnimo) * 100) : 0} %</strong>
                 <span className="tjm2-dist-n">{r.n}</span>
               </li>
@@ -193,7 +194,7 @@ export default function TjEmotions({ trades, dias, now, onOpenToday }: {
               return (
                 <div key={d.w} className={a ? `mood-${a.value}` : "is-blank"} title={a ? `${d.name}: ${a.label} (${d.n} días)` : `${d.name}: sin datos`}>
                   <span className="tjm2-emoji" aria-hidden="true">{a?.emoji ?? "·"}</span>
-                  <span className="tjm2-week-bar" aria-hidden="true"><i style={{ height: `${d.media != null ? (d.media / 4) * 100 : 0}%` }} /></span>
+                  <span className="tjm2-week-bar" aria-hidden="true"><motion.i initial={{ height: 0 }} animate={{ height: `${d.media != null ? (d.media / 4) * 100 : 0}%` }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }} /></span>
                   <span className="tjm2-week-day">{d.w}</span>
                 </div>
               );

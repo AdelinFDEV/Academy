@@ -16,7 +16,7 @@ import TjCalendar from "@/components/trading/TjCalendar";
 import TjWelcome from "@/components/trading/TjWelcome";
 import TjBalance from "@/components/trading/TjBalance";
 import TjBot, { reiniciarNova } from "@/components/trading/TjBot";
-import { NOVA_FIRMA, buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
+import { NOVA_FIRMA, NOVA_RESUMEN, buildBotReport, type BotActionKind } from "@/components/trading/tjNova";
 import TjEmotions from "@/components/trading/TjEmotions";
 import { toDiasMap, type DiaDiario, type DiasMap } from "@/components/trading/tjDias";
 import {
@@ -137,10 +137,9 @@ export default function TradingJournal({
   }
 
   // Al cambiar de vista, si la barra ya iba fija encima del contenido, se sube
-  // hasta que la vista nueva empiece justo debajo de ella. Antes se miraba la
-  // posición de la propia barra, que al ser sticky nunca está por encima de la
-  // pantalla, y al pasar del Resumen (con bienvenida) a Emociones la barra
-  // quedaba flotando sobre la primera tarjeta (10-11-2026).
+  // hasta dejarla justo en su sitio, con la vista nueva empezando debajo. Sin
+  // animación: con el desplazamiento suave, el cambio de contenido lo dejaba a
+  // medias y la barra tapaba la primera tarjeta (10-11-2026).
   useEffect(() => {
     if (vistaPrevia.current === view) return;
     vistaPrevia.current = view;
@@ -148,7 +147,8 @@ export default function TradingJournal({
     const tabs = tabsRef.current;
     if (!ancla || !tabs) return;
     const fija = parseFloat(getComputedStyle(tabs).top) || 0;
-    if (ancla.getBoundingClientRect().top < fija) ancla.scrollIntoView({ behavior: "smooth", block: "start" });
+    const top = ancla.getBoundingClientRect().top;
+    if (top < fija) window.scrollBy({ top: top - fija, behavior: "auto" });
   }, [view]);
 
   // Cuenta completa: lo que no cambia al filtrar.
@@ -299,15 +299,17 @@ export default function TradingJournal({
     [userName, trades, dias, account, ctx, capital],
   );
 
-  // La huella del último análisis, para que Nova en la barra sepa si hay algo sin leer.
+  // La huella del último análisis y su resumen (cuántas cosas, cuántas importantes
+  // y la frase principal): Nova en la barra sabe si hay algo sin leer y QUÉ es.
   useEffect(() => {
     try {
       localStorage.setItem(NOVA_FIRMA, botReport.signature);
+      localStorage.setItem(NOVA_RESUMEN, JSON.stringify(botReport.resumen));
     } catch {
       // Sin almacenamiento: la barra no podrá avisar de novedades, sin más.
     }
     window.dispatchEvent(new Event("tj-bot-visto"));
-  }, [botReport.signature]);
+  }, [botReport.signature, botReport.resumen]);
 
   /** Los botones de los mensajes de Nova: cada uno lleva a hacer lo que propone. */
   function onBotAction(kind: BotActionKind) {
@@ -383,12 +385,11 @@ export default function TradingJournal({
         <span className="imm-orb imm-orb--3" />
       </div>
 
-      {/* Sin cabecera: al entrar, lo primero es el calendario. La barra solo lleva
-          las vistas y el botón de apuntar, y se queda fija al hacer scroll. */}
-      {/* La bienvenida abre el Resumen; en las demás vistas el título queda solo para lectores de pantalla. */}
-      {view === "resumen" || trades.length === 0
-        ? <TjWelcome name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
-        : <h1 className="sr-only">Diario de Trading</h1>}
+      {/* La cabecera (saludo, Nova y el balance) se queda en TODAS las vistas
+          (pedido por el admin el 10-11-2026): así la página no cambia de alto al
+          cambiar de pestaña, la barra no se solapa con la primera tarjeta y Nova
+          sigue en su habitación sin volver a aterrizar. */}
+      <TjWelcome name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
       <div ref={anclaRef} className="tj-scroll-anchor tj-ancla-vista" aria-hidden="true" />
       <div className="tj-topbar" ref={tabsRef}>
         {trades.length > 0 && (
@@ -447,6 +448,15 @@ export default function TradingJournal({
         )}
       </AnimatePresence>
 
+      <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={trades.length === 0 ? "vacio" : view}
+        className="tj-vista"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+      >
       {trades.length === 0 ? (
         <>
           {calendar}
@@ -519,6 +529,8 @@ export default function TradingJournal({
           )}
         </>
       )}
+      </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
