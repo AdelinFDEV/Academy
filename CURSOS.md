@@ -86,7 +86,7 @@ La paleta sale del campo **`color`** de `curso.json` (un hexadecimal). Ese únic
 
 - la portada del curso, la ficha y las tarjetas de `/cursos`;
 - el acento del aula (temario, botones, barras de progreso);
-- **el certificado**: el sello con la nota, la roseta del fondo, los filetes, el resplandor de la franja azul noche y el código (`--cert-acento` en `components/aula/certificado.css`). Es su único color: no lleva oro fijo;
+- **el certificado**: el anillo de la nota, el resplandor del fondo, el filete del marco, el título del curso y el código (`--dp-acento` en `components/aula/certificado.css`). Es su único color: no lleva oro fijo;
 - la vitrina de certificados del dashboard.
 
 No hay que tocar CSS para cambiar de paleta: basta con el `color`.
@@ -319,7 +319,9 @@ Formato de cada pregunta:
 
 **El certificado** es un solo componente: `src/components/aula/Certificado.tsx` (+ `certificado.css`). Lo pintan el aula, la verificación pública, la vitrina y todas las **muestras** (`muestra` = marca de agua «Muestra»): ficha del curso, `/cursos`, `/premium`, el slider de la portada y la vitrina vacía. Cambiar el diseño ahí lo cambia en todas partes.
 
-- Diseño («Grabado», 12-11-2026): hoja marfil con una roseta guilloché de fondo y doble filete, texto centrado en serif (Fraunces, servida con `next/font`), franja azul noche con la fecha, el emisor «AdelinBTC Academy» y el código, y entre las dos **el sello con la nota final**, flanqueado por las dos notas que la componen. **Hereda la paleta del curso** por `color`, que es su único color (sello, roseta, filetes, franja y código).
+- Diseño («Noche», 12-11-2026): el mismo lenguaje que la web. Fondo azul noche con un resplandor del color del curso y un filete fino; a la izquierda el texto en marfil (nombre en serif Fraunces, servida con `next/font`; el curso en cursiva del color del curso; el logro en una píldora) y el pie con fecha, emisor «AdelinBTC Academy», código y dirección de verificación; a la derecha, **una placa con la nota final en un anillo** y las dos notas que la componen. **Hereda la paleta del curso** por `color`, que es su único color.
+- **Las clases son `dp-*` y solo viven en ese componente.** El 12-11-2026 se cambió el diseño conservando los nombres `cert-*`, y el servidor de desarrollo siguió sirviendo trozos del CSS viejo: las dos rejillas se mezclaron y el certificado salió roto en la pantalla del admin. **Si se vuelve a rehacer, se cambia el prefijo**, y se actualizan los selectores de fuera que lo tocan (`catalogo.css`, `cursos.css`, `home.css`, `premium.css`, `vitrina-certificados.css`).
+- `.dp` solo fija la proporción y hace de contenedor; el certificado es `.dp-hoja`. En el propio contenedor no se usa `cqw` (miraría al contenedor de fuera).
 - **Solo lleva datos reales**: nombre, curso, logro, las tres notas, fecha, código y su dirección de verificación. Nada de horas, avales ni organismos.
 - **Sin encabezados**: el nombre y el curso son `<p>`, no `<h1>`/`<h2>`. Las muestras salen en la portada, `/premium` y `/cursos`, y un `<h1>` dentro les ponía un segundo título («Tu nombre aquí»).
 - El nombre y el título del curso **se encogen solos** si son largos (`cuerpoSegunLargo`), para que no desborden.

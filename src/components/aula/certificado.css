@@ -3,361 +3,263 @@
    pública, la vitrina del dashboard y las muestras de la ficha, el catálogo,
    `/premium` y la portada.
 
-   Rehecho el 12-11-2026 («Grabado»): hoja marfil con una roseta guilloché de
-   fondo y un filete fino, texto centrado en serif, franja azul noche con los
-   datos de emisión y, entre las dos, el sello con la nota final.
+   Diseño «Noche» (12-11-2026): el lenguaje de la web. Fondo azul noche con un
+   resplandor del color del curso, el texto a la izquierda en marfil y a la
+   derecha una placa con la nota final en un anillo y sus dos parciales.
 
-   El color del curso entra por `--cert-acento` y es el ÚNICO color: tiñe el
-   sello, la roseta, los filetes, el resplandor de la franja y el código. No
-   hay oro fijo: así cada certificado se reconoce por su curso.
+   El color del curso entra por `--dp-acento` y es el ÚNICO color.
 
-   Todo se mide en cqw —por ciento del ancho del certificado—, así se ve igual
-   de proporcionado como miniatura que impreso en A4 apaisado. */
+   Dos piezas, y no es casualidad:
+    · `.dp` fija la proporción (A4 apaisado) y es el CONTENEDOR. No lleva ni
+      una medida en cqw: en el propio contenedor, cqw mira al contenedor de
+      fuera, no a sí mismo.
+    · `.dp-hoja` es el certificado, y todo dentro se mide en cqw —por ciento
+      del ancho—, así se ve igual en miniatura que impreso.
 
-.cert {
-  --cert-acento: #e6b455;
-  --cert-noche: #0a1628;
-  --cert-tinta: #121b2c;
-  --cert-gris: #5a6273;
-  --cert-hoja: #fbf8f1;
-  /* El color del curso oscurecido: es el que se lee sobre el marfil. El
-     acento tal cual (medio y luminoso, ver CURSOS.md) solo va sobre el noche. */
-  --cert-tono: color-mix(in srgb, var(--cert-acento) 56%, #14233f);
-  --cert-tono-texto: color-mix(in srgb, var(--cert-acento) 38%, #101b30);
-  --cert-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --cert-franja: 10.6cqw;
-  --cert-sello: 18.6cqw;
+   Cada rejilla declara filas Y columnas, y cada hijo su `min-width: 0`: nada
+   se da por supuesto. */
+
+.dp {
+  --dp-acento: #e6b455;
+  display: block;
   position: relative;
-  padding: 1cqw;
-  border-radius: 1.5cqw;
-  /* El passe-partout: azul noche con un reflejo del color del curso. */
-  background:
-    linear-gradient(135deg,
-      color-mix(in srgb, var(--cert-acento) 34%, #0f2140) 0%,
-      var(--cert-noche) 30%,
-      #0d1d38 55%,
-      color-mix(in srgb, var(--cert-acento) 26%, #0f2140) 100%);
-  aspect-ratio: 1.414;
+  width: 100%;
   max-width: 900px;
+  aspect-ratio: 1.414;
   container-type: inline-size;
+  border-radius: 14px;
+  overflow: hidden;
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
 
-.cert-marco {
-  position: relative;
+.dp-hoja {
+  --dp-marfil: #f7f2e6;
+  --dp-suave: rgba(247, 242, 230, 0.66);
+  --dp-tenue: rgba(247, 242, 230, 0.42);
+  /* El color del curso aclarado: el que se lee como texto sobre el noche. */
+  --dp-claro: color-mix(in srgb, var(--dp-acento) 72%, #fff);
+  --dp-linea: color-mix(in srgb, var(--dp-acento) 34%, transparent);
+  --dp-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  position: absolute;
+  inset: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) var(--cert-franja);
-  height: 100%;
-  border-radius: 0.7cqw;
+  grid-template-columns: minmax(0, 1fr) 27cqw;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 4.4cqw;
+  padding: 5cqw 5cqw 4.6cqw 5.6cqw;
+  color: var(--dp-marfil);
+  text-align: left;
+  background:
+    radial-gradient(62% 78% at 88% 30%, color-mix(in srgb, var(--dp-acento) 26%, transparent), transparent 70%),
+    radial-gradient(48% 60% at 0% 100%, color-mix(in srgb, var(--dp-acento) 13%, transparent), transparent 72%),
+    linear-gradient(150deg, #0f1f3a 0%, #0a1628 46%, #070f1e 100%);
   overflow: hidden;
-  background: var(--cert-hoja);
-  box-shadow: 0 0 0 0.14cqw color-mix(in srgb, var(--cert-acento) 55%, transparent);
 }
 
-/* ── La hoja ───────────────────────────────────────────────────────────── */
-
-.cert-papel {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 0;
-  padding: 4.3cqw 6cqw 0;
-  text-align: center;
-  color: var(--cert-tinta);
-  background:
-    radial-gradient(75% 70% at 50% 42%, #fffefb 0%, var(--cert-hoja) 62%, #f3ecdd 100%);
-}
-
-/* El doble filete de los diplomas. Deja libre el borde de abajo, que es de la franja. */
-.cert-papel::before,
-.cert-papel::after {
+/* El marco: un filete fino del color del curso, con las esquinas redondeadas. */
+.dp-hoja::before {
   content: "";
   position: absolute;
+  inset: 1.7cqw;
+  border: 0.1cqw solid var(--dp-linea);
+  border-radius: 1cqw;
   pointer-events: none;
 }
-.cert-papel::before {
-  inset: 1.7cqw 1.7cqw 1.5cqw;
-  border: 0.12cqw solid color-mix(in srgb, var(--cert-tono) 62%, transparent);
-}
-.cert-papel::after {
-  inset: 2.15cqw 2.15cqw 1.95cqw;
-  border: 0.07cqw solid color-mix(in srgb, var(--cert-tono) 30%, transparent);
-}
-
-/* Un rombo en cada esquina del filete. */
-.cert-esquina {
-  position: absolute;
-  z-index: 1;
-  width: 1.05cqw;
-  height: 1.05cqw;
-  background: var(--cert-tono);
-  box-shadow: 0 0 0 0.3cqw var(--cert-hoja);
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.cert-esquina--1 { top: 1.76cqw; left: 1.76cqw; }
-.cert-esquina--2 { top: 1.76cqw; left: calc(100% - 1.76cqw); }
-.cert-esquina--3 { top: calc(100% - 1.56cqw); left: 1.76cqw; }
-.cert-esquina--4 { top: calc(100% - 1.56cqw); left: calc(100% - 1.76cqw); }
-
-/* La roseta: una marca de agua grabada, del color del curso. */
-.cert-guilloche {
-  position: absolute;
-  top: 49%;
-  left: 50%;
-  width: 62cqw;
-  height: 62cqw;
-  transform: translate(-50%, -50%);
-  fill: none;
-  stroke: var(--cert-tono);
-  stroke-width: 0.45;
-  opacity: 0.2;
-  pointer-events: none;
-}
-
-.cert-marca,
-.cert-titulo,
-.cert-cuerpo,
-.cert-desglose { position: relative; z-index: 1; }
-
-.cert-marca {
-  display: flex;
-  align-items: center;
-  gap: 1.5cqw;
-  margin: 0;
-  font: 700 1.2cqw/1 var(--font-display);
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--cert-tono-texto);
-}
-/* El espaciado deja un hueco de más tras la última letra: se compensa. */
-.cert-marca i:last-child { margin-left: -0.42em; }
-.cert-marca i { display: block; width: 7cqw; height: 0.1cqw; background: linear-gradient(90deg, transparent, var(--cert-tono)); }
-.cert-marca i:last-child { transform: scaleX(-1); }
-
-.cert-titulo {
-  margin: 1.5cqw 0 0;
-  font: italic 400 3.9cqw/1.12 var(--cert-serif);
-  letter-spacing: -0.005em;
-  color: var(--cert-noche);
-}
-
-.cert-cuerpo {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.95cqw;
-  width: 100%;
-  min-height: 0;
-}
-.cert-otorga {
-  margin: 0;
-  font: 500 1.08cqw/1.3 var(--font-display);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--cert-gris);
-}
-.cert-nombre {
-  margin: 0;
-  max-width: 100%;
-  font: 600 var(--cert-cuerpo-nombre, 6.6cqw) / 1.06 var(--cert-serif);
-  letter-spacing: -0.015em;
-  color: var(--cert-noche);
-  overflow-wrap: anywhere;
-  text-wrap: balance;
-}
-/* Florón: una línea con un rombo en medio, bajo el nombre. */
-.cert-floron {
-  position: relative;
-  display: block;
-  flex-shrink: 0;
-  width: 30cqw;
-  height: 0.12cqw;
-  margin: 0.45cqw 0 0.6cqw;
-  background: linear-gradient(90deg, transparent, var(--cert-tono) 22%, var(--cert-tono) 78%, transparent);
-}
-.cert-floron::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0.9cqw;
-  height: 0.9cqw;
-  background: var(--cert-tono);
-  box-shadow: 0 0 0 0.32cqw var(--cert-hoja);
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.cert-curso {
-  margin: 0;
-  max-width: 82%;
-  font: 700 var(--cert-cuerpo-curso, 3.2cqw) / 1.16 var(--cert-serif);
-  letter-spacing: -0.01em;
-  color: var(--cert-tinta);
-  text-wrap: balance;
-}
-.cert-logro {
-  display: flex;
-  align-items: baseline;
-  gap: 0.9cqw;
-  margin: 0.7cqw 0 0;
-  padding: 0.55cqw 1.6cqw 0.6cqw;
-  border: 0.1cqw solid color-mix(in srgb, var(--cert-tono) 42%, transparent);
-  border-radius: 99cqw;
-  background: color-mix(in srgb, var(--cert-acento) 9%, #fffdf8);
-}
-.cert-logro span {
-  font: 600 0.92cqw/1 var(--font-display);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--cert-gris);
-}
-.cert-logro strong { font: italic 600 1.65cqw/1 var(--cert-serif); color: var(--cert-tono-texto); }
-
-/* Las dos notas parciales, a los lados del hueco que ocupa el sello. */
-.cert-desglose {
-  display: grid;
-  grid-template-columns: 1fr var(--cert-sello) 1fr;
-  align-items: center;
-  width: 100%;
-  height: calc(var(--cert-sello) / 2 + 0.6cqw);
-  flex-shrink: 0;
-}
-.cert-parcial { display: flex; align-items: center; gap: 1.1cqw; min-width: 0; }
-.cert-parcial--i { grid-column: 1; justify-content: flex-end; padding-right: 1.6cqw; text-align: right; }
-.cert-parcial--d { grid-column: 3; justify-content: flex-start; padding-left: 1.6cqw; text-align: left; }
-.cert-parcial span {
-  font: 600 0.92cqw/1.35 var(--font-display);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--cert-gris);
-}
-.cert-parcial strong { font: 600 2.8cqw/1 var(--cert-serif); color: var(--cert-noche); }
-/* Un trazo que lleva cada parcial hasta el sello. */
-.cert-parcial::before,
-.cert-parcial::after {
-  flex: 0 0 2.6cqw;
-  height: 0.1cqw;
-  background: color-mix(in srgb, var(--cert-tono) 55%, transparent);
-}
-.cert-parcial--i::after,
-.cert-parcial--d::before { content: ""; }
-
-/* ── La franja ─────────────────────────────────────────────────────────── */
-
-.cert-franja {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr var(--cert-sello) 1fr;
-  align-items: center;
-  padding: 0 3.6cqw;
-  color: #f6f1e4;
-  background:
-    radial-gradient(46% 190% at 50% -10%, color-mix(in srgb, var(--cert-acento) 34%, transparent), transparent 72%),
-    /* Una trama fina en diagonal, como el papel de seguridad. */
-    repeating-linear-gradient(115deg, transparent 0 0.55cqw, rgba(255, 255, 255, 0.028) 0.55cqw 0.65cqw),
-    linear-gradient(180deg, #10223f 0%, var(--cert-noche) 100%);
-}
-.cert-franja::before {
+/* Un canto de luz arriba, como el borde de una tarjeta de metal. */
+.dp-hoja::after {
   content: "";
   position: absolute;
   top: 0;
-  right: 0;
-  left: 0;
+  right: 12%;
+  left: 12%;
   height: 0.22cqw;
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--cert-acento) 35%, transparent),
-    var(--cert-acento) 50%,
-    color-mix(in srgb, var(--cert-acento) 35%, transparent));
+  background: linear-gradient(90deg, transparent, var(--dp-acento), transparent);
+  pointer-events: none;
 }
 
-.cert-datos { display: flex; gap: 3.4cqw; min-width: 0; }
-.cert-dato { display: flex; flex-direction: column; gap: 0.5cqw; min-width: 0; }
-.cert-dato span {
-  font: 600 0.9cqw/1 var(--font-display);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(246, 241, 228, 0.6);
-}
-.cert-dato strong { font: 600 1.45cqw/1.15 var(--cert-serif); color: #f6f1e4; }
-
-.cert-verif { grid-column: 3; align-items: flex-end; text-align: right; }
-.cert-dato .cert-codigo {
-  font: 700 1.7cqw/1 ui-monospace, "SFMono-Regular", Consolas, monospace;
-  letter-spacing: 0.2em;
-  /* El espaciado añade un hueco tras la última letra: se compensa para que
-     el código quede alineado a la derecha con las otras dos líneas. */
-  margin-right: -0.2em;
-  color: var(--cert-acento);
-}
-.cert-dato .cert-url {
-  font: 500 0.92cqw/1.2 var(--font-display);
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: rgba(246, 241, 228, 0.72);
-  word-break: break-all;
-}
-
-/* ── El sello ──────────────────────────────────────────────────────────── */
-
-.cert-sello {
-  position: absolute;
-  z-index: 2;
-  bottom: calc(var(--cert-franja) - var(--cert-sello) / 2);
-  left: 50%;
-  width: var(--cert-sello);
-  height: var(--cert-sello);
-  transform: translateX(-50%);
-  filter: drop-shadow(0 0.5cqw 0.9cqw rgba(4, 10, 22, 0.42));
-}
-.cert-sello-luz { stop-color: color-mix(in srgb, var(--cert-acento) 55%, #fff); }
-.cert-sello-medio { stop-color: var(--cert-acento); }
-.cert-sello-sombra { stop-color: color-mix(in srgb, var(--cert-acento) 62%, #0a1628); }
-.cert-sello-filete { fill: none; stroke: rgba(10, 22, 40, 0.34); stroke-width: 0.7; }
-/* Sobre el color del curso el texto es siempre oscuro, nunca blanco (CURSOS.md). */
-.cert-sello-leyenda {
-  font: 700 8.6px var(--font-display);
-  fill: #0a1628;
-}
-.cert-sello-disco { fill: #0a1628; stroke: rgba(10, 22, 40, 0.5); stroke-width: 1; }
-.cert-sello-aro { fill: none; stroke: color-mix(in srgb, var(--cert-acento) 70%, transparent); stroke-width: 0.6; }
-.cert-sello-etiqueta {
-  font: 700 7.2px var(--font-display);
-  letter-spacing: 0.24em;
-  fill: rgba(246, 241, 228, 0.72);
-}
-.cert-sello-nota {
-  font: 700 47px var(--cert-serif);
-  letter-spacing: -0.02em;
-  fill: color-mix(in srgb, var(--cert-acento) 82%, #fff);
-}
-
-/* Muestra: lleva una marca de agua que deja claro que no es de nadie. */
-.cert--muestra .cert-papel > .cert-cuerpo::after {
-  content: "Muestra";
+/* Los arcos: anillos finos detrás de la placa. */
+.dp-arcos {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-16deg);
-  font: 700 11cqw/1 var(--cert-serif);
-  letter-spacing: 0.14em;
+  right: -18cqw;
+  width: 74cqw;
+  height: 74cqw;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: var(--dp-acento);
+  stroke-width: 0.5;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+/* ── El texto ──────────────────────────────────────────────────────────── */
+
+.dp-texto {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dp-cab { display: flex; align-items: center; gap: 1.5cqw; min-width: 0; }
+.dp-marca { flex-shrink: 0; font: 800 1.55cqw/1 var(--font-display); letter-spacing: -0.01em; color: var(--dp-marfil); white-space: nowrap; }
+.dp-tipo {
+  display: flex;
+  align-items: center;
+  gap: 1.5cqw;
+  min-width: 0;
+  font: 700 0.98cqw/1 var(--font-display);
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--cert-tono) 13%, transparent);
+  color: var(--dp-claro);
+  white-space: nowrap;
+}
+.dp-tipo::before { content: ""; flex-shrink: 0; width: 0.12cqw; height: 1.8cqw; background: var(--dp-linea); }
+
+.dp-centro { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.dp-rotulo {
+  margin: 0;
+  font: 600 0.98cqw/1.3 var(--font-display);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--dp-suave);
+}
+.dp-nombre {
+  margin: 1cqw 0 0;
+  max-width: 100%;
+  font: 600 var(--dp-cuerpo-nombre, 6.8cqw) / 1.05 var(--dp-serif);
+  letter-spacing: -0.02em;
+  color: #fffaf0;
+  overflow-wrap: break-word;
+}
+.dp-raya {
+  display: block;
+  width: 9cqw;
+  height: 0.28cqw;
+  margin: 2cqw 0 2cqw;
+  border-radius: 99cqw;
+  background: linear-gradient(90deg, var(--dp-acento), color-mix(in srgb, var(--dp-acento) 20%, transparent));
+}
+.dp-curso {
+  margin: 0.9cqw 0 0;
+  max-width: 100%;
+  font: italic 600 var(--dp-cuerpo-curso, 3cqw) / 1.16 var(--dp-serif);
+  letter-spacing: -0.01em;
+  color: var(--dp-claro);
+  overflow-wrap: break-word;
+}
+.dp-logro {
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqw;
+  margin: 2cqw 0 0;
+  padding: 0.75cqw 1.5cqw;
+  border: 0.1cqw solid var(--dp-linea);
+  border-radius: 99cqw;
+  background: color-mix(in srgb, var(--dp-acento) 10%, transparent);
+  white-space: nowrap;
+}
+.dp-logro span { font: 700 0.86cqw/1 var(--font-display); letter-spacing: 0.24em; text-transform: uppercase; color: var(--dp-suave); }
+.dp-logro strong { font: 700 1.3cqw/1 var(--font-display); color: var(--dp-marfil); }
+
+/* El pie: cuándo, quién y cómo se comprueba. */
+.dp-pie {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 3.4cqw;
+  row-gap: 1.2cqw;
+  padding-top: 1.9cqw;
+  border-top: 0.1cqw solid rgba(247, 242, 230, 0.14);
+  min-width: 0;
+}
+.dp-dato { display: flex; flex-direction: column; gap: 0.6cqw; min-width: 0; }
+.dp-dato span { font: 700 0.84cqw/1 var(--font-display); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dp-tenue); white-space: nowrap; }
+.dp-dato strong { font: 600 1.3cqw/1.1 var(--font-display); color: var(--dp-marfil); white-space: nowrap; }
+.dp-dato--codigo strong { font: 700 1.5cqw/1 ui-monospace, "SFMono-Regular", Consolas, monospace; letter-spacing: 0.16em; color: var(--dp-claro); }
+.dp-url { grid-column: 1 / -1; margin: 0; font: 500 0.9cqw/1.2 var(--font-display); color: var(--dp-tenue); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ── La placa ──────────────────────────────────────────────────────────── */
+
+.dp-placa {
+  position: relative;
+  z-index: 1;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.6cqw;
+  min-width: 0;
+  padding: 3cqw 2.2cqw 2.2cqw;
+  border: 0.1cqw solid var(--dp-linea);
+  border-radius: 2cqw;
+  background:
+    linear-gradient(170deg, color-mix(in srgb, var(--dp-acento) 13%, rgba(10, 22, 40, 0.86)), rgba(7, 15, 30, 0.9));
+  box-shadow: 0 2.4cqw 5cqw -2.4cqw rgba(0, 0, 0, 0.8), inset 0 0.1cqw 0 rgba(255, 255, 255, 0.06);
+}
+
+.dp-anillo { position: relative; width: 18.5cqw; height: 18.5cqw; flex-shrink: 0; }
+.dp-anillo svg { display: block; width: 100%; height: 100%; transform: rotate(-90deg); }
+.dp-anillo-pista { fill: none; stroke: rgba(247, 242, 230, 0.09); stroke-width: 6; }
+.dp-anillo-relleno { fill: none; stroke: var(--dp-acento); stroke-width: 6; stroke-linecap: round; }
+.dp-anillo-centro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5cqw;
+  text-align: center;
+}
+.dp-anillo-centro span { font: 700 0.82cqw/1 var(--font-display); letter-spacing: 0.22em; text-transform: uppercase; color: var(--dp-suave); }
+.dp-anillo-centro strong { font: 600 5.6cqw/0.95 var(--dp-serif); letter-spacing: -0.03em; color: #fffaf0; }
+
+.dp-parciales { display: flex; flex-direction: column; width: 100%; min-width: 0; }
+.dp-parcial {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1cqw;
+  padding: 1.15cqw 0.2cqw;
+  border-top: 0.1cqw solid rgba(247, 242, 230, 0.12);
+  min-width: 0;
+}
+.dp-parcial span { display: flex; flex-direction: column; gap: 0.4cqw; min-width: 0; font: 600 1.02cqw/1.15 var(--font-display); color: var(--dp-marfil); }
+.dp-parcial i { font: 500 0.82cqw/1 var(--font-display); font-style: normal; color: var(--dp-tenue); }
+.dp-parcial strong { flex-shrink: 0; font: 600 2.2cqw/1 var(--dp-serif); color: var(--dp-claro); }
+
+/* Muestra: lleva una marca de agua que deja claro que no es de nadie. */
+.dp--muestra .dp-texto::after {
+  content: "Muestra";
+  position: absolute;
+  top: 46%;
+  left: 46%;
+  transform: translate(-50%, -50%) rotate(-14deg);
+  font: 800 10cqw/1 var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(247, 242, 230, 0.07);
   pointer-events: none;
   white-space: nowrap;
 }
-.cert--muestra .cert-cuerpo { position: relative; }
 
 /* ── Impresión: solo el certificado, en A4 apaisado ────────────────────── */
 
 @media print {
   @page { size: A4 landscape; margin: 0; }
   body * { visibility: hidden !important; }
-  .cert, .cert * { visibility: visible !important; }
-  .cert {
+  .dp, .dp * { visibility: visible !important; }
+  .dp {
     position: fixed;
     inset: 0;
     max-width: none;
@@ -367,5 +269,4 @@
     border-radius: 0;
     box-shadow: none;
   }
-  .cert-sello { filter: none; }
 }

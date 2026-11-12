@@ -488,12 +488,12 @@
   filter: blur(60px);
   opacity: 0.55;
 }
-.cf-cert-muestra .cert {
+.cf-cert-muestra .dp {
   transform: rotateY(-8deg) rotateX(3deg) rotate(1.5deg);
   transition: transform 0.6s ease;
   animation: cf-flotar 6s ease-in-out infinite;
 }
-.cf-cert-muestra:hover .cert { transform: none; animation-play-state: paused; }
+.cf-cert-muestra:hover .dp { transform: none; animation-play-state: paused; }
 @keyframes cf-flotar {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 -8px; }
@@ -546,5 +546,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .cf-btn, .cf-objetivos li, .cf-mod-flecha, .cf .cur-paso { transition: none; }
-  .cf-cert-muestra .cert { animation: none; }
+  .cf-cert-muestra .dp { animation: none; }
 }

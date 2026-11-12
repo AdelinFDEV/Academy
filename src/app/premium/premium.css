@@ -217,7 +217,7 @@
   width: 74%;
   transform: rotate(-2deg);
 }
-.pm-carta-cert .cert { box-shadow: 0 40px 70px -24px rgba(0, 0, 0, 0.85), 0 0 60px -20px rgba(230, 180, 85, 0.5); }
+.pm-carta-cert .dp { box-shadow: 0 40px 70px -24px rgba(0, 0, 0, 0.85), 0 0 60px -20px rgba(230, 180, 85, 0.5); }
 
 /* ── Franja de lo incluido ── */
 .pm-franja {
@@ -336,7 +336,7 @@
 }
 .pm-cert-marco { transform: rotate(-2deg); transition: transform 0.5s ease; }
 .pm-cert-marco:hover { transform: rotate(0) scale(1.02); }
-.pm-cert-marco .cert { box-shadow: 0 40px 70px -24px rgba(0, 0, 0, 0.85), 0 0 70px -20px rgba(230, 180, 85, 0.5); }
+.pm-cert-marco .dp { box-shadow: 0 40px 70px -24px rgba(0, 0, 0, 0.85), 0 0 70px -20px rgba(230, 180, 85, 0.5); }
 
 /* ── Miembro Fundador ── */
 .pm-fundador {

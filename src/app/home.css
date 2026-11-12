@@ -1753,7 +1753,7 @@
 /* La sombra va en el propio certificado (box-shadow) y no como `filter` en el
    contenedor: un filtro encima del destello obliga a Safari (iPhone) a
    recalcularlo en cada fotograma, y el destello iba a tirones. */
-.hs-cc-cert .cert {
+.hs-cc-cert .dp {
   box-shadow: 0 40px 60px -20px rgba(0, 0, 0, 0.7), 0 0 50px -10px color-mix(in srgb, var(--tool-color) 40%, transparent);
 }
 .hs-diapo.is-activa .hs-cc-cert { animation: hs-cc-entrar 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s both; }
