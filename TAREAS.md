@@ -136,14 +136,14 @@ Lo esencial (06-11-2026): **leer es de todos y participar es solo de Premium**, 
 
 **Por qué interesa:** es el único contenido que **crece sin que nadie lo escriba**, y cada pregunta bien titulada es una URL que responde a una búsqueda real (`QAPage`).
 
-En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (§0 de `FORO.md`: **nada se revisa antes de publicar**, el filtro rechaza en el acto, réplicas de un nivel) y se reforzó la seguridad: el navegador no lee ni escribe ninguna tabla del foro, y todo pasa por `src/lib/foro/`. Las fases 0 a 3 y la 5 (imágenes, probada contra Storage) están hechas: el esquema (`scripts/create-foro.sql`) y las funciones (`scripts/create-foro-funciones.sql`) están ejecutados y, con la clave anónima, no se lee ni se escribe ninguna tabla ni se llama a ninguna función (comprobado el 12-11-2026).
+En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (§0 de `FORO.md`: **nada se revisa antes de publicar**, el filtro rechaza en el acto, réplicas de un nivel) y se reforzó la seguridad: el navegador no lee ni escribe ninguna tabla del foro, y todo pasa por `src/lib/foro/`. Las fases 0 a 3 y la 5 (imágenes, probada contra Storage) están hechas, y los cuatro SQL del foro están ejecutados y comprobados en Supabase: el esquema (`scripts/create-foro.sql`) y las funciones (`scripts/create-foro-funciones.sql`) están ejecutados y, con la clave anónima, no se lee ni se escribe ninguna tabla ni se llama a ninguna función (comprobado el 12-11-2026).
 
 - [ ] **Fase 4 — API:** escrita (`src/lib/foro/` y `/api/foro/*`), con el filtro de texto probado (77 casos) y las rutas probadas sin sesión. **Falta probarla con sesiones de verdad**: gratuito, Premium, suspendido, 2FA a medias y campos de más. Necesita cuentas de prueba en Supabase, que hay que crear con permiso del admin y borrar después.
 - [ ] **Casos de dos peticiones a la vez** del §9.4 de `FORO.md` (50 me gusta simultáneos, dos eligiendo ganadora): con esas mismas cuentas de prueba, contra la API.
-- [ ] **Ejecutar `scripts/create-foro-mantenimiento.sql`** (el admin lo tiene entero en el chat del 12-11-2026): el mantenimiento diario, la edición por el admin y salir del ranking. Probado con 45 casos en el Postgres de pruebas.
 - [ ] **Fase 6 — Moderación:** `/admin/foro` y sus rutas están escritos. **Falta que el admin lo use con su sesión** (con la verificación en dos pasos pasada).
 - [ ] **Fases 7 y 8:** la base de datos y el servidor están hechos (avisos, puntos, recálculo diario, ranking, logros derivados). **Faltan sus pantallas** (campana, lista de avisos, ranking), que van con el diseño.
-- [ ] **Fases 9 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: romperlo, legal, diseño, SEO, beta cerrada y apertura.
+- [ ] **Fase 11 — Diseño, en marcha:** están las páginas de lectura (`/foro`, la de categoría y la del hilo). **Falta todo lo de participar**: preguntar con imágenes, responder y replicar, me gusta, etiquetas, ganadora, reportar, aceptar las normas, el ranking, la campana de avisos, «lo mío» en el dashboard y la invitación a Premium de cada botón. Nadie ha visto aún las páginas pintadas: con el foro cerrado solo las ve el admin con su sesión.
+- [ ] **Fases 9, 10 y 12 a 14**: romperlo (pendiente de cuentas de prueba), legal (las normas de la comunidad y los cambios en términos y privacidad), SEO, beta cerrada y apertura.
 - [ ] **D15**, antes de la fase 6: si se reconoce a un expulsado que vuelve con otra cuenta (final de `FORO.md`).
 
 ---

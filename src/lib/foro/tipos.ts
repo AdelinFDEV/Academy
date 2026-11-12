@@ -140,3 +140,74 @@ export type RankingForo = {
   ganadoras: FilaRanking[];
   gracias: FilaRanking[];
 };
+
+// ── Lo público: el listado y el hilo ────────────────────────────────────────
+
+export type CategoriaForo = { slug: string; nombre: string; descripcion: string; hilos: number };
+
+/** Una pregunta en el listado. */
+export type HiloEnListado = {
+  id: number;
+  slug: string;
+  titulo: string;
+  categoria: { slug: string; nombre: string };
+  autor: AutorForo;
+  fecha: string;
+  ultimaActividad: string;
+  respuestas: number;
+  /** Tiene respuesta ganadora. */
+  resuelto: boolean;
+  fijado: boolean;
+  yoTambien: number;
+};
+
+export type ListadoForo = {
+  categorias: CategoriaForo[];
+  /** La categoría que se está viendo, o null si son todas. */
+  categoria: CategoriaForo | null;
+  hilos: HiloEnListado[];
+  pagina: number;
+  paginas: number;
+  total: number;
+};
+
+/** Una respuesta o una réplica, tal como se pinta. */
+export type MensajeForo = {
+  id: string;
+  texto: string;
+  fecha: string;
+  editado: boolean;
+  editadoPorModeracion: boolean;
+  autor: AutorForo;
+  meGusta: number;
+  esGanadora: boolean;
+  /** En una réplica que contesta a otra: el alias de a quién. */
+  citado: string | null;
+  /** Solo en las respuestas: sus réplicas, por orden de llegada. */
+  replicas: MensajeForo[];
+};
+
+export type ImagenForo = { url: string; ancho: number; alto: number };
+
+export type HiloForo = {
+  id: number;
+  slug: string;
+  titulo: string;
+  texto: string;
+  categoria: { slug: string; nombre: string };
+  autor: AutorForo;
+  fecha: string;
+  editado: boolean;
+  editadoPorModeracion: boolean;
+  /** Resuelto o cerrado por el admin: no admite más respuestas. */
+  cerrado: boolean;
+  fijado: boolean;
+  etiquetas: { interesante: number; gracias: number; yoTambien: number };
+  imagenes: ImagenForo[];
+  /** Ordenadas ya: la ganadora primero (FORO.md §9.1). */
+  respuestas: MensajeForo[];
+  /** Cuántas respuestas publicadas hay (sin contar réplicas). */
+  totalRespuestas: number;
+  /** Si Google puede indexarlo (FORO.md §12). */
+  indexable: boolean;
+};

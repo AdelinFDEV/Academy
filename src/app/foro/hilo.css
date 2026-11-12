@@ -1,0 +1,223 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   EL FORO — un hilo (/foro/<id>-<titulo>)
+   ══════════════════════════════════════════════════════════════════════════
+
+   Lo importa `src/components/foro/HiloCompleto.tsx`. Prefijo: fh-.
+
+   La pregunta manda: va sin caja, como el arranque de un artículo. Las
+   respuestas son una lista separada por líneas, y las réplicas cuelgan de la
+   suya con una sola sangría (el hilo tiene un nivel, FORO.md §2). El verde se
+   reserva para una cosa: la respuesta elegida. */
+
+.fh-main { max-width: 780px; }
+
+/* ── La pregunta ───────────────────────────────────────────────────────── */
+
+.fh-pregunta { margin-bottom: 2.6rem; }
+
+.fh-sellos {
+  display: flex;
+  gap: 0.4rem;
+  min-height: 0;
+  margin-bottom: 0.7rem;
+}
+
+.fh-sellos:empty { display: none; }
+
+.fh-titulo {
+  margin-bottom: 1.1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.fh-texto-pregunta {
+  margin-top: 1.5rem;
+  font-size: 1.06rem;
+  color: var(--text-primary);
+}
+
+.fh-imagenes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.7rem;
+  margin-top: 1.5rem;
+  list-style: none;
+}
+
+.fh-imagenes a {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.fh-imagenes a:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.fh-imagenes img {
+  display: block;
+  width: 100%;
+  height: 9rem;
+  object-fit: cover;
+}
+
+.fh-pie-pregunta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem 1.2rem;
+  margin-top: 1.6rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.fh-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.3rem;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.fh-etiquetas b {
+  margin-right: 0.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.fh-marca {
+  font-size: 0.74rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* ── Las respuestas ────────────────────────────────────────────────────── */
+
+.fh-respuestas-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.fh-respuestas-cab h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.fh-orden {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+}
+
+.fh-orden a { color: var(--text-muted); text-decoration: none; }
+.fh-orden a:hover { color: var(--text-primary); }
+.fh-orden a.is-activo { color: var(--text-primary); font-weight: 600; }
+
+.fh-lista { list-style: none; }
+
+.fh-respuesta {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--hairline);
+  /* Al llegar por un aviso (#r-…), que la barra fija no tape el mensaje. */
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.fh-respuesta .fo-texto { margin-top: 0.9rem; }
+
+/* La elegida: una raya verde a la izquierda y su rótulo. Sin fondo de color:
+   tiene que leerse igual de bien que las demás. */
+.fh-respuesta.is-ganadora {
+  margin-left: -1.1rem;
+  padding-left: 1.1rem;
+  border-left: 3px solid var(--free-green);
+}
+
+.fh-ganadora {
+  margin-bottom: 0.8rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--free-green);
+}
+
+.fh-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  margin-top: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.fh-pie:empty { display: none; }
+
+.fh-megusta b {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Las réplicas: un solo nivel ───────────────────────────────────────── */
+
+.fh-replicas {
+  margin-top: 1.2rem;
+  padding-left: 1.2rem;
+  border-left: 1px solid var(--hairline);
+  list-style: none;
+}
+
+.fh-replica {
+  padding: 0.85rem 0;
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.fh-replica + .fh-replica { border-top: 1px solid var(--hairline); }
+.fh-replica .fo-texto { margin-top: 0.5rem; font-size: 0.93rem; line-height: 1.6; }
+.fh-replica .fh-pie { margin-top: 0.5rem; }
+
+.fh-cita {
+  margin-top: 0.45rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+/* ── Cierre ────────────────────────────────────────────────────────────── */
+
+.fh-cerrado {
+  margin-top: 1.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.fh-opiniones {
+  margin: 2.6rem 0 1.2rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+@media (max-width: 600px) {
+  .fh-respuesta.is-ganadora { margin-left: -0.8rem; padding-left: 0.8rem; }
+  .fh-replicas { padding-left: 0.8rem; }
+  .fh-imagenes { grid-template-columns: repeat(2, 1fr); }
+}

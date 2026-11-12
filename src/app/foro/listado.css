@@ -1,0 +1,131 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   EL FORO — el listado de preguntas (/foro y /foro/<categoria>)
+   ══════════════════════════════════════════════════════════════════════════
+
+   Lo importa `src/components/foro/ListadoHilos.tsx`. Prefijo: fl- (y las
+   categorías, fo-categoria, que solo salen aquí).
+
+   Una lista, no una rejilla de tarjetas: el título de cada pregunta es lo que
+   se lee, y todo lo demás va en pequeño debajo. */
+
+/* ── Categorías ────────────────────────────────────────────────────────── */
+
+.fo-categorias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.8rem;
+}
+
+.fo-categoria {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.fo-categoria:hover { border-color: rgba(240, 244, 255, 0.28); color: var(--text-primary); }
+.fo-categoria:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.fo-categoria.is-activa {
+  border-color: var(--accent-orange);
+  background: var(--accent-orange-light);
+  color: var(--text-primary);
+}
+
+.fo-categoria-cuenta {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── La lista ──────────────────────────────────────────────────────────── */
+
+.fl-lista {
+  list-style: none;
+  border-top: 1px solid var(--hairline);
+}
+
+.fl-hilo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.fl-cuerpo { min-width: 0; }
+
+.fl-titulo {
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.fl-titulo a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.fl-titulo a:hover { color: var(--accent-orange-soft); }
+.fl-titulo a:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; border-radius: 4px; }
+
+.fl-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.fl-categoria {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.fl-categoria:hover { color: var(--text-primary); text-decoration: underline; }
+
+.fl-cifras {
+  flex: none;
+  display: flex;
+  gap: 1.4rem;
+  text-align: right;
+}
+
+/* La cifra arriba y su nombre debajo: en el HTML van al revés (dt antes que
+   dd), que es como se lee en voz alta. */
+.fl-cifras div { display: flex; flex-direction: column-reverse; }
+
+.fl-cifras dd {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.fl-cifras dt {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .fl-hilo { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+  .fl-cifras { text-align: left; }
+  .fl-cifras div { flex-direction: row-reverse; align-items: baseline; gap: 0.35rem; }
+  .fl-cifras dd { font-size: 0.9rem; }
+}

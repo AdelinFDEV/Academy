@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { bd } from "./bd";
 
@@ -35,6 +36,17 @@ export async function sesion(): Promise<Sesion> {
   if (aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") return { ok: false, error: "falta_2fa" };
 
   return { ok: true, usuarioId: user.id };
+}
+
+/**
+ * Quién MIRA una página, sin exigirle nada: el id de su sesión, o null. Para
+ * decidir si el foro existe para él y qué botones enseñarle. No sirve para
+ * autorizar ninguna acción: eso es `sesion()` y lo que comprueba cada función.
+ */
+export async function quienMira(): Promise<string | null> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
 }
 
 /**
@@ -87,3 +99,18 @@ export async function accesoAlForo(usuarioId: string | null): Promise<{ visible:
   // Cerrado = solo el admin lo ve. Para los demás, el foro no existe (404).
   return { visible: modo !== "cerrado" || esAdmin, modo, esAdmin };
 }
+
+/**
+ * Lo que necesita saber cualquier página del foro antes de pintar nada: quién
+ * mira y si el foro existe para él. `cache()` de React hace que el layout y
+ * la página compartan la misma respuesta dentro de una petición.
+ *
+ * Con el foro en modo `cerrado`, `visible` es false para todos menos el admin
+ * y la página tiene que responder 404: no «acceso denegado», sino que no hay
+ * nada (FORO.md §16).
+ */
+export const entradaAlForo = cache(async () => {
+  const usuarioId = await quienMira();
+  const acceso = await accesoAlForo(usuarioId);
+  return { usuarioId, ...acceso };
+});
