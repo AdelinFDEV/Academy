@@ -566,7 +566,7 @@ Cada fase deja algo comprobado y no empieza hasta que la anterior cumple su crit
 |---|---|---|---|
 | 0 | **Decisiones** | Cerrar las decisiones pendientes | ✅ Cerradas el 12-11-2026, en el §0 |
 | 1 | **Perfil público** | Alias, foto, reglas del alias | ✅ Hecho, con `scripts/create-perfil-publico.sql` ejecutado (comprobado en Supabase el 12-11-2026) |
-| 2 | **Esquema** | Tablas, estados, `check`, únicos, índices, RLS sin policies y `revoke` a `anon` y `authenticated`. Un solo SQL, idempotente (`scripts/create-foro.sql`) | Desde el navegador no se puede leer ni escribir nada, comprobado con la clave anónima y con un token |
+| 2 | **Esquema** | Tablas, estados, `check`, únicos, índices, RLS sin policies y `revoke` a `anon` y `authenticated`. Un solo SQL, idempotente (`scripts/create-foro.sql`) | ✅ Hecho el 12-11-2026. Con la clave anónima: las 16 tablas rechazan leer y escribir (42501) y ninguna función se puede llamar. Con el token de un usuario se prueba en la fase 9; sus permisos son los mismos, y lo confirma la consulta final del SQL |
 | 3 | **Funciones atómicas** | Las del §6.3, el libro de puntos y los límites del §6.5, en Postgres | Las pruebas de concurrencia del §9.4 en verde contra una base de prueba |
 | 4 | **API** | `/api/foro/*` con las comprobaciones del §6.2, normalización, detectores y filtro de palabras, y las reglas del §6.0 en `npm run check` | Cada ruta rechaza cada caso de «Permisos» y «Contenido» del §15 |
 | 5 | **Imágenes** | Subida firmada, comprobación, recodificado, buckets y limpieza (§6.6) | Los casos de «Imágenes» del §15 en verde |
