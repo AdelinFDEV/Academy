@@ -46,7 +46,9 @@ export default function ListadoHilos({
 
         <div className="fl-barra">
           <Link href="/foro/preguntar" className="fp-btn fp-btn--firme">Hacer una pregunta</Link>
-          <Link href="/foro/normas" className="fl-enlace">Normas del foro</Link>
+          <Link href="/foro/ranking" className="fl-enlace">Ranking</Link>
+          <Link href="/foro/normas" className="fl-enlace">Normas</Link>
+          {conSesion && <Link href="/foro/mio" className="fl-enlace">Lo mío</Link>}
         </div>
 
         <nav className="fo-categorias" aria-label="Categorías del foro">

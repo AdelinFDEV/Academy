@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { pedirForo } from "@/components/foro/pedir";
-import { MOTIVOS_REPORTE, type MotivoReporteId } from "@/lib/foro/limites";
+import { LIMITES, MOTIVOS_REPORTE, type MotivoReporteId } from "@/lib/foro/limites";
 import { useHilo } from "./ContextoHilo";
 import Invitacion from "./Invitacion";
 import Responder from "./Responder";
 
-type Panel = null | "replicar" | "reportar" | "borrar" | "ganadora" | "invitar";
+type Panel = null | "replicar" | "reportar" | "borrar" | "ganadora" | "invitar" | "editar";
 
 /**
  * Lo que se puede hacer con un mensaje del hilo, debajo de él: replicar,
@@ -23,6 +23,9 @@ export default function AccionesMensaje({
   esRespuesta,
   esGanadora,
   hiloCerrado,
+  texto,
+  titulo,
+  fecha,
 }: {
   /** Sin id, las acciones son sobre la PREGUNTA (reportarla o borrarla). */
   respuestaId?: string;
@@ -30,6 +33,11 @@ export default function AccionesMensaje({
   esRespuesta?: boolean;
   esGanadora?: boolean;
   hiloCerrado: boolean;
+  /** El texto y la fecha del mensaje, para poder editarlo si es propio y reciente. */
+  texto: string;
+  /** Solo en la pregunta. */
+  titulo?: string;
+  fecha: string;
 }) {
   const router = useRouter();
   const { preguntaId, mio, cambiar } = useHilo();
@@ -39,6 +47,8 @@ export default function AccionesMensaje({
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
   const [hecho, setHecho] = useState("");
+  const [nuevoTexto, setNuevoTexto] = useState(texto);
+  const [nuevoTitulo, setNuevoTitulo] = useState(titulo ?? "");
 
   if (!mio) return null;
 
@@ -46,6 +56,8 @@ export default function AccionesMensaje({
   const esMio = respuestaId ? mio.mios.includes(respuestaId) : mio.esAutorDeLaPregunta;
   const yaReportado = mio.reportados.includes(clave);
   const destino = { pregunta: preguntaId, ...(respuestaId ? { respuesta: respuestaId } : {}) };
+  // Solo decide si se ENSEÑA el botón: el plazo de verdad lo cuenta la base de datos.
+  const editable = esMio && !esGanadora && Date.now() - new Date(fecha).getTime() < LIMITES.minutosParaEditar * 60 * 1000;
 
   /** Abre un panel, o la invitación si no puede participar. */
   const abrir = (cual: Exclude<Panel, null | "invitar">) => {
@@ -53,6 +65,17 @@ export default function AccionesMensaje({
     setHecho("");
     setPanel(panel === cual ? null : mio.puede || cual === "borrar" ? cual : "invitar");
   };
+
+  const guardarEdicion = () =>
+    enviar(
+      "/api/foro/editar",
+      {
+        ...destino,
+        cuerpo: nuevoTexto,
+        ...(respuestaId ? (esRespuesta ? {} : { esReplica: true }) : { titulo: nuevoTitulo }),
+      },
+      () => router.refresh(),
+    );
 
   async function enviar(ruta: string, cuerpo: Record<string, unknown>, despues: () => void) {
     setEnviando(true);
@@ -96,6 +119,15 @@ export default function AccionesMensaje({
             {yaReportado ? "Reportado" : "Reportar"}
           </button>
         )}
+        {editable && (
+          <button
+            type="button"
+            className="fp-accion"
+            onClick={() => { setNuevoTexto(texto); setNuevoTitulo(titulo ?? ""); abrir("editar"); }}
+          >
+            Editar
+          </button>
+        )}
         {esMio && !esGanadora && (
           <button type="button" className="fp-accion" onClick={() => abrir("borrar")}>Borrar</button>
         )}
@@ -104,6 +136,32 @@ export default function AccionesMensaje({
       {panel === "invitar" && <Invitacion motivo={mio.motivo} onCerrar={() => setPanel(null)} />}
 
       {panel === "replicar" && respuestaId && <Responder a={respuestaId} alTerminar={() => setPanel(null)} />}
+
+      {panel === "editar" && (
+        <div className="fp-panel">
+          {!respuestaId && (
+            <label className="fp-campo">
+              <span>Título</span>
+              <input type="text" value={nuevoTitulo} onChange={(e) => setNuevoTitulo(e.target.value)} maxLength={LIMITES.titulo.max * 2} />
+            </label>
+          )}
+          <label className="fp-campo">
+            <span>Texto <small>— puedes editarlo durante {LIMITES.minutosParaEditar} minutos desde que lo publicaste</small></span>
+            <textarea value={nuevoTexto} onChange={(e) => setNuevoTexto(e.target.value)} rows={respuestaId ? 5 : 9} maxLength={LIMITES.pregunta.max * 2} />
+          </label>
+          <div className="fp-fila">
+            <button
+              type="button"
+              className="fp-btn fp-btn--firme"
+              disabled={enviando || nuevoTexto.trim() === "" || (nuevoTexto.trim() === texto.trim() && nuevoTitulo.trim() === (titulo ?? "").trim())}
+              onClick={guardarEdicion}
+            >
+              {enviando ? "Guardando…" : "Guardar cambios"}
+            </button>
+            <button type="button" className="fp-btn" disabled={enviando} onClick={() => setPanel(null)}>Cancelar</button>
+          </div>
+        </div>
+      )}
 
       {panel === "ganadora" && (
         <div className="fp-panel">

@@ -36,7 +36,7 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
         <MeGusta respuestaId={r.id} inicial={r.meGusta} />
         {marca && <span className="fh-marca">{marca}</span>}
       </div>
-      <AccionesMensaje respuestaId={r.id} esRespuesta esGanadora={r.esGanadora} hiloCerrado={cerrado} />
+      <AccionesMensaje respuestaId={r.id} esRespuesta esGanadora={r.esGanadora} hiloCerrado={cerrado} texto={r.texto} fecha={r.fecha} />
 
       {r.replicas.length > 0 && (
         <ol className="fh-replicas">
@@ -51,7 +51,7 @@ function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
                   <MeGusta respuestaId={x.id} inicial={x.meGusta} />
                   {marcaReplica && <span className="fh-marca">{marcaReplica}</span>}
                 </div>
-                <AccionesMensaje respuestaId={x.id} hiloCerrado={cerrado} />
+                <AccionesMensaje respuestaId={x.id} hiloCerrado={cerrado} texto={x.texto} fecha={x.fecha} />
               </li>
             );
           })}
@@ -127,7 +127,7 @@ export default function HiloCompleto({
             />
             {marca && <span className="fh-marca">{marca}</span>}
           </footer>
-          <AccionesMensaje hiloCerrado={hilo.cerrado} />
+          <AccionesMensaje hiloCerrado={hilo.cerrado} texto={hilo.texto} titulo={hilo.titulo} fecha={hilo.fecha} />
         </article>
 
         <section className="fh-respuestas" aria-labelledby="fh-respuestas-titulo">

@@ -1,0 +1,129 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   EL FORO — lo mío (/foro/mio)
+   ══════════════════════════════════════════════════════════════════════════
+   Lo importa `src/app/foro/mio/page.tsx`. Prefijo: fm-.
+   Una página personal y de consulta: tres bloques, uno debajo de otro. */
+
+.fm-main { max-width: 760px; }
+
+.fm-seccion {
+  margin-bottom: 2.4rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.fm-seccion h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.fm-seccion .fp-fila--entre h2 { margin-bottom: 0; }
+.fm-seccion .fp-fila--entre { margin-bottom: 0.9rem; }
+
+.fm-cuenta {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--accent-orange-soft);
+}
+
+.fm-vacio { font-size: 0.88rem; color: var(--text-muted); }
+
+/* ── Reputación ────────────────────────────────────────────────────────── */
+
+.fm-cifras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 2rem;
+}
+
+.fm-cifras div { display: flex; flex-direction: column-reverse; }
+
+.fm-cifras dd {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.fm-cifras dt { font-size: 0.72rem; color: var(--text-muted); }
+
+.fm-logros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  list-style: none;
+}
+
+.fm-logros li {
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--premium-gold-soft);
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--premium-gold);
+}
+
+.fm-ranking {
+  margin-top: 1rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+/* ── Avisos y mensajes ─────────────────────────────────────────────────── */
+
+.fm-lista { list-style: none; }
+
+.fm-lista li {
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.fm-lista li:first-child { border-top: 0; padding-top: 0; }
+
+/* Un aviso sin leer: una raya naranja a la izquierda. */
+.fm-lista li.es-nuevo {
+  margin-left: -0.9rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--accent-orange);
+}
+
+.fm-linea {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+.fm-linea a { color: inherit; text-decoration: none; }
+.fm-linea a:hover { color: var(--accent-orange-soft); text-decoration: underline; }
+.fm-linea time { flex: none; font-size: 0.74rem; color: var(--text-muted); white-space: nowrap; }
+
+.fm-lista small {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.fm-clase {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fm-lista small.fm-oculto { color: var(--premium-gold); }

@@ -211,3 +211,37 @@ export type HiloForo = {
   /** Si Google puede indexarlo (FORO.md §12). */
   indexable: boolean;
 };
+
+// ── Lo mío en el foro (/foro/mio) ───────────────────────────────────────────
+
+/** Un mensaje propio, con su estado. Solo lo ve su autor. */
+export type MensajeMio = {
+  preguntaId: number;
+  respuestaId: string | null;
+  clase: "pregunta" | "respuesta" | "replica";
+  /** El título del hilo. */
+  titulo: string;
+  slug: string;
+  /** Las primeras palabras de lo que escribió. */
+  extracto: string;
+  estado: string;
+  /** Si se ocultó o se retiró: el motivo que dio la moderación. */
+  motivo: string;
+  fecha: string;
+};
+
+export type LoMio = {
+  alias: string | null;
+  puntos: number;
+  puntosDelMes: number;
+  nivel: string;
+  ganadoras: number;
+  gracias: number;
+  logros: string[];
+  fueraDelRanking: boolean;
+  /** Sanciones en vigor, con el motivo que ve el sancionado. */
+  sanciones: { tipo: string; hasta: string | null; motivo: string; fecha: string }[];
+  avisos: AvisoForo[];
+  sinLeer: number;
+  mensajes: MensajeMio[];
+};

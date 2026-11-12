@@ -1,9 +1,9 @@
 import "server-only";
 import { bd } from "../bd";
-import { ETIQUETA_IDS, type EtiquetaId } from "../limites";
+import { ETIQUETA_IDS, logrosDelForo, nivelDe, type EtiquetaId } from "../limites";
 import type { ResultadoAccion } from "../peticion";
 import { accesoAlForo, motivoParaNoParticipar } from "../permisos";
-import type { AvisoForo, MioEnHilo } from "../tipos";
+import type { AvisoForo, LoMio, MensajeMio, MioEnHilo } from "../tipos";
 
 /**
  * Lo PERSONAL de quien mira: qué ha hecho en un hilo y sus avisos.
@@ -65,6 +65,11 @@ export async function mioEnHilo(usuarioId: string, parametros: URLSearchParams):
 
 /** Los avisos del usuario, los más recientes primero, y cuántos tiene sin leer. */
 export async function misAvisos(usuarioId: string): Promise<ResultadoAccion> {
+  const { avisos, sinLeer } = await leerAvisos(usuarioId);
+  return { ok: true, datos: { avisos, sinLeer } };
+}
+
+async function leerAvisos(usuarioId: string): Promise<{ avisos: AvisoForo[]; sinLeer: number }> {
   const cliente = bd();
   const { data: filas } = await cliente
     .from("foro_avisos")
@@ -93,5 +98,102 @@ export async function misAvisos(usuarioId: string): Promise<ResultadoAccion> {
       respuestaId: f.respuesta_id ? String(f.respuesta_id) : null,
     };
   });
-  return { ok: true, datos: { avisos, sinLeer: avisos.filter((a) => !a.leido).length } };
+  return { avisos, sinLeer: avisos.filter((a) => !a.leido).length };
+}
+
+const extracto = (texto: unknown) => {
+  const t = String(texto ?? "").replace(/\s+/g, " ").trim();
+  return t.length > 140 ? `${t.slice(0, 140).replace(/\s+\S*$/, "")}…` : t;
+};
+
+/**
+ * Todo lo del usuario en el foro, para su página `/foro/mio`: su reputación,
+ * sus avisos, sus sanciones en vigor y sus mensajes con su estado (también
+ * los ocultos y los retirados, con el motivo: es lo único que ve él y nadie
+ * más). Lo llama la página, con el usuario de la sesión.
+ */
+export async function loMio(usuarioId: string): Promise<LoMio> {
+  const cliente = bd();
+  const ahora = new Date().toISOString();
+  const mesActual = `${ahora.slice(0, 8)}01`;
+
+  const [perfil, reputacion, sancionesFilas, preguntas, respuestas, avisos] = await Promise.all([
+    cliente.from("profiles").select("alias").eq("id", usuarioId).maybeSingle(),
+    cliente.from("foro_reputacion").select("puntos, puntos_mes, mes, ganadoras, gracias, respuestas, fuera_del_ranking").eq("usuario_id", usuarioId).maybeSingle(),
+    cliente.from("foro_sanciones").select("tipo, hasta, motivo, creada_at").eq("usuario_id", usuarioId).is("levantada_at", null).order("creada_at", { ascending: false }).limit(20),
+    cliente.from("foro_preguntas").select("id, slug, titulo, cuerpo, estado, creada_at").eq("autor_id", usuarioId).neq("estado", "borrada").order("creada_at", { ascending: false }).limit(50),
+    cliente.from("foro_respuestas").select("id, pregunta_id, padre_id, cuerpo, estado, creada_at").eq("autor_id", usuarioId).neq("estado", "borrada").order("creada_at", { ascending: false }).limit(50),
+    leerAvisos(usuarioId),
+  ]);
+
+  // Los títulos de los hilos donde ha respondido, y el motivo de lo que tenga oculto.
+  const idsHilos = Array.from(new Set((respuestas.data ?? []).map((r) => Number(r.pregunta_id))));
+  const hayOcultos = [...(preguntas.data ?? []), ...(respuestas.data ?? [])].some((m) => m.estado === "oculta");
+  const [hilos, registro] = await Promise.all([
+    idsHilos.length
+      ? cliente.from("foro_preguntas").select("id, slug, titulo, estado").in("id", idsHilos)
+      : Promise.resolve({ data: [] as { id: number; slug: string; titulo: string; estado: string }[] }),
+    hayOcultos
+      ? cliente.from("foro_moderacion").select("pregunta_id, respuesta_id, motivo, creado_at").eq("usuario_id", usuarioId).in("accion", ["ocultar", "ocultar_auto"]).order("creado_at", { ascending: false }).limit(100)
+      : Promise.resolve({ data: [] as { pregunta_id: number | null; respuesta_id: string | null; motivo: string }[] }),
+  ]);
+  const hiloDe = new Map((hilos.data ?? []).map((h) => [Number(h.id), h]));
+  // El registro viene del más reciente al más antiguo: el primero que aparece manda.
+  const motivoDe = new Map<string, string>();
+  for (const m of registro.data ?? []) {
+    const clave = m.respuesta_id ? `r:${m.respuesta_id}` : `p:${m.pregunta_id}`;
+    if (!motivoDe.has(clave)) motivoDe.set(clave, String(m.motivo ?? ""));
+  }
+
+  const mensajes: MensajeMio[] = [
+    ...(preguntas.data ?? []).map((p): MensajeMio => ({
+      preguntaId: Number(p.id),
+      respuestaId: null,
+      clase: "pregunta",
+      titulo: String(p.titulo),
+      slug: String(p.slug),
+      extracto: extracto(p.cuerpo),
+      estado: String(p.estado),
+      motivo: p.estado === "oculta" ? (motivoDe.get(`p:${p.id}`) ?? "") : "",
+      fecha: String(p.creada_at),
+    })),
+    ...(respuestas.data ?? []).flatMap((r): MensajeMio[] => {
+      const h = hiloDe.get(Number(r.pregunta_id));
+      // Si el hilo ya no se puede ver, tampoco se enlaza desde aquí.
+      if (!h || h.estado !== "publicada") return [];
+      return [{
+        preguntaId: Number(r.pregunta_id),
+        respuestaId: String(r.id),
+        clase: r.padre_id ? "replica" : "respuesta",
+        titulo: String(h.titulo),
+        slug: String(h.slug),
+        extracto: extracto(r.cuerpo),
+        estado: String(r.estado),
+        motivo: r.estado === "oculta" ? (motivoDe.get(`r:${r.id}`) ?? "") : "",
+        fecha: String(r.creada_at),
+      }];
+    }),
+  ].sort((a, b) => b.fecha.localeCompare(a.fecha));
+
+  const rep = reputacion.data;
+  const puntos = Math.max(0, Number(rep?.puntos ?? 0));
+  const ganadoras = Number(rep?.ganadoras ?? 0);
+  const gracias = Number(rep?.gracias ?? 0);
+
+  return {
+    alias: typeof perfil.data?.alias === "string" ? perfil.data.alias : null,
+    puntos,
+    puntosDelMes: rep && String(rep.mes) === mesActual ? Math.max(0, Number(rep.puntos_mes)) : 0,
+    nivel: nivelDe(puntos),
+    ganadoras,
+    gracias,
+    logros: logrosDelForo({ puntos, ganadoras, gracias, respuestas: Number(rep?.respuestas ?? 0) }),
+    fueraDelRanking: Boolean(rep?.fuera_del_ranking),
+    sanciones: (sancionesFilas.data ?? [])
+      .filter((s) => s.tipo === "expulsion" || (s.tipo === "suspension" && typeof s.hasta === "string" && s.hasta > ahora))
+      .map((s) => ({ tipo: String(s.tipo), hasta: typeof s.hasta === "string" ? s.hasta : null, motivo: String(s.motivo), fecha: String(s.creada_at) })),
+    avisos: avisos.avisos,
+    sinLeer: avisos.sinLeer,
+    mensajes,
+  };
 }
