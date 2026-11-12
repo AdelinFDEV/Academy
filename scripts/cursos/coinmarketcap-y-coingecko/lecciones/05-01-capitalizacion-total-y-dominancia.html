@@ -1,0 +1,129 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En la franja superior de las dos webs hay unas cifras que resumen el mercado entero: la capitalización total, el volumen global y la dominancia de bitcoin. Sirven para saber en qué clima te mueves antes de mirar una moneda concreta. Aquí ves cómo se calculan, qué incluyen que no esperarías y qué significa en realidad el índice de «temporada de altcoins».</p>
+</div>
+
+<h2>La franja de arriba</h2>
+
+<p>Hasta ahora has mirado monedas una a una. Encima de la tabla, en una línea pequeña que casi nadie lee, las dos webs dan el resumen de todo el mercado: cuántas criptomonedas siguen, en cuántas plataformas, cuánto valen entre todas, cuánto se ha negociado en 24 horas y qué parte del total es bitcoin.</p>
+
+<p>Son cifras de contexto. No te dicen qué comprar, pero sí en qué mar estás nadando. La mayoría de las monedas se mueve en la misma dirección que el mercado en su conjunto, sobre todo en las caídas. Una moneda que baja un 8 % en un día es una noticia si el mercado está plano y no lo es si todo ha bajado un 8 %.</p>
+
+<h2>La capitalización total</h2>
+
+<p>Es la suma de las capitalizaciones de todas las monedas que cada web tiene listadas y verificadas. Se calcula con la misma lógica que la de una moneda, así que hereda todas sus limitaciones, multiplicadas.</p>
+
+<ol class="prose-pasos">
+  <li><strong>No es dinero invertido.</strong> Es la suma de miles de multiplicaciones de un último precio por una oferta. Lo que viste en la lección 3.4 para una moneda vale para el total.</li>
+  <li><strong>Depende de qué se cuente.</strong> Cada web lista monedas distintas y verifica ofertas distintas. Por eso sus totales no coinciden.</li>
+  <li><strong>Incluye las stablecoins.</strong> Las monedas que valen un dólar forman parte del total, y son de las mayores. Cuando el total sube, parte puede ser simplemente que se han emitido más.</li>
+</ol>
+
+<p>Dicho esto, es la mejor medida disponible del tamaño del mercado, y su gráfico histórico, que las dos webs publican, es de las cosas más instructivas que puedes mirar: enseña los ciclos de subida y de caída de los que oirás hablar como <a href="/glosario/bull-market">bull market</a> y <a href="/glosario/bear-market">bear market</a>.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Cuando una moneda sube, compárala con el total. Si ella sube un 10 % en un mes en el que el mercado entero sube un 30 %, en realidad lo ha hecho peor que la media. Las webs permiten ver el precio de una moneda medido en bitcoin en lugar de en euros o dólares, que es la forma rápida de hacer esa comparación.</div>
+</div>
+
+<h2>La dominancia de bitcoin</h2>
+
+<p>La <a href="/glosario/dominancia-de-bitcoin">dominancia de bitcoin</a> es el porcentaje de la capitalización total que corresponde a bitcoin. Si el mercado entero vale 100 y bitcoin vale 55, la dominancia es del 55 %. CoinMarketCap la define como la capitalización de bitcoin comparada con la de todas las criptomonedas juntas.</p>
+
+<p>Se interpreta como un termómetro del apetito por el riesgo dentro del mercado cripto. Cuando sube, el dinero se concentra en bitcoin; cuando baja, se reparte hacia las <a href="/glosario/altcoin">altcoins</a>. Pero el cálculo tiene una trampa que conviene conocer.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Escenario inventado</th><th>Bitcoin</th><th>Stablecoins</th><th>Resto</th><th>Dominancia</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Punto de partida</td><td>500</td><td>100</td><td>400</td><td>50 %</td></tr>
+    <tr><td>Se emiten 100 más en stablecoins</td><td>500</td><td>200</td><td>400</td><td>45,5 %</td></tr>
+    <tr><td>El resto cae a la mitad</td><td>500</td><td>100</td><td>200</td><td>62,5 %</td></tr>
+  </tbody>
+</table>
+
+<p>En la segunda fila, la dominancia baja casi cinco puntos sin que bitcoin haya perdido nada frente a ninguna altcoin: solo se han emitido más stablecoins, que según la propia web entran en el total. En la tercera, sube doce puntos sin que bitcoin haya subido un céntimo: han caído las demás. <strong>La dominancia se mueve por lo que hace bitcoin y por lo que hacen todas las demás</strong>, y la cifra sola no te dice cuál de las dos cosas ha pasado.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "La dominancia cambia sin que bitcoin se mueva",
+  "subtitulo": "Bitcoin vale 500 en los tres casos. Lo que cambia es el resto.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Punto de partida", "dominancia": 50 },
+    { "etiqueta": "Se emiten más stablecoins", "dominancia": 45.5 },
+    { "etiqueta": "Las altcoins caen a la mitad", "dominancia": 62.5 }
+  ],
+  "series": [{ "clave": "dominancia", "nombre": "Dominancia de bitcoin", "color": "#ff8a7a" }],
+  "nota": "Ejemplo inventado. 500 ÷ 1.000 = 50 %. 500 ÷ 1.100 = 45,5 %. 500 ÷ 800 = 62,5 %."
+}
+</script></div>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">Un cociente</span>
+  <span class="prose-dato-texto">Eso es la dominancia: bitcoin dividido entre todo. Puede subir porque bitcoin sube o porque lo demás cae, y son situaciones opuestas para quien tiene altcoins.</span>
+</div>
+
+<h2>La «temporada de altcoins»</h2>
+
+<p>Habrás leído que «empieza la altseason». CoinMarketCap publica un índice que intenta medirlo, y su definición es mucho más concreta que el uso que se le da en redes.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Temporada de altcoins</p>
+    <p class="prose-vs-sub">Índice alto, cerca de 100</p>
+    <ul>
+      <li data-tono="favor">El 75 % de las 100 primeras ha superado a bitcoin</li>
+      <li data-tono="favor">Medido en los últimos 90 días</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Temporada de bitcoin</p>
+    <p class="prose-vs-sub">Índice bajo, cerca de 1</p>
+    <ul>
+      <li data-tono="contra">El 25 % o menos ha superado a bitcoin</li>
+      <li data-tono="contra">En esos mismos 90 días</li>
+    </ul>
+  </div>
+</div>
+
+<p>El índice va de 1 a 100, se actualiza cada día y se calcula sobre las cien primeras monedas del ranking, excluyendo las stablecoins y los tokens envueltos. Hay tres cosas que se deducen de esa definición y que casi nunca se mencionan:</p>
+
+<ul>
+  <li><strong>Mira hacia atrás.</strong> Dice lo que ha pasado en los últimos 90 días, no lo que va a pasar. Cuando marca «temporada de altcoins», buena parte de la subida ya ha ocurrido.</li>
+  <li><strong>«Superar a bitcoin» no es «subir».</strong> Si bitcoin cae un 40 % y una altcoin cae un 30 %, la altcoin lo ha superado. Puede haber «temporada de altcoins» con todo el mercado en rojo.</li>
+  <li><strong>Solo cuenta las cien primeras.</strong> No dice nada sobre los miles de tokens pequeños, que es donde suele estar quien más habla de altseason.</li>
+</ul>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Ninguna de estas cifras es una señal de compra. Describen lo que ya ha pasado con todo el mercado. Usarlas para adivinar el siguiente movimiento es pedirle a un retrovisor que te enseñe la carretera.</div>
+</div>
+
+<h2>El volumen global y otras cifras de la franja</h2>
+
+<p>Junto a la capitalización total aparece el volumen de 24 horas de todo el mercado, la suma del de todas las monedas. Su cociente con la capitalización total se lee igual que el de una moneda: en los días de pánico o de euforia se dispara, y en las semanas de calma se encoge.</p>
+
+<p>Las webs suelen añadir el precio del gas de Ethereum, que es lo que cuesta hacer una operación en esa red en ese momento. No tiene que ver con el precio de ninguna moneda, pero conviene mirarlo antes de mover fondos: en momentos de congestión, una operación puede costar varias veces más. Tienes el concepto explicado en la ficha de <a href="/glosario/gas">gas</a>.</p>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "En un mes, bitcoin cae un 20 % y la dominancia de bitcoin sube del 50 % al 58 %. ¿Qué ha pasado con las altcoins en conjunto?",
+  "opciones": [
+    "Han subido, porque el dinero ha salido de bitcoin",
+    "Han caído más que bitcoin",
+    "Se han quedado igual",
+    "No se puede saber nada"
+  ],
+  "correcta": 1,
+  "explicacion": "Si bitcoin cae y aun así su parte del total aumenta, es que el resto ha caído todavía más. La dominancia sube también cuando todo baja y bitcoin baja menos."
+}
+</script></div>
+
+<h2>Ejercicio: el clima de hoy</h2>
+
+<p>Apunta de la web que prefieras cinco cifras: capitalización total, volumen de 24 horas, dominancia de bitcoin, valor del índice de temporada de altcoins y variación de la capitalización total en 7 días. Después abre el gráfico histórico de la capitalización total, en escala logarítmica, y sitúa el día de hoy: ¿cerca de un máximo, en mitad de una caída, en una fase plana? Escríbelo en una frase. Esa frase es el contexto con el que debería empezar cualquier revisión de una moneda.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la capitalización total y la dominancia describen el clima, no predicen nada. La dominancia es un cociente: sube porque bitcoin sube o porque el resto cae. El índice de temporada de altcoins mira 90 días atrás y solo a las cien primeras. Antes de juzgar cómo le va a una moneda, mira cómo le va al mercado.</div>
+</div>

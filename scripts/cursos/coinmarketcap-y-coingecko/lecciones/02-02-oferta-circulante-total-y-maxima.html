@@ -1,0 +1,126 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En la ficha de cada moneda hay tres cifras de oferta: la circulante, la total y la máxima. La circulante son las unidades en manos del público; la total, todas las que existen hoy; la máxima, las que podrán existir nunca. El ranking usa la primera, y la distancia entre las tres te dice cuántas monedas faltan por llegar al mercado. También verás qué significa el interrogante o el guion que a veces sale donde debería haber un número.</p>
+</div>
+
+<h2>Tres cifras que parecen la misma</h2>
+
+<p>La lección anterior terminó con una condición: tu parte vale el doble si la capitalización se dobla «sin que cambie el número de unidades». En muchas monedas esa condición no se cumple, porque cada mes salen unidades nuevas al mercado. Para saber cuántas, hay que distinguir tres cifras que las dos webs muestran una junto a otra.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Cifra</th><th>Qué cuenta</th><th>Cómo la define CoinMarketCap</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Oferta circulante</strong></td><td>Las unidades que están en el mercado, en manos del público</td><td>La mejor aproximación de las monedas que circulan y están en manos del público general</td></tr>
+    <tr><td><strong>Oferta total</strong></td><td>Todas las que existen ahora, circulen o no</td><td>Las monedas que existen ahora mismo, menos las que se han quemado de forma verificable</td></tr>
+    <tr><td><strong>Oferta máxima</strong></td><td>Las que podrán llegar a existir</td><td>La mejor aproximación del máximo de monedas que existirán en toda la vida de la criptomoneda</td></tr>
+  </tbody>
+</table>
+
+<p>La relación entre ellas es siempre la misma: la circulante es igual o menor que la total, y la total es igual o menor que la máxima. Lo interesante es <strong>cuánto de menor</strong>.</p>
+
+<h2>La circulante: lo que de verdad está a la venta</h2>
+
+<p>La <a href="/glosario/oferta-circulante">oferta circulante</a> es la que se usa para calcular la capitalización y, por tanto, el puesto. La razón la da CoinMarketCap en sus preguntas frecuentes: las monedas bloqueadas, reservadas o que no pueden venderse en el mercado público no deberían afectar a la capitalización. La compara con el capital flotante de una empresa en bolsa: las acciones que de verdad cambian de manos, sin contar las que guardan los fundadores.</p>
+
+<p>Hay un matiz importante que casi nadie conoce: <strong>circulante no es lo mismo que desbloqueado</strong>. Según su metodología, lo asignado al equipo o a inversores privados no suele contarse como circulante aunque ya se pueda vender, porque no está en manos del público. Es una decisión de criterio, y por eso las dos webs pueden dar cifras distintas para la misma moneda.</p>
+
+<p>CoinGecko lo calcula de otra forma para los tokens: parte de la oferta total y le resta lo bloqueado, como los fondos de la fundación o los tokens del equipo y de los inversores que aún no se han liberado.</p>
+
+<h2>La total y la máxima: lo que falta por salir</h2>
+
+<p>La diferencia entre la oferta total y la circulante son unidades que <strong>ya existen pero no están en el mercado</strong>: reservas del proyecto, tokens del equipo con un calendario de liberación, fondos para incentivos. La diferencia entre la máxima y la total son unidades que <strong>todavía no se han creado</strong>, como los bitcoins que quedan por minar.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Tres monedas, tres repartos muy distintos",
+  "subtitulo": "Qué parte de la oferta máxima circula ya en cada una.",
+  "formato": "pct",
+  "apilado": true,
+  "datos": [
+    { "etiqueta": "Casi todo fuera", "circulante": 95, "existe": 0, "porcrear": 5 },
+    { "etiqueta": "A medio camino", "circulante": 50, "existe": 30, "porcrear": 20 },
+    { "etiqueta": "Recién lanzada", "circulante": 12, "existe": 88, "porcrear": 0 }
+  ],
+  "series": [
+    { "clave": "circulante", "nombre": "Circulante", "color": "#ff8a7a" },
+    { "clave": "existe", "nombre": "Existe, pero no circula", "color": "#8fb0ff" },
+    { "clave": "porcrear", "nombre": "Aún sin crear", "color": "#5a6b8c" }
+  ],
+  "nota": "Ejemplos inventados. En la tercera, por cada unidad que hay hoy en el mercado quedan más de siete por llegar."
+}
+</script></div>
+
+<p>La primera moneda se parece a bitcoin: casi todas sus unidades circulan ya y las que faltan llegan despacio. La tercera es el caso de muchos tokens recién lanzados, con solo una pequeña parte en el mercado. En ella, quien compra hoy sabe —o debería saber— que durante los próximos años van a aparecer siete unidades nuevas por cada una que existe ahora.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">12 %</span>
+  <span class="prose-dato-texto">Con solo esa parte en circulación, el precio de hoy lo fija una fracción mínima de la oferta. El resto llegará después, con otro precio.</span>
+</div>
+
+<h2>Monedas sin techo y monedas que se queman</h2>
+
+<p>No todas las monedas tienen oferta máxima. Algunas se diseñan sin límite: se crean unidades nuevas de forma indefinida, normalmente para pagar a quienes aseguran la red. En esos casos el campo de oferta máxima aparece vacío o con el símbolo de infinito. No es bueno ni malo por sí mismo, pero significa que hay <a href="/glosario/inflacion">inflación</a> permanente de la oferta, y conviene saber de cuánto al año.</p>
+
+<p>Lo contrario también existe. Algunos proyectos <strong>queman</strong> monedas: las envían a una dirección de la que nadie tiene la clave, y dejan de existir a todos los efectos. Por eso la definición de oferta total habla de las unidades «menos las quemadas de forma verificable». Una quema reduce la oferta total; que eso haga subir el precio depende de que la demanda no baje, cosa que ninguna quema garantiza.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Oferta con techo</p>
+    <p class="prose-vs-sub">Hay un máximo escrito en el código</p>
+    <ul>
+      <li data-tono="favor">Sabes cuántas unidades habrá como mucho</li>
+      <li data-tono="favor">El FDV se puede calcular sin dudas</li>
+      <li data-tono="contra">Un techo no dice a qué ritmo salen las que faltan</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Oferta sin techo</p>
+    <p class="prose-vs-sub">Se crean unidades de forma indefinida</p>
+    <ul>
+      <li data-tono="contra">Tu parte se diluye un poco cada año</li>
+      <li data-tono="contra">El campo de oferta máxima sale vacío</li>
+      <li data-tono="favor">Si hay quemas, la emisión neta puede ser baja</li>
+    </ul>
+  </div>
+</div>
+
+<h2>El interrogante y el guion</h2>
+
+<p>A veces, donde esperas un número encuentras otra cosa, y conviene saber leerla.</p>
+
+<p>En CoinMarketCap, un <strong>signo de interrogación</strong> junto a la oferta o la capitalización significa, según sus preguntas frecuentes, que todavía no han verificado lo suficiente la oferta circulante. En CoinGecko, un <strong>guion</strong> indica que no tienen información suficiente o que tienen motivos para dudar de la que hay. Y en las dos puedes encontrar la etiqueta de oferta «declarada por el proyecto», que avisa de que el dato lo ha mandado el propio equipo y nadie lo ha confirmado.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Una capitalización calculada con una oferta no verificada vale lo que valga la palabra del proyecto. CoinMarketCap lo dice sin rodeos en su metodología: muchos actores tienen incentivos para inflar su oferta circulante y su capitalización, y por eso no publica la cifra verificada sin comprobar que el volumen y la liquidez de la moneda cuadran con el tamaño que dice tener.</div>
+</div>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿A qué oferta pertenece?",
+  "instrucciones": "Lleva cada caso a la cifra más pequeña en la que ya está contado.",
+  "grupos": [
+    { "id": "circ", "nombre": "Circulante" },
+    { "id": "total", "nombre": "Total, pero no circulante" },
+    { "id": "max", "nombre": "Solo en la máxima" }
+  ],
+  "elementos": [
+    { "texto": "Las monedas que tienes tú en tu wallet", "grupo": "circ", "explicacion": "Están en manos del público: circulan." },
+    { "texto": "Tokens del equipo bloqueados dos años", "grupo": "total", "explicacion": "Ya existen, pero no pueden venderse todavía." },
+    { "texto": "Bitcoins que aún no se han minado", "grupo": "max", "explicacion": "No existen todavía: solo cuentan en la oferta máxima." },
+    { "texto": "La reserva de la fundación del proyecto, sin liberar", "grupo": "total", "explicacion": "Existe, pero no está en el mercado." },
+    { "texto": "Lo que hay a la venta en los exchanges", "grupo": "circ", "explicacion": "Es la parte más visible de la oferta circulante." },
+    { "texto": "Recompensas que se emitirán en los próximos diez años", "grupo": "max", "explicacion": "Se crearán más adelante: aún no forman parte de la oferta total." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: el porcentaje en circulación</h2>
+
+<p>Con las tres monedas de la lección anterior, apunta ahora la oferta circulante, la total y la máxima. Divide la circulante entre la máxima (o entre la total, si no hay máxima) y multiplica por cien: ese es el porcentaje que ya está en el mercado. Anota también si alguna cifra lleva interrogante, guion o la etiqueta de dato declarado por el proyecto. En la siguiente lección conviertes ese porcentaje en una cifra en euros.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la circulante son las unidades en manos del público y es la que ordena el ranking; la total, las que existen; la máxima, las que podrán existir. Cuanto más lejos está la circulante de las otras dos, más monedas faltan por llegar. Un interrogante o un guion significan que nadie ha verificado el dato.</div>
+</div>

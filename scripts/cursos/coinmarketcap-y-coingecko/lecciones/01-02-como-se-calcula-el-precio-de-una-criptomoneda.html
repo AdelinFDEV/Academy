@@ -1,0 +1,119 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Una criptomoneda no tiene un precio: tiene uno distinto en cada plataforma donde se negocia. Las dos webs los juntan en una sola cifra con una media en la que pesa más quien más negocia, y descartan los precios que no parecen de fiar. Por eso nunca coinciden del todo entre sí, ni con el precio al que tú vas a comprar. Aquí aprendes a leer esa cifra como lo que es: una referencia.</p>
+</div>
+
+<h2>No hay un precio, hay cientos</h2>
+
+<p>Las acciones de una empresa se negocian sobre todo en una bolsa, con un horario y un precio de cierre. Las criptomonedas no funcionan así. Se negocian las 24 horas en muchas plataformas a la vez, y cada plataforma es un mercado separado. Dentro de cada una, además, la misma moneda se cambia contra varias cosas: contra dólares, contra euros, contra una <a href="/glosario/stablecoin">stablecoin</a>, contra bitcoin.</p>
+
+<p>Cada una de esas combinaciones —una moneda, contra otra, en una plataforma concreta— es un <strong>par de mercado</strong>. Una moneda grande puede tener miles. Y en cada par el último precio es ligeramente distinto, porque depende de quién compró y quién vendió allí hace un instante.</p>
+
+<p>Normalmente las diferencias son pequeñas. Si en una plataforma estuviera claramente más barata, alguien compraría ahí para vender en otra y se embolsaría la diferencia; esa actividad, que se llama arbitraje, empuja los precios a parecerse. Pero «parecerse» no es «ser iguales».</p>
+
+<h2>La media ponderada por volumen</h2>
+
+<p>Para sacar una cifra de todas esas, las dos webs hacen en esencia lo mismo: una media en la que <strong>cada precio pesa según cuánto se negocia en su mercado</strong>. Se llama precio medio ponderado por <a href="/glosario/volumen">volumen</a>, o VWAP por sus siglas en inglés. La idea es de sentido común: un mercado donde se mueven cien millones al día dice más sobre el precio que uno donde se mueven mil euros.</p>
+
+<p>Mira un ejemplo inventado, con una moneda que se negocia en tres plataformas:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Plataforma</th><th>Precio</th><th>Volumen 24 h</th><th>Peso</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>A</td><td>2,00 €</td><td>8.000.000 €</td><td>80 %</td></tr>
+    <tr><td>B</td><td>2,04 €</td><td>1.500.000 €</td><td>15 %</td></tr>
+    <tr><td>C</td><td>2,50 €</td><td>500.000 €</td><td>5 %</td></tr>
+  </tbody>
+</table>
+
+<p>La media simple de los tres precios sale a 2,18 €. La ponderada, a <strong>2,03 €</strong>: 2,00 × 0,80 + 2,04 × 0,15 + 2,50 × 0,05. El precio raro de la plataforma C casi no mueve el resultado, porque allí se negocia muy poco.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "El mismo dato, dos medias",
+  "subtitulo": "La media simple se deja arrastrar por el mercado pequeño; la ponderada, no.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Plataforma A (80 % del volumen)", "precio": 2.0 },
+    { "etiqueta": "Plataforma B (15 %)", "precio": 2.04 },
+    { "etiqueta": "Plataforma C (5 %)", "precio": 2.5 },
+    { "etiqueta": "Media simple", "precio": 2.18 },
+    { "etiqueta": "Media ponderada por volumen", "precio": 2.03 }
+  ],
+  "series": [{ "clave": "precio", "nombre": "Precio", "color": "#ff8a7a" }],
+  "nota": "Ejemplo inventado. Media simple: (2,00 + 2,04 + 2,50) / 3 = 2,18. Ponderada: 2,00 × 0,80 + 2,04 × 0,15 + 2,50 × 0,05 = 2,03."
+}
+</script></div>
+
+<p>CoinGecko lo describe así en su metodología: parte de hasta los 600 pares con más volumen de la moneda, quita los anómalos y calcula el VWAP de los que quedan. CoinMarketCap habla de un algoritmo que tiene en cuenta la confianza que merece la distribución de precios que declaran las plataformas. Los detalles difieren; el principio es el mismo.</p>
+
+<h2>Los precios que se quedan fuera</h2>
+
+<p>Antes de hacer la media, las dos webs descartan precios. Es la parte que explica casi todas las diferencias entre ellas, y CoinMarketCap la deja a la vista con asteriscos en su pestaña de mercados.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">* Un asterisco</span>
+    <p>El precio no entra en la media porque no parece de libre mercado. Pasa, por ejemplo, cuando una plataforma tiene los depósitos o las retiradas desactivados: el precio allí se despega del resto porque nadie puede meter ni sacar monedas para igualarlo.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">** Dos asteriscos</span>
+    <p>El par no cuenta para el volumen. Suele ser porque esa plataforma no cobra comisión o paga por operar, y eso facilita inflar las cifras operando contra uno mismo.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">*** Tres asteriscos</span>
+    <p>El precio es un valor atípico: se aleja demasiado del de los demás pares de la misma moneda y se descarta.</p>
+  </div>
+</div>
+
+<p>CoinGecko hace algo parecido sin asteriscos. Usa una medida estadística, la desviación absoluta respecto a la mediana, para marcar los precios que se salen del rango razonable, y deja de contar los pares que llevan más de tres horas sin actualizarse.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Hay una regla de CoinMarketCap que protege al lector: solo acepta precios que vengan de plataformas conectadas, con su volumen y su liquidez. Lo justifica así: si aceptara precios sin mercado detrás, un proyecto podría «fijar» un precio artificial y subir puestos en el ranking sin que nadie comprara nada.</div>
+</div>
+
+<h2>Por qué nunca coincide con lo que vas a pagar</h2>
+
+<p>Con todo esto ya puedes explicar la nota que tomaste en la lección anterior. Las dos webs no dan el mismo precio de bitcoin por tres motivos que se suman:</p>
+
+<ol class="prose-pasos">
+  <li><strong>No tienen conectadas las mismas plataformas</strong>, ni los mismos pares de cada una.</li>
+  <li><strong>No descartan los mismos precios</strong>: cada una tiene sus reglas para lo anómalo.</li>
+  <li><strong>No actualizan en el mismo instante.</strong> En un mercado que no cierra nunca, un minuto de diferencia ya mueve la cifra.</li>
+</ol>
+
+<p>Y ninguna de las dos te da el precio al que tú vas a comprar. Ese lo pone la plataforma donde operes, en el par que uses, en el momento exacto en que entre tu orden, y con sus comisiones encima. En una moneda grande la diferencia con la referencia será de céntimos. En una pequeña puede ser de varios puntos porcentuales, y en el módulo 3 verás cómo estimarla antes de comprar.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">Referencia</span>
+  <span class="prose-dato-texto">Eso es el precio de un agregador: una media razonable de muchos mercados. No es una oferta de venta ni el precio de ninguna plataforma en concreto.</span>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una moneda marca 1,00 € en un agregador, pero en una plataforma pequeña la ves a 1,35 €. En la pestaña de mercados, ese par lleva tres asteriscos. ¿Qué es lo más razonable pensar?",
+  "opciones": [
+    "Que el precio real es 1,35 € y el agregador va con retraso",
+    "Que ese precio es un valor atípico y el agregador lo ha dejado fuera de la media",
+    "Que hay que comprar a 1,00 € y vender a 1,35 € sin riesgo",
+    "Que la moneda ha subido un 35 % en la última hora"
+  ],
+  "correcta": 1,
+  "explicacion": "Tres asteriscos marcan un precio que se aleja demasiado del de los demás pares. Suele haber una razón detrás, como muy poca liquidez o retiradas cerradas, que es justo lo que impediría aprovechar la diferencia."
+}
+</script></div>
+
+<h2>El precio en euros es una conversión</h2>
+
+<p>Un último detalle para quien mira desde España. Las dos webs calculan todo en dólares y después convierten. Si eliges ver los precios en euros, lo que ves es el precio en dólares pasado a euros con el tipo de cambio del momento, no una media de los mercados en euros. La diferencia es pequeña, pero explica por qué el precio en euros de la web no cuadra al céntimo con el del par en euros de tu plataforma.</p>
+
+<h2>Ejercicio: explica la diferencia</h2>
+
+<p>Recupera los dos precios de bitcoin que apuntaste. Calcula la diferencia en porcentaje: resta el menor del mayor, divide entre el menor y multiplica por cien. Después repite lo mismo con una moneda pequeña, de las que están más allá del puesto 500. Lo normal es que la diferencia en bitcoin sea de centésimas de punto y la de la moneda pequeña sea bastante mayor. Apunta las dos cifras: es la primera medida de <a href="/glosario/liquidez">liquidez</a> que haces en este curso, aunque aún no la llamemos así.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el precio de un agregador es una media ponderada por volumen de muchos mercados, después de quitar los que no son de fiar. Es una referencia, no el precio al que comprarás. Cuanto más pequeña es la moneda, más se separan la referencia y la realidad.</div>
+</div>

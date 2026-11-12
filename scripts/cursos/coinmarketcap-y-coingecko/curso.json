@@ -1,0 +1,88 @@
+{
+  "slug": "coinmarketcap-y-coingecko",
+  "titulo": "Cómo leer CoinMarketCap y CoinGecko",
+  "subtitulo": "Market cap, FDV, oferta, volumen y liquidez: qué dice cada cifra y qué esconde.",
+  "descripcion": "Un curso para quien abre CoinMarketCap o CoinGecko y solo entiende el precio. Recorre cada número de las dos webs de datos más usadas del mercado cripto: de dónde sale el precio, qué es la capitalización y por qué el precio por moneda no dice nada, qué diferencia hay entre oferta circulante, total y máxima, qué es el FDV, cómo se lee el volumen, qué es la liquidez y cuánto puedes comprar de verdad sin mover el precio. Cada lección se apoya en la metodología que publican las propias webs y en estudios sobre volumen falso, desbloqueos y monedas que desaparecen, y termina con algo que mirar en una moneda real. No enseña a encontrar la próxima moneda que se multiplica ni recomienda comprar nada: te da un método de diez minutos para entender lo que tienes delante. Curso independiente, sin relación con CoinMarketCap ni con CoinGecko.",
+  "objetivos": [
+    "Saber de dónde sale cada número de CoinMarketCap y CoinGecko y por qué no coinciden entre sí.",
+    "Calcular la capitalización de una moneda y entender por qué su precio por unidad no dice si es cara o barata.",
+    "Distinguir oferta circulante, total y máxima, y leer el FDV y su relación con la capitalización.",
+    "Reconocer el volumen inflado y medir la liquidez real de una moneda en su pestaña de mercados.",
+    "Recorrer la ficha de cualquier moneda: gráficos, máximos, contratos, desbloqueos y señales de alerta.",
+    "Aplicar una revisión de diez minutos antes de poner dinero en una moneda."
+  ],
+  "nivel": "básico",
+  "portada": null,
+  "color": "#ff8a7a",
+  "aviso": "formacion",
+  "logro": "Ojo Clínico",
+  "preguntas_final": 25,
+  "revisado": "2026-11-12",
+  "orden": 3,
+  "published": false,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "De dónde salen los números",
+      "descripcion": "Qué son estas dos webs, quién está detrás y cómo fabrican el precio que ves. Sin esto, todo lo demás se lee mal.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-son-los-agregadores-de-datos", "titulo": "Qué son CoinMarketCap y CoinGecko, y qué no son", "resumen": "No venden criptomonedas ni te dicen qué comprar: juntan los datos de cientos de plataformas. Quién está detrás de cada una y por qué importa.", "minutos": 12, "archivo": "01-01-que-son-los-agregadores-de-datos.html" },
+        { "slug": "como-se-calcula-el-precio-de-una-criptomoneda", "titulo": "Cómo se calcula el precio que ves", "resumen": "Una criptomoneda no tiene un precio, tiene cientos. Cómo se convierten en uno solo y por qué las dos webs nunca dan exactamente el mismo.", "minutos": 13, "archivo": "01-02-como-se-calcula-el-precio-de-una-criptomoneda.html" },
+        { "slug": "la-portada-columna-a-columna", "titulo": "La portada, columna a columna", "resumen": "Puesto, precio, variaciones, capitalización, volumen y oferta: qué significa cada columna de la tabla y cuál miras primero.", "minutos": 12, "archivo": "01-03-la-portada-columna-a-columna.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Capitalización y oferta",
+      "descripcion": "El corazón del curso: cuánto vale una moneda entera, cuántas unidades hay, cuántas faltan por salir y qué les pasa a las tuyas cuando salen.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-precio-por-moneda-no-dice-nada", "titulo": "El precio por moneda no dice nada", "resumen": "Una moneda de 0,001 € no es barata y una de 50.000 € no es cara. Lo que se compara es la capitalización, y se calcula con una multiplicación.", "minutos": 13, "archivo": "02-01-el-precio-por-moneda-no-dice-nada.html" },
+        { "slug": "oferta-circulante-total-y-maxima", "titulo": "Oferta circulante, total y máxima", "resumen": "Tres cifras que parecen la misma y no lo son. Cuál usa cada web para el ranking y qué significa el interrogante junto a una de ellas.", "minutos": 13, "archivo": "02-02-oferta-circulante-total-y-maxima.html" },
+        { "slug": "fdv-y-su-relacion-con-la-capitalizacion", "titulo": "FDV: lo que valdría con todas las monedas fuera", "resumen": "La valoración totalmente diluida y el cociente que te dice cuánta oferta falta por llegar al mercado.", "minutos": 14, "archivo": "02-03-fdv-y-su-relacion-con-la-capitalizacion.html" },
+        { "slug": "desbloqueos-y-dilucion", "titulo": "Desbloqueos y dilución", "resumen": "Qué pasa con el precio cuando se liberan las monedas del equipo y de los inversores, y dónde mirar el calendario antes de comprar.", "minutos": 13, "archivo": "02-04-desbloqueos-y-dilucion.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Volumen y liquidez",
+      "descripcion": "Cuánto se negocia de verdad, cuánto es humo y cuánto podrías comprar o vender tú sin mover el precio en tu contra.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-volumen-y-su-relacion-con-la-capitalizacion", "titulo": "El volumen y su relación con la capitalización", "resumen": "Qué mide el volumen de 24 horas y qué te dice el cociente entre volumen y capitalización, por arriba y por abajo.", "minutos": 12, "archivo": "03-01-el-volumen-y-su-relacion-con-la-capitalizacion.html" },
+        { "slug": "volumen-falso-y-wash-trading", "titulo": "Volumen falso y wash trading", "resumen": "Los estudios que midieron cuánto volumen era inventado, por qué se infla y qué hacen las dos webs para filtrarlo.", "minutos": 13, "archivo": "03-02-volumen-falso-y-wash-trading.html" },
+        { "slug": "mercados-pares-y-profundidad", "titulo": "Mercados, pares y profundidad", "resumen": "La pestaña que casi nadie abre: dónde se negocia la moneda, contra qué, con qué diferencia entre compra y venta y con cuánto dinero esperando.", "minutos": 14, "archivo": "03-03-mercados-pares-y-profundidad.html" },
+        { "slug": "slippage-cuanto-puedes-comprar-de-verdad", "titulo": "Slippage: cuánto puedes comprar de verdad", "resumen": "Por qué la capitalización no es dinero que se pueda sacar, y cómo estimar lo que te costaría entrar y salir de una moneda poco líquida.", "minutos": 13, "archivo": "03-04-slippage-cuanto-puedes-comprar-de-verdad.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "La ficha de una moneda",
+      "descripcion": "Todo lo que hay en la página de una moneda, del gráfico al contrato, y las señales que conviene ver antes que el precio.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "la-ficha-de-arriba-abajo", "titulo": "La ficha, de arriba abajo", "resumen": "Estadísticas, enlaces, categorías, valoraciones y avisos: qué es dato, qué es opinión de terceros y qué lo escribió el propio proyecto.", "minutos": 13, "archivo": "04-01-la-ficha-de-arriba-abajo.html" },
+        { "slug": "graficos-maximos-y-escalas", "titulo": "Gráficos, máximos y escalas", "resumen": "Precio frente a capitalización, escala lineal frente a logarítmica, y la cuenta que casi nadie hace: cuánto tiene que subir para volver a su máximo.", "minutos": 13, "archivo": "04-02-graficos-maximos-y-escalas.html" },
+        { "slug": "contratos-redes-y-monedas-falsas", "titulo": "Contratos, redes y monedas falsas", "resumen": "Varias monedas pueden llamarse igual. Cómo comprobar que la que vas a comprar es la de la ficha, y en qué red está.", "minutos": 12, "archivo": "04-03-contratos-redes-y-monedas-falsas.html" },
+        { "slug": "monedas-muertas-y-sesgo-de-supervivencia", "titulo": "Monedas muertas y sesgo de supervivencia", "resumen": "El ranking solo enseña a las que siguen vivas. Cuántas desaparecen según los datos, y qué cambia eso en cómo lees una lista.", "minutos": 12, "archivo": "04-04-monedas-muertas-y-sesgo-de-supervivencia.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "El mercado entero y tu método",
+      "descripcion": "Las cifras que resumen todo el mercado, los indicadores de ánimo y las listas de moda. Y, para cerrar, tu revisión de diez minutos.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "capitalizacion-total-y-dominancia", "titulo": "Capitalización total y dominancia", "resumen": "Cuánto vale todo el mercado junto, qué parte es bitcoin y qué quiere decir de verdad eso de la «temporada de altcoins».", "minutos": 13, "archivo": "05-01-capitalizacion-total-y-dominancia.html" },
+        { "slug": "miedo-codicia-y-listas-de-moda", "titulo": "Miedo, codicia y listas de moda", "resumen": "De qué está hecho el índice de miedo y codicia, y por qué las listas de tendencias y de mayores subidas son el peor sitio para decidir.", "minutos": 13, "archivo": "05-02-miedo-codicia-y-listas-de-moda.html" },
+        { "slug": "tu-revision-en-diez-minutos", "titulo": "Tu revisión en diez minutos", "resumen": "Todo el curso en una lista de comprobación que puedes pasar a cualquier moneda, con su ejercicio final.", "minutos": 15, "archivo": "05-03-tu-revision-en-diez-minutos.html" }
+      ]
+    }
+  ]
+}

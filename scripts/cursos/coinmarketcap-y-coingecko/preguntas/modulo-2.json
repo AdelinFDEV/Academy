@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "cm-m2-01",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "Una moneda cuesta 0,001 € por unidad. ¿Qué te dice ese precio sobre si es cara o barata?",
+    "opciones": [
+      "Que es más arriesgada que una de 1.000 €",
+      "Que es una moneda pequeña",
+      "Nada: depende de cuántas unidades existan",
+      "Que es barata y tiene mucho recorrido"
+    ],
+    "correcta": 2,
+    "explicacion": "El precio por unidad es el valor total dividido entre un número de unidades que el proyecto eligió. Solo no dice nada."
+  },
+  {
+    "clave": "cm-m2-02",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "¿Cómo se calcula la capitalización de una moneda en las dos webs?",
+    "opciones": [
+      "Precio × volumen de 24 horas",
+      "Precio × oferta máxima",
+      "Volumen ÷ oferta circulante",
+      "Precio × oferta circulante"
+    ],
+    "correcta": 3,
+    "explicacion": "Es la fórmula que publican las dos. Con la oferta máxima se obtiene el FDV, que es otra cifra."
+  },
+  {
+    "clave": "cm-m2-03",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "Alfa vale 500 € y tiene 2 millones de unidades. Beta vale 0,005 € y tiene 400.000 millones. ¿Cuál es más grande?",
+    "opciones": [
+      "Beta: 2.000 millones frente a 1.000 millones",
+      "Alfa, porque cada unidad vale mucho más",
+      "Son iguales",
+      "No se puede saber sin el volumen"
+    ],
+    "correcta": 0,
+    "explicacion": "500 × 2 millones = 1.000 M€. 0,005 × 400.000 millones = 2.000 M€. La de céntimos es el doble de grande."
+  },
+  {
+    "clave": "cm-m2-04",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "Una moneda cuesta 0,01 € y tiene 100.000 millones de unidades en circulación. Alguien asegura que «llegará a 1 €». ¿Qué capitalización exigiría eso?",
+    "opciones": [
+      "1.000 millones de euros, la misma que hoy",
+      "100.000 millones de euros, cien veces la actual",
+      "100 millones de euros",
+      "10.000 millones de euros, diez veces la actual"
+    ],
+    "correcta": 1,
+    "explicacion": "1 € × 100.000 millones = 100.000 M€. Hoy vale 1.000 M€ (0,01 × 100.000 millones): tendría que multiplicarse por cien."
+  },
+  {
+    "clave": "cm-m2-05",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "¿Qué representa exactamente la capitalización de una moneda?",
+    "opciones": [
+      "El beneficio acumulado de sus compradores",
+      "El dinero que se podría retirar si todos vendieran",
+      "El último precio multiplicado por todas las unidades en circulación",
+      "El dinero total que se ha invertido en ella"
+    ],
+    "correcta": 2,
+    "explicacion": "Es una multiplicación, no una hucha. Que alguien pague cierto precio por una unidad no implica que haya compradores a ese precio para todas."
+  },
+  {
+    "clave": "cm-m2-06",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "¿Qué cuenta la oferta circulante?",
+    "opciones": [
+      "Las unidades que podrán existir como máximo",
+      "Todas las unidades que existen hoy",
+      "Las unidades que se negociaron en las últimas 24 horas",
+      "Las unidades que están en el mercado, en manos del público"
+    ],
+    "correcta": 3,
+    "explicacion": "Es la que se usa para calcular la capitalización y ordenar el ranking."
+  },
+  {
+    "clave": "cm-m2-07",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "Los tokens del equipo están bloqueados durante dos años. ¿En qué cifra de oferta están contados?",
+    "opciones": [
+      "En la total, pero no en la circulante",
+      "En ninguna hasta que se liberen",
+      "Solo en la máxima",
+      "En la circulante"
+    ],
+    "correcta": 0,
+    "explicacion": "Ya existen, así que cuentan en la oferta total, pero no pueden venderse y no están en manos del público."
+  },
+  {
+    "clave": "cm-m2-08",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "Junto a la capitalización de una moneda en CoinMarketCap aparece un signo de interrogación. ¿Qué significa?",
+    "opciones": [
+      "Que la moneda va a salir del listado",
+      "Que la oferta circulante no se ha verificado lo suficiente",
+      "Que la moneda no tiene oferta máxima",
+      "Que el precio lleva horas sin actualizarse"
+    ],
+    "correcta": 1,
+    "explicacion": "Lo dicen sus preguntas frecuentes. Esa capitalización se apoya en un dato que nadie ha confirmado."
+  },
+  {
+    "clave": "cm-m2-09",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "Una moneda no tiene oferta máxima. ¿Qué implica?",
+    "opciones": [
+      "Que no se pueden crear más unidades",
+      "Que su capitalización no se puede calcular",
+      "Que se seguirán creando unidades y tu parte se diluye con el tiempo",
+      "Que es una estafa"
+    ],
+    "correcta": 2,
+    "explicacion": "No es bueno ni malo por sí mismo, pero hay emisión permanente y conviene saber de cuánto al año."
+  },
+  {
+    "clave": "cm-m2-10",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "¿Qué es el FDV de una moneda?",
+    "opciones": [
+      "El valor de las monedas que se negociaron ayer",
+      "La capitalización descontando las monedas del equipo",
+      "El precio máximo que ha alcanzado",
+      "Lo que valdría al precio de hoy con todas sus unidades en el mercado"
+    ],
+    "correcta": 3,
+    "explicacion": "Es la valoración totalmente diluida: precio por la oferta máxima (o la total, según la web)."
+  },
+  {
+    "clave": "cm-m2-11",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Una moneda tiene 300 millones de euros de capitalización y 1.500 millones de FDV. ¿Qué parte de su oferta circula?",
+    "opciones": [
+      "Alrededor del 20 %",
+      "Alrededor del 5 %",
+      "Alrededor del 50 %",
+      "Alrededor del 80 %"
+    ],
+    "correcta": 0,
+    "explicacion": "300 ÷ 1.500 = 0,20. Una de cada cinco unidades está en el mercado; faltan cuatro por llegar."
+  },
+  {
+    "clave": "cm-m2-12",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Dos fuentes dan cifras distintas de «market cap» para la misma moneda. ¿Qué conviene comprobar primero?",
+    "opciones": [
+      "Si la moneda cotiza en euros o en dólares",
+      "Qué oferta ha usado cada una en la multiplicación",
+      "Cuál publicó el dato antes",
+      "Cuál de las dos tiene más visitas"
+    ],
+    "correcta": 1,
+    "explicacion": "Circulante, desbloqueada, total o máxima dan cuatro cifras distintas con el mismo precio."
+  },
+  {
+    "clave": "cm-m2-13",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Ves una moneda «pequeña», de 80 millones de capitalización, con un cociente capitalización ÷ FDV de 0,08. Un amigo dice que por ser pequeña tiene mucho recorrido. ¿Qué le falta a su razonamiento?",
+    "opciones": [
+      "Que el FDV solo importa en bitcoin",
+      "Que un cociente bajo significa poca dilución",
+      "Que el proyecto entero ya se valora en 1.000 millones y el 92 % de la oferta está por llegar",
+      "Que las monedas pequeñas nunca suben"
+    ],
+    "correcta": 2,
+    "explicacion": "80 ÷ 0,08 = 1.000 M€ de FDV. Parece pequeña porque solo se ve la parte que circula."
+  },
+  {
+    "clave": "cm-m2-14",
+    "leccion": "desbloqueos-y-dilucion",
+    "enunciado": "Una moneda tiene 100 millones de unidades a 1 € y se desbloquean otros 100 millones. Si la capitalización no cambia, ¿cuánto pasa a valer cada unidad?",
+    "opciones": [
+      "1,00 €",
+      "2,00 €",
+      "0,10 €",
+      "0,50 €"
+    ],
+    "correcta": 3,
+    "explicacion": "Los mismos 100 millones de euros se reparten entre 200 millones de unidades. La capitalización no baja y cada comprador pierde la mitad."
+  },
+  {
+    "clave": "cm-m2-15",
+    "leccion": "desbloqueos-y-dilucion",
+    "enunciado": "Lees que «el 90 % de los desbloqueos presiona el precio a la baja», según el estudio de Keyrock. ¿Cómo hay que tomar ese dato?",
+    "opciones": [
+      "Como una tendencia media, de un estudio de parte, que no garantiza la caída de un desbloqueo concreto",
+      "Como prueba de que conviene vender siempre el día antes",
+      "Como una garantía de que el precio caerá el día del desbloqueo",
+      "Como un dato sin valor, porque no es académico"
+    ],
+    "correcta": 0,
+    "explicacion": "Keyrock es un creador de mercado y el dato es una media sobre miles de casos. Sirve para tomarse en serio el calendario, no para predecir una fecha."
+  }
+]

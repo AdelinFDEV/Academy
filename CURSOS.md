@@ -107,8 +107,9 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 | Psicología del trading | `psicologia-del-trading` | `#5ec8c4` | Verde azulado (turquesa) | Publicado 08-11-2026 |
 | Seguridad cripto | `seguridad-cripto` | `#a78bfa` | Violeta | Publicado 08-11-2026 |
 | Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Borrador |
+| Cómo leer CoinMarketCap y CoinGecko | `coinmarketcap-y-coingecko` | `#ff8a7a` | Coral | Escrito el 12-11-2026 |
 
-Ideas libres para los siguientes: coral `#ff8a7a`, azul cobalto `#6f9bff`, verde lima `#a3e635`, rosa `#f472b6`, ámbar `#fbbf24`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
+Ideas libres para los siguientes: azul cobalto `#6f9bff`, verde lima `#a3e635`, rosa `#f472b6`, ámbar `#fbbf24`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
 
 ### La tarjeta del curso en `/cursos` — el mismo formato para todos
 
@@ -147,6 +148,7 @@ El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no 
 |---|---|---|---|
 | Psicología del trading | Un cerebro de cristal translúcido | Una línea de pulso que lo atraviesa y anillos finos como órbitas | `#5ec8c4` |
 | Seguridad cripto | Un escudo geométrico de cristal con una cerradura de metal | Una malla hexagonal tenue detrás | `#a78bfa` |
+| Cómo leer CoinMarketCap y CoinGecko | Una lupa de cristal y metal satinado sobre unas barras de datos de cristal | Una rejilla tenue de tabla de datos detrás | `#ff8a7a` (pendiente de generar) |
 
 Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
 
@@ -309,7 +311,7 @@ Formato de cada pregunta:
 - `clave`: única en el curso, con un prefijo propio del curso (`pt-` para psicología del trading): `<prefijo>-m<n>-NN` y `<prefijo>-f-NN`.
 - `leccion`: la lección que el alumno debe repasar si falla.
 - **Cuatro opciones**, todas plausibles, sin «todas las anteriores».
-- **Reparte la posición de la correcta** entre 0, 1, 2 y 3. Al escribir, la tendencia es ponerla casi siempre en la segunda: baraja al final con un script, salvo cuando las opciones son números en orden.
+- **Reparte la posición de la correcta** entre 0, 1, 2 y 3. Lo cómodo es escribir cada pregunta con la correcta la primera y pasar al final `node scripts/barajar-preguntas.mjs <slug>`, que la reparte de forma pareja y siempre igual (se puede repetir sin que cambie nada). Una pregunta con `"fijo": true` no se baraja: para cuando las opciones son números en orden. **Cuida que la correcta no sea siempre la más larga**: es la pista que más delata.
 - **El final**: la mitad de conocimiento y la mitad de **casos prácticos** (situaciones reales en las que hay que reconocer el error y elegir lo que diría un buen plan).
 - Las preguntas solo preguntan lo que las lecciones explican.
 

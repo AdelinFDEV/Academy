@@ -1,0 +1,103 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Una moneda de 0,001 € no es barata y una de 50.000 € no es cara. El precio por unidad depende de cuántas unidades decidió crear el proyecto, y eso es una elección arbitraria. Lo que permite comparar es la capitalización: precio por unidades en circulación. Con ella puedes hacer la cuenta que desmonta la mayoría de las promesas: cuánto tendría que valer la moneda entera para llegar al precio que te dicen.</p>
+</div>
+
+<h2>El error más común al empezar</h2>
+
+<p>Casi todo el mundo lo comete la primera vez. Ves bitcoin a decenas de miles de euros y piensas que ya es tarde. Ves otra moneda a 0,0001 € y piensas que ahí sí hay recorrido: «si llega a 1 €, multiplico por diez mil». La intuición es comprensible y está equivocada, porque trata el precio de una unidad como si fuera el tamaño de la moneda.</p>
+
+<p>En el mundo cripto se le llama <strong>sesgo de unidad</strong>: preferimos tener muchas unidades enteras de algo barato antes que una fracción de algo caro, aunque valgan lo mismo. Los creadores de tokens lo conocen bien. Emitir billones de unidades para que cada una cueste una fracción de céntimo no hace a nadie más rico, pero hace que la moneda parezca una ganga.</p>
+
+<h2>Una pizza cortada en más trozos</h2>
+
+<p>Piensa en una pizza. Puedes cortarla en 4 trozos o en 400. En el segundo caso cada trozo es mucho más pequeño y, si se vendieran, mucho más barato. Pero la pizza es la misma. Nadie diría que la de 400 trozos es «más barata» por tener porciones de pocos céntimos.</p>
+
+<p>Con las criptomonedas pasa exactamente eso. El número de unidades lo decide el proyecto al crearla: 21 millones, mil millones, un billón. <strong>El precio por unidad es solo el resultado de dividir el valor total entre ese número.</strong> Compara dos monedas inventadas:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Moneda Alfa</th><th>Moneda Beta</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Precio por unidad</td><td>500 €</td><td>0,005 €</td></tr>
+    <tr><td>Unidades en circulación</td><td>2.000.000</td><td>400.000.000.000</td></tr>
+    <tr><td><strong>Capitalización</strong></td><td><strong>1.000 millones €</strong></td><td><strong>2.000 millones €</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Beta cuesta cien mil veces menos por unidad y, sin embargo, <strong>es el doble de grande</strong>. Si te hubieras guiado por el precio, habrías dicho que Alfa es la cara. Es justo al revés.</p>
+
+<h2>La capitalización, a mano</h2>
+
+<p>La fórmula es la misma en las dos webs, y la publican tal cual:</p>
+
+<blockquote><strong>Capitalización = precio × oferta circulante</strong></blockquote>
+
+<p>La <a href="/glosario/market-cap">capitalización de mercado</a> responde a la pregunta «¿cuánto valen, al precio de hoy, todas las unidades que están en circulación?». Es lo que ordena el ranking, y es la única cifra de la portada que permite comparar tamaños entre monedas distintas.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "El precio engaña; la capitalización, no",
+  "subtitulo": "Las mismas tres monedas inventadas, ordenadas por lo que de verdad miden.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Alfa · 500 € por unidad", "capitalizacion": 1000 },
+    { "etiqueta": "Beta · 0,005 € por unidad", "capitalizacion": 2000 },
+    { "etiqueta": "Gamma · 12 € por unidad", "capitalizacion": 120 }
+  ],
+  "series": [{ "clave": "capitalizacion", "nombre": "Capitalización (millones de €)", "color": "#ff8a7a" }],
+  "nota": "Ejemplo inventado. Alfa: 500 € × 2 millones = 1.000 M€. Beta: 0,005 € × 400.000 millones = 2.000 M€. Gamma: 12 € × 10 millones = 120 M€."
+}
+</script></div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">La capitalización no es dinero metido en la moneda, ni dinero que se pueda sacar. Es una multiplicación: el último precio por todas las unidades. Que alguien pague 2 € por una unidad no significa que haya compradores a 2 € para las mil millones restantes. Lo verás con números en la lección 3.4.</div>
+</div>
+
+<h2>La cuenta que desmonta las promesas</h2>
+
+<p>Aquí está la utilidad práctica de todo esto. Cada vez que leas que una moneda «puede llegar a» cierto precio, haz esta cuenta: multiplica ese precio por la oferta circulante y mira qué capitalización sale. Después compárala con las monedas más grandes del mercado.</p>
+
+<p>Vuelve a Beta, que cuesta 0,005 € y tiene 400.000 millones de unidades. Alguien te dice que «va a llegar a 1 €». La cuenta: 1 € × 400.000 millones = <strong>400.000 millones de euros</strong> de capitalización. Para que eso ocurriera, Beta tendría que valer doscientas veces más que hoy y colocarse entre las mayores monedas del mundo. ¿Imposible? No. ¿Es lo que te estaban contando cuando decían «solo tiene que llegar a 1 €»? Tampoco.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">× 200</span>
+  <span class="prose-dato-texto">Lo que tendría que crecer la moneda entera para que una unidad de 0,005 € valiera 1 €. El «solo» de «solo tiene que llegar a 1 €» esconde esa cifra.</span>
+</div>
+
+<ol class="prose-pasos">
+  <li><strong>Apunta el precio que te prometen</strong> y la oferta circulante de la moneda.</li>
+  <li><strong>Multiplica.</strong> El resultado es la capitalización que haría falta.</li>
+  <li><strong>Divídela entre la capitalización actual.</strong> Ese es el múltiplo real: cuántas veces tiene que crecer la moneda entera.</li>
+  <li><strong>Busca en la portada qué monedas tienen hoy ese tamaño.</strong> Si la promesa obliga a superar a casi todo el mercado, ya sabes cuánto pesa.</li>
+</ol>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una moneda cuesta 0,02 € y tiene 50.000 millones de unidades en circulación. Te dicen que llegará a 2 €. ¿Qué capitalización tendría entonces?",
+  "opciones": [
+    "1.000 millones de euros",
+    "10.000 millones de euros",
+    "100.000 millones de euros",
+    "2.000 millones de euros"
+  ],
+  "correcta": 2,
+  "explicacion": "2 € × 50.000 millones de unidades = 100.000 millones de euros. Hoy vale 1.000 millones (0,02 × 50.000 millones), así que tendría que multiplicarse por cien."
+}
+</script></div>
+
+<h2>El mismo error, en la otra dirección</h2>
+
+<p>El sesgo de unidad también funciona al revés. Hay quien descarta una moneda «porque una entera vale demasiado» y no puede permitírsela. Pero las criptomonedas se pueden comprar en fracciones: puedes tener 0,001 unidades de bitcoin igual que puedes tener 3 millones de unidades de un token de céntimos. Lo que importa no es cuántas unidades tienes, sino qué parte de la capitalización representan y qué le pase a esa capitalización.</p>
+
+<p>Dicho de otra forma: si pones 100 € en una moneda y su capitalización se dobla sin que cambie el número de unidades, tus 100 € pasan a ser 200 €. Da igual que tuvieras media unidad o medio millón. <strong>El precio sube porque la capitalización sube</strong>, no al revés. Y ese «sin que cambie el número de unidades» es justo lo que la siguiente lección pone en duda.</p>
+
+<h2>Ejercicio: la multiplicación, tres veces</h2>
+
+<p>Elige tres monedas de la portada: una de las diez primeras, una entre el puesto 50 y el 100 y una más allá del 300. De cada una, apunta el precio y la oferta circulante, multiplícalos y comprueba que el resultado se parece a la capitalización que da la web. No coincidirá al céntimo, porque el precio cambia mientras lo haces. Después ordénalas por precio y por capitalización: lo normal es que las dos listas no coincidan.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el precio por unidad depende de cuántas unidades se crearon y no dice si una moneda es cara o barata. Se compara la capitalización: precio × oferta circulante. Ante cualquier precio prometido, multiplica y mira qué tamaño exigiría.</div>
+</div>

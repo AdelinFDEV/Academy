@@ -1,0 +1,128 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>La pestaña de mercados es la más útil de la ficha y la que menos se abre. Enseña en qué plataformas se negocia la moneda, contra qué, a qué precio en cada sitio, con qué diferencia entre compra y venta y con cuánto dinero esperando a un 2 % del precio. Con esas columnas se mide la liquidez real, que es lo que decide si podrás vender cuando quieras. Aquí las lees una a una.</p>
+</div>
+
+<h2>Liquidez: la pregunta que el precio no responde</h2>
+
+<p>La <a href="/glosario/liquidez">liquidez</a> es la facilidad con la que puedes cambiar una moneda por dinero sin mover su precio. Una moneda líquida se compra y se vende en segundos, en cantidades grandes, casi al precio que marca la pantalla. Una poco líquida te obliga a aceptar un precio peor cuanto más quieras comprar o vender.</p>
+
+<p>Es la propiedad más infravalorada por quien empieza, porque no se nota al entrar. Al comprar 100 € de casi cualquier cosa no hay problema. Se nota al salir, sobre todo cuando todo el mundo quiere salir a la vez. Por eso conviene medirla antes.</p>
+
+<h2>El libro de órdenes, en dos minutos</h2>
+
+<p>Para entender las columnas hay que saber de dónde salen. En un exchange centralizado, cada par tiene un <a href="/glosario/libro-de-ordenes">libro de órdenes</a>: la lista de todas las órdenes de compra y de venta que esperan a ejecutarse, ordenadas por precio.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Quieren comprar (bids)</th><th>Precio</th><th>Quieren vender (asks)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td></td><td>1,03 €</td><td>40.000 unidades</td></tr>
+    <tr><td></td><td>1,02 €</td><td>25.000 unidades</td></tr>
+    <tr><td></td><td><strong>1,01 €</strong></td><td><strong>8.000 unidades</strong></td></tr>
+    <tr><td><strong>10.000 unidades</strong></td><td><strong>0,99 €</strong></td><td></td></tr>
+    <tr><td>30.000 unidades</td><td>0,98 €</td><td></td></tr>
+    <tr><td>45.000 unidades</td><td>0,97 €</td><td></td></tr>
+  </tbody>
+</table>
+
+<p>En este libro inventado, el mejor precio al que alguien vende es 1,01 € y el mejor al que alguien compra es 0,99 €. La diferencia entre los dos es el <a href="/glosario/spread">spread</a>. Si compras ahora mismo pagas 1,01 €; si vendes, recibes 0,99 €. <strong>Nada más comprar ya vas un 2 % por detrás</strong>, sin que el precio se haya movido.</p>
+
+<h2>Las columnas de la pestaña de mercados</h2>
+
+<p>Con el libro en la cabeza, la tabla se lee sola. Cada fila es un par en una plataforma.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Columna</th><th>Qué dice</th><th>Qué buscar</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Exchange y par</strong></td><td>Dónde se negocia y contra qué</td><td>Plataformas conocidas y varios pares</td></tr>
+    <tr><td><strong>Precio</strong></td><td>El último precio en ese par</td><td>Que no se aleje del de las demás filas</td></tr>
+    <tr><td><strong>Spread</strong></td><td>Distancia entre el mejor precio de compra y el de venta</td><td>Cuanto más estrecho, mejor</td></tr>
+    <tr><td><strong>Profundidad +2 %</strong></td><td>Dinero en órdenes de venta hasta un 2 % por encima del precio</td><td>Cuánto puedes comprar sin subirlo más de un 2 %</td></tr>
+    <tr><td><strong>Profundidad −2 %</strong></td><td>Dinero en órdenes de compra hasta un 2 % por debajo</td><td>Cuánto puedes vender sin bajarlo más de un 2 %</td></tr>
+    <tr><td><strong>Volumen 24 h</strong></td><td>Lo negociado en ese par</td><td>Que no esté todo en una sola fila</td></tr>
+    <tr><td><strong>Confianza o Trust Score</strong></td><td>La valoración de la web sobre ese par</td><td>Alta, o verde</td></tr>
+  </tbody>
+</table>
+
+<p>La columna que casi nadie mira y más vale es la de <strong>profundidad −2 %</strong>. Responde a la pregunta concreta: si mañana quiero vender, ¿cuánto dinero hay esperando a comprarme antes de que el precio caiga un 2 %?</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">−2 %</span>
+  <span class="prose-dato-texto">La columna de la salida. Si vas a poner 5.000 € en una moneda y ahí solo hay 800 €, ya sabes lo que va a pasar el día que vendas.</span>
+</div>
+
+<h2>Las dos notas de las webs</h2>
+
+<p>Las dos webs resumen todo lo anterior en una valoración propia. Miden lo mismo con escalas distintas.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Liquidity Score</p>
+    <p class="prose-vs-sub">CoinMarketCap · de 0 a 1.200</p>
+    <ul>
+      <li data-tono="favor">Mide el slippage de órdenes de distinto tamaño</li>
+      <li data-tono="favor">Da más peso a órdenes de 100 a 10.000 dólares</li>
+      <li data-tono="favor">1.200: slippage mínimo hasta 200.000 dólares</li>
+      <li data-tono="contra">0: menos de 100 dólares en algún lado del libro</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Trust Score</p>
+    <p class="prose-vs-sub">CoinGecko · verde, amarillo o rojo</p>
+    <ul>
+      <li data-tono="favor">Mira el spread y la profundidad a ±2 %</li>
+      <li data-tono="favor">Tiene en cuenta volumen y frecuencia de operaciones</li>
+      <li data-tono="favor">Los exchanges, además, reciben una nota de 1 a 10</li>
+      <li data-tono="contra">Cambia en tiempo real con el mercado</li>
+    </ul>
+  </div>
+</div>
+
+<p>CoinMarketCap explica el criterio de su nota con una frase que resume la lección: lo que importa a la mayoría de los usuarios no es si se puede ejecutar una orden de 50 bitcoins, sino cuánto pierden por el camino en una orden de entre 100 y 10.000 dólares. Por eso pondera sobre todo ese tramo.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">CoinGecko define su Trust Score de pares como la liquidez de un par, es decir, lo probable que es que puedas comprar o vender al precio que ves. Rehízo el sistema en mayo de 2026, y para los exchanges mide liquidez, regulación, ciberseguridad, incidentes pasados y prueba de reservas. Los pesos cambian; lo que mide, no.</div>
+</div>
+
+<h2>Exchange centralizado o DEX</h2>
+
+<p>En la tabla aparecen mezcladas dos clases de mercado, y la profundidad significa cosas algo distintas en cada una.</p>
+
+<p>En un exchange centralizado hay un libro de órdenes como el de arriba. En un <a href="/glosario/dex">DEX</a> normalmente no lo hay: se negocia contra un fondo común de monedas, un <a href="/glosario/liquidity-pool">liquidity pool</a>, y el precio lo fija una fórmula según cuánto hay de cada moneda en el fondo. Ahí la cifra que importa es el tamaño del pool: cuanto mayor es, menos se mueve el precio con cada operación.</p>
+
+<p>Para una moneda que solo se negocia en un DEX, la pregunta equivalente a la profundidad es: <strong>¿cuánto dinero hay en el pool?</strong> Un token con una capitalización de 50 millones y un pool de 40.000 € tiene un mercado de 40.000 €, diga lo que diga la portada. Y si quien puso esa liquidez puede retirarla cuando quiera, puede no tener ninguno mañana.</p>
+
+<h2>Cuatro comprobaciones en un minuto</h2>
+
+<ol class="prose-pasos">
+  <li><strong>¿En cuántas plataformas conocidas se negocia?</strong> Una sola, y pequeña, es una dependencia: si esa plataforma cierra o la retira, te quedas sin mercado.</li>
+  <li><strong>¿Cómo se reparte el volumen?</strong> Repartido entre varias filas es buena señal. Más del 80 % en una sola pide una explicación.</li>
+  <li><strong>¿Cuánto hay a −2 %?</strong> Compáralo con lo que piensas invertir. Si tu posición es mayor que esa cifra, tú solo moverías el mercado.</li>
+  <li><strong>¿Qué nota tiene el par principal?</strong> Confianza alta o Trust Score en verde. Un par rojo con mucho volumen es justo el caso de la lección anterior.</li>
+</ol>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Vas a invertir 3.000 € en una moneda. En su pestaña de mercados, el par con más volumen tiene 600 € de profundidad a −2 % y 700 € a +2 %. ¿Qué significa para ti?",
+  "opciones": [
+    "Que es un buen momento, porque hay equilibrio entre compras y ventas",
+    "Que tu orden por sí sola movería el precio mucho más de un 2 %, al entrar y al salir",
+    "Que la moneda tiene un spread del 2 %",
+    "Que el volumen de la moneda es de 1.300 € al día"
+  ],
+  "correcta": 1,
+  "explicacion": "Tu posición es cuatro o cinco veces mayor que todo lo que hay esperando a un 2 % del precio. Comprarías encareciendo el precio y venderías hundiéndolo."
+}
+</script></div>
+
+<h2>Ejercicio: la ficha de liquidez</h2>
+
+<p>Para cada una de tus tres monedas, abre la pestaña de mercados y rellena una línea con cinco datos: número de plataformas donde se negocia, porcentaje del volumen que se lleva la primera, spread del par principal, profundidad a −2 % en ese par y nota de confianza o Trust Score. Lo normal es que la moneda grande y la pequeña parezcan de planetas distintos. Guarda la línea: en la lección siguiente la conviertes en euros.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la liquidez es poder vender sin hundir el precio, y se mide en la pestaña de mercados. El spread es lo que pierdes nada más entrar. La profundidad a −2 % es lo que hay esperando a comprarte. Si tu posición es mayor que esa cifra, el mercado eres tú.</div>
+</div>

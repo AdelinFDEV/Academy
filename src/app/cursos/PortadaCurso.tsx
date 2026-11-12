@@ -22,10 +22,11 @@ const PORTADA_IMAGEN: Record<string, string> = {
   "seguridad-cripto": "/cursos/seguridad-cripto/portada.webp",
 };
 
-type Motivo = "pulso" | "escudo" | "generico";
+type Motivo = "pulso" | "escudo" | "datos" | "generico";
 const MOTIVO: Record<string, Motivo> = {
   "psicologia-del-trading": "pulso",
   "seguridad-cripto": "escudo",
+  "coinmarketcap-y-coingecko": "datos",
 };
 
 /** Un número estable a partir del slug, para variar el arte genérico. */
@@ -95,6 +96,24 @@ function ArteEscudo({ id }: { id: string }) {
   );
 }
 
+/** Una tabla de datos: barras de distinta altura y una lupa sobre una de ellas. */
+function ArteDatos() {
+  const barras = [34, 52, 28, 70, 46, 88, 60, 40, 76];
+  return (
+    <>
+      {[30, 55, 80, 105].map((y) => (
+        <line key={y} x1="190" y1={y} x2="400" y2={y} stroke="currentColor" strokeWidth="1" opacity="0.1" />
+      ))}
+      {barras.map((alto, i) => (
+        <rect key={i} x={204 + i * 21} y={118 - alto} width="11" height={alto} rx="2" fill="currentColor" opacity={i === 5 ? 0.85 : 0.2 + (i % 3) * 0.06} />
+      ))}
+      <circle cx="314" cy="52" r="30" fill="none" stroke="currentColor" strokeWidth="2.2" opacity="0.9" />
+      <circle cx="314" cy="52" r="42" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.22" />
+      <path d="M336 74 L360 98" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.9" />
+    </>
+  );
+}
+
 function ArteGenerico({ slug }: { slug: string }) {
   const s = semilla(slug);
   const cx = 260 + (s % 80);
@@ -133,6 +152,7 @@ export default function PortadaCurso({ slug, titulo }: { slug: string; titulo: s
     <svg className="cx-portada-arte" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       {motivo === "pulso" && <ArtePulso />}
       {motivo === "escudo" && <ArteEscudo id={id} />}
+      {motivo === "datos" && <ArteDatos />}
       {motivo === "generico" && <ArteGenerico slug={slug} />}
     </svg>
   );

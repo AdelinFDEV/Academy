@@ -1,0 +1,149 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El gráfico de la ficha se puede ver de varias formas, y cada una cuenta una historia distinta: por precio o por capitalización, en escala lineal o logarítmica. Junto a él están el máximo y el mínimo históricos, que casi todo el mundo lee mal. Aquí aprendes a elegir la vista correcta y a hacer la cuenta que más disgustos evita: cuánto tiene que subir una moneda para volver a donde estaba.</p>
+</div>
+
+<h2>Precio o capitalización: dos gráficos distintos</h2>
+
+<p>Encima del gráfico hay un selector que casi nadie toca. Permite ver la evolución del <strong>precio</strong> o la de la <strong>capitalización</strong>. En una moneda cuya oferta no cambia, las dos líneas tienen la misma forma. En una que emite unidades nuevas, se separan, y la diferencia entre ellas es justo la dilución del módulo 2.</p>
+
+<p>Imagina un token que hace dos años tenía 100 millones de unidades a 2 €, y hoy tiene 400 millones a 1 €. Su precio ha caído a la mitad. Su capitalización ha pasado de 200 a 400 millones: se ha doblado.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "La misma moneda, dos historias",
+  "subtitulo": "La capitalización se dobla mientras el precio cae a la mitad: la oferta se ha multiplicado por cuatro.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Hace 2 años", "precio": 100, "capitalizacion": 100 },
+    { "etiqueta": "Hace 18 meses", "precio": 85, "capitalizacion": 128 },
+    { "etiqueta": "Hace 1 año", "precio": 70, "capitalizacion": 158 },
+    { "etiqueta": "Hace 6 meses", "precio": 58, "capitalizacion": 181 },
+    { "etiqueta": "Hoy", "precio": 50, "capitalizacion": 200 }
+  ],
+  "series": [
+    { "clave": "precio", "nombre": "Precio (base 100)", "color": "#ff8a7a" },
+    { "clave": "capitalizacion", "nombre": "Capitalización (base 100)", "color": "#8fb0ff" }
+  ],
+  "nota": "Ejemplo inventado, con las dos series en base 100. Quien mira la capitalización ve un proyecto que crece; quien compró hace dos años ha perdido la mitad."
+}
+</script></div>
+
+<p>¿Cuál mirar? Depende de la pregunta. Si quieres saber cómo le ha ido <strong>a quien compró</strong>, el precio. Si quieres saber cómo ha evolucionado <strong>el tamaño del proyecto</strong>, la capitalización. Y si las dos líneas se separan mucho, ya sabes que hay una emisión fuerte detrás.</p>
+
+<h2>Escala lineal y escala logarítmica</h2>
+
+<p>El segundo selector cambia la escala del eje vertical, y cambia por completo lo que ves.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lineal</p>
+    <p class="prose-vs-sub">Cada tramo del eje vale los mismos euros</p>
+    <ul>
+      <li data-tono="favor">Intuitiva: es la de cualquier gráfico</li>
+      <li data-tono="favor">Buena para periodos cortos</li>
+      <li data-tono="contra">Aplasta todo lo anterior a una gran subida</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Logarítmica</p>
+    <p class="prose-vs-sub">Cada tramo del eje vale el mismo porcentaje</p>
+    <ul>
+      <li data-tono="favor">Subir de 1 a 2 se ve igual que de 100 a 200</li>
+      <li data-tono="favor">Imprescindible para periodos de años</li>
+      <li data-tono="contra">Hace que las caídas recientes parezcan menores</li>
+    </ul>
+  </div>
+</div>
+
+<p>En escala lineal, una moneda que pasó de 0,10 € a 100 € muestra años enteros como una línea plana pegada al suelo y, al final, una pared. Parece que «no pasó nada» hasta el último tramo, cuando en realidad se multiplicó por diez varias veces. En escala logarítmica cada una de esas multiplicaciones ocupa el mismo espacio, y se ve la historia completa.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Regla práctica: para mirar semanas o pocos meses, lineal. Para mirar toda la historia de una moneda, logarítmica. Y si un gráfico te lo enseña otra persona para convencerte de algo, pregúntate qué escala ha elegido y por qué.</div>
+</div>
+
+<h2>El máximo histórico y la distancia que marca</h2>
+
+<p>En las estadísticas aparece el máximo histórico, el <a href="/glosario/ath">ATH</a>, con su fecha y un porcentaje en rojo: lo que ha caído el precio desde entonces. CoinGecko publica la fórmula: máximo menos precio actual, dividido entre el máximo, por cien. A su lado está el mínimo histórico, el <a href="/glosario/atl">ATL</a>, con lo que ha subido desde ahí.</p>
+
+<p>Ese porcentaje rojo es el dato peor interpretado de toda la ficha. La lectura habitual es: «está un 90 % por debajo de su máximo, así que tiene un 90 % de recorrido». Las dos mitades de esa frase están mal.</p>
+
+<h2>La cuenta que casi nadie hace</h2>
+
+<p>Una caída y la subida necesaria para recuperarla no son simétricas. Si algo cae un 50 %, de 100 a 50, para volver a 100 tiene que subir un 100 %, no un 50 %. Cuanto mayor es la caída, peor se pone la cuenta:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Ha caído desde el máximo</th><th>Tiene que subir para volver</th><th>Es decir, multiplicarse por</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>−20 %</td><td>+25 %</td><td>1,25</td></tr>
+    <tr><td>−50 %</td><td>+100 %</td><td>2</td></tr>
+    <tr><td>−75 %</td><td>+300 %</td><td>4</td></tr>
+    <tr><td>−90 %</td><td>+900 %</td><td>10</td></tr>
+    <tr><td>−95 %</td><td>+1.900 %</td><td>20</td></tr>
+    <tr><td>−99 %</td><td>+9.900 %</td><td>100</td></tr>
+  </tbody>
+</table>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Cuántas veces tiene que multiplicarse para volver a su máximo",
+  "subtitulo": "La caída y la recuperación no son simétricas.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Cayó un 20 %", "veces": 1.25 },
+    { "etiqueta": "Cayó un 50 %", "veces": 2 },
+    { "etiqueta": "Cayó un 75 %", "veces": 4 },
+    { "etiqueta": "Cayó un 90 %", "veces": 10 },
+    { "etiqueta": "Cayó un 95 %", "veces": 20 }
+  ],
+  "series": [{ "clave": "veces", "nombre": "Veces que debe multiplicarse", "color": "#ff8a7a" }],
+  "nota": "Fórmula: 1 ÷ (1 − caída). Con una caída del 90 %: 1 ÷ 0,10 = 10."
+}
+</script></div>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">× 10</span>
+  <span class="prose-dato-texto">Lo que tiene que multiplicarse una moneda que ha caído un 90 % solo para volver a su máximo. «Un 90 % por debajo» no es «un 90 % de recorrido».</span>
+</div>
+
+<h2>El máximo es de precio, no de capitalización</h2>
+
+<p>Hay una trampa más, y es la que une esta lección con el módulo 2. El máximo histórico es un <strong>máximo de precio por unidad</strong>. Si desde entonces la oferta ha crecido, volver a ese precio exige una capitalización mucho mayor que la de entonces.</p>
+
+<p>Retoma el token del primer gráfico: hizo su máximo en 2 € con 100 millones de unidades, es decir, con 200 millones de capitalización. Hoy cotiza a 1 € con 400 millones de unidades. Para volver a 2 € no le basta con recuperar los 200 millones de entonces: necesita <strong>800 millones</strong> de capitalización, cuatro veces su récord de tamaño.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Mira la fecha del máximo.</strong> Cuanto más antiguo, más probable es que la oferta haya cambiado desde entonces.</li>
+  <li><strong>Multiplica el precio máximo por la oferta circulante de hoy.</strong> Esa es la capitalización que haría falta para repetirlo.</li>
+  <li><strong>Compárala con la capitalización que tenía entonces</strong>, cambiando el gráfico a capitalización. Si la de hoy necesaria es varias veces mayor, el máximo de precio es un espejismo.</li>
+</ol>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Que una moneda haya valido un precio no la obliga a volver a él. Muchas no vuelven nunca: lo verás con cifras en la lección 4.4. El máximo histórico es un dato del pasado, no un objetivo.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una moneda está un 80 % por debajo de su máximo histórico. ¿Cuánto tiene que subir para volver a él?",
+  "opciones": [
+    "Un 80 %",
+    "Un 160 %",
+    "Un 400 %",
+    "Un 800 %"
+  ],
+  "correcta": 2,
+  "explicacion": "Si valía 100 y vale 20, para volver a 100 tiene que multiplicarse por cinco: una subida del 400 %. La fórmula es 1 ÷ (1 − 0,80) = 5."
+}
+</script></div>
+
+<h2>Ejercicio: el máximo de tus tres monedas</h2>
+
+<p>Para cada una de tus tres monedas, apunta el máximo histórico, su fecha y el porcentaje de caída. Calcula cuántas veces tendría que multiplicarse para volver, con la fórmula 1 ÷ (1 − caída). Después cambia el gráfico a capitalización y compara la del día del máximo con la de hoy. Si la capitalización actual ya supera a la de aquel día y el precio no, has encontrado una moneda cuya oferta ha crecido mucho.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el gráfico de precio dice cómo le fue a quien compró; el de capitalización, cómo cambió el tamaño. Usa la escala logarítmica para periodos largos. Una caída del 90 % exige multiplicarse por diez para recuperarse, y si la oferta ha crecido, volver al precio máximo pide una capitalización mayor que la de entonces.</div>
+</div>

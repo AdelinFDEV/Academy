@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "cm-m1-01",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "¿Qué hace, en esencia, un agregador como CoinMarketCap o CoinGecko?",
+    "opciones": [
+      "Vende criptomonedas al precio que publica",
+      "Emite un sello de garantía sobre las monedas que lista",
+      "Recoge los datos de muchas plataformas, calcula cifras de referencia y ordena las monedas",
+      "Guarda las criptomonedas de sus usuarios"
+    ],
+    "correcta": 2,
+    "explicacion": "Juntan y ordenan datos de otros. No venden, no custodian y no avalan."
+  },
+  {
+    "clave": "cm-m1-02",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "Una moneda aparece listada en un agregador. ¿Qué puedes concluir de eso?",
+    "opciones": [
+      "Que está supervisada por un regulador financiero",
+      "Que es una buena inversión a largo plazo",
+      "Que la web ha comprobado que el proyecto es fiable",
+      "Que cumple los requisitos de datos de esa web, nada más"
+    ],
+    "correcta": 3,
+    "explicacion": "Estar en la lista es una cuestión de datos, no un aval sobre el proyecto."
+  },
+  {
+    "clave": "cm-m1-03",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "¿A quién pertenece CoinMarketCap desde 2020?",
+    "opciones": [
+      "A Binance, que anunció la compra en abril de ese año",
+      "A una fundación sin ánimo de lucro",
+      "A un regulador europeo",
+      "A CoinGecko"
+    ],
+    "correcta": 0,
+    "explicacion": "Binance anunció la compra el 2 de abril de 2020. Las dos empresas dijeron que la web seguiría funcionando de forma independiente."
+  },
+  {
+    "clave": "cm-m1-04",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "Sabiendo que un exchange es dueño de uno de los agregadores, ¿cuál es la forma sensata de usar sus datos?",
+    "opciones": [
+      "Dar por hecho que sus clasificaciones están manipuladas",
+      "Contrastar en las dos webs lo que vayas a usar para decidir",
+      "Dejar de usar esa web por completo",
+      "Fiarte solo de esa web, porque tiene más datos"
+    ],
+    "correcta": 1,
+    "explicacion": "Hay un conflicto de interés evidente, pero nadie ha demostrado manipulación. Lo razonable es contrastar."
+  },
+  {
+    "clave": "cm-m1-05",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "En la ficha de una moneda ves un botón grande de «Comprar». ¿Qué es?",
+    "opciones": [
+      "La forma de comprar directamente al agregador",
+      "Una señal de que la moneda ha sido verificada",
+      "Publicidad o un enlace de afiliación a una plataforma",
+      "Una recomendación de compra de la web"
+    ],
+    "correcta": 2,
+    "explicacion": "Los agregadores viven de publicidad y afiliación. El botón lleva a una plataforma que paga por estar ahí."
+  },
+  {
+    "clave": "cm-m1-06",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "¿Quién suele escribir la descripción de un proyecto que aparece en su ficha?",
+    "opciones": [
+      "Un regulador",
+      "Un auditor independiente",
+      "Los usuarios, por votación",
+      "El propio proyecto, que la envía a la web"
+    ],
+    "correcta": 3,
+    "explicacion": "Los textos y los enlaces los suele mandar quien más interés tiene en que la moneda se vea bien."
+  },
+  {
+    "clave": "cm-m1-07",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "¿Qué es un «par de mercado»?",
+    "opciones": [
+      "Una moneda negociada contra otra en una plataforma concreta",
+      "Dos monedas que suben y bajan a la vez",
+      "Dos plataformas que comparten sus datos",
+      "La pareja de precios de compra y de venta de un agregador"
+    ],
+    "correcta": 0,
+    "explicacion": "Cada combinación de moneda, contrapartida y plataforma es un mercado separado, con su propio precio."
+  },
+  {
+    "clave": "cm-m1-08",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "¿Qué significa que el precio de un agregador sea una media «ponderada por volumen»?",
+    "opciones": [
+      "Que se hace la media simple de todos los precios",
+      "Que el precio de cada mercado pesa según cuánto se negocia en él",
+      "Que solo cuenta el precio de la plataforma más grande",
+      "Que se elige siempre el precio más bajo"
+    ],
+    "correcta": 1,
+    "explicacion": "Un mercado donde se negocia mucho dice más sobre el precio que uno donde casi no hay operaciones."
+  },
+  {
+    "clave": "cm-m1-09",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "Una moneda cotiza a 2,00 € en una plataforma con el 80 % del volumen, a 2,04 € en otra con el 15 % y a 2,50 € en otra con el 5 %. ¿Cuál es, aproximadamente, su precio medio ponderado por volumen?",
+    "opciones": [
+      "2,18 €",
+      "2,50 €",
+      "2,03 €",
+      "2,25 €"
+    ],
+    "correcta": 2,
+    "explicacion": "2,00 × 0,80 + 2,04 × 0,15 + 2,50 × 0,05 = 2,03. La media simple, 2,18, se deja arrastrar por el mercado pequeño."
+  },
+  {
+    "clave": "cm-m1-10",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "En la pestaña de mercados de CoinMarketCap, un par lleva un asterisco (*). ¿Qué indica?",
+    "opciones": [
+      "Que es el par recomendado para comprar",
+      "Que es el par con más volumen",
+      "Que la plataforma ha pagado por destacarlo",
+      "Que su precio se ha dejado fuera de la media porque no parece de libre mercado"
+    ],
+    "correcta": 3,
+    "explicacion": "Pasa, por ejemplo, cuando una plataforma tiene los depósitos o las retiradas desactivados y su precio se despega del resto."
+  },
+  {
+    "clave": "cm-m1-11",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "¿Por qué CoinMarketCap solo acepta precios que vengan de plataformas conectadas, con su volumen detrás?",
+    "opciones": [
+      "Porque un precio sin mercado detrás permitiría inflar la capitalización y el puesto de una moneda",
+      "Porque lo exige la normativa europea",
+      "Porque así cobra una comisión a cada plataforma",
+      "Porque los precios de otras fuentes son siempre más bajos"
+    ],
+    "correcta": 0,
+    "explicacion": "Si bastara con declarar un precio, un proyecto podría fijar uno artificial y subir en el ranking sin que nadie comprara nada."
+  },
+  {
+    "clave": "cm-m1-12",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "Vas a comprar una moneda pequeña y el agregador marca 0,50 €. ¿Qué precio vas a pagar tú?",
+    "opciones": [
+      "Siempre menos de 0,50 €",
+      "El de tu plataforma, en tu par y en ese momento, que puede diferir varios puntos de la referencia",
+      "El precio medio de la última semana",
+      "Exactamente 0,50 €, en cualquier plataforma"
+    ],
+    "correcta": 1,
+    "explicacion": "El agregador da una referencia. En una moneda pequeña, la diferencia con el precio real de compra puede ser de varios puntos."
+  },
+  {
+    "clave": "cm-m1-13",
+    "leccion": "la-portada-columna-a-columna",
+    "enunciado": "¿Con qué criterio están ordenadas por defecto las monedas en la portada?",
+    "opciones": [
+      "Por antigüedad",
+      "Por la valoración de los usuarios",
+      "Por capitalización, de mayor a menor",
+      "Por precio por unidad"
+    ],
+    "correcta": 2,
+    "explicacion": "El puesto dice quién es más grande, no quién es mejor."
+  },
+  {
+    "clave": "cm-m1-14",
+    "leccion": "la-portada-columna-a-columna",
+    "enunciado": "Una moneda cayó un 30 % ayer a las 10:00 y no se ha movido desde entonces. Hoy a las 11:00, ¿qué marca su columna de 24 horas?",
+    "opciones": [
+      "−30 %, porque la caída fue ayer",
+      "−15 %, la mitad de la caída",
+      "+30 %, porque está recuperando",
+      "0 %, porque la caída ya ha salido de la ventana de 24 horas"
+    ],
+    "correcta": 3,
+    "explicacion": "La columna compara con el precio de hace exactamente 24 horas. La caída sigue ahí, pero ya no se ve en esa columna: sí en la de 7 días."
+  },
+  {
+    "clave": "cm-m1-15",
+    "leccion": "la-portada-columna-a-columna",
+    "enunciado": "Dos monedas tienen el mismo dibujo en su gráfico pequeño de 7 días. ¿Qué puedes afirmar?",
+    "opciones": [
+      "Nada sobre cuánto se han movido: cada gráfico tiene su propia escala",
+      "Que tienen la misma capitalización",
+      "Que se negocian en las mismas plataformas",
+      "Que han subido el mismo porcentaje"
+    ],
+    "correcta": 0,
+    "explicacion": "Cada línea se ajusta a su máximo y su mínimo. Para saber cuánto se ha movido hay que mirar el número."
+  }
+]

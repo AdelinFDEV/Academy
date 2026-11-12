@@ -22,6 +22,19 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00f. Cinco cursos nuevos, uno a uno (12-11-2026)
+
+Pedido por el admin el 12-11-2026, con la orden de **no parar, no esperar su aprobación de cada informe y publicarlos**. Cada curso sigue `CURSOS.md` entero: informe con fuentes en `informes/`, `scripts/cursos/<slug>/` (curso.json, lecciones, bancos de 15 por módulo y 40 del final), términos nuevos del diccionario como ficha detallada, icono del logro, paleta propia, `subir-curso.mjs`, y publicación. Las portadas las genera el admin con los prompts que se le dejan; mientras, cada curso sale con su arte SVG.
+
+Orden y estado (se va tachando aquí según se cierra cada paso; al cerrar el curso entero se borra su línea):
+
+- [ ] **1 · Cómo leer CoinMarketCap y CoinGecko** (`coinmarketcap-y-coingecko`, coral `#ff8a7a`, logro «Ojo Clínico», claves `cm-`). **Escrito entero y subido como borrador el 12-11-2026**: 5 módulos, 18 lecciones, 75 preguntas de módulo y 40 del final, diez términos nuevos en el diccionario, icono del logro y motivo SVG de la portada. Falta: publicarlo (`"published": true` y volver a subir, **después de desplegar el código**, que es donde viven los términos y el icono) y su ilustración.
+- [ ] **2 · Bitcoin y DCA a largo plazo** (ámbar `#fbbf24`).
+- [ ] **3 · Futuros y apalancamiento** (rosa `#f472b6`).
+- [ ] **4 · Análisis técnico sin humo** (verde lima `#a3e635`).
+- [ ] **5 · DeFi y stablecoins** (azul: ajustar para que no se parezca al del Portfolio `#4f9dff`).
+- [ ] **Al final:** auditoría SEO de las cinco fichas (se publican sin ella por orden del admin), ilustraciones de portada cuando el admin las genere, y registro de paletas e ilustraciones en `CURSOS.md`.
+
 ### 00e. La portada no tiene `<h1>` (12-11-2026)
 
 Visto al rehacer el certificado: el único `<h1>` de la portada era el de la **muestra del certificado** del slider («Tu nombre aquí»), porque el componente pintaba el nombre como `<h1>`. Ya no lo hace (`CURSOS.md` §9), así que la portada se queda sin ninguno. Comprobar: `curl -s https://adelinacademy.com/ | grep -c "<h1"`.

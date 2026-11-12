@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "cm-m3-01",
+    "leccion": "el-volumen-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "¿Qué mide el volumen de 24 horas de una moneda?",
+    "opciones": [
+      "El valor de todas sus compraventas al contado en el último día",
+      "El dinero nuevo que ha entrado en la moneda",
+      "La cantidad de monedas creadas en un día",
+      "El número de personas que la han comprado"
+    ],
+    "correcta": 0,
+    "explicacion": "Es lo que ha cambiado de manos. Por cada euro que entró, otro salió."
+  },
+  {
+    "clave": "cm-m3-02",
+    "leccion": "el-volumen-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Una moneda tiene 50 millones de euros de capitalización y 5 millones de volumen diario. ¿Cuál es su cociente volumen ÷ capitalización?",
+    "opciones": [
+      "100 %",
+      "10 %",
+      "1 %",
+      "0,1 %"
+    ],
+    "correcta": 1,
+    "explicacion": "5 ÷ 50 = 0,10. Cada día cambia de manos el equivalente a una décima parte de la moneda."
+  },
+  {
+    "clave": "cm-m3-03",
+    "leccion": "el-volumen-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Una moneda vale 2.000 millones de euros y mueve 1 millón al día. ¿Qué indica?",
+    "opciones": [
+      "Que su precio es muy estable y fiable",
+      "Que su volumen está inflado",
+      "Que su capitalización es más teórica que real y será difícil vender",
+      "Que es muy segura porque nadie quiere venderla"
+    ],
+    "correcta": 2,
+    "explicacion": "Con un cociente del 0,05 %, pocas operaciones pequeñas fijan el precio. Vender una cantidad seria lo hundiría."
+  },
+  {
+    "clave": "cm-m3-04",
+    "leccion": "el-volumen-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Un token negocia cada día el triple de su capitalización, y lleva así dos meses. ¿Qué es lo razonable?",
+    "opciones": [
+      "Concluir que entra el triple de dinero del que vale",
+      "Darlo por bueno: mucho volumen siempre es buena señal",
+      "Concluir que es la moneda más líquida del mercado",
+      "Averiguar por qué: puede ser especulación de muy corto plazo o volumen fabricado"
+    ],
+    "correcta": 3,
+    "explicacion": "Un pico de un día puede ser una noticia. Meses negociando varias veces su tamaño pide una explicación."
+  },
+  {
+    "clave": "cm-m3-05",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "¿En qué consiste el wash trading?",
+    "opciones": [
+      "En comprar y venderse a uno mismo para aparentar actividad",
+      "En comprar en una plataforma y vender en otra más cara",
+      "En vender una moneda justo antes de una mala noticia",
+      "En repartir una orden grande en varias pequeñas"
+    ],
+    "correcta": 0,
+    "explicacion": "No cambia nada de dueño, pero suma operaciones a las estadísticas."
+  },
+  {
+    "clave": "cm-m3-06",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "¿Qué concluyó el informe de Bitwise presentado a la SEC en marzo de 2019?",
+    "opciones": [
+      "Que los exchanges regulados inflaban más que los demás",
+      "Que alrededor del 95 % del volumen de bitcoin declarado era falso",
+      "Que bitcoin no tenía ningún mercado real",
+      "Que el 95 % de los inversores perdía dinero"
+    ],
+    "correcta": 1,
+    "explicacion": "Analizó 81 plataformas. Añadía que el 5 % restante, el mercado real, funcionaba de forma ordenada."
+  },
+  {
+    "clave": "cm-m3-07",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "Según el estudio «Crypto Wash Trading» (Management Science, 2023), ¿dónde aparecía el volumen falso?",
+    "opciones": [
+      "Solo en los exchanges descentralizados",
+      "Por igual en todos los exchanges",
+      "Sobre todo en los exchanges no regulados, con más del 70 % de media",
+      "Únicamente en los regulados"
+    ],
+    "correcta": 2,
+    "explicacion": "En los regulados los patrones eran los normales de un mercado financiero."
+  },
+  {
+    "clave": "cm-m3-08",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "¿Por qué las medidas modernas de las dos webs miran la liquidez en vez de fiarse del volumen?",
+    "opciones": [
+      "Porque la liquidez es más fácil de calcular",
+      "Porque el volumen ya no se publica",
+      "Porque los reguladores lo exigen así",
+      "Porque la liquidez obliga a poner dinero real en el libro de órdenes y es más difícil de fingir"
+    ],
+    "correcta": 3,
+    "explicacion": "El volumen se fabrica cruzando órdenes con uno mismo; para aparentar profundidad hay que arriesgar dinero de verdad."
+  },
+  {
+    "clave": "cm-m3-09",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "En la pestaña de mercados ves un par con muchísimo volumen y el indicador de confianza en «baja». ¿Qué te dice?",
+    "opciones": [
+      "Que el volumen declarado supera con mucho el que la web considera creíble",
+      "Que la plataforma cobra comisiones altas",
+      "Que es el mejor par para comprar",
+      "Que el precio de ese par es el más actualizado"
+    ],
+    "correcta": 0,
+    "explicacion": "El indicador compara el volumen declarado con el que estima un modelo. Confianza baja, por debajo del 50 %, es una señal de volumen inflado."
+  },
+  {
+    "clave": "cm-m3-10",
+    "leccion": "mercados-pares-y-profundidad",
+    "enunciado": "¿Qué es el spread de un par?",
+    "opciones": [
+      "La diferencia de precio entre dos plataformas",
+      "La diferencia entre el mejor precio de compra y el mejor de venta",
+      "La variación del precio en 24 horas",
+      "La comisión que cobra la plataforma"
+    ],
+    "correcta": 1,
+    "explicacion": "Es lo que pierdes nada más entrar: compras al precio de venta y venderías al de compra."
+  },
+  {
+    "clave": "cm-m3-11",
+    "leccion": "mercados-pares-y-profundidad",
+    "enunciado": "¿Qué indica la columna de profundidad a −2 %?",
+    "opciones": [
+      "El dinero en órdenes de venta hasta un 2 % por encima",
+      "La comisión máxima al vender",
+      "El dinero en órdenes de compra hasta un 2 % por debajo del precio",
+      "Cuánto ha caído el precio en las últimas dos horas"
+    ],
+    "correcta": 2,
+    "explicacion": "Es la columna de la salida: lo que hay esperando a comprarte antes de que el precio caiga un 2 %."
+  },
+  {
+    "clave": "cm-m3-12",
+    "leccion": "mercados-pares-y-profundidad",
+    "enunciado": "Un token solo se negocia en un DEX. Tiene 50 millones de capitalización y 40.000 € en su pool de liquidez. ¿De qué tamaño es su mercado real?",
+    "opciones": [
+      "De 50 millones de euros",
+      "No se puede saber sin el volumen",
+      "De 25 millones, la mitad de la capitalización",
+      "Del orden de los 40.000 € que hay en el pool"
+    ],
+    "correcta": 3,
+    "explicacion": "En un DEX la profundidad la da el tamaño del pool. Y si quien puso esa liquidez la retira, mañana puede no haber ninguno."
+  },
+  {
+    "clave": "cm-m3-13",
+    "leccion": "slippage-cuanto-puedes-comprar-de-verdad",
+    "enunciado": "¿Qué es el slippage?",
+    "opciones": [
+      "La diferencia entre el precio que esperabas y el precio medio al que se ejecuta tu orden",
+      "La caída del precio después de un desbloqueo",
+      "La comisión de retirada de una plataforma",
+      "El tiempo que tarda en confirmarse una operación"
+    ],
+    "correcta": 0,
+    "explicacion": "Tu orden consume varias líneas del libro, cada una a peor precio, y pagas la media."
+  },
+  {
+    "clave": "cm-m3-14",
+    "leccion": "slippage-cuanto-puedes-comprar-de-verdad",
+    "enunciado": "Compras 20.000 unidades a mercado. En el libro hay 8.000 a 1,01 € y 25.000 a 1,02 €. ¿Cuánto pagas en total?",
+    "opciones": [
+      "20.000 €",
+      "20.320 €",
+      "20.400 €",
+      "20.200 €"
+    ],
+    "correcta": 1,
+    "explicacion": "8.000 × 1,01 = 8.080 €, más 12.000 × 1,02 = 12.240 €. Total 20.320 €, un precio medio de 1,016 €."
+  },
+  {
+    "clave": "cm-m3-15",
+    "leccion": "slippage-cuanto-puedes-comprar-de-verdad",
+    "enunciado": "Un tenedor tiene monedas que «valen» 10 millones de euros según la capitalización, pero el libro solo tiene compradores para una parte mínima. ¿Qué describe mejor la situación?",
+    "opciones": [
+      "Su posición vale más de 10 millones, porque hay poca oferta",
+      "Puede venderlas todas al precio de pantalla si lo hace rápido",
+      "Sus 10 millones son una valoración sobre el papel: no podría venderlas a ese precio",
+      "La capitalización está mal calculada"
+    ],
+    "correcta": 2,
+    "explicacion": "La capitalización aplica el último precio a todas las unidades. Al intentar venderlas, el precio se desploma mucho antes de haber vendido una pequeña parte."
+  }
+]

@@ -1,0 +1,106 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>La portada de las dos webs es una tabla con las mismas columnas: puesto, nombre, precio, variaciones, capitalización, volumen, oferta y un gráfico pequeño. Aquí las recorres una a una para saber qué mide cada cual, cuáles se pueden comparar entre monedas y cuáles no. Es el mapa del resto del curso: cada columna tiene después su lección.</p>
+</div>
+
+<h2>Una tabla ordenada por tamaño, no por calidad</h2>
+
+<p>Lo primero que ves al entrar es una lista con bitcoin arriba. El orden no es alfabético ni de antigüedad, y mucho menos de «mejor a peor». <strong>Las monedas están ordenadas por capitalización</strong>: el valor de todas sus unidades en circulación. La primera es la más grande, no la más recomendable.</p>
+
+<p>Ese orden se puede cambiar. Si pulsas la cabecera de cualquier columna, la tabla se reordena por ella: por volumen, por subida en 24 horas, por precio. Es útil, y también es la forma más rápida de acabar mirando monedas que no deberías, como verás en el módulo 5 con las listas de mayores subidas.</p>
+
+<h2>Las columnas, una a una</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Columna</th><th>Qué mide</th><th>¿Sirve para comparar monedas?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong># (puesto)</strong></td><td>La posición por capitalización</td><td>Sí: dice quién es más grande</td></tr>
+    <tr><td><strong>Precio</strong></td><td>El precio de referencia de una unidad</td><td>No. Es la trampa del módulo 2</td></tr>
+    <tr><td><strong>1 h, 24 h, 7 d</strong></td><td>Cuánto ha cambiado el precio en ese tiempo</td><td>Con cuidado: son ventanas móviles</td></tr>
+    <tr><td><strong>Capitalización</strong></td><td>Precio × unidades en circulación</td><td>Sí: es la medida de tamaño</td></tr>
+    <tr><td><strong>Volumen (24 h)</strong></td><td>Cuánto dinero se ha negociado en un día</td><td>Sí, en relación con la capitalización</td></tr>
+    <tr><td><strong>Oferta circulante</strong></td><td>Cuántas unidades hay en el mercado</td><td>Solo dentro de la misma moneda</td></tr>
+    <tr><td><strong>Últimos 7 días</strong></td><td>Un gráfico mínimo del precio</td><td>No: cada uno tiene su propia escala</td></tr>
+  </tbody>
+</table>
+
+<p>Vamos con lo que no se ve a simple vista en cada una.</p>
+
+<h2>El puesto y el nombre</h2>
+
+<p>Junto al puesto va el nombre de la moneda y su símbolo, un código de tres a cinco letras: BTC, ETH, SOL. Aquí hay un aviso temprano: <strong>el símbolo no es único</strong>. Nada impide que dos proyectos distintos usen las mismas letras, y pasa a menudo con las monedas pequeñas. Lo único que identifica de verdad a un token es su dirección de contrato, que verás en el módulo 4.</p>
+
+<p>En CoinMarketCap, además, no todas las monedas tienen puesto. Su metodología distingue varios niveles: las 200 primeras, que exigen oferta verificada y otros requisitos; las del 201 en adelante, con capitalización verificada; y las <strong>sin clasificar</strong>, que no tienen capitalización verificada y se ordenan por volumen. Una moneda sin puesto no es necesariamente mala, pero es una de la que la web no ha podido confirmar cuántas unidades circulan. Es un dato.</p>
+
+<h2>Las variaciones: ventanas que se mueven</h2>
+
+<p>Las columnas de 1 hora, 24 horas y 7 días dicen cuánto ha cambiado el precio respecto a hace ese tiempo. Son <strong>ventanas móviles</strong>: la de 24 horas compara el precio de ahora con el de hace exactamente 24 horas, no con el de «ayer al cierre», porque aquí no hay cierre.</p>
+
+<p>Eso tiene una consecuencia práctica. Si una moneda cayó un 30 % ayer a las diez de la mañana y no se ha movido desde entonces, a las once de hoy su columna de 24 horas marcará un 0 %. La caída no ha desaparecido: ha salido de la ventana. Por eso conviene mirar siempre las tres columnas juntas, y el gráfico.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Una caída que «desaparece» de la columna de 24 h",
+  "subtitulo": "El precio cae un 30 % y se queda plano. Lo que marca la columna depende de la hora a la que mires.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Ayer 08:00", "precio": 1.0 },
+    { "etiqueta": "Ayer 10:00", "precio": 0.7 },
+    { "etiqueta": "Ayer 16:00", "precio": 0.7 },
+    { "etiqueta": "Ayer 22:00", "precio": 0.71 },
+    { "etiqueta": "Hoy 04:00", "precio": 0.7 },
+    { "etiqueta": "Hoy 09:00", "precio": 0.7 },
+    { "etiqueta": "Hoy 11:00", "precio": 0.7 }
+  ],
+  "series": [{ "clave": "precio", "nombre": "Precio", "color": "#ff8a7a" }],
+  "nota": "Ejemplo inventado. A las 09:00 de hoy la columna de 24 h marca −30 % (frente a 1,00 €). A las 11:00 marca 0 % (frente a 0,70 €). La de 7 días sigue marcando −30 %."
+}
+</script></div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Un porcentaje grande en verde tampoco significa lo que parece. Una moneda que cae de 1,00 € a 0,10 € y después sube a 0,20 € marca «+100 %» y sigue un 80 % por debajo de donde estaba. El porcentaje siempre se calcula sobre el punto de partida de la ventana.</div>
+</div>
+
+<h2>Capitalización, volumen y oferta: el triángulo del curso</h2>
+
+<p>Las tres columnas siguientes son las que de verdad describen a una moneda, y dedicarás a ellas los módulos 2 y 3. De momento, quédate con qué pregunta responde cada una:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Capitalización: ¿cómo de grande es?</strong> Es el precio multiplicado por las unidades en circulación. Es lo que permite comparar una moneda de céntimos con otra de miles de euros. Tiene su ficha en el diccionario: <a href="/glosario/market-cap">market cap</a>.</li>
+  <li><strong>Volumen: ¿cuánto se mueve?</strong> Es el dinero negociado en las últimas 24 horas. Una moneda grande que casi no se negocia y una pequeña con un volumen enorme son, las dos, señales que hay que saber leer.</li>
+  <li><strong>Oferta circulante: ¿cuántas hay?</strong> Las unidades que están en manos del público. Al lado suele ir una barra que indica qué parte de la oferta máxima ya ha salido. Su ficha: <a href="/glosario/oferta-circulante">oferta circulante</a>.</li>
+</ol>
+
+<p>Fíjate en que las tres están atadas: la capitalización sale de multiplicar precio por oferta. Si sabes dos de las tres cifras, puedes calcular la tercera, y lo harás a mano en la lección 2.1.</p>
+
+<h2>El gráfico pequeño engaña</h2>
+
+<p>La última columna es una línea diminuta con el precio de los últimos siete días, en verde si sube y en rojo si baja. Es cómoda, pero <strong>cada línea tiene su propia escala</strong>. La de una moneda que se ha movido un 1 % ocupa el mismo alto que la de una que se ha movido un 60 %. Dos líneas con la misma forma pueden esconder movimientos que no se parecen en nada. Para saber cuánto, mira el número de la columna de 7 días, no el dibujo.</p>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "¿Lo has leído bien?",
+  "afirmaciones": [
+    { "texto": "La moneda que está en el puesto 1 es la mejor inversión de la lista.", "verdadero": false, "explicacion": "El puesto ordena por capitalización, es decir, por tamaño. No dice nada sobre si es buena compra." },
+    { "texto": "Si la columna de 24 h marca 0 %, la moneda no ha tenido ninguna caída reciente.", "verdadero": false, "explicacion": "Solo dice que el precio es igual al de hace 24 horas. Una caída anterior ya ha salido de la ventana." },
+    { "texto": "Dos monedas distintas pueden compartir el mismo símbolo.", "verdadero": true, "explicacion": "El símbolo no es único. Lo que identifica a un token es su dirección de contrato." },
+    { "texto": "Con el precio y la oferta circulante se puede calcular la capitalización.", "verdadero": true, "explicacion": "Capitalización = precio × oferta circulante. Lo harás a mano en el módulo 2." },
+    { "texto": "Los gráficos pequeños de 7 días comparten todos la misma escala.", "verdadero": false, "explicacion": "Cada uno se ajusta a su propio máximo y mínimo: la forma no dice cuánto se ha movido." }
+  ]
+}
+</script></div>
+
+<h2>Lo que la portada no enseña</h2>
+
+<p>La tabla es un resumen, y como todo resumen deja cosas fuera. No aparece el FDV, que dice cuánto valdría la moneda con todas sus unidades en el mercado. No aparece dónde se negocia ni con cuánta facilidad. No aparece cuántas unidades se van a liberar el mes que viene. Todo eso está un clic más adentro, en la ficha de cada moneda, y algunas columnas se pueden añadir a la tabla desde el botón de personalizar.</p>
+
+<h2>Ejercicio: personaliza tu tabla</h2>
+
+<p>En la web que prefieras, busca el botón para personalizar columnas y añade dos: la valoración totalmente diluida (FDV o «Fully Diluted Market Cap») y el cociente entre volumen y capitalización, si lo ofrece. Cambia también la moneda de referencia a euros. Con eso tendrás delante la tabla con la que vas a trabajar el resto del curso.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la tabla ordena por tamaño, no por calidad. El precio por unidad no sirve para comparar; la capitalización, sí. Las variaciones son ventanas móviles y los gráficos pequeños no comparten escala. Lo importante está en tres columnas: capitalización, volumen y oferta.</div>
+</div>

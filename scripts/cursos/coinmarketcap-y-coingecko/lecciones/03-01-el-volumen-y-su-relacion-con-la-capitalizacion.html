@@ -1,0 +1,136 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El volumen de 24 horas es el dinero que se ha negociado de una moneda en el último día, sumando todas las plataformas. Solo no dice mucho; dividido entre la capitalización, dice bastante: qué parte de la moneda cambia de manos cada día. Un cociente muy bajo avisa de que será difícil entrar y salir. Uno muy alto avisa de otra cosa. Aquí aprendes a calcularlo y a leer los dos extremos.</p>
+</div>
+
+<h2>Qué mide el volumen</h2>
+
+<p>El <a href="/glosario/volumen">volumen</a> es el valor de todas las compraventas de una moneda en un periodo. En las dos webs, la cifra que ves en la portada es la de las últimas 24 horas y cuenta el mercado al contado, el <a href="/glosario/spot">spot</a>: las operaciones en las que se compra y se vende la moneda de verdad, sin derivados.</p>
+
+<p>Se calcula sumando. Cada plataforma declara cuánto se ha negociado en cada uno de sus pares, la web lo convierte todo a dólares y lo suma. CoinMarketCap lo define como el volumen total al contado que declaran todos los exchanges en las últimas 24 horas; CoinGecko, como el volumen total en todos los exchanges activos que sigue.</p>
+
+<p>Dos cosas se deducen de esa definición, y las dos importan:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Es una ventana móvil</strong>, igual que la variación de 24 horas. Compara siempre con el volumen de otros días, no con el de un momento suelto.</li>
+  <li><strong>Es un dato declarado.</strong> Lo dice la plataforma, no lo mide la web. La lección siguiente va entera de lo que eso implica.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Cada compraventa tiene un comprador y un vendedor, y el volumen la cuenta una vez. Un volumen de 10 millones no quiere decir que hayan «entrado» 10 millones en la moneda: quiere decir que 10 millones de euros en monedas han cambiado de dueño. Por cada euro que entró, otro salió.</div>
+</div>
+
+<h2>Por qué el volumen suelto no sirve para comparar</h2>
+
+<p>Un volumen de 5 millones de euros al día, ¿es mucho o poco? Depende de para qué moneda. En una que vale 20 millones es una barbaridad: la cuarta parte de la moneda cambia de manos cada día. En una que vale 20.000 millones es casi nada. Por eso, igual que con el precio, hace falta ponerlo en relación con el tamaño.</p>
+
+<blockquote><strong>Volumen ÷ capitalización = parte de la moneda que se negocia en un día</strong></blockquote>
+
+<p>CoinMarketCap lo muestra en la ficha como «Vol/Mkt Cap (24h)». Si tu web no lo enseña, es una división que haces en cinco segundos.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Moneda inventada</th><th>Capitalización</th><th>Volumen 24 h</th><th>Cociente</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Grande y activa</td><td>20.000 M€</td><td>1.000 M€</td><td>5 %</td></tr>
+    <tr><td>Mediana y tranquila</td><td>500 M€</td><td>10 M€</td><td>2 %</td></tr>
+    <tr><td>Grande y dormida</td><td>2.000 M€</td><td>1 M€</td><td>0,05 %</td></tr>
+    <tr><td>Pequeña y frenética</td><td>10 M€</td><td>30 M€</td><td>300 %</td></tr>
+  </tbody>
+</table>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Volumen sobre capitalización, en cuatro monedas inventadas",
+  "subtitulo": "Las dos últimas son las que piden una segunda mirada, cada una por un motivo.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Grande y activa", "cociente": 5 },
+    { "etiqueta": "Mediana y tranquila", "cociente": 2 },
+    { "etiqueta": "Grande y dormida", "cociente": 0.05 },
+    { "etiqueta": "Pequeña y frenética", "cociente": 300 }
+  ],
+  "series": [{ "clave": "cociente", "nombre": "Volumen ÷ capitalización", "color": "#ff8a7a" }],
+  "nota": "Ejemplo inventado. La barra de la «grande y dormida» apenas se ve: ese es justo el problema."
+}
+</script></div>
+
+<h2>Cuando el cociente es muy bajo</h2>
+
+<p>La «grande y dormida» de la tabla vale 2.000 millones y mueve 1 millón al día. Eso significa que <strong>su capitalización es una cifra sobre el papel</strong>. El precio lo fijan unas pocas operaciones pequeñas, y cualquiera que quisiera vender una cantidad seria se encontraría con que no hay compradores suficientes.</p>
+
+<p>Es una señal clásica en monedas con casi toda la oferta en manos de unos pocos tenedores, lo que en el sector se llama una <a href="/glosario/whale">whale</a>, o en monedas que viven de un pasado mejor. El número de la portada dice «2.000 millones»; la realidad es que con vender unos cientos de miles de euros el precio se hundiría. Lo verás con números en la lección 3.4.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0,05 %</span>
+  <span class="prose-dato-texto">A ese ritmo, haría falta que se negociara sin parar durante más de cinco años para que cambiara de manos el equivalente a toda la moneda.</span>
+</div>
+
+<h2>Cuando el cociente es muy alto</h2>
+
+<p>El caso contrario parece una buena noticia y pide la misma cautela. Una moneda que negocia cada día tres veces su tamaño puede estar viviendo una de estas situaciones:</p>
+
+<ul>
+  <li><strong>Un momento de atención real:</strong> una noticia, un listado nuevo en una plataforma grande, un movimiento fuerte del precio. El volumen sube unos días y vuelve a su nivel.</li>
+  <li><strong>Especulación pura a muy corto plazo:</strong> las mismas monedas pasando de mano en mano muchas veces al día. Es habitual en los tokens de moda.</li>
+  <li><strong>Volumen fabricado:</strong> operaciones en las que comprador y vendedor son la misma persona, para aparentar actividad. Es el tema de la lección siguiente.</li>
+</ul>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Cociente muy bajo</p>
+    <p class="prose-vs-sub">Se negocia muy poco para su tamaño</p>
+    <ul>
+      <li data-tono="contra">Difícil entrar y, sobre todo, salir</li>
+      <li data-tono="contra">El precio lo marcan pocas operaciones</li>
+      <li data-tono="contra">La capitalización es más teórica que real</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Cociente muy alto</p>
+    <p class="prose-vs-sub">Se negocia varias veces su tamaño</p>
+    <ul>
+      <li data-tono="favor">Puede ser interés genuino por una noticia</li>
+      <li data-tono="contra">Puede ser especulación de muy corto plazo</li>
+      <li data-tono="contra">Puede ser volumen fabricado</li>
+    </ul>
+  </div>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">No hay un cociente «correcto» que valga para todo. Las monedas grandes y consolidadas suelen moverse en pocos puntos porcentuales al día, y las stablecoins más usadas pueden superar con mucho esa cifra porque se emplean como medio de pago entre plataformas. Lo útil es comparar una moneda consigo misma a lo largo del tiempo y con otras de su tamaño, y preguntarse por los extremos.</div>
+</div>
+
+<h2>El volumen también tiene historia</h2>
+
+<p>Una cifra de un solo día engaña. El gráfico de la ficha suele llevar el volumen debajo del precio, en forma de barras, y ahí se ve lo que la portada no enseña: si el volumen de hoy es el normal o es un pico aislado. Tres patrones que conviene saber reconocer:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Volumen estable durante meses.</strong> Hay un mercado que funciona con regularidad.</li>
+  <li><strong>Un pico enorme y después nada.</strong> Hubo un momento de atención y se acabó. Si compraste en el pico, mira cuánto queda del volumen que te permitió entrar.</li>
+  <li><strong>Volumen que se apaga poco a poco.</strong> Cada mes se negocia menos. Es lo que les pasa a muchas monedas antes de dejar de negociarse del todo.</li>
+</ol>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una moneda tiene 800 millones de euros de capitalización y 400.000 € de volumen diario. ¿Qué es lo más prudente pensar?",
+  "opciones": [
+    "Que es muy estable, porque casi nadie la vende",
+    "Que su capitalización es poco fiable: con tan poco volumen, pocas operaciones fijan el precio",
+    "Que está a punto de subir, porque queda poca oferta a la venta",
+    "Que su volumen está inflado artificialmente"
+  ],
+  "correcta": 1,
+  "explicacion": "400.000 ÷ 800 millones = 0,05 %. Se negocia una parte mínima de la moneda: el precio lo marcan pocas operaciones y vender una cantidad seria lo hundiría."
+}
+</script></div>
+
+<h2>Ejercicio: el cociente de tus tres monedas</h2>
+
+<p>Calcula volumen ÷ capitalización de tus tres monedas y multiplícalo por cien. Después abre el gráfico de cada una, pon un periodo de tres meses y mira las barras de volumen: ¿el de hoy es el habitual, un pico o un valle? Apunta el cociente y una palabra —estable, pico o apagándose— junto a cada moneda.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el volumen es lo que cambia de manos en 24 horas, y lo declaran las plataformas. Divídelo entre la capitalización para saber qué parte de la moneda se negocia. Muy bajo: será difícil salir. Muy alto: averigua por qué. Y mira siempre la historia, no un día.</div>
+</div>

@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "cm-m4-01",
+    "leccion": "la-ficha-de-arriba-abajo",
+    "enunciado": "En la ficha de una moneda, ¿cuál de estos es un dato calculado por la web y no declarado por el proyecto?",
+    "opciones": [
+      "La descripción del proyecto",
+      "El enlace a su web oficial",
+      "El volumen de 24 horas",
+      "El reparto inicial de tokens"
+    ],
+    "correcta": 2,
+    "explicacion": "El volumen lo calcula la web a partir de las plataformas. Lo demás lo suele mandar el propio proyecto."
+  },
+  {
+    "clave": "cm-m4-02",
+    "leccion": "la-ficha-de-arriba-abajo",
+    "enunciado": "¿Qué es la valoración con estrellas que muestra CoinMarketCap en algunas fichas?",
+    "opciones": [
+      "El resultado de una auditoría del código",
+      "La nota que le ponen los usuarios registrados",
+      "La opinión del equipo de CoinMarketCap sobre el proyecto",
+      "La media simple de las notas de varias empresas externas"
+    ],
+    "correcta": 3,
+    "explicacion": "Lo dice su metodología: es un promedio de valoraciones de terceros y no representa la opinión de la web."
+  },
+  {
+    "clave": "cm-m4-03",
+    "leccion": "la-ficha-de-arriba-abajo",
+    "enunciado": "Un token muestra en su ficha que ha pasado una auditoría. ¿Qué puedes concluir?",
+    "opciones": [
+      "Que una empresa revisó ese código en una fecha y no halló ciertos fallos",
+      "Que el código no ha cambiado desde entonces",
+      "Que el proyecto es honrado y no puede ser una estafa",
+      "Que no puede sufrir un ataque"
+    ],
+    "correcta": 0,
+    "explicacion": "Una auditoría revisa un código en un momento concreto, normalmente pagada por el proyecto. Proyectos auditados han sido vaciados."
+  },
+  {
+    "clave": "cm-m4-04",
+    "leccion": "la-ficha-de-arriba-abajo",
+    "enunciado": "Abres una ficha y hay un aviso en la parte superior sobre una migración de contrato. ¿Cuándo lo lees?",
+    "opciones": [
+      "Después de mirar el precio y el gráfico",
+      "Antes que cualquier cifra",
+      "Solo si piensas comprar más de 1.000 €",
+      "No hace falta: los avisos son publicidad"
+    ],
+    "correcta": 1,
+    "explicacion": "Un aviso puede invalidar todo lo demás. Es lo primero del orden de lectura."
+  },
+  {
+    "clave": "cm-m4-05",
+    "leccion": "graficos-maximos-y-escalas",
+    "enunciado": "El gráfico de precio de un token cae a la mitad en dos años mientras el de capitalización se dobla. ¿Qué ha pasado?",
+    "opciones": [
+      "El volumen se ha multiplicado por cuatro",
+      "La web ha cometido un error de cálculo",
+      "La oferta en circulación se ha multiplicado por cuatro",
+      "Se ha quemado la mitad de la oferta"
+    ],
+    "correcta": 2,
+    "explicacion": "Capitalización = precio × oferta. Si el precio es la mitad y la capitalización el doble, hay cuatro veces más unidades."
+  },
+  {
+    "clave": "cm-m4-06",
+    "leccion": "graficos-maximos-y-escalas",
+    "enunciado": "¿Para qué sirve la escala logarítmica en un gráfico?",
+    "opciones": [
+      "Para convertir los precios a euros",
+      "Para ocultar las caídas del precio",
+      "Para que el precio parezca más alto",
+      "Para que cada tramo del eje represente el mismo porcentaje y se vea bien un periodo largo"
+    ],
+    "correcta": 3,
+    "explicacion": "Subir de 1 a 2 se ve igual que de 100 a 200. En lineal, los primeros años de una moneda quedan aplastados."
+  },
+  {
+    "clave": "cm-m4-07",
+    "leccion": "graficos-maximos-y-escalas",
+    "enunciado": "Una moneda ha caído un 90 % desde su máximo histórico. ¿Cuánto tiene que multiplicarse para volver a él?",
+    "opciones": [
+      "Por 10",
+      "Por 1,9",
+      "Por 9",
+      "Por 90"
+    ],
+    "correcta": 0,
+    "explicacion": "1 ÷ (1 − 0,90) = 10. Si valía 100 y vale 10, tiene que multiplicarse por diez: una subida del 900 %."
+  },
+  {
+    "clave": "cm-m4-08",
+    "leccion": "graficos-maximos-y-escalas",
+    "enunciado": "Un token hizo su máximo en 2 € con 100 millones de unidades. Hoy vale 1 € y tiene 400 millones. ¿Qué capitalización necesita para volver a 2 €?",
+    "opciones": [
+      "100 millones de euros",
+      "800 millones de euros",
+      "200 millones de euros",
+      "400 millones de euros"
+    ],
+    "correcta": 1,
+    "explicacion": "2 € × 400 millones = 800 M€, cuatro veces la capitalización que tenía en su máximo. El máximo es de precio, no de tamaño."
+  },
+  {
+    "clave": "cm-m4-09",
+    "leccion": "contratos-redes-y-monedas-falsas",
+    "enunciado": "¿Qué identifica de forma única a un token?",
+    "opciones": [
+      "Su nombre",
+      "Su logotipo",
+      "Su dirección de contrato en una red concreta",
+      "Su símbolo de tres o cuatro letras"
+    ],
+    "correcta": 2,
+    "explicacion": "Nombre, símbolo y logotipo se pueden copiar. La dirección la asigna la red y no se repite."
+  },
+  {
+    "clave": "cm-m4-10",
+    "leccion": "contratos-redes-y-monedas-falsas",
+    "enunciado": "Vas a comprar un token en un DEX. ¿Cuál es la forma más segura de encontrarlo?",
+    "opciones": [
+      "Escribir su nombre en el buscador y elegir el primero",
+      "Seguir el enlace que alguien ha puesto en redes sociales",
+      "Elegir el que tenga el precio más bajo",
+      "Pegar la dirección de contrato copiada de su ficha"
+    ],
+    "correcta": 3,
+    "explicacion": "El buscador muestra todos los tokens con ese nombre, incluidos los falsos."
+  },
+  {
+    "clave": "cm-m4-11",
+    "leccion": "contratos-redes-y-monedas-falsas",
+    "enunciado": "En el explorador ves que una dirección tiene el 45 % de la oferta de un token. ¿Qué haces antes de asustarte?",
+    "opciones": [
+      "Mirar si es un exchange o un contrato de bloqueo, o una wallet sin etiqueta",
+      "Dar por hecho que es un solo dueño que va a vender",
+      "Comprar, porque indica confianza en el proyecto",
+      "Ignorarlo: la concentración no importa"
+    ],
+    "correcta": 0,
+    "explicacion": "Las direcciones mayores suelen ser plataformas o contratos. Lo preocupante es una wallet corriente, sin etiqueta, con esa parte de la oferta."
+  },
+  {
+    "clave": "cm-m4-12",
+    "leccion": "contratos-redes-y-monedas-falsas",
+    "enunciado": "¿Qué es un token «envuelto» (wrapped)?",
+    "opciones": [
+      "Una copia fraudulenta de una moneda conocida",
+      "Una representación de una moneda en una red que no es la suya",
+      "Un token bloqueado por el equipo",
+      "Un token que no se puede vender"
+    ],
+    "correcta": 1,
+    "explicacion": "Su valor depende de que alguien guarde las monedas reales que lo respaldan. Las webs los tratan aparte para no contar dos veces la misma capitalización."
+  },
+  {
+    "clave": "cm-m4-13",
+    "leccion": "monedas-muertas-y-sesgo-de-supervivencia",
+    "enunciado": "¿Qué es el sesgo de supervivencia aplicado a un ranking de criptomonedas?",
+    "opciones": [
+      "Vender demasiado pronto las que suben",
+      "Preferir las monedas más antiguas",
+      "Sacar conclusiones mirando solo las monedas que siguen activas",
+      "Creer que las monedas baratas subirán más"
+    ],
+    "correcta": 2,
+    "explicacion": "La lista no incluye a las que desaparecieron, así que da una imagen mucho más favorable de la real."
+  },
+  {
+    "clave": "cm-m4-14",
+    "leccion": "monedas-muertas-y-sesgo-de-supervivencia",
+    "enunciado": "Según el estudio de CoinGecko con datos hasta el 31 de diciembre de 2025, ¿qué parte de las criptomonedas listadas en GeckoTerminal había dejado de negociarse?",
+    "opciones": [
+      "Una cuarta parte, el 25 %",
+      "Alrededor del 10 %",
+      "Casi todas, el 98 %",
+      "Algo más de la mitad, el 53,2 %"
+    ],
+    "correcta": 3,
+    "explicacion": "13,4 de 25,2 millones. Son tokens de DEX, la mayoría efímeros, no las monedas del ranking principal."
+  },
+  {
+    "clave": "cm-m4-15",
+    "leccion": "monedas-muertas-y-sesgo-de-supervivencia",
+    "enunciado": "Te presentan un token nuevo diciendo «es como aquella moneda en sus inicios, que luego se multiplicó por mil». ¿Qué pregunta corrige el sesgo?",
+    "opciones": [
+      "De las que se lanzaron a la vez que aquella, ¿cuántas siguen negociándose?",
+      "¿Cuánto cuesta cada unidad del token nuevo?",
+      "¿Cuántos seguidores tiene en redes sociales?",
+      "¿En qué puesto está hoy aquella moneda?"
+    ],
+    "correcta": 0,
+    "explicacion": "Comparar con la que triunfó ignora a todas las de su hornada que desaparecieron."
+  }
+]

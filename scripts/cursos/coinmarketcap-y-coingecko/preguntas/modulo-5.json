@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "cm-m5-01",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "¿Qué es la capitalización total del mercado cripto que muestran las dos webs?",
+    "opciones": [
+      "La suma de las capitalizaciones de las monedas que cada web tiene listadas",
+      "La capitalización de bitcoin y ether juntas",
+      "El volumen negociado en todas las plataformas",
+      "El dinero total que la gente ha invertido en criptomonedas"
+    ],
+    "correcta": 0,
+    "explicacion": "Es una suma de multiplicaciones, con las mismas limitaciones que la capitalización de una sola moneda."
+  },
+  {
+    "clave": "cm-m5-02",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "Una moneda sube un 10 % en un mes en el que la capitalización total sube un 30 %. ¿Cómo le ha ido?",
+    "opciones": [
+      "Mejor que al mercado, porque ha subido",
+      "Peor que al conjunto del mercado",
+      "Igual que al mercado",
+      "No se pueden comparar las dos cifras"
+    ],
+    "correcta": 1,
+    "explicacion": "Ha subido, pero menos que la media. El contexto es el primer paso de cualquier revisión."
+  },
+  {
+    "clave": "cm-m5-03",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "¿Qué mide la dominancia de bitcoin?",
+    "opciones": [
+      "Cuánto ha subido bitcoin frente al dólar",
+      "La parte del volumen diario que se negocia en bitcoin",
+      "La parte de la capitalización total que corresponde a bitcoin",
+      "El número de personas que tienen bitcoin"
+    ],
+    "correcta": 2,
+    "explicacion": "Es un cociente: la capitalización de bitcoin entre la de todo el mercado."
+  },
+  {
+    "clave": "cm-m5-04",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "Bitcoin vale 500, las stablecoins 100 y el resto 400. Si el resto cae a 200 y bitcoin no se mueve, ¿qué pasa con la dominancia?",
+    "opciones": [
+      "Sube al 100 %",
+      "Baja al 45,5 %",
+      "Se queda en el 50 %",
+      "Sube del 50 % al 62,5 %"
+    ],
+    "correcta": 3,
+    "explicacion": "500 ÷ 1.000 = 50 %; 500 ÷ 800 = 62,5 %. La dominancia sube sin que bitcoin haya subido un céntimo."
+  },
+  {
+    "clave": "cm-m5-05",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "Según la definición de CoinMarketCap, ¿cuándo hay «temporada de altcoins»?",
+    "opciones": [
+      "Cuando el 75 % de las 100 primeras monedas ha superado a bitcoin en los últimos 90 días",
+      "Cuando todas las altcoins suben a la vez",
+      "Cuando bitcoin cae más de un 20 %",
+      "Cuando se lanzan muchas monedas nuevas"
+    ],
+    "correcta": 0,
+    "explicacion": "El índice mira hacia atrás, 90 días, y solo a las cien primeras, sin stablecoins ni tokens envueltos."
+  },
+  {
+    "clave": "cm-m5-06",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "El índice de temporada de altcoins marca un valor muy alto. ¿Puede estar todo el mercado cayendo a la vez?",
+    "opciones": [
+      "No: el índice no se calcula en las caídas",
+      "Sí: basta con que las altcoins caigan menos que bitcoin",
+      "Sí, pero solo si la dominancia sube",
+      "No: el índice solo sube cuando los precios suben"
+    ],
+    "correcta": 1,
+    "explicacion": "«Superar a bitcoin» no es «subir». Una altcoin que cae un 30 % supera a un bitcoin que cae un 40 %."
+  },
+  {
+    "clave": "cm-m5-07",
+    "leccion": "miedo-codicia-y-listas-de-moda",
+    "enunciado": "¿Qué es el índice de miedo y codicia?",
+    "opciones": [
+      "Una nota de riesgo de cada moneda",
+      "El porcentaje de inversores que está en pérdidas",
+      "Un número de 0 a 100 que resume el ánimo del mercado",
+      "Una predicción del precio de bitcoin a 30 días"
+    ],
+    "correcta": 2,
+    "explicacion": "Cerca de 0 es miedo extremo y cerca de 100, codicia extrema. Describe el ambiente; no pronostica."
+  },
+  {
+    "clave": "cm-m5-08",
+    "leccion": "miedo-codicia-y-listas-de-moda",
+    "enunciado": "¿Qué publica CoinMarketCap sobre cómo construye su índice de miedo y codicia?",
+    "opciones": [
+      "Solo que se basa en encuestas a inversores",
+      "La fórmula completa, con todos los pesos",
+      "Nada: es totalmente secreto",
+      "Sus cinco componentes, pero no cuánto pesa cada uno"
+    ],
+    "correcta": 3,
+    "explicacion": "Impulso del precio, volatilidad, derivados, composición del mercado y datos propios. De los pesos solo dice que usa un sistema de ponderación complejo."
+  },
+  {
+    "clave": "cm-m5-09",
+    "leccion": "miedo-codicia-y-listas-de-moda",
+    "enunciado": "¿Por qué «comprar cuando el índice marca miedo extremo» no funciona como regla?",
+    "opciones": [
+      "Porque el miedo puede durar meses y el índice no dice cuándo termina",
+      "Porque el índice siempre marca miedo",
+      "Porque el índice solo vale para acciones",
+      "Porque con miedo no se puede operar"
+    ],
+    "correcta": 0,
+    "explicacion": "El índice se construye en buena parte con el propio precio: marca miedo porque ha caído. No indica el suelo."
+  },
+  {
+    "clave": "cm-m5-10",
+    "leccion": "miedo-codicia-y-listas-de-moda",
+    "enunciado": "¿Qué miden, a grandes rasgos, las listas de monedas «en tendencia»?",
+    "opciones": [
+      "Las recomendadas por el equipo de la web",
+      "Lo que más gente está buscando y visitando en la web",
+      "Las monedas con mejores fundamentos",
+      "Las que más van a subir la próxima semana"
+    ],
+    "correcta": 1,
+    "explicacion": "Miden atención. Y lo que atrae atención suele ser una subida que ya ha ocurrido."
+  },
+  {
+    "clave": "cm-m5-11",
+    "leccion": "miedo-codicia-y-listas-de-moda",
+    "enunciado": "Una moneda encabeza la lista de mayores subidas con un +250 % en 24 horas. ¿Qué es lo primero que deberías comprobar?",
+    "opciones": [
+      "Cuántos seguidores tiene en redes",
+      "Si todavía queda tiempo para comprar antes de que siga subiendo",
+      "Su liquidez y qué hizo el precio los días anteriores",
+      "Si su precio por unidad es bajo"
+    ],
+    "correcta": 2,
+    "explicacion": "Esa lista favorece a las monedas menos líquidas, y una ventana de 24 horas puede esconder una caída enorme anterior."
+  },
+  {
+    "clave": "cm-m5-12",
+    "leccion": "miedo-codicia-y-listas-de-moda",
+    "enunciado": "¿Cuál es el uso razonable de las listas de tendencias y de mayores subidas?",
+    "opciones": [
+      "Usarlas como confirmación de que una moneda es fiable",
+      "Vender todo lo que no aparezca en ellas",
+      "Comprar las tres primeras cada mañana",
+      "Enterarte de qué se habla y revisarlo después con calma"
+    ],
+    "correcta": 3,
+    "explicacion": "Sirven para enterarse, no para decidir. La decisión viene después de la revisión completa."
+  },
+  {
+    "clave": "cm-m5-13",
+    "leccion": "tu-revision-en-diez-minutos",
+    "enunciado": "¿A qué pregunta responde bien una revisión hecha con los datos de un agregador?",
+    "opciones": [
+      "Qué estoy mirando: tamaño, oferta pendiente, liquidez e identidad",
+      "Si el equipo cumplirá lo que promete",
+      "Hacia dónde irá el precio en los próximos meses",
+      "Cuánto de mi dinero debería invertir"
+    ],
+    "correcta": 0,
+    "explicacion": "Da una radiografía y motivos para descartar. No es un pronóstico ni decide el tamaño de tu inversión."
+  },
+  {
+    "clave": "cm-m5-14",
+    "leccion": "tu-revision-en-diez-minutos",
+    "enunciado": "En la revisión de diez minutos, ¿qué paso va justo después de mirar el contexto del mercado?",
+    "opciones": [
+      "La historia: distancia al máximo",
+      "El tamaño: capitalización y puesto, no precio por unidad",
+      "La liquidez: profundidad a −2 %",
+      "Las valoraciones de terceros"
+    ],
+    "correcta": 1,
+    "explicacion": "El orden es contexto, tamaño, oferta, volumen, liquidez, identidad e historia."
+  },
+  {
+    "clave": "cm-m5-15",
+    "leccion": "tu-revision-en-diez-minutos",
+    "enunciado": "Haces la revisión a diez monedas y descartas ocho. ¿Qué significa?",
+    "opciones": [
+      "Que la revisión está mal hecha",
+      "Que estás siendo demasiado exigente",
+      "Que el método funciona: su mayor utilidad es descartar",
+      "Que las dos restantes son compras seguras"
+    ],
+    "correcta": 2,
+    "explicacion": "La mayoría de los errores caros se evitan descartando. Y pasar la revisión no convierte a una moneda en una compra segura."
+  }
+]

@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "cm-f-01",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "¿De dónde sacan sus datos CoinMarketCap y CoinGecko?",
+    "opciones": [
+      "De sus propias operaciones de compraventa",
+      "De encuestas a inversores",
+      "De las plataformas donde se negocian las monedas, que consultan cada pocos minutos",
+      "De los bancos centrales"
+    ],
+    "correcta": 2,
+    "explicacion": "Son agregadores: recogen lo que declara cada plataforma y lo juntan."
+  },
+  {
+    "clave": "cm-f-02",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "Un amigo te dice: «esta moneda es fiable, sale en CoinMarketCap». ¿Qué le respondes?",
+    "opciones": [
+      "Que solo es fiable si sale también en CoinGecko",
+      "Que las monedas listadas no pueden bajar de precio",
+      "Que tiene razón: solo listan proyectos verificados",
+      "Que estar listada significa cumplir requisitos de datos, no que alguien la haya avalado"
+    ],
+    "correcta": 3,
+    "explicacion": "Aparecer en un agregador no es un sello de calidad. Muchas monedas listadas acaban desapareciendo."
+  },
+  {
+    "clave": "cm-f-03",
+    "leccion": "que-son-los-agregadores-de-datos",
+    "enunciado": "¿Por qué conviene contrastar un dato importante en las dos webs?",
+    "opciones": [
+      "Porque usan plataformas y criterios distintos, y la diferencia entre ambas es información",
+      "Porque lo exige la ley",
+      "Porque así se obtiene el precio exacto de compra",
+      "Porque una de las dos siempre se equivoca"
+    ],
+    "correcta": 0,
+    "explicacion": "Además, una pertenece a un exchange. Si un dato no coincide, hay que entender por qué."
+  },
+  {
+    "clave": "cm-f-04",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "¿Por qué una misma criptomoneda tiene precios ligeramente distintos según dónde mires?",
+    "opciones": [
+      "Porque cada web redondea de forma distinta",
+      "Porque se negocia en muchos mercados separados, cada uno con sus compradores y vendedores",
+      "Porque algunas webs muestran el precio de ayer",
+      "Porque el precio lo fija cada país"
+    ],
+    "correcta": 1,
+    "explicacion": "No hay un precio único: hay uno por cada par en cada plataforma. El arbitraje los acerca, pero no los iguala."
+  },
+  {
+    "clave": "cm-f-05",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "Una plataforma tiene las retiradas de una moneda desactivadas y allí cotiza un 20 % más cara que en el resto. ¿Qué hace CoinMarketCap con ese precio?",
+    "opciones": [
+      "Elimina la moneda del ranking",
+      "Sube el precio de referencia un 20 %",
+      "Lo excluye de la media, porque no es un precio de libre mercado",
+      "Lo toma como el precio correcto"
+    ],
+    "correcta": 2,
+    "explicacion": "Sin poder mover monedas hacia dentro o hacia fuera, nadie puede igualar ese precio con el del resto. Lo marca con un asterisco."
+  },
+  {
+    "clave": "cm-f-06",
+    "leccion": "como-se-calcula-el-precio-de-una-criptomoneda",
+    "enunciado": "Ves una moneda a 1,00 € en el agregador y vas a comprarla en tu plataforma. ¿Qué describe mejor ese 1,00 €?",
+    "opciones": [
+      "El precio máximo que puedes llegar a pagar",
+      "El precio de la plataforma con menos comisiones",
+      "El precio garantizado durante 24 horas",
+      "Una referencia media de muchos mercados, no el precio de tu plataforma"
+    ],
+    "correcta": 3,
+    "explicacion": "El precio real lo pone tu plataforma, en tu par y en ese instante, con sus comisiones."
+  },
+  {
+    "clave": "cm-f-07",
+    "leccion": "la-portada-columna-a-columna",
+    "enunciado": "Una moneda cae de 1,00 € a 0,10 € y al día siguiente sube a 0,20 €. ¿Qué marca su variación de 24 horas, y qué ha pasado en realidad?",
+    "opciones": [
+      "Marca +100 %, y sigue un 80 % por debajo de donde estaba",
+      "Marca +100 %, y ha recuperado todo lo perdido",
+      "Marca −80 %, y sigue cayendo",
+      "Marca +10 %, y ha recuperado la mitad"
+    ],
+    "correcta": 0,
+    "explicacion": "El porcentaje se calcula sobre el punto de partida de la ventana. Un verde enorme puede esconder una pérdida enorme."
+  },
+  {
+    "clave": "cm-f-08",
+    "leccion": "la-portada-columna-a-columna",
+    "enunciado": "En CoinMarketCap, una moneda aparece sin puesto en el ranking. ¿Qué indica?",
+    "opciones": [
+      "Que es demasiado nueva para tener precio",
+      "Que no tiene una capitalización verificada",
+      "Que ha sido denunciada por fraude",
+      "Que su precio es inferior a un céntimo"
+    ],
+    "correcta": 1,
+    "explicacion": "Las monedas sin capitalización verificada no se clasifican por tamaño: se ordenan por volumen."
+  },
+  {
+    "clave": "cm-f-09",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "Tienes 100 € y dudas entre una moneda de 0,0005 € y otra de 300 €. Alguien te dice que con la primera «tienes muchas más monedas». ¿Qué importa de verdad?",
+    "opciones": [
+      "Elegir la que tenga el precio más bajo",
+      "Tener el mayor número posible de unidades",
+      "Qué le pase a la capitalización de cada una, no cuántas unidades tengas",
+      "Comprar siempre unidades enteras"
+    ],
+    "correcta": 2,
+    "explicacion": "Si la capitalización se dobla sin que cambie la oferta, tus 100 € pasan a 200 € tengas media unidad o medio millón."
+  },
+  {
+    "clave": "cm-f-10",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "Una moneda cuesta 0,50 € y tiene 2.000 millones de unidades en circulación. ¿Cuál es su capitalización?",
+    "opciones": [
+      "4.000 millones de euros",
+      "500 millones de euros",
+      "2.000 millones de euros",
+      "1.000 millones de euros"
+    ],
+    "correcta": 3,
+    "explicacion": "0,50 € × 2.000 millones = 1.000 millones de euros."
+  },
+  {
+    "clave": "cm-f-11",
+    "leccion": "el-precio-por-moneda-no-dice-nada",
+    "enunciado": "Un canal asegura que un token de 0,00002 € «llegará a 0,01 €». Tiene 500 billones de unidades (500.000.000.000.000). ¿Qué capitalización exigiría?",
+    "opciones": [
+      "5 billones de euros, del orden de todo el mercado cripto junto",
+      "5.000 millones de euros, algo razonable",
+      "500 millones de euros",
+      "10 millones de euros"
+    ],
+    "correcta": 0,
+    "explicacion": "0,01 € × 500 billones = 5 billones de euros. La multiplicación desmonta la promesa en diez segundos."
+  },
+  {
+    "clave": "cm-f-12",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "¿Qué relación guardan siempre las tres cifras de oferta?",
+    "opciones": [
+      "Total ≤ circulante ≤ máxima",
+      "Circulante ≤ total ≤ máxima",
+      "Máxima ≤ total ≤ circulante",
+      "Las tres son siempre iguales"
+    ],
+    "correcta": 1,
+    "explicacion": "Lo que circula es parte de lo que existe, y lo que existe no puede superar lo que podrá existir."
+  },
+  {
+    "clave": "cm-f-13",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "Un proyecto «quema» el 10 % de sus tokens. ¿Qué cambia con seguridad?",
+    "opciones": [
+      "La oferta máxima aumenta",
+      "La capitalización sube un 10 %",
+      "La oferta total baja; que el precio suba depende de la demanda",
+      "El precio sube un 10 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Una quema reduce unidades. Nada garantiza que la demanda se mantenga."
+  },
+  {
+    "clave": "cm-f-14",
+    "leccion": "oferta-circulante-total-y-maxima",
+    "enunciado": "En una ficha lees que la oferta circulante es «declarada por el proyecto». ¿Cómo tratas la capitalización de esa moneda?",
+    "opciones": [
+      "Como una capitalización calculada con la oferta máxima",
+      "Como una prueba de transparencia",
+      "Como un dato tan fiable como cualquier otro",
+      "Como una cifra que depende de la palabra del equipo y nadie ha confirmado"
+    ],
+    "correcta": 3,
+    "explicacion": "El equipo tiene incentivos para que la moneda parezca más grande. Es una señal de alerta, no una condena."
+  },
+  {
+    "clave": "cm-f-15",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Roble y Brote cuestan 10 € y tienen 100 millones de oferta máxima. De Roble circulan 90 millones y de Brote, 10 millones. ¿En qué se parecen y en qué no?",
+    "opciones": [
+      "Tienen el mismo FDV, pero en Brote falta por salir el 90 % de la oferta",
+      "Brote es más pequeña y por eso tiene más recorrido",
+      "Tienen la misma capitalización y distinto FDV",
+      "Roble tiene más dilución por delante"
+    ],
+    "correcta": 0,
+    "explicacion": "FDV: 1.000 M€ en las dos. Capitalización: 900 M€ frente a 100 M€. Brote parece pequeña porque solo se ve lo que circula."
+  },
+  {
+    "clave": "cm-f-16",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "¿Qué supuesto poco realista hace el FDV?",
+    "opciones": [
+      "Que nadie vende nunca",
+      "Que el precio no cambia cuando llega al mercado el resto de la oferta",
+      "Que el volumen es constante",
+      "Que la oferta máxima puede aumentar"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso no es una predicción ni un precio justo: mide el tamaño implícito del proyecto entero al precio de hoy."
+  },
+  {
+    "clave": "cm-f-17",
+    "leccion": "fdv-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Las dos webs dan un FDV muy distinto para la misma moneda, que no tiene oferta máxima definida. ¿Cuál es la explicación más probable?",
+    "opciones": [
+      "Que una de las dos tiene el precio mal",
+      "Que el FDV no se puede calcular sin oferta máxima en ninguna web",
+      "Que no usan la misma cifra de oferta en la multiplicación",
+      "Que una de ellas cuenta el volumen"
+    ],
+    "correcta": 2,
+    "explicacion": "CoinMarketCap define el FDV con la oferta máxima y CoinGecko con la total. Sin máximo, las cifras se separan."
+  },
+  {
+    "clave": "cm-f-18",
+    "leccion": "desbloqueos-y-dilucion",
+    "enunciado": "Tienes 1.000 unidades de una moneda. La oferta se dobla por desbloqueos y la capitalización se queda igual. ¿Qué te ha pasado?",
+    "opciones": [
+      "Tienes el doble de unidades",
+      "Tienes la mitad de unidades",
+      "No te afecta: la capitalización no ha cambiado",
+      "Tienes las mismas unidades, pero valen la mitad"
+    ],
+    "correcta": 3,
+    "explicacion": "Eso es la dilución: tu fracción del total se reduce aunque no pierdas ninguna moneda."
+  },
+  {
+    "clave": "cm-f-19",
+    "leccion": "desbloqueos-y-dilucion",
+    "enunciado": "Dentro de dos semanas se desbloquean tokens de una moneda. ¿Qué dato te dice mejor cuánto puede pesar?",
+    "opciones": [
+      "Cuánto supone frente al volumen que se negocia cada día, y quién lo recibe",
+      "El número de unidades en términos absolutos",
+      "El número de seguidores del proyecto",
+      "El precio actual por unidad"
+    ],
+    "correcta": 0,
+    "explicacion": "Mil millones de unidades son muchas o pocas según lo que mueva la moneda. Y pesan más si las recibe quien compró muy barato."
+  },
+  {
+    "clave": "cm-f-20",
+    "leccion": "desbloqueos-y-dilucion",
+    "enunciado": "Buscas el calendario de desbloqueos de un token y no lo encuentras ni en su ficha ni en su documentación. ¿Cómo lo interpretas?",
+    "opciones": [
+      "Como prueba de que no habrá desbloqueos",
+      "Como una señal de alerta: te piden comprar sin saber cuánta oferta llegará",
+      "Como algo normal: ningún proyecto lo publica",
+      "Como una ventaja, porque nadie más lo sabe"
+    ],
+    "correcta": 1,
+    "explicacion": "Los calendarios deberían ser públicos. Su ausencia es en sí misma un dato."
+  },
+  {
+    "clave": "cm-f-21",
+    "leccion": "el-volumen-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Una moneda tiene 10 millones de euros de volumen en 24 horas. ¿Significa que han entrado 10 millones en ella?",
+    "opciones": [
+      "Sí, pero solo si el precio ha subido",
+      "Sí: el volumen es el dinero nuevo que entra",
+      "No: son monedas que han cambiado de dueño; por cada comprador hubo un vendedor",
+      "No: el volumen cuenta solo las ventas"
+    ],
+    "correcta": 2,
+    "explicacion": "Cada operación tiene dos partes y se cuenta una vez. El volumen mide actividad, no entrada neta de dinero."
+  },
+  {
+    "clave": "cm-f-22",
+    "leccion": "el-volumen-y-su-relacion-con-la-capitalizacion",
+    "enunciado": "Miras el gráfico de volumen de una moneda en tres meses: un pico enorme hace diez semanas y casi nada desde entonces. ¿Qué te dice?",
+    "opciones": [
+      "Que el dato de volumen es erróneo",
+      "Que la moneda está acumulando para subir",
+      "Que el mercado es estable y funciona con regularidad",
+      "Que hubo un momento de atención y se acabó; el volumen que permitía entrar ya no está"
+    ],
+    "correcta": 3,
+    "explicacion": "Importa la historia, no un día. Quien entró en el pico tiene ahora mucha menos liquidez para salir."
+  },
+  {
+    "clave": "cm-f-23",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "¿Por qué a una plataforma le interesaba inflar su volumen?",
+    "opciones": [
+      "Para subir en las listas de exchanges, atraer usuarios y cobrar más por listar tokens",
+      "Para pagar menos impuestos",
+      "Para cumplir con el regulador",
+      "Para reducir el precio de las monedas"
+    ],
+    "correcta": 0,
+    "explicacion": "Las listas ordenadas por volumen premiaban a quien más declaraba, fuera cierto o no."
+  },
+  {
+    "clave": "cm-f-24",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "Una moneda da 40 millones de volumen diario en una web y 9 millones en la otra. ¿Qué es lo más probable?",
+    "opciones": [
+      "Que una de las dos use otra moneda de referencia",
+      "Que una cuente plataformas o pares que la otra ha descartado",
+      "Que el volumen real sea la suma de las dos cifras",
+      "Que la moneda tenga dos contratos"
+    ],
+    "correcta": 1,
+    "explicacion": "Una diferencia así suele deberse a volumen que una web filtra y la otra no. Conviene localizar qué plataforma lo explica."
+  },
+  {
+    "clave": "cm-f-25",
+    "leccion": "volumen-falso-y-wash-trading",
+    "enunciado": "¿Cómo conviene tratar hoy la cifra de volumen de una moneda?",
+    "opciones": [
+      "Como un dato falso en todos los casos",
+      "Como una medida exacta, auditada por las webs",
+      "Como un dato declarado y mejor filtrado que antes, pero no auditado ni exacto",
+      "Como un dato fiable solo en las monedas pequeñas"
+    ],
+    "correcta": 2,
+    "explicacion": "Fue masivamente inventado en el pasado; hoy hay filtros, pero sigue sin auditarse operación a operación."
+  },
+  {
+    "clave": "cm-f-26",
+    "leccion": "mercados-pares-y-profundidad",
+    "enunciado": "En un libro de órdenes, el mejor precio de venta es 1,01 € y el mejor de compra 0,99 €. Compras y vendes al instante. ¿Qué pasa?",
+    "opciones": [
+      "Pierdes solo la comisión de la plataforma",
+      "Ganas un 2 %",
+      "No pierdes nada, porque el precio no ha cambiado",
+      "Pierdes alrededor de un 2 %, el spread, sin que el precio se mueva"
+    ],
+    "correcta": 3,
+    "explicacion": "Compras al precio de venta y vendes al de compra. El spread es un coste que se paga al entrar."
+  },
+  {
+    "clave": "cm-f-27",
+    "leccion": "mercados-pares-y-profundidad",
+    "enunciado": "¿Qué mide el Liquidity Score de CoinMarketCap?",
+    "opciones": [
+      "El slippage de órdenes de distinto tamaño, en una escala de 0 a 1.200",
+      "El número de usuarios de una plataforma",
+      "La solvencia financiera de un exchange",
+      "La rapidez con la que se confirman las operaciones"
+    ],
+    "correcta": 0,
+    "explicacion": "Da más peso a las órdenes de 100 a 10.000 dólares, que son las de la mayoría de los usuarios."
+  },
+  {
+    "clave": "cm-f-28",
+    "leccion": "mercados-pares-y-profundidad",
+    "enunciado": "Una moneda solo se negocia en una plataforma pequeña. ¿Cuál es el riesgo principal?",
+    "opciones": [
+      "Que el agregador deja de mostrar su precio",
+      "Que si esa plataforma cierra o la retira, te quedas sin mercado para vender",
+      "Que el precio no puede subir",
+      "Que las comisiones son siempre más altas"
+    ],
+    "correcta": 1,
+    "explicacion": "Es una dependencia. Varias plataformas conocidas reparten ese riesgo."
+  },
+  {
+    "clave": "cm-f-29",
+    "leccion": "slippage-cuanto-puedes-comprar-de-verdad",
+    "enunciado": "¿Por qué el slippage real al vender en una caída suele ser mayor que el que calculaste en un día tranquilo?",
+    "opciones": [
+      "Porque el volumen baja a cero",
+      "Porque el spread desaparece",
+      "Porque las órdenes de compra se retiran del libro justo cuando el mercado se pone feo",
+      "Porque las plataformas suben las comisiones"
+    ],
+    "correcta": 2,
+    "explicacion": "La profundidad de la pestaña de mercados es una foto del momento, el mejor caso, no una garantía."
+  },
+  {
+    "clave": "cm-f-30",
+    "leccion": "slippage-cuanto-puedes-comprar-de-verdad",
+    "enunciado": "Para comprar un token en un DEX tienes que subir la tolerancia al slippage al 15 % o la operación falla. ¿Qué te está diciendo eso?",
+    "opciones": [
+      "Que la red está congestionada",
+      "Que el token está a punto de subir",
+      "Que el DEX cobra un 15 % de comisión",
+      "Que el token tiene muy poca liquidez y vas a pagar mucho más que el precio que ves"
+    ],
+    "correcta": 3,
+    "explicacion": "La tolerancia es lo que aceptas que se desvíe el precio. Si hace falta tanta, el mercado es mínimo, y salir costará lo mismo o más."
+  },
+  {
+    "clave": "cm-f-31",
+    "leccion": "slippage-cuanto-puedes-comprar-de-verdad",
+    "enunciado": "¿Qué reduce mejor el slippage al comprar una moneda poco líquida?",
+    "opciones": [
+      "Usar órdenes limitadas y partir la compra en varias",
+      "Comprar a primera hora de la mañana",
+      "Comprar todo de golpe a mercado",
+      "Elegir la plataforma con menos volumen"
+    ],
+    "correcta": 0,
+    "explicacion": "Con una orden limitada fijas tu precio; al partirla dejas que el libro se rellene entre compras."
+  },
+  {
+    "clave": "cm-f-32",
+    "leccion": "la-ficha-de-arriba-abajo",
+    "enunciado": "Un token aparece en la categoría «inteligencia artificial» de un agregador. ¿Qué demuestra?",
+    "opciones": [
+      "Que el proyecto usa inteligencia artificial de forma demostrada",
+      "Solo que la web lo ha clasificado así, a menudo a propuesta del proyecto",
+      "Que es una inversión del sector tecnológico regulado",
+      "Que ha pasado una auditoría técnica"
+    ],
+    "correcta": 1,
+    "explicacion": "Las categorías sirven para comparar, pero se asignan con criterios amplios."
+  },
+  {
+    "clave": "cm-f-33",
+    "leccion": "la-ficha-de-arriba-abajo",
+    "enunciado": "¿En qué orden conviene leer una ficha?",
+    "opciones": [
+      "Precio, redes sociales y botón de compra",
+      "Valoraciones, noticias y precio",
+      "Avisos, números, mercados, contrato, web oficial y, al final, opiniones",
+      "Descripción, opiniones, gráfico y, si hay tiempo, los números"
+    ],
+    "correcta": 2,
+    "explicacion": "Primero lo que puede invalidarlo todo, después lo que no depende de la palabra de nadie."
+  },
+  {
+    "clave": "cm-f-34",
+    "leccion": "graficos-maximos-y-escalas",
+    "enunciado": "Una moneda está un 75 % por debajo de su máximo. Alguien dice que «tiene un 75 % de recorrido hasta recuperarlo». ¿Cuál es la cifra correcta?",
+    "opciones": [
+      "Tiene que subir un 75 %",
+      "Tiene que subir un 150 %",
+      "Tiene que subir un 25 %",
+      "Tiene que subir un 300 %, es decir, multiplicarse por cuatro"
+    ],
+    "correcta": 3,
+    "explicacion": "1 ÷ (1 − 0,75) = 4. Si valía 100 y vale 25, volver a 100 es multiplicar por cuatro."
+  },
+  {
+    "clave": "cm-f-35",
+    "leccion": "graficos-maximos-y-escalas",
+    "enunciado": "Quieres saber cómo le ha ido a quien compró un token hace tres años. ¿Qué gráfico miras?",
+    "opciones": [
+      "El de precio",
+      "El de capitalización",
+      "El de dominancia",
+      "El de volumen"
+    ],
+    "correcta": 0,
+    "explicacion": "El precio refleja lo que vale cada unidad que alguien compró. La capitalización puede crecer mientras el precio cae, si se emite oferta."
+  },
+  {
+    "clave": "cm-f-36",
+    "leccion": "contratos-redes-y-monedas-falsas",
+    "enunciado": "Un token muy esperado todavía no tiene ficha verificada, pero en un DEX aparecen veinte con su nombre. ¿Qué haces?",
+    "opciones": [
+      "Comprar el más barato",
+      "No comprar ninguno: no hay forma fiable de saber cuál es el auténtico",
+      "Comprar el que tenga más volumen",
+      "Comprar un poco de cada uno"
+    ],
+    "correcta": 1,
+    "explicacion": "Sin una dirección de contrato confirmada por una fuente fiable, todos menos uno son falsos y no puedes distinguirlos."
+  },
+  {
+    "clave": "cm-f-37",
+    "leccion": "contratos-redes-y-monedas-falsas",
+    "enunciado": "Vas a retirar un token de un exchange a tu wallet y te pide elegir la red. ¿Qué compruebas antes?",
+    "opciones": [
+      "Que el nombre del token coincide",
+      "Nada: los tokens llegan igual por cualquier red",
+      "Que la red de envío es la misma en la que tu wallet espera recibir ese token",
+      "Que la red elegida tenga la comisión más baja, sin más"
+    ],
+    "correcta": 2,
+    "explicacion": "Cada versión de un token solo funciona en su red. Enviarlo por una red a una dirección de otra suele acabar en pérdida."
+  },
+  {
+    "clave": "cm-f-38",
+    "leccion": "monedas-muertas-y-sesgo-de-supervivencia",
+    "enunciado": "Una moneda sigue listada con 300 millones de capitalización, pero su volumen se apaga desde hace un año, está en dos plataformas pequeñas y un 97 % bajo su máximo. ¿Qué es lo más probable?",
+    "opciones": [
+      "Que tenga una liquidez excelente",
+      "Que sea muy estable",
+      "Que esté muy infravalorada y a punto de recuperarse",
+      "Que su capitalización sea una cifra sobre el papel: casi nadie vende porque no hay a quién"
+    ],
+    "correcta": 3,
+    "explicacion": "Son las señales de una moneda que sigue en la lista pero ha perdido casi todo su mercado."
+  },
+  {
+    "clave": "cm-f-39",
+    "leccion": "capitalizacion-total-y-dominancia",
+    "enunciado": "La dominancia de bitcoin baja cinco puntos en una semana. ¿Puedes afirmar que las altcoins han subido?",
+    "opciones": [
+      "No: también baja si se emiten más stablecoins o si bitcoin cae más que el resto",
+      "No: la dominancia no tiene relación con las altcoins",
+      "Sí: es la única explicación posible",
+      "Sí, y han subido exactamente un 5 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Es un cociente con stablecoins incluidas en el total. La cifra sola no dice cuál de las partes se ha movido."
+  },
+  {
+    "clave": "cm-f-40",
+    "leccion": "tu-revision-en-diez-minutos",
+    "enunciado": "Una moneda pasa tu revisión de diez minutos sin ninguna señal de alerta. ¿Qué has demostrado?",
+    "opciones": [
+      "Que va a subir en los próximos meses",
+      "Que sabes qué estás mirando; no que el precio vaya a subir ni cuánto deberías invertir",
+      "Que es una compra segura",
+      "Que puedes invertir en ella todo tu ahorro"
+    ],
+    "correcta": 1,
+    "explicacion": "La revisión es una radiografía y un filtro. El pronóstico no lo da nadie, y cuánto arriesgar depende de tu situación."
+  }
+]

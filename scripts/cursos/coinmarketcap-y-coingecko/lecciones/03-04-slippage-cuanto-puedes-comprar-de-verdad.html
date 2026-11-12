@@ -1,0 +1,127 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El slippage es la diferencia entre el precio que esperabas y el que acabas pagando, porque tu orden se va comiendo el libro. En una moneda grande es despreciable; en una pequeña puede costarte más que todas las comisiones juntas. Aquí lo calculas a mano con un libro de órdenes, ves por qué la capitalización no es dinero que se pueda sacar y aprendes a estimar tu coste de entrada y de salida antes de comprar.</p>
+</div>
+
+<h2>Tu orden se come el libro</h2>
+
+<p>Cuando compras «a mercado», le dices a la plataforma: quiero esta cantidad ya, al mejor precio que haya. Si tu orden es pequeña, se llena con la primera línea del libro. Si es mayor que lo que hay en esa línea, sigue con la siguiente, que es más cara, y con la siguiente. El precio que pagas es la media de todas las líneas que has consumido.</p>
+
+<p>Esa diferencia entre el precio que veías y el precio medio que has pagado es el <a href="/glosario/slippage">slippage</a>, o deslizamiento. No es una comisión y no aparece en ningún recibo como tal. Simplemente, compras más caro o vendes más barato de lo que esperabas.</p>
+
+<h2>La cuenta, paso a paso</h2>
+
+<p>Vuelve al libro inventado de la lección anterior. Estas son las órdenes de venta que hay esperando:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Precio</th><th>Unidades a la venta</th><th>Coste de llevárselas todas</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1,01 €</td><td>8.000</td><td>8.080 €</td></tr>
+    <tr><td>1,02 €</td><td>25.000</td><td>25.500 €</td></tr>
+    <tr><td>1,03 €</td><td>40.000</td><td>41.200 €</td></tr>
+  </tbody>
+</table>
+
+<p>Quieres comprar 20.000 unidades. La pantalla marca 1,00 € de precio de referencia, así que esperas gastar unos 20.000 €. Lo que ocurre es esto:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Las primeras 8.000 unidades</strong> las compras a 1,01 €: 8.080 €.</li>
+  <li><strong>Las 12.000 restantes</strong> salen de la línea siguiente, a 1,02 €: 12.240 €.</li>
+  <li><strong>Total: 20.320 €</strong> por 20.000 unidades. Precio medio: 1,016 €.</li>
+</ol>
+
+<p>Has pagado un 1,6 % más que el precio que veías. Y fíjate en lo que ha pasado en el libro: la línea de 1,01 € ha desaparecido. El mejor precio de venta es ahora 1,02 €. <strong>Tu compra ha movido el precio</strong>, y la web lo reflejará en el siguiente dato.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Slippage al comprar, según el tamaño de la orden",
+  "subtitulo": "El mismo libro inventado, con órdenes cada vez mayores.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "5.000 unidades", "slippage": 1.0 },
+    { "etiqueta": "20.000 unidades", "slippage": 1.6 },
+    { "etiqueta": "33.000 unidades", "slippage": 1.76 },
+    { "etiqueta": "60.000 unidades", "slippage": 2.32 }
+  ],
+  "series": [{ "clave": "slippage", "nombre": "Sobrecoste frente a 1,00 €", "color": "#ff8a7a" }],
+  "nota": "5.000: todas a 1,01 €. 20.000: 8.000 a 1,01 y 12.000 a 1,02. 33.000: 8.000 a 1,01 y 25.000 a 1,02. 60.000: además 27.000 a 1,03 €, media 1,0232 €."
+}
+</script></div>
+
+<h2>La salida cuesta lo mismo, o más</h2>
+
+<p>Al vender pasa lo contrario: tu orden consume las órdenes de compra, de la mejor a la peor, y recibes cada vez menos. Si entraste con un 1,6 % de sobrecoste y sales con otro tanto, has perdido más de un 3 % sin que el precio «de la pantalla» se haya movido, y a eso hay que sumarle las comisiones de la plataforma.</p>
+
+<p>Hay una asimetría que conviene tener grabada. Compras cuando quieres, con calma, y puedes partir la orden en trozos. Pero muchas veces vendes cuando el precio cae y otros venden también. En ese momento las órdenes de compra desaparecen del libro, la profundidad se reduce a una fracción de la que viste y <strong>el slippage real es mucho mayor que el que calculaste en un día tranquilo</strong>.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La profundidad que enseña la pestaña de mercados es una foto del momento. Quien tiene órdenes puestas puede retirarlas en un segundo, y es justo lo que hace cuando el mercado se pone feo. Tómala como el mejor caso, no como una garantía.</div>
+</div>
+
+<h2>Por qué la capitalización no es dinero que se pueda sacar</h2>
+
+<p>Con esto puedes entender una de las ideas más importantes del curso. Imagina una moneda con 100 millones de unidades a 1 €: 100 millones de euros de capitalización. Un tenedor grande tiene 10 millones de unidades, que «valen» 10 millones de euros. ¿Puede convertirlas en 10 millones de euros?</p>
+
+<p>Mira el lado de compra del libro: hay 10.000 unidades a 0,99 €, 30.000 a 0,98 € y 45.000 a 0,97 €. En total, 85.000 unidades con comprador a menos de un 3 % del precio. Para vender 10 millones tendría que ir bajando por un libro que se vacía enseguida, y el precio se desplomaría mucho antes de haber vendido una pequeña parte.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0,85 %</span>
+  <span class="prose-dato-texto">La parte de la posición de ese tenedor que encuentra comprador a menos de un 3 % del precio. Sus 10 millones existen solo mientras no intente venderlos.</span>
+</div>
+
+<p>Por eso se dice que la capitalización es una valoración <strong>marginal</strong>: se calcula con el precio de la última unidad negociada y se aplica a todas, como si todas pudieran venderse a ese precio. No pueden. Es una medida útil para comparar tamaños, y es una mala medida de cuánto dinero «hay» en una moneda.</p>
+
+<p>Funciona también en la otra dirección, y explica las subidas espectaculares de los tokens pequeños. Si el libro de ventas tiene pocas unidades, unas compras modestas suben mucho el precio, y ese precio nuevo se multiplica por toda la oferta. Una entrada de 50.000 € puede «crear» varios millones de capitalización. Ese dinero no ha entrado: es una multiplicación.</p>
+
+<h2>Cómo estimar tu coste antes de comprar</h2>
+
+<p>No hace falta reconstruir el libro. Con la pestaña de mercados tienes suficiente para una estimación gruesa, que es todo lo que necesitas.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Tu orden frente a la profundidad a ±2 %</th><th>Qué esperar</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Menos de la décima parte</td><td>Slippage despreciable. Pagarás poco más que el spread</td></tr>
+    <tr><td>Entre la décima parte y la mitad</td><td>Notarás algo, por debajo del 1 %. Mejor una orden limitada</td></tr>
+    <tr><td>Más de la mitad</td><td>Vas a mover el precio en torno a un 2 % o más. Parte la orden</td></tr>
+    <tr><td>Más que toda la profundidad</td><td>El mercado eres tú. Replantéate el tamaño o la moneda</td></tr>
+  </tbody>
+</table>
+
+<p>Y tres formas de reducirlo, por orden de eficacia:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Usar órdenes limitadas.</strong> En vez de aceptar el precio que haya, fijas el tuyo y esperas a que alguien te lo dé. No sufres slippage; a cambio, puede que la orden no se ejecute.</li>
+  <li><strong>Partir la orden.</strong> Varias compras pequeñas repartidas en el tiempo dejan que el libro se rellene entre una y otra.</li>
+  <li><strong>Elegir bien el par y la plataforma.</strong> La misma moneda puede tener diez veces más profundidad en un sitio que en otro. Está en la tabla.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">En un DEX, la aplicación te pide una «tolerancia al slippage»: el máximo que aceptas que se desvíe el precio antes de cancelar la operación. Si para que la compra de un token se ejecute tienes que subirla al 10 % o al 20 %, la aplicación te está diciendo con toda claridad cuánta liquidez tiene.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un token recién lanzado pasa de 2 a 20 millones de capitalización en una hora. ¿Significa que han entrado 18 millones de euros?",
+  "opciones": [
+    "Sí: la capitalización es el dinero invertido en la moneda",
+    "No: con poca liquidez, unas compras modestas suben el precio y ese precio se multiplica por toda la oferta",
+    "Sí, pero solo si el volumen fue de 18 millones",
+    "No: la capitalización solo cuenta las monedas del equipo"
+  ],
+  "correcta": 1,
+  "explicacion": "La capitalización aplica el último precio a todas las unidades. En un libro con pocas órdenes, una cantidad pequeña de dinero mueve mucho ese precio."
+}
+</script></div>
+
+<h2>Ejercicio del módulo: tu coste de entrada y de salida</h2>
+
+<p>Con la línea de liquidez de tus tres monedas, elige una cantidad que te parecería razonable invertir —por ejemplo, 1.000 €— y compárala con la profundidad a +2 % y a −2 % de cada una. Clasifica cada moneda en una de las cuatro filas de la tabla, para la entrada y para la salida. Suma el spread del par principal dos veces, una por operación. Esa cifra, antes de comisiones, es lo que te cuesta entrar y salir si el precio no se mueve. Apúntala al lado de cada moneda.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una orden grande se come el libro y paga un precio medio peor que el de la pantalla: eso es el slippage. La capitalización aplica el último precio a todas las unidades, y no todas pueden venderse a ese precio. Compara lo que vas a invertir con la profundidad antes de entrar, y recuerda que al salir habrá menos.</div>
+</div>

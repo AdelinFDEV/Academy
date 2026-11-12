@@ -1,0 +1,150 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El FDV, o valoración totalmente diluida, es lo que valdría una moneda si todas sus unidades estuvieran ya en el mercado al precio de hoy. Dividir la capitalización entre el FDV te da, en un solo número, qué parte de la oferta circula. Cuando ese número es bajo, compras una moneda cuyo precio lo fija una fracción pequeña de la oferta, con el resto por llegar. No es una predicción: es una cuenta que conviene hacer antes de entrar.</p>
+</div>
+
+<h2>Qué es el FDV</h2>
+
+<p>La capitalización cuenta solo las unidades que circulan. El <a href="/glosario/fdv">FDV</a> (del inglés <em>fully diluted valuation</em>) hace la misma multiplicación con todas:</p>
+
+<blockquote><strong>FDV = precio × oferta máxima</strong> (o la oferta total, según la web)</blockquote>
+
+<p>Responde a una pregunta hipotética: si mañana todas las unidades que existen o existirán estuvieran en circulación y el precio no se moviera, ¿cuánto valdría la moneda entera? El precio, por supuesto, se movería. Pero la cifra sirve para ver el tamaño que el mercado le está dando implícitamente al proyecto completo, no solo a la parte que hoy se negocia.</p>
+
+<h2>Las dos webs no lo calculan igual</h2>
+
+<p>Aquí hay una diferencia de metodología que explica más de un descuadre.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">CoinMarketCap</p>
+    <p class="prose-vs-sub">Oferta máxima × precio</p>
+    <ul>
+      <li data-tono="favor">Cuenta también lo que aún no se ha creado</li>
+      <li data-tono="contra">Sin oferta máxima, tiene que recurrir a otra cifra</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">CoinGecko</p>
+    <p class="prose-vs-sub">Precio × oferta total</p>
+    <ul>
+      <li data-tono="favor">Usa unidades que ya existen</li>
+      <li data-tono="contra">Deja fuera lo que queda por emitir</li>
+    </ul>
+  </div>
+</div>
+
+<p>CoinMarketCap, de hecho, distingue en su metodología cuatro formas de «capitalización», ordenadas de mayor a menor:</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">1 · Valoración totalmente diluida (FDV)</span>
+    <p>Oferta máxima × precio. La más grande de las cuatro.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">2 · Capitalización emitida</span>
+    <p>Oferta total, descontadas las quemas, × precio.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">3 · Capitalización desbloqueada</span>
+    <p>Lo que ya se puede vender, esté en manos de quien esté, × precio.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">4 · Capitalización circulante</span>
+    <p>Lo que está en manos del público × precio. Es la que ordena el ranking.</p>
+  </div>
+</div>
+
+<p>No hace falta memorizarlas. Basta con saber que <strong>cuando dos fuentes dan cifras distintas de «market cap», lo primero que hay que preguntar es qué oferta ha usado cada una</strong>.</p>
+
+<h2>El cociente que lo resume todo</h2>
+
+<p>La cifra de FDV, suelta, dice poco. Lo útil es compararla con la capitalización:</p>
+
+<blockquote><strong>Capitalización ÷ FDV = parte de la oferta que ya circula</strong></blockquote>
+
+<p>El resultado va de 0 a 1. CoinGecko lo muestra en la ficha de cada moneda y lo explica así: cuanto más cerca de 1 está, más cerca está la capitalización de la valoración totalmente diluida, es decir, más cerca está la moneda de tener toda su oferta fuera.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Moneda Roble</th><th>Moneda Brote</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Precio</td><td>10 €</td><td>10 €</td></tr>
+    <tr><td>Oferta circulante</td><td>90 millones</td><td>10 millones</td></tr>
+    <tr><td>Oferta máxima</td><td>100 millones</td><td>100 millones</td></tr>
+    <tr><td>Capitalización</td><td>900 M€</td><td>100 M€</td></tr>
+    <tr><td>FDV</td><td>1.000 M€</td><td>1.000 M€</td></tr>
+    <tr><td><strong>Capitalización ÷ FDV</strong></td><td><strong>0,90</strong></td><td><strong>0,10</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Las dos tienen el mismo precio y el mismo FDV. En la portada, Brote aparece como una moneda «pequeña», de 100 millones, y eso hace que parezca que tiene mucho más recorrido que Roble. Pero el mercado ya está valorando el proyecto entero de Brote en 1.000 millones. La diferencia es que <strong>en Roble casi todo está fuera y en Brote falta por salir el 90 %</strong>.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Misma valoración total, muy distinta por dentro",
+  "subtitulo": "Lo que circula hoy frente a lo que falta por llegar, en millones de euros al precio actual.",
+  "formato": "num",
+  "apilado": true,
+  "datos": [
+    { "etiqueta": "Roble (cociente 0,90)", "circula": 900, "falta": 100 },
+    { "etiqueta": "Brote (cociente 0,10)", "circula": 100, "falta": 900 }
+  ],
+  "series": [
+    { "clave": "circula", "nombre": "Capitalización (circula)", "color": "#ff8a7a" },
+    { "clave": "falta", "nombre": "Resto hasta el FDV (por llegar)", "color": "#5a6b8c" }
+  ],
+  "nota": "Ejemplo inventado. Las dos barras miden 1.000 M€: el FDV es el mismo. Cambia qué parte está ya en el mercado."
+}
+</script></div>
+
+<h2>Poca oferta en circulación y FDV alto</h2>
+
+<p>La combinación de Brote tiene nombre en el sector: <em>low float, high FDV</em>, poca oferta flotante y valoración diluida alta. Fue tan habitual en los lanzamientos de 2024 que Binance Research le dedicó un informe en mayo de ese año. Según ese informe, los tokens lanzados en 2024 tenían los cocientes entre capitalización y FDV más bajos de los últimos años, y entre 2024 y 2030 se iban a desbloquear tokens por valor de unos 155.000 millones de dólares.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">155.000 M$</span>
+  <span class="prose-dato-texto">Lo que el informe de Binance Research estimó en tokens por desbloquear entre 2024 y 2030. Conviene leerlo sabiendo que Binance es parte interesada: lista muchos de esos tokens.</span>
+</div>
+
+<p>¿Por qué importa? Porque para que el precio aguante mientras llega esa oferta, <strong>tiene que entrar dinero nuevo al mismo ritmo</strong>. Si Brote libera el 90 % restante en tres años y nadie compra de más, hay nueve veces más unidades buscando comprador al mismo precio. No significa que el precio vaya a caer: significa que la moneda tiene el viento en contra, y que quien entra hoy debería saberlo.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">El FDV no es una predicción ni un «precio justo». Supone que el precio no cambia cuando llega la oferta nueva, cosa que casi nunca ocurre. Y un cociente alto tampoco es un aval: una moneda con toda su oferta fuera puede ser un mal proyecto igualmente. El cociente responde a una sola pregunta: cuánta dilución queda por delante.</div>
+</div>
+
+<h2>Cuándo el FDV engaña en la otra dirección</h2>
+
+<p>Hay tres casos en los que la cifra hay que leerla con cuidado.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Monedas sin oferta máxima.</strong> Si no hay techo, el FDV calculado con la máxima no existe, y el que ves usa la oferta total. Infravalora la dilución futura, porque no cuenta lo que se seguirá emitiendo.</li>
+  <li><strong>Emisiones muy lentas.</strong> A bitcoin le faltan monedas por minar, pero llegan a lo largo de más de un siglo. El cociente no dice nada del ritmo: una dilución del 10 % en cien años no es lo mismo que en doce meses.</li>
+  <li><strong>Oferta bloqueada que quizá nunca salga.</strong> Algunos proyectos tienen reservas enormes sin calendario claro. El FDV las cuenta todas como si fueran a salir mañana.</li>
+</ol>
+
+<p>Por eso el cociente es el principio de la pregunta, no el final. El final es el calendario: cuántas unidades salen, cuándo y para quién. Eso es la lección siguiente.</p>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una moneda tiene una capitalización de 200 millones de euros y un FDV de 2.000 millones. ¿Qué te dice eso?",
+  "opciones": [
+    "Que está infravalorada y debería multiplicarse por diez",
+    "Que circula alrededor del 10 % de la oferta y el resto está por llegar",
+    "Que el 90 % de las monedas se han quemado",
+    "Que su volumen es diez veces su capitalización"
+  ],
+  "correcta": 1,
+  "explicacion": "200 ÷ 2.000 = 0,10. Solo una de cada diez unidades está en el mercado. No dice que el precio vaya a subir: dice cuánta oferta falta por salir."
+}
+</script></div>
+
+<h2>Ejercicio: el cociente de tus tres monedas</h2>
+
+<p>Con las tres monedas que vienes siguiendo, apunta la capitalización y el FDV que dan las dos webs. Calcula el cociente en cada una y compáralo con el porcentaje en circulación que sacaste en la lección anterior: deberían parecerse. Si en alguna moneda las dos webs dan un FDV muy distinto, averigua cuál usa la oferta máxima y cuál la total. Tienes la definición del concepto, con más ejemplos, en la ficha de <a href="/glosario/tokenomics">tokenomics</a> del diccionario.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el FDV es el precio por todas las unidades, no solo las que circulan. Capitalización ÷ FDV te dice qué parte de la oferta está ya en el mercado. Un cociente bajo significa mucha oferta por llegar; no predice el precio, pero te dice contra qué corriente nada la moneda.</div>
+</div>

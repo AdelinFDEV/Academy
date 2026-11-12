@@ -1,0 +1,115 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El nombre y el símbolo de un token no son únicos: cualquiera puede crear otro que se llame igual. Lo que identifica a un token es su dirección de contrato, en una red concreta. Aquí aprendes a encontrarla en la ficha, a comprobar que lo que vas a comprar es lo que estás mirando, a entender por qué una misma moneda aparece en varias redes y qué te dice el reparto entre direcciones.</p>
+</div>
+
+<h2>Monedas y tokens: una diferencia que aquí importa</h2>
+
+<p>Hasta ahora has leído «moneda» para todo, y casi siempre da igual. En esta lección no. Hay dos clases de criptoactivos:</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Moneda nativa</p>
+    <p class="prose-vs-sub">Es la de su propia red</p>
+    <ul>
+      <li data-tono="favor">Bitcoin en la red de Bitcoin, ether en Ethereum</li>
+      <li data-tono="favor">No tiene contrato: forma parte de la red</li>
+      <li data-tono="favor">Difícil de falsificar</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Token</p>
+    <p class="prose-vs-sub">Vive sobre la red de otro</p>
+    <ul>
+      <li data-tono="favor">Lo crea un programa: un contrato</li>
+      <li data-tono="contra">Crear uno cuesta minutos y muy poco dinero</li>
+      <li data-tono="contra">Nombre y símbolo se eligen libremente</li>
+    </ul>
+  </div>
+</div>
+
+<p>Un token es un <a href="/glosario/smart-contract">smart contract</a>: un programa publicado en una <a href="/glosario/blockchain">blockchain</a> que lleva la cuenta de quién tiene cuántas unidades. Quien lo crea elige el nombre, el símbolo y la cantidad. <strong>Nada impide llamarlo igual que otro que ya existe.</strong></p>
+
+<h2>La dirección de contrato es el DNI del token</h2>
+
+<p>Lo único que no se puede copiar es la dirección del contrato: una cadena larga de letras y números que la red asigna al publicarlo. Dos tokens pueden compartir nombre, símbolo y hasta logotipo; nunca comparten dirección en la misma red.</p>
+
+<p>En la ficha de las dos webs, la dirección aparece en un apartado llamado «Contratos» o «Contract», junto al icono de la red y un botón para copiarla. Ese es el dato que tienes que usar, y no el nombre, en tres momentos:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Al comprar en un DEX.</strong> Pega la dirección copiada de la ficha en lugar de buscar el nombre. Los buscadores de los DEX enseñan todos los tokens con ese nombre, y los falsos suelen estar entre los primeros.</li>
+  <li><strong>Al añadir el token a tu wallet.</strong> Añádelo por dirección, no desde una lista de sugerencias.</li>
+  <li><strong>Al seguir un enlace ajeno.</strong> Si alguien te manda un token «para que lo mires», compara su dirección con la de la ficha, carácter a carácter por el principio y por el final.</li>
+</ol>
+
+<div class="prose-callout prose-callout--danger">
+  <div class="prose-callout-body">Las monedas con mucha expectación generan copias en horas. Antes de un lanzamiento esperado ya hay decenas de tokens con ese nombre, y todos menos uno son falsos. Si la moneda aún no tiene ficha verificada en ninguna de las dos webs, no tienes forma fiable de saber cuál es la buena.</div>
+</div>
+
+<h2>Una moneda, varias redes</h2>
+
+<p>En el apartado de contratos es habitual ver varias direcciones, cada una con el icono de una red distinta. Significa que el token existe en varias blockchains a la vez. No es un error ni una señal de alarma, pero tiene consecuencias prácticas.</p>
+
+<p>La primera: <strong>cada versión solo funciona en su red</strong>. Si envías un token desde una red a una dirección de otra sin usar el mecanismo adecuado, lo más probable es que lo pierdas. Antes de mover nada, comprueba que la red de origen, la de destino y la que admite la plataforma coinciden.</p>
+
+<p>La segunda: <strong>la liquidez no se reparte por igual</strong>. Un token puede tener un mercado profundo en una red y casi ninguno en otra. La pestaña de mercados del módulo 3 indica en qué red está cada par.</p>
+
+<p>Y hay un caso particular que conviene reconocer: los <strong>tokens envueltos</strong>, o <em>wrapped</em>. Son representaciones de una moneda en una red que no es la suya; la más conocida es la versión de bitcoin que circula en Ethereum. Su valor depende de que alguien guarde las monedas reales que las respaldan. Las dos webs los tratan aparte: CoinMarketCap, por ejemplo, los excluye de su índice de temporada de altcoins y los coloca en una categoría propia para no contar dos veces la misma capitalización.</p>
+
+<h2>Lo que cuenta el reparto entre direcciones</h2>
+
+<p>Desde la ficha puedes saltar al <a href="/glosario/explorador-de-bloques">explorador de bloques</a> de la red, y ahí está una de las informaciones más valiosas y menos consultadas: cuántas direcciones tienen el token y cuánto tiene cada una.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Lo que ves</th><th>Qué puede significar</th><th>Qué comprobar</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Una dirección con más del 50 %</td><td>Un contrato de bloqueo, la reserva del proyecto… o un solo dueño</td><td>Si la dirección es un contrato de vesting conocido o una wallet cualquiera</td></tr>
+    <tr><td>Las diez primeras suman más del 80 %</td><td>Oferta muy concentrada</td><td>Cuántas son plataformas y cuántas son particulares</td></tr>
+    <tr><td>Muy pocas direcciones en total</td><td>Casi nadie tiene el token</td><td>Si cuadra con la capitalización que dice tener</td></tr>
+    <tr><td>Miles de direcciones con importes pequeños</td><td>Reparto amplio, o un regalo masivo</td><td>Si esas direcciones tienen actividad real</td></tr>
+  </tbody>
+</table>
+
+<p>Leer esto exige un poco de cuidado, porque <strong>no todas las direcciones grandes son una persona</strong>. Las mayores suelen ser las de los exchanges, que guardan las monedas de miles de clientes en pocas direcciones, o contratos que mantienen tokens bloqueados. Los exploradores suelen etiquetarlas. Lo preocupante es una dirección sin etiqueta, que no es un contrato, con una parte enorme de la oferta: es alguien que puede vender cuando quiera.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">10 direcciones</span>
+  <span class="prose-dato-texto">Mira siempre cuánto suman las diez mayores y quiénes son. Es la comprobación de dos minutos que más sustos evita en tokens pequeños.</span>
+</div>
+
+<h2>Tres comprobaciones del contrato</h2>
+
+<p>Sin saber programar puedes mirar tres cosas en el explorador, o en las herramientas de análisis que enlazan las fichas:</p>
+
+<ul>
+  <li><strong>Si el código está verificado.</strong> Un contrato verificado tiene su código publicado y cualquiera puede leerlo. Uno sin verificar es una caja cerrada.</li>
+  <li><strong>Si alguien puede crear más unidades.</strong> Algunos contratos permiten a su dueño emitir tokens sin límite. Si existe esa función y sigue activa, la oferta máxima de la ficha es una promesa, no un hecho.</li>
+  <li><strong>Si se puede vender.</strong> Existen tokens diseñados para que se puedan comprar pero no vender, salvo por su creador. Suelen llamarse <em>honeypots</em>. Las herramientas de análisis simulan una venta y avisan.</li>
+</ul>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Todo esto pesa muchísimo más en los tokens pequeños que solo viven en un DEX. En una moneda del top 50, negociada en plataformas grandes desde hace años, el riesgo de comprar una copia a través de un exchange centralizado es mínimo. Ajusta el esfuerzo al tamaño del riesgo.</div>
+</div>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Contratos y redes",
+  "afirmaciones": [
+    { "texto": "Dos tokens distintos pueden tener el mismo nombre y el mismo símbolo.", "verdadero": true, "explicacion": "Nombre y símbolo los elige libremente quien crea el token. Lo único irrepetible es la dirección del contrato." },
+    { "texto": "Para comprar un token en un DEX, lo más seguro es buscarlo por su nombre.", "verdadero": false, "explicacion": "El buscador enseña todos los tokens con ese nombre, también los falsos. Hay que pegar la dirección copiada de la ficha." },
+    { "texto": "Que un token aparezca en varias redes significa que es una estafa.", "verdadero": false, "explicacion": "Es habitual que un token exista en varias blockchains. Lo importante es saber en cuál estás operando." },
+    { "texto": "Una dirección con el 40 % de la oferta siempre pertenece a una sola persona.", "verdadero": false, "explicacion": "Puede ser un exchange que guarda monedas de miles de clientes, o un contrato de bloqueo. Hay que mirar su etiqueta." },
+    { "texto": "Si el dueño del contrato puede emitir más unidades, la oferta máxima de la ficha no está garantizada.", "verdadero": true, "explicacion": "Mientras esa función esté activa, la oferta puede crecer aunque la ficha muestre un techo." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: del nombre a la dirección</h2>
+
+<p>Con la más pequeña de tus tres monedas, si es un token: copia su dirección de contrato desde la ficha y comprueba que es la misma en las dos webs. Ábrela en el explorador de su red y apunta el número de direcciones que lo tienen y qué porcentaje suman las diez mayores, distinguiendo las que llevan etiqueta de plataforma o de contrato. Si tu moneda es nativa de su red y no tiene contrato, hazlo con cualquier token del puesto 300 en adelante.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el nombre y el símbolo se copian; la dirección de contrato, no. Úsala siempre para comprar en un DEX o añadir un token a tu wallet. Comprueba la red antes de mover nada, y mira cuánto concentran las diez mayores direcciones y quiénes son.</div>
+</div>

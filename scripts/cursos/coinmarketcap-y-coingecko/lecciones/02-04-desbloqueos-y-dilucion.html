@@ -1,0 +1,126 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Las monedas que faltan por salir no llegan todas a la vez: siguen un calendario. Cada fecha de ese calendario es un desbloqueo, y cada desbloqueo pone a la venta unidades que antes no podían venderse. Aquí ves qué es la dilución con números, qué encontró el mayor estudio publicado sobre desbloqueos y dónde se mira el calendario de una moneda antes de comprarla.</p>
+</div>
+
+<h2>De dónde salen las monedas que faltan</h2>
+
+<p>Cuando se lanza un token, sus unidades se reparten entre varios grupos: el equipo, los inversores que financiaron el proyecto antes de salir al mercado, una reserva para el desarrollo, incentivos para los usuarios y la parte que se vende o se regala al público. Ese reparto y sus reglas forman parte de lo que se llama <a href="/glosario/tokenomics">tokenomics</a>.</p>
+
+<p>Casi nunca se entrega todo de golpe. Lo del equipo y lo de los inversores suele quedar bloqueado y liberarse poco a poco, con un calendario de <a href="/glosario/vesting">vesting</a>. Lo habitual es un primer periodo sin liberar nada —el <em>cliff</em>— y después entregas mensuales durante dos, tres o cuatro años. Cada entrega es una <a href="/glosario/liberacion-de-tokens">liberación de tokens</a>, o desbloqueo.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mes 0 · Lanzamiento</span>
+    <p>Sale al mercado una parte pequeña: la venta pública, los regalos a usuarios y algo de liquidez. El precio lo fija esa fracción.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Meses 1-12 · El cliff</span>
+    <p>Equipo e inversores no pueden vender. La oferta en circulación crece poco, solo por incentivos.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mes 12 · Primer gran desbloqueo</span>
+    <p>Termina el cliff y se libera de golpe una parte importante, a menudo la de quienes compraron mucho más barato.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Meses 13-48 · Goteo mensual</span>
+    <p>Cada mes sale una fracción más, hasta completar la oferta.</p>
+  </div>
+</div>
+
+<h2>Qué es la dilución, con una cuenta</h2>
+
+<p>Dilución es lo que le pasa a tu parte cuando aumenta el número de unidades. No pierdes monedas: sigues teniendo las mismas. Lo que cambia es <strong>qué fracción del total representan</strong>.</p>
+
+<p>Imagina una moneda con 100 millones de unidades en circulación a 1 €. Capitalización: 100 millones de euros. Tú tienes 1.000 unidades, que valen 1.000 €. En un año se desbloquean otros 100 millones de unidades. Si el valor total que el mercado le da a la moneda no cambia —sigue en 100 millones de euros—, ahora hay que repartirlo entre 200 millones de unidades.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Antes</th><th>Después del desbloqueo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Unidades en circulación</td><td>100 millones</td><td>200 millones</td></tr>
+    <tr><td>Capitalización</td><td>100 M€</td><td>100 M€ (sin dinero nuevo)</td></tr>
+    <tr><td>Precio por unidad</td><td>1,00 €</td><td>0,50 €</td></tr>
+    <tr><td><strong>Tus 1.000 unidades</strong></td><td><strong>1.000 €</strong></td><td><strong>500 €</strong></td></tr>
+  </tbody>
+</table>
+
+<p>La capitalización no ha bajado ni un euro y tú has perdido la mitad. Es la trampa de mirar solo la capitalización: <strong>una moneda puede mantener su puesto en el ranking mientras sus compradores pierden dinero</strong>, si lo que crece es el número de unidades y no el valor.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Lo que tiene que crecer la capitalización para que el precio no baje",
+  "subtitulo": "Una moneda que pasa de 100 a 400 millones de unidades en cuatro años, con el precio fijo en 1 €.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Hoy", "necesaria": 100 },
+    { "etiqueta": "Año 1", "necesaria": 175 },
+    { "etiqueta": "Año 2", "necesaria": 250 },
+    { "etiqueta": "Año 3", "necesaria": 325 },
+    { "etiqueta": "Año 4", "necesaria": 400 }
+  ],
+  "series": [{ "clave": "necesaria", "nombre": "Capitalización necesaria (M€)", "color": "#ff8a7a" }],
+  "nota": "Ejemplo inventado. Para que cada unidad siga valiendo 1 €, la capitalización tiene que multiplicarse por cuatro: tiene que entrar dinero nuevo solo para quedarse donde estaba."
+}
+</script></div>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">× 4</span>
+  <span class="prose-dato-texto">Lo que tiene que crecer la capitalización de esa moneda en cuatro años solo para que el precio no se mueva.</span>
+</div>
+
+<h2>Lo que dicen los datos sobre los desbloqueos</h2>
+
+<p>¿Baja el precio cuando hay un desbloqueo? El estudio más grande publicado hasta ahora es el de Keyrock, que analizó más de 16.000 desbloqueos. Su conclusión principal: <strong>alrededor del 90 % de los desbloqueos generan presión bajista sobre el precio</strong>, sea cual sea su tamaño o su tipo. Y no todos pesan igual: los que liberan tokens del equipo son los que peor se comportan.</p>
+
+<p>Tres matices antes de sacar conclusiones, porque este dato se cita mucho y casi siempre mal:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Keyrock es un creador de mercado</strong>, una empresa que vive de dar liquidez a tokens. Es un estudio de parte, no una investigación académica revisada.</li>
+  <li><strong>«Presión bajista» no es «caída segura».</strong> Es una tendencia media sobre miles de casos. Un desbloqueo concreto puede coincidir con una subida si ese mes entra mucho dinero al mercado.</li>
+  <li><strong>El mercado lo sabe de antemano.</strong> Los calendarios son públicos. Parte del efecto ya está en el precio antes de la fecha, así que «vender el día antes» no es ninguna estrategia secreta.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Lo que sí puedes usar del estudio es la dirección: la oferta nueva pesa, y pesa más cuando la recibe quien compró muy barato y tiene motivos para vender. Con eso basta para tomarte en serio el calendario.</div>
+</div>
+
+<h2>Dónde se mira el calendario</h2>
+
+<p>Las dos webs han ido incorporando esta información a la ficha de cada moneda. Lo que conviene buscar:</p>
+
+<ul>
+  <li><strong>El reparto inicial:</strong> qué porcentaje es del equipo, de los inversores, de la comunidad y de la reserva. Suele verse como un gráfico circular en el apartado de tokenomics.</li>
+  <li><strong>El próximo desbloqueo:</strong> la fecha, cuántas unidades salen y qué porcentaje de la oferta circulante suponen.</li>
+  <li><strong>A quién van:</strong> no es lo mismo que salgan incentivos para usuarios que tokens de inversores que entraron a una décima parte del precio actual.</li>
+</ul>
+
+<p>Si la ficha no trae el calendario, el sitio de referencia es la documentación del propio proyecto, donde debería estar publicado. Y si no lo encuentras en ningún sitio, esa ausencia ya es un dato: un proyecto que no explica cuándo salen sus tokens te está pidiendo que compres a ciegas.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Lo que de verdad importa de un desbloqueo es su tamaño respecto a lo que se negocia. Mil millones de unidades suenan a mucho; si la moneda mueve eso mismo cada día, se absorben sin ruido. Compara siempre las unidades que salen con el volumen diario, que es justo lo que aprendes en el módulo siguiente.</div>
+</div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "El recorrido habitual de un token",
+  "instrucciones": "Ordena las fases desde el lanzamiento.",
+  "pasos": [
+    "Sale al mercado una pequeña parte de la oferta",
+    "Empieza el cliff: equipo e inversores no pueden vender",
+    "Termina el cliff y llega el primer gran desbloqueo",
+    "La oferta se libera mes a mes durante años",
+    "Toda la oferta está en circulación"
+  ]
+}
+</script></div>
+
+<h2>Ejercicio del módulo: la radiografía de la oferta</h2>
+
+<p>Elige una de tus tres monedas, la que tenga el cociente capitalización ÷ FDV más bajo, y escribe su radiografía en cinco líneas: precio, oferta circulante, oferta máxima, capitalización y FDV; el cociente; el reparto inicial; la fecha y el tamaño del próximo desbloqueo; y a quién va. Termina con una frase: cuánto tendría que crecer su capitalización en los próximos doce meses para que el precio no bajara. No hace falta que decidas nada. Hace falta que lo sepas.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> un desbloqueo pone a la venta unidades que antes no podían venderse. Si no entra dinero nuevo, más unidades significan menos precio aunque la capitalización no se mueva. El estudio más amplio sitúa en torno al 90 % los desbloqueos que presionan a la baja. Mira el calendario antes de comprar, y compara lo que sale con lo que se negocia.</div>
+</div>
