@@ -22,11 +22,12 @@ const PORTADA_IMAGEN: Record<string, string> = {
   "seguridad-cripto": "/cursos/seguridad-cripto/portada.webp",
 };
 
-type Motivo = "pulso" | "escudo" | "datos" | "generico";
+type Motivo = "pulso" | "escudo" | "datos" | "peldanos" | "generico";
 const MOTIVO: Record<string, Motivo> = {
   "psicologia-del-trading": "pulso",
   "seguridad-cripto": "escudo",
   "coinmarketcap-y-coingecko": "datos",
+  "bitcoin-y-dca": "peldanos",
 };
 
 /** Un número estable a partir del slug, para variar el arte genérico. */
@@ -114,6 +115,25 @@ function ArteDatos() {
   );
 }
 
+/** Compras iguales, una al mes: columnas del mismo ancho que suben a paso fijo, y una moneda. */
+function ArtePeldanos() {
+  const columnas = Array.from({ length: 10 }, (_, i) => 14 + i * 9);
+  return (
+    <>
+      {[30, 55, 80, 105].map((y) => (
+        <line key={y} x1="180" y1={y} x2="400" y2={y} stroke="currentColor" strokeWidth="1" opacity="0.1" />
+      ))}
+      {columnas.map((alto, i) => (
+        <rect key={i} x={196 + i * 19} y={122 - alto} width="12" height={alto} rx="2" fill="currentColor" opacity={0.16 + i * 0.03} />
+      ))}
+      <path d={columnas.map((alto, i) => `${i === 0 ? "M" : "L"}${202 + i * 19} ${116 - alto}`).join(" ")} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" opacity="0.85" />
+      <circle cx="246" cy="42" r="20" fill="none" stroke="currentColor" strokeWidth="2.2" opacity="0.9" />
+      <circle cx="246" cy="42" r="30" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.22" />
+      <path d="M246 33 V51" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" opacity="0.9" />
+    </>
+  );
+}
+
 function ArteGenerico({ slug }: { slug: string }) {
   const s = semilla(slug);
   const cx = 260 + (s % 80);
@@ -153,6 +173,7 @@ export default function PortadaCurso({ slug, titulo }: { slug: string; titulo: s
       {motivo === "pulso" && <ArtePulso />}
       {motivo === "escudo" && <ArteEscudo id={id} />}
       {motivo === "datos" && <ArteDatos />}
+      {motivo === "peldanos" && <ArtePeldanos />}
       {motivo === "generico" && <ArteGenerico slug={slug} />}
     </svg>
   );

@@ -29,7 +29,7 @@ Pedido por el admin el 12-11-2026, con la orden de **no parar, no esperar su apr
 Orden y estado (se va tachando aquí según se cierra cada paso; al cerrar el curso entero se borra su línea):
 
 - [ ] **1 · Cómo leer CoinMarketCap y CoinGecko** (`coinmarketcap-y-coingecko`, coral `#ff8a7a`, logro «Ojo Clínico», claves `cm-`). **Escrito entero y subido como borrador el 12-11-2026**: 5 módulos, 18 lecciones, 75 preguntas de módulo y 40 del final, diez términos nuevos en el diccionario, icono del logro y motivo SVG de la portada. Falta: publicarlo (`"published": true` y volver a subir, **después de desplegar el código**, que es donde viven los términos y el icono) y su ilustración.
-- [ ] **2 · Bitcoin y DCA a largo plazo** (ámbar `#fbbf24`).
+- [ ] **2 · Bitcoin y DCA a largo plazo** (`bitcoin-y-dca`, ámbar `#fbbf24`, logro «Paso Firme», claves `bd-`). **Escrito entero y subido como borrador el 13-11-2026**: 5 módulos, 17 lecciones, 75 preguntas de módulo y 40 del final, nueve términos nuevos en el diccionario (`volatilidad`, `etf-de-bitcoin`, `prueba-de-trabajo`, `satoshi`, `reserva-de-valor`, `fondo-de-emergencia`, `rebalanceo`, `precio-medio-de-compra`, `fifo`), icono del logro y motivo SVG. Falta lo mismo que al 1: publicarlo tras desplegar, y su ilustración.
 - [ ] **3 · Futuros y apalancamiento** (rosa `#f472b6`).
 - [ ] **4 · Análisis técnico sin humo** (verde lima `#a3e635`).
 - [ ] **5 · DeFi y stablecoins** (azul: ajustar para que no se parezca al del Portfolio `#4f9dff`).
