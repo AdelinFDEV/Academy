@@ -56,3 +56,26 @@ export const NIVELES = [
 export function nivelDe(puntos: number): string {
   return (NIVELES.find((n) => puntos >= n.desde) ?? NIVELES[NIVELES.length - 1]).nombre;
 }
+
+/**
+ * Los logros del foro (FORO.md §10.4). NO se guardan en `user_badges`: esa
+ * tabla deja insertar desde el navegador, y un logro del foro tiene que ser
+ * verdad. Se DERIVAN de la reputación, que calcula el servidor desde el libro
+ * de puntos: quien cumple la condición lo tiene, y quien deja de cumplirla
+ * (porque se retiró lo que lo justificaba), no.
+ */
+export const LOGROS_FORO = [
+  { id: "foro-primera-respuesta", nombre: "Primera respuesta", ayuda: "Responde a una pregunta del foro", de: "respuestas", minimo: 1 },
+  { id: "foro-primera-ganadora", nombre: "Respuesta elegida", ayuda: "Que elijan una respuesta tuya como la ganadora", de: "ganadoras", minimo: 1 },
+  { id: "foro-diez-ganadoras", nombre: "Diez respuestas elegidas", ayuda: "Diez respuestas tuyas elegidas como ganadoras", de: "ganadoras", minimo: 10 },
+  { id: "foro-cien-gracias", nombre: "Cien gracias", ayuda: "Cien «Gracias» en tus preguntas", de: "gracias", minimo: 100 },
+  { id: "foro-colaborador", nombre: "Colaborador", ayuda: "Llega a 50 puntos en el foro", de: "puntos", minimo: 50 },
+  { id: "foro-referente", nombre: "Referente", ayuda: "Llega a 1.000 puntos en el foro", de: "puntos", minimo: 1000 },
+] as const;
+
+export type ReputacionParaLogros = { respuestas: number; ganadoras: number; gracias: number; puntos: number };
+
+/** Los ids de los logros del foro que tiene alguien con esta reputación. */
+export function logrosDelForo(r: ReputacionParaLogros): string[] {
+  return LOGROS_FORO.filter((l) => r[l.de] >= l.minimo).map((l) => l.id);
+}

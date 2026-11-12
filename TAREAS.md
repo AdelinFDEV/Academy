@@ -140,8 +140,10 @@ En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (
 
 - [ ] **Fase 4 — API:** escrita (`src/lib/foro/` y `/api/foro/*`), con el filtro de texto probado (77 casos) y las rutas probadas sin sesión. **Falta probarla con sesiones de verdad**: gratuito, Premium, suspendido, 2FA a medias y campos de más. Necesita cuentas de prueba en Supabase, que hay que crear con permiso del admin y borrar después.
 - [ ] **Casos de dos peticiones a la vez** del §9.4 de `FORO.md` (50 me gusta simultáneos, dos eligiendo ganadora): con esas mismas cuentas de prueba, contra la API.
-- [ ] **Fase 6 — Moderación:** `/admin/foro` y sus rutas están escritos. **Falta que el admin lo use con su sesión** (necesita tener activada la verificación en dos pasos: sin ella ve el panel pero no modera) y la edición de un mensaje por el admin, que pide una función nueva de Postgres.
-- [ ] **Fases 7 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: avisos (la campana y la lista; la parte de base de datos ya está), puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
+- [ ] **Ejecutar `scripts/create-foro-mantenimiento.sql`** (el admin lo tiene entero en el chat del 12-11-2026): el mantenimiento diario, la edición por el admin y salir del ranking. Probado con 45 casos en el Postgres de pruebas.
+- [ ] **Fase 6 — Moderación:** `/admin/foro` y sus rutas están escritos. **Falta que el admin lo use con su sesión** (con la verificación en dos pasos pasada).
+- [ ] **Fases 7 y 8:** la base de datos y el servidor están hechos (avisos, puntos, recálculo diario, ranking, logros derivados). **Faltan sus pantallas** (campana, lista de avisos, ranking), que van con el diseño.
+- [ ] **Fases 9 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: romperlo, legal, diseño, SEO, beta cerrada y apertura.
 - [ ] **D15**, antes de la fase 6: si se reconoce a un expulsado que vuelve con otra cuenta (final de `FORO.md`).
 
 ---

@@ -3,7 +3,8 @@ import { z } from "zod";
 import { bd, llamar } from "../bd";
 import { sincronizar } from "../imagenes/almacen";
 import type { ResultadoAccion } from "../peticion";
-import { limpiar } from "../texto/normalizar";
+import { LIMITES } from "../limites";
+import { huella, limpiar } from "../texto/normalizar";
 
 /**
  * Lo que hace el admin (FORO.md §7). Solo se llega aquí por `rutaForoAdmin`,
@@ -94,4 +95,37 @@ export const esquemaModo = z.strictObject({ modo: z.enum(["cerrado", "lectura", 
 /** El interruptor: `lectura` corta toda escritura en el acto, sin desplegar nada. */
 export function cambiarModo(adminId: string, d: z.infer<typeof esquemaModo>): Promise<ResultadoAccion> {
   return llamar("foro_cambiar_modo", { p_admin: adminId, p_modo: d.modo, p_motivo: motivoLimpio(d.motivo) });
+}
+
+export const esquemaEditarAdmin = z.strictObject({
+  pregunta: idPregunta,
+  respuesta: idRespuesta.optional(),
+  /** Solo al editar una pregunta, y solo si se quiere cambiar. */
+  titulo: z.string().min(1).max(LIMITES.titulo.max * 2).optional(),
+  cuerpo: z.string().min(1).max(LIMITES.pregunta.max * 2),
+  motivo: z.string().min(3).max(2000),
+});
+
+/**
+ * El admin corrige un mensaje ajeno: quitar un teléfono o una frase sin tener
+ * que ocultar el mensaje entero. Queda marcado «editado por moderación», la
+ * versión anterior se guarda y el motivo va al registro.
+ *
+ * El texto se limpia (invisibles, espacios) pero NO pasa por los detectores:
+ * es el admin quien lo escribe. Las longitudes las vigila la tabla.
+ */
+export async function editarComoAdmin(adminId: string, d: z.infer<typeof esquemaEditarAdmin>): Promise<ResultadoAccion> {
+  const cuerpo = limpiar(d.cuerpo);
+  const titulo = !d.respuesta && d.titulo ? limpiar(d.titulo, { unaLinea: true }) : null;
+  const r = await llamar("foro_editar_admin", {
+    p_admin: adminId,
+    p_pregunta: d.pregunta,
+    p_respuesta: d.respuesta ?? null,
+    p_titulo: titulo,
+    p_cuerpo: cuerpo,
+    // Sin título nuevo la huella sale solo del cuerpo: sirve igual para cazar duplicados.
+    p_huella: titulo ? huella(titulo, cuerpo) : huella(cuerpo),
+    p_motivo: motivoLimpio(d.motivo),
+  });
+  return r.ok ? { ok: true, datos: {} } : r;
 }

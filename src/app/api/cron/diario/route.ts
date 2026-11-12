@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fotografiarYoutube } from "@/lib/objetivosServidor";
 import { sincronizarCobrosStripe } from "@/lib/cobrosStripe";
-import { limpiarHuerfanas } from "@/lib/foro/imagenes/almacen";
+import { mantenimientoDelForo } from "@/lib/foro/acciones/mantenimiento";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,8 +19,9 @@ export const dynamic = "force-dynamic";
  *  · La red de seguridad de los cobros de Stripe: el webhook ya los copia al
  *    momento; esto recoge lo que se le escapara (un webhook fallido, un
  *    reembolso hecho desde el panel de Stripe) en el último mes.
- *  · La limpieza de las imágenes del foro que se subieron y no se usaron
- *    (FORO.md §6.6), desde el 12-11-2026.
+ *  · El mantenimiento del foro, desde el 12-11-2026: recalcula contadores y
+ *    puntos desde sus filas, avisa a quien puede elegir ganadora, purga lo
+ *    caducado y limpia las imágenes que no se usaron (FORO.md §9.2 y §13).
  *
  * Cada tarea es independiente: si una falla, la otra sigue, y la salida lo dice.
  */
@@ -46,11 +47,11 @@ export async function GET(request: NextRequest) {
 
   const cobros = await sincronizarCobrosStripe(admin);
 
-  // Las imágenes del foro que se subieron y nunca llegaron a una pregunta.
-  const foroImagenes = await limpiarHuerfanas().catch((err) => {
-    console.error("[cron-diario] Error limpiando imágenes del foro:", err instanceof Error ? err.name : "desconocido");
+  // El foro: recálculo de contadores y puntos, avisos, purgas e imágenes sin usar.
+  const foro = await mantenimientoDelForo().catch((err) => {
+    console.error("[cron-diario] Error en el mantenimiento del foro:", err instanceof Error ? err.name : "desconocido");
     return null;
   });
 
-  return NextResponse.json({ youtube, cobros, foroImagenes });
+  return NextResponse.json({ youtube, cobros, foro });
 }

@@ -82,6 +82,7 @@ function Mensaje({ m, puedeModerar }: { m: MensajeModerado; puedeModerar: boolea
         preguntaId={m.preguntaId}
         respuestaId={m.respuestaId}
         estado={m.estado}
+        texto={m.texto}
         conReportes={m.reportes.length > 0}
         puedeModerar={puedeModerar}
       />

@@ -24,3 +24,10 @@ export const esquemaLeerAvisos = z.strictObject({
 export function leerAvisos(usuarioId: string, d: z.infer<typeof esquemaLeerAvisos>): Promise<ResultadoAccion> {
   return llamar("foro_leer_avisos", { p_usuario: usuarioId, p_ids: d.ids ?? null });
 }
+
+export const esquemaRanking = z.strictObject({ fuera: z.boolean() });
+
+/** No aparecer en el ranking, o volver a él. Sigue ganando puntos y nivel. */
+export function salirDelRanking(usuarioId: string, d: z.infer<typeof esquemaRanking>): Promise<ResultadoAccion> {
+  return llamar("foro_salir_del_ranking", { p_usuario: usuarioId, p_fuera: d.fuera });
+}

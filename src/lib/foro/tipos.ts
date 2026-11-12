@@ -121,3 +121,22 @@ export type PanelModeracion = {
   registro: EntradaRegistro[];
   alertas: AlertaDeVotos[];
 };
+
+// ── El ranking (/foro/ranking) ──────────────────────────────────────────────
+
+/** Una fila del ranking. Sin enlace a ningún perfil: no los hay. */
+export type FilaRanking = {
+  posicion: number;
+  alias: string;
+  avatar: string | null;
+  nivel: string;
+  cifra: number;
+};
+
+export type RankingForo = {
+  /** Se reinicia cada mes: alguien nuevo puede ganar en su primer mes. */
+  puntosDelMes: FilaRanking[];
+  puntosDeSiempre: FilaRanking[];
+  ganadoras: FilaRanking[];
+  gracias: FilaRanking[];
+};

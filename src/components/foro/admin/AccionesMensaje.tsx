@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { pedirForo } from "@/components/foro/pedir";
 
-type Panel = null | "ocultar" | "borrar" | "sancionar";
+type Panel = null | "ocultar" | "borrar" | "sancionar" | "editar";
 
 /**
  * Lo que el admin puede hacer con un mensaje de la cola de `/admin/foro`.
@@ -17,12 +17,15 @@ export default function AccionesMensaje({
   preguntaId,
   respuestaId,
   estado,
+  texto,
   conReportes,
   puedeModerar,
 }: {
   preguntaId: number;
   respuestaId: string | null;
   estado: string;
+  /** El texto actual, para corregirlo sin tener que ocultar el mensaje. */
+  texto: string;
   conReportes: boolean;
   /** false si la sesión del admin no ha pasado la verificación en dos pasos. */
   puedeModerar: boolean;
@@ -30,6 +33,7 @@ export default function AccionesMensaje({
   const router = useRouter();
   const [panel, setPanel] = useState<Panel>(null);
   const [motivo, setMotivo] = useState("");
+  const [corregido, setCorregido] = useState(texto);
   const [tipo, setTipo] = useState<"aviso" | "suspension" | "expulsion">("aviso");
   const [dias, setDias] = useState(7);
   const [enviando, setEnviando] = useState(false);
@@ -55,6 +59,9 @@ export default function AccionesMensaje({
     enviar("/api/admin/foro/moderar", { accion, ...destino, ...(conMotivo ? { motivo } : {}) });
 
   function confirmarPanel() {
+    if (panel === "editar") {
+      return enviar("/api/admin/foro/editar", { ...destino, cuerpo: corregido, motivo });
+    }
     if (panel === "sancionar") {
       return enviar("/api/admin/foro/sancionar", { ...destino, tipo, motivo, ...(tipo === "suspension" ? { dias } : {}) });
     }
@@ -86,6 +93,16 @@ export default function AccionesMensaje({
             Desestimar reportes
           </button>
         )}
+        {estado !== "borrada" && (
+          <button
+            type="button"
+            className="fa-btn"
+            disabled={enviando}
+            onClick={() => { setCorregido(texto); setPanel(panel === "editar" ? null : "editar"); }}
+          >
+            Corregir el texto
+          </button>
+        )}
         <button type="button" className="fa-btn" disabled={enviando} onClick={() => setPanel(panel === "sancionar" ? null : "sancionar")}>
           Sancionar al autor
         </button>
@@ -114,18 +131,24 @@ export default function AccionesMensaje({
               )}
             </div>
           )}
+          {panel === "editar" && (
+            <label className="fa-panel-motivo">
+              Texto corregido <span>(quedará marcado «editado por moderación»)</span>
+              <textarea value={corregido} onChange={(e) => setCorregido(e.target.value)} rows={6} maxLength={5000} />
+            </label>
+          )}
           <label className="fa-panel-motivo">
-            Motivo <span>(lo verá el autor)</span>
+            Motivo <span>{panel === "editar" ? "(queda en el registro)" : "(lo verá el autor)"}</span>
             <textarea value={motivo} onChange={(e) => setMotivo(e.target.value)} rows={2} maxLength={1000} />
           </label>
           <div className="fa-botones">
             <button
               type="button"
-              className={`fa-btn fa-btn--firme${panel === "ocultar" ? "" : " fa-btn--peligro"}`}
-              disabled={enviando || motivo.trim().length < 3}
+              className={`fa-btn fa-btn--firme${panel === "ocultar" || panel === "editar" ? "" : " fa-btn--peligro"}`}
+              disabled={enviando || motivo.trim().length < 3 || (panel === "editar" && corregido.trim() === texto.trim())}
               onClick={confirmarPanel}
             >
-              {enviando ? "Enviando…" : panel === "ocultar" ? "Ocultar mensaje" : panel === "borrar" ? "Borrar para siempre" : "Aplicar sanción"}
+              {enviando ? "Enviando…" : panel === "ocultar" ? "Ocultar mensaje" : panel === "borrar" ? "Borrar para siempre" : panel === "editar" ? "Guardar corrección" : "Aplicar sanción"}
             </button>
             <button type="button" className="fa-btn" disabled={enviando} onClick={() => setPanel(null)}>
               Cancelar
