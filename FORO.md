@@ -1,6 +1,6 @@
 # El foro — plan de construcción
 
-**Estado: plan, sin código del foro.** Lo único construido es lo que el foro necesita antes de existir: el perfil público (alias y foto, en «Mi perfil»).
+**Estado: en construcción desde el 12-11-2026.** Hecho: el perfil público (alias y foto, en «Mi perfil»). El plan de seguridad se reforzó ese día (§1 puntos 1, 7 y 8, §5, §6.0, §6.1, §6.2, §6.4, §6.6 y §15): el navegador ya no lee las tablas, cada permiso se comprueba dos veces y el foro es un módulo cerrado.
 
 **Orden innegociable: primero la seguridad y la moderación, luego la lógica, y el diseño al final.** Si una regla de aquí molesta al construir, se cambia aquí primero, con el admin, y después en el código. Nunca al revés.
 
@@ -23,18 +23,32 @@ Cada fase de la §16 tiene un **criterio de salida**: hasta cumplirlo no se empi
 | 06-11-2026 | Las preguntas se **valoran con etiquetas** (Interesante, Gracias y una tercera); le llegan a su autor |
 | 06-11-2026 | **Ranking** del foro en toda la web (preguntas, gracias, puntos), pensado para premiar a quien ayuda |
 | 06-11-2026 | El autor elige la **respuesta ganadora**: su autor gana puntos, el hilo **se cierra** y la ganadora se **fija arriba** |
+| 12-11-2026 | **Nada se revisa antes de publicar**: preguntas y respuestas salen al momento. Se modera después, con reportes (§7) |
+| 12-11-2026 | Lo que el filtro automático marca como posible estafa **se rechaza en el acto**: ni se guarda ni se publica, y el usuario lo reescribe (§6.4). No hay cola previa |
+| 12-11-2026 | **Se puede responder a una respuesta, un solo nivel**: debajo de cada respuesta van sus réplicas, todas a la misma altura; contestar a una réplica la deja en ese hilo citando el alias (§2) |
+| 12-11-2026 | **Imágenes solo en las preguntas**, no en respuestas ni réplicas |
+| 12-11-2026 | **Seis categorías** al abrir: Bitcoin, Altcoins, Trading, Seguridad y carteras, Impuestos y La academia. Las crea solo el admin |
+| 12-11-2026 | La tercera etiqueta es **«Yo también»** |
+| 12-11-2026 | Al borrar la cuenta, sus mensajes **se quedan sin nombre** («usuario eliminado»); si lo pide, se borran |
+| 12-11-2026 | Un expulsado del foro **conserva su Premium**. En un caso grave, el admin lo cancela a mano |
+| 12-11-2026 | **Avisos solo en la web**, sin email |
+| 12-11-2026 | Los niveles dan **solo estatus** |
+| 12-11-2026 | Reportes, sanciones y registro se guardan **12 meses** |
+| 12-11-2026 | Los números del §4, §6.5 y §10.2 son los de este documento para la beta, y se ajustan con lo que pase en ella |
 | 06-11-2026 | **Solo Premium participa, en todo.** Sin Premium (gratuito, sin cuenta o con el Premium caducado) solo se lee: ni me gusta, ni etiquetas, ni reportar, ni elegir ganadora. **Cualquier botón de participar le lleva a hacerse Premium** |
 
 ---
 
 ## 1 · Los principios
 
-1. **Un solo escritor: el servidor.** Ninguna tabla del foro tiene policy de escritura para `anon` ni `authenticated`. La clave anónima va en el navegador de cualquiera: con una policy de `insert`, un `curl` se saltaría toda la validación. Es la misma regla que `portfolio_positions` y `dca_compras` (`PLATAFORMA.md`).
+1. **Un solo escritor y un solo lector: el servidor** (reforzado el 12-11-2026). Las tablas del foro no tienen **ninguna** policy, ni de escritura ni de lectura, y `anon` y `authenticated` no tienen ningún permiso sobre ellas: desde el navegador el foro **no existe** en Supabase. La clave anónima va en el navegador de cualquiera: con una policy de `insert`, un `curl` se saltaría toda la validación, y con una de `select` bastaría un despiste en los permisos de columna para enseñar un `autor_id` o un motivo de moderación. Todo lo que se lee y se escribe pasa por el módulo `src/lib/foro/` del servidor (§6.0).
 2. **Lo que cambia varias cosas a la vez, en una sola transacción.** Elegir ganadora, dar un me gusta o moderar tocan varias tablas (contadores, puntos, avisos, registro). Se hacen en **funciones de Postgres**, todo o nada; nunca con varias llamadas desde la API que puedan quedarse a medias.
-3. **Nada se publica sin pasar por el filtro**, y lo indexable (las preguntas) pasa además por el admin.
+3. **Nada se publica sin pasar por el filtro automático.** No hay revisión humana previa (decidido el 12-11-2026), así que el filtro es la única barrera antes de publicar: lo que marca, no entra. Lo demás se corrige después, con reportes y ocultado automático (§7).
 4. **Los contadores y los puntos no se escriben a mano.** Salen de las filas que los justifican: un me gusta es una fila, y la cifra se deriva. Así siempre se pueden recalcular y auditar.
 5. **Lo mínimo de cada persona.** Alias y foto; ni perfil, ni email, ni IP guardada.
 6. **Todo es YMYL** (dinero): el listón de calidad y de moderación es el más alto. Una estafa indexada bajo el dominio hace más daño que todas las URLs que gana el foro.
+7. **Cada regla se comprueba dos veces, en dos sitios.** La API decide si alguien puede hacer algo, y la función de Postgres **lo vuelve a comprobar** dentro de la transacción (Premium, sanción, alias, normas, autoría). Si un día una ruta nueva se olvida de una comprobación, la base de datos se niega igual.
+8. **Cerrado por defecto.** Lo que no está permitido expresamente, está prohibido: campos que no se esperan en una petición la invalidan, un estado desconocido no se pinta, y un fallo al comprobar un permiso es un «no».
 
 ---
 
@@ -43,8 +57,9 @@ Cada fase de la §16 tiene un **criterio de salida**: hasta cumplirlo no se empi
 **Hay:**
 
 - **Hilo** = una pregunta (título, texto, categoría y hasta 4 imágenes) y sus respuestas.
-- **Respuesta**: plana, a la pregunta. No hay respuestas a respuestas (ver D9).
-- **Me gusta** en las respuestas.
+- **Respuesta**: a la pregunta.
+- **Réplica**: a una respuesta, **un solo nivel**. Todas las réplicas de una respuesta van debajo de ella, a la misma altura y por orden de llegada. Contestar a una réplica crea otra réplica en ese mismo hilo, que empieza citando el alias de a quién se contesta. Solo texto, más cortas (§4), y **no pueden ser la ganadora**.
+- **Me gusta** en las respuestas y en las réplicas.
 - **Etiquetas** en las preguntas: *Interesante*, *Gracias* y *Yo también* (ver §8).
 - **Respuesta ganadora**, elegida por el autor de la pregunta (§9).
 - **Reportar** cualquier pregunta o respuesta.
@@ -65,10 +80,10 @@ Cada fase de la §16 tiene un **criterio de salida**: hasta cumplirlo no se empi
 |---|---|---|---|---|---|
 | Leer lo publicado | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Preguntar (con imágenes) | → Premium | → Premium | ✅ | — | ✅ |
-| Responder | → Premium | → Premium | ✅ | — | ✅ |
-| Me gusta en respuestas | → Premium | → Premium | ✅ | — | ✅ |
+| Responder y replicar | → Premium | → Premium | ✅ | — | ✅ |
+| Me gusta en respuestas y réplicas | → Premium | → Premium | ✅ | — | ✅ |
 | Etiquetar preguntas | → Premium | → Premium | ✅ | — | ✅ |
-| Elegir la ganadora de **su** pregunta | — | → Premium (D10) | ✅ | — | ✅ (cualquiera) |
+| Elegir la ganadora de **su** pregunta | — | → Premium | ✅ | — | ✅ (cualquiera) |
 | Reportar | → Premium | → Premium | ✅ | ✅ | — |
 | Ver lo suyo y sus avisos | — | ✅ | ✅ | ✅ | ✅ |
 | Moderar | — | — | — | — | ✅ |
@@ -95,13 +110,14 @@ Referencia: Reddit permite títulos de 300 caracteres y cuerpos de 40.000; Stack
 | Título | 15 | 150 | Un título que se lee entero en Google y en el listado |
 | Pregunta | 30 | 5.000 | ~800 palabras: de sobra para explicar un problema con contexto |
 | Respuesta | 20 | 3.000 | Una respuesta que necesita más suele ser una guía |
+| Réplica | 5 | 1.000 | Es una aclaración, no otra respuesta |
 | Imágenes por pregunta | 0 | 4 | Capturas de un gráfico, un error o un exchange |
 | Peso por imagen (subida) | — | 5 MB | Lo que pesa una captura de móvil |
 | Lado mayor (guardada) | — | 1.600 px | Se reduce al guardar |
 
 Los límites se cuentan **después de normalizar** (§6.4) y viven en un solo archivo (`src/lib/foro/limites.ts`) que leen la API y el formulario. La restricción `check` de la tabla repite los máximos como última barrera.
 
-**Imágenes en las respuestas: no en la primera versión** (D8). Cada imagen es moderación extra, y casi todas las dudas se resuelven con texto.
+**Imágenes en las respuestas y réplicas: no** (decidido el 12-11-2026). Como nada se revisa antes de publicar, cada imagen sale sin que nadie la haya visto; se limita a las preguntas, y casi todas las dudas se resuelven con texto.
 
 ---
 
@@ -114,7 +130,7 @@ Nombres orientativos; el SQL final se escribe en la fase 2. Todas las tablas con
 | `foro_categorias` | una categoría (las crea el admin) | `slug`, `nombre`, `orden`, `activa` |
 | `foro_preguntas` | una pregunta | `autor_id`, `categoria`, `titulo`, `slug`, `cuerpo`, `estado`, `cerrada`, `ganadora_id`, contadores, `huella`, fechas |
 | `foro_imagenes` | una imagen de una pregunta | `pregunta_id`, `ruta`, `ancho`, `alto`, `bytes`, `orden`, `estado` |
-| `foro_respuestas` | una respuesta | `pregunta_id`, `autor_id`, `cuerpo`, `estado`, `me_gusta` (contador), `huella`, fechas |
+| `foro_respuestas` | una respuesta o una réplica | `pregunta_id`, `padre_id` (vacío en una respuesta; en una réplica, la respuesta de la que cuelga, que nunca es otra réplica), `autor_id`, `cuerpo`, `estado`, `me_gusta` (contador), `huella`, fechas |
 | `foro_me_gusta` | un me gusta | **PK (`respuesta_id`, `usuario_id`)**: es imposible dar dos |
 | `foro_etiquetas` | una etiqueta puesta | **PK (`pregunta_id`, `usuario_id`, `tipo`)** |
 | `foro_reportes` | un reporte | `objeto`, `objeto_id`, `usuario_id`, `motivo`, `estado`; único por (objeto, usuario) |
@@ -122,35 +138,78 @@ Nombres orientativos; el SQL final se escribe en la fase 2. Todas las tablas con
 | `foro_sanciones` | una sanción | `usuario_id`, `tipo` (aviso, suspensión, expulsión), `hasta`, `motivo` |
 | `foro_puntos` | un movimiento de puntos | `usuario_id`, `motivo`, `puntos` (±), `ref`, fecha. **Solo inserción** (§10) |
 | `foro_reputacion` | los totales de un usuario | puntos totales y del mes, respuestas ganadoras, gracias recibidas, nivel. **Derivada** del libro de puntos |
+| `foro_ajustes` | el modo del foro y la versión de las normas | una sola fila; la leen todas las funciones (§6.1) |
+| `foro_normas_aceptadas` | una aceptación de las normas | `usuario_id`, `version`, fecha |
 | `foro_avisos` | un aviso | `destinatario`, `tipo`, `pregunta_id`, `cuantos`, `leido`, fechas |
 
-**Estados** de preguntas, respuestas e imágenes: `pendiente` → `publicada` | `rechazada`; `publicada` → `oculta` (reversible) | `borrada`. Nunca se borra la fila de verdad mientras haya un reporte o una sanción que la cite: se marca, y se purga al vencer el plazo de conservación (§13).
+**Estados** de preguntas, respuestas e imágenes: `publicada` → `oculta` (reversible) | `borrada`. No hay `pendiente` ni `rechazada`: nada espera revisión, y lo que el filtro rechaza no llega a guardarse. Nunca se borra la fila de verdad mientras haya un reporte o una sanción que la cite: se marca, y se purga al vencer el plazo de conservación (§13).
 
-**Lectura pública** (policy `select` para `anon, authenticated`): solo filas `publicada`, y solo las columnas públicas (`GRANT` por columnas, como `scripts/lock-profiles-columns.sql`). El autor de un mensaje se pinta con su alias y su foto de `profiles`, que ya son públicos; **`autor_id` no sale nunca al navegador**: sin perfiles visitables no hace falta, y con él se podría cruzar la actividad de alguien.
+**Lectura pública: la hace el servidor, no el navegador** (cambiado el 12-11-2026; antes iba a ser una policy `select` con `GRANT` por columnas). Las páginas del foro son componentes de servidor que leen con la clave de servicio a través de `src/lib/foro/datos/`, que solo devuelve filas `publicada` y las convierte en un objeto con **los campos públicos escritos uno a uno** (§6.0). El autor de un mensaje se pinta con su alias y su foto; **`autor_id` no sale nunca al navegador**: sin perfiles visitables no hace falta, y con él se podría cruzar la actividad de alguien.
+
+**Los identificadores.** Las preguntas llevan un número correlativo (va en la URL). Todo lo demás que el navegador necesita nombrar (una respuesta para darle me gusta, una imagen) lleva un `uuid` aleatorio: no se puede recorrer ni adivinar. Los de usuario no salen nunca.
+
+**Claves ajenas.** `autor_id` apunta a `auth.users` con `on delete set null`: al borrar la cuenta, el mensaje se queda sin autor («usuario eliminado») sin que haya que acordarse de hacerlo. Me gusta, etiquetas, avisos y reputación, `on delete cascade`.
 
 ---
 
 ## 6 · La seguridad, capa a capa
 
+### 6.0 El encapsulamiento: quién puede tocar qué (12-11-2026)
+
+El foro es un módulo cerrado. Desde fuera solo se ve su puerta.
+
+```
+navegador ──► /api/foro/*  y páginas de /foro  (finas: no deciden nada)
+                    │
+                    ▼
+            src/lib/foro/            ← la ÚNICA parte del código que conoce las tablas
+            ├─ limites.ts            lo único compartido con el navegador (números)
+            ├─ tipos.ts              lo que sale al navegador, campo a campo
+            ├─ texto/                normalizar, detectores, enlaces, palabras
+            ├─ peticion.ts           origen, tamaño, JSON estricto, errores genéricos
+            ├─ permisos.ts           sesión, 2FA, Premium, sanción, alias, normas
+            ├─ datos/                lecturas → devuelven solo `tipos.ts`
+            └─ acciones/             escrituras → llaman a UNA función de Postgres
+                    │
+                    ▼
+            funciones foro_*()  ──►  tablas foro_*   (sin policies, sin permisos)
+```
+
+Reglas, y las vigila `npm run check` (se añaden a `scripts/check-code.mjs` en la fase 4):
+
+1. **Ningún archivo fuera de `src/lib/foro/` nombra una tabla ni una función `foro_`.** Ni una página, ni una ruta de la API, ni el admin: todos llaman a `datos/` o a `acciones/`.
+2. **Todo `src/lib/foro/` menos `limites.ts` y `tipos.ts` empieza por `import "server-only"`**: si alguien lo importa desde un componente de cliente, la compilación falla en vez de mandar la clave de servicio al navegador.
+3. **Nada sale al navegador sin pasar por un tipo de `tipos.ts`**, construido campo a campo. Nunca se devuelve una fila tal cual (`select *` y `...fila` prohibidos en `datos/`): el día que se añada una columna privada a la tabla, no sale sola.
+4. **Las rutas de la API no tienen lógica**: leen la petición con `peticion.ts`, piden permiso a `permisos.ts`, llaman a una acción y devuelven su resultado. Una regla nueva se escribe una vez, en el módulo, no en cada ruta.
+5. **Lo personal no se mezcla con lo público.** La página de un hilo se genera igual para todo el mundo y se puede cachear; lo que depende de quién mira (si ya le diste me gusta, tus avisos) se pide aparte, con `Cache-Control: private, no-store`. Así es imposible que la caché le sirva a uno lo de otro.
+6. **Moderar invalida la caché en el acto** (`revalidateTag` del hilo): lo ocultado no puede seguir sirviéndose ni un minuto.
+
 ### 6.1 Base de datos
 
-- RLS en todas las tablas, cerrada por defecto. Ninguna policy de `insert`, `update` ni `delete` para `anon` ni `authenticated`.
-- `GRANT` por columnas: el público lee el texto, la fecha, el alias y los contadores. Nunca motivos, reportes, sanciones, huellas ni `autor_id`.
-- `check` en la tabla: longitudes y estados permitidos.
+- RLS activada en todas las tablas y **ninguna policy**. Además, `revoke all … from anon, authenticated` en cada una: aunque alguien añadiera una policy por error, seguiría sin permiso.
+- Las tablas del foro **no entran en la publicación de Realtime**: nada de lo que pasa en ellas se emite por websocket.
+- `check` en la tabla: longitudes y estados permitidos. `not null` y claves ajenas en todo.
 - **Únicos** que hacen imposible el doble voto: las PK de `foro_me_gusta` y `foro_etiquetas`, y el único de los reportes.
-- **Funciones `SECURITY DEFINER`** para cada acción compuesta (§6.3), con `search_path` fijado, que solo puede ejecutar `service_role`.
+- **Funciones `SECURITY DEFINER`** para cada acción compuesta (§6.3), con `set search_path = ''` y todos los nombres con su esquema. Postgres da permiso de ejecución **a todo el mundo por defecto**, y Supabase publica cada función de `public` en `/rest/v1/rpc/…`: por eso cada una lleva su `revoke execute … from public, anon, authenticated` y su `grant execute … to service_role`, y el SQL termina con una consulta que lista quién puede ejecutar qué.
+- **Cada función vuelve a comprobar el permiso** con `foro_puede_participar(usuario)` (Premium o admin en `profiles.role`, sin sanción vigente, con alias y con las normas aceptadas), dentro de la misma transacción. Cierra también el hueco entre que la API comprueba y la base de datos escribe.
 - `foro_moderacion` y `foro_puntos`: sin `update` ni `delete` para nadie salvo `service_role`, y un trigger que lo rechaza también para él salvo en la purga programada.
+- **Interruptor de emergencia**: una fila en `foro_ajustes` con el modo del foro (`cerrado` = solo el admin lo ve, `lectura` = se lee pero nadie publica, `abierto`). Las funciones lo leen: pasar a `lectura` corta toda escritura en el acto, sin desplegar nada. Hasta la fase 13 está en `cerrado`.
+- **Tope global**: si en una hora se publican más de 30 preguntas entre todas las cuentas, el foro pasa solo a `lectura` y avisa al admin. Un ataque coordinado no lo llena antes de que nadie mire.
 
 ### 6.2 La API (`/api/foro/*`)
 
 Cada acción pasa, en este orden, y se corta en el primer fallo:
 
-1. **Sesión válida** (`supabase.auth.getUser()`, nunca `getSession()`).
-2. **Permiso** según la tabla del §3, leído en ese momento: rol, sanción vigente, normas aceptadas, alias puesto.
-3. **Límites de envío** contados en la base de datos (§6.5).
-4. **Validación del contenido** (§6.4).
-5. **La función de Postgres** que hace el cambio entero.
-6. Respuesta al cliente con un **mensaje genérico en español**. Nunca el error de Postgres, que enseña nombres de tablas y restricciones.
+0. **La petición es de la propia web**: la cabecera `Origin` tiene que ser la del sitio y el `Content-Type`, `application/json`. Un formulario escondido en otra web no puede publicar en nombre de quien la visita (CSRF), aunque lleve su cookie.
+1. **Sesión válida** (`supabase.auth.getUser()`, nunca `getSession()`). Si la cuenta tiene verificación en dos pasos, la sesión tiene que haberla pasado (`aal2`): hoy `src/proxy.ts` solo lo exige en las páginas protegidas, no en `/api`. Las rutas de moderación lo exigen siempre.
+2. **Permiso** según la tabla del §3, leído en ese momento: modo del foro, rol, sanción vigente, normas aceptadas, alias puesto.
+3. **Tamaño y forma**: el cuerpo no pasa de 16 KB, y se valida con un esquema `zod` **estricto**: un campo que no se espera (`autor_id`, `estado`, `puntos`…) invalida la petición entera en vez de ignorarse. Los identificadores se validan como `uuid` o entero antes de llegar a la base de datos.
+4. **Límites de envío** contados en la base de datos (§6.5).
+5. **Validación del contenido** (§6.4).
+6. **La función de Postgres** que hace el cambio entero. El autor es siempre el de la sesión: ninguna ruta acepta un id de usuario en el cuerpo.
+7. Respuesta al cliente con un **mensaje genérico en español**. Nunca el error de Postgres, que enseña nombres de tablas y restricciones. En el registro del servidor se apunta el código del error y los ids, **nunca el texto del mensaje ni cabeceras**.
+
+**Lo que no existe y lo que no puedes ver responden igual.** Un hilo oculto o borrado da el mismo 404 que uno que nunca existió a quien no es su autor ni el admin (el 410 del §12 es para lo retirado que Google ya conocía).
 
 Todas las rutas `/api/foro/*` entran en el tramo `escritura` de `src/lib/rate-limit.ts`, y las imágenes en uno propio más estricto.
 
@@ -158,11 +217,12 @@ Todas las rutas `/api/foro/*` entran en el tramo `escritura` de `src/lib/rate-li
 
 | Función | Hace, todo o nada |
 |---|---|
-| `foro_publicar(...)` | Crea la pregunta o la respuesta **pendiente** o publicada según la confianza (§7.1), comprueba límites y duplicados, y apunta en el registro |
+| `foro_preguntar(...)`, `foro_responder(...)` | Crean la pregunta, la respuesta o la réplica ya **publicada**, tras comprobar permiso, modo del foro, límites y duplicados; avisan a quien toca. En una réplica comprueban que el padre es una respuesta publicada de ese mismo hilo y no otra réplica |
 | `foro_me_gusta(respuesta, usuario)` | Pone o quita el me gusta, ajusta el contador y los puntos (§10) y crea o agrupa el aviso. Rechaza su propia respuesta, una respuesta no publicada o de un hilo no publicado |
 | `foro_etiquetar(pregunta, usuario, tipo)` | Igual, para las etiquetas de las preguntas |
 | `foro_elegir_ganadora(pregunta, respuesta, usuario)` | Comprueba que es el autor (o el admin), que la respuesta es de otro y está publicada y que el hilo no está cerrado; fija la ganadora, cierra el hilo, da los puntos y avisa (§9) |
-| `foro_moderar(objeto, accion, motivo, admin)` | Aprueba, rechaza, oculta, restaura o borra; revierte los puntos que dependían de ello; apunta en el registro y avisa al autor con el motivo |
+| `foro_reportar(objeto, usuario, motivo)` | Apunta el reporte y, al tercero de cuentas distintas, **oculta el mensaje** en la misma transacción |
+| `foro_moderar(objeto, accion, motivo, admin)` | Oculta, restaura o borra; revierte los puntos que dependían de ello; apunta en el registro y avisa al autor con el motivo |
 | `foro_sancionar(usuario, tipo, hasta, motivo, admin)` | Crea la sanción, la apunta y avisa |
 
 Todas bloquean la fila que tocan (`select … for update`) antes de comprobar nada: dos me gusta simultáneos, o dos personas eligiendo ganadora a la vez, no pueden dejar un contador mal.
@@ -170,10 +230,12 @@ Todas bloquean la fila que tocan (`select … for update`) antes de comprobar na
 ### 6.4 El contenido
 
 - **Texto plano.** Nunca se pinta HTML del usuario: nada de `dangerouslySetInnerHTML`; React escapa el texto. Los saltos de línea se respetan. Si algún día hay formato, es un subconjunto mínimo (negrita, listas, código) convertido en el servidor con lista blanca.
-- **Normalizar antes de validar y contar**: Unicode NFC, quitar caracteres invisibles (ancho cero, control, dirección del texto), colapsar espacios y saltos repetidos. Si no, las palabras vetadas se esquivan con un carácter invisible en medio.
-- **Duplicados**: huella del texto normalizado. El mismo texto dos veces del mismo usuario se rechaza; de usuarios distintos, va a revisión (cuentas coordinadas).
-- **Enlaces**: solo a dominios de una lista blanca (la propia web, YouTube, exploradores de bloques y webs oficiales que apruebe el admin). Los demás, rechazados. Todo enlace sale con `rel="nofollow ugc noopener noreferrer"`.
-- **Detectores que mandan a revisión** aunque el usuario tenga confianza: algo que parezca una **frase semilla** (12 o 24 palabras seguidas de la lista BIP-39), una **clave privada**, una dirección de cartera pidiendo envíos, teléfonos y emails, «escríbeme por privado», enlaces de WhatsApp o Telegram, códigos de referido y promesas de rentabilidad («x10 asegurado»). Son las estafas típicas del sector.
+- **Normalizar antes de validar y contar**: Unicode NFC, quitar caracteres invisibles (ancho cero, control, dirección del texto), colapsar espacios y saltos repetidos. Si no, las palabras vetadas se esquivan con un carácter invisible en medio. Tope de marcas combinadas por letra (el texto «zalgo» que se sale de su línea) y de saltos de línea.
+- **Para comparar con los filtros se usa una segunda forma, más agresiva** (NFKC, sin tildes, minúsculas, letras parecidas de otros alfabetos pasadas a la latina): «ｅｓｔａｆａ» o una «а» cirílica no esquivan nada. Se guarda el texto en NFC; la forma agresiva solo sirve para detectar.
+- **Duplicados**: huella del texto normalizado. El mismo texto dos veces del mismo usuario se rechaza (cubre también el doble clic y el reintento); de usuarios distintos, va a revisión (cuentas coordinadas).
+- **Enlaces**: solo a dominios de una lista blanca (la propia web, YouTube, exploradores de bloques y webs oficiales que apruebe el admin). Los demás, rechazados. Todo enlace sale con `rel="nofollow ugc noopener noreferrer"`. Se analizan con `new URL()` y se compara el **dominio exacto**: solo `https:`, sin usuario ni contraseña en la URL, sin puerto y sin dominios `xn--` (los que imitan a otro con letras parecidas). El enlace se pinta como componente de React a partir del texto, nunca como HTML.
+- **El JSON-LD lleva texto de usuarios** (§12): al escribirlo en la página, cada `<` se escapa como `<`. Sin eso, un `</script>` dentro de una pregunta cerraría la etiqueta y lo siguiente se ejecutaría como código en la página de todos.
+- **Detectores que rechazan el mensaje en el acto** (decidido el 12-11-2026; no se guarda, y el usuario ve qué tiene que quitar): algo que parezca una **frase semilla** (12 o 24 palabras seguidas de la lista BIP-39), una **clave privada**, una dirección de cartera pidiendo envíos, teléfonos y emails, «escríbeme por privado», enlaces de WhatsApp o Telegram, códigos de referido y promesas de rentabilidad («x10 asegurado»). Son las estafas típicas del sector. Un falso positivo se arregla afinando el detector, y cada rechazo se cuenta (sin guardar el texto) para ver cuál se pasa de estricto.
 - **Palabras malsonantes**: el mismo filtro del alias (`src/lib/perfilPublico.ts`), sobre el texto normalizado.
 
 ### 6.5 Límites de envío, por usuario
@@ -182,9 +244,9 @@ El limitador de `src/lib/rate-limit.ts` vive en la memoria de cada instancia de 
 
 | Acción | Límite |
 |---|---|
-| Preguntas pendientes a la vez | 1 (el patrón de `scripts/comments-one-pending.sql`) |
 | Preguntas | 3 al día |
-| Respuestas | 10 a la hora, 30 al día |
+| Respuestas y réplicas | 10 a la hora, 30 al día |
+| Mensajes rechazados por el filtro | 10 al día; al pasar, no puede publicar hasta mañana (quien prueba variantes para colar una estafa) |
 | Me gusta | 60 al día |
 | Etiquetas | 60 al día |
 | Imágenes subidas | 12 al día |
@@ -199,9 +261,12 @@ Una imagen es el contenido más peligroso del foro: puede llevar un script, la u
 1. El navegador pide subir; la API comprueba permiso y límites y da una **URL firmada de un solo uso** a un bucket **privado** de Supabase Storage (`foro-pendientes`).
 2. Al confirmar, el **servidor** la descarga y la comprueba: tipo real por sus **primeros bytes** (no por la extensión ni por lo que diga el navegador), solo **JPG, PNG o WebP** (nunca SVG, que puede llevar código, ni GIF), peso y dimensiones.
 3. **La recodifica** a WebP de 1.600 px como mucho. Recodificar destruye cualquier cosa escondida en el archivo y **borra los metadatos EXIF**, que en una foto de móvil incluyen **la ubicación GPS**.
-4. Pasa al bucket público (`foro`) **solo cuando la pregunta se aprueba**. Hasta entonces la ven el autor y el admin, con una URL firmada que caduca.
+4. Pasa al bucket público (`foro`) **al publicarse la pregunta**, ya recodificada. La original del bucket privado se borra; lo que quede allí sin pregunta a las 24 horas, lo limpia el cron.
 5. El nombre del archivo lo pone el servidor (un id aleatorio), nunca el usuario.
 6. Si se rechaza o se borra la pregunta, sus imágenes se borran del bucket.
+7. **Los dos buckets, sin ninguna policy** en `storage.objects` para `anon` ni `authenticated`: solo entra la clave de servicio y las URL firmadas que ella emite. El límite de peso y los tipos permitidos se fijan **también en el bucket**, por si falla la comprobación del servidor.
+8. **Las dimensiones se leen de la cabecera del archivo antes de decodificarlo**, con un tope de píxeles: una imagen de 20.000 × 20.000 pesa pocos KB comprimida y tumba el servidor al abrirla.
+9. La imagen guardada se sirve siempre como `image/webp` (lo fija el servidor al subirla, no el navegador) y nunca desde una ruta de la propia web que acepte un nombre de archivo.
 
 ### 6.7 Contra la manipulación de puntos y del orden
 
@@ -217,24 +282,24 @@ Premium cuesta dinero, y eso ya frena las cuentas falsas en masa. Aun así:
 
 ## 7 · La moderación
 
-### 7.1 Antes de publicar
+### 7.1 Antes de publicar: solo el filtro
 
-- **Las preguntas siempre pasan por el admin**: cada una es una URL indexable bajo el dominio.
-- **Las respuestas, por confianza:**
+**Nada pasa por el admin antes de publicarse** (decidido el 12-11-2026). Lo que pasa el filtro automático del §6.4 se publica al momento; lo que no, se rechaza y no se guarda.
 
-| Nivel de confianza | Cómo se llega | Sus respuestas |
-|---|---|---|
-| 0 · Nuevo | Al empezar | Van a revisión |
-| 1 · De confianza | 3 respuestas aprobadas, ninguna rechazada en 30 días y sin sanciones | Se publican solas, sujetas a reporte |
+Eso deja al foro sin red humana previa, así que lo compensan cuatro cosas, todas automáticas:
 
-Una sanción o un rechazo devuelve al nivel 0. El admin puede quitar o dar la confianza a mano. Los detectores del §6.4 mandan a revisión **siempre**, tenga el nivel que tenga.
+1. **El filtro rechaza, no retiene** (§6.4), y quien acumula 10 rechazos en un día no publica hasta el siguiente.
+2. **El ocultado automático** con 3 reportes (§7.2), y con **uno solo** si el motivo es «estafa» y quien reporta tiene nivel Colaborador o más.
+3. **Los nuevos van más despacio**: en sus primeros 7 días en el foro, una cuenta publica como mucho 1 pregunta y 5 respuestas al día, y **no puede poner enlaces**. Es cuando actúa quien paga un mes solo para colar una estafa.
+4. **Google espera** (§12): un hilo no es indexable hasta llevar 48 horas publicado sin reportes abiertos. Lo que se retira en ese plazo no llega a salir en el buscador.
 
-La cola de `/admin/foro` enseña cada pendiente con su autor, sus envíos anteriores, sus sanciones y lo que marcó el detector. Acciones: **aprobar**, **rechazar con motivo** (el autor lo ve), **editar antes de aprobar** (queda marcado «editado por moderación») y **mover de categoría**.
+`/admin/foro` no tiene cola de pendientes: tiene los **reportes abiertos**, lo **ocultado automáticamente** a la espera de decisión y las **alertas** (§6.7), con el autor de cada mensaje, sus envíos anteriores y sus sanciones.
 
 ### 7.2 Después de publicar
 
 - **Reportar**: cualquier Premium, una vez por mensaje, con un motivo de una lista cerrada: estafa o spam, insulto, datos personales, consejo peligroso, fuera de tema, otro.
-- **Ocultado automático**: con 3 reportes de cuentas distintas, el mensaje se oculta solo hasta que el admin lo revise. Un reporte de «estafa» va a la cola con prioridad.
+- **Ocultado automático**: con 3 reportes de cuentas distintas, el mensaje se oculta solo hasta que el admin lo revise (o con 1 de «estafa» de un Colaborador o más, §7.1). Ocultar una respuesta oculta también sus réplicas. Un reporte de «estafa» sale el primero en la lista del admin.
+- **Quien reporta en falso pierde el botón**: 3 reportes desestimados por el admin en 30 días, y no puede reportar durante 30 días. Si no, tres amigos ocultarían lo que quisieran.
 - Acciones del admin: **ocultar** (reversible), **restaurar**, **borrar**, **editar** (marcado), **cerrar o reabrir** un hilo, **cambiar la ganadora** y **fijar** un hilo arriba de su categoría.
 
 ### 7.3 Sanciones
@@ -245,7 +310,7 @@ En escalera, cada una con su motivo, que el sancionado ve:
 2. **Suspensión del foro**: 7 días; la siguiente, 30.
 3. **Expulsión del foro.**
 
-Estafa, frase semilla ajena o suplantar al admin: directo al paso 3. Qué pasa con el Premium de un expulsado es la D4.
+Estafa, frase semilla ajena o suplantar al admin: directo al paso 3. El expulsado **conserva su Premium** (decidido el 12-11-2026); en un caso grave, el admin lo cancela a mano.
 
 ### 7.4 El registro
 
@@ -281,7 +346,7 @@ Estafa, frase semilla ajena o suplantar al admin: directo al paso 3. Qué pasa c
    - a igualdad de todo, por **id**, para que el orden sea siempre el mismo en cada carga.
 4. Un selector deja ver también **«Más recientes»**. La ganadora sigue arriba en los dos.
 
-Por qué solo me gusta y no «interacciones»: las respuestas no tienen respuestas propias (D9), así que la única interacción que existe es el me gusta. Si un día hay otras, entran aquí con su peso, y se apunta.
+**Las réplicas no se ordenan por me gusta**: van debajo de su respuesta por orden de llegada, que es como se lee una conversación. Y no cuentan para el orden de las respuestas: una respuesta con mucha discusión debajo no es por eso mejor.
 
 ### 9.2 Cómo se calcula sin errores
 
@@ -291,10 +356,10 @@ Por qué solo me gusta y no «interacciones»: las respuestas no tienen respuest
 
 ### 9.3 La respuesta ganadora
 
-- **La elige el autor de la pregunta**, entre respuestas **publicadas** de **otras** personas. El admin también puede, y puede cambiarla.
+- **La elige el autor de la pregunta**, entre respuestas **publicadas** de **otras** personas (una réplica no puede serlo). El admin también puede, y puede cambiarla.
 - **Es definitiva para el autor.** Cambiarla solo puede el admin, con motivo en el registro. Si no, se podría dar los puntos a un amigo, luego a otro, y así.
 - **Al elegirla**, en una sola transacción:
-  1. el hilo queda **cerrado**: no admite más respuestas, y donde iba el formulario sale «Resuelto: este hilo ya tiene respuesta»;
+  1. el hilo queda **cerrado**: no admite más respuestas ni réplicas, y donde iba el formulario sale «Resuelto: este hilo ya tiene respuesta»;
   2. la ganadora se **fija arriba**, con su marca;
   3. su autor **gana puntos** y un aviso;
   4. quien preguntó gana unos pocos puntos por cerrar su duda;
@@ -310,7 +375,7 @@ Casos que se escriben como pruebas automáticas antes de abrir:
 - 0, 1, 4, 5 y 20 respuestas; empates de me gusta; empates de me gusta y de fecha.
 - Dar y quitar un me gusta 10 veces seguidas: el contador acaba donde empezó.
 - 50 me gusta simultáneos a la misma respuesta: el contador es 50.
-- Me gusta a la propia respuesta, a una oculta y a una de un hilo pendiente: rechazados.
+- Me gusta a la propia respuesta, a una oculta y a una de un hilo oculto: rechazados.
 - Elegir ganadora siendo otro usuario, eligiendo la propia, una oculta, dos veces y dos personas a la vez. Responder a un hilo cerrado.
 - Ocultar la ganadora: el hilo se reabre y los puntos vuelven.
 - Que el orden sea idéntico en dos cargas seguidas.
@@ -350,7 +415,7 @@ Quitar un me gusta o una etiqueta quita sus puntos. El total que se enseña nunc
 
 ### 10.3 Niveles
 
-Salen de los **puntos de siempre** y se ven junto al alias en cada mensaje y en el ranking. Dan estatus, no acceso (D11):
+Salen de los **puntos de siempre** y se ven junto al alias en cada mensaje y en el ranking. Dan solo estatus (decidido el 12-11-2026):
 
 | Nivel | Desde |
 |---|---|
@@ -386,7 +451,8 @@ Una campana en la barra con los no leídos, y la lista en el dashboard.
 | Me gusta en tu respuesta | Autor de la respuesta | Sí, por respuesta |
 | Etiquetas en tu pregunta | Autor de la pregunta | Sí, por pregunta y etiqueta |
 | Tu respuesta es la ganadora | Autor de la respuesta | No |
-| Tu pregunta o respuesta fue aprobada / rechazada (con motivo) | Autor | No |
+| Nueva réplica a tu respuesta, o a una réplica tuya | Autor de la respuesta y el citado | Sí, por respuesta |
+| Tu mensaje se ocultó o se retiró (con motivo) | Autor | No |
 | Ya puedes elegir ganadora (a los 14 días) | Autor de la pregunta | No |
 | La ganadora de tu hilo se retiró: elige otra | Autor de la pregunta | No |
 | Sanción, con su motivo | Sancionado | No |
@@ -397,16 +463,16 @@ Reglas:
 - Si lo que causó el aviso se oculta o se borra, el aviso desaparece.
 - **Sin auto-avisos.**
 - Guardan a quién, qué hilo, el tipo, cuántos y si está leído. Nada del texto: enlazan al hilo.
-- La lectura es `destinatario = auth.uid()`; nadie crea avisos para otros.
+- Los lee el servidor filtrando por el usuario **de la sesión**, nunca por un id que mande el navegador; nadie crea avisos para otros.
 - Se borran solos a los 90 días de leídos.
-- Por email, opcional y apagado por defecto (D7).
+- Solo en la web: no hay avisos por email (decidido el 12-11-2026).
 
 ---
 
 ## 12 · Google
 
-- Se indexa una pregunta **publicada con al menos una respuesta publicada**. Las demás, `noindex`.
-- **`QAPage`** solo con lo visible: la pregunta, sus respuestas publicadas, la ganadora como `acceptedAnswer` y las demás como `suggestedAnswer`, con su número de me gusta como `upvoteCount`. Nada oculto ni pendiente (`PLATAFORMA.md`: spam de datos estructurados).
+- Se indexa una pregunta **publicada con al menos una respuesta publicada, que lleve 48 horas en el foro y no tenga reportes abiertos**. Las demás, `noindex`. Como nada se revisa antes de publicar, esas 48 horas son el margen para que un reporte retire algo antes de que llegue a Google.
+- **`QAPage`** solo con lo visible: la pregunta, sus respuestas publicadas, la ganadora como `acceptedAnswer` y las demás como `suggestedAnswer`, con su número de me gusta como `upvoteCount`. Nada oculto (`PLATAFORMA.md`: spam de datos estructurados). Las réplicas van como `comment` de su respuesta.
 - **Sitemap**: solo los hilos indexables. Nunca la cola, los avisos ni nada personal.
 - **URL**: `/foro`, `/foro/<categoria>` y `/foro/<id>-<slug-del-titulo>`. Antes de fijarlas, comparar con cada `Disallow` de `robots.txt` **por prefijo**.
 - **Lo ocultado o borrado responde 410**, como las rutas retiradas (`src/lib/retiradas.ts`).
@@ -421,16 +487,16 @@ Reglas:
 - **Normas de la comunidad**: una página pública que el usuario acepta antes de su primera publicación. Se guarda la fecha y la versión aceptada; si cambian, se vuelven a aceptar.
 - **Términos y privacidad**: el foro como finalidad nueva (base legal: el contrato, art. 6.1.b del RGPD); qué se publica, que es visible para cualquiera e indexable, y cuánto se guarda.
 - **Qué se guarda**: autor, texto, imágenes recodificadas, fechas y estado. **No se guarda la IP** en el foro. Las imágenes, **sin EXIF**.
-- **Plazos**: reportes, registro de moderación y sanciones, 12 meses (D6); avisos leídos, 90 días; lo borrado se purga a los 30 días, salvo que lo cite un reporte o una sanción abiertos.
-- **Borrar la cuenta** (`/api/account/delete`): sus mensajes publicados quedan como «usuario eliminado», sin alias ni foto; lo pendiente se borra; sus puntos y su fila del ranking desaparecen (D5).
+- **Plazos**: reportes, registro de moderación y sanciones, 12 meses; avisos leídos, 90 días; lo borrado se purga a los 30 días, salvo que lo cite un reporte o una sanción abiertos.
+- **Borrar la cuenta** (`/api/account/delete`): sus mensajes publicados quedan como «usuario eliminado», sin alias ni foto; sus puntos y su fila del ranking desaparecen. Si además pide borrar sus mensajes, se borran.
 
 ---
 
 ## 14 · Lo que el usuario hace con lo suyo
 
-- **Editar**: libremente durante 30 minutos; después, una edición vuelve a mandar el mensaje a revisión. Se guarda la versión anterior para el admin. Una respuesta ganadora no se edita: cambiaría lo que se premió.
+- **Editar**: durante 30 minutos, y la edición pasa otra vez por el filtro entero. Después ya no se edita: sin revisión previa, editar más tarde serviría para cambiar un mensaje inocente por una estafa cuando ya nadie mira. Se guarda la versión anterior para el admin. Una respuesta ganadora no se edita: cambiaría lo que se premió.
 - **Borrar**: su pregunta, mientras no tenga respuestas; después, solo pidiéndolo al admin, porque se llevaría lo que escribieron otros. Sus respuestas, siempre, salvo la ganadora.
-- **Ver lo suyo**: en el dashboard, sus preguntas y respuestas con su estado (pendiente, publicada, rechazada con su motivo).
+- **Ver lo suyo**: en el dashboard, sus preguntas, respuestas y réplicas con su estado (publicada, u oculta o retirada con su motivo).
 
 ---
 
@@ -442,21 +508,33 @@ Antes de enseñárselo a nadie, cada intento se prueba y su resultado se escribe
 - [ ] Publicar, responder, dar me gusta, etiquetar, reportar y elegir ganadora sin sesión, con cuenta gratuita, suspendida y con un Premium recién caducado: la API lo rechaza todo, aunque se salte el botón.
 - [ ] Escribir llamando a Supabase directamente con la clave anónima y con el token de un usuario. Tiene que fallar todo: no hay policies de escritura.
 - [ ] Publicar en nombre de otro mandando otro `autor_id`.
-- [ ] Leer pendientes, rechazados, ocultos, reportes, registro, sanciones, puntos y avisos de otro, con y sin sesión.
+- [ ] Leer ocultos, borrados, reportes, registro, sanciones, puntos y avisos de otro, con y sin sesión.
 - [ ] Encontrar el `autor_id` de alguien en cualquier respuesta de la API o en el HTML.
+- [ ] Leer cualquier tabla `foro_*` y llamar a cada función `foro_*` por `/rest/v1/rpc/` con la clave anónima y con el token de un Premium: todo rechazado.
+- [ ] Mandar una petición válida desde otro origen (sin `Origin`, con otro `Origin` y como formulario): rechazada.
+- [ ] Mandar campos de más (`autor_id`, `estado`, `puntos`) en cada ruta: la petición entera se rechaza.
+- [ ] Con verificación en dos pasos activada y la sesión sin pasarla: no publica.
+- [ ] Pedir un hilo oculto, uno borrado y uno que no existe sin ser el autor: los tres dan el mismo 404, con el mismo cuerpo.
+- [ ] Poner el foro en `lectura`: ninguna escritura entra, tampoco llamando a la función directamente con la clave de servicio de una ruta.
+- [ ] Ocultar un hilo: deja de servirse en el acto, también desde la caché, y lo personal de un usuario no aparece nunca en la respuesta de otro.
+- [ ] `npm run check` falla si un archivo fuera de `src/lib/foro/` nombra una tabla `foro_`.
 
 **Contenido**
 - [ ] HTML, `<script>`, `javascript:` en enlaces, Markdown malicioso y caracteres invisibles para esquivar filtros.
-- [ ] Una frase semilla, una dirección pidiendo envíos y un enlace de Telegram: los tres a revisión.
+- [ ] `</script><script>alert(1)</script>` en el título y en el cuerpo de una pregunta publicada: el JSON-LD no se rompe.
+- [ ] Palabras vetadas con letras de ancho completo, cirílicas y con tildes de más; un enlace `xn--`, uno con `usuario@` y uno a un subdominio parecido a uno permitido.
+- [ ] Una frase semilla, una dirección pidiendo envíos y un enlace de Telegram: los tres rechazados, y nada guardado. Once rechazos seguidos: bloqueado hasta mañana.
+- [ ] Una cuenta de menos de 7 días en el foro: un enlace permitido, rechazado; la segunda pregunta del día, rechazada.
+- [ ] Replicar a una réplica (queda en el hilo de la respuesta), a una respuesta oculta, a una de otro hilo y en un hilo cerrado. Elegir una réplica como ganadora.
 - [ ] Textos justo en los límites y uno por encima.
 
 **Imágenes**
 - [ ] Un SVG con script, un PHP renombrado a `.jpg`, un GIF, un archivo de 50 MB y uno de 20.000 × 20.000 px.
 - [ ] Una foto con GPS: la guardada no tiene EXIF.
-- [ ] Ver la imagen de una pregunta pendiente sin ser su autor ni el admin.
+- [ ] Ver una imagen subida y aún sin pregunta, o la de una pregunta oculta, sin ser su autor ni el admin.
 
 **Ráfagas y concurrencia**
-- [ ] Enviar en ráfaga desde una cuenta y desde varias: queda una pendiente.
+- [ ] Enviar en ráfaga desde una cuenta y desde varias: se para en los límites del §6.5, y el mismo texto dos veces se rechaza.
 - [ ] Todos los casos del §9.4.
 
 **Puntos**
@@ -465,7 +543,7 @@ Antes de enseñárselo a nadie, cada intento se prueba y su resultado se escribe
 - [ ] Ocultar algo con puntos: se revierten. Recalcular la reputación desde el libro: cuadra.
 
 **Moderación**
-- [ ] Tres reportes de una misma cuenta (cuenta uno) y de tres cuentas (se oculta).
+- [ ] Tres reportes de una misma cuenta (cuenta uno) y de tres cuentas (se oculta, con sus réplicas). Uno de «estafa» de un Colaborador (se oculta). Tres reportes desestimados: pierde el botón.
 - [ ] Borrar una cuenta: sus mensajes quedan anónimos.
 
 **Google**
@@ -475,17 +553,24 @@ Antes de enseñárselo a nadie, cada intento se prueba y su resultado se escribe
 
 ## 16 · El plan de construcción, paso a paso
 
-Cada fase deja algo comprobado y no empieza hasta que la anterior cumple su criterio de salida. Hasta la fase 13, **el foro no tiene ningún enlace público** y sus páginas responden 404 a quien no sea admin.
+Cada fase deja algo comprobado y no empieza hasta que la anterior cumple su criterio de salida. Hasta la fase 13, **el foro no tiene ningún enlace público** y sus páginas responden 404 a quien no sea admin (modo `cerrado` de `foro_ajustes`, §6.1).
+
+**Cómo se ordena el código** (pedido por el admin el 12-11-2026: módulos separados, nunca un CSS enorme):
+
+- La lógica, en `src/lib/foro/` (§6.0). Un archivo por responsabilidad.
+- Las rutas, en `src/app/api/foro/<accion>/route.ts`, una por acción.
+- Las páginas, en `src/app/foro/`, con **un CSS por pantalla**: `foro.css` (solo lo que comparten todas: cabecera del foro, tarjeta de autor, botones de participar), `listado.css`, `hilo.css`, `preguntar.css` y `ranking.css`. La moderación, en `src/app/admin/foro/` con su `foro-admin.css`. Nada del foro va a `globals.css`.
+- Los componentes, en `src/components/foro/`, uno por pieza.
 
 | # | Fase | Qué se hace | Criterio de salida |
 |---|---|---|---|
-| 0 | **Decisiones** | Cerrar las D pendientes de abajo | Todas cerradas y escritas en el §0 |
-| 1 | **Perfil público** | Alias, foto, reglas del alias | ✅ Hecho. Falta ejecutar `scripts/create-perfil-publico.sql` |
-| 2 | **Esquema** | Tablas, estados, `check`, únicos, índices, RLS y `GRANT` por columnas. Un solo SQL, idempotente | Desde el navegador no se puede escribir nada, comprobado con la clave anónima y con un token |
+| 0 | **Decisiones** | Cerrar las decisiones pendientes | ✅ Cerradas el 12-11-2026, en el §0 |
+| 1 | **Perfil público** | Alias, foto, reglas del alias | ✅ Hecho, con `scripts/create-perfil-publico.sql` ejecutado (comprobado en Supabase el 12-11-2026) |
+| 2 | **Esquema** | Tablas, estados, `check`, únicos, índices, RLS sin policies y `revoke` a `anon` y `authenticated`. Un solo SQL, idempotente (`scripts/create-foro.sql`) | Desde el navegador no se puede leer ni escribir nada, comprobado con la clave anónima y con un token |
 | 3 | **Funciones atómicas** | Las del §6.3, el libro de puntos y los límites del §6.5, en Postgres | Las pruebas de concurrencia del §9.4 en verde contra una base de prueba |
-| 4 | **API** | `/api/foro/*` con las comprobaciones del §6.2, normalización, detectores y filtro de palabras | Cada ruta rechaza cada caso de «Permisos» y «Contenido» del §15 |
+| 4 | **API** | `/api/foro/*` con las comprobaciones del §6.2, normalización, detectores y filtro de palabras, y las reglas del §6.0 en `npm run check` | Cada ruta rechaza cada caso de «Permisos» y «Contenido» del §15 |
 | 5 | **Imágenes** | Subida firmada, comprobación, recodificado, buckets y limpieza (§6.6) | Los casos de «Imágenes» del §15 en verde |
-| 6 | **Moderación** | `/admin/foro`: cola, reportes, sanciones, confianza y registro | El admin puede hacer cada acción del §7, y todas quedan en el registro |
+| 6 | **Moderación** | `/admin/foro`: reportes, ocultados, alertas, sanciones y registro | El admin puede hacer cada acción del §7, y todas quedan en el registro |
 | 7 | **Avisos** | Tabla, creación dentro de las funciones, agrupado, campana y lista | Cada aviso del §11 se crea, se agrupa y desaparece cuando debe |
 | 8 | **Puntos y ranking** | Puntos del §10.2, topes, reputación, recálculo en el cron, niveles, ranking y logros del foro | El recálculo cuadra con los totales; los casos de «Puntos» del §15 en verde |
 | 9 | **Romperlo** | Todo el §15, escrito con su resultado | Cero fallos abiertos |
@@ -499,17 +584,8 @@ Cada fase deja algo comprobado y no empieza hasta que la anterior cumple su crit
 
 ## Decisiones pendientes
 
+Ninguna. Las once que había se cerraron el 12-11-2026 y están en el §0. Queda una, que no bloquea nada hasta la fase 6:
+
 | | Pregunta | Lo que recomiendo |
 |---|---|---|
-| **D2** | ¿Se aprueba antes de publicar? | **Preguntas siempre; respuestas por confianza** (§7.1) |
-| **D4** | ¿Qué pasa con el Premium de un expulsado del foro? | **Nada**: pierde el foro y conserva lo que paga. Si es grave (estafa), los términos permiten cancelar; caso por caso |
-| **D5** | Al borrar la cuenta, ¿sus mensajes se anonimizan o se borran? | **Se anonimizan** y, si lo pide, se borran también. Borrar siempre deja huecos en los hilos de otros |
-| **D6** | ¿Cuánto se guardan reportes, registro y sanciones? | **12 meses**, y lo que esté en una reclamación abierta, hasta cerrarla |
-| **D7** | ¿Avisos también por email? | **Sí, opcional y apagado por defecto**, como mucho un resumen diario. Necesita proveedor de correo y enlace de baja en cada email |
-| **D8** | ¿Imágenes también en las respuestas? | **No en la primera versión.** Se añade si los usuarios lo piden |
-| **D9** | ¿Respuestas a respuestas (hilos anidados)? | **No.** Respuestas planas a la pregunta: más fáciles de leer, de ordenar y de moderar |
-| **D10** | Quien ya no es Premium, ¿puede elegir ganadora en sus propias preguntas? | **Decidido el 06-11-2026: no**, solo Premium participa. Al pulsar, la invitación a volver a Premium. Para que el hilo no se quede sin resolver, **el admin puede elegir la ganadora** de cualquier hilo, y a los 30 días sin ganadora se le avisa en la cola |
-| **D11** | ¿Los niveles dan algo más que estatus? | **No, al principio.** Si dan algo material, se piensa con la suscripción delante |
-| **D12** | La tercera etiqueta: ¿«Yo también»? | **Sí**: es la única que mide algo nuevo (cuántos tienen la misma duda) y alimenta las próximas guías |
-| **D13** | ¿Categorías? | **Pocas y fijas al principio**: Bitcoin, altcoins, trading, seguridad y carteras, impuestos, la academia. Las crea solo el admin |
-| **D14** | ¿Los números del §4, §6.5 y §10.2? | **Los de este documento para la beta**, y se ajustan con lo que pase en ella |
+| **D15** | Un expulsado borra su cuenta y se registra de nuevo con otro email. ¿Se le reconoce? | **Sí**: guardar con la expulsión una huella irreversible del email y del cliente de Stripe, solo para impedir el reingreso al foro, y decirlo en la privacidad. Sin eso, la expulsión dura lo que se tarda en crear otra cuenta |

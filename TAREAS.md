@@ -136,9 +136,11 @@ Lo esencial (06-11-2026): **leer es de todos y participar es solo de Premium**, 
 
 **Por qué interesa:** es el único contenido que **crece sin que nadie lo escriba**, y cada pregunta bien titulada es una URL que responde a una búsqueda real (`QAPage`).
 
-- [ ] **Fase 0 — Cerrar las decisiones pendientes** del final de `FORO.md` (D2, D4–D9, D11–D14).
-  El perfil público (su fase 1) ya está hecho: es la tarea 3.
-- [ ] **Fases 2 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: esquema, funciones atómicas, API, imágenes, moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
+En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (§0 de `FORO.md`: **nada se revisa antes de publicar**, el filtro rechaza en el acto, réplicas de un nivel) y se reforzó la seguridad: el navegador no lee ni escribe ninguna tabla del foro, y todo pasa por `src/lib/foro/`. Las fases 0 y 1 están hechas.
+
+- [ ] **Fase 2 — Esquema:** `scripts/create-foro.sql` está escrito. **Falta que el admin lo ejecute en Supabase** (lo tiene entero en el chat del 12-11-2026) y que su última consulta salga toda en «bien». Después, comprobar con la clave anónima que no se lee ni se escribe nada.
+- [ ] **Fases 3 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: funciones atómicas, API, imágenes, moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
+- [ ] **D15**, antes de la fase 6: si se reconoce a un expulsado que vuelve con otra cuenta (final de `FORO.md`).
 
 ---
 
