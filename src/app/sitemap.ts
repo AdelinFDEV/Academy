@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 import { GUIDES } from "@/lib/guides";
 import { GLOSARIO_CON_PAGINA } from "@/lib/glosario";
+import { urlsParaSitemap } from "@/lib/foro/datos/hilos";
 import { SITE_URL } from "@/lib/site";
 
 /**
@@ -71,7 +72,7 @@ async function fetchCursos(): Promise<{ slug: string; updated_at: string }[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const cursos = await fetchCursos();
+  const [cursos, foro] = await Promise.all([fetchCursos(), urlsParaSitemap()]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map(
     ({ path, priority, changeFrequency }) => ({
@@ -110,5 +111,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ]
     : [];
 
-  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...cursoEntries];
+  // El foro: nada mientras esté cerrado (sus páginas dan 404), y de los hilos
+  // solo los indexables. Qué entra lo decide `urlsParaSitemap` (FORO.md §12).
+  // Lee con la clave de servicio, sin cookies: la ruta sigue siendo estática.
+  const foroEntries: MetadataRoute.Sitemap = foro.map((u) => ({
+    url: `${SITE_URL}${u.path}`,
+    ...(u.modificada ? { lastModified: new Date(u.modificada) } : {}),
+    changeFrequency: "weekly" as const,
+    priority: u.path === "/foro" ? 0.7 : 0.5,
+  }));
+
+  return [...staticEntries, ...guideEntries, ...glosarioEntries, ...cursoEntries, ...foroEntries];
 }

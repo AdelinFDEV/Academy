@@ -144,7 +144,8 @@ En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (
 - [ ] **Fases 7 y 8:** la base de datos y el servidor están hechos (avisos, puntos, recálculo diario, ranking, logros derivados). **Faltan sus pantallas** (campana, lista de avisos, ranking), que van con el diseño.
 - [ ] **Fase 11 — Diseño:** están todas las pantallas: listado, categoría, hilo (responder, replicar, me gusta, etiquetas, ganadora, reportar, editar y borrar), `/foro/preguntar` con imágenes, `/foro/normas`, `/foro/ranking` y `/foro/mio` (reputación, avisos y mensajes propios). Compila en producción. **Falta que el admin las vea y las use con su sesión**: nadie las ha visto pintadas, porque con el foro cerrado solo las ve él. Al abrir el foro: la campana de avisos en la barra de toda la web y el enlace desde el dashboard.
 - [ ] **Revisar el texto de las normas** (`src/app/foro/normas/page.tsx`): es un borrador escrito sin revisión legal. Va con la fase 10.
-- [ ] **Fases 9, 10 y 12 a 14**: romperlo (pendiente de cuentas de prueba), legal (las normas de la comunidad y los cambios en términos y privacidad), SEO, beta cerrada y apertura.
+- [ ] **Fase 12 — SEO:** hecho lo que no depende de tener contenido (`QAPage`, canónicas, `noindex` hasta que un hilo es indexable y el foro en el sitemap solo cuando esté abierto). **Falta**: el 410 de lo retirado, la caché de lo público y la auditoría SEO sobre el primer hilo real.
+- [ ] **Fases 9, 10, 13 y 14**: romperlo (pendiente de cuentas de prueba), legal (revisar las normas y cambiar términos y privacidad), beta cerrada y apertura.
 - [ ] **D15**, antes de la fase 6: si se reconoce a un expulsado que vuelve con otra cuenta (final de `FORO.md`).
 
 ---

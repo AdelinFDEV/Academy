@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
+import JsonLd from "@/components/JsonLd";
 import HiloCompleto from "@/components/foro/HiloCompleto";
 import ListadoHilos from "@/components/foro/ListadoHilos";
 import { avisoDeModo } from "@/components/foro/modo";
 import { hilo, listado } from "@/lib/foro/datos/hilos";
 import { entradaAlForo } from "@/lib/foro/permisos";
+import { breadcrumbSchema, qaPageSchema } from "@/lib/schema";
 
 /**
  * `/foro/<ref>` son dos cosas, y se distinguen por la forma:
@@ -79,7 +81,24 @@ export default async function ForoRefPage({ params, searchParams }: Props) {
     if (!h) notFound();
     // Una sola URL por hilo: si el título de la URL no es el suyo, a la buena.
     if (ref !== `${h.id}-${h.slug}`) permanentRedirect(`/foro/${h.id}-${h.slug}`);
-    return <HiloCompleto hilo={h} orden={cual} conSesion={conSesion} aviso={aviso} />;
+    return (
+      <>
+        {/* Solo con el foro abierto: con él cerrado esta página no existe para
+            nadie más. Las migas replican las visibles (Foro / categoría). */}
+        {modo === "abierto" && (
+          <JsonLd
+            data={[
+              qaPageSchema({ path: `/foro/${h.id}-${h.slug}`, titulo: h.titulo, texto: h.texto, fecha: h.fecha, autor: h.autor, respuestas: h.respuestas }),
+              breadcrumbSchema([
+                { name: "Foro", path: "/foro" },
+                { name: h.categoria.nombre, path: `/foro/${h.categoria.slug}` },
+              ]),
+            ]}
+          />
+        )}
+        <HiloCompleto hilo={h} orden={cual} conSesion={conSesion} aviso={aviso} />
+      </>
+    );
   }
 
   const datos = await listado(ref, Number(pagina ?? "1"));

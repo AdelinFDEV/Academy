@@ -176,6 +176,7 @@ Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constr
 |---|---|---|
 | **Todas las rutas** | `Organization` + `WebSite` | No. Van en el layout raíz, una sola vez |
 | **Guía** | `Article` + `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>` |
+| **Hilo del foro** | `QAPage` + `BreadcrumbList` | No. Lo emite `src/app/foro/[ref]/page.tsx` con `qaPageSchema`, y solo con el foro abierto. El texto es de usuarios: no lo escribas a mano, `<JsonLd>` escapa los `<` |
 | **Página pública nueva** | Nada por defecto | Solo si el tipo aporta algo real. Una página sin tipo propio no necesita ninguno |
 
 **La organización y el sitio se declaran SOLO en el layout raíz**, con un `@id` fijo (`.../#organization` y `.../#website`), y los demás esquemas apuntan a ese `@id` en vez de repetir el objeto. Si copias el bloque entero en otra página tendrás dos definiciones que se pueden desincronizar.
@@ -195,6 +196,7 @@ En una guía, `isAccessibleForFree` es siempre `true`: desde el 31-10-2026 toda 
 |---|---|
 | **Guía** | **Añadirla al array `GUIDES` de `src/lib/guides.ts`.** El sitemap recorre ese array, no la carpeta `src/app/guias/`. Una guía con su `page.tsx` pero sin su entrada en `GUIDES` **es invisible para Google**. |
 | **Página pública nueva** | Añadirla a mano a `STATIC_ROUTES` en `src/app/sitemap.ts`, con su `priority` y su `changeFrequency`. |
+| **Algo del foro** | Nada: lo decide `urlsParaSitemap()` (`src/lib/foro/datos/hilos.ts`). Con el foro cerrado no entra ninguna URL; abierto, entran `/foro`, sus categorías, las normas, el ranking y los hilos indexables (`FORO.md` §12). `/foro/mio` y `/foro/preguntar` no entran nunca. |
 | **Término del diccionario** | Nada, en cuanto tenga `extended` en `src/lib/glosario.ts`. Sin ese campo no existe como URL. |
 
 ### Tres reglas que ya se rompieron una vez

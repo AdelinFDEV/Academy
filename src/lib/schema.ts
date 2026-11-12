@@ -212,3 +212,76 @@ export function breadcrumbSchema(items: { name: string; path: string }[]): JsonL
     })),
   };
 }
+
+/** Quien firma en el foro: solo su alias. No hay página de perfil que enlazar. */
+type FirmaForo = { alias: string } | null;
+
+/**
+ * Un hilo del foro como `QAPage` (FORO.md §12).
+ *
+ * Solo lo que se ve en la página: la pregunta, sus respuestas publicadas con
+ * su número de «me gusta», la elegida como `acceptedAnswer` y las demás como
+ * `suggestedAnswer`, y las réplicas como `comment` de su respuesta. Nada
+ * oculto ni retirado llega aquí: `datos/hilos.ts` ya solo lee lo publicado.
+ *
+ * El texto es de usuarios. `<JsonLd>` escapa cada `<` al escribirlo, así que
+ * un `</script>` dentro de una pregunta no puede cerrar la etiqueta.
+ */
+export function qaPageSchema(hilo: {
+  path: string;
+  titulo: string;
+  texto: string;
+  fecha: string;
+  autor: FirmaForo;
+  respuestas: {
+    id: string;
+    texto: string;
+    fecha: string;
+    autor: FirmaForo;
+    meGusta: number;
+    esGanadora: boolean;
+    replicas: { id: string; texto: string; fecha: string; autor: FirmaForo }[];
+  }[];
+}): JsonLdNode {
+  const url = `${SITE_URL}${hilo.path}`;
+  const persona = (a: FirmaForo) => (a ? { author: { "@type": "Person", name: a.alias } } : {});
+  const respuesta = (r: (typeof hilo.respuestas)[number]): JsonLdNode => ({
+    "@type": "Answer",
+    text: r.texto,
+    dateCreated: r.fecha,
+    upvoteCount: r.meGusta,
+    url: `${url}#r-${r.id}`,
+    ...persona(r.autor),
+    ...(r.replicas.length
+      ? {
+          comment: r.replicas.map((x) => ({
+            "@type": "Comment",
+            text: x.texto,
+            dateCreated: x.fecha,
+            url: `${url}#r-${x.id}`,
+            ...persona(x.autor),
+          })),
+        }
+      : {}),
+  });
+
+  const elegida = hilo.respuestas.find((r) => r.esGanadora);
+  const demas = hilo.respuestas.filter((r) => !r.esGanadora);
+
+  return {
+    "@type": "QAPage",
+    "@id": `${url}#qa`,
+    url,
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntity: {
+      "@type": "Question",
+      name: hilo.titulo,
+      text: hilo.texto,
+      dateCreated: hilo.fecha,
+      answerCount: hilo.respuestas.length,
+      ...persona(hilo.autor),
+      ...(elegida ? { acceptedAnswer: respuesta(elegida) } : {}),
+      ...(demas.length ? { suggestedAnswer: demas.map(respuesta) } : {}),
+    },
+  };
+}

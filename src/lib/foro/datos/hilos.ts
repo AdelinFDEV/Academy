@@ -228,3 +228,50 @@ export async function hilo(id: number, orden: "relevancia" | "recientes" = "rele
       (reportesAbiertos ?? 0) === 0,
   };
 }
+
+/**
+ * Las URLs del foro para el sitemap (FORO.md §12), como rutas relativas.
+ *
+ * Solo con el foro ABIERTO: si no, estas páginas dan 404 a quien no es admin,
+ * y un sitemap no puede apuntar a una página que no responde 200 sin sesión
+ * (`PLATAFORMA.md`). Y de los hilos, solo los indexables: publicados, con
+ * respuesta, con 48 horas y sin reportes abiertos. Nunca `/foro/mio` ni
+ * `/foro/preguntar`, que piden sesión o llevan `noindex`.
+ *
+ * Si algo falla (falta la clave, la tabla no existe), devuelve la lista vacía:
+ * el sitemap del resto de la web no puede caerse por el foro.
+ */
+export async function urlsParaSitemap(): Promise<{ path: string; modificada: string | null }[]> {
+  try {
+    const cliente = bd();
+    const { data: ajustes } = await cliente.from("foro_ajustes").select("modo").maybeSingle();
+    if (ajustes?.modo !== "abierto") return [];
+
+    const haceDosDias = new Date(Date.now() - DOS_DIAS).toISOString();
+    const [{ data: cats }, { data: hilos }, { data: reportados }] = await Promise.all([
+      cliente.from("foro_categorias").select("slug").eq("activa", true),
+      cliente
+        .from("foro_preguntas")
+        .select("id, slug, ultima_actividad_at")
+        .eq("estado", "publicada")
+        .gt("respuestas", 0)
+        .lt("creada_at", haceDosDias)
+        .order("id", { ascending: true })
+        .limit(5000),
+      cliente.from("foro_reportes").select("pregunta_id").eq("estado", "abierto").limit(2000),
+    ]);
+    const conReporte = new Set((reportados ?? []).map((r) => Number(r.pregunta_id)));
+
+    return [
+      { path: "/foro", modificada: null },
+      { path: "/foro/normas", modificada: null },
+      { path: "/foro/ranking", modificada: null },
+      ...(cats ?? []).map((c) => ({ path: `/foro/${String(c.slug)}`, modificada: null })),
+      ...(hilos ?? [])
+        .filter((h) => !conReporte.has(Number(h.id)))
+        .map((h) => ({ path: `/foro/${Number(h.id)}-${String(h.slug)}`, modificada: String(h.ultima_actividad_at) })),
+    ];
+  } catch {
+    return [];
+  }
+}
