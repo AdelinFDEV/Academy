@@ -1,11 +1,13 @@
 import "server-only";
 import { z } from "zod";
 import { llamar } from "../bd";
+import { despublicar, olvidarListas, publicar, sincronizar } from "../imagenes/almacen";
 import { LIMITES } from "../limites";
 import type { ResultadoAccion } from "../peticion";
 import { motivoParaNoParticipar } from "../permisos";
 import { filtrar, type ClaseDeTexto } from "../texto/filtro";
 import { slugDe } from "../texto/normalizar";
+import { sonSuyasYListas } from "./imagenes";
 
 /**
  * Publicar, editar y borrar: preguntas, respuestas y réplicas.
@@ -54,16 +56,31 @@ export async function preguntar(usuarioId: string, d: z.infer<typeof esquemaPreg
   const f = await pasarFiltro(usuarioId, "pregunta", { titulo: d.titulo, cuerpo: d.cuerpo });
   if (!f.ok) return { ok: false, error: "rechazado", mensaje: f.mensaje };
 
-  return llamar("foro_preguntar", {
+  // Las imágenes pasan al bucket público ANTES de crear la pregunta, y se
+  // retiran si al final no se crea: así una pregunta publicada nunca apunta a
+  // una imagen que no está. Solo se copian las que son suyas y están listas.
+  const imagenes = d.imagenes ?? [];
+  if (imagenes.length) {
+    if (!(await sonSuyasYListas(usuarioId, imagenes))) return { ok: false, error: "imagen_no_valida" };
+    if (!(await publicar(imagenes))) return { ok: false, error: "interno" };
+  }
+
+  const r = await llamar("foro_preguntar", {
     p_usuario: usuarioId,
     p_categoria: d.categoria,
     p_titulo: f.titulo,
     p_slug: slugDe(f.titulo ?? ""),
     p_cuerpo: f.cuerpo,
     p_huella: f.huella,
-    p_imagenes: d.imagenes ?? null,
+    p_imagenes: imagenes.length ? imagenes : null,
     p_tiene_enlaces: f.tieneEnlaces,
   });
+
+  if (imagenes.length) {
+    if (r.ok) await olvidarListas(imagenes);
+    else await despublicar(imagenes);
+  }
+  return r;
 }
 
 // ── Responder y replicar ────────────────────────────────────────────────────
@@ -136,9 +153,12 @@ export const esquemaBorrar = z.strictObject({
 
 /** No pide ser Premium: es su contenido y puede retirarlo aunque ya no pague. */
 export async function borrar(usuarioId: string, d: z.infer<typeof esquemaBorrar>): Promise<ResultadoAccion> {
-  return llamar("foro_borrar_propio", {
+  const r = await llamar("foro_borrar_propio", {
     p_usuario: usuarioId,
     p_pregunta: d.pregunta,
     p_respuesta: d.respuesta ?? null,
   });
+  // Al borrar una pregunta, sus imágenes salen del bucket público.
+  if (r.ok && !d.respuesta) await sincronizar(d.pregunta);
+  return r;
 }

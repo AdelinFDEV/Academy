@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { fotografiarYoutube } from "@/lib/objetivosServidor";
 import { sincronizarCobrosStripe } from "@/lib/cobrosStripe";
+import { limpiarHuerfanas } from "@/lib/foro/imagenes/almacen";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,8 @@ export const dynamic = "force-dynamic";
  *  · La red de seguridad de los cobros de Stripe: el webhook ya los copia al
  *    momento; esto recoge lo que se le escapara (un webhook fallido, un
  *    reembolso hecho desde el panel de Stripe) en el último mes.
+ *  · La limpieza de las imágenes del foro que se subieron y no se usaron
+ *    (FORO.md §6.6), desde el 12-11-2026.
  *
  * Cada tarea es independiente: si una falla, la otra sigue, y la salida lo dice.
  */
@@ -43,5 +46,11 @@ export async function GET(request: NextRequest) {
 
   const cobros = await sincronizarCobrosStripe(admin);
 
-  return NextResponse.json({ youtube, cobros });
+  // Las imágenes del foro que se subieron y nunca llegaron a una pregunta.
+  const foroImagenes = await limpiarHuerfanas().catch((err) => {
+    console.error("[cron-diario] Error limpiando imágenes del foro:", err instanceof Error ? err.name : "desconocido");
+    return null;
+  });
+
+  return NextResponse.json({ youtube, cobros, foroImagenes });
 }

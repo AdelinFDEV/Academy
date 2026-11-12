@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { llamar } from "../bd";
+import { sincronizar } from "../imagenes/almacen";
 import { ETIQUETA_IDS, LIMITES, MOTIVO_REPORTE_IDS } from "../limites";
 import type { ResultadoAccion } from "../peticion";
 import { limpiar } from "../texto/normalizar";
@@ -68,6 +69,10 @@ export async function reportar(usuarioId: string, d: z.infer<typeof esquemaRepor
     p_motivo: d.motivo,
     p_detalle: detalle,
   });
+  if (!r.ok) return r;
+  // Si este reporte ha ocultado una pregunta, sus imágenes salen ya del
+  // bucket público: lo oculto no puede seguir sirviéndose ni un minuto.
+  if (r.datos.oculto === true && !d.respuesta) await sincronizar(d.pregunta);
   // Quien reporta no tiene por qué saber si su reporte fue el que lo ocultó.
-  return r.ok ? { ok: true, datos: {} } : r;
+  return { ok: true, datos: {} };
 }

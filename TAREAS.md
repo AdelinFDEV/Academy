@@ -140,7 +140,8 @@ En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (
 
 - [ ] **Fase 4 — API:** escrita (`src/lib/foro/` y `/api/foro/*`), con el filtro de texto probado (77 casos) y las rutas probadas sin sesión. **Falta probarla con sesiones de verdad**: gratuito, Premium, suspendido, 2FA a medias y campos de más. Necesita cuentas de prueba en Supabase, que hay que crear con permiso del admin y borrar después.
 - [ ] **Casos de dos peticiones a la vez** del §9.4 de `FORO.md` (50 me gusta simultáneos, dos eligiendo ganadora): con esas mismas cuentas de prueba, contra la API.
-- [ ] **Fases 5 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: imágenes, moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
+- [ ] **Fase 5 — Imágenes:** escrita y probada en local (34 archivos maliciosos y 21 casos de SQL). **Falta que el admin ejecute `scripts/create-foro-imagenes.sql`** (lo tiene entero en el chat del 12-11-2026) y probar después contra Storage la subida firmada, la copia al bucket público y la retirada al ocultar.
+- [ ] **Fases 6 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
 - [ ] **D15**, antes de la fase 6: si se reconoce a un expulsado que vuelve con otra cuenta (final de `FORO.md`).
 
 ---
