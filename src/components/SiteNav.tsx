@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { cache } from "react";
 import NavPrincipal from "@/components/NavPrincipal";
+import NavForo from "@/components/NavForo";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavSaludo, { type PlanUsuario } from "@/components/NavSaludo";
-import { MessagesSquare } from "lucide-react";
 import { foroALaVista } from "@/lib/foro/permisos";
 import { createClient } from "@/lib/supabase/server";
 
@@ -67,12 +67,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
         <NavPrincipal logueado={user} premium={!!isPremium} conNova={perfil.plan !== "free"} />
         {/* El foro va fuera de la cápsula: dentro están las tres piezas de
             pago, que salen del catálogo de herramientas, y el foro no es una. */}
-        {foro && (
-          <Link href="/foro" className="nav-foro">
-            <MessagesSquare size={16} strokeWidth={2.2} aria-hidden="true" />
-            Foro
-          </Link>
-        )}
+        {foro && <NavForo />}
       </div>
       <div className="blog-nav-end">
         {/* Identidad y accesos personales, en un solo sitio. Pulsando el
