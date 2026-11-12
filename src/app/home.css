@@ -295,12 +295,6 @@
    aplicación. El color de cada pieza entra por --tool-color desde el catálogo
    y es lo único que cambia entre las tres. */
 
-@property --hs-giro {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
-
 .hs {
   width: 100%;
   margin: 0 auto 1.4rem;
@@ -328,30 +322,49 @@
   transition: transform 1.1s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
+/* Sin desenfoque en ningún tamaño (12-11-2026): desenfocar un bloque tan
+   grande durante 0,9 s era el paso más caro del cambio. La escala y el
+   apagado ya dan la profundidad. */
 .hs-diapo {
   transition:
     scale 1.1s cubic-bezier(0.76, 0, 0.24, 1),
-    opacity 0.9s ease,
-    filter 0.9s ease;
+    opacity 0.9s ease;
   scale: 0.9;
   opacity: 0.35;
-  filter: blur(3px) saturate(0.6);
 }
 
 .hs-diapo.is-activa {
   scale: 1;
   opacity: 1;
-  filter: none;
 }
 
 /* Rendimiento en móvil (08-11-2026): nada de filtros caros. Las luces del
    hero ya son degradados que se desvanecen solos; el blur gigante encima y su
    animación obligaban al teléfono a recalcular capas enormes en cada
-   fotograma. Y la diapositiva que se va no se desenfoca: basta con apagarla. */
+   fotograma. */
 @media (max-width: 760px) {
   .hero-aurora::before,
   .hero-aurora::after { filter: none; opacity: 0.12; animation: none; }
-  .hs-diapo { filter: none; transition: scale 1.1s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.9s ease; }
+}
+
+/* ── Lo que no se ve, no se anima (12-11-2026) ──────────────────────────
+   · Las diapositivas que no están activas congelan todo lo suyo: iconos,
+     latidos, halos, Nova… seguían moviéndose fuera de la vista.
+   · Con el slider fuera de pantalla (.is-fuera, lo pone un
+     IntersectionObserver en HeroSlider.tsx) se congela todo, también la
+     barra del temporizador, así que tampoco avanza solo mientras no se ve.
+     Las luces del hero se paran con él (.hero.is-hs-fuera).
+   Pausar y no quitar: al volver, cada animación sigue donde iba. */
+.hs-diapo:not(.is-activa) *,
+.hs-diapo:not(.is-activa) *::before,
+.hs-diapo:not(.is-activa) *::after,
+.hs.is-fuera,
+.hs.is-fuera *,
+.hs.is-fuera *::before,
+.hs.is-fuera *::after,
+.hero.is-hs-fuera .hero-aurora::before,
+.hero.is-hs-fuera .hero-aurora::after {
+  animation-play-state: paused !important;
 }
 
 .hs-texto,
@@ -367,36 +380,54 @@
   translate: calc(var(--rel, 0) * 34%) 0;
 }
 
-/* Mientras el dedo arrastra, la pista lo sigue sin retraso. */
-.hs-ventana.is-arrastrando .hs-pista {
-  transition: none;
-}
+/* Mientras el dedo arrastra, la pista lo sigue sin retraso: HeroSlider.tsx
+   le quita la transición en línea y se la devuelve al soltar. */
 
 /* ── La diapositiva: un borde de luz que gira, y el marco dentro ────────── */
 
+/* El borde de luz (rehecho el 12-11-2026). Antes giraba animando una
+   variable dentro del conic-gradient del fondo, y eso repintaba la
+   diapositiva entera en cada fotograma, sin parar. Ahora el degradado va en
+   una capa propia (::before) que gira con `transform`, que lo mueve la
+   tarjeta gráfica sin repintar nada; el marco la tapa salvo en el píxel del
+   borde. La capa es un cuadrado del lado de la diagonal (--hs-diag, lo mide
+   HeroSlider.tsx), así al girar nunca deja una esquina sin cubrir. */
 .hs-diapo {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   flex: 0 0 100%;
   min-width: 0;
   display: flex;
   padding: 1px;
   border-radius: 30px;
-  background:
-    conic-gradient(from var(--hs-giro),
-      transparent 0deg,
-      color-mix(in srgb, var(--tool-color) 85%, #fff) 40deg,
-      transparent 110deg,
-      transparent 180deg,
-      color-mix(in srgb, var(--tool-color) 40%, transparent) 230deg,
-      transparent 300deg),
-    rgba(240, 244, 255, 0.08);
+  background: rgba(240, 244, 255, 0.08);
 }
 
-.hs-diapo.is-activa {
+.hs-diapo::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: var(--hs-diag, 150%);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: conic-gradient(
+    transparent 0deg,
+    color-mix(in srgb, var(--tool-color) 85%, #fff) 40deg,
+    transparent 110deg,
+    transparent 180deg,
+    color-mix(in srgb, var(--tool-color) 40%, transparent) 230deg,
+    transparent 300deg);
+}
+
+.hs-diapo.is-activa::before {
   animation: hs-girar 9s linear infinite;
 }
 
 @keyframes hs-girar {
-  to { --hs-giro: 360deg; }
+  to { transform: rotate(360deg); }
 }
 
 .hs-marco {
@@ -2004,7 +2035,7 @@
     transition: none;
   }
 
-  .hs-diapo.is-activa,
+  .hs-diapo.is-activa::before,
   .hs-diapo.is-activa .hs-entra,
   .hs-app-etiqueta.is-vivo i {
     animation: none;

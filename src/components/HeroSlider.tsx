@@ -232,8 +232,10 @@ const DJ_OPS = [
 /** La racha del súper hito en la maqueta: 9 meses válidos (uno en rojo) y 3 por llegar. */
 const DJ_MESES = ["ok", "ok", "rojo", "ok", "ok", "ok", "ok", "ok", "ok", "vacio", "vacio", "vacio"] as const;
 
-function VentanaDiario() {
+function VentanaDiario({ sigue }: { sigue: boolean }) {
   // Nova mira de frente: aquí no se gira, solo hace sus gestos y sigue al cursor.
+  // Solo lo sigue mientras se la ve (12-11-2026): si no, escuchaba el ratón
+  // en toda la página con su diapositiva escondida o el slider fuera de vista.
   const novaTheta = useMotionValue(0);
   return (
     <div className="hs-dj" aria-hidden="true">
@@ -303,7 +305,7 @@ function VentanaDiario() {
           <span>Así va tu trading ahora mismo</span>
         </span>
         <span className="hs-dj-nova-cabeza">
-          <NovaHead theta={novaTheta} face="happy" activity="none" flying={false} joy={false} talking={false} track />
+          <NovaHead theta={novaTheta} face="happy" activity="none" flying={false} joy={false} talking={false} track={sigue} />
           <span className="hs-dj-nova-aviso" />
         </span>
       </div>
@@ -384,7 +386,7 @@ function ventana(id: string, portfolio: ResumenHero, activo: boolean) {
     return { ruta: "/portfolio", vivo: !!portfolio, cuerpo: <VentanaPortfolio datos={portfolio} activo={activo} /> };
   }
   if (id === "diario") {
-    return { ruta: "/dashboard/trading", vivo: false, cuerpo: <VentanaDiario /> };
+    return { ruta: "/dashboard/trading", vivo: false, cuerpo: <VentanaDiario sigue={activo} /> };
   }
   return { ruta: "/aula", vivo: false, cuerpo: null };
 }
@@ -406,33 +408,88 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
   const [actual, setActual] = useState(0);
   const [encima, setEncima] = useState(false);
   const [foco, setFoco] = useState(false);
-  // Arrastre en curso: dónde empezó y cuánto lleva. Mientras dura, la pista
-  // sigue al dedo sin transición y el temporizador se para.
-  const [arrastre, setArrastre] = useState<{ x: number; dx: number } | null>(null);
+  // Arrastre en curso. Solo se guarda en el estado SI hay arrastre (para parar
+  // el temporizador); dónde empezó y cuánto lleva van en una ref, y la pista
+  // se mueve escribiendo en el DOM. Antes cada movimiento del dedo era un
+  // setState que volvía a pintar las tres diapositivas, Nova y el certificado
+  // incluidos: en móviles modestos se notaba a tirones (12-11-2026).
+  const [arrastrando, setArrastrando] = useState(false);
+  const arrastre = useRef<{ x: number; dx: number } | null>(null);
   // Si el gesto fue un arrastre, el clic que llega al soltar no debe abrir
   // el enlace sobre el que se soltó.
   const huboArrastre = useRef(false);
+  // Fuera de pantalla se congela todo (ver .is-fuera en home.css). Empieza en
+  // true para que el HTML del servidor y la primera pintura coincidan.
+  const [enPantalla, setEnPantalla] = useState(true);
+  const seccionRef = useRef<HTMLElement>(null);
+  const ventanaRef = useRef<HTMLDivElement>(null);
+  const pistaRef = useRef<HTMLDivElement>(null);
 
   const total = DIAPOSITIVAS.length;
   const ir = (n: number) => setActual((n + total) % total);
   // Sin movimiento no hay avance automático: el visitante pasa a mano.
   const automatico = !reduceMotion;
-  const pausado = encima || foco || arrastre !== null;
+  const pausado = encima || foco || arrastrando;
 
-  // En los extremos el arrastre cuesta más, como en cualquier carrusel nativo.
-  const dx = arrastre?.dx ?? 0;
-  const enBorde = (actual === 0 && dx > 0) || (actual === total - 1 && dx < 0);
-  const resistido = enBorde ? dx * 0.35 : dx;
+  const posicion = (px: number) => `translateX(calc(-${actual * 100}% + ${px}px))`;
 
-  const soltar = () => {
-    if (!arrastre) return;
-    if (Math.abs(arrastre.dx) > UMBRAL_PX) ir(actual + (arrastre.dx < 0 ? 1 : -1));
-    setArrastre(null);
+  /** Mueve la pista con el dedo, sin pasar por React. */
+  const seguirDedo = (dx: number) => {
+    const pista = pistaRef.current;
+    if (!pista) return;
+    // En los extremos el arrastre cuesta más, como en cualquier carrusel nativo.
+    const enBorde = (actual === 0 && dx > 0) || (actual === total - 1 && dx < 0);
+    pista.style.transition = "none";
+    pista.style.transform = posicion(enBorde ? dx * 0.35 : dx);
   };
+
+  /** Termina el gesto: devuelve la transición y, si no cambia, la pista a su sitio. */
+  const soltar = (cancelado: boolean) => {
+    const a = arrastre.current;
+    if (!a) return;
+    arrastre.current = null;
+    setArrastrando(false);
+    const pista = pistaRef.current;
+    if (pista) {
+      pista.style.transition = "";
+      // Si cambia de diapositiva, React escribe la posición nueva al pintar;
+      // si no, la pista vuelve sola, animada, a donde estaba.
+      pista.style.transform = posicion(0);
+    }
+    if (!cancelado && Math.abs(a.dx) > UMBRAL_PX) ir(actual + (a.dx < 0 ? 1 : -1));
+  };
+
+  // Lo que no se ve no gasta: fuera de pantalla, el slider y las luces del
+  // hero se congelan.
+  useEffect(() => {
+    const el = seccionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setEnPantalla(e.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const hero = seccionRef.current?.closest(".hero");
+    hero?.classList.toggle("is-hs-fuera", !enPantalla);
+    return () => hero?.classList.remove("is-hs-fuera");
+  }, [enPantalla]);
+
+  // La diagonal de la diapositiva, para el cuadrado del borde que gira.
+  useEffect(() => {
+    const el = ventanaRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => {
+      el.style.setProperty("--hs-diag", `${Math.ceil(Math.hypot(el.offsetWidth, el.offsetHeight))}px`);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   return (
     <section
-      className={`hs${pausado ? " is-pausado" : ""}${automatico ? "" : " is-quieto"}`}
+      ref={seccionRef}
+      className={`hs${pausado ? " is-pausado" : ""}${automatico ? "" : " is-quieto"}${enPantalla ? "" : " is-fuera"}`}
       aria-roledescription="carrusel"
       aria-label="Lo que hay dentro de la academia"
       style={{ "--hs-duracion": `${DURACION_MS}ms` } as React.CSSProperties}
@@ -450,23 +507,26 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
       {/* Solo el dedo arrastra: en PC se pasa con las flechas, las pestañas
           o el teclado, y un arrastre con el ratón seleccionaría texto. */}
       <div
-        className={`hs-ventana${arrastre ? " is-arrastrando" : ""}`}
+        ref={ventanaRef}
+        className="hs-ventana"
         aria-live={automatico && !pausado ? "off" : "polite"}
         onPointerDown={(e) => {
           if (e.pointerType !== "touch") return;
           huboArrastre.current = false;
-          setArrastre({ x: e.clientX, dx: 0 });
+          arrastre.current = { x: e.clientX, dx: 0 };
+          setArrastrando(true);
         }}
         onPointerMove={(e) => {
-          if (!arrastre || e.pointerType !== "touch") return;
-          const dx = e.clientX - arrastre.x;
-          if (Math.abs(dx) > 8) huboArrastre.current = true;
-          setArrastre({ ...arrastre, dx });
+          const a = arrastre.current;
+          if (!a || e.pointerType !== "touch") return;
+          a.dx = e.clientX - a.x;
+          if (Math.abs(a.dx) > 8) huboArrastre.current = true;
+          seguirDedo(a.dx);
         }}
-        onPointerUp={soltar}
+        onPointerUp={() => soltar(false)}
         // El navegador cancela el gesto si decide que es un scroll vertical:
         // la diapositiva vuelve a su sitio.
-        onPointerCancel={() => setArrastre(null)}
+        onPointerCancel={() => soltar(true)}
         onClickCapture={(e) => {
           if (huboArrastre.current) {
             e.preventDefault();
@@ -475,16 +535,13 @@ export default function HeroSlider({ isPremium, portfolio }: Props) {
           }
         }}
       >
-        <div
-          className="hs-pista"
-          style={{ transform: `translateX(calc(-${actual * 100}% + ${resistido}px))` }}
-        >
+        <div ref={pistaRef} className="hs-pista" style={{ transform: posicion(0) }}>
           {DIAPOSITIVAS.map((d, i) => {
             const f = herramienta(d.id);
             const titulo = d.titulo ?? f.label;
             const activo = i === actual;
             const a = accion(f, isPremium);
-            const v = ventana(f.id, portfolio, activo);
+            const v = ventana(f.id, portfolio, activo && enPantalla);
             const IconoGrande = ICONO_PIEZA[f.id];
 
             return (
