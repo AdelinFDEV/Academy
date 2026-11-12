@@ -1832,85 +1832,86 @@ html {
   backdrop-filter: blur(12px);
 }
 
-/* ── El foro, en una cápsula hermana (NavForo.tsx) ──────────────────────
-   Va al lado de la cápsula de las tres piezas y no dentro: dentro van las
-   que salen del catálogo de herramientas. Pero es de la misma familia, así
-   que repite su lenguaje pieza a pieza: el mismo cristal por fuera, la misma
-   pastilla de 42 px por dentro, el icono en un círculo de su color y la
-   misma burbuja al pasar el ratón o al estar dentro del foro.
+/* ── El foro en la barra (NavForo.tsx) ───────────────────────────────────
+   Va al lado de la cápsula de las tres piezas y tiene que verse DISTINTO de
+   ellas: no es una herramienta de pago, es el sitio donde está la gente.
+   (La primera versión repetía el aro de cristal y el icono en un círculo, y
+   se leía como una cuarta pieza: el admin la descartó el 12-11-2026.)
 
-   Su color es el naranja de la marca. Se esconde con `.blog-nav-center`
-   cuando la barra se queda sin sitio; ahí el foro sigue en el menú. */
+   Por eso es una sola pastilla, sin aro alrededor y sin círculo en el icono:
+   teñida del naranja de la marca, con su borde, y con un punto encendido que
+   dice «aquí hay actividad». Al pasar el ratón se aviva; dentro del foro se
+   queda rellena.
+
+   Se esconde con `.blog-nav-center` cuando la barra se queda sin sitio; ahí
+   el foro sigue en el menú. */
 .nav-foro {
-  --c: var(--accent-orange-soft);
-  display: inline-flex;
-  padding: 6px 8px;
-  border: 1px solid rgba(240, 244, 255, 0.08);
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.06),
-    0 10px 30px -18px rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(12px);
-  text-decoration: none;
-  outline: none;
-}
-
-.nav-foro-dentro {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
   height: 42px;
-  padding: 0 1.25rem 0 0.5rem;
-  border-radius: 999px;
+  margin-left: 0.35rem;
+  padding: 0 1.1rem 0 0.95rem;
+  border: 1px solid color-mix(in srgb, var(--accent-orange) 38%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-orange) 16%, transparent) 0%, color-mix(in srgb, var(--accent-orange) 7%, transparent) 100%);
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  color: rgba(240, 244, 255, 0.66);
-  transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  text-decoration: none;
+  color: #ffd9c7;
+  outline: none;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .nav-foro-icono {
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
+  color: var(--accent-orange-soft);
+  transition: color 0.2s ease;
+}
+
+/* El punto de actividad, arriba a la derecha, montado sobre el borde. */
+.nav-foro::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--bg-dark);
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 10%, transparent) 70%);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 28%, transparent);
-  color: var(--c);
-  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  background: var(--accent-orange);
+  box-sizing: content-box;
 }
 
-/* La burbuja de la cápsula grande se desliza entre tres; aquí solo hay una
-   pieza, así que se enciende en el sitio con los mismos colores. */
-.nav-foro:hover .nav-foro-dentro,
-.nav-foro:focus-visible .nav-foro-dentro,
-.nav-foro.is-activo .nav-foro-dentro {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
-    color-mix(in srgb, var(--c) 13%, rgba(10, 18, 34, 0.92));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent);
+.nav-foro:hover,
+.nav-foro:focus-visible {
+  border-color: var(--accent-orange-soft);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-orange) 28%, transparent) 0%, color-mix(in srgb, var(--accent-orange) 14%, transparent) 100%);
+  box-shadow: 0 10px 24px -14px var(--accent-orange);
   color: #fff;
+  transform: translateY(-1px);
 }
 
-.nav-foro:hover .nav-foro-icono,
-.nav-foro:focus-visible .nav-foro-icono,
-.nav-foro.is-activo .nav-foro-icono {
-  background: var(--c);
+.nav-foro:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 3px; }
+
+/* Dentro del foro: rellena, con la letra oscura. Ya no hace falta el punto. */
+.nav-foro.is-activo {
+  border-color: var(--accent-orange);
+  background: var(--accent-orange);
   box-shadow: none;
-  color: #070c18;
-  transform: rotate(-8deg) scale(1.06);
+  color: #1a0a02;
+  transform: none;
 }
+
+.nav-foro.is-activo .nav-foro-icono { color: #1a0a02; }
+.nav-foro.is-activo::after { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-foro-dentro,
-  .nav-foro-icono { transition: none; }
-  .nav-foro:hover .nav-foro-icono,
-  .nav-foro.is-activo .nav-foro-icono { transform: none; }
+  .nav-foro { transition: none; }
+  .nav-foro:hover { transform: none; }
 }
 
 .nav-principal-enlace {

@@ -8,13 +8,12 @@ import { MessagesSquare } from "lucide-react";
  * El foro en la barra de escritorio, al lado de la cápsula de las tres piezas
  * de pago (`NavPrincipal`).
  *
- * Es una cápsula hermana, no una cuarta pieza: dentro de la otra van las que
- * salen del catálogo de herramientas, y el foro no es una. Pero tiene que
- * leerse como de la misma familia, así que comparte su cristal, su icono en
- * pastilla de color y su gesto al pasar el ratón (rehecho el 12-11-2026: la
- * primera versión era un contorno plano y se quedaba pobre a su lado).
+ * Tiene que verse DISTINTO de ellas: es una sola pastilla teñida de naranja,
+ * sin aro de cristal alrededor y sin círculo en el icono, con un punto de
+ * actividad. La versión anterior copiaba la cápsula y se leía como una cuarta
+ * pieza (descartada por el admin el 12-11-2026).
  *
- * Es de cliente solo para saber si estás dentro del foro y dejarlo encendido.
+ * Es de cliente solo para saber si estás dentro del foro y dejarlo relleno.
  * Si se enseña o no lo decide `SiteNav`, en el servidor.
  */
 export default function NavForo() {
@@ -23,12 +22,10 @@ export default function NavForo() {
 
   return (
     <Link href="/foro" className={`nav-foro${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
-      <span className="nav-foro-dentro">
-        <span className="nav-foro-icono" aria-hidden="true">
-          <MessagesSquare size={16} strokeWidth={2.2} />
-        </span>
-        Foro
+      <span className="nav-foro-icono" aria-hidden="true">
+        <MessagesSquare size={17} strokeWidth={2.2} />
       </span>
+      Foro
     </Link>
   );
 }
