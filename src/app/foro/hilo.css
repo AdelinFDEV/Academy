@@ -221,3 +221,14 @@
   .fh-replicas { padding-left: 0.8rem; }
   .fh-imagenes { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ── Responder a la pregunta ───────────────────────────────────────────── */
+
+.fh-responder { margin-top: 2rem; }
+
+.fh-responder h3 {
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}

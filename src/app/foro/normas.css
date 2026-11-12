@@ -1,0 +1,34 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   EL FORO — las normas de la comunidad (/foro/normas)
+   ══════════════════════════════════════════════════════════════════════════
+   Lo importa `src/app/foro/normas/page.tsx`. Prefijo: fn-.
+   Un texto para leer entero: columna estrecha y nada que distraiga. */
+
+.fn-main { max-width: 700px; }
+
+.fn-texto {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.fn-texto h2 {
+  margin: 2.2rem 0 0.8rem;
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.fn-texto ul { padding-left: 1.15rem; }
+.fn-texto li { margin-bottom: 0.55rem; }
+.fn-texto li::marker { color: var(--text-muted); }
+.fn-texto b { font-weight: 600; color: var(--text-primary); }
+
+.fn-texto a {
+  color: var(--accent-orange-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.fn-aceptar { margin-top: 2.6rem; }

@@ -4,32 +4,39 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import Firma from "@/components/foro/Firma";
 import TextoForo from "@/components/foro/TextoForo";
-import { ETIQUETAS } from "@/lib/foro/limites";
+import AccionesMensaje from "@/components/foro/participar/AccionesMensaje";
+import ContextoHilo from "@/components/foro/participar/ContextoHilo";
+import Etiquetas from "@/components/foro/participar/Etiquetas";
+import MeGusta from "@/components/foro/participar/MeGusta";
+import Responder from "@/components/foro/participar/Responder";
 import type { HiloForo, MensajeForo } from "@/lib/foro/tipos";
 import "@/app/foro/hilo.css";
 
 /**
  * Un hilo: la pregunta, sus imágenes, sus etiquetas y sus respuestas con sus
  * réplicas. Es la página que lee todo el mundo y la que indexa Google, así
- * que es igual para todos: nada de aquí depende de quién mira.
+ * que el HTML es igual para todos: nada de aquí depende de quién mira.
+ *
+ * Los botones (me gusta, etiquetas, responder, reportar…) son componentes de
+ * cliente que piden APARTE lo personal de quien mira (`ContextoHilo`). Sin
+ * JavaScript, o para Google, la página se lee entera igual.
  */
 
 const marcas = (m: { editado: boolean; editadoPorModeracion: boolean }) =>
   m.editadoPorModeracion ? "Editado por moderación" : m.editado ? "Editado" : null;
 
-function Respuesta({ r }: { r: MensajeForo }) {
+function Respuesta({ r, cerrado }: { r: MensajeForo; cerrado: boolean }) {
   const marca = marcas(r);
   return (
     <li className={`fh-respuesta${r.esGanadora ? " is-ganadora" : ""}`} id={`r-${r.id}`}>
       {r.esGanadora && <p className="fh-ganadora">Respuesta elegida por quien preguntó</p>}
       <Firma autor={r.autor} fecha={r.fecha} />
       <TextoForo texto={r.texto} />
-      <p className="fh-pie">
-        <span className="fh-megusta">
-          <b>{r.meGusta}</b> me gusta
-        </span>
+      <div className="fh-pie">
+        <MeGusta respuestaId={r.id} inicial={r.meGusta} />
         {marca && <span className="fh-marca">{marca}</span>}
-      </p>
+      </div>
+      <AccionesMensaje respuestaId={r.id} esRespuesta esGanadora={r.esGanadora} hiloCerrado={cerrado} />
 
       {r.replicas.length > 0 && (
         <ol className="fh-replicas">
@@ -40,14 +47,11 @@ function Respuesta({ r }: { r: MensajeForo }) {
                 <Firma autor={x.autor} fecha={x.fecha} compacta />
                 {x.citado && <p className="fh-cita">En respuesta a {x.citado}</p>}
                 <TextoForo texto={x.texto} />
-                <p className="fh-pie">
-                  {x.meGusta > 0 && (
-                    <span className="fh-megusta">
-                      <b>{x.meGusta}</b> me gusta
-                    </span>
-                  )}
+                <div className="fh-pie">
+                  <MeGusta respuestaId={x.id} inicial={x.meGusta} />
                   {marcaReplica && <span className="fh-marca">{marcaReplica}</span>}
-                </p>
+                </div>
+                <AccionesMensaje respuestaId={x.id} hiloCerrado={cerrado} />
               </li>
             );
           })}
@@ -70,12 +74,12 @@ export default function HiloCompleto({
 }) {
   const url = `/foro/${hilo.id}-${hilo.slug}`;
   const marca = marcas(hilo);
-  const cuentas = [hilo.etiquetas.interesante, hilo.etiquetas.gracias, hilo.etiquetas.yoTambien];
 
   return (
     <div className="blog-page">
       <SiteNav user={conSesion} />
 
+      <ContextoHilo preguntaId={hilo.id} conSesion={conSesion}>
       <main className="blog-main fo-main fh-main">
         <nav className="fo-migas" aria-label="Estás en">
           <Link href="/foro">Foro</Link>
@@ -118,15 +122,12 @@ export default function HiloCompleto({
           )}
 
           <footer className="fh-pie-pregunta">
-            <ul className="fh-etiquetas" aria-label="Valoraciones de la pregunta">
-              {ETIQUETAS.map((e, i) => (
-                <li key={e.id} title={e.ayuda}>
-                  <b>{cuentas[i]}</b> {e.nombre}
-                </li>
-              ))}
-            </ul>
+            <Etiquetas
+              inicial={{ interesante: hilo.etiquetas.interesante, gracias: hilo.etiquetas.gracias, yo_tambien: hilo.etiquetas.yoTambien }}
+            />
             {marca && <span className="fh-marca">{marca}</span>}
           </footer>
+          <AccionesMensaje hiloCerrado={hilo.cerrado} />
         </article>
 
         <section className="fh-respuestas" aria-labelledby="fh-respuestas-titulo">
@@ -155,16 +156,21 @@ export default function HiloCompleto({
 
           {hilo.respuestas.length > 0 && (
             <ol className="fh-lista">
-              {hilo.respuestas.map((r) => <Respuesta key={r.id} r={r} />)}
+              {hilo.respuestas.map((r) => <Respuesta key={r.id} r={r} cerrado={hilo.cerrado} />)}
             </ol>
           )}
 
-          {hilo.cerrado && (
+          {hilo.cerrado ? (
             <p className="fh-cerrado">
               {hilo.respuestas.some((r) => r.esGanadora)
                 ? "Resuelto: este hilo ya tiene respuesta y no admite más."
                 : "Este hilo está cerrado y no admite más respuestas."}
             </p>
+          ) : (
+            <div className="fh-responder">
+              <h3>Responder a esta pregunta</h3>
+              <Responder />
+            </div>
           )}
         </section>
 
@@ -174,6 +180,7 @@ export default function HiloCompleto({
         </p>
         <DisclaimerRiesgo variante="general" />
       </main>
+      </ContextoHilo>
 
       <Footer />
     </div>

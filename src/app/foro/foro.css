@@ -197,3 +197,150 @@
 @media (max-width: 600px) {
   .fo-main { padding-top: 1.8rem; padding-left: 1.1rem; padding-right: 1.1rem; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PARTICIPAR — botones, paneles y formularios (prefijo fp-)
+   ══════════════════════════════════════════════════════════════════════════
+   Los usan el hilo, el formulario de pregunta y las normas, así que van aquí
+   y no en el CSS de una pantalla. Discretos a propósito: en una página de
+   lectura los botones no pueden competir con el texto. */
+
+.fp-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fp-fila--entre { justify-content: space-between; }
+
+/* Una acción bajo un mensaje: parece texto, y se comporta como botón. */
+.fp-accion {
+  padding: 0.28rem 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.fp-accion b { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.fp-accion:hover:not(:disabled) { border-color: var(--hairline); color: var(--text-primary); }
+.fp-accion:disabled { opacity: 0.55; cursor: default; }
+.fp-accion:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.fp-accion.is-puesto {
+  border-color: var(--accent-orange);
+  background: var(--accent-orange-light);
+  color: var(--text-primary);
+}
+
+.fp-accion--elegir { color: var(--free-green); }
+.fp-accion--elegir:hover:not(:disabled) { border-color: rgba(95, 211, 154, 0.45); color: var(--free-green); }
+
+.fp-acciones { margin-top: 0.5rem; margin-left: -0.6rem; }
+.fp-acciones > .fp-panel,
+.fp-acciones > .fp-invitacion,
+.fp-acciones > .fp-form,
+.fp-acciones > .fp-error,
+.fp-acciones > .fp-hecho { margin-left: 0.6rem; }
+
+.fp-etiquetas { min-width: 0; }
+.fp-etiquetas .fh-etiquetas { gap: 0.3rem 0.4rem; margin-left: -0.6rem; }
+.fp-megusta { margin-left: -0.6rem; }
+
+/* ── Botones de formulario ─────────────────────────────────────────────── */
+
+.fp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.fp-btn:hover:not(:disabled) { border-color: rgba(240, 244, 255, 0.28); color: var(--text-primary); }
+.fp-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.fp-btn:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.fp-btn--firme { border-color: var(--accent-orange); background: var(--accent-orange); color: #fff; }
+.fp-btn--firme:hover:not(:disabled) { border-color: var(--accent-orange-soft); background: var(--accent-orange-soft); color: #fff; }
+
+.fp-btn--peligro { border-color: rgba(255, 107, 107, 0.4); color: #ff8a8a; }
+.fp-btn--peligro:hover:not(:disabled) { border-color: #ff6b6b; color: #ffb3b3; }
+
+/* ── Paneles e invitación ──────────────────────────────────────────────── */
+
+.fp-panel,
+.fp-invitacion {
+  margin-top: 0.7rem;
+  padding: 0.95rem 1.05rem;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.fp-panel > p,
+.fp-invitacion > p { margin-bottom: 0.8rem; }
+
+.fp-invitacion { border-color: var(--premium-gold-soft); background: rgba(230, 180, 85, 0.06); }
+
+/* ── Formularios ───────────────────────────────────────────────────────── */
+
+.fp-form { display: flex; flex-direction: column; gap: 0.7rem; }
+.fp-form--replica { margin-top: 0.7rem; }
+
+.fp-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.fp-form > .fp-campo { margin-bottom: 0; }
+.fp-campo small { font-weight: 400; color: var(--text-muted); }
+
+.fp-campo input,
+.fp-campo select,
+.fp-campo textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--bg-dark);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.fp-campo textarea { resize: vertical; }
+
+.fp-campo input:focus,
+.fp-campo select:focus,
+.fp-campo textarea:focus { outline: none; border-color: var(--accent-orange); }
+
+.fp-contador { font-size: 0.76rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.fp-contador.es-malo { color: #ff8a8a; }
+
+.fp-error { margin-top: 0.5rem; font-size: 0.84rem; line-height: 1.5; color: #ff8a8a; }
+.fp-hecho { margin-top: 0.5rem; font-size: 0.84rem; color: var(--free-green); }

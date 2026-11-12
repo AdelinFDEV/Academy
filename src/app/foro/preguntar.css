@@ -1,0 +1,78 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   EL FORO — hacer una pregunta (/foro/preguntar)
+   ══════════════════════════════════════════════════════════════════════════
+   Lo importa `src/app/foro/preguntar/page.tsx`. Prefijo: fq-.
+   Los campos y los botones son los comunes (fp-, en foro.css); aquí va solo
+   lo de esta pantalla: el ancho, las imágenes y las notas. */
+
+.fq-main { max-width: 720px; }
+
+.fq-form { gap: 1.3rem; }
+
+.fq-imagenes {
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--hairline);
+  border-radius: 12px;
+}
+
+.fq-imagenes-titulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.fq-imagenes-titulo small { font-weight: 400; color: var(--text-muted); }
+
+.fq-miniaturas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.9rem;
+  list-style: none;
+}
+
+.fq-miniaturas li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+}
+
+.fq-miniaturas img,
+.fq-sin-vista {
+  display: block;
+  width: 100%;
+  height: 6.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.fq-sin-vista {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.fq-nota {
+  margin-top: 0.8rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.fp-fila > .fq-nota { margin-top: 0; }
+
+.fq-normas {
+  margin-top: 1.6rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.fq-normas a { color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; }

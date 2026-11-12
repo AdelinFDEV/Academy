@@ -44,6 +44,11 @@ export default function ListadoHilos({
 
         {aviso && <p className="fo-aviso" role="status">{aviso}</p>}
 
+        <div className="fl-barra">
+          <Link href="/foro/preguntar" className="fp-btn fp-btn--firme">Hacer una pregunta</Link>
+          <Link href="/foro/normas" className="fl-enlace">Normas del foro</Link>
+        </div>
+
         <nav className="fo-categorias" aria-label="Categorías del foro">
           <Link href="/foro" className={`fo-categoria${datos.categoria ? "" : " is-activa"}`} aria-current={datos.categoria ? undefined : "page"}>
             Todas

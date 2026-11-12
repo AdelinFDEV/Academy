@@ -129,3 +129,21 @@
   .fl-cifras div { flex-direction: row-reverse; align-items: baseline; gap: 0.35rem; }
   .fl-cifras dd { font-size: 0.9rem; }
 }
+
+/* ── La barra de arriba: preguntar y las normas ────────────────────────── */
+
+.fl-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.2rem;
+  margin-bottom: 1.4rem;
+}
+
+.fl-enlace {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.fl-enlace:hover { color: var(--text-primary); text-decoration: underline; }

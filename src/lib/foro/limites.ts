@@ -24,6 +24,13 @@ export const LIMITES = {
   minutosParaEditar: 30,
 } as const;
 
+/**
+ * La versión vigente de las normas de la comunidad (`/foro/normas`). Tiene
+ * que coincidir con `foro_ajustes.normas_version`: si el texto cambia de
+ * fondo, se suben LOS DOS y todos vuelven a aceptarlas.
+ */
+export const NORMAS_VERSION = 1;
+
 /** Las tres etiquetas de una pregunta. El orden es el de los botones. */
 export const ETIQUETAS = [
   { id: "interesante", nombre: "Interesante", ayuda: "Esta pregunta aporta" },
