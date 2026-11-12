@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "at-m3-01",
+    "leccion": "medias-moviles",
+    "enunciado": "Los cinco últimos cierres son 100, 102, 104, 103 y 106. ¿Cuánto vale la media móvil simple de 5?",
+    "opciones": [
+      "103",
+      "515",
+      "104",
+      "106"
+    ],
+    "correcta": 0,
+    "explicacion": "(100 + 102 + 104 + 103 + 106) ÷ 5 = 103."
+  },
+  {
+    "clave": "at-m3-02",
+    "leccion": "medias-moviles",
+    "enunciado": "¿En qué se diferencia una media exponencial de una simple?",
+    "opciones": [
+      "Usa el volumen en lugar del precio",
+      "Da más peso a los cierres recientes",
+      "No tiene retraso",
+      "Solo se calcula en gráficos semanales"
+    ],
+    "correcta": 1,
+    "explicacion": "Reacciona antes y, por eso mismo, da más señales falsas."
+  },
+  {
+    "clave": "at-m3-03",
+    "leccion": "medias-moviles",
+    "enunciado": "Aproximadamente, ¿cuántas velas de retraso tiene una media simple de 200 periodos?",
+    "opciones": [
+      "Ninguna",
+      "Unas 20",
+      "Unas 100",
+      "Unas 200"
+    ],
+    "correcta": 2,
+    "explicacion": "El retraso es (n − 1) ÷ 2. En gráfico diario, unos cien días."
+  },
+  {
+    "clave": "at-m3-04",
+    "leccion": "medias-moviles",
+    "enunciado": "¿Qué intercambio no tiene solución al elegir los periodos de una media?",
+    "opciones": [
+      "Una corta no funciona en criptomonedas",
+      "Una corta es más cara de calcular",
+      "Una larga solo sirve con volumen",
+      "Una corta avisa pronto y falla mucho; una larga falla poco y avisa tarde"
+    ],
+    "correcta": 3,
+    "explicacion": "No existe el número de periodos que haga las dos cosas a la vez."
+  },
+  {
+    "clave": "at-m3-05",
+    "leccion": "medias-moviles",
+    "enunciado": "¿En qué tipo de mercado encadena pérdidas una regla de media móvil?",
+    "opciones": [
+      "En un rango lateral",
+      "En una tendencia bajista larga",
+      "En una tendencia alcista larga",
+      "En ninguno"
+    ],
+    "correcta": 0,
+    "explicacion": "El precio cruza la media una y otra vez, y cada cruce cuesta una pequeña pérdida más comisiones."
+  },
+  {
+    "clave": "at-m3-06",
+    "leccion": "medias-moviles",
+    "enunciado": "¿De dónde viene sobre todo la ventaja de las reglas de media móvil en los estudios?",
+    "opciones": [
+      "De acertar la mayoría de las operaciones",
+      "De sacarte durante parte de las grandes caídas",
+      "De predecir los mínimos",
+      "De ganar más que comprar y mantener en las subidas"
+    ],
+    "correcta": 1,
+    "explicacion": "Ganan menos en los buenos tiempos y pierden mucho menos en los malos."
+  },
+  {
+    "clave": "at-m3-07",
+    "leccion": "medias-moviles",
+    "enunciado": "¿Por qué no conviene buscar la media «que mejor habría funcionado» el último año?",
+    "opciones": [
+      "Porque solo existen las de 20, 50 y 200",
+      "Porque las medias largas son ilegales",
+      "Porque es ajustar un número a un pasado que no se repetirá",
+      "Porque las plataformas no lo permiten"
+    ],
+    "correcta": 2,
+    "explicacion": "Es sobreajuste. Mejor usar las que mira todo el mundo y seguir la regla."
+  },
+  {
+    "clave": "at-m3-08",
+    "leccion": "el-rsi",
+    "enunciado": "¿Qué compara el RSI?",
+    "opciones": [
+      "Dos medias móviles entre sí",
+      "El precio con su media móvil",
+      "El volumen con su media",
+      "El tamaño medio de las subidas recientes con el de las bajadas recientes"
+    ],
+    "correcta": 3,
+    "explicacion": "Encaja esa proporción en una escala de 0 a 100."
+  },
+  {
+    "clave": "at-m3-09",
+    "leccion": "el-rsi",
+    "enunciado": "La media de las subidas es del 1,5 % y la de las bajadas del 0,5 %. ¿Cuánto vale el RSI?",
+    "opciones": [
+      "75",
+      "3",
+      "30",
+      "50"
+    ],
+    "correcta": 0,
+    "explicacion": "RS = 3. RSI = 100 − 100 ÷ (1 + 3) = 75."
+  },
+  {
+    "clave": "at-m3-10",
+    "leccion": "el-rsi",
+    "enunciado": "¿Qué significa de verdad un RSI por encima de 70?",
+    "opciones": [
+      "Que el activo está caro",
+      "Que el precio ha subido deprisa en las últimas velas",
+      "Que el precio caerá pronto",
+      "Que hay que vender"
+    ],
+    "correcta": 1,
+    "explicacion": "«Sobrecomprado» no es «va a caer». En tendencias fuertes puede seguir así semanas."
+  },
+  {
+    "clave": "at-m3-11",
+    "leccion": "el-rsi",
+    "enunciado": "¿De dónde salen los 14 periodos y los niveles 70 y 30 del RSI?",
+    "opciones": [
+      "De una demostración matemática",
+      "De un estudio con bitcoin",
+      "De una convención propuesta por Wilder en 1978 para materias primas",
+      "De una norma de las plataformas"
+    ],
+    "correcta": 2,
+    "explicacion": "No hay razón de fondo por la que deban ser los adecuados para una criptomoneda."
+  },
+  {
+    "clave": "at-m3-12",
+    "leccion": "el-rsi",
+    "enunciado": "¿Qué uso del RSI es coherente con seguir la tendencia?",
+    "opciones": [
+      "Vender cada vez que supera 70",
+      "Ponerse en corto al llegar a 80",
+      "Ignorar la tendencia y operar solo el indicador",
+      "Usar sus caídas hacia 40 o 50 como referencia de retroceso dentro de una subida"
+    ],
+    "correcta": 3,
+    "explicacion": "Primero se mira la dirección; el RSI mide el ritmo, no la decide."
+  },
+  {
+    "clave": "at-m3-13",
+    "leccion": "macd-y-bandas-de-bollinger",
+    "enunciado": "¿Qué es la línea MACD?",
+    "opciones": [
+      "La media exponencial de 12 periodos menos la de 26",
+      "El RSI suavizado",
+      "La suma de dos medias",
+      "La desviación típica del precio"
+    ],
+    "correcta": 0,
+    "explicacion": "Mide cuánto se ha separado la media rápida de la lenta."
+  },
+  {
+    "clave": "at-m3-14",
+    "leccion": "macd-y-bandas-de-bollinger",
+    "enunciado": "¿Cómo se calculan las bandas de Bollinger?",
+    "opciones": [
+      "El máximo y el mínimo de 20 velas",
+      "Una media de 20 periodos más y menos dos desviaciones típicas",
+      "El RSI más y menos 20",
+      "Dos medias de 12 y 26 periodos"
+    ],
+    "correcta": 1,
+    "explicacion": "Dibujan la volatilidad reciente alrededor de una media."
+  },
+  {
+    "clave": "at-m3-15",
+    "leccion": "macd-y-bandas-de-bollinger",
+    "enunciado": "Las bandas de Bollinger están muy estrechas. ¿Qué indican?",
+    "opciones": [
+      "Que hay mucho volumen",
+      "Que el precio va a subir",
+      "Que la volatilidad reciente es baja; no dicen hacia dónde irá el precio",
+      "Que el precio va a caer"
+    ],
+    "correcta": 2,
+    "explicacion": "Tras la calma suele llegar un movimiento amplio, en cualquiera de los dos sentidos."
+  },
+  {
+    "clave": "at-m3-16",
+    "leccion": "macd-y-bandas-de-bollinger",
+    "enunciado": "El precio toca la banda superior. ¿Qué se puede concluir?",
+    "opciones": [
+      "Que volverá a la media",
+      "Que es una señal de venta",
+      "Que el movimiento ha terminado",
+      "Que está por encima de su media: puede indicar fuerza tanto como agotamiento"
+    ],
+    "correcta": 3,
+    "explicacion": "En tendencias fuertes el precio avanza pegado a una banda durante semanas."
+  },
+  {
+    "clave": "at-m3-17",
+    "leccion": "mas-indicadores-no-es-mejor",
+    "enunciado": "¿Por qué varios indicadores «alineados» no son varias confirmaciones?",
+    "opciones": [
+      "Porque casi todos se calculan con el mismo precio y reaccionan al mismo hecho",
+      "Porque solo uno puede estar activo",
+      "Porque se anulan entre sí",
+      "Porque las plataformas los sincronizan"
+    ],
+    "correcta": 0,
+    "explicacion": "Mirar una moneda con cuatro gafas no es lanzar cuatro monedas."
+  },
+  {
+    "clave": "at-m3-18",
+    "leccion": "mas-indicadores-no-es-mejor",
+    "enunciado": "¿Cuál es el único dato del gráfico que no sale del precio?",
+    "opciones": [
+      "El RSI",
+      "El volumen",
+      "Las bandas de Bollinger",
+      "El MACD"
+    ],
+    "correcta": 1,
+    "explicacion": "Todo lo demás es el mismo ingrediente cocinado de formas distintas."
+  }
+]

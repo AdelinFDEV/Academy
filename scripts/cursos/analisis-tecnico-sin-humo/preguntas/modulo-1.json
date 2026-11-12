@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "at-m1-01",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Qué información utiliza el análisis técnico?",
+    "opciones": [
+      "Los ingresos y beneficios del proyecto",
+      "Las noticias y los rumores",
+      "El precio y el volumen pasados",
+      "Las opiniones de otros analistas"
+    ],
+    "correcta": 2,
+    "explicacion": "Su única materia prima es el gráfico: cómo se ha movido el precio y cuánto se ha negociado."
+  },
+  {
+    "clave": "at-m1-02",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿A qué pregunta responde el análisis fundamental, a diferencia del técnico?",
+    "opciones": [
+      "Dónde poner el stop",
+      "Qué temporalidad usar",
+      "Cuándo entrar y salir",
+      "Qué vale un activo"
+    ],
+    "correcta": 3,
+    "explicacion": "El fundamental sirve para elegir qué tener; el técnico, para decidir entradas, salidas y límites de pérdida."
+  },
+  {
+    "clave": "at-m1-03",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "En la revisión de Park e Irwin de 2007, ¿cuántos de los 95 estudios modernos dieron resultados positivos?",
+    "opciones": [
+      "56",
+      "20",
+      "95",
+      "5"
+    ],
+    "correcta": 0,
+    "explicacion": "56 positivos, 20 negativos y 19 mixtos. Los autores advierten de problemas de método en la mayoría."
+  },
+  {
+    "clave": "at-m1-04",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Qué es el «data snooping»?",
+    "opciones": [
+      "Mirar el gráfico demasiadas veces al día",
+      "Probar muchas reglas y quedarse con la que sale bien, que puede ser buena solo por azar",
+      "Usar datos de pago",
+      "Espiar las órdenes de otros operadores"
+    ],
+    "correcta": 1,
+    "explicacion": "Entre cien reglas al azar, unas cuantas parecerán excelentes por pura suerte."
+  },
+  {
+    "clave": "at-m1-05",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Qué encontraron Sullivan, Timmermann y White con la mejor regla de cien años del Dow Jones?",
+    "opciones": [
+      "Que nunca había funcionado",
+      "Que funcionaba solo con criptomonedas",
+      "Que dejó de funcionar en los diez años reservados para comprobarla",
+      "Que siguió ganando igual"
+    ],
+    "correcta": 2,
+    "explicacion": "Elegida entre miles con el pasado, la regla no repitió su resultado fuera de la muestra."
+  },
+  {
+    "clave": "at-m1-06",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Qué tipo de herramienta técnica sale mejor parada en los estudios con criptomonedas?",
+    "opciones": [
+      "Las ondas de Elliott",
+      "Las figuras de velas",
+      "Los retrocesos de Fibonacci",
+      "Las reglas simples de tendencia, como las medias móviles"
+    ],
+    "correcta": 3,
+    "explicacion": "Lo que resiste es aburrido: reglas que caben en una línea."
+  },
+  {
+    "clave": "at-m1-07",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Cuál es la utilidad más sólida del análisis técnico, según el curso?",
+    "opciones": [
+      "Darte un nivel a partir del cual tu idea es errónea, para acotar la pérdida",
+      "Predecir el precio de la semana próxima",
+      "Saber cuánto vale un activo",
+      "Garantizar que un soporte aguantará"
+    ],
+    "correcta": 0,
+    "explicacion": "No predice, pero permite convertir una opinión en una operación con la pérdida limitada."
+  },
+  {
+    "clave": "at-m1-08",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Qué cuatro precios resume una vela?",
+    "opciones": [
+      "Compra, venta, media y volumen",
+      "Apertura, máximo, mínimo y cierre",
+      "Soporte, resistencia, entrada y salida",
+      "Inicio, mitad, final y promedio"
+    ],
+    "correcta": 1,
+    "explicacion": "Se abrevian OHLC por sus iniciales en inglés."
+  },
+  {
+    "clave": "at-m1-09",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Qué representa el cuerpo de una vela?",
+    "opciones": [
+      "La distancia entre el máximo y el mínimo",
+      "La duración del periodo",
+      "La distancia entre la apertura y el cierre",
+      "El volumen negociado"
+    ],
+    "correcta": 2,
+    "explicacion": "Las mechas marcan hasta dónde llegó el precio antes de volver."
+  },
+  {
+    "clave": "at-m1-10",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "Una vela abre a 100, tiene un máximo de 112, un mínimo de 98 y cierra a 108. ¿Cuánto mide la mecha superior?",
+    "opciones": [
+      "14",
+      "12",
+      "8",
+      "4"
+    ],
+    "correcta": 3,
+    "explicacion": "Del cierre al máximo: 112 − 108 = 4. El cuerpo mide 8 y el rango total, 14."
+  },
+  {
+    "clave": "at-m1-11",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Qué indica una mecha superior larga?",
+    "opciones": [
+      "Que el precio subió y fue rechazado en ese extremo",
+      "Que los compradores dominaron hasta el cierre",
+      "Que el precio subirá en la vela siguiente",
+      "Que hubo poco volumen"
+    ],
+    "correcta": 0,
+    "explicacion": "Describe lo que pasó en ese periodo: alguien vendió arriba con fuerza. No predice."
+  },
+  {
+    "clave": "at-m1-12",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Por qué conviene decidir solo con velas cerradas?",
+    "opciones": [
+      "Porque las velas abiertas no tienen volumen",
+      "Porque una vela abierta cambia con cada operación y puede acabar muy distinta",
+      "Porque las plataformas no las muestran",
+      "Porque las velas cerradas son siempre alcistas"
+    ],
+    "correcta": 1,
+    "explicacion": "Lo que hace una vela a medio formar es ruido."
+  },
+  {
+    "clave": "at-m1-13",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "En escala logarítmica, ¿qué dos tramos ocupan la misma altura en el gráfico?",
+    "opciones": [
+      "De 10.000 a 20.000 y de 90.000 a 100.000",
+      "De 1.000 a 2.000 y de 1.000 a 3.000",
+      "De 10.000 a 20.000 y de 50.000 a 100.000",
+      "De 10.000 a 20.000 y de 20.000 a 30.000"
+    ],
+    "correcta": 2,
+    "explicacion": "La escala logarítmica mide porcentajes: los dos tramos son una subida del 100 %."
+  },
+  {
+    "clave": "at-m1-14",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Qué problema tiene una línea de tendencia presentada sin decir en qué escala está?",
+    "opciones": [
+      "Que solo vale en gráfico semanal",
+      "Ninguno: es igual en las dos",
+      "Que no se puede dibujar en velas",
+      "Que no pasa por los mismos puntos en escala lineal que en logarítmica"
+    ],
+    "correcta": 3,
+    "explicacion": "La misma línea «respeta» puntos distintos según la escala, así que sin ese dato no dice nada."
+  },
+  {
+    "clave": "at-m1-15",
+    "leccion": "temporalidades",
+    "enunciado": "¿Qué es la temporalidad de un gráfico?",
+    "opciones": [
+      "El periodo que resume cada vela",
+      "El horario del mercado",
+      "El tiempo que lleva abierta una operación",
+      "La antigüedad del activo"
+    ],
+    "correcta": 0,
+    "explicacion": "1m, 1h, 1D, 1W: cada vela cubre ese intervalo."
+  },
+  {
+    "clave": "at-m1-16",
+    "leccion": "temporalidades",
+    "enunciado": "¿Por qué hay más señales falsas en las temporalidades cortas?",
+    "opciones": [
+      "Porque tienen menos velas",
+      "Porque una parte mayor del movimiento es ruido sin significado",
+      "Porque no tienen volumen",
+      "Porque el precio es distinto"
+    ],
+    "correcta": 1,
+    "explicacion": "En una vela de un minuto pesan los accidentes; en una semanal se han compensado."
+  },
+  {
+    "clave": "at-m1-17",
+    "leccion": "temporalidades",
+    "enunciado": "Cuando dos temporalidades se contradicen, ¿cuál manda?",
+    "opciones": [
+      "La más reciente",
+      "La menor",
+      "La mayor",
+      "Ninguna: se anulan"
+    ],
+    "correcta": 2,
+    "explicacion": "La mayor da el contexto; un rebote en la menor es un movimiento dentro de él."
+  },
+  {
+    "clave": "at-m1-18",
+    "leccion": "temporalidades",
+    "enunciado": "Buscas una ganancia del 0,5 % y cada operación cuesta un 0,2 %. ¿Qué parte de la ganancia se llevan los costes?",
+    "opciones": [
+      "El 10 %",
+      "El 2,5 %",
+      "El 0,2 %",
+      "El 40 %"
+    ],
+    "correcta": 3,
+    "explicacion": "0,2 ÷ 0,5 = 40 %. Con un objetivo del 8 %, el mismo coste sería el 2,5 %."
+  }
+]

@@ -1,0 +1,158 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Una media móvil es el promedio de los últimos precios de cierre, recalculado con cada vela nueva. Es el indicador más simple que existe y, de los que se han estudiado con bitcoin, el que mejor parado ha salido. Aquí aprendes a calcularla, ves la diferencia entre la simple y la exponencial, entiendes el retraso que lleva dentro, cómo se usa para leer la tendencia y en qué tipo de mercado te hará perder dinero una y otra vez.</p>
+</div>
+
+<h2>Cómo se calcula</h2>
+
+<p>Una <a href="/glosario/media-movil">media móvil</a> simple de cinco periodos suma los cinco últimos cierres y divide entre cinco. Cuando llega una vela nueva, entra su cierre y sale el más antiguo. De ahí lo de «móvil».</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Día</th><th>Cierre</th><th>Los cinco cierres que entran</th><th>Media de 5</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>5</td><td>106</td><td>100, 102, 104, 103, 106</td><td>103</td></tr>
+    <tr><td>6</td><td>110</td><td>102, 104, 103, 106, 110</td><td>105</td></tr>
+    <tr><td>7</td><td>108</td><td>104, 103, 106, 110, 108</td><td>106,2</td></tr>
+  </tbody>
+</table>
+
+<p>Unidos esos promedios, forman una línea más suave que el precio. Cuantos más periodos tenga la media, más suave es la línea y más despacio reacciona.</p>
+
+<p>Hay dos variantes que verás en todas partes:</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Simple (SMA)</p>
+    <p class="prose-vs-sub">Todos los cierres pesan igual</p>
+    <ul>
+      <li data-tono="favor">Fácil de calcular y de entender</li>
+      <li data-tono="favor">Es la que más gente mira en plazos largos</li>
+      <li data-tono="contra">Da un salto el día que sale un dato antiguo extremo</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Exponencial (EMA)</p>
+    <p class="prose-vs-sub">Los cierres recientes pesan más</p>
+    <ul>
+      <li data-tono="favor">Reacciona antes a los cambios</li>
+      <li data-tono="favor">No da saltos por datos que salen</li>
+      <li data-tono="contra">Al reaccionar antes, da más señales falsas</li>
+    </ul>
+  </div>
+</div>
+
+<p>La diferencia entre las dos es menor de lo que hacen creer las discusiones sobre cuál es mejor. Elige una y no la cambies.</p>
+
+<h2>El retraso viene de serie</h2>
+
+<p>Una media es un promedio del pasado. Por construcción, va siempre por detrás del precio. No es un defecto que se pueda corregir: es lo que la hace suave.</p>
+
+<p>Una regla útil: una media simple de <em>n</em> periodos refleja, aproximadamente, dónde estaba el precio hace la mitad de esos periodos.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Retraso aproximado de una media móvil simple",
+  "subtitulo": "En velas. Más periodos significan una línea más suave y una reacción más tardía.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Media de 10", "retraso": 4.5 },
+    { "etiqueta": "Media de 20", "retraso": 9.5 },
+    { "etiqueta": "Media de 50", "retraso": 24.5 },
+    { "etiqueta": "Media de 100", "retraso": 49.5 },
+    { "etiqueta": "Media de 200", "retraso": 99.5 }
+  ],
+  "series": [{ "clave": "retraso", "nombre": "Velas de retraso", "color": "#a3e635" }],
+  "nota": "El retraso de una media simple de n periodos es (n − 1) ÷ 2. En gráfico diario, la de 200 va unos cien días por detrás."
+}
+</script></div>
+
+<p>De ahí sale el intercambio que no tiene solución. Una media corta avisa pronto y se equivoca mucho. Una media larga se equivoca poco y avisa tarde. No existe el número de periodos que haga las dos cosas.</p>
+
+<h2>Para qué se usa</h2>
+
+<p>Tres usos, de más a menos sólido.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Leer la tendencia de un vistazo.</strong> Si el precio está por encima de una media larga y esta sube, la <a href="/glosario/tendencia">tendencia</a> de fondo es alcista. Si está por debajo y baja, bajista. Si el precio la cruza una y otra vez y la media va plana, hay rango.</li>
+  <li><strong>Como regla de entrada y salida.</strong> Estar dentro mientras el precio cierra por encima de la media; estar fuera cuando cierra por debajo. Es la regla más estudiada.</li>
+  <li><strong>Cruces de dos medias.</strong> Cuando una corta cruza por encima de una larga, se lee como alcista, y al revés. El cruce de la media de 50 con la de 200 tiene hasta nombres: «cruce dorado» y «cruce de la muerte».</li>
+</ol>
+
+<p>Sobre el tercero, un aviso: un cruce de dos medias es una señal todavía más retrasada que cada media por separado. Cuando la de 50 cruza a la de 200, el movimiento que lo provoca lleva meses en marcha. Los nombres llamativos no la hacen más fiable.</p>
+
+<h2>Lo que dicen los estudios</h2>
+
+<p>Las medias móviles son la herramienta técnica con más respaldo en criptomonedas, y conviene saber exactamente qué respalda cada estudio.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Estudio</th><th>Qué encontró</th><th>Cautela</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Detzel y otros, 2021</td><td>La ratio entre el precio de bitcoin y sus medias móviles anticipa la rentabilidad diaria, dentro y fuera de la muestra</td><td>Datos hasta 2018 en la versión de trabajo; un mercado muy alcista</td></tr>
+    <tr><td>Grobys, Ahmed y Sapkota, 2020</td><td>En once criptomonedas, la regla de la media de 20 días funcionó; sin contar bitcoin, un 8,76 % anual de exceso</td><td>Solo tres años, de 2016 a 2018</td></tr>
+    <tr><td>Hudson y Urquhart, 2021</td><td>Capacidad predictiva en varias criptomonedas entre casi 15.000 reglas</td><td>En bitcoin, no la hallaron en el periodo reservado para comprobar</td></tr>
+    <tr><td>Deprez y Frömmel, 2024</td><td>Con costes y corrección estadística, algunas reglas simples superan a comprar y mantener</td><td>Sobre todo en relación entre riesgo y rentabilidad, no tanto en rentabilidad bruta</td></tr>
+  </tbody>
+</table>
+
+<p>La última cautela explica de dónde viene la ventaja. Una regla de media móvil rara vez gana más que haber comprado y aguantado en un mercado que sube. Lo que hace es sacarte durante parte de las grandes caídas. Gana menos en los buenos tiempos y pierde mucho menos en los malos.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">8,76 %</span>
+  <span class="prose-dato-texto">Exceso de rentabilidad anual de la regla de la media de 20 días en diez criptomonedas, sin contar bitcoin, entre 2016 y 2018, según Grobys, Ahmed y Sapkota. Tres años no son una garantía.</span>
+</div>
+
+<h2>Dónde te hará perder dinero</h2>
+
+<p>Las medias móviles funcionan cuando hay tendencia y fallan cuando no la hay. En un rango, el precio cruza la media hacia arriba, la regla compra, el precio se gira, cruza hacia abajo, la regla vende con pérdida. Y otra vez. Cada cruce cuesta una pequeña pérdida más las comisiones.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">En tendencia</span>
+    <p>Una sola señal te mete en el movimiento y te mantiene dentro durante semanas o meses.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">En rango</span>
+    <p>Seis u ocho señales seguidas, casi todas con pérdida pequeña. Es el coste normal del método.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">En un giro brusco</span>
+    <p>Una caída del 20 % en dos días ocurre antes de que la media se entere. No protege de eso.</p>
+  </div>
+</div>
+
+<p>Quien usa una regla de este tipo tiene que saber de antemano que acertará menos de la mitad de las veces. El resultado, cuando lo hay, viene de unas pocas operaciones grandes que compensan muchas pequeñas pérdidas. Es incómodo, y es el motivo por el que casi todo el mundo abandona la regla justo después de una racha de señales falsas y antes de la tendencia que la habría pagado.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Probar medias de 17, 23 y 34 periodos hasta dar con la que «mejor habría funcionado» en el último año no es encontrar una buena regla: es ajustar un número a un pasado que no se repetirá. Usa las medias que mira todo el mundo —20, 50, 200— y dedica el esfuerzo a seguir la regla, no a afinarla. Volveremos a esto en el módulo 5.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Una media móvil no es un soporte. Verás gráficos en los que el precio «rebota» en la media de 50 o de 200, y a veces coincide. No hay órdenes acumuladas en un promedio que cambia cada día como las hay en un nivel fijo. Úsala para leer la dirección.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Los cinco últimos cierres son 50, 52, 51, 55 y 57. ¿Cuánto vale la media móvil simple de 5, y cuánto valdrá si el siguiente cierre es 60?",
+  "opciones": [
+    "53, y después 55",
+    "53, y después 54,2",
+    "57, y después 60",
+    "55, y después 57"
+  ],
+  "correcta": 0,
+  "explicacion": "(50+52+51+55+57) ÷ 5 = 53. Al entrar 60 sale 50: (52+51+55+57+60) ÷ 5 = 55."
+}
+</script></div>
+
+<h2>Ejercicio: una regla, un año</h2>
+
+<p>En el gráfico diario de bitcoin, añade una media simple de 50 periodos. Recorre el último año y apunta cada vez que el precio cierra por encima de la media estando por debajo, y cada vez que cierra por debajo estando por encima. Para cada par de entrada y salida, anota el resultado en porcentaje. Cuenta cuántas operaciones salen, cuántas ganan, la mayor ganancia y la mayor pérdida, y resta a cada una un 0,2 % de costes. Compara el total con haber comprado el primer día y no hacer nada.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una media móvil es el promedio de los últimos cierres, y va siempre por detrás del precio: la simple de 200 lleva unas cien velas de retraso. Sirve para leer la tendencia y, como regla, ha mostrado respaldo en estudios con criptomonedas, sobre todo porque evita parte de las grandes caídas. Falla en los rangos, donde encadena pequeñas pérdidas, y no gana por afinar el número de periodos.</div>
+</div>

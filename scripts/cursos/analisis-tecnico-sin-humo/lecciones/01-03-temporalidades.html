@@ -1,0 +1,140 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>La temporalidad es el periodo que resume cada vela: un minuto, una hora, un día, una semana. El mismo precio dibuja gráficos muy distintos según cuál elijas, y lo que en uno parece una tendencia clara en otro es un parpadeo. Aquí ves qué cambia de una a otra, por qué las más cortas tienen más ruido y más costes, cómo se combinan dos de ellas y cómo elegir la que encaja con el tiempo que de verdad puedes dedicar.</p>
+</div>
+
+<h2>Qué es una temporalidad</h2>
+
+<p>Cada vela cubre un intervalo fijo. Ese intervalo es la <a href="/glosario/temporalidad">temporalidad</a> del gráfico, y en las plataformas aparece abreviado: 1m, 5m, 15m, 1h, 4h, 1D, 1W. En un gráfico diario, cada vela es un día. En uno de cuatro horas, hacen falta seis velas para cubrir ese mismo día.</p>
+
+<p>El precio es el mismo; lo que cambia es el nivel de detalle. Piensa en un mapa. El de carreteras de un país y el plano de tu barrio describen el mismo territorio, y ninguno es «el verdadero». Sirven para viajes distintos.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Temporalidad</th><th>Velas en un día</th><th>Quién suele usarla</th><th>Duración típica de una operación</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 a 5 minutos</td><td>De 288 a 1.440</td><td>Quien opera dentro del día, muy activo</td><td>Minutos</td></tr>
+    <tr><td>15 minutos a 1 hora</td><td>De 24 a 96</td><td>Quien opera dentro del día</td><td>Horas</td></tr>
+    <tr><td>4 horas</td><td>6</td><td>Operaciones de varios días</td><td>Días</td></tr>
+    <tr><td>Diaria</td><td>1</td><td>Operaciones de semanas</td><td>Semanas</td></tr>
+    <tr><td>Semanal</td><td>Una cada siete días</td><td>Quien invierte a largo plazo</td><td>Meses o años</td></tr>
+  </tbody>
+</table>
+
+<h2>Cuanto más cerca, más ruido</h2>
+
+<p>En una vela de un minuto, buena parte del movimiento no significa nada: una orden grande, un hueco momentáneo en el libro, alguien que cierra una posición. En una vela semanal, esos accidentes se han compensado entre sí y lo que queda refleja mejor hacia dónde se ha movido de verdad el dinero.</p>
+
+<p>Hay una forma de verlo con números. Supón un activo que en un mes sube un 6 %. Ese mes tiene unas 30 velas diarias y unas 43.000 velas de un minuto. La subida es la misma, pero en el gráfico de un minuto está repartida entre decenas de miles de pequeños movimientos hacia arriba y hacia abajo que casi se anulan.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Cambios de dirección en un mes, según la temporalidad",
+  "subtitulo": "Ejemplo inventado de un activo que sube un 6 % en el mes: veces que una vela cierra en sentido contrario a la anterior.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Semanal", "giros": 1 },
+    { "etiqueta": "Diaria", "giros": 14 },
+    { "etiqueta": "4 horas", "giros": 85 },
+    { "etiqueta": "1 hora", "giros": 350 },
+    { "etiqueta": "5 minutos", "giros": 4300 }
+  ],
+  "series": [{ "clave": "giros", "nombre": "Cambios de dirección", "color": "#a3e635" }],
+  "nota": "Cifras ilustrativas. Cada cambio de dirección es una ocasión de creer que la tendencia ha terminado."
+}
+</script></div>
+
+<p>Cada uno de esos giros es una tentación de actuar. Quien mira el gráfico de cinco minutos recibe miles de «señales» al mes; quien mira el diario, unas pocas. Y en las temporalidades cortas, la proporción de señales que son puro azar es mucho mayor.</p>
+
+<h2>Más operaciones, más costes</h2>
+
+<p>El ruido no es el único problema. Cada operación paga comisión y cruza el <a href="/glosario/spread">spread</a>, la diferencia entre el mejor precio de compra y el de venta. Ese coste es más o menos fijo por operación, pero el movimiento que se busca se encoge al acortar la temporalidad.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Operación en gráfico diario</p>
+    <p class="prose-vs-sub">Busca un movimiento del 8 %</p>
+    <ul>
+      <li data-tono="favor">Un coste del 0,2 % se lleva la cuadragésima parte</li>
+      <li data-tono="favor">Unas pocas operaciones al mes</li>
+      <li data-tono="contra">Exige paciencia y aguantar noches abierto</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Operación en gráfico de 5 minutos</p>
+    <p class="prose-vs-sub">Busca un movimiento del 0,5 %</p>
+    <ul>
+      <li data-tono="contra">El mismo coste del 0,2 % se lleva casi la mitad</li>
+      <li data-tono="contra">Decenas de operaciones al día</li>
+      <li data-tono="contra">Exige estar delante de la pantalla sin descanso</li>
+    </ul>
+  </div>
+</div>
+
+<p>Los porcentajes son de ejemplo, pero la proporción es real. Cuanto más corta la temporalidad, mayor es la parte del resultado que se queda la plataforma, y más aciertos hacen falta solo para empatar.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">40 %</span>
+  <span class="prose-dato-texto">La parte de la ganancia buscada que se llevan los costes en el ejemplo de cinco minutos. En el gráfico diario, con el mismo coste, es el 2,5 %.</span>
+</div>
+
+<h2>Dos temporalidades, no una ni cinco</h2>
+
+<p>Mirar una sola temporalidad deja sin contexto. Mirar cinco paraliza, porque siempre hay una que contradice a las demás. Lo que suele funcionar es usar dos, con un papel claro para cada una.</p>
+
+<ol class="prose-pasos">
+  <li><strong>La mayor da el contexto.</strong> En ella se mira la <a href="/glosario/tendencia">tendencia</a> de fondo y los niveles importantes. No se opera desde aquí: se decide en qué dirección tiene sentido buscar.</li>
+  <li><strong>La menor da el momento.</strong> En ella se afina la entrada y se coloca la salida, siempre a favor de lo que dice la mayor.</li>
+  <li><strong>La distancia entre las dos, de cuatro a seis veces.</strong> Semanal con diaria, diaria con cuatro horas, cuatro horas con una hora.</li>
+</ol>
+
+<p>La regla que resuelve los conflictos es simple: <strong>manda la temporalidad mayor</strong>. Si el gráfico diario baja y el de una hora rebota, el rebote es un movimiento dentro de una caída, no un cambio de dirección.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">El error más caro con las temporalidades es cambiarlas para tener razón. Entras por una señal en el gráfico de una hora, la operación va mal, y pasas al diario para encontrar un motivo para aguantar. La temporalidad con la que se decide la entrada es la misma con la que se decide la salida.</div>
+</div>
+
+<h2>Cómo elegir la tuya</h2>
+
+<p>No se elige por gusto, sino por la vida que llevas. La pregunta es cuánto tiempo puedes mirar el mercado, de forma realista y todos los días.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Si puedes dedicar…</th><th>Tu temporalidad de trabajo</th><th>La de contexto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Un rato a la semana</td><td>Diaria</td><td>Semanal</td></tr>
+    <tr><td>Diez minutos al día</td><td>Diaria o 4 horas</td><td>Semanal o diaria</td></tr>
+    <tr><td>Varias horas seguidas, a diario</td><td>1 hora o 15 minutos</td><td>4 horas o 1 hora</td></tr>
+  </tbody>
+</table>
+
+<p>Casi todo el que empieza elige una temporalidad demasiado corta, porque en ella «pasan más cosas». Es justo el motivo para evitarla. Los estudios favorables al análisis técnico que viste en la lección anterior se hicieron, en su gran mayoría, con datos diarios. Lo que se sabe de las reglas de tendencia se sabe a esa escala.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Si tienes un trabajo y una vida, el gráfico diario mirado una vez al día, siempre a la misma hora y con la vela ya cerrada, es suficiente para todo lo que enseña este curso. No estar delante de la pantalla no es una desventaja: es lo que te libra del ruido.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "El gráfico semanal de un activo muestra una caída sostenida. El de una hora lleva un día subiendo. ¿Cuál es la lectura más prudente?",
+  "opciones": [
+    "Es un rebote dentro de una caída: manda la temporalidad mayor",
+    "La tendencia ha cambiado: manda la temporalidad más reciente",
+    "Las dos se anulan y no se puede decir nada",
+    "Hay que mirar el gráfico de un minuto para desempatar"
+  ],
+  "correcta": 0,
+  "explicacion": "La temporalidad mayor da el contexto. Un día de subida en el gráfico horario no cambia una tendencia semanal."
+}
+</script></div>
+
+<h2>Ejercicio: el mismo tramo, tres mapas</h2>
+
+<p>Elige un activo y mira los últimos tres meses en gráfico semanal, diario y de una hora. En cada uno, escribe en una frase qué dirección ves. Después cuenta, en el diario, cuántas veces una vela ha cerrado en sentido contrario a la anterior, y calcula qué porcentaje de las velas representa. Por último, decide por escrito tu pareja de temporalidades, según la tabla de esta lección y el tiempo que tienes de verdad. La usarás en todos los ejercicios que vienen.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la temporalidad es el periodo de cada vela. Las cortas tienen más ruido, más señales falsas y más costes por cada punto de ganancia buscada. Usa dos: una mayor para el contexto y otra menor, de cuatro a seis veces más corta, para el momento; cuando se contradicen, manda la mayor. Elígela por el tiempo que puedes dedicar, y no la cambies a mitad de una operación.</div>
+</div>

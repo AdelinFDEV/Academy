@@ -1,0 +1,157 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Las plataformas ofrecen cientos de indicadores, y la tentación es apilarlos hasta que «todos coincidan». El problema es que casi todos se calculan con el mismo dato: el precio de cierre. Cuando tres de ellos dicen lo mismo, no tienes tres confirmaciones, sino una. Aquí ves por qué ocurre, en qué familias se agrupan, por qué más parámetros hacen más fácil engañarse y cómo quedarse con un gráfico que quepa en la cabeza.</p>
+</div>
+
+<h2>Todos beben de la misma fuente</h2>
+
+<p>Repasa los indicadores del módulo. La media móvil promedia los cierres. El <a href="/glosario/rsi">RSI</a> compara subidas y bajadas de los cierres. El <a href="/glosario/macd">MACD</a> resta dos medias de los cierres. Las bandas de Bollinger añaden la dispersión de los cierres. Son cuatro cuentas distintas sobre la misma columna de números.</p>
+
+<p>Ninguno sabe nada que no sepa el precio. No ven las órdenes pendientes, ni las noticias, ni lo que piensan los demás. Son transformaciones matemáticas del pasado: lo suavizan, lo comparan consigo mismo o lo cambian de escala.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Familia</th><th>Qué pregunta contesta</th><th>Ejemplos</th><th>Con qué se calcula</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Tendencia</td><td>¿Hacia dónde va el precio?</td><td>Medias móviles, MACD</td><td>Cierres</td></tr>
+    <tr><td>Ritmo</td><td>¿Con cuánta fuerza se ha movido últimamente?</td><td>RSI, estocástico</td><td>Cierres, máximos y mínimos</td></tr>
+    <tr><td>Volatilidad</td><td>¿Cuánto se está moviendo?</td><td>Bandas de Bollinger, ATR</td><td>Cierres, máximos y mínimos</td></tr>
+    <tr><td>Volumen</td><td>¿Cuánta participación hay?</td><td>Barras de volumen y su media</td><td>Volumen: el único dato distinto</td></tr>
+  </tbody>
+</table>
+
+<p>Fíjate en la última columna. Solo la cuarta familia usa un dato que no sea el precio. Todo lo demás es el mismo ingrediente cocinado de formas distintas.</p>
+
+<h2>La confirmación que no confirma</h2>
+
+<p>Imagina que el precio sube con fuerza durante diez días. ¿Qué harán los indicadores?</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">La media corta</span>
+    <p>Cruza por encima de la larga, porque los cierres recientes son más altos.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El MACD</span>
+    <p>Pasa a positivo. Es el mismo cruce, restado.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El RSI</span>
+    <p>Sube por encima de 50 y luego de 70, porque ha habido más subidas que bajadas.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Las bandas</span>
+    <p>El precio toca la superior, porque está por encima de su media.</p>
+  </div>
+</div>
+
+<p>Cuatro indicadores «alineados». Parece una coincidencia significativa, y es inevitable: los cuatro reaccionan al mismo hecho, que el precio ha subido. Si lanzas una moneda y luego la miras con cuatro gafas distintas, no has lanzado cuatro monedas.</p>
+
+<p>Los estadísticos llaman a esto colinealidad: varias medidas tan relacionadas entre sí que apenas añaden información al juntarlas. El efecto sobre quien opera es peor que no añadir nada. Da una seguridad que no está justificada, y con ella, posiciones más grandes de lo que la información real permite.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">1</span>
+  <span class="prose-dato-texto">Las confirmaciones reales que hay cuando la media, el MACD y el RSI coinciden. Los tres responden al mismo dato: el precio ha subido en las últimas velas.</span>
+</div>
+
+<h2>Más parámetros, más formas de engañarse</h2>
+
+<p>Cada indicador trae números que se pueden ajustar: los periodos de la media, los del RSI, sus niveles, los tres del MACD, los dos de las bandas. Con cuatro indicadores hay fácilmente una docena de ajustes.</p>
+
+<p>Con una docena de ajustes se puede hacer que casi cualquier combinación «funcione» sobre el pasado. Basta con ir probando hasta que encaje. El resultado es una configuración hecha a medida de un tramo de historia que no va a repetirse.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Combinaciones posibles según el número de ajustes",
+  "subtitulo": "Suponiendo solo cinco valores razonables para cada ajuste.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "1 ajuste", "combinaciones": 5 },
+    { "etiqueta": "2 ajustes", "combinaciones": 25 },
+    { "etiqueta": "3 ajustes", "combinaciones": 125 },
+    { "etiqueta": "4 ajustes", "combinaciones": 625 },
+    { "etiqueta": "5 ajustes", "combinaciones": 3125 }
+  ],
+  "series": [{ "clave": "combinaciones", "nombre": "Combinaciones", "color": "#a3e635" }],
+  "nota": "Entre 3.125 combinaciones, decenas darán un resultado excelente en cualquier periodo pasado por puro azar."
+}
+</script></div>
+
+<p>Volveremos a esta cuenta en el módulo 5, porque es el corazón del autoengaño con datos pasados. Por ahora, la conclusión práctica: cada indicador que añades y cada número que afinas multiplica las formas de encontrar algo que parece funcionar y no funciona.</p>
+
+<h2>Lo que cuesta un gráfico lleno</h2>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Gráfico con ocho indicadores</p>
+    <p class="prose-vs-sub">Parece riguroso</p>
+    <ul>
+      <li data-tono="contra">Siempre hay alguno que justifica lo que ya querías hacer</li>
+      <li data-tono="contra">Siempre hay alguno que contradice a otro</li>
+      <li data-tono="contra">El precio, que es el dato real, queda tapado</li>
+      <li data-tono="contra">Imposible saber qué parte del método funciona</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Gráfico con dos o tres</p>
+    <p class="prose-vs-sub">Parece poca cosa</p>
+    <ul>
+      <li data-tono="favor">Cada herramienta contesta a una pregunta distinta</li>
+      <li data-tono="favor">Se puede escribir como regla y comprobarse</li>
+      <li data-tono="favor">El precio se ve</li>
+      <li data-tono="favor">Si algo falla, se sabe qué cambiar</li>
+    </ul>
+  </div>
+</div>
+
+<p>El primer punto de la izquierda merece atención. Con suficientes indicadores a la vista, cualquier decisión encuentra apoyo. Si quieres comprar, mirarás el que dice comprar. Es el <a href="/glosario/sesgo-de-confirmacion">sesgo de confirmación</a> con una herramienta hecha a su medida.</p>
+
+<h2>Cómo elegir</h2>
+
+<p>El criterio no es cuál es el mejor indicador, sino que no haya dos haciendo el mismo trabajo.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Como mucho, uno por familia.</strong> Una herramienta de tendencia, quizá una de ritmo, y el volumen. Dos de la misma familia son una repetida.</li>
+  <li><strong>Empieza por el precio desnudo.</strong> Tendencia por máximos y mínimos, y los niveles. Añade un indicador solo si contesta a una pregunta que el precio no te ha contestado.</li>
+  <li><strong>Usa los valores por defecto.</strong> Son los que mira todo el mundo, y no están ajustados a tu último mes.</li>
+  <li><strong>Escribe para qué sirve cada uno.</strong> Una línea por indicador: qué pregunta contesta y qué harás según lo que diga. Si no sabes escribirla, sobra.</li>
+  <li><strong>Quita uno y mira si cambia algo.</strong> Si tus decisiones serían las mismas sin él, no estaba aportando.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Una combinación suficiente para todo lo que enseña este curso: el precio con sus niveles, una media móvil larga para la tendencia y el volumen con su media. Todo lo demás es opcional, y debería ganarse el sitio.</div>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Los indicadores «exclusivos» o de pago, con nombres propios y flechas de compra y venta, son casi siempre combinaciones de los de siempre con otros colores. Si no te enseñan la fórmula, no puedes saber qué mide. Y si no puedes saber qué mide, no puedes comprobar si sirve.</div>
+</div>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿A qué familia pertenece?",
+  "instrucciones": "Agrupa cada herramienta según la pregunta que contesta.",
+  "grupos": [
+    { "id": "tendencia", "nombre": "Tendencia" },
+    { "id": "ritmo", "nombre": "Ritmo" },
+    { "id": "otra", "nombre": "Volatilidad o volumen" }
+  ],
+  "elementos": [
+    { "texto": "Media móvil de 200 periodos", "grupo": "tendencia", "explicacion": "Indica la dirección de fondo del precio." },
+    { "texto": "RSI de 14 periodos", "grupo": "ritmo", "explicacion": "Mide la fuerza de las subidas recientes frente a las bajadas." },
+    { "texto": "MACD", "grupo": "tendencia", "explicacion": "Es la distancia entre dos medias: una herramienta de tendencia." },
+    { "texto": "Bandas de Bollinger", "grupo": "otra", "explicacion": "Dibujan la volatilidad alrededor de una media." },
+    { "texto": "Barras de volumen con su media", "grupo": "otra", "explicacion": "El único dato que no sale del precio." },
+    { "texto": "Cruce de las medias de 50 y 200", "grupo": "tendencia", "explicacion": "Otra forma de leer la dirección, con más retraso." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: limpia tu gráfico</h2>
+
+<p>Abre el gráfico que uses normalmente y haz una lista de todo lo que tiene puesto: indicadores, líneas, zonas. Junto a cada elemento escribe a qué familia pertenece y qué decisión has tomado alguna vez gracias a él. Elimina todos los que compartan familia con otro, salvo uno, y todos aquellos para los que no hayas sabido escribir una decisión. Guarda el resultado como plantilla. Si no tenías ningún gráfico propio, monta el mínimo: precio, una media larga y volumen.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> casi todos los indicadores se calculan con el precio de cierre, así que cuando varios coinciden están contando el mismo hecho varias veces. Solo el volumen aporta un dato distinto. Más indicadores y más ajustes multiplican las formas de encontrar algo que parece funcionar por azar. Uno por familia como mucho, con valores por defecto y una línea escrita que diga para qué sirve.</div>
+</div>

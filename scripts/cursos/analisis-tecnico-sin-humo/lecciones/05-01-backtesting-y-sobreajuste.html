@@ -1,0 +1,155 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Hacer backtesting es aplicar una regla a los datos del pasado para ver qué resultado habría dado. Es la única forma de saber si una idea tiene algo detrás antes de arriesgar dinero, y es también la forma más cómoda de engañarse: con un poco de insistencia, casi cualquier regla sale ganadora. Aquí ves las cuatro trampas que estropean una prueba, por qué probar muchas variantes invalida el resultado y cómo hacer una comprobación sencilla que merezca cierta confianza.</p>
+</div>
+
+<h2>Qué es y por qué hace falta</h2>
+
+<p>Hasta aquí has visto herramientas y lo que otros han encontrado al estudiarlas. Pero los estudios hablan de reglas concretas, en mercados y periodos concretos. Si tú quieres usar una, necesitas saber cómo se habría comportado esa, tal como tú la aplicarías.</p>
+
+<p>Eso es el <a href="/glosario/backtesting">backtesting</a>: tomar una regla escrita sin ambigüedad, recorrer el historial del precio y anotar todas las operaciones que habría generado, una por una. El resultado no dice lo que pasará. Dice algo más modesto y muy valioso: si la regla ni siquiera funcionó en el pasado, no hay ningún motivo para esperar que funcione en el futuro.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Una prueba bien hecha sirve para</th><th>Ninguna prueba sirve para</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Descartar ideas que no han funcionado nunca</td><td>Garantizar que una regla seguirá funcionando</td></tr>
+    <tr><td>Saber cuántas operaciones pierde seguidas una regla</td><td>Predecir el resultado del próximo mes</td></tr>
+    <tr><td>Conocer su peor racha, para no abandonarla en ella</td><td>Sustituir a operar con dinero real y pequeño</td></tr>
+  </tbody>
+</table>
+
+<h2>Las cuatro trampas</h2>
+
+<p>La mayoría de las pruebas caseras, y muchas de las que se publican, caen en al menos una.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">1 · Sobreajuste</span>
+    <p>Retocar la regla hasta que encaja con el pasado. Es la más grave y tiene su propio apartado.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">2 · Mirar el futuro</span>
+    <p>Usar en una decisión un dato que en ese momento no existía: el cierre de una vela que aún no había cerrado, o un nivel que solo se ve con el gráfico completo.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">3 · Olvidar los costes</span>
+    <p>No restar comisiones, spread ni deslizamiento. En reglas con muchas operaciones, los costes deciden el signo del resultado.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">4 · Probar solo con supervivientes</span>
+    <p>Elegir las monedas que hoy son grandes. Las que desaparecieron no están en la lista, y la regla también habría operado en ellas.</p>
+  </div>
+</div>
+
+<p>La segunda es sutil cuando se hace a mano. Al recorrer un gráfico ya dibujado, el ojo ve lo que viene, y es casi imposible no dejarse influir. Por eso conviene usar la función de reproducción de la plataforma, que oculta las velas futuras, o tapar físicamente la parte derecha.</p>
+
+<p>La cuarta afecta especialmente a las criptomonedas. Probar una regla sobre las diez mayores monedas de hoy supone haber sabido, hace cinco años, cuáles iban a sobrevivir. Miles no lo hicieron.</p>
+
+<h2>El sobreajuste, con números</h2>
+
+<p>Supón que pruebas una regla que no tiene ninguna capacidad real, y que aceptas como «buena» una que supere un listón que el azar solo alcanza una de cada veinte veces. La probabilidad de que tu regla inútil parezca buena es del 5 %. Razonable.</p>
+
+<p>Ahora supón que no pruebas una, sino veinte variantes: distintas medias, distintos niveles, distintas temporalidades. Todas inútiles. ¿Qué probabilidad hay de que al menos una supere el listón por pura suerte?</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Probabilidad de que al menos una regla inútil parezca buena",
+  "subtitulo": "Según cuántas variantes se prueben, con un listón que el azar supera 1 de cada 20 veces.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "1 regla", "prob": 5 },
+    { "etiqueta": "5 reglas", "prob": 23 },
+    { "etiqueta": "10 reglas", "prob": 40 },
+    { "etiqueta": "20 reglas", "prob": 64 },
+    { "etiqueta": "50 reglas", "prob": 92 },
+    { "etiqueta": "100 reglas", "prob": 99 }
+  ],
+  "series": [{ "clave": "prob", "nombre": "Probabilidad", "color": "#a3e635" }],
+  "nota": "La cuenta es 1 − 0,95 elevado al número de reglas. Con veinte variantes ya es más probable encontrar una «ganadora» falsa que no encontrarla."
+}
+</script></div>
+
+<p>Con veinte variantes, un 64 %. Con cien, prácticamente seguro. Y probar cien variantes no cuesta nada: cambiar un número en una plataforma y volver a pulsar un botón.</p>
+
+<p>Esto es lo que documentaron Bailey, Borwein, López de Prado y Zhu en un artículo de 2014 con un título que no deja dudas: «Pseudomatemáticas y charlatanismo financiero». Mostraron que basta probar un número modesto de configuraciones para obtener resultados excelentes sobre el pasado que no se repiten después. Y señalaron el problema de fondo: casi nadie dice cuántas configuraciones probó antes de enseñar la buena.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">64 %</span>
+  <span class="prose-dato-texto">Probabilidad de que, entre veinte reglas sin ningún valor, al menos una parezca buena por azar. El número de intentos importa tanto como el resultado.</span>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Cuando alguien te enseñe una estrategia con una curva de resultados preciosa, la pregunta no es cuánto ganó. Es cuántas probó antes de quedarse con esa. Si la respuesta es «muchas», o no hay respuesta, la curva no vale nada.</div>
+</div>
+
+<h2>Dentro y fuera de la muestra</h2>
+
+<p>Existe una defensa sencilla y potente: no usar todos los datos para diseñar la regla. Se divide el historial en dos partes.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Dentro de la muestra</p>
+    <p class="prose-vs-sub">Los datos con los que diseñas</p>
+    <ul>
+      <li data-tono="favor">Aquí pruebas, ajustas y eliges</li>
+      <li data-tono="contra">El resultado está contaminado por tus ajustes</li>
+      <li data-tono="contra">No demuestra nada por sí solo</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Fuera de la muestra</p>
+    <p class="prose-vs-sub">Los datos que no has tocado</p>
+    <ul>
+      <li data-tono="favor">Aplicas la regla ya cerrada, una sola vez</li>
+      <li data-tono="favor">El resultado es el que cuenta</li>
+      <li data-tono="contra">Si lo miras y vuelves a ajustar, deja de ser «fuera»</li>
+    </ul>
+  </div>
+</div>
+
+<p>Es exactamente lo que hicieron Sullivan, Timmermann y White con cien años del Dow Jones: la mejor regla del periodo histórico era excelente, y en los diez años reservados dejó de serlo. Y es lo que separa a los estudios con criptomonedas que viste en el módulo 3: los más fiables son los que comprueban fuera de la muestra.</p>
+
+<p>La tentación, cuando la regla falla en la segunda parte, es volver atrás y retocarla. En ese instante la segunda parte pasa a ser también datos de diseño, y te has quedado sin prueba. La prueba fuera de la muestra solo se puede hacer una vez.</p>
+
+<h2>Una prueba sencilla que merece confianza</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Escribe la regla completa antes de mirar nada.</strong> Condición, entrada, salida y tamaño. Si mientras pruebas necesitas decidir algo «sobre la marcha», la regla no estaba completa.</li>
+  <li><strong>Reserva la última tercera parte de los datos.</strong> No la mires hasta el final.</li>
+  <li><strong>Recorre el resto vela a vela,</strong> con el futuro oculto, y apunta cada operación: fecha, entrada, salida y resultado en porcentaje.</li>
+  <li><strong>Resta costes realistas</strong> a cada operación: dos comisiones y algo de <a href="/glosario/slippage">slippage</a>.</li>
+  <li><strong>Anota cuántas variantes has probado.</strong> Si son más de dos o tres, desconfía de la mejor.</li>
+  <li><strong>Aplica la regla final, sin tocarla, a la parte reservada.</strong> Una vez.</li>
+  <li><strong>Compara con no hacer nada.</strong> El resultado de haber comprado el primer día y mantenido es la vara de medir.</li>
+</ol>
+
+<p>El séptimo paso baja muchos humos. En un activo que ha subido mucho, casi cualquier regla que compre gana dinero. La pregunta no es si gana, sino si gana más, o con menos sobresaltos, que la alternativa más simple.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Una prueba hecha a mano, con cincuenta operaciones en una hoja de cálculo, enseña más que una automática con miles. Obliga a mirar cada operación, a ver las rachas de pérdidas una a una y a notar lo incómodo que habría sido seguir la regla. Esa incomodidad es parte del resultado.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Pruebas cuarenta combinaciones de medias móviles sobre los dos últimos años y te quedas con la que más ganó. ¿Qué puedes concluir de su resultado?",
+  "opciones": [
+    "Casi nada: entre cuarenta variantes, lo normal es que alguna destaque por azar",
+    "Que es la mejor combinación para los próximos dos años",
+    "Que las medias móviles funcionan",
+    "Que debes usarla con una posición grande"
+  ],
+  "correcta": 0,
+  "explicacion": "Con cuarenta intentos, la probabilidad de un falso ganador es muy alta. Haría falta comprobarla en datos que no se usaron para elegirla."
+}
+</script></div>
+
+<h2>Ejercicio: tu primera prueba</h2>
+
+<p>Toma la regla más simple del curso: comprar cuando el precio cierra por encima de la media simple de 50 días y vender cuando cierra por debajo. Elige un activo y cuatro años de gráfico diario. Reserva el último año. En los tres primeros, recorre el gráfico con el futuro oculto y apunta todas las operaciones con su resultado, restando un 0,2 % de costes a cada una. Calcula el total y la peor racha de pérdidas seguidas. Después aplica la regla al año reservado. Compara los dos resultados entre sí y con comprar y mantener.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una prueba con datos pasados sirve para descartar lo que no ha funcionado, no para garantizar lo que funcionará. Sus cuatro trampas son el sobreajuste, mirar el futuro, olvidar los costes y probar solo con lo que ha sobrevivido. Entre veinte reglas inútiles hay un 64 % de probabilidad de que una parezca buena. Escribe la regla antes, reserva datos sin tocar, prueba pocas variantes y compara con no hacer nada.</div>
+</div>

@@ -1,0 +1,171 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>«Compro cuando el gráfico se pone alcista» no es una regla: es una intención. Una regla dice exactamente qué tiene que pasar, dónde se entra, dónde se sale y con cuánto, de modo que otra persona llegaría a la misma operación. Aquí aprendes a escribirla en cinco piezas, a calcular si tiene sentido con la esperanza matemática y a saber cuántas operaciones hacen falta para creerse el resultado, que son bastantes más de las que parece.</p>
+</div>
+
+<h2>La diferencia entre una idea y una regla</h2>
+
+<p>Casi todo lo que la gente llama «mi estrategia» es una colección de ideas: «opero a favor de la tendencia», «compro en soportes», «espero confirmación». Suenan sensatas, y no se pueden comprobar, porque cada vez se aplican de una manera.</p>
+
+<p>La prueba para saber si tienes una regla es sencilla: dásela escrita a otra persona junto con un gráfico. Si marca las mismas operaciones que tú, es una regla. Si tiene que preguntarte «¿y esto cuenta?», todavía es una idea.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Una idea</p>
+    <p class="prose-vs-sub">«Compro cuando rompe con fuerza»</p>
+    <ul>
+      <li data-tono="contra">¿Qué es romper? ¿Y qué es «con fuerza»?</li>
+      <li data-tono="contra">Cada vez se decide sobre la marcha</li>
+      <li data-tono="contra">No se puede probar ni mejorar</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Una regla</p>
+    <p class="prose-vs-sub">«Compro si la vela diaria cierra por encima del máximo de las últimas 20 velas, con un volumen superior al doble de su media de 20»</p>
+    <ul>
+      <li data-tono="favor">Cualquiera la aplica igual</li>
+      <li data-tono="favor">Se puede probar con datos pasados</li>
+      <li data-tono="favor">Si falla, se sabe qué parte cambiar</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Las cinco piezas</h2>
+
+<p>Una regla completa contesta a cinco preguntas. Si falta una, la decidirás en el peor momento posible: con la operación abierta.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Pieza</th><th>Pregunta</th><th>Ejemplo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 · Contexto</td><td>¿En qué situación opero?</td><td>Solo si el precio está por encima de su media simple de 200 días</td></tr>
+    <tr><td>2 · Disparador</td><td>¿Qué tiene que ocurrir exactamente?</td><td>La vela diaria cierra por encima del máximo de las 20 velas anteriores</td></tr>
+    <tr><td>3 · Entrada</td><td>¿Dónde y cuándo entro?</td><td>En la apertura de la vela siguiente</td></tr>
+    <tr><td>4 · Salida</td><td>¿Dónde salgo, gane o pierda?</td><td>Stop bajo el mínimo de las 10 velas anteriores; salgo también si cierra por debajo de la media de 50</td></tr>
+    <tr><td>5 · Tamaño</td><td>¿Cuánto arriesgo?</td><td>Un 1 % de la cuenta entre la entrada y el stop</td></tr>
+  </tbody>
+</table>
+
+<p>Fíjate en la cuarta. Tiene dos salidas: una para cuando sale mal, el <a href="/glosario/stop-loss">stop loss</a>, y otra para cuando sale bien. La segunda es la que casi todo el mundo deja sin escribir, y la que más afecta al resultado. «Ya veré cuándo vendo» significa vender pronto por miedo o tarde por codicia.</p>
+
+<p>La quinta pieza es la que convierte la regla en algo con lo que se puede sobrevivir. El <a href="/glosario/tamano-de-posicion">tamaño de posición</a> se calcula dividiendo el dinero que aceptas perder entre la distancia hasta el stop. Así, todas las operaciones perdedoras cuestan lo mismo, y a esa cantidad se la llama 1R.</p>
+
+<h2>¿Tiene sentido? La esperanza matemática</h2>
+
+<p>Antes de probar nada, hay una cuenta que dice si una regla puede ganar dinero. Solo necesita tres números: con qué frecuencia acierta, cuánto gana cuando acierta y cuánto pierde cuando falla. Con ellos se calcula la <a href="/glosario/esperanza-matematica">esperanza matemática</a>: lo que se gana o se pierde de media por operación.</p>
+
+<blockquote><strong>Esperanza = (% de aciertos × ganancia media) − (% de fallos × pérdida media)</strong></blockquote>
+
+<p>Medido en R, con todas las pérdidas iguales a 1R:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Aciertos</th><th>Ganancia media</th><th>Cuenta</th><th>Esperanza por operación</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>70 %</td><td>0,3R</td><td>0,7 × 0,3 − 0,3 × 1</td><td>−0,09R</td></tr>
+    <tr><td>50 %</td><td>1R</td><td>0,5 × 1 − 0,5 × 1</td><td>0R</td></tr>
+    <tr><td>40 %</td><td>2R</td><td>0,4 × 2 − 0,6 × 1</td><td>+0,2R</td></tr>
+    <tr><td>30 %</td><td>3R</td><td>0,3 × 3 − 0,7 × 1</td><td>+0,2R</td></tr>
+  </tbody>
+</table>
+
+<p>La primera fila acierta siete de cada diez veces y pierde dinero. La última acierta tres de cada diez y lo gana. El porcentaje de aciertos, el <a href="/glosario/win-rate">win rate</a>, no dice nada por sí solo.</p>
+
+<p>Y falta restar los costes. Si cada operación cuesta 0,1R entre comisiones y deslizamiento, las dos últimas filas se quedan en +0,1R: la mitad. En reglas que buscan movimientos pequeños, los costes se llevan la esperanza entera.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">+0,2R</span>
+  <span class="prose-dato-texto">Lo que gana de media por operación una regla que acierta el 40 % de las veces con ganancias de 2R. Con 0,1R de costes, se queda en la mitad.</span>
+</div>
+
+<h2>¿Cuántas operaciones hacen falta para creérselo?</h2>
+
+<p>Has probado tu regla y ha acertado 12 de 20 operaciones, un 60 %. Parece prometedor. ¿Lo es?</p>
+
+<p>Hazte la pregunta de otro modo: si la regla no valiera nada y acertara por azar la mitad de las veces, como una moneda, ¿con qué frecuencia daría un resultado así de bueno o mejor?</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Probabilidad de que una moneda dé un 60 % de aciertos o más",
+  "subtitulo": "Según el número de operaciones de la muestra.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "12 de 20", "prob": 25 },
+    { "etiqueta": "18 de 30", "prob": 18 },
+    { "etiqueta": "60 de 100", "prob": 3 }
+  ],
+  "series": [{ "clave": "prob", "nombre": "Probabilidad por azar", "color": "#a3e635" }],
+  "nota": "Con 20 operaciones, una moneda logra un 60 % o más una de cada cuatro veces. Con 100, menos de 3 de cada 100."
+}
+</script></div>
+
+<p>Con veinte operaciones, una moneda consigue ese 60 % una de cada cuatro veces. No has demostrado nada. Con cien, la probabilidad baja a menos del 3 %, y ya empieza a ser difícil atribuirlo a la suerte.</p>
+
+<ul>
+  <li><strong>Menos de 30 operaciones:</strong> una anécdota. No sirve ni para animarse ni para descartar.</li>
+  <li><strong>Entre 30 y 100:</strong> un indicio. Suficiente para seguir probando, no para aumentar el tamaño.</li>
+  <li><strong>Más de 100, en mercados distintos:</strong> empieza a ser un dato.</li>
+</ul>
+
+<p>«En mercados distintos» importa tanto como el número. Cien operaciones de compra durante una subida de dos años no dicen nada de cómo se comporta la regla cuando el mercado cae o se mueve de lado. Necesitas que la muestra incluya las tres situaciones.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Esto tiene una consecuencia incómoda para las reglas en gráfico diario: cien operaciones pueden suponer varios años. No hay atajo. Lo que sí puedes hacer es probar la misma regla en varios activos a la vez, sabiendo que en las criptomonedas se mueven casi todos juntos y la muestra es menos independiente de lo que parece.</div>
+</div>
+
+<h2>Del papel al dinero, por pasos</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Escribe la regla con sus cinco piezas.</strong> Hasta que otra persona pueda aplicarla.</li>
+  <li><strong>Pruébala con datos pasados,</strong> como viste en la lección anterior, reservando una parte.</li>
+  <li><strong>Calcula su esperanza y su peor racha.</strong> Si la esperanza tras costes no es claramente positiva, se acaba aquí.</li>
+  <li><strong>Síguela en directo sin dinero</strong> durante unas semanas, anotando cada señal en el momento. Sirve para comprobar que eres capaz de aplicarla tal como está escrita.</li>
+  <li><strong>Empieza con el tamaño mínimo.</strong> Dinero real, pero poco. El objetivo es comprobar la ejecución, no ganar.</li>
+  <li><strong>Aumenta solo con muestra.</strong> Cuando lleves suficientes operaciones reales y el resultado se parezca al de la prueba.</li>
+</ol>
+
+<p>El cuarto paso descubre algo que ninguna prueba con datos pasados enseña: la distancia entre la regla y lo que haces tú. Mucha gente tiene una regla razonable y un resultado malo, porque se salta señales después de dos pérdidas, entra tarde o mueve el stop.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Anota cada operación con su resultado en R y una marca que diga si seguiste la regla o no. Al cabo de unos meses podrás separar dos resultados: el de la regla y el tuyo. Suelen ser distintos, y la diferencia es lo primero que conviene arreglar.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una regla acierta el 35 % de las veces, gana 3R de media cuando acierta y pierde 1R cuando falla. ¿Cuál es su esperanza por operación, antes de costes?",
+  "opciones": [
+    "+0,4R",
+    "−0,3R",
+    "+1,05R",
+    "0R"
+  ],
+  "correcta": 0,
+  "explicacion": "0,35 × 3 = 1,05R ganados; 0,65 × 1 = 0,65R perdidos. 1,05 − 0,65 = +0,4R por operación."
+}
+</script></div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "De la idea al dinero",
+  "instrucciones": "Ordena los pasos antes de arriesgar una cantidad importante.",
+  "pasos": [
+    "Escribir la regla con contexto, disparador, entrada, salida y tamaño",
+    "Probarla con datos pasados, reservando una parte sin tocar",
+    "Calcular su esperanza tras costes y su peor racha",
+    "Seguirla en directo sin dinero, anotando cada señal",
+    "Operarla con el tamaño mínimo",
+    "Aumentar el tamaño solo cuando haya muestra suficiente"
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: escribe tu regla</h2>
+
+<p>Elige una idea del curso que te parezca razonable: seguir una media, operar rupturas de un máximo de varias velas o comprar retrocesos dentro de una tendencia. Escríbela con las cinco piezas de la tabla, usando solo condiciones que se puedan comprobar mirando el gráfico. Dásela a otra persona, o déjala reposar dos días y vuelve a leerla, y apunta todas las dudas que surjan. Corrige hasta que no quede ninguna. Después calcula qué porcentaje de aciertos necesitaría para tener esperanza positiva con la relación entre ganancia y pérdida que has definido.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una regla tiene cinco piezas —contexto, disparador, entrada, salida y tamaño— y está bien escrita cuando otra persona marcaría las mismas operaciones. Su esperanza es lo que gana de media por operación: se puede ganar acertando el 30 % y perder acertando el 70 %. Con veinte operaciones, un 60 % de aciertos sale por azar una de cada cuatro veces: hacen falta cerca de cien, en mercados distintos, para creérselo.</div>
+</div>

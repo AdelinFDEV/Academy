@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "at-m4-01",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Por qué Lo, Mamaysky y Wang definieron las figuras con reglas exactas y un programa?",
+    "opciones": [
+      "Porque querían venderlo como indicador",
+      "Porque los gráficos eran secretos",
+      "Porque ver figuras en un gráfico está a menudo «en los ojos de quien mira»",
+      "Porque las figuras no existen"
+    ],
+    "correcta": 2,
+    "explicacion": "A ojo, cada persona marca figuras distintas en el mismo gráfico."
+  },
+  {
+    "clave": "at-m4-02",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Qué concluyeron Lo, Mamaysky y Wang sobre las figuras que estudiaron?",
+    "opciones": [
+      "Que no existía ninguna diferencia estadística",
+      "Que garantizaban ganancias tras costes",
+      "Que solo funcionaban con velas japonesas",
+      "Que varias aportaban información incremental y podían tener cierto valor práctico"
+    ],
+    "correcta": 3,
+    "explicacion": "Hallaron una diferencia estadística, sin afirmar que operarlas fuera rentable."
+  },
+  {
+    "clave": "at-m4-03",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Qué encontraron Marshall, Young y Rose al comprobar las figuras de velas?",
+    "opciones": [
+      "Que no creaban valor: seguirlas no superaba al mercado",
+      "Que acertaban el 83 % de las veces",
+      "Que eran la mejor herramienta técnica",
+      "Que funcionaban solo en gráficos diarios"
+    ],
+    "correcta": 0,
+    "explicacion": "Una vela describe lo ocurrido en un periodo; no ha mostrado capacidad de predecir."
+  },
+  {
+    "clave": "at-m4-04",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Cuál de estas razones explica que las figuras parezcan funcionar?",
+    "opciones": [
+      "Están programadas en las plataformas",
+      "Se enseñan las que salieron bien y se reconocen después",
+      "Los mercados las obedecen por ley",
+      "Las usan los bancos centrales"
+    ],
+    "correcta": 1,
+    "explicacion": "Selección de ejemplos y reconocimiento a posteriori: nada que ver con el mercado."
+  },
+  {
+    "clave": "at-m4-05",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Qué es lo aprovechable de un doble techo?",
+    "opciones": [
+      "El objetivo de precio proyectando su altura",
+      "Su tasa de acierto",
+      "El nivel que deja marcado, con el que se puede escribir una regla",
+      "El nombre de la figura"
+    ],
+    "correcta": 2,
+    "explicacion": "Una resistencia y un mínimo intermedio son niveles reales. El dibujo no añade nada."
+  },
+  {
+    "clave": "at-m4-06",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Qué ocurre si dibujas una serie de precios lanzando una moneda?",
+    "opciones": [
+      "Sale una línea recta",
+      "No se parece en nada a un gráfico",
+      "Solo aparecen triángulos",
+      "Aparecen tendencias, soportes y figuras tan convincentes como las de un gráfico real"
+    ],
+    "correcta": 3,
+    "explicacion": "El azar produce formas. Verlas no demuestra que signifiquen algo."
+  },
+  {
+    "clave": "at-m4-07",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "¿Cuál de los niveles habituales de «Fibonacci» no procede de la sucesión?",
+    "opciones": [
+      "El 50 %",
+      "El 38,2 %",
+      "El 61,8 %",
+      "El 23,6 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Es simplemente la mitad del tramo, y es uno de los más usados."
+  },
+  {
+    "clave": "at-m4-08",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "Con cinco líneas y una tolerancia de ±4 puntos, ¿qué parte del tramo queda «en un nivel»?",
+    "opciones": [
+      "El 8 %",
+      "El 40 %",
+      "El 5 %",
+      "El 100 %"
+    ],
+    "correcta": 1,
+    "explicacion": "Cinco franjas de ocho puntos. Cuatro de cada diez giros coincidirían por azar."
+  },
+  {
+    "clave": "at-m4-09",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "¿Qué encontraron Batchelor y Ramyar en el Dow Jones de 1914 a 2002?",
+    "opciones": [
+      "Que los giros se concentraban en el 50 %",
+      "Que el precio respetaba siempre el 61,8 %",
+      "Que las proporciones de Fibonacci no aparecían más de lo esperable por azar",
+      "Que Fibonacci funcionaba solo en caídas"
+    ],
+    "correcta": 2,
+    "explicacion": "Si mucha gente operara esos niveles, los giros se agruparían en ellos. Los datos no lo muestran."
+  },
+  {
+    "clave": "at-m4-10",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "¿Cuál es el principal problema de la teoría de las ondas de Elliott?",
+    "opciones": [
+      "Que solo vale para acciones",
+      "Que exige gráficos de un minuto",
+      "Que usa demasiados decimales",
+      "Que se «recuenta» cuando falla, así que ningún resultado la contradice"
+    ],
+    "correcta": 3,
+    "explicacion": "Una teoría que encaja con cualquier resultado no anticipa ninguno."
+  },
+  {
+    "clave": "at-m4-11",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "¿Qué pregunta sirve para poner a prueba cualquier técnica?",
+    "opciones": [
+      "¿Qué resultado demostraría que está equivocada?",
+      "¿Cuántos años tiene?",
+      "¿Cuánta gente la usa?",
+      "¿Qué nombre tiene?"
+    ],
+    "correcta": 0,
+    "explicacion": "Si no puede decirse de antemano, la técnica no predice."
+  },
+  {
+    "clave": "at-m4-12",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "¿Qué relación suele haber entre la complejidad de una técnica y lo fácil que es comprobarla?",
+    "opciones": [
+      "A más complejidad, más fiable",
+      "A más complejidad, más formas de adaptarse al pasado y más difícil comprobarla",
+      "Las técnicas complejas no necesitan comprobación",
+      "No hay relación"
+    ],
+    "correcta": 1,
+    "explicacion": "La complejidad vende, y esconde lo que no se ha comprobado."
+  },
+  {
+    "clave": "at-m4-13",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "¿Qué es la apofenia?",
+    "opciones": [
+      "La confianza en los indicadores",
+      "El miedo a perder dinero",
+      "La tendencia a ver patrones con significado en datos aleatorios",
+      "La costumbre de operar demasiado"
+    ],
+    "correcta": 2,
+    "explicacion": "Es lo que te hizo ver figuras en la serie de la moneda."
+  },
+  {
+    "clave": "at-m4-14",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "¿Qué es el sesgo retrospectivo?",
+    "opciones": [
+      "Operar a favor de la tendencia",
+      "Fiarse del último precio",
+      "Recordar solo las pérdidas",
+      "Creer, una vez conocido el final, que era previsible"
+    ],
+    "correcta": 3,
+    "explicacion": "Con el gráfico completo, todo «se veía venir»."
+  },
+  {
+    "clave": "at-m4-15",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "1.024 cuentas predicen al azar cada semana si el precio subirá o bajará. ¿Cuántas llevan pleno de aciertos tras diez semanas?",
+    "opciones": [
+      "Una, de media",
+      "Ninguna",
+      "La mitad",
+      "Unas cien"
+    ],
+    "correcta": 0,
+    "explicacion": "1.024 ÷ 2 diez veces da 1. Tiene un historial perfecto y ningún método."
+  },
+  {
+    "clave": "at-m4-16",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "¿Cuándo vale algo un historial de predicciones?",
+    "opciones": [
+      "Cuando incluye las diez mejores operaciones",
+      "Cuando está completo y se publicó antes de conocer el resultado",
+      "Cuando lo recomienda mucha gente",
+      "Cuando tiene muchas capturas de aciertos"
+    ],
+    "correcta": 1,
+    "explicacion": "Una selección de aciertos no es un historial: faltan los fallos."
+  },
+  {
+    "clave": "at-m4-17",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "¿Qué hábito reduce más el autoengaño?",
+    "opciones": [
+      "Revisar el gráfico cada cinco minutos",
+      "Consultar más opiniones afines",
+      "Escribir antes de entrar qué esperas, dónde sales y qué te demostraría que estabas equivocado",
+      "Mirar más indicadores"
+    ],
+    "correcta": 2,
+    "explicacion": "Los sesgos no se eliminan sabiéndolos: se reducen con procedimientos."
+  },
+  {
+    "clave": "at-m4-18",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "Atribuyes los aciertos a tu análisis y los fallos a la mala suerte. ¿Qué efecto tiene?",
+    "opciones": [
+      "Que mejoras más deprisa",
+      "Que aumentas la muestra",
+      "Que reduces el riesgo",
+      "Que el método nunca se cuestiona y no se aprende nada"
+    ],
+    "correcta": 3,
+    "explicacion": "Los aciertos confirman y los fallos no cuentan: se puede pasar años sin comprobar nada."
+  }
+]

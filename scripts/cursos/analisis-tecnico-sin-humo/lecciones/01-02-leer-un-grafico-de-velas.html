@@ -1,0 +1,148 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Un gráfico de velas resume, en cada figura, cuatro precios de un periodo: apertura, máximo, mínimo y cierre. Con eso basta para ver quién ha dominado, cuánto se ha movido el precio y dónde ha sido rechazado. Aquí aprendes a leer una vela pieza a pieza, a no sacar de ella más de lo que dice y a elegir entre las dos escalas del eje de precios, que cuentan historias distintas del mismo activo.</p>
+</div>
+
+<h2>Cuatro precios en una figura</h2>
+
+<p>Un gráfico de línea une los precios de cierre y nada más. Es limpio, y esconde casi todo lo que pasó entre un punto y el siguiente. La <a href="/glosario/vela-japonesa">vela japonesa</a> guarda cuatro datos de cada periodo, que se abrevian con sus iniciales en inglés: OHLC.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Dato</th><th>Qué es</th><th>Dónde se ve</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Apertura</td><td>El primer precio del periodo</td><td>Un extremo del cuerpo</td></tr>
+    <tr><td>Cierre</td><td>El último precio del periodo</td><td>El otro extremo del cuerpo</td></tr>
+    <tr><td>Máximo</td><td>El precio más alto alcanzado</td><td>La punta de la mecha superior</td></tr>
+    <tr><td>Mínimo</td><td>El precio más bajo alcanzado</td><td>La punta de la mecha inferior</td></tr>
+  </tbody>
+</table>
+
+<p>La parte gruesa es el <strong>cuerpo</strong>: la distancia entre la apertura y el cierre. Las líneas finas que salen por arriba y por abajo son las <strong>mechas</strong>, también llamadas sombras: hasta dónde llegó el precio antes de volver.</p>
+
+<p>El color indica la dirección. Si el cierre queda por encima de la apertura, la vela es alcista, normalmente verde. Si queda por debajo, bajista, normalmente roja. Los colores se pueden cambiar en cualquier plataforma; lo que no cambia es que en una vela alcista la apertura está abajo y el cierre arriba, y en una bajista al revés.</p>
+
+<h2>Lo que cuenta cada parte</h2>
+
+<p>Una vela es el resumen de una pelea entre compradores y vendedores durante un periodo. Sus proporciones dicen cómo terminó.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cuerpo grande, mechas cortas</span>
+    <p>Un lado dominó de principio a fin. El precio cerró cerca de su extremo.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cuerpo pequeño, mechas largas</span>
+    <p>El precio fue lejos en las dos direcciones y acabó donde empezó. Indecisión.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mecha superior larga</span>
+    <p>El precio subió y fue rechazado: alguien vendió ahí arriba con fuerza.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mecha inferior larga</span>
+    <p>El precio bajó y fue recogido: alguien compró ahí abajo con fuerza.</p>
+  </div>
+</div>
+
+<p>Un ejemplo con números. En un día, un activo abre a 100 €, llega a subir hasta 112 €, cae hasta 98 € y cierra a 108 €.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Medida</th><th>Cuenta</th><th>Resultado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cuerpo</td><td>108 − 100</td><td>8 €, alcista</td></tr>
+    <tr><td>Mecha superior</td><td>112 − 108</td><td>4 €</td></tr>
+    <tr><td>Mecha inferior</td><td>100 − 98</td><td>2 €</td></tr>
+    <tr><td>Rango total</td><td>112 − 98</td><td>14 €</td></tr>
+  </tbody>
+</table>
+
+<p>La lectura honesta: ganaron los compradores, con un cuerpo que ocupa más de la mitad del rango, aunque no pudieron sostener los últimos 4 €. Nada más. La vela no dice qué pasará mañana.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Una vela describe lo que ya ha ocurrido en un periodo. Las figuras con nombre propio —martillo, estrella fugaz, envolvente— se enseñan como señales de lo que viene. Cuando se han puesto a prueba con datos, no han mostrado esa capacidad. Lo verás con su fuente en el módulo 4.</div>
+</div>
+
+<h2>La vela no está terminada hasta que cierra</h2>
+
+<p>Mientras el periodo sigue abierto, la vela cambia con cada operación. Una vela diaria que a media tarde parece un rechazo espectacular puede acabar siendo una vela corriente si el precio se mueve en las últimas horas.</p>
+
+<p>De ahí sale una norma sencilla que evita muchos errores: <strong>las decisiones se toman con velas cerradas</strong>. Lo que hace una vela a medio formar es ruido.</p>
+
+<p>En las criptomonedas hay un detalle añadido. El mercado no cierra nunca, así que el «cierre diario» es una convención: la mayoría de las plataformas lo sitúa a medianoche en hora universal. Dos gráficos con cortes distintos dibujan velas diarias distintas del mismo activo.</p>
+
+<h2>Dos escalas para el mismo precio</h2>
+
+<p>El eje vertical de un gráfico puede medir de dos maneras, y casi nadie comprueba cuál tiene puesta.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Escala lineal</p>
+    <p class="prose-vs-sub">La misma distancia, los mismos euros</p>
+    <ul>
+      <li data-tono="favor">De 10.000 a 20.000 ocupa lo mismo que de 90.000 a 100.000</li>
+      <li data-tono="favor">Útil en periodos cortos, con poco recorrido</li>
+      <li data-tono="contra">En periodos largos aplasta todo el pasado contra el suelo</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Escala logarítmica</p>
+    <p class="prose-vs-sub">La misma distancia, el mismo porcentaje</p>
+    <ul>
+      <li data-tono="favor">De 10.000 a 20.000 ocupa lo mismo que de 50.000 a 100.000</li>
+      <li data-tono="favor">Permite comparar movimientos de épocas distintas</li>
+      <li data-tono="contra">Hace parecer pequeñas las caídas recientes en euros</li>
+    </ul>
+  </div>
+</div>
+
+<p>Lo que le importa a tu dinero es el porcentaje, no los euros. Pasar de 10.000 a 20.000 es doblar; pasar de 90.000 a 100.000 es ganar un 11 %. En escala lineal los dos tramos miden lo mismo en la pantalla, y eso engaña.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "El mismo salto de 10.000 €, medido en porcentaje",
+  "subtitulo": "En escala lineal los cuatro tramos ocupan lo mismo. En logarítmica, lo que indica su barra.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "De 10.000 a 20.000 €", "subida": 100 },
+    { "etiqueta": "De 20.000 a 30.000 €", "subida": 50 },
+    { "etiqueta": "De 50.000 a 60.000 €", "subida": 20 },
+    { "etiqueta": "De 90.000 a 100.000 €", "subida": 11 }
+  ],
+  "series": [{ "clave": "subida", "nombre": "Subida en porcentaje", "color": "#a3e635" }],
+  "nota": "Cifras redondas de ejemplo. La escala logarítmica dibuja los tramos en proporción a estos porcentajes."
+}
+</script></div>
+
+<p>Como norma práctica: para mirar años de historia de un activo que se ha multiplicado, escala logarítmica. Para mirar unas semanas, da casi igual. Y hay una consecuencia que conviene tener presente: una línea de tendencia trazada en una escala no pasa por los mismos puntos en la otra. Quien presenta una línea «que el precio respeta desde hace años» sin decir en qué escala está, no ha dicho nada.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">4</span>
+  <span class="prose-dato-texto">Los precios que resume cada vela: apertura, máximo, mínimo y cierre. Todo lo demás que se le atribuye es interpretación.</span>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una vela abre a 50 €, marca un máximo de 58 €, un mínimo de 49 € y cierra a 51 €. ¿Qué describe mejor lo ocurrido?",
+  "opciones": [
+    "El precio subió con fuerza y fue rechazado: cerró casi donde abrió, con una mecha superior larga",
+    "Los compradores dominaron de principio a fin",
+    "Los vendedores dominaron de principio a fin",
+    "El precio no se movió en todo el periodo"
+  ],
+  "correcta": 0,
+  "explicacion": "Cuerpo de 1 € y mecha superior de 7 €: llegó a 58 € y devolvió casi todo. Es un rechazo, no un dominio."
+}
+</script></div>
+
+<h2>Ejercicio: describe sin interpretar</h2>
+
+<p>Abre el gráfico diario de bitcoin en cualquier plataforma. Elige las cinco últimas velas cerradas y, para cada una, anota apertura, máximo, mínimo y cierre, y calcula el cuerpo y las dos mechas. Escribe una frase por vela que diga solo lo que pasó: quién ganó y dónde hubo rechazo. Prohibido usar las palabras «va a», «debería» o «señal». Después cambia el eje a escala logarítmica, aleja el gráfico hasta ver varios años y fíjate en cómo cambia la forma de todo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> cada vela resume cuatro precios; el cuerpo va de la apertura al cierre y las mechas marcan hasta dónde llegó el precio antes de volver. Una mecha larga indica rechazo en ese extremo. Decide solo con velas cerradas, y comprueba la escala: la logarítmica mide porcentajes, que es lo que le importa a tu dinero.</div>
+</div>

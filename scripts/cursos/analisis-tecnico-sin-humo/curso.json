@@ -1,0 +1,87 @@
+{
+  "slug": "analisis-tecnico-sin-humo",
+  "titulo": "Análisis técnico sin humo",
+  "subtitulo": "Leer un gráfico, entender qué mide cada herramienta y saber qué parte tiene respaldo y cuál no.",
+  "descripcion": "Un curso para aprender a leer un gráfico de precios sin creerse todo lo que se dice de ellos. Explica las velas, las temporalidades, la tendencia, los soportes y resistencias, las rupturas y el volumen; qué calculan las medias móviles, el RSI, el MACD y las bandas de Bollinger; y, al lado de cada herramienta, lo que ha encontrado la investigación cuando la ha puesto a prueba. Dedica un módulo entero a lo que no ha superado esas pruebas —figuras de velas, Fibonacci, ondas— y a los sesgos que hacen ver patrones donde hay azar. Termina con el método para comprobar por tu cuenta si una regla ha funcionado: una prueba con datos pasados bien hecha, con costes y sin autoengaño. No promete que el análisis técnico prediga el precio: te enseña a usarlo para lo que sí sirve, que es ordenar decisiones y definir el riesgo.",
+  "objetivos": [
+    "Leer un gráfico de velas en cualquier temporalidad y describir lo que muestra sin interpretarlo de más.",
+    "Identificar la tendencia, los niveles relevantes y las rupturas con criterios objetivos.",
+    "Explicar qué calculan las medias móviles, el RSI, el MACD y las bandas de Bollinger, y qué no pueden decir.",
+    "Distinguir las herramientas con respaldo en la investigación de las que no han superado las pruebas.",
+    "Reconocer los sesgos que hacen ver patrones en datos aleatorios.",
+    "Convertir una idea en una regla comprobable y probarla con datos pasados sin sobreajustarla."
+  ],
+  "nivel": "intermedio",
+  "portada": null,
+  "color": "#a3e635",
+  "aviso": "formacion",
+  "logro": "Gráfico Limpio",
+  "preguntas_final": 25,
+  "revisado": "2026-11-13",
+  "orden": 6,
+  "published": false,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Qué es y qué no es",
+      "descripcion": "Qué estudia el análisis técnico, qué ha encontrado la investigación al ponerlo a prueba y cómo se lee su materia prima: el gráfico.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-es-el-analisis-tecnico", "titulo": "Qué es el análisis técnico y qué dice la evidencia", "resumen": "Ni magia ni basura. Lo que estudia, en qué se apoya y lo que han encontrado casi cien estudios al comprobarlo.", "minutos": 14, "archivo": "01-01-que-es-el-analisis-tecnico.html" },
+        { "slug": "leer-un-grafico-de-velas", "titulo": "Leer un gráfico de velas", "resumen": "Cuatro precios en cada vela, el cuerpo y las mechas, y la diferencia entre la escala lineal y la logarítmica.", "minutos": 12, "archivo": "01-02-leer-un-grafico-de-velas.html" },
+        { "slug": "temporalidades", "titulo": "Temporalidades: el mismo precio, distintos mapas", "resumen": "Qué cambia al pasar del gráfico diario al de cinco minutos, por qué hay más ruido cuanto más te acercas y cómo elegir la tuya.", "minutos": 12, "archivo": "01-03-temporalidades.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "La estructura del precio",
+      "descripcion": "Tendencia, niveles, rupturas y volumen. Lo que se puede decir de un gráfico sin ningún indicador.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "la-tendencia", "titulo": "La tendencia: máximos y mínimos", "resumen": "Una definición que no depende de opiniones, las tres direcciones posibles y por qué la tendencia es la herramienta con más respaldo.", "minutos": 13, "archivo": "02-01-la-tendencia.html" },
+        { "slug": "soportes-y-resistencias", "titulo": "Soportes y resistencias", "resumen": "Por qué el precio se frena en ciertos niveles, qué pintan los números redondos y por qué son zonas y no líneas.", "minutos": 13, "archivo": "02-02-soportes-y-resistencias.html" },
+        { "slug": "rupturas-y-falsas-rupturas", "titulo": "Rupturas y falsas rupturas", "resumen": "Cuando el precio atraviesa un nivel: por qué se acelera, por qué tantas veces vuelve atrás y cómo no perseguirlo.", "minutos": 12, "archivo": "02-03-rupturas-y-falsas-rupturas.html" },
+        { "slug": "el-volumen-en-el-grafico", "titulo": "El volumen en el gráfico", "resumen": "Las barras de debajo del precio: qué confirman, qué no, y por qué en criptomonedas hay que mirarlas con cuidado.", "minutos": 12, "archivo": "02-04-el-volumen-en-el-grafico.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Indicadores",
+      "descripcion": "Qué calculan los cuatro más usados, de dónde salen sus números y lo que no pueden decirte.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "medias-moviles", "titulo": "Medias móviles", "resumen": "El indicador más simple y el que mejor ha salido en los estudios con bitcoin. Cómo se calcula, qué retraso tiene y dónde falla.", "minutos": 14, "archivo": "03-01-medias-moviles.html" },
+        { "slug": "el-rsi", "titulo": "El RSI", "resumen": "Un número entre 0 y 100 que mide la fuerza de las últimas subidas frente a las últimas bajadas. Y por qué «sobrecomprado» no significa «va a caer».", "minutos": 13, "archivo": "03-02-el-rsi.html" },
+        { "slug": "macd-y-bandas-de-bollinger", "titulo": "MACD y bandas de Bollinger", "resumen": "Dos formas de mirar lo mismo: la distancia entre dos medias y la distancia del precio a su media, medida en volatilidad.", "minutos": 13, "archivo": "03-03-macd-y-bandas-de-bollinger.html" },
+        { "slug": "mas-indicadores-no-es-mejor", "titulo": "Por qué más indicadores no es mejor", "resumen": "Todos salen del mismo precio. Lo que parece confirmación es, casi siempre, el mismo dato contado tres veces.", "minutos": 12, "archivo": "03-04-mas-indicadores-no-es-mejor.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "El humo",
+      "descripcion": "Lo que no ha superado las pruebas, y los mecanismos de la cabeza que hacen que lo parezca.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "patrones-chartistas-y-figuras-de-velas", "titulo": "Patrones chartistas y figuras de velas", "resumen": "Hombro-cabeza-hombro, triángulos, martillos y envolventes: qué encontraron los investigadores que los buscaron con un ordenador.", "minutos": 13, "archivo": "04-01-patrones-chartistas-y-figuras-de-velas.html" },
+        { "slug": "fibonacci-ondas-y-numeros-magicos", "titulo": "Fibonacci, ondas y números mágicos", "resumen": "Por qué con suficientes líneas siempre hay una que coincide, y qué diferencia a una teoría que se puede comprobar de una que no.", "minutos": 13, "archivo": "04-02-fibonacci-ondas-y-numeros-magicos.html" },
+        { "slug": "los-sesgos-de-quien-mira-graficos", "titulo": "Los sesgos de quien mira gráficos", "resumen": "Ver patrones en el azar, acordarse solo de los aciertos y creer que se veía venir. Lo que hace tan convincente un gráfico ya terminado.", "minutos": 13, "archivo": "04-03-los-sesgos-de-quien-mira-graficos.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Método",
+      "descripcion": "Cómo comprobar si una regla ha funcionado, cómo convertir una idea en algo que se pueda comprobar y qué dejar escrito.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "backtesting-y-sobreajuste", "titulo": "Backtesting y sobreajuste", "resumen": "Probar una regla con datos pasados es imprescindible y es la forma más fácil de engañarse. Las cuatro trampas y cómo evitarlas.", "minutos": 14, "archivo": "05-01-backtesting-y-sobreajuste.html" },
+        { "slug": "de-una-idea-a-una-regla", "titulo": "De una idea a una regla", "resumen": "Condición, entrada, salida y tamaño, escritos de forma que otra persona llegaría a la misma operación. Y cuántas operaciones hacen falta para creérselo.", "minutos": 13, "archivo": "05-02-de-una-idea-a-una-regla.html" },
+        { "slug": "tu-metodo-en-una-pagina", "titulo": "Tu método en una página", "resumen": "Qué usar, qué descartar y para qué sirve de verdad el análisis técnico: no para adivinar, sino para saber cuándo estás equivocado.", "minutos": 12, "archivo": "05-03-tu-metodo-en-una-pagina.html" }
+      ]
+    }
+  ]
+}

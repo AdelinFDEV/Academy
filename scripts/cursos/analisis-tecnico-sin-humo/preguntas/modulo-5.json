@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "at-m5-01",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Qué es hacer backtesting?",
+    "opciones": [
+      "Aplicar una regla escrita a los datos pasados y anotar las operaciones que habría generado",
+      "Copiar las operaciones de otra persona",
+      "Predecir el precio con un indicador",
+      "Operar con dinero ficticio en directo"
+    ],
+    "correcta": 0,
+    "explicacion": "Sirve para descartar lo que no ha funcionado, no para garantizar lo que funcionará."
+  },
+  {
+    "clave": "at-m5-02",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Qué es el sobreajuste?",
+    "opciones": [
+      "Operar con demasiado apalancamiento",
+      "Retocar una regla hasta que encaja con el pasado",
+      "Usar una media demasiado larga",
+      "Pagar demasiadas comisiones"
+    ],
+    "correcta": 1,
+    "explicacion": "El resultado es una configuración a medida de un tramo de historia que no se repetirá."
+  },
+  {
+    "clave": "at-m5-03",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "Pruebas veinte reglas sin ningún valor, con un listón que el azar supera 1 de cada 20 veces. ¿Qué probabilidad hay de que alguna parezca buena?",
+    "opciones": [
+      "Un 5 %",
+      "Un 100 %",
+      "Un 64 %",
+      "Un 20 %"
+    ],
+    "correcta": 2,
+    "explicacion": "1 − 0,95 elevado a 20 = 0,64. El número de intentos importa tanto como el resultado."
+  },
+  {
+    "clave": "at-m5-04",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Qué significa «mirar el futuro» en una prueba con datos pasados?",
+    "opciones": [
+      "Usar la escala logarítmica",
+      "Reservar datos sin tocar",
+      "Probar la regla en años venideros",
+      "Usar en una decisión un dato que en ese momento todavía no existía"
+    ],
+    "correcta": 3,
+    "explicacion": "Por ejemplo, el cierre de una vela aún abierta, o un nivel que solo se ve con el gráfico completo."
+  },
+  {
+    "clave": "at-m5-05",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Por qué falsea el resultado probar una regla solo con las diez mayores monedas de hoy?",
+    "opciones": [
+      "Porque supone haber sabido de antemano cuáles sobrevivirían",
+      "Porque son demasiado caras",
+      "Porque tienen poco volumen",
+      "Porque no tienen historial"
+    ],
+    "correcta": 0,
+    "explicacion": "Las que desaparecieron no están en la lista, y la regla también habría operado en ellas."
+  },
+  {
+    "clave": "at-m5-06",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Para qué sirve reservar una parte de los datos sin tocar?",
+    "opciones": [
+      "Para ajustar mejor los parámetros",
+      "Para comprobar la regla ya cerrada en datos que no influyeron en su diseño",
+      "Para tener más operaciones",
+      "Para ahorrar tiempo"
+    ],
+    "correcta": 1,
+    "explicacion": "El resultado fuera de la muestra es el que cuenta, y solo se puede obtener una vez."
+  },
+  {
+    "clave": "at-m5-07",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "La regla falla en los datos reservados, la retocas y vuelves a probarla ahí. ¿Qué ha pasado?",
+    "opciones": [
+      "La regla ha mejorado",
+      "Has duplicado la muestra",
+      "Esos datos han dejado de ser «fuera de la muestra»: ya no hay prueba",
+      "Has reducido el sobreajuste"
+    ],
+    "correcta": 2,
+    "explicacion": "En cuanto ajustas con ellos, pasan a ser datos de diseño."
+  },
+  {
+    "clave": "at-m5-08",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Con qué hay que comparar el resultado de una regla?",
+    "opciones": [
+      "Con el resultado de otra plataforma",
+      "Con la mejor operación",
+      "Con cero",
+      "Con haber comprado el primer día y no hacer nada"
+    ],
+    "correcta": 3,
+    "explicacion": "En un activo que ha subido mucho, casi cualquier regla que compre gana. La pregunta es si gana más."
+  },
+  {
+    "clave": "at-m5-09",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "¿Cómo se sabe si algo es una regla y no solo una idea?",
+    "opciones": [
+      "Otra persona, con la regla escrita y el gráfico, marcaría las mismas operaciones",
+      "Tiene nombre propio",
+      "Ha ganado la última vez",
+      "Usa al menos tres indicadores"
+    ],
+    "correcta": 0,
+    "explicacion": "Si tiene que preguntar «¿y esto cuenta?», todavía es una idea."
+  },
+  {
+    "clave": "at-m5-10",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "¿Cuáles son las cinco piezas de una regla completa?",
+    "opciones": [
+      "Tendencia, rango, ruptura, giro y pausa",
+      "Contexto, disparador, entrada, salida y tamaño",
+      "Apertura, máximo, mínimo, cierre y volumen",
+      "Precio, volumen, RSI, MACD y media"
+    ],
+    "correcta": 1,
+    "explicacion": "La pieza que falte la decidirás en el peor momento: con la operación abierta."
+  },
+  {
+    "clave": "at-m5-11",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "Una regla acierta el 40 % de las veces, gana 2R cuando acierta y pierde 1R cuando falla. ¿Esperanza por operación?",
+    "opciones": [
+      "+0,8R",
+      "−0,2R",
+      "+0,2R",
+      "0R"
+    ],
+    "correcta": 2,
+    "explicacion": "0,4 × 2 − 0,6 × 1 = 0,8 − 0,6 = +0,2R."
+  },
+  {
+    "clave": "at-m5-12",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "Una regla acierta el 70 % de las veces, gana 0,3R y pierde 1R. ¿Qué le ocurre?",
+    "opciones": [
+      "Queda a cero",
+      "Depende del volumen",
+      "Gana mucho, por su alto porcentaje de aciertos",
+      "Pierde dinero: su esperanza es negativa"
+    ],
+    "correcta": 3,
+    "explicacion": "0,7 × 0,3 − 0,3 × 1 = −0,09R. El porcentaje de aciertos no dice nada por sí solo."
+  },
+  {
+    "clave": "at-m5-13",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "Tu regla acierta 12 de 20 operaciones. ¿Con qué frecuencia lograría eso, o más, una moneda?",
+    "opciones": [
+      "Una de cada cuatro veces",
+      "Una de cada mil",
+      "Nunca",
+      "Una de cada cien"
+    ],
+    "correcta": 0,
+    "explicacion": "Con veinte operaciones, un 60 % de aciertos sale por azar el 25 % de las veces."
+  },
+  {
+    "clave": "at-m5-14",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "¿Cuántas operaciones, aproximadamente, hacen falta para empezar a creerse un resultado?",
+    "opciones": [
+      "Cinco",
+      "Cerca de cien, en situaciones de mercado distintas",
+      "Veinte",
+      "Tres seguidas ganadoras"
+    ],
+    "correcta": 1,
+    "explicacion": "Y que incluyan subidas, caídas y rangos."
+  },
+  {
+    "clave": "at-m5-15",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "¿Qué descubre seguir la regla en directo sin dinero que no enseña la prueba con datos pasados?",
+    "opciones": [
+      "La comisión de la plataforma",
+      "El precio futuro",
+      "La distancia entre la regla y lo que tú haces de verdad",
+      "El volumen real"
+    ],
+    "correcta": 2,
+    "explicacion": "Mucha gente tiene una regla razonable y un mal resultado por no aplicarla tal como está escrita."
+  },
+  {
+    "clave": "at-m5-16",
+    "leccion": "tu-metodo-en-una-pagina",
+    "enunciado": "¿Qué herramienta se mira primero, según el balance del curso?",
+    "opciones": [
+      "Las figuras de velas",
+      "Los retrocesos de Fibonacci",
+      "El recuento de ondas",
+      "La tendencia por máximos y mínimos"
+    ],
+    "correcta": 3,
+    "explicacion": "Es la idea más sólida y la base de las reglas que mejor resisten."
+  },
+  {
+    "clave": "at-m5-17",
+    "leccion": "tu-metodo-en-una-pagina",
+    "enunciado": "¿Cuándo conviene dar por rota una regla?",
+    "opciones": [
+      "Cuando su racha o su caída superan claramente las peores de tu prueba",
+      "Cuando un analista opina lo contrario",
+      "Tras dos pérdidas seguidas",
+      "Cada vez que el mercado entra en rango"
+    ],
+    "correcta": 0,
+    "explicacion": "Sin conocer la peor racha esperable, cualquier racha parece el fin."
+  },
+  {
+    "clave": "at-m5-18",
+    "leccion": "tu-metodo-en-una-pagina",
+    "enunciado": "Tu regla sale de lo esperable. ¿Qué es lo correcto?",
+    "opciones": [
+      "Añadir más indicadores",
+      "Dejar de operar y revisarla con calma, sin retocarla sobre la marcha",
+      "Cambiar un parámetro para que habría evitado las últimas pérdidas",
+      "Doblar el tamaño para recuperar"
+    ],
+    "correcta": 1,
+    "explicacion": "Retocarla en directo es sobreajuste hecho con dinero."
+  }
+]

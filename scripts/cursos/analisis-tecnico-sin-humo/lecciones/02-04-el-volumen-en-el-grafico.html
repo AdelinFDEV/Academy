@@ -1,0 +1,153 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El volumen es la cantidad negociada en cada vela, y aparece como una fila de barras bajo el precio. Es el único dato del gráfico que no sale del precio, y por eso aporta algo distinto: cuánta participación hubo detrás de cada movimiento. Aquí aprendes a leerlo en relación con su propia media, a usarlo para valorar rupturas y giros, y a no confiar de más en él en un mercado donde una parte del volumen publicado es dudosa.</p>
+</div>
+
+<h2>Qué mide y qué no</h2>
+
+<p>Cada barra de <a href="/glosario/volumen">volumen</a> indica cuántas unidades, o cuánto dinero, cambiaron de manos durante esa vela. Una barra alta significa mucha actividad; una baja, poca.</p>
+
+<p>Hay un malentendido que conviene quitarse de encima cuanto antes. El color de la barra —verde o roja— no indica que haya habido más compras que ventas. En cada operación hay un comprador y un vendedor por la misma cantidad. El color solo copia el de la vela: verde si el precio cerró por encima de la apertura, roja si cerró por debajo.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>El volumen sí dice</th><th>El volumen no dice</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cuánta actividad hubo en ese periodo</td><td>Si había más compradores que vendedores</td></tr>
+    <tr><td>Si un movimiento atrajo participación o pasó desapercibido</td><td>Quién compraba ni por qué</td></tr>
+    <tr><td>Si hoy es un día normal o excepcional para ese activo</td><td>Hacia dónde irá el precio</td></tr>
+  </tbody>
+</table>
+
+<h2>Lo que importa es la comparación</h2>
+
+<p>Una cifra de volumen aislada no significa nada. Mil millones es muchísimo para una moneda pequeña y un día flojo para bitcoin. Lo único que se puede interpretar es el volumen de una vela <strong>comparado con el habitual de ese mismo activo</strong>.</p>
+
+<p>La forma más simple de hacerlo es poner sobre las barras una media de las últimas veinte velas, que casi todas las plataformas ofrecen. A partir de ahí, la lectura es directa.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Volumen de ocho días, frente a su media",
+  "subtitulo": "Ejemplo inventado, en millones. El día 6 destaca; los demás son ruido alrededor de la media.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Día 1", "volumen": 42 },
+    { "etiqueta": "Día 2", "volumen": 38 },
+    { "etiqueta": "Día 3", "volumen": 45 },
+    { "etiqueta": "Día 4", "volumen": 36 },
+    { "etiqueta": "Día 5", "volumen": 41 },
+    { "etiqueta": "Día 6", "volumen": 118 },
+    { "etiqueta": "Día 7", "volumen": 64 },
+    { "etiqueta": "Día 8", "volumen": 44 }
+  ],
+  "series": [{ "clave": "volumen", "nombre": "Volumen diario", "color": "#a3e635" }],
+  "nota": "La media de los cinco primeros días es de unos 40 millones. El día 6 la triplica: ese día pasó algo que atrajo a mucha más gente."
+}
+</script></div>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cerca de la media</span>
+    <p>Un día cualquiera. Lo que haya hecho el precio no tiene un peso especial.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El doble o más</span>
+    <p>Participación claramente superior. El movimiento de ese día merece atención.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Muy por debajo</span>
+    <p>Poca gente operando. Los movimientos son más fáciles de provocar y menos fiables.</p>
+  </div>
+</div>
+
+<h2>Volumen y rupturas</h2>
+
+<p>El uso más extendido del volumen es valorar una <a href="/glosario/ruptura">ruptura</a>. La lógica es razonable: si el precio supera un nivel importante y ese día se negocia el triple de lo normal, mucha gente ha participado en el movimiento. Si lo supera con un volumen corriente, puede ser un empujón sin nadie detrás.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Ruptura con volumen alto</p>
+    <p class="prose-vs-sub">Muy por encima de la media</p>
+    <ul>
+      <li data-tono="favor">Ha participado mucha gente</li>
+      <li data-tono="favor">Es más difícil que sea obra de un solo actor</li>
+      <li data-tono="contra">Tampoco garantiza que continúe</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Ruptura con volumen bajo</p>
+    <p class="prose-vs-sub">Igual o menor que la media</p>
+    <ul>
+      <li data-tono="contra">El nivel se ha cruzado sin interés</li>
+      <li data-tono="contra">Más fácil de revertir</li>
+      <li data-tono="favor">A veces el volumen llega uno o dos días después</li>
+    </ul>
+  </div>
+</div>
+
+<p>Trátalo como lo que es: un criterio más entre los de la lección anterior, no un veredicto. Lo honesto es decir que esta idea forma parte de la tradición del análisis técnico y que es coherente con cómo funcionan los mercados, pero que no tiene detrás una prueba tan sólida como las reglas de tendencia.</p>
+
+<h2>Volumen en los extremos</h2>
+
+<p>Hay un segundo patrón que se observa con frecuencia: los picos de volumen más altos suelen aparecer al final de los movimientos violentos, no al principio.</p>
+
+<p>En una caída fuerte, el día de mayor volumen suele ser aquel en que venden a la vez los que tienen miedo y los que son liquidados. Cuando esas ventas forzosas se agotan, deja de haber quien empuje el precio hacia abajo. A ese momento se le llama capitulación. Lo mismo ocurre al revés en las subidas eufóricas, cuando el último tramo se hace con un volumen enorme de compradores tardíos.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Un pico de volumen en una caída no es una señal de compra. Se reconoce como el final solo después, cuando el precio deja de caer. En el momento es indistinguible de la mitad de un desplome que todavía tiene recorrido. Lo que dice es «aquí ha pasado algo grande», no «aquí termina».</div>
+</div>
+
+<h2>El problema de las criptomonedas: de dónde sale el dato</h2>
+
+<p>En una bolsa tradicional, el volumen de una acción es una cifra única y supervisada. En las criptomonedas, no.</p>
+
+<ul>
+  <li><strong>Cada plataforma tiene su propio volumen.</strong> El gráfico que miras muestra solo lo negociado en esa plataforma y en ese par. El total del mercado es otra cifra.</li>
+  <li><strong>Parte del volumen publicado es ficticio.</strong> Algunas plataformas y algunos proyectos inflan la actividad operando consigo mismos, una práctica conocida como <a href="/glosario/wash-trading">wash trading</a>.</li>
+  <li><strong>Contado y derivados van por separado.</strong> El volumen de los contratos perpetuos es mucho mayor que el de las monedas reales, y está apalancado.</li>
+</ul>
+
+<p>La consecuencia práctica es que el volumen sirve razonablemente bien en los activos grandes y en las plataformas grandes, y es poco fiable en las monedas pequeñas, que es justo donde más se querría una confirmación. En un token recién listado, una barra enorme puede no significar nada.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">1 a 1</span>
+  <span class="prose-dato-texto">La proporción entre lo comprado y lo vendido en cualquier barra de volumen. Cada unidad que alguien compra la vende otra persona.</span>
+</div>
+
+<h2>Cómo usarlo sin complicarse</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Pon la media de veinte velas</strong> sobre las barras. Es la única referencia que necesitas.</li>
+  <li><strong>Mira el volumen solo en los momentos clave:</strong> cuando el precio llega a un nivel, lo rompe o hace un movimiento fuera de lo común.</li>
+  <li><strong>Pregúntate una sola cosa:</strong> ¿esto ha ocurrido con más participación de la habitual, o sin ella?</li>
+  <li><strong>Usa siempre la misma plataforma,</strong> una de las grandes, para que las barras sean comparables entre días.</li>
+  <li><strong>Desconfía en las monedas pequeñas.</strong> Si el volumen es lo único que sostiene tu idea, no tienes idea.</li>
+</ol>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Existen indicadores construidos a partir del volumen, con nombres como OBV o perfil de volumen. Ninguno añade un dato que no esté ya en las barras: lo reordenan. Antes de usarlos, domina la lectura simple. En la mayoría de los casos no hará falta más.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una barra de volumen es verde y muy alta. ¿Qué se puede afirmar?",
+  "opciones": [
+    "Que hubo mucha más actividad de la habitual y que el precio cerró por encima de la apertura",
+    "Que hubo más compradores que vendedores",
+    "Que el precio subirá en las próximas velas",
+    "Que entró dinero nuevo en la moneda"
+  ],
+  "correcta": 0,
+  "explicacion": "El color copia el de la vela y la altura mide la actividad. En toda operación hay la misma cantidad comprada que vendida."
+}
+</script></div>
+
+<h2>Ejercicio: los cinco días de más volumen</h2>
+
+<p>En el gráfico diario de bitcoin, en una plataforma grande, añade la media de volumen de veinte velas. Localiza los cinco días de mayor volumen del último año y, para cada uno, anota tres cosas: cuántas veces superó la media, si el precio subió o bajó ese día y qué hizo en las diez velas siguientes. Fíjate en cuántos de los cinco coinciden con caídas fuertes y cuántos con el final de un movimiento. Después repite con una moneda pequeña y compara lo limpias que se ven las barras en uno y otro caso.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el volumen mide cuánta actividad hubo, no quién ganó: el color de la barra solo copia el de la vela. Léelo siempre frente a su media. Un movimiento con el doble de volumen o más merece atención; uno con volumen corriente, menos. Los mayores picos suelen llegar al final de los movimientos violentos. En monedas pequeñas, el dato es poco fiable.</div>
+</div>

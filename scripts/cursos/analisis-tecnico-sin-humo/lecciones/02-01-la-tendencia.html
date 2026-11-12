@@ -1,0 +1,154 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>La tendencia es la dirección general en la que se mueve el precio. Se puede definir sin opiniones, con una regla que cualquiera aplica igual: hacia dónde van los máximos y los mínimos sucesivos. Aquí aprendes esa definición, las tres situaciones posibles, cómo reconocer que una tendencia se ha roto y por qué, de todo el análisis técnico, es la idea con más respaldo en los estudios y la primera que conviene mirar en cualquier gráfico.</p>
+</div>
+
+<h2>Una definición que no depende de quién mire</h2>
+
+<p>El precio nunca se mueve en línea recta. Avanza, retrocede una parte, vuelve a avanzar. Cada avance deja un pico, y cada retroceso, un valle. A esos picos y valles se les llama máximos y mínimos relativos, y la <a href="/glosario/tendencia">tendencia</a> se define por cómo se ordenan.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Situación</th><th>Máximos sucesivos</th><th>Mínimos sucesivos</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Tendencia alcista</strong></td><td>Cada uno más alto que el anterior</td><td>Cada uno más alto que el anterior</td></tr>
+    <tr><td><strong>Tendencia bajista</strong></td><td>Cada uno más bajo que el anterior</td><td>Cada uno más bajo que el anterior</td></tr>
+    <tr><td><strong>Rango o lateral</strong></td><td>Más o menos a la misma altura</td><td>Más o menos a la misma altura</td></tr>
+  </tbody>
+</table>
+
+<p>La ventaja de esta definición es que se puede comprobar. Dos personas con el mismo gráfico y la misma temporalidad llegan a la misma respuesta. No hace falta ninguna línea ni ningún indicador: basta con marcar los últimos picos y valles y compararlos.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Una tendencia alcista: máximos y mínimos cada vez más altos",
+  "subtitulo": "Ejemplo inventado. Cada retroceso se queda por encima del anterior.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "1", "precio": 100 },
+    { "etiqueta": "2", "precio": 112 },
+    { "etiqueta": "3", "precio": 105 },
+    { "etiqueta": "4", "precio": 121 },
+    { "etiqueta": "5", "precio": 113 },
+    { "etiqueta": "6", "precio": 130 },
+    { "etiqueta": "7", "precio": 122 },
+    { "etiqueta": "8", "precio": 138 }
+  ],
+  "series": [{ "clave": "precio", "nombre": "Precio", "color": "#a3e635" }],
+  "nota": "Máximos: 112, 121, 130 y 138. Mínimos: 105, 113 y 122. Los dos suben: la tendencia es alcista."
+}
+</script></div>
+
+<h2>La mayor parte del tiempo no hay tendencia</h2>
+
+<p>Los manuales dedican casi todas sus páginas a las tendencias, y dan la impresión de que el precio siempre está en una. No es así. Los mercados pasan buena parte del tiempo moviéndose de lado, entre un techo y un suelo, sin ir a ningún sitio.</p>
+
+<p>Reconocer un rango es tan importante como reconocer una tendencia, porque lo que funciona en uno falla en el otro.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">En tendencia</p>
+    <p class="prose-vs-sub">El precio va a algún sitio</p>
+    <ul>
+      <li data-tono="favor">Tiene sentido operar a favor de la dirección</li>
+      <li data-tono="favor">Los retrocesos son ocasiones de entrada</li>
+      <li data-tono="contra">Comprar «porque ha caído mucho» sale caro en una bajista</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">En rango</p>
+    <p class="prose-vs-sub">El precio rebota entre dos niveles</p>
+    <ul>
+      <li data-tono="favor">Los extremos del rango son las referencias</li>
+      <li data-tono="contra">Las reglas de tendencia dan señales falsas una tras otra</li>
+      <li data-tono="contra">Los avances se agotan pronto</li>
+    </ul>
+  </div>
+</div>
+
+<p>Una parte importante de las pérdidas de quien sigue tendencias no viene de las tendencias que fallan, sino de los rangos: semanas en las que la regla dice «arriba», luego «abajo», luego «arriba», y cada cambio cuesta una pequeña pérdida más las comisiones.</p>
+
+<h2>Cuándo se rompe una tendencia</h2>
+
+<p>Con la definición por máximos y mínimos, la ruptura también es objetiva. Una tendencia alcista sigue viva mientras cada mínimo quede por encima del anterior. El día que el precio cierra por debajo del último mínimo relevante, la secuencia se ha roto.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Primer aviso.</strong> El precio no consigue superar el máximo anterior: hace un máximo más bajo. La tendencia pierde fuerza, pero no está rota.</li>
+  <li><strong>Ruptura.</strong> El precio cierra por debajo del último mínimo. Ya no hay mínimos crecientes: la tendencia alcista ha terminado.</li>
+  <li><strong>Lo que viene después no está escrito.</strong> Puede empezar una tendencia bajista o, con más frecuencia, un rango.</li>
+</ol>
+
+<p>El tercer punto corrige una confusión habitual. Que una tendencia alcista se rompa no significa que empiece una bajista. Significa que has dejado de tener un motivo para suponer que la subida continúa.</p>
+
+<p>Esa ruptura es el uso práctico más valioso de todo el concepto. Te da un precio concreto —el último mínimo— a partir del cual tu idea de «esto está subiendo» deja de ser cierta. Es el sitio natural para el <a href="/glosario/stop-loss">stop loss</a> de quien ha comprado a favor de la tendencia.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Las líneas de tendencia —rectas que unen mínimos o máximos— son una forma de dibujar lo mismo. Son cómodas y son subjetivas: según qué puntos unas y en qué escala, sale una línea distinta. La secuencia de máximos y mínimos dice lo mismo sin esa ambigüedad.</div>
+</div>
+
+<h2>Por qué es la idea con más respaldo</h2>
+
+<p>En la primera lección viste que, de todo el análisis técnico, lo que mejor ha resistido las pruebas son las reglas sencillas de seguimiento de tendencia. Los estudios con criptomonedas apuntan en la misma dirección: la ratio entre el precio y sus medias móviles, que es una forma de medir la tendencia, ha mostrado capacidad para anticipar la rentabilidad diaria de bitcoin.</p>
+
+<p>Hay explicaciones razonables de por qué los precios muestran inercia:</p>
+
+<ul>
+  <li><strong>La información se difunde despacio.</strong> No todo el mundo se entera a la vez ni reacciona a la vez.</li>
+  <li><strong>Los inversores se mueven en manada.</strong> Una subida atrae compradores que provocan más subida; es el <a href="/glosario/fomo">FOMO</a> visto desde fuera.</li>
+  <li><strong>En activos difíciles de valorar, el precio es la noticia.</strong> A falta de otra referencia, la gente aprende del propio movimiento.</li>
+</ul>
+
+<p>Nada de eso convierte la tendencia en una garantía. Las tendencias terminan, y terminan sin avisar. Lo que dice la evidencia es más modesto: apostar a que un movimiento en marcha continúa ha sido, de media, mejor negocio que apostar a que se da la vuelta.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">2</span>
+  <span class="prose-dato-texto">Las cosas que hay que mirar para definir una tendencia: hacia dónde van los máximos y hacia dónde van los mínimos. No hace falta ningún indicador.</span>
+</div>
+
+<h2>El error típico: adivinar el giro</h2>
+
+<p>Hay un atractivo enorme en comprar en el mínimo exacto o vender en el máximo exacto. Es la operación de la que se presume. Y es, de las formas de usar un gráfico, una de las que peor resultado da.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">«Ha caído tanto que ya no puede caer más» no es un análisis. En una tendencia bajista, cada mínimo parece el definitivo hasta que llega el siguiente. Mientras los máximos y los mínimos sigan bajando, lo que el gráfico dice es que el precio baja. Esperar a que la secuencia cambie supone llegar tarde al primer tramo, y evita casi todos los intentos fallidos.</div>
+</div>
+
+<p>Operar a favor de la tendencia tiene un coste psicológico que conviene conocer de antemano: nunca compras en el mínimo ni vendes en el máximo. Entras cuando la subida ya es visible y sales cuando la caída ya ha empezado. Renuncias a los extremos a cambio de no tener que adivinarlos.</p>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "Cómo se rompe una tendencia alcista",
+  "instrucciones": "Ordena los hechos tal como suelen ocurrir.",
+  "pasos": [
+    "El precio marca máximos y mínimos cada vez más altos",
+    "Un avance no logra superar el máximo anterior",
+    "El precio cierra por debajo del último mínimo",
+    "La secuencia de mínimos crecientes queda rota",
+    "Empieza un rango o una tendencia bajista: aún no se sabe cuál"
+  ]
+}
+</script></div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Los últimos picos de un gráfico están en 80, 76 y 71, y los últimos valles en 70, 66 y 62. ¿Qué describe?",
+  "opciones": [
+    "Una tendencia bajista: máximos y mínimos cada vez más bajos",
+    "Una tendencia alcista",
+    "Un rango lateral",
+    "No se puede saber sin un indicador"
+  ],
+  "correcta": 0,
+  "explicacion": "Tanto los máximos como los mínimos descienden. Es la definición de tendencia bajista, y no requiere ningún indicador."
+}
+</script></div>
+
+<h2>Ejercicio: marca la secuencia</h2>
+
+<p>En el gráfico diario de un activo, con seis meses a la vista, marca los máximos y mínimos relativos más evidentes; no más de ocho o diez puntos. Anota sus precios en dos columnas. Decide con la tabla de esta lección si hay tendencia alcista, bajista o rango, y escribe el precio exacto que tendría que perder o superar para que tu respuesta cambiara. Repite en el gráfico semanal y comprueba si las dos temporalidades dicen lo mismo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> hay tendencia alcista cuando máximos y mínimos suben, bajista cuando bajan, y rango cuando se quedan a la misma altura, que es lo que ocurre buena parte del tiempo. La tendencia se rompe cuando el precio cierra más allá del último mínimo o máximo relevante, y ese nivel es el sitio natural de tu salida. Seguirla tiene más respaldo que intentar adivinar el giro.</div>
+</div>

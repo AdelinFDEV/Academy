@@ -1,0 +1,162 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El MACD y las bandas de Bollinger están en casi todos los gráficos que verás compartidos. El primero mide la distancia entre dos medias móviles; las segundas, la distancia del precio a su media, usando la volatilidad como regla. Aquí ves qué calcula cada uno pieza a pieza, qué señales se les atribuyen, cuáles son simplemente un cruce de medias con otro nombre y qué información útil queda cuando se les quita la mística.</p>
+</div>
+
+<h2>El MACD: dos medias y su distancia</h2>
+
+<p>El <a href="/glosario/macd">MACD</a> lo ideó Gerald Appel a finales de los años setenta. El nombre son las siglas en inglés de «convergencia y divergencia de medias móviles», y describe exactamente lo que hace: mide si dos medias se acercan o se alejan.</p>
+
+<p>Tiene tres componentes, y los tres salen del precio de cierre.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Componente</th><th>Cómo se calcula</th><th>Qué enseña</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Línea MACD</td><td>Media exponencial de 12 periodos menos la de 26</td><td>Cuánto se ha separado la media rápida de la lenta</td></tr>
+    <tr><td>Línea de señal</td><td>Media exponencial de 9 periodos de la línea MACD</td><td>Una versión suavizada de la anterior</td></tr>
+    <tr><td>Histograma</td><td>Línea MACD menos línea de señal</td><td>Si esa separación crece o se reduce</td></tr>
+  </tbody>
+</table>
+
+<p>Un ejemplo. La media de 12 está en 104 y la de 26, en 100. La línea MACD vale 4: la media rápida va cuatro puntos por encima de la lenta. Si hace unos días valía 6, las dos medias se están acercando: el precio sigue por encima, pero su avance se ha frenado.</p>
+
+<h2>Sus señales, traducidas</h2>
+
+<p>Al MACD se le atribuyen tres señales. Traducidas a lo que significan, pierden buena parte del misterio.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cruce de la línea cero</span>
+    <p>La línea MACD pasa de negativa a positiva. Traducción: la media de 12 ha cruzado por encima de la de 26. Es un cruce de medias, ni más ni menos.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cruce de la señal</span>
+    <p>La línea MACD cruza su línea de señal. Traducción: la distancia entre las medias ha empezado a reducirse o a ampliarse. Llega antes que el anterior y falla más.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Divergencia</span>
+    <p>El precio hace un máximo más alto y el MACD uno más bajo. Traducción: el último avance fue más lento. Lo mismo que viste con el RSI.</p>
+  </div>
+</div>
+
+<p>La primera es la más reveladora. Quien usa una media de 12 y otra de 26 en el gráfico, y además el MACD debajo, está mirando el mismo cruce dos veces. No tiene dos confirmaciones: tiene una, dibujada de dos maneras.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Como se construye con medias, el MACD hereda sus virtudes y sus defectos. Va con retraso, acompaña bien las tendencias largas y, en un rango, cruza arriba y abajo una y otra vez dando una señal falsa tras otra.</div>
+</div>
+
+<h2>Las bandas de Bollinger: una media y su anchura</h2>
+
+<p>Las desarrolló John Bollinger en los años ochenta. Son tres líneas dibujadas sobre el precio.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Línea</th><th>Cómo se calcula</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Banda central</td><td>Media móvil simple de 20 periodos</td></tr>
+    <tr><td>Banda superior</td><td>La media más dos desviaciones típicas de esos 20 cierres</td></tr>
+    <tr><td>Banda inferior</td><td>La media menos dos desviaciones típicas</td></tr>
+  </tbody>
+</table>
+
+<p>La desviación típica mide cuánto se han dispersado los cierres alrededor de su media. Cuando el precio se mueve mucho, es grande y las bandas se abren. Cuando se mueve poco, es pequeña y las bandas se estrechan. Las bandas son, en el fondo, un dibujo de la <a href="/glosario/volatilidad">volatilidad</a> reciente.</p>
+
+<p>Un ejemplo: la media de 20 está en 100 y la desviación típica de esos veinte cierres es de 3. La banda superior queda en 106 y la inferior en 94. Si la semana siguiente el precio se calma y la desviación baja a 1,5, las bandas se cierran a 103 y 97 sin que la media se haya movido.</p>
+
+<h2>Lo que no dicen las bandas</h2>
+
+<p>La interpretación más extendida es que tocar la banda superior es señal de venta y tocar la inferior, de compra. Su propio autor ha insistido en que no es así.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que se suele creer</p>
+    <p class="prose-vs-sub">«Las bandas contienen al precio»</p>
+    <ul>
+      <li data-tono="contra">Tocar la banda superior anuncia una caída</li>
+      <li data-tono="contra">El precio «tiene que» volver a la media</li>
+      <li data-tono="contra">Fuera de las bandas, el precio está en un extremo insostenible</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que ocurre</p>
+    <p class="prose-vs-sub">Las bandas siguen al precio</p>
+    <ul>
+      <li data-tono="favor">En una tendencia fuerte, el precio avanza pegado a una banda durante semanas</li>
+      <li data-tono="favor">Las bandas se abren a medida que el precio se mueve</li>
+      <li data-tono="favor">Tocar una banda indica fuerza tan a menudo como agotamiento</li>
+    </ul>
+  </div>
+</div>
+
+<p>Detrás del malentendido hay un argumento estadístico mal aplicado. En una distribución normal, alrededor del 95 % de los valores quedan a menos de dos desviaciones típicas de la media, y de ahí se deduce que el precio «casi nunca» debería salir de las bandas. Pero los movimientos de los precios no siguen una distribución normal: los extremos son mucho más frecuentes de lo que esa curva predice. Y además las bandas se calculan con los mismos cierres que luego se comparan con ellas.</p>
+
+<h2>Lo que sí aportan</h2>
+
+<p>Usadas como lo que son, las bandas dan una información que no es trivial de ver a ojo: si la volatilidad actual es alta o baja en comparación con la de las últimas semanas.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Las bandas se estrechan y se abren con la volatilidad",
+  "subtitulo": "Ejemplo inventado. La media apenas se mueve; lo que cambia es la anchura.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Semana 1", "superior": 108, "media": 100, "inferior": 92 },
+    { "etiqueta": "Semana 2", "superior": 106, "media": 100, "inferior": 94 },
+    { "etiqueta": "Semana 3", "superior": 104, "media": 101, "inferior": 98 },
+    { "etiqueta": "Semana 4", "superior": 103, "media": 101, "inferior": 99 },
+    { "etiqueta": "Semana 5", "superior": 109, "media": 103, "inferior": 97 },
+    { "etiqueta": "Semana 6", "superior": 116, "media": 106, "inferior": 96 }
+  ],
+  "series": [
+    { "clave": "superior", "nombre": "Banda superior", "color": "#a3e635" },
+    { "clave": "media", "nombre": "Media de 20", "color": "#8fb0ff" },
+    { "clave": "inferior", "nombre": "Banda inferior", "color": "#a3e635" }
+  ],
+  "nota": "En la semana 4 las bandas están muy juntas: el precio lleva tiempo casi quieto. Después llega un movimiento amplio y se abren."
+}
+</script></div>
+
+<p>Los periodos de calma y los de agitación tienden a alternarse. Tras semanas con las bandas muy estrechas suele llegar un movimiento amplio. Lo que las bandas no dicen es hacia dónde.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Bandas muy estrechas.</strong> El mercado está comprimido. Tiene sentido estar atento a una <a href="/glosario/ruptura">ruptura</a> del rango, en cualquiera de los dos sentidos.</li>
+  <li><strong>Bandas muy abiertas.</strong> La volatilidad es alta. Las salidas tienen que estar más lejos y, por tanto, las posiciones ser más pequeñas.</li>
+  <li><strong>Precio pegado a una banda mientras esta se abre.</strong> Hay tendencia con fuerza. No es momento de operar en contra.</li>
+</ol>
+
+<p>El segundo punto es el uso más práctico y el menos comentado. La anchura de las bandas te dice cuánto se está moviendo el activo, y eso afecta directamente a dónde colocar el <a href="/glosario/stop-loss">stop loss</a> y a cuánto comprar.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">1</span>
+  <span class="prose-dato-texto">Los cruces de medias que mides si tienes en el gráfico una media de 12, una de 26 y el MACD. Tres líneas, un solo dato.</span>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Ni el MACD ni las bandas de Bollinger han mostrado en los estudios una capacidad predictiva propia, separada de la que tienen las reglas de tendencia en las que se apoyan. Si alguien te los presenta como un sistema, pregunta con qué datos lo comprobó, en qué periodo y después de qué costes.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "La línea MACD pasa de negativa a positiva. ¿Qué ha ocurrido exactamente?",
+  "opciones": [
+    "La media exponencial de 12 periodos ha cruzado por encima de la de 26",
+    "El precio ha superado su máximo histórico",
+    "El volumen ha subido por encima de su media",
+    "El RSI ha superado el nivel 50"
+  ],
+  "correcta": 0,
+  "explicacion": "La línea MACD es la media de 12 menos la de 26. Es positiva cuando la rápida está por encima de la lenta: un cruce de medias."
+}
+</script></div>
+
+<h2>Ejercicio: tradúcelos</h2>
+
+<p>En el gráfico diario de un activo, añade el MACD con sus valores por defecto y, sobre el precio, dos medias exponenciales de 12 y de 26. Localiza tres momentos en que la línea MACD cruza el cero y comprueba que coinciden con el cruce de las dos medias. Después quita todo y añade las bandas de Bollinger. Busca el momento del último año en que estuvieron más estrechas, y mira qué hizo el precio en las tres semanas siguientes y en qué dirección. Escribe en una línea qué te ha dicho cada indicador que no estuviera ya a la vista en el precio.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el MACD es la distancia entre dos medias móviles, y su cruce por cero es un cruce de medias con otro nombre. Las bandas de Bollinger son una media de 20 más y menos dos desviaciones típicas: dibujan la volatilidad. Tocar una banda no es una señal de giro. Lo útil de las bandas es saber si el mercado está comprimido o agitado, para ajustar la distancia de la salida y el tamaño.</div>
+</div>

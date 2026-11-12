@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "at-f-01",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Por qué el análisis técnico tiene tantos seguidores en las criptomonedas?",
+    "opciones": [
+      "Porque las plataformas lo exigen",
+      "Porque siempre acierta en ellas",
+      "Porque la mayoría de estos activos son difíciles de valorar por sus fundamentos",
+      "Porque está prohibido el análisis fundamental"
+    ],
+    "correcta": 2,
+    "explicacion": "Sin ingresos ni rentas que valorar, se mira lo único disponible: cómo se ha movido el precio."
+  },
+  {
+    "clave": "at-f-02",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Cuál de los tres supuestos clásicos tiene más respaldo en los estudios?",
+    "opciones": [
+      "Que el precio sigue proporciones naturales",
+      "Que la historia se repite en figuras exactas",
+      "Que los indicadores predicen",
+      "Que el precio se mueve en tendencias"
+    ],
+    "correcta": 3,
+    "explicacion": "La inercia de los precios es lo que mejor ha resistido las pruebas."
+  },
+  {
+    "clave": "at-f-03",
+    "leccion": "que-es-el-analisis-tecnico",
+    "enunciado": "¿Qué tres problemas de método señalan Park e Irwin en los estudios favorables?",
+    "opciones": [
+      "Probar muchas reglas, elegirlas a posteriori y medir mal riesgo y costes",
+      "Estudiar acciones, divisas y materias primas",
+      "Usar gráficos de velas, medias y volumen",
+      "Tener pocos autores, pocas páginas y pocos gráficos"
+    ],
+    "correcta": 0,
+    "explicacion": "Por eso 56 estudios positivos de 95 no equivalen a una demostración."
+  },
+  {
+    "clave": "at-f-04",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "Una vela tiene el cuerpo muy pequeño y dos mechas largas. ¿Qué describe?",
+    "opciones": [
+      "Dominio de los compradores",
+      "Indecisión: el precio fue lejos en las dos direcciones y cerró donde abrió",
+      "Dominio de los vendedores",
+      "Un error del gráfico"
+    ],
+    "correcta": 1,
+    "explicacion": "Ningún lado consiguió imponerse durante ese periodo."
+  },
+  {
+    "clave": "at-f-05",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Qué es lo que le importa a tu dinero: los euros que sube un activo o el porcentaje?",
+    "opciones": [
+      "La hora del cierre",
+      "El número de velas",
+      "El porcentaje",
+      "Los euros"
+    ],
+    "correcta": 2,
+    "explicacion": "Por eso la escala logarítmica es la adecuada para mirar años de historia."
+  },
+  {
+    "clave": "at-f-06",
+    "leccion": "leer-un-grafico-de-velas",
+    "enunciado": "¿Por qué dos plataformas pueden mostrar velas diarias distintas del mismo activo?",
+    "opciones": [
+      "Porque una de ellas se equivoca",
+      "Porque usan monedas distintas",
+      "Porque las velas son aleatorias",
+      "Porque el mercado no cierra y cada una puede cortar el día a una hora distinta"
+    ],
+    "correcta": 3,
+    "explicacion": "El cierre diario es una convención; la mayoría usa la medianoche en hora universal."
+  },
+  {
+    "clave": "at-f-07",
+    "leccion": "temporalidades",
+    "enunciado": "¿Qué relación suele recomendarse entre la temporalidad de contexto y la de trabajo?",
+    "opciones": [
+      "Que la mayor sea de cuatro a seis veces la menor",
+      "Que se usen cinco a la vez",
+      "Que la mayor sea mil veces la menor",
+      "Que sean la misma"
+    ],
+    "correcta": 0,
+    "explicacion": "Semanal con diaria, diaria con cuatro horas, cuatro horas con una hora."
+  },
+  {
+    "clave": "at-f-08",
+    "leccion": "temporalidades",
+    "enunciado": "¿Cuál es el error más caro con las temporalidades?",
+    "opciones": [
+      "Mirar el semanal como contexto",
+      "Cambiar de temporalidad a mitad de una operación para encontrar un motivo para aguantar",
+      "Esperar al cierre de la vela",
+      "Usar el gráfico diario"
+    ],
+    "correcta": 1,
+    "explicacion": "La temporalidad con la que decides la entrada es la misma con la que decides la salida."
+  },
+  {
+    "clave": "at-f-09",
+    "leccion": "temporalidades",
+    "enunciado": "Tienes diez minutos al día. ¿Qué temporalidad de trabajo encaja mejor?",
+    "opciones": [
+      "La de cinco minutos",
+      "La de un minuto",
+      "La diaria",
+      "La de quince minutos"
+    ],
+    "correcta": 2,
+    "explicacion": "Mirada una vez al día, con la vela cerrada. Menos pantalla es menos ruido."
+  },
+  {
+    "clave": "at-f-10",
+    "leccion": "la-tendencia",
+    "enunciado": "Los picos están en 50, 55 y 61, y los valles en 44, 49 y 54. ¿Qué precio rompería la tendencia?",
+    "opciones": [
+      "Un cierre en 58",
+      "Cualquier vela roja",
+      "Un cierre por encima de 61",
+      "Un cierre por debajo de 54"
+    ],
+    "correcta": 3,
+    "explicacion": "54 es el último mínimo de una secuencia alcista. Perderlo rompe los mínimos crecientes."
+  },
+  {
+    "clave": "at-f-11",
+    "leccion": "la-tendencia",
+    "enunciado": "¿Por qué las reglas de tendencia pierden dinero en los rangos?",
+    "opciones": [
+      "Porque dan una señal tras otra en sentidos opuestos, y cada una cuesta algo",
+      "Porque en los rangos no hay precio",
+      "Porque el volumen desaparece",
+      "Porque las velas no cierran"
+    ],
+    "correcta": 0,
+    "explicacion": "Arriba, abajo, arriba: cada cambio es una pequeña pérdida más las comisiones."
+  },
+  {
+    "clave": "at-f-12",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Qué explicación mecánica tienen los soportes y resistencias en números redondos?",
+    "opciones": [
+      "Las plataformas bloquean esos precios",
+      "La gente coloca sus órdenes en cifras redondas, y ahí se acumulan",
+      "Los números redondos tienen propiedades matemáticas",
+      "Los bancos centrales los fijan"
+    ],
+    "correcta": 1,
+    "explicacion": "Es lo que mostraron los datos reales de órdenes de Osler en el mercado de divisas."
+  },
+  {
+    "clave": "at-f-13",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Cuántos niveles conviene tener marcados a cada lado del precio?",
+    "opciones": [
+      "Ninguno",
+      "Todos los que se puedan dibujar",
+      "Tres o cuatro",
+      "Veinte"
+    ],
+    "correcta": 2,
+    "explicacion": "Con muchos, siempre parecerá que alguno «ha funcionado»."
+  },
+  {
+    "clave": "at-f-14",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Qué significa que un soporte «tiene que aguantar»?",
+    "opciones": [
+      "Que el precio no puede bajar de ahí",
+      "Que conviene aumentar la posición",
+      "Que es seguro comprar sin stop",
+      "Nada: los soportes se rompen, y un nivel solo sirve para decidir con la pérdida acotada"
+    ],
+    "correcta": 3,
+    "explicacion": "Todos los mínimos de una tendencia bajista fueron soportes hasta que dejaron de serlo."
+  },
+  {
+    "clave": "at-f-15",
+    "leccion": "rupturas-y-falsas-rupturas",
+    "enunciado": "¿Qué ventaja tiene entrar cuando el precio regresa al nivel roto?",
+    "opciones": [
+      "Que el punto en el que te equivocas queda muy cerca",
+      "Que siempre ocurre",
+      "Que no hay comisiones",
+      "Que el precio ya no puede caer"
+    ],
+    "correcta": 0,
+    "explicacion": "Si vuelve a meterse al otro lado del nivel, sales. El inconveniente: a veces no hay regreso."
+  },
+  {
+    "clave": "at-f-16",
+    "leccion": "rupturas-y-falsas-rupturas",
+    "enunciado": "¿Qué cuesta no entrar en una ruptura que no esperaste?",
+    "opciones": [
+      "El stop",
+      "Nada",
+      "Una comisión",
+      "La mitad de la cuenta"
+    ],
+    "correcta": 1,
+    "explicacion": "Perderse un movimiento no cuesta dinero. Perseguirlo tarde, sí."
+  },
+  {
+    "clave": "at-f-17",
+    "leccion": "el-volumen-en-el-grafico",
+    "enunciado": "Un día el volumen triplica su media de veinte velas. ¿Qué se puede afirmar?",
+    "opciones": [
+      "Que hubo más compras que ventas",
+      "Que la tendencia ha terminado",
+      "Que ese día hubo una participación muy superior a la habitual",
+      "Que el precio subirá"
+    ],
+    "correcta": 2,
+    "explicacion": "Dice que pasó algo grande, no qué pasará."
+  },
+  {
+    "clave": "at-f-18",
+    "leccion": "el-volumen-en-el-grafico",
+    "enunciado": "¿Dónde suelen aparecer los mayores picos de volumen?",
+    "opciones": [
+      "Siempre al principio de una tendencia",
+      "En los rangos más estrechos",
+      "En los días sin noticias",
+      "Al final de los movimientos violentos"
+    ],
+    "correcta": 3,
+    "explicacion": "En la capitulación venden a la vez los que tienen miedo y los que son liquidados."
+  },
+  {
+    "clave": "at-f-19",
+    "leccion": "medias-moviles",
+    "enunciado": "Tienes en el gráfico una media de 12, una de 26 y el MACD. ¿Cuántos cruces de medias distintos estás midiendo?",
+    "opciones": [
+      "Uno",
+      "Tres",
+      "Ninguno",
+      "Dos"
+    ],
+    "correcta": 0,
+    "explicacion": "El cruce del MACD por cero es el cruce de esas dos medias."
+  },
+  {
+    "clave": "at-f-20",
+    "leccion": "medias-moviles",
+    "enunciado": "¿Qué encontraron Grobys, Ahmed y Sapkota con la media de 20 días entre 2016 y 2018?",
+    "opciones": [
+      "Que solo funcionaba en acciones",
+      "Un exceso de rentabilidad del 8,76 % anual en criptomonedas, sin contar bitcoin",
+      "Que perdía un 8,76 % anual",
+      "Que no funcionaba en ninguna moneda"
+    ],
+    "correcta": 1,
+    "explicacion": "Tres años son poco para una garantía, y el propio curso lo advierte."
+  },
+  {
+    "clave": "at-f-21",
+    "leccion": "medias-moviles",
+    "enunciado": "¿Por qué una media móvil no es un soporte?",
+    "opciones": [
+      "Porque solo existe en gráficos semanales",
+      "Porque siempre está por encima del precio",
+      "Porque no hay órdenes acumuladas en un promedio que cambia cada día",
+      "Porque no se puede dibujar"
+    ],
+    "correcta": 2,
+    "explicacion": "Sirve para leer la dirección. Los niveles fijos son otra cosa."
+  },
+  {
+    "clave": "at-f-22",
+    "leccion": "el-rsi",
+    "enunciado": "El precio hace un máximo más alto y el RSI uno más bajo. ¿Qué indica con seguridad?",
+    "opciones": [
+      "Que el precio caerá un 10 %",
+      "Que la tendencia ha terminado",
+      "Que hay que vender",
+      "Que el último avance fue menos intenso que el anterior"
+    ],
+    "correcta": 3,
+    "explicacion": "Muchas tendencias continúan tras varias divergencias."
+  },
+  {
+    "clave": "at-f-23",
+    "leccion": "el-rsi",
+    "enunciado": "¿Qué cambia al pasar el RSI de 14 a 7 periodos?",
+    "opciones": [
+      "Cuántas veces llega a los extremos, no si acierta",
+      "Que deja de tener retraso",
+      "Que usa el volumen",
+      "Que predice mejor"
+    ],
+    "correcta": 0,
+    "explicacion": "Con menos periodos da más señales. Ninguna configuración arregla el problema de fondo."
+  },
+  {
+    "clave": "at-f-24",
+    "leccion": "macd-y-bandas-de-bollinger",
+    "enunciado": "La media de 20 está en 100 y la desviación típica es de 3. ¿Dónde quedan las bandas de Bollinger?",
+    "opciones": [
+      "En 103 y 97",
+      "En 106 y 94",
+      "En 102 y 98",
+      "En 120 y 80"
+    ],
+    "correcta": 1,
+    "explicacion": "Media más y menos dos desviaciones típicas: 100 ± 6."
+  },
+  {
+    "clave": "at-f-25",
+    "leccion": "macd-y-bandas-de-bollinger",
+    "enunciado": "¿Cuál es el uso más práctico de la anchura de las bandas?",
+    "opciones": [
+      "Vender cuando el precio toca la superior",
+      "Predecir la dirección de la ruptura",
+      "Saber si el mercado está comprimido o agitado, para ajustar la salida y el tamaño",
+      "Comprar cuando toca la inferior"
+    ],
+    "correcta": 2,
+    "explicacion": "Con volatilidad alta, las salidas van más lejos y las posiciones son más pequeñas."
+  },
+  {
+    "clave": "at-f-26",
+    "leccion": "mas-indicadores-no-es-mejor",
+    "enunciado": "Con cinco valores posibles para cada uno de cuatro ajustes, ¿cuántas combinaciones hay?",
+    "opciones": [
+      "20",
+      "9",
+      "125",
+      "625"
+    ],
+    "correcta": 3,
+    "explicacion": "5 × 5 × 5 × 5. Entre tantas, decenas darán un resultado excelente por azar."
+  },
+  {
+    "clave": "at-f-27",
+    "leccion": "mas-indicadores-no-es-mejor",
+    "enunciado": "¿Qué criterio propone el curso para elegir indicadores?",
+    "opciones": [
+      "Como mucho uno por familia, con valores por defecto y una línea que diga para qué sirve",
+      "Cuantos más, mejor",
+      "Los que usa la cuenta con más seguidores",
+      "Solo los de pago"
+    ],
+    "correcta": 0,
+    "explicacion": "Dos de la misma familia son uno repetido."
+  },
+  {
+    "clave": "at-f-28",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Qué vale una tasa de acierto de una figura sin fuente, periodo ni definición?",
+    "opciones": [
+      "Depende de quién la diga",
+      "Nada: no es un dato",
+      "Lo mismo que un estudio publicado",
+      "Más cuanto más alta sea"
+    ],
+    "correcta": 1,
+    "explicacion": "Las que circulan suelen venir de quien vende el método, con figuras identificadas después."
+  },
+  {
+    "clave": "at-f-29",
+    "leccion": "patrones-chartistas-y-figuras-de-velas",
+    "enunciado": "¿Cómo se lee un hombro-cabeza-hombro sin mística?",
+    "opciones": [
+      "Como una garantía de caída",
+      "Como una señal de compra",
+      "Como un máximo que no se supera y un mínimo que se pierde: la ruptura de una tendencia alcista",
+      "Como una proporción de Fibonacci"
+    ],
+    "correcta": 2,
+    "explicacion": "Es lo mismo que el módulo 2, contado con un dibujo."
+  },
+  {
+    "clave": "at-f-30",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "Además de la tolerancia, ¿qué aumenta las coincidencias de Fibonacci?",
+    "opciones": [
+      "Que las plataformas ajustan el precio",
+      "Que el precio conoce la sucesión",
+      "Que hay pocos niveles",
+      "Que quien dibuja elige dónde empieza y dónde termina el tramo"
+    ],
+    "correcta": 3,
+    "explicacion": "Con libertad para elegir el tramo y cinco líneas, casi siempre hay alguna cerca."
+  },
+  {
+    "clave": "at-f-31",
+    "leccion": "fibonacci-ondas-y-numeros-magicos",
+    "enunciado": "¿Qué problema tienen los ángulos de Gann?",
+    "opciones": [
+      "Que la pendiente de una recta depende de la escala del gráfico",
+      "Que usan demasiado volumen",
+      "Que son demasiado simples",
+      "Que solo sirven para velas"
+    ],
+    "correcta": 0,
+    "explicacion": "El mismo ángulo dibuja rectas distintas según cómo se escalen los ejes."
+  },
+  {
+    "clave": "at-f-32",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "Solo miras el indicador que apoya la compra que ya querías hacer. ¿Qué sesgo es?",
+    "opciones": [
+      "Sesgo del superviviente",
+      "Sesgo de confirmación",
+      "Sesgo retrospectivo",
+      "Apofenia"
+    ],
+    "correcta": 1,
+    "explicacion": "Buscas y recuerdas lo que te da la razón."
+  },
+  {
+    "clave": "at-f-33",
+    "leccion": "los-sesgos-de-quien-mira-graficos",
+    "enunciado": "¿Qué ejercicio entrena contra el sesgo retrospectivo?",
+    "opciones": [
+      "Añadir líneas de tendencia",
+      "Leer más análisis ajenos",
+      "Avanzar el gráfico vela a vela con el futuro oculto y decidir sin ver el final",
+      "Mirar más gráficos terminados"
+    ],
+    "correcta": 2,
+    "explicacion": "En directo, la mitad derecha del gráfico siempre está tapada."
+  },
+  {
+    "clave": "at-f-34",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Qué mostraron Bailey, Borwein, López de Prado y Zhu?",
+    "opciones": [
+      "Que las medias móviles no funcionan",
+      "Que hay que probar miles de variantes",
+      "Que el backtesting es inútil",
+      "Que probando pocas configuraciones se obtienen resultados excelentes que no se repiten"
+    ],
+    "correcta": 3,
+    "explicacion": "Y que casi nadie dice cuántas probó antes de enseñar la buena."
+  },
+  {
+    "clave": "at-f-35",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "Ante una estrategia con una curva de resultados preciosa, ¿cuál es la pregunta clave?",
+    "opciones": [
+      "Cuántas variantes se probaron antes de quedarse con esa",
+      "De qué color es la curva",
+      "Cuántos seguidores tiene el autor",
+      "Cuánto ganó en total"
+    ],
+    "correcta": 0,
+    "explicacion": "Sin ese número no se puede valorar si el resultado es azar."
+  },
+  {
+    "clave": "at-f-36",
+    "leccion": "backtesting-y-sobreajuste",
+    "enunciado": "¿Qué ventaja tiene una prueba hecha a mano frente a una automática?",
+    "opciones": [
+      "Es más rápida",
+      "Obliga a ver cada operación y cada racha, y a notar lo incómodo de seguir la regla",
+      "Elimina los costes",
+      "Permite probar miles de variantes"
+    ],
+    "correcta": 1,
+    "explicacion": "Esa incomodidad es parte del resultado."
+  },
+  {
+    "clave": "at-f-37",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "Una regla gana +0,2R por operación antes de costes, y cada operación cuesta 0,1R. ¿Qué queda?",
+    "opciones": [
+      "Nada",
+      "−0,1R",
+      "+0,1R: la mitad",
+      "+0,3R"
+    ],
+    "correcta": 2,
+    "explicacion": "En reglas que buscan movimientos pequeños, los costes pueden llevarse la esperanza entera."
+  },
+  {
+    "clave": "at-f-38",
+    "leccion": "de-una-idea-a-una-regla",
+    "enunciado": "¿Por qué no basta con cien operaciones de compra durante una subida de dos años?",
+    "opciones": [
+      "Porque las subidas no cuentan",
+      "Porque faltan indicadores",
+      "Porque cien son demasiadas",
+      "Porque no dicen cómo se comporta la regla en caídas ni en rangos"
+    ],
+    "correcta": 3,
+    "explicacion": "La muestra tiene que incluir las tres situaciones de mercado."
+  },
+  {
+    "clave": "at-f-39",
+    "leccion": "tu-metodo-en-una-pagina",
+    "enunciado": "¿Cuánto tiempo al día exige un método sobre gráfico diario con la vela cerrada?",
+    "opciones": [
+      "Unos diez minutos",
+      "Ocho horas",
+      "Una hora cada hora",
+      "Toda la noche"
+    ],
+    "correcta": 0,
+    "explicacion": "El resto del tiempo delante de la pantalla añade tentaciones, no información."
+  },
+  {
+    "clave": "at-f-40",
+    "leccion": "tu-metodo-en-una-pagina",
+    "enunciado": "Tras probar con rigor, tu regla no supera a comprar y mantener. ¿Qué es eso?",
+    "opciones": [
+      "Un motivo para subir el tamaño",
+      "Un resultado válido, que te ha costado unas semanas y no tu dinero",
+      "Un fracaso del curso",
+      "Una señal para añadir indicadores"
+    ],
+    "correcta": 1,
+    "explicacion": "Decidir no operar con gráficos es una conclusión tan legítima como cualquier otra."
+  }
+]

@@ -1,0 +1,157 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El RSI es un número entre 0 y 100 que compara el tamaño de las subidas recientes con el de las bajadas recientes. Es uno de los indicadores más usados, y uno de los que peor se interpretan: «sobrecomprado» se entiende como «va a caer», y no es eso lo que mide. Aquí ves su fórmula con un ejemplo, de dónde salen los niveles de 70 y 30, por qué falla precisamente en las tendencias fuertes y qué uso razonable le queda.</p>
+</div>
+
+<h2>De dónde sale</h2>
+
+<p>El <a href="/glosario/rsi">RSI</a>, siglas en inglés de índice de fuerza relativa, lo publicó el ingeniero J. Welles Wilder en 1978, en un libro pensado para operar materias primas con gráficos diarios hechos a mano. Los valores que hoy vienen por defecto en todas las plataformas —14 periodos, niveles de 70 y 30— son los que él propuso entonces. No salen de ninguna demostración: son una convención de hace casi cincuenta años, para otros mercados.</p>
+
+<h2>Cómo se calcula</h2>
+
+<p>La idea es sencilla. Se toman las últimas catorce velas y se separan en dos grupos: las que cerraron al alza y las que cerraron a la baja. Se suma lo que subió en las primeras y lo que bajó en las segundas, se divide cada suma entre catorce, y se comparan los dos promedios.</p>
+
+<blockquote><strong>Fuerza relativa (RS) = media de las subidas ÷ media de las bajadas</strong><br><strong>RSI = 100 − 100 ÷ (1 + RS)</strong></blockquote>
+
+<p>Un ejemplo. En las últimas catorce velas, la media de las subidas ha sido de un 1,5 % y la de las bajadas, de un 0,5 %.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Paso</th><th>Cuenta</th><th>Resultado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Fuerza relativa</td><td>1,5 ÷ 0,5</td><td>3</td></tr>
+    <tr><td>Denominador</td><td>1 + 3</td><td>4</td></tr>
+    <tr><td>RSI</td><td>100 − 100 ÷ 4</td><td>75</td></tr>
+  </tbody>
+</table>
+
+<p>Un RSI de 75 significa, sin más, que las subidas recientes han sido tres veces mayores que las bajadas. La segunda fórmula solo sirve para encajar esa proporción en una escala de 0 a 100.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Qué proporción entre subidas y bajadas hay detrás de cada valor del RSI",
+  "subtitulo": "Cuántas veces mayores han sido las subidas medias que las bajadas medias.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "RSI 30", "rs": 0.43 },
+    { "etiqueta": "RSI 50", "rs": 1 },
+    { "etiqueta": "RSI 60", "rs": 1.5 },
+    { "etiqueta": "RSI 70", "rs": 2.33 },
+    { "etiqueta": "RSI 80", "rs": 4 },
+    { "etiqueta": "RSI 90", "rs": 9 }
+  ],
+  "series": [{ "clave": "rs", "nombre": "Subidas ÷ bajadas", "color": "#a3e635" }],
+  "nota": "Con RSI 50, subidas y bajadas han sido iguales. Con RSI 70, las subidas han sido 2,33 veces mayores."
+}
+</script></div>
+
+<p>Dos cosas se ven en la fórmula. La primera: el RSI no sabe nada del nivel del precio, solo del ritmo de los últimos cambios. La segunda: todo lo que contiene ya estaba en el gráfico. Es otra manera de mirar las mismas catorce velas.</p>
+
+<h2>«Sobrecomprado» no significa «va a caer»</h2>
+
+<p>La lectura que enseñan los manuales es esta: por encima de 70, el activo está sobrecomprado y conviene vender; por debajo de 30, sobrevendido y conviene comprar. Es la interpretación que más dinero cuesta.</p>
+
+<p>Piensa en lo que significa un RSI alto: que el precio lleva varias velas subiendo con fuerza. Eso es exactamente lo que ocurre en una tendencia alcista sólida. En las mejores subidas, el RSI se instala por encima de 70 y se queda ahí durante semanas, mientras el precio sigue subiendo.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">En un rango</p>
+    <p class="prose-vs-sub">El precio rebota entre dos niveles</p>
+    <ul>
+      <li data-tono="favor">Los extremos del RSI coinciden con los del rango</li>
+      <li data-tono="favor">70 y 30 dan una referencia razonable</li>
+      <li data-tono="contra">Hasta el día en que el rango se rompe</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">En una tendencia fuerte</p>
+    <p class="prose-vs-sub">El precio va en una dirección</p>
+    <ul>
+      <li data-tono="contra">El RSI se queda en la zona extrema durante semanas</li>
+      <li data-tono="contra">Vender en 70 te saca al principio del movimiento</li>
+      <li data-tono="contra">Ponerse en corto por «sobrecompra» es ir contra la tendencia</li>
+    </ul>
+  </div>
+</div>
+
+<p>Aquí está el problema de fondo: el RSI funciona como dicen los manuales solo cuando no hay tendencia, y no te dice cuándo no la hay. Para saberlo necesitas otra herramienta. Usado a ciegas, da su señal de venta justo en los mejores tramos de las subidas.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Las palabras «sobrecomprado» y «sobrevendido» sugieren que el precio está en un nivel insostenible. El indicador no mide eso. Mide que ha subido o bajado deprisa en las últimas catorce velas. Un activo puede estar «sobrecomprado» y doblar su precio.</div>
+</div>
+
+<h2>Las divergencias</h2>
+
+<p>El segundo uso popular es la divergencia: el precio marca un máximo más alto que el anterior, pero el RSI marca un máximo más bajo. Se interpreta como señal de que la subida pierde fuerza y está a punto de girar.</p>
+
+<p>Lo que describe es real y es poco: la última subida ha sido más lenta que la anterior. Eso pasa constantemente dentro de tendencias que continúan. Una tendencia puede mostrar tres o cuatro divergencias seguidas antes de girar, o no girar.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Lo que dice una divergencia</th><th>Lo que no dice</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>El último avance fue menos intenso que el anterior</td><td>Que el avance haya terminado</td></tr>
+    <tr><td>El ritmo se ha moderado</td><td>Cuándo girará el precio, si gira</td></tr>
+    <tr><td>Puede ser un motivo para no añadir posición</td><td>Que convenga operar en contra</td></tr>
+  </tbody>
+</table>
+
+<p>No hemos localizado estudios que muestren que las divergencias del RSI tengan capacidad predictiva una vez descontados los costes. Las que se enseñan en los cursos son las que funcionaron, elegidas después.</p>
+
+<h2>El uso que sí tiene sentido</h2>
+
+<p>Quitando lo que promete de más, el RSI queda como un termómetro del ritmo. Hay un uso coherente con todo lo visto hasta aquí, y va al revés de la lectura clásica.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Mira primero la tendencia</strong> con máximos y mínimos o con una media larga. El RSI no decide la dirección.</li>
+  <li><strong>En tendencia alcista, usa las caídas del RSI como referencia de retroceso.</strong> Que baje hacia 40 o 50 indica que el precio ha corregido dentro de la subida. Es una zona donde buscar entrada a favor, no en contra.</li>
+  <li><strong>No operes los extremos contra la tendencia.</strong> Un RSI de 80 en una subida fuerte confirma la fuerza; no la desmiente.</li>
+  <li><strong>En rango claro, los extremos sirven de aviso,</strong> siempre con la salida puesta al otro lado del rango.</li>
+</ol>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">14</span>
+  <span class="prose-dato-texto">Los periodos que usa el RSI por defecto. Los eligió Wilder en 1978 para materias primas. No hay ninguna razón de fondo por la que deban ser los adecuados para una criptomoneda.</span>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Cambiar los 14 periodos por 7 o por 21, o los niveles por 80 y 20, modifica cuántas señales da, no si aciertan. Con menos periodos el RSI llega a los extremos más a menudo; con más, casi nunca. Ninguna configuración arregla el problema de fondo.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "En las últimas 14 velas, la media de las subidas ha sido del 2 % y la de las bajadas, del 2 %. ¿Cuánto vale el RSI?",
+  "opciones": [
+    "50",
+    "100",
+    "0",
+    "70"
+  ],
+  "correcta": 0,
+  "explicacion": "RS = 2 ÷ 2 = 1. RSI = 100 − 100 ÷ (1 + 1) = 50. Subidas y bajadas han sido iguales."
+}
+</script></div>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Qué mide el RSI",
+  "afirmaciones": [
+    { "texto": "El RSI compara el tamaño medio de las subidas recientes con el de las bajadas recientes.", "verdadero": true, "explicacion": "Es todo lo que calcula, encajado en una escala de 0 a 100." },
+    { "texto": "Un RSI por encima de 70 indica que el precio va a caer pronto.", "verdadero": false, "explicacion": "Indica que ha subido deprisa. En tendencias fuertes puede seguir así durante semanas." },
+    { "texto": "Los 14 periodos y los niveles de 70 y 30 son una convención de 1978.", "verdadero": true, "explicacion": "Los propuso Wilder para materias primas. No salen de ninguna demostración." },
+    { "texto": "El RSI aporta información que no está en el precio.", "verdadero": false, "explicacion": "Se calcula solo con los cierres. Reordena lo que ya está en el gráfico." },
+    { "texto": "Una divergencia garantiza un cambio de tendencia.", "verdadero": false, "explicacion": "Solo indica que el último avance fue más lento. Muchas tendencias continúan tras varias divergencias." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: cuenta los extremos</h2>
+
+<p>En el gráfico diario de bitcoin, añade el RSI de 14 periodos. Busca un tramo de subida fuerte de los últimos años y cuenta cuántos días seguidos se mantuvo por encima de 70. Anota el precio el primer día que cruzó 70 y el precio máximo que alcanzó después: calcula cuánto habrías dejado de ganar vendiendo en la primera «sobrecompra». Luego busca un tramo lateral de varias semanas y comprueba si ahí los extremos del RSI coincidieron con los giros. Escribe la diferencia entre los dos casos.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el RSI mide cuánto mayores han sido las subidas recientes que las bajadas, en una escala de 0 a 100. Un valor alto dice que el precio ha subido deprisa, no que vaya a caer: en tendencias fuertes se queda arriba durante semanas. Sus valores por defecto son una convención de 1978. Mira antes la tendencia y úsalo para medir retrocesos a favor de ella, no para operar en contra.</div>
+</div>

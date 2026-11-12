@@ -1,0 +1,165 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El mayor obstáculo para usar bien un gráfico no está en el gráfico: está en quien lo mira. El cerebro humano encuentra patrones en el azar, recuerda los aciertos mejor que los fallos y, una vez conocido el final, cree que se veía venir. Aquí ves los cinco sesgos que más afectan a quien hace análisis técnico, por qué un gráfico terminado resulta tan convincente, cómo se fabrica un gurú sin que nadie sepa nada y qué hábitos concretos reducen el autoengaño.</p>
+</div>
+
+<h2>Una máquina de ver patrones</h2>
+
+<p>En el ejercicio de las dos lecciones anteriores dibujaste una serie lanzando una moneda y encontraste en ella tendencias, soportes y figuras. No es que hicieras algo mal. Es lo que hace cualquier cerebro humano: buscar orden, incluso donde no lo hay.</p>
+
+<p>Esa tendencia tiene nombre, apofenia, y está muy estudiada. Una de sus formas más conocidas es la ilusión de agrupamiento: cuando vemos varias caras seguidas en una serie de lanzamientos, nos parece que «algo pasa», aunque las rachas son exactamente lo que produce el azar. Las series de verdad aleatorias nos parecen demasiado ordenadas, y si nos piden inventar una, la hacemos con demasiados cambios.</p>
+
+<p>Un gráfico de precios es el terreno ideal para este error. Tiene mucho ruido, miles de puntos y ninguna respuesta inmediata que te corrija.</p>
+
+<h2>Los cinco sesgos del gráfico</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Sesgo</th><th>En qué consiste</th><th>Cómo se ve en un gráfico</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Apofenia</td><td>Ver patrones con significado en datos aleatorios</td><td>Encontrar figuras y líneas «que el precio respeta» en cualquier tramo</td></tr>
+    <tr><td>Sesgo retrospectivo</td><td>Creer, una vez conocido el final, que era previsible</td><td>«Estaba clarísimo que iba a caer», dicho después de la caída</td></tr>
+    <tr><td><a href="/glosario/sesgo-de-confirmacion">Sesgo de confirmación</a></td><td>Buscar y recordar lo que apoya lo que ya pensabas</td><td>Fijarte solo en el indicador que te da la razón</td></tr>
+    <tr><td>Sesgo del superviviente</td><td>Juzgar solo por los casos que han llegado hasta ti</td><td>Ver únicamente los ejemplos y los operadores que salieron bien</td></tr>
+    <tr><td><a href="/glosario/anclaje">Anclaje</a></td><td>Dar demasiado peso a una cifra de referencia</td><td>Juzgar todo respecto a tu precio de compra o a un máximo anterior</td></tr>
+  </tbody>
+</table>
+
+<h2>El gráfico terminado siempre tiene razón</h2>
+
+<p>El sesgo retrospectivo merece un apartado, porque sostiene casi toda la enseñanza del análisis técnico. Mira cualquier gráfico del pasado: el giro es evidente, la figura está completa, el momento de entrar se ve a simple vista.</p>
+
+<p>Ahora tapa con una hoja la mitad derecha y vuelve a mirarlo. Lo que antes era evidente se convierte en tres o cuatro posibilidades igual de razonables.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Con el gráfico completo</p>
+    <p class="prose-vs-sub">Sabiendo cómo acabó</p>
+    <ul>
+      <li data-tono="contra">El soporte que aguantó parece obvio</li>
+      <li data-tono="contra">Los que no aguantaron ni se recuerdan</li>
+      <li data-tono="contra">La entrada perfecta «se veía»</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Con la mitad tapada</p>
+    <p class="prose-vs-sub">Como se vive en directo</p>
+    <ul>
+      <li data-tono="favor">Hay cuatro niveles posibles y no se sabe cuál contará</li>
+      <li data-tono="favor">La figura puede completarse o deshacerse</li>
+      <li data-tono="favor">Cualquier decisión tiene motivos en contra</li>
+    </ul>
+  </div>
+</div>
+
+<p>Todos los cursos, vídeos y publicaciones que enseñan con gráficos pasados juegan con esa ventaja, a veces sin mala intención. El resultado es una confianza que no se corresponde con lo que ocurre al operar en directo, donde la mitad derecha siempre está tapada.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Hay una forma barata de entrenar contra este sesgo: la función de reproducción que ofrecen casi todas las plataformas de gráficos. Oculta el futuro y avanza vela a vela. Decidir así, sin ver el final, enseña en una tarde más humildad que cien gráficos comentados.</div>
+</div>
+
+<h2>Cómo se fabrica un gurú</h2>
+
+<p>El sesgo del superviviente explica algo que desconcierta a mucha gente: cómo puede haber personas con rachas de aciertos espectaculares si el método no funciona. La respuesta es una cuenta.</p>
+
+<p>Imagina 1.024 cuentas en redes sociales. Cada semana, cada una publica una predicción: el precio subirá o bajará. No saben nada; es como lanzar una moneda. Cada semana, la mitad acierta por azar.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Cuentas que siguen sin fallar, semana a semana",
+  "subtitulo": "1.024 cuentas que predicen al azar si el precio subirá o bajará.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Inicio", "cuentas": 1024 },
+    { "etiqueta": "Semana 2", "cuentas": 256 },
+    { "etiqueta": "Semana 4", "cuentas": 64 },
+    { "etiqueta": "Semana 6", "cuentas": 16 },
+    { "etiqueta": "Semana 8", "cuentas": 4 },
+    { "etiqueta": "Semana 10", "cuentas": 1 }
+  ],
+  "series": [{ "clave": "cuentas", "nombre": "Cuentas con pleno de aciertos", "color": "#a3e635" }],
+  "nota": "Cada semana acierta la mitad por puro azar. Tras diez semanas queda una cuenta con diez aciertos seguidos."
+}
+</script></div>
+
+<p>Al cabo de diez semanas queda, de media, una cuenta que ha acertado diez veces seguidas. No tiene ningún método. Pero tiene un historial impecable, capturas de pantalla que lo demuestran y, probablemente, un curso en venta. Las otras 1.023 han borrado sus predicciones o han dejado de publicar.</p>
+
+<p>Tú solo ves a la que queda. Y lo mismo pasa con las capturas de operaciones ganadoras, con los testimonios y con los ejemplos de los libros.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">1 de 1.024</span>
+  <span class="prose-dato-texto">Las cuentas que, prediciendo al azar, consiguen diez aciertos seguidos. Con miles de personas publicando predicciones, siempre habrá alguien con un historial perfecto.</span>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Un historial de aciertos solo vale algo si lo tienes completo y se publicó antes de saber el resultado: todas las predicciones, con fecha, incluidas las fallidas. Una selección de capturas no es un historial. Y aun con uno completo, diez aciertos seguidos son poca muestra, como verás en el módulo 5.</div>
+</div>
+
+<h2>Los sesgos, en tu propia operativa</h2>
+
+<p>No hace falta un gurú para caer. Estos son los efectos más habituales sobre quien opera con gráficos.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Antes de entrar</span>
+    <p>Decides que quieres comprar y después buscas en el gráfico los motivos. Siempre los hay.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Con la operación abierta</span>
+    <p>Mides todo desde tu precio de entrada, que al mercado no le importa. Mueves la línea para que la idea siga viva.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Si sale bien</span>
+    <p>Lo atribuyes a tu análisis, aunque fuera suerte. Aumenta el <a href="/glosario/exceso-de-confianza">exceso de confianza</a>.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Si sale mal</span>
+    <p>Lo atribuyes a la mala suerte o a una manipulación. El método queda intacto y no aprendes nada.</p>
+  </div>
+</div>
+
+<p>El tercer y el cuarto paso juntos forman un circuito que impide mejorar: los aciertos confirman el método y los fallos no lo cuestionan. Así se pueden pasar años creyendo que algo funciona sin haberlo comprobado nunca.</p>
+
+<h2>Lo que reduce el autoengaño</h2>
+
+<p>Los sesgos no se eliminan sabiendo que existen. Se reducen con procedimientos que no dependan de tu impresión del momento.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Escribe antes.</strong> Qué esperas, por qué, dónde sales y qué te demostraría que estabas equivocado. Con fecha, antes de entrar.</li>
+  <li><strong>Apunta todo, no solo lo que sale bien.</strong> Un <a href="/glosario/diario-de-trading">diario de trading</a> con todas las operaciones es el único historial que no puedes retocar con la memoria.</li>
+  <li><strong>Busca el argumento contrario.</strong> Antes de entrar, escribe la mejor razón para no hacerlo. Si no encuentras ninguna, no has mirado.</li>
+  <li><strong>Usa reglas que otro aplicaría igual.</strong> Cuanto menos interpretación, menos sitio para el sesgo.</li>
+  <li><strong>Cuenta.</strong> Cuántas veces has usado esa herramienta y cuántas acertó. La memoria da siempre un número más alto que el real.</li>
+</ol>
+
+<p>El quinto punto conecta con lo que viene. Contar es la única forma de salir de la impresión y entrar en el dato, y es justo de lo que trata el último módulo.</p>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Qué sesgo es?",
+  "instrucciones": "Lleva cada situación al sesgo que mejor la explica.",
+  "grupos": [
+    { "id": "retro", "nombre": "Sesgo retrospectivo" },
+    { "id": "confirma", "nombre": "Sesgo de confirmación" },
+    { "id": "super", "nombre": "Sesgo del superviviente" }
+  ],
+  "elementos": [
+    { "texto": "«Se veía venir», dicho al día siguiente de la caída", "grupo": "retro", "explicacion": "Con el final conocido, todo parece previsible." },
+    { "texto": "Tienes cinco indicadores y solo miras el que apoya tu compra", "grupo": "confirma", "explicacion": "Buscas lo que confirma lo que ya querías hacer." },
+    { "texto": "Sigues a alguien por sus capturas de operaciones ganadoras", "grupo": "super", "explicacion": "No ves las perdedoras ni a quienes fallaron y dejaron de publicar." },
+    { "texto": "Un libro muestra veinte dobles techos que funcionaron", "grupo": "super", "explicacion": "Los ejemplos están elegidos entre muchos que no funcionaron." },
+    { "texto": "Sobre un gráfico pasado, la entrada perfecta te parece evidente", "grupo": "retro", "explicacion": "En directo, con la mitad derecha tapada, no lo era." },
+    { "texto": "Lees solo a analistas que opinan lo mismo que tú", "grupo": "confirma", "explicacion": "Filtras la información para no encontrar desacuerdo." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: la mitad tapada</h2>
+
+<p>Abre un gráfico diario de un activo que no hayas mirado en meses y, sin fijarte, desplázalo hasta un punto de hace más de un año, de modo que no se vea lo que pasó después. O usa la función de reproducción de la plataforma. Escribe qué crees que hará el precio en las próximas treinta velas y por qué. Avanza y comprueba. Repítelo diez veces, en momentos distintos, y apunta cuántas acertaste. Compara ese número con la seguridad que sentías al escribir cada predicción.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el cerebro ve patrones en el azar, cree a posteriori que todo era previsible y recuerda mejor lo que le da la razón. Un gráfico terminado siempre convence; con la mitad derecha tapada, no. Entre mil cuentas que predicen al azar, una acierta diez veces seguidas, y es la única que ves. Escribe antes, apúntalo todo, busca el argumento contrario y cuenta.</div>
+</div>

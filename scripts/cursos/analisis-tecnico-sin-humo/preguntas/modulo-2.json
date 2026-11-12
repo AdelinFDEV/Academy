@@ -1,0 +1,249 @@
+[
+  {
+    "clave": "at-m2-01",
+    "leccion": "la-tendencia",
+    "enunciado": "¿Cómo se define una tendencia alcista?",
+    "opciones": [
+      "La última vela es verde",
+      "El volumen aumenta",
+      "Máximos y mínimos sucesivos cada vez más altos",
+      "El precio está por encima de 100"
+    ],
+    "correcta": 2,
+    "explicacion": "Es una definición comprobable: dos personas llegan a la misma respuesta."
+  },
+  {
+    "clave": "at-m2-02",
+    "leccion": "la-tendencia",
+    "enunciado": "Los últimos picos están en 90, 91 y 90, y los valles en 80, 81 y 80. ¿Qué hay?",
+    "opciones": [
+      "Una tendencia alcista",
+      "Una tendencia bajista",
+      "Una ruptura",
+      "Un rango lateral"
+    ],
+    "correcta": 3,
+    "explicacion": "Máximos y mínimos se quedan a la misma altura: el precio no va a ningún sitio."
+  },
+  {
+    "clave": "at-m2-03",
+    "leccion": "la-tendencia",
+    "enunciado": "¿Cuándo se rompe una tendencia alcista?",
+    "opciones": [
+      "Cuando el precio cierra por debajo del último mínimo relevante",
+      "Cuando baja el volumen",
+      "Cuando aparece una vela roja",
+      "Cuando el precio no sube en tres días"
+    ],
+    "correcta": 0,
+    "explicacion": "Deja de haber mínimos crecientes: la secuencia que la definía ya no existe."
+  },
+  {
+    "clave": "at-m2-04",
+    "leccion": "la-tendencia",
+    "enunciado": "Una tendencia alcista se rompe. ¿Qué empieza a continuación?",
+    "opciones": [
+      "Un doble techo",
+      "No se sabe: puede ser una tendencia bajista o, más a menudo, un rango",
+      "Siempre otra alcista",
+      "Siempre una tendencia bajista"
+    ],
+    "correcta": 1,
+    "explicacion": "La ruptura solo dice que ya no hay motivo para suponer que la subida continúa."
+  },
+  {
+    "clave": "at-m2-05",
+    "leccion": "la-tendencia",
+    "enunciado": "¿Dónde es más natural colocar la salida de quien compra a favor de una tendencia alcista?",
+    "opciones": [
+      "Por encima del último máximo",
+      "En el precio de entrada",
+      "Por debajo del último mínimo relevante",
+      "En el máximo histórico"
+    ],
+    "correcta": 2,
+    "explicacion": "Si se pierde ese mínimo, la idea «esto está subiendo» deja de ser cierta."
+  },
+  {
+    "clave": "at-m2-06",
+    "leccion": "la-tendencia",
+    "enunciado": "¿Qué coste tiene operar a favor de la tendencia?",
+    "opciones": [
+      "Que pagas más comisiones",
+      "Que exige adivinar el giro",
+      "Que solo sirve en gráficos de minutos",
+      "Que nunca compras en el mínimo ni vendes en el máximo"
+    ],
+    "correcta": 3,
+    "explicacion": "Renuncias a los extremos a cambio de no tener que adivinarlos."
+  },
+  {
+    "clave": "at-m2-07",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Qué es un soporte?",
+    "opciones": [
+      "Una zona por debajo del precio donde las caídas se han detenido",
+      "La media de los últimos cierres",
+      "El precio mínimo histórico",
+      "Una zona por encima del precio donde las subidas se han detenido"
+    ],
+    "correcta": 0,
+    "explicacion": "Es donde predominan los compradores. La resistencia es su equivalente por arriba."
+  },
+  {
+    "clave": "at-m2-08",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "Según los datos de Osler, ¿dónde se agrupan las órdenes de toma de beneficios?",
+    "opciones": [
+      "Justo más allá de los números redondos",
+      "En los números redondos",
+      "En los precios con muchos decimales",
+      "No se agrupan"
+    ],
+    "correcta": 1,
+    "explicacion": "Al ejecutarse en sentido contrario al movimiento, frenan el precio en esos niveles."
+  },
+  {
+    "clave": "at-m2-09",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "Según Osler, ¿dónde se agrupan las órdenes de stop?",
+    "opciones": [
+      "Lejos de cualquier nivel",
+      "Exactamente en los números redondos",
+      "Justo más allá de los números redondos",
+      "En el precio medio del día"
+    ],
+    "correcta": 2,
+    "explicacion": "Al ejecutarse a favor del movimiento, lo aceleran cuando el nivel se supera."
+  },
+  {
+    "clave": "at-m2-10",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Qué suele ocurrir con un soporte cuando se rompe?",
+    "opciones": [
+      "Se convierte en un soporte más fuerte",
+      "Deja de tener órdenes",
+      "Desaparece para siempre",
+      "Pasa a actuar como resistencia"
+    ],
+    "correcta": 3,
+    "explicacion": "Quienes compraron allí quedan atrapados y venden cuando el precio vuelve a ese nivel."
+  },
+  {
+    "clave": "at-m2-11",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Por qué hay que tratar un nivel como una zona y no como una línea?",
+    "opciones": [
+      "Porque el precio rara vez se gira en el mismo precio exacto",
+      "Porque las líneas no se pueden dibujar",
+      "Porque las zonas tienen más volumen",
+      "Porque así nunca se rompe"
+    ],
+    "correcta": 0,
+    "explicacion": "Se gira un poco antes o lo atraviesa un poco y vuelve. La salida va más allá de la zona."
+  },
+  {
+    "clave": "at-m2-12",
+    "leccion": "soportes-y-resistencias",
+    "enunciado": "¿Cuál de estos niveles merece menos la pena marcar?",
+    "opciones": [
+      "Un número redondo cercano",
+      "Un pico del gráfico de un minuto de hace una hora",
+      "Un giro claro en el gráfico semanal",
+      "El máximo histórico"
+    ],
+    "correcta": 1,
+    "explicacion": "Casi nadie lo mira, así que no acumula órdenes."
+  },
+  {
+    "clave": "at-m2-13",
+    "leccion": "rupturas-y-falsas-rupturas",
+    "enunciado": "¿Por qué se acelera el precio al superar una resistencia?",
+    "opciones": [
+      "Porque las plataformas suben el precio",
+      "Porque cambia la temporalidad",
+      "Porque saltan los stops acumulados detrás y entran quienes esperaban la ruptura",
+      "Porque baja el volumen"
+    ],
+    "correcta": 2,
+    "explicacion": "Varios grupos compran a la vez en un espacio muy pequeño de precios."
+  },
+  {
+    "clave": "at-m2-14",
+    "leccion": "rupturas-y-falsas-rupturas",
+    "enunciado": "¿Qué es una ruptura falsa?",
+    "opciones": [
+      "La que ocurre en fin de semana",
+      "La que va a favor de la tendencia",
+      "La que tiene mucho volumen",
+      "La que cruza el nivel y vuelve a meterse dentro sin continuar"
+    ],
+    "correcta": 3,
+    "explicacion": "Atrapa a quien entró al otro lado, en pérdidas desde el primer momento."
+  },
+  {
+    "clave": "at-m2-15",
+    "leccion": "rupturas-y-falsas-rupturas",
+    "enunciado": "¿Qué criterio elimina más falsas alarmas con menos esfuerzo?",
+    "opciones": [
+      "Esperar a que la vela cierre al otro lado del nivel",
+      "Añadir más indicadores",
+      "Entrar en cuanto el precio toca el nivel",
+      "Usar el gráfico de un minuto"
+    ],
+    "correcta": 0,
+    "explicacion": "Con la vela abierta, el precio puede cruzar y volver muchas veces."
+  },
+  {
+    "clave": "at-m2-16",
+    "leccion": "rupturas-y-falsas-rupturas",
+    "enunciado": "Compras una ruptura de una resistencia en 100. ¿Cuándo queda invalidada tu idea?",
+    "opciones": [
+      "Si aparece una vela roja por encima de 100",
+      "Si el precio vuelve a cerrar por debajo del nivel",
+      "Nunca, si la ruptura fue con volumen",
+      "Si sube más despacio de lo previsto"
+    ],
+    "correcta": 1,
+    "explicacion": "La idea era «el nivel se ha roto». Si vuelve a quedar por debajo, es falsa."
+  },
+  {
+    "clave": "at-m2-17",
+    "leccion": "el-volumen-en-el-grafico",
+    "enunciado": "¿Qué indica el color de una barra de volumen?",
+    "opciones": [
+      "Si hubo más compradores que vendedores",
+      "Si entró dinero nuevo",
+      "Si la vela cerró por encima o por debajo de su apertura",
+      "Si el volumen sube o baja"
+    ],
+    "correcta": 2,
+    "explicacion": "Copia el color de la vela. En toda operación se compra y se vende la misma cantidad."
+  },
+  {
+    "clave": "at-m2-18",
+    "leccion": "el-volumen-en-el-grafico",
+    "enunciado": "¿Con qué hay que comparar el volumen de una vela para interpretarlo?",
+    "opciones": [
+      "Con el de otra plataforma",
+      "Con el precio",
+      "Con el volumen de bitcoin",
+      "Con el volumen habitual de ese mismo activo"
+    ],
+    "correcta": 3,
+    "explicacion": "Una cifra aislada no dice nada. Lo útil es saber si es más o menos de lo normal."
+  },
+  {
+    "clave": "at-m2-19",
+    "leccion": "el-volumen-en-el-grafico",
+    "enunciado": "¿Por qué el volumen es menos fiable en las monedas pequeñas?",
+    "opciones": [
+      "Porque parte del volumen publicado puede ser ficticio",
+      "Porque no tienen gráfico",
+      "Porque solo cotizan unas horas",
+      "Porque su precio es bajo"
+    ],
+    "correcta": 0,
+    "explicacion": "El wash trading infla la actividad. En un token recién listado, una barra enorme puede no significar nada."
+  }
+]

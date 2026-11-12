@@ -1,0 +1,147 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Los retrocesos de Fibonacci, las ondas de Elliott y otras técnicas parecidas tienen algo en común: suenan a matemática profunda y casi siempre parecen acertar cuando se enseñan sobre un gráfico terminado. Aquí ves de dónde salen esos números, qué encontró el estudio que los buscó en casi noventa años de bolsa, por qué con suficientes líneas alguna coincide siempre y cómo distinguir una teoría que se puede comprobar de una que se adapta a cualquier resultado.</p>
+</div>
+
+<h2>De dónde salen los números</h2>
+
+<p>La sucesión de Fibonacci empieza 1, 1, 2, 3, 5, 8, 13, 21… Cada número es la suma de los dos anteriores. Al dividir uno entre el siguiente, el resultado se acerca a 0,618; entre el que está dos puestos más allá, a 0,382. Esa proporción aparece en algunas formas de la naturaleza, y de ahí viene buena parte de su prestigio.</p>
+
+<p>En el análisis técnico se usa para los llamados retrocesos. Tras una subida, se mide el tramo entero y se dibujan líneas horizontales a ciertas fracciones de él, donde se supone que el precio encontrará un <a href="/glosario/soporte">soporte</a> antes de continuar.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Nivel</th><th>De dónde sale</th><th>Ejemplo: subida de 100 a 200</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>23,6 %</td><td>Un número entre el que está tres puestos después</td><td>176,4</td></tr>
+    <tr><td>38,2 %</td><td>Un número entre el que está dos puestos después</td><td>161,8</td></tr>
+    <tr><td>50 %</td><td>No es de Fibonacci: es simplemente la mitad</td><td>150</td></tr>
+    <tr><td>61,8 %</td><td>Un número entre el siguiente</td><td>138,2</td></tr>
+    <tr><td>78,6 %</td><td>La raíz cuadrada de 0,618</td><td>121,4</td></tr>
+  </tbody>
+</table>
+
+<p>Fíjate en dos cosas. El nivel del 50 %, uno de los más usados, no tiene nada que ver con la sucesión. Y hay cinco líneas repartidas a lo largo de todo el tramo.</p>
+
+<h2>Con cinco líneas, siempre hay una cerca</h2>
+
+<p>Aquí está el truco, y no hace falta ningún estudio para verlo. Las cinco líneas quedan repartidas por el tramo, a entre doce y diecisiete puntos unas de otras. Un precio que retroceda algo más de una quinta parte de la subida tiene siempre una línea a pocos puntos.</p>
+
+<p>Ahora añade lo que viste en el módulo 2: un nivel no es una línea exacta, sino una zona. Si aceptas que el precio «respeta» un nivel cuando se gira a tres o cuatro puntos de él, la cuenta es esta.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Parte del tramo que queda «cerca» de alguna línea de Fibonacci",
+  "subtitulo": "Con los cinco niveles habituales, según la tolerancia que se acepte a cada lado de la línea.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "A ±1 punto", "cubierto": 10 },
+    { "etiqueta": "A ±2 puntos", "cubierto": 20 },
+    { "etiqueta": "A ±3 puntos", "cubierto": 30 },
+    { "etiqueta": "A ±4 puntos", "cubierto": 40 },
+    { "etiqueta": "A ±5 puntos", "cubierto": 50 }
+  ],
+  "series": [{ "clave": "cubierto", "nombre": "Parte del tramo cubierta", "color": "#a3e635" }],
+  "nota": "Cinco líneas, cada una con su margen a los dos lados. Con ±4 puntos, cuatro de cada diez giros caerían «en un nivel» por puro azar."
+}
+</script></div>
+
+<p>Con una tolerancia de cuatro puntos, el 40 % de todo el recorrido está «en un nivel de Fibonacci». Un precio que se girase en un punto elegido al azar acertaría con alguna línea cuatro de cada diez veces. Y como además quien dibuja elige dónde empieza y dónde termina el tramo que mide, la probabilidad real de encontrar una coincidencia es todavía mayor.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">40 %</span>
+  <span class="prose-dato-texto">La parte de un tramo que queda a menos de cuatro puntos de alguno de los cinco niveles habituales. Coincidir con uno de ellos no demuestra nada.</span>
+</div>
+
+<h2>Lo que encontró quien lo comprobó</h2>
+
+<p>En 2006, dos investigadores de la Cass Business School de Londres, Roy Batchelor y Richard Ramyar, hicieron la comprobación a gran escala. Tomaron el índice Dow Jones de 1914 a 2002, identificaron sus tendencias con un método automático y midieron las proporciones entre cada movimiento y el siguiente. Si las ratios de Fibonacci tuvieran algo especial, deberían aparecer más a menudo que otras.</p>
+
+<p>No aparecieron. Las proporciones no se agrupaban en torno a esos números más de lo que cabría esperar por azar. La prensa económica resumió el resultado sin rodeos: el estudio no halló indicios de que los números de Fibonacci funcionen en la bolsa estadounidense.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Hay un argumento a favor que merece respuesta: «funcionan porque mucha gente los mira, como los números redondos». Es una hipótesis razonable, y es justo la que el estudio habría detectado. Si suficientes operadores colocaran órdenes en esos niveles, los giros se concentrarían en ellos. Los datos no lo muestran.</div>
+</div>
+
+<h2>Las ondas de Elliott y las teorías que no pueden fallar</h2>
+
+<p>La teoría de las ondas de Elliott afirma que el precio avanza en secuencias de cinco ondas a favor de la tendencia y tres en contra, y que ese patrón se repite a todas las escalas, unas ondas dentro de otras. Combina con Fibonacci para calcular hasta dónde llegará cada una.</p>
+
+<p>Su problema no es que se haya demostrado falsa. Es que resulta casi imposible demostrarla falsa, y eso es peor.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Una regla comprobable</p>
+    <p class="prose-vs-sub">«Compro si cierra por encima de la media de 50»</p>
+    <ul>
+      <li data-tono="favor">Dos personas la aplican igual</li>
+      <li data-tono="favor">Se puede probar con datos pasados</li>
+      <li data-tono="favor">Si no funciona, se ve</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Una teoría elástica</p>
+    <p class="prose-vs-sub">«Estamos en la onda 3 de la onda 5»</p>
+    <ul>
+      <li data-tono="contra">Dos expertos cuentan las ondas de forma distinta</li>
+      <li data-tono="contra">Si el precio hace otra cosa, se «recuenta»</li>
+      <li data-tono="contra">Ningún resultado la contradice</li>
+    </ul>
+  </div>
+</div>
+
+<p>Cuando una predicción falla y la respuesta es «el recuento era otro», la teoría no ha fallado nunca. Tampoco ha acertado: ha explicado el pasado, que es mucho más fácil. Una idea que encaja con cualquier cosa que ocurra no te dice nada sobre lo que va a ocurrir.</p>
+
+<p>Esta es la prueba más útil que puedes aplicar a cualquier técnica, tenga el nombre que tenga.</p>
+
+<ol class="prose-pasos">
+  <li><strong>¿Puede decirse de antemano qué resultado demostraría que estaba equivocada?</strong> Si no, no predice.</li>
+  <li><strong>¿Dos personas que la aplican llegan a lo mismo?</strong> Si no, depende de quien mira.</li>
+  <li><strong>¿Se puede escribir como una regla y probar con datos?</strong> Si no, no hay forma de saber si sirve.</li>
+</ol>
+
+<h2>Otros números con aura</h2>
+
+<p>La lista es larga y todos comparten el mismo patrón: una fórmula o una proporción con apariencia de ley natural, muchas líneas en el gráfico y ejemplos elegidos después.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Técnica</th><th>Qué dibuja</th><th>El problema común</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Extensiones de Fibonacci</td><td>Objetivos de precio al 127 %, 161,8 %, 261,8 %…</td><td>Más líneas: más coincidencias casuales</td></tr>
+    <tr><td>Ángulos de Gann</td><td>Rectas con pendientes fijas desde un punto</td><td>La pendiente depende de la escala del gráfico</td></tr>
+    <tr><td>Patrones armónicos</td><td>Figuras con nombre de animal definidas por ratios</td><td>Tolerancias amplias y validación a posteriori</td></tr>
+    <tr><td>Ciclos temporales fijos</td><td>Fechas en las que «toca» un giro</td><td>Pocas observaciones y muchas fechas posibles</td></tr>
+  </tbody>
+</table>
+
+<p>Ninguna de ellas cuenta, que hayamos localizado, con estudios publicados que muestren una ventaja después de costes. Eso no demuestra que sean inútiles en todos los casos. Significa que quien las usa lo hace sin más respaldo que su propia impresión de que funcionan.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La complejidad vende. Un método con ratios, ondas y nombres técnicos parece más serio que «el precio está por encima de su media». Es al revés: cuanto más complicada es una técnica, más formas tiene de adaptarse al pasado y más difícil es comprobar si aporta algo. Desconfía en proporción a lo sofisticada que parezca.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un analista dijo que el precio subiría. Bajó. Ahora explica que «el recuento de ondas correcto era otro» y que la caída encaja perfectamente. ¿Qué indica eso sobre su método?",
+  "opciones": [
+    "Que se adapta a cualquier resultado, así que no sirve para anticipar ninguno",
+    "Que el método es muy flexible, lo cual es una ventaja",
+    "Que acertó, pero con retraso",
+    "Que hacían falta más niveles de Fibonacci"
+  ],
+  "correcta": 0,
+  "explicacion": "Una teoría que explica tanto la subida como la caída no distingue entre ellas de antemano. Explicar el pasado no es predecir."
+}
+</script></div>
+
+<h2>Ejercicio: Fibonacci sobre el azar</h2>
+
+<p>Recupera la serie que dibujaste lanzando una moneda en la lección anterior. Elige en ella una subida clara, mide el tramo y marca los cinco niveles de la tabla. Cuenta cuántas veces el «precio» se giró a menos de tres puntos de alguna de las líneas. Después haz lo mismo sobre un gráfico real, con las mismas reglas y la misma tolerancia. Compara los dos recuentos. Si en la moneda encuentras tantos aciertos como en el gráfico, ya sabes cuánto vale la herramienta.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> con cinco líneas y un margen razonable, casi la mitad de un tramo queda «en un nivel de Fibonacci», así que las coincidencias no prueban nada. El estudio que buscó esas proporciones en el Dow Jones de 1914 a 2002 no las encontró más de lo esperable por azar. Y una teoría que se recuenta cuando falla no predice. Pregunta siempre qué resultado demostraría que un método está equivocado.</div>
+</div>

@@ -1,0 +1,144 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Una ruptura ocurre cuando el precio atraviesa un nivel que lo había contenido. A veces es el inicio de un movimiento amplio; muchas otras, el precio asoma al otro lado, atrapa a quien entró y vuelve. Aquí ves por qué el precio se acelera al romper, por qué las rupturas falsas son tan frecuentes, qué criterios ayudan a distinguirlas sin pretender acertar siempre y cómo plantear la operación para que una ruptura fallida cueste poco.</p>
+</div>
+
+<h2>Qué es una ruptura</h2>
+
+<p>En la lección anterior viste que un nivel es una zona donde el precio se ha detenido varias veces. Una <a href="/glosario/ruptura">ruptura</a> es lo contrario: el precio llega a la zona y, en lugar de girarse, la atraviesa. En inglés se llama <em>breakout</em>.</p>
+
+<p>Es uno de los momentos que más atención atrae en un gráfico, y por un buen motivo. Si una <a href="/glosario/resistencia">resistencia</a> representaba a los vendedores que esperaban a ese precio, que el mercado la supere significa que esas ventas se han agotado. El camino queda más despejado, al menos hasta el siguiente nivel.</p>
+
+<h2>Por qué el precio se acelera</h2>
+
+<p>Recuerda el hallazgo de Osler: las órdenes de stop se agrupan justo más allá de los niveles que todo el mundo ve. Cuando el precio supera una resistencia, se encuentra con ellas.</p>
+
+<ol class="prose-pasos">
+  <li><strong>El precio supera el nivel.</strong> Los vendedores que esperaban ahí ya han vendido.</li>
+  <li><strong>Saltan los stops de quienes estaban en corto.</strong> Para cerrar un corto hay que comprar: son compras forzosas.</li>
+  <li><strong>Entran los que esperaban la ruptura.</strong> Sus órdenes de compra estaban colocadas justo por encima.</li>
+  <li><strong>Entran los que lo ven tarde.</strong> El movimiento aparece en las alertas y atrae a más compradores.</li>
+</ol>
+
+<p>Tres grupos comprando a la vez en un espacio muy pequeño de precios. Por eso las rupturas auténticas suelen ser rápidas, con velas grandes. Y por eso mismo son un terreno propicio para las trampas.</p>
+
+<h2>La ruptura falsa</h2>
+
+<p>Una ruptura falsa es la que no continúa. El precio cruza el nivel, activa las órdenes que había detrás y, sin compradores nuevos que lo sostengan, vuelve a meterse dentro. Quien compró la ruptura queda atrapado por encima, en pérdidas desde el primer momento.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Una ruptura falsa sobre una resistencia en 100",
+  "subtitulo": "Ejemplo inventado, con precios de cierre. El precio supera el nivel un día y vuelve a quedar por debajo.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Día 1", "precio": 94, "nivel": 100 },
+    { "etiqueta": "Día 2", "precio": 97, "nivel": 100 },
+    { "etiqueta": "Día 3", "precio": 99, "nivel": 100 },
+    { "etiqueta": "Día 4", "precio": 103, "nivel": 100 },
+    { "etiqueta": "Día 5", "precio": 98, "nivel": 100 },
+    { "etiqueta": "Día 6", "precio": 93, "nivel": 100 },
+    { "etiqueta": "Día 7", "precio": 91, "nivel": 100 }
+  ],
+  "series": [
+    { "clave": "precio", "nombre": "Precio de cierre", "color": "#a3e635" },
+    { "clave": "nivel", "nombre": "Resistencia", "color": "#94a3b8" }
+  ],
+  "nota": "Quien compró el día 4 a 103 pierde casi un 12 % tres días después."
+}
+</script></div>
+
+<p>¿Por qué son tan frecuentes? Porque las órdenes que hay justo detrás de un nivel son un objetivo. Un participante con capital suficiente puede empujar el precio unos puntos, hacer saltar los stops, y usar esas compras forzosas para vender a buen precio lo que quería vender. No hace falta imaginar una conspiración: es la consecuencia natural de que todo el mundo ponga las órdenes en el mismo sitio.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">No hay una cifra fiable y general de cuántas rupturas fracasan. Las que circulan por las redes —«el 70 % de las rupturas son falsas»— no tienen detrás un estudio que se pueda comprobar, y dependen por completo de cómo se defina ruptura y fracaso. Lo que sí se puede decir es que son lo bastante habituales como para contar con ellas en cada operación.</div>
+</div>
+
+<h2>Lo que ayuda a distinguirlas</h2>
+
+<p>Ningún criterio separa con certeza una ruptura buena de una mala. Algunos inclinan las probabilidades, y sobre todo evitan los peores errores.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Criterio</th><th>A favor de la ruptura</th><th>Motivo de cautela</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cierre de la vela</td><td>Cierra claramente al otro lado del nivel</td><td>Solo lo ha cruzado con la mecha y ha cerrado dentro</td></tr>
+    <tr><td>Temporalidad</td><td>Se ve en gráfico diario o semanal</td><td>Solo se ve en gráficos de minutos</td></tr>
+    <tr><td><a href="/glosario/volumen">Volumen</a></td><td>Claramente superior al de los días previos</td><td>Igual o inferior al habitual</td></tr>
+    <tr><td>Tendencia de fondo</td><td>La ruptura va a favor de ella</td><td>Va en contra</td></tr>
+    <tr><td>Lo que hay delante</td><td>Espacio libre hasta el siguiente nivel</td><td>Otro nivel importante muy cerca</td></tr>
+  </tbody>
+</table>
+
+<p>El primero es el más útil y el más barato de aplicar. Mientras la vela está abierta, el precio puede cruzar el nivel y volver diez veces. Esperar al cierre elimina buena parte de las falsas alarmas. Su coste es evidente: entras más tarde y a peor precio. Ese es el intercambio de todo el análisis técnico, entre confirmar y llegar a tiempo.</p>
+
+<h2>Tres formas de entrar, con su precio</h2>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Comprar en cuanto cruza</p>
+    <p class="prose-vs-sub">Sin esperar al cierre</p>
+    <ul>
+      <li data-tono="favor">El mejor precio si la ruptura es buena</li>
+      <li data-tono="contra">Te comes todas las rupturas falsas</li>
+      <li data-tono="contra">Suele hacerse con prisa y sin plan</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Esperar el cierre o el regreso</p>
+    <p class="prose-vs-sub">Confirmar antes de entrar</p>
+    <ul>
+      <li data-tono="favor">Evita muchas trampas</li>
+      <li data-tono="favor">La salida queda cerca: al otro lado del nivel</li>
+      <li data-tono="contra">Entras más caro, o te quedas fuera si no hay regreso</li>
+    </ul>
+  </div>
+</div>
+
+<p>El «regreso» de la derecha es un comportamiento que se ve con frecuencia: después de romper, el precio vuelve a tocar el nivel desde el otro lado, que ahora actúa como <a href="/glosario/soporte">soporte</a>, y desde ahí continúa. Entrar en ese regreso tiene la ventaja de que el punto en el que te equivocas está muy cerca: si el precio vuelve a meterse por debajo del nivel, la ruptura ha fallado y sales.</p>
+
+<p>Tiene también un inconveniente que hay que aceptar: no siempre ocurre. Algunas de las rupturas más fuertes no vuelven nunca, y quien esperaba el regreso las ve irse. No pasa nada. Perderse un movimiento no cuesta dinero.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0 €</span>
+  <span class="prose-dato-texto">Lo que cuesta no entrar en una ruptura que no esperaste. Perseguirla tarde, en cambio, es una de las formas más habituales de comprar justo antes de la vuelta.</span>
+</div>
+
+<h2>Plantear la operación para que el fallo cueste poco</h2>
+
+<p>Como no se puede saber de antemano cuál será buena, lo sensato es montar cada operación de ruptura de modo que las falsas sean baratas y las buenas compensen.</p>
+
+<ul>
+  <li><strong>La salida va al otro lado del nivel.</strong> Si has comprado porque se rompió una resistencia en 100, tu idea queda invalidada si el precio vuelve a cerrar por debajo. El <a href="/glosario/stop-loss">stop loss</a> va ahí, con algo de holgura.</li>
+  <li><strong>El tamaño sale de esa distancia.</strong> Cuanto más lejos esté la salida, más pequeña la posición.</li>
+  <li><strong>El objetivo tiene que estar bastante más lejos que la salida.</strong> Si el siguiente nivel está a la misma distancia que tu stop, la operación no compensa aunque acierte la mitad de las veces.</li>
+  <li><strong>Se acepta de antemano que muchas fallarán.</strong> Una serie de tres o cuatro rupturas falsas seguidas es normal y no significa que el método esté roto.</li>
+</ul>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La entrada más peligrosa es la que se hace viendo una vela enorme a medio formar, con miedo a quedarse fuera. Se compra lejos del nivel, sin salida decidida y con la emoción de todos los demás. Si ya ha recorrido la mitad del camino hasta el siguiente nivel, la operación ha pasado.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Compras porque el precio ha cerrado por encima de una resistencia en 200 €. ¿Dónde tiene más sentido colocar la salida?",
+  "opciones": [
+    "Algo por debajo de 200 €: si el precio vuelve a cerrar ahí, la ruptura ha fallado",
+    "Justo en 200 €, al céntimo",
+    "Muy por debajo, para que no salte nunca",
+    "No hace falta: una ruptura confirmada no falla"
+  ],
+  "correcta": 0,
+  "explicacion": "La idea era «el nivel se ha roto». Si el precio vuelve a quedar por debajo, la idea es falsa. El nivel es una zona, así que hace falta algo de holgura."
+}
+</script></div>
+
+<h2>Ejercicio: cuenta tus rupturas</h2>
+
+<p>En el gráfico diario de un activo, con un año a la vista, localiza cinco ocasiones en las que el precio cerró más allá de un nivel claro, por arriba o por abajo. Para cada una anota: si la vela cerró fuera o solo cruzó con la mecha, si el volumen fue mayor que el de los días anteriores, y qué hizo el precio en las diez velas siguientes. Cuenta cuántas continuaron y cuántas volvieron. Cinco casos no demuestran nada, pero te enseñarán que las dos cosas ocurren, y con qué frecuencia en ese activo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> al romperse un nivel el precio se acelera porque saltan los stops acumulados detrás y entran los que esperaban. Por eso mismo abundan las rupturas falsas. Esperar al cierre de la vela, mirar el volumen y la tendencia de fondo ayuda, sin garantizar nada. Coloca la salida al otro lado del nivel, ajusta el tamaño a esa distancia y no persigas una vela que ya se ha ido.</div>
+</div>
