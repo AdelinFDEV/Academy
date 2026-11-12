@@ -46,17 +46,16 @@ Hecho el 10-11-2026 (versión 2 del motor): `tjNova.ts` tiene tres capas, **lect
 
 Pedido por el admin el 31-10-2026: grabar un vídeo corto de cada herramienta que enseñe cómo se usa, y colocarlo en el home.
 
-- [ ] **Grabar los vídeos** (los graba el admin): Diario de Trading, Portfolio Adelin y Predicción de Precio, y los Cursos cuando se publique el primero.
+- [ ] **Grabar los vídeos** (los graba el admin): Diario de Trading, Portfolio Adelin, Predicción de Precio y los Cursos.
 - [ ] **Decidir dónde van en el home.** Lo natural es la sección Premium (`PremiumHome`, rehecha el 08-11-2026 como bento con FAQ): cada celda lleva a la ficha de su pieza, y el vídeo podría abrirse desde ella o ir en la propia ficha. La Predicción de Precio solo sale ahí como enlace en la franja «Gratis»: si lleva vídeo, necesita sitio propio.
 - [ ] **Al montarlos**: alojarlos en YouTube y servirlos desde `youtube-nocookie.com`, que ya está permitido en la CSP (`next.config.ts`). Ojo: `GuideVideoEmbed` mete el iframe nada más cargar; en el home conviene una portada con botón de play que solo cargue el vídeo al pulsar, para no frenar la página.
 
 
 ### 00a. Telegram, retirado entero (05-11-2026)
 
-Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho en el código: fuera el bot (webhook y comandos), la vinculación de cuentas (`/api/telegram/*`, la tarjeta de `/cuenta` y el aviso del dashboard), los crons `telegram-sync` y `promo-premium`, los avisos al admin, los avisos de guías y vídeos (`announce.ts`), `/admin/comunidad`, Telegram en `/admin/premium` y en Objetivos (métrica, canal de ideas y calendario, gráficas de Crecimiento), los enlaces del pie y de redes, los textos de Premium y de la página de gracias, `BOT.md` y `ANUNCIO-TELEGRAM.md`. Lo que no era de Telegram y vivía en su cron (la foto diaria de YouTube y la red de seguridad de los cobros de Stripe) pasó a `/api/cron/diario`. Copia de todos los datos en `backups/telegram-2026-11-05/` (local, fuera de git). Falta:
+Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho en el código: fuera el bot (webhook y comandos), la vinculación de cuentas (`/api/telegram/*`, la tarjeta de `/cuenta` y el aviso del dashboard), los crons `telegram-sync` y `promo-premium`, los avisos al admin, los avisos de guías y vídeos (`announce.ts`), `/admin/comunidad`, Telegram en `/admin/premium` y en Objetivos (métrica, canal de ideas y calendario, gráficas de Crecimiento), los enlaces del pie y de redes, los textos de Premium y de la página de gracias, `BOT.md` y `ANUNCIO-TELEGRAM.md`. Lo que no era de Telegram y vivía en su cron (la foto diaria de YouTube y la red de seguridad de los cobros de Stripe) pasó a `/api/cron/diario`. Copia de todos los datos en `backups/telegram-2026-11-05/` (local, fuera de git). **El SQL que borra sus tablas y columnas está ejecutado** (comprobado en Supabase el 12-11-2026: ni las 8 tablas ni las 3 columnas de `profiles` existen). Falta:
 
-- [ ] **Ejecutar el SQL que borra las tablas y columnas de Telegram**, **después** de desplegar el código (el admin lo tiene en el chat del 05-11-2026; está también al final de `scripts/create-objetivos.sql`).
-- [ ] **Quitar las variables de Telegram en Vercel**: todas las `TELEGRAM_*` (token del bot, ids de canal, enlace de invitación, secreto del webhook…). Ya no las lee nadie.
+- [ ] **Quitar las variables de Telegram en Vercel**: todas las `TELEGRAM_*` (token del bot, ids de canal, enlace de invitación, secreto del webhook…). Ya no las lee nadie. Y la `TELEGRAM_BOT_TOKEN` que sigue en el `.env.local` de cada ordenador.
 - [ ] **Apagar el bot en Telegram**: borrar su webhook (`deleteWebhook`) o el bot entero desde @BotFather, y decidir qué pasa con los canales (cerrarlos o dejar un último mensaje que lleve a la web).
 - [ ] **El aviso de que se acaba el Premium** iba por Telegram a quien había cancelado y le quedaban 3 días. Ya no existe: decidir si se manda por email (`cancel_warning_period_end` en `profiles` sigue sirviendo para no repetirlo).
 - [ ] **Pedido por el admin el 05-11-2026: revisar la seguridad y que todo funcione solo desde la web, ahora que no hay Telegram.**
@@ -76,26 +75,24 @@ Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi P
     2. *Sitemaps*: reenviar `sitemap.xml`.
     3. Opcional: *Inspección de URLs* de cada una para confirmar que Google ya ve el 410.
   - **Cómo se cierra:** buscar `site:adelinacademy.com directo` y `site:adelinacademy.com herramientas` en Google. Si no sale ninguna de las dos, se borra esta tarea. La retirada temporal dura unos seis meses; para entonces el 410 ya las habrá sacado para siempre.
-  - **Ligado:** el SQL que quita la variante de aviso `directo` de `cursos.aviso` (está al final de `scripts/create-cursos.sql`; el admin lo tiene en el chat del 08-11-2026). No toca a Google, pero es el último resto del servicio en la base de datos.
+  - **Ligado:** el SQL que quita la variante de aviso `directo` de `cursos.aviso` (al final de `scripts/create-cursos.sql`). Ningún curso la usa (comprobado el 12-11-2026), pero la regla de la tabla no se puede leer desde la API: si no consta que se ejecutó, relanzar esas últimas líneas, que son idempotentes.
 
 
 ### 00. La web es solo guías (empezado el 10-10-2026)
 
-Decidido por el admin el 10-10-2026: **no hay noticias, ni entradas, ni categorías, ni comentarios**. La academia son **guías ultra detalladas de criptomonedas**. Ya está hecho en el código: retirado todo el sistema de entradas (páginas, admin, comentarios, «me gusta», guardados, RSS, avisos, noticias del bot, la métrica de Objetivos y los 5 logros de leer y guardar); `/post/…`, `/categoria/…` y `/rss.xml` responden 410 (`src/lib/retiradas.ts`) y 4 entradas redirigen a su guía (`next.config.ts`). Copia de todo en `backups/` (local, fuera de git). Falta:
+Decidido por el admin el 10-10-2026: **no hay noticias, ni entradas, ni categorías, ni comentarios**. La academia son **guías ultra detalladas de criptomonedas**. Ya está hecho en el código: retirado todo el sistema de entradas (páginas, admin, comentarios, «me gusta», guardados, RSS, avisos, noticias del bot, la métrica de Objetivos y los 5 logros de leer y guardar); `/post/…`, `/categoria/…` y `/rss.xml` responden 410 (`src/lib/retiradas.ts`) y 4 entradas redirigen a su guía (`next.config.ts`). Copia de todo en `backups/` (local, fuera de git). **El SQL que borra sus tablas y los logros retirados está ejecutado**, y `/post/…`, `/categoria/…` y `/rss.xml` dan 410 en producción y no están en el sitemap (comprobado el 12-11-2026). Falta:
 
-- [ ] **Ejecutar el SQL que borra las tablas** de entradas y noticias y los logros retirados, **después** de desplegar el código (el admin lo tiene en el chat del 10-10-2026; está también al final de `scripts/create-objetivos.sql`).
-- [ ] **Borrar las 12 portadas** de las entradas del bucket `media` de Supabase (empiezan por `17882…`; la lista exacta, en `backups/entradas-2026-10-10.json`).
-- [ ] **Reenviar el sitemap en Search Console** y comprobar en producción que `/post/<cualquiera>`, `/categoria/<cualquiera>` y `/rss.xml` dan 410.
+- [ ] **Borrar las 11 portadas** de las entradas del bucket `media` de Supabase (empiezan por `17882…`; la lista exacta, en `backups/entradas-2026-10-10.json`). El 12-11-2026 seguían las 11 y ningún archivo del código las usa.
+- [ ] **Reenviar el sitemap en Search Console.**
 - [ ] **Plantilla común de guía de criptomoneda**, para que cada guía nueva sea contenido y no código: mismas secciones y diseño, y una «última revisión» visible.
 - [ ] **CSS muerto en `src/app/globals.css`**: los estilos de la página de entrada (`.post-*`), el feed (`.feed-*`, `.hero-post-*`), los comentarios, la barra de categorías (`.cat-nav-*`), `/articulos` (`.articulos-*`), el índice y la barra de lectura (`.toc-*`, `.reading-progress*`) y lo del admin (`.admin-top-post*`, `.admin-donut*`, `.admin-bar-*`, `.users-reads`). No se pinta nada, pero pesa. Quitarlo con cuidado: algunos bloques comparten reglas con cosas vivas.
 
-### 0. Objetivos y diario: fases 2 y 3
+### 0. Objetivos: lo que falta
 
-Hecho entre el 04 y el 05-10-2026, en `/admin/objetivos`: objetivos (repetibles, con historial, +1 y métricas automáticas) con el gran objetivo de 1.000 €/mes arriba; calendario de mes y de semana con panel del día y cierre del día; ideas por canal con tick; diario con intenciones, lo que afecta y motiva, y análisis por periodos largos; y Crecimiento con la actividad del mes. El admin eligió canales **YouTube, Web y Telegram** y **usar el bot**. Falta:
+Hecho entre el 04 y el 05-10-2026, en `/admin/objetivos`: objetivos (repetibles, con historial, +1 y métricas automáticas) con el gran objetivo de 1.000 €/mes arriba; calendario de mes y de semana con panel del día y cierre del día; ideas por canal con tick; diario con intenciones, lo que afecta y motiva, y análisis por periodos largos; y Crecimiento con la actividad del mes. Los canales son **YouTube y Web**. Las fases que dependían del bot de Telegram (notas e ideas desde el móvil, resumen diario y balance del domingo) se cayeron con él el 05-11-2026. Falta:
 
-- [ ] **Fase 2 — el bot:** `/nota <texto>` e `/idea <texto>` guardan en `diario_notas` e `ideas` desde el móvil (la idea necesita canal: `/idea yt …`, `/idea web …`, `/idea tg …`, o preguntarlo); resumen diario con lo que toca hoy, lo retrasado y cómo van los objetivos, y que **pregunte si el día ha sido productivo y cuánto se ha ganado** (lo guarda en `dias_balance` / `ingresos_dia`, como el cierre del día del panel). En el plan Hobby cada cron corre una vez al día como mucho: aprovechar uno existente (el de noticias está en pausa). **El resumen va a las 22:00 de Rumanía** (decidido el 05-10-2026). Ojo: los crons de Vercel van en UTC y no cambian de hora, así que 22:00 es `0 20 * * *` en invierno (UTC+2, desde el 25-10-2026) y `0 19 * * *` en verano (UTC+3). Con uno fijo, medio año llega una hora antes o después; o se acepta, o se cambia a mano dos veces al año.
 - [ ] **Suscriptores de YouTube exactos.** La YouTube Data API pública REDONDEA la cifra a tres cifras significativas (el 05-10-2026 daba 17.200 con 17.224 reales), así que la pestaña Crecimiento y los objetivos de suscriptores solo se mueven de 100 en 100. La solución es la **YouTube Analytics API**: con OAuth de la cuenta del canal da los suscriptores ganados y perdidos de cada día, exactos. Partir de un total exacto conocido (17.224 el 05-10-2026) y sumar el neto diario en el cron de las 04:00, guardándolo en `metricas_diarias`. Necesita: credenciales OAuth en Google Cloud, conectar la cuenta una vez y guardar el refresh token en Vercel.
-- [ ] **Fase 3:** balance del domingo por el bot e ideas sugeridas a partir de las consultas de Search Console sin contenido.
+- [ ] **Ideas sugeridas** en Objetivos a partir de las consultas de Search Console que aún no tienen contenido.
 
 ### 0b. Cursos para Premium — el primero: fiscalidad cripto en España
 
@@ -114,7 +111,7 @@ Curso de fiscalidad: estructura de 7 módulos y 24 lecciones subida como **borra
 - [ ] **Desbloqueo de módulos:** cada módulo se abre solo al aprobar el examen del anterior, y no antes. Probar también los atajos: entrar por URL directa a una lección de un módulo bloqueado, recargar a mitad de examen o abrirlo en dos pestañas.
 - [ ] **Exámenes:** preguntas sorteadas y corregidas en el servidor (`src/lib/cursos-examen.ts`), nota mínima 5, la espera de 24 h tras suspender, y que la nota guardada sea la que se enseña. Comprobar que la respuesta correcta no viaja al navegador antes de corregir.
 - [ ] **Certificado:** que se entregue completo al aprobar el examen final, con la nota (40 % media de módulos + 60 % final), descargable, y que el código abra su página pública de verificación (`/cursos/verificar/<codigo>`). Que el logro del curso salga en `/dashboard/logros`.
-- [ ] **Un apartado nuevo en el dashboard para todos los usuarios**, «Mis cursos»: los cursos en curso con su progreso por módulos, el siguiente paso, las notas y los certificados conseguidos. Quien no es Premium ve el catálogo y qué incluye. Hoy el dashboard solo tiene un enlace a `/cursos` en la barra lateral, marcado «Pronto».
+- [ ] **Un apartado nuevo en el dashboard para todos los usuarios**, «Mis cursos»: los cursos en curso con su progreso por módulos, el siguiente paso, las notas y los certificados conseguidos. Quien no es Premium ve el catálogo y qué incluye. Hoy el dashboard solo tiene el enlace a `/cursos` en la barra lateral y la vitrina de certificados.
 
 ### 0d. Curso «Seguridad cripto» — publicado el 08-11-2026
 
@@ -156,9 +153,9 @@ Niveles de usuario **en toda la web**. No confundir con los hitos del Diario de 
 - La tarjeta del dashboard y `/dashboard/logros` ya pintan esa lista: un nivel visible saldría en los dos sitios sin duplicar nada.
 
 **Preguntas para el admin:**
-- ¿El nivel sale de los logros, de la racha, de artículos leídos, o de una mezcla?
+- ¿El nivel sale de los logros, de la racha, de las guías y cursos completados, o de una mezcla?
 - ¿Da algo material (acceso, descuento) o es solo estatus? Si da algo material, hay que pensarlo con la suscripción delante.
-- ¿Se ve entre usuarios —en los comentarios, por ejemplo— o es privado?
+- ¿Se ve entre usuarios —en el foro, por ejemplo— o es privado?
 
 ---
 
@@ -223,5 +220,5 @@ El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de l
 
 ## Menor, y ya identificado
 
-- [ ] **Revisar la indexación a partir del 17-10-2026.** El 03-10-2026 solo 47 de las URLs del sitemap estaban indexadas (las que salgan en Search Console → Páginas). Se pidió a mano la indexación de diez: `/premium`, las guías `hyperliquid`, `render` y `worldcoin` (las dos primeras Google ni las conocía), `/calculadora`, `/categoria/fiscalidad`, las entradas `actualizacion-xrp-ledger-2026` y `staking-airdrops-impuestos-espana`, y las fichas `pnl` y `staking`. Comprobar cuáles han entrado. **`staking-airdrops-impuestos-espana` es distinta**: Google la leyó y decidió no indexarla («Rastreada: actualmente sin indexar»), que es una señal de calidad; si sigue fuera, pasarle la auditoría SEO. Mirar también el CTR del título nuevo de `/glosario/atl`.
+- [ ] **Revisar la indexación en Search Console → Páginas.** El 03-10-2026 se pidió a mano la indexación de `/premium`, las guías `hyperliquid`, `render` y `worldcoin`, `/calculadora` y las fichas `pnl` y `staking`: comprobar cuáles han entrado. Mirar también el CTR del título nuevo de `/glosario/atl`.
 - [ ] **Ficha pública de Logros.** Es la única de las cuatro herramientas sin página propia (Diario y Portfolio la tienen; la Predicción de Precio se usa sin cuenta). La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.
