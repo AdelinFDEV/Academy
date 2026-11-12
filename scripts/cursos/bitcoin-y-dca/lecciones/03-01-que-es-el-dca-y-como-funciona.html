@@ -1,0 +1,137 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El DCA consiste en comprar la misma cantidad en euros cada cierto tiempo, sin mirar el precio. Al hacerlo, compras más unidades cuando el precio está bajo y menos cuando está alto, y tu precio medio queda por debajo de la media de los precios a los que compraste. Aquí lo ves con una cuenta completa de seis compras, y entiendes por qué su mayor ventaja no es matemática, sino que te quita de encima la decisión de cuándo entrar.</p>
+</div>
+
+<h2>La idea, en una frase</h2>
+
+<p><a href="/glosario/dca">DCA</a> son las siglas en inglés de <em>dollar cost averaging</em>, que en español se suele traducir como promediar el coste. La regla es todo lo simple que puede ser una regla de inversión: <strong>la misma cantidad de dinero, cada cierto tiempo, pase lo que pase con el precio</strong>. Cien euros el día cinco de cada mes, por ejemplo.</p>
+
+<p>No hay que decidir si hoy es buen momento. No hay que mirar gráficos ni noticias. Llega la fecha, se hace la compra y se cierra la aplicación hasta el mes siguiente. Esa falta de decisiones es precisamente lo que la hace funcionar para la mayoría de la gente.</p>
+
+<h2>Seis compras, con todas las cuentas</h2>
+
+<p>Mira un ejemplo inventado, con precios de bitcoin redondos para que la cuenta se siga con facilidad. Alguien aporta 100 € al mes durante seis meses, en un periodo en el que el precio cae a menos de la mitad y luego se recupera en parte.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Mes</th><th>Precio de 1 BTC</th><th>Aportación</th><th>Bitcoin comprado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>50.000 €</td><td>100 €</td><td>0,0020</td></tr>
+    <tr><td>2</td><td>40.000 €</td><td>100 €</td><td>0,0025</td></tr>
+    <tr><td>3</td><td>25.000 €</td><td>100 €</td><td>0,0040</td></tr>
+    <tr><td>4</td><td>20.000 €</td><td>100 €</td><td>0,0050</td></tr>
+    <tr><td>5</td><td>25.000 €</td><td>100 €</td><td>0,0040</td></tr>
+    <tr><td>6</td><td>40.000 €</td><td>100 €</td><td>0,0025</td></tr>
+    <tr><td><strong>Total</strong></td><td></td><td><strong>600 €</strong></td><td><strong>0,0200 BTC</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Fíjate en la última columna. Con los mismos 100 €, en el mes 4 compró dos veces y media más bitcoin que en el mes 1. Nadie decidió «ahora está barato, compro más». Salió solo, de mantener fija la cantidad en euros.</p>
+
+<h2>Tu precio medio de compra</h2>
+
+<p>Con el total invertido y el total de bitcoin, se calcula el dato más importante de cualquier plan de aportaciones: el <a href="/glosario/precio-medio-de-compra">precio medio de compra</a>.</p>
+
+<blockquote><strong>Precio medio = total invertido ÷ total de bitcoin = 600 € ÷ 0,02 = 30.000 €</strong></blockquote>
+
+<p>Ahora compáralo con la media de los seis precios a los que compró: 50.000, 40.000, 25.000, 20.000, 25.000 y 40.000 suman 200.000, que entre seis da 33.333 €. <strong>El precio medio de compra, 30.000 €, es más bajo que la media de los precios.</strong> No es casualidad ni un truco del ejemplo: ocurre siempre que el precio varía, porque los meses baratos pesan más al haberse comprado en ellos más unidades.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "El precio de cada compra frente al precio medio",
+  "subtitulo": "Seis aportaciones de 100 €. El precio medio queda por debajo de la media de los precios.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Mes 1", "precio": 50000, "medio": 30000 },
+    { "etiqueta": "Mes 2", "precio": 40000, "medio": 30000 },
+    { "etiqueta": "Mes 3", "precio": 25000, "medio": 30000 },
+    { "etiqueta": "Mes 4", "precio": 20000, "medio": 30000 },
+    { "etiqueta": "Mes 5", "precio": 25000, "medio": 30000 },
+    { "etiqueta": "Mes 6", "precio": 40000, "medio": 30000 }
+  ],
+  "series": [
+    { "clave": "precio", "nombre": "Precio del bitcoin", "color": "#fbbf24" },
+    { "clave": "medio", "nombre": "Tu precio medio de compra", "color": "#8fb0ff" }
+  ],
+  "nota": "Ejemplo inventado. Precio medio: 600 € ÷ 0,02 BTC = 30.000 €. Media simple de los seis precios: 33.333 €."
+}
+</script></div>
+
+<h2>El resultado, comparado con comprar de golpe</h2>
+
+<p>Al final del mes 6 el bitcoin está a 40.000 €, un 20 % por debajo de donde empezó. Aun así:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>100 € al mes, seis meses</th><th>600 € de golpe el mes 1</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Bitcoin comprado</td><td>0,0200</td><td>0,0120</td></tr>
+    <tr><td>Precio medio de compra</td><td>30.000 €</td><td>50.000 €</td></tr>
+    <tr><td>Valor al final (a 40.000 €)</td><td>800 €</td><td>480 €</td></tr>
+    <tr><td><strong>Resultado</strong></td><td><strong>+200 € (+33 %)</strong></td><td><strong>−120 € (−20 %)</strong></td></tr>
+  </tbody>
+</table>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">+33 %</span>
+  <span class="prose-dato-texto">Lo que gana en el ejemplo quien repartió sus compras, en un periodo en el que el precio terminó un 20 % por debajo de donde empezó.</span>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Este ejemplo está elegido para que se vea el mecanismo, y favorece al DCA porque el precio cae y se recupera. Si el precio hubiera subido sin parar desde el mes 1, comprar todo de golpe habría ganado con claridad. La lección siguiente cuenta qué pasa de media, con datos reales, y el resultado no es el que sugiere esta tabla.</div>
+</div>
+
+<h2>La ventaja que no sale en la tabla</h2>
+
+<p>La cuenta anterior es cierta, pero no es el motivo principal por el que el DCA funciona. El motivo principal es de comportamiento.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Sin regla fija</p>
+    <p class="prose-vs-sub">Decides cada vez</p>
+    <ul>
+      <li data-tono="contra">Compras cuando sube, porque da confianza</li>
+      <li data-tono="contra">Dejas de comprar cuando cae, porque da miedo</li>
+      <li data-tono="contra">Cada compra es una decisión que puede salir mal</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Con DCA</p>
+    <p class="prose-vs-sub">La regla decide por ti</p>
+    <ul>
+      <li data-tono="favor">Compras igual suba o baje</li>
+      <li data-tono="favor">Las caídas pasan a ser compras baratas</li>
+      <li data-tono="favor">No hay un «momento equivocado» del que arrepentirse</li>
+    </ul>
+  </div>
+</div>
+
+<p>El instinto empuja exactamente al revés de lo que conviene: a comprar con euforia, cerca de los máximos, por <a href="/glosario/fomo">FOMO</a>, y a dejarlo cuando todo cae. El DCA no te hace más listo que el mercado. <strong>Te impide ser más tonto que tu propio plan.</strong></p>
+
+<p>Y hay otra ventaja práctica: encaja con cómo llega el dinero. Casi nadie tiene una gran suma esperando para invertirla. La mayoría ahorra un poco cada mes. Para esa persona, aportar cada mes no es una estrategia entre varias: es, sencillamente, invertir el dinero en cuanto lo tiene.</p>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Aportas 100 € cada mes. El primer mes el bitcoin está a 50.000 € y el segundo a 25.000 €. ¿Cuál es tu precio medio de compra?",
+  "opciones": [
+    "37.500 €, la media de los dos precios",
+    "33.333 €, porque el segundo mes compraste el doble de bitcoin",
+    "25.000 €, el último precio",
+    "50.000 €, el primero"
+  ],
+  "correcta": 1,
+  "explicacion": "Compraste 0,002 BTC y 0,004 BTC: 0,006 en total por 200 €. 200 ÷ 0,006 = 33.333 €. El mes barato pesa más."
+}
+</script></div>
+
+<h2>Ejercicio: tus seis compras</h2>
+
+<p>Elige una cantidad mensual que te parezca realista y busca el precio de bitcoin, en euros, el primer día de cada uno de los últimos seis meses; el gráfico de cualquier web de datos te lo da al pasar el cursor. Haz la tabla: precio, aportación y bitcoin comprado. Suma, calcula tu precio medio y compáralo con la media de los seis precios y con el precio de hoy. No importa si el resultado es bueno o malo: importa que hagas la cuenta una vez con tus manos.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el DCA es aportar la misma cantidad en euros cada cierto tiempo. Compra más unidades cuando el precio baja, así que tu precio medio queda por debajo de la media de los precios. Su mayor ventaja es que elimina la decisión de cuándo entrar, que es la que casi todos tomamos mal.</div>
+</div>

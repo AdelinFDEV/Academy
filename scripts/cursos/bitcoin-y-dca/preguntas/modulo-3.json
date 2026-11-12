@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "bd-m3-01",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "¿En qué consiste el DCA?",
+    "opciones": [
+      "En aportar la misma cantidad en euros cada cierto tiempo, sin mirar el precio",
+      "En invertir todo el primer día y esperar",
+      "En comprar la misma cantidad de bitcoin cada mes",
+      "En comprar solo cuando el precio baja un 10 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Lo que se mantiene fijo es el importe en euros, no las unidades."
+  },
+  {
+    "clave": "bd-m3-02",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "Aportas siempre 100 €. ¿Qué pasa con las unidades que compras cuando el precio baja?",
+    "opciones": [
+      "Compras siempre las mismas",
+      "Compras más unidades con el mismo dinero",
+      "Compras menos unidades",
+      "No se ejecuta la compra"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso los meses baratos pesan más en tu precio medio, sin que tengas que decidirlo."
+  },
+  {
+    "clave": "bd-m3-03",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "Has invertido 600 € en total y tienes 0,02 BTC. ¿Cuál es tu precio medio de compra?",
+    "opciones": [
+      "3.000 €",
+      "12.000 €",
+      "30.000 €",
+      "60.000 €"
+    ],
+    "correcta": 2,
+    "explicacion": "Total invertido entre total de bitcoin: 600 ÷ 0,02 = 30.000 €."
+  },
+  {
+    "clave": "bd-m3-04",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "Con aportaciones fijas en euros y un precio que varía, ¿cómo queda tu precio medio respecto a la media de los precios a los que compraste?",
+    "opciones": [
+      "Depende solo del último precio",
+      "Exactamente igual",
+      "Por encima, porque compras más en los meses caros",
+      "Por debajo, porque compras más unidades en los meses baratos"
+    ],
+    "correcta": 3,
+    "explicacion": "Los meses baratos pesan más. En el ejemplo de la lección: 30.000 € frente a 33.333 €."
+  },
+  {
+    "clave": "bd-m3-05",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "¿Cuál es la principal ventaja del DCA según la lección?",
+    "opciones": [
+      "Que elimina la decisión de cuándo entrar, que solemos tomar mal",
+      "Que garantiza una rentabilidad mayor",
+      "Que reduce las comisiones a cero",
+      "Que evita pagar impuestos"
+    ],
+    "correcta": 0,
+    "explicacion": "El instinto empuja a comprar con euforia y a parar con miedo. La regla fija lo impide."
+  },
+  {
+    "clave": "bd-m3-06",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "Según el estudio de Vanguard de 2023, ¿cuántas veces invertir de golpe superó a repartir la compra en tres meses?",
+    "opciones": [
+      "El 95 % de las veces",
+      "El 68 % de las veces",
+      "Nunca",
+      "El 32 % de las veces"
+    ],
+    "correcta": 1,
+    "explicacion": "Con el índice MSCI World de 1976 a 2022, comparando el resultado a un año."
+  },
+  {
+    "clave": "bd-m3-07",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "¿Por qué invertir de golpe gana la mayoría de las veces en ese estudio?",
+    "opciones": [
+      "Porque el efectivo pierde valor cada día",
+      "Porque repartir tiene comisiones más altas",
+      "Porque el mercado sube más tiempo del que baja, y repartir deja dinero esperando fuera",
+      "Porque de golpe se compra siempre en el mínimo"
+    ],
+    "correcta": 2,
+    "explicacion": "Estar fuera, aunque sea unos meses, cuesta la rentabilidad que no se obtiene."
+  },
+  {
+    "clave": "bd-m3-08",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "En el 5 % de los peores casos del estudio, ¿qué estrategia perdió menos?",
+    "opciones": [
+      "Las dos perdieron exactamente lo mismo",
+      "Invertir de golpe",
+      "Ninguna tuvo pérdidas",
+      "Repartir la compra"
+    ],
+    "correcta": 3,
+    "explicacion": "100.000 dólares acabaron en 82.947 de golpe y en 85.906 repartiendo. Promediar recorta los dos extremos."
+  },
+  {
+    "clave": "bd-m3-09",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "Ahorras 150 € al mes de tu nómina y los inviertes según los cobras. ¿Estás renunciando a rentabilidad por no invertir de golpe?",
+    "opciones": [
+      "No: no tienes una suma que repartir; inviertes cada cantidad en cuanto la tienes",
+      "Solo si el precio sube ese mes",
+      "Sí: deberías esperar a juntar un año entero",
+      "Sí: el estudio demuestra que es peor"
+    ],
+    "correcta": 0,
+    "explicacion": "El estudio compara qué hacer con una suma ya disponible. Aportar de la nómina es lo más parecido a invertir de golpe."
+  },
+  {
+    "clave": "bd-m3-10",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "¿Qué opción resultó peor en el estudio, frente a las otras dos?",
+    "opciones": [
+      "Las tres dieron lo mismo",
+      "Quedarse en efectivo sin invertir",
+      "Invertir de golpe",
+      "Repartir en tres meses"
+    ],
+    "correcta": 1,
+    "explicacion": "Repartir superó al efectivo el 69 % de las veces e invertir de golpe, el 70 %."
+  },
+  {
+    "clave": "bd-m3-11",
+    "leccion": "lo-que-el-dca-no-hace",
+    "enunciado": "Aportas cada mes mientras el precio cae un 80 % y no se recupera. ¿Qué ocurre?",
+    "opciones": [
+      "No pierdes, porque el DCA protege de las caídas",
+      "Ganas, porque compraste barato",
+      "Pierdes dinero, aunque menos que si hubieras comprado todo al principio",
+      "Recuperas lo invertido automáticamente"
+    ],
+    "correcta": 2,
+    "explicacion": "En el ejemplo, 600 € quedaban en 295 € con DCA y en 120 € de golpe. Suaviza la caída; no la anula."
+  },
+  {
+    "clave": "bd-m3-12",
+    "leccion": "lo-que-el-dca-no-hace",
+    "enunciado": "¿Qué decide el DCA y qué no?",
+    "opciones": [
+      "Decide cuándo hay que vender",
+      "Decide qué parte de tu ahorro invertir",
+      "Decide qué activo es bueno",
+      "Decide el cuándo; no decide qué comprar ni cuánto de tu ahorro"
+    ],
+    "correcta": 3,
+    "explicacion": "Es una forma de comprar, no un criterio para elegir. Aplicado a algo que acaba en cero, da cero."
+  },
+  {
+    "clave": "bd-m3-13",
+    "leccion": "lo-que-el-dca-no-hace",
+    "enunciado": "Una plataforma cobra 1 € fijo por operación. ¿Qué parte de una compra de 10 € se lleva?",
+    "opciones": [
+      "Un 10 %",
+      "Un 0,1 %",
+      "Un 100 %",
+      "Un 1 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Las comisiones fijas castigan las compras pequeñas. Sobre 100 € sería un 1 %."
+  },
+  {
+    "clave": "bd-m3-14",
+    "leccion": "disena-tu-dca",
+    "enunciado": "¿Qué es lo más importante al decidir la cantidad de tu DCA?",
+    "opciones": [
+      "Que sea la más alta que puedas un buen mes",
+      "Que puedas mantenerla también en tu peor mes",
+      "Que cambie según el precio del día",
+      "Que coincida con la de otras personas"
+    ],
+    "correcta": 1,
+    "explicacion": "Un DCA pequeño y sostenido durante años vale más que uno grande que se abandona."
+  },
+  {
+    "clave": "bd-m3-15",
+    "leccion": "disena-tu-dca",
+    "enunciado": "Después de un año de DCA, piensas: «este mes está caro, me lo salto». ¿Qué problema tiene?",
+    "opciones": [
+      "Ninguno: es una mejora del método",
+      "Que aumenta las comisiones",
+      "Devuelve al plan la decisión de adivinar el momento, que el DCA había quitado",
+      "Que obliga a pagar más impuestos"
+    ],
+    "correcta": 2,
+    "explicacion": "Cualquier ajuste que dependa de tu opinión del precio deshace el método. Si quieres una variante, que sea una regla escrita y mecánica."
+  }
+]

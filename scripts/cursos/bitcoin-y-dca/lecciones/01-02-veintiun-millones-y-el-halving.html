@@ -1,0 +1,126 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Nunca habrá más de 21 millones de bitcoins. Las monedas nuevas salen como recompensa a los mineros, y esa recompensa se parte por la mitad cada cuatro años aproximadamente, en un evento llamado halving. Aquí ves el calendario completo, cuántos bitcoins existen ya, cuántos se dan por perdidos y qué se puede concluir de todo eso para el precio, que es bastante menos de lo que se suele decir.</p>
+</div>
+
+<h2>Un techo escrito en el programa</h2>
+
+<p>El euro no tiene un máximo de unidades: el banco central emite más o menos según su política. Bitcoin funciona al revés. Su programa fija desde el primer día cuántas monedas se crean y cuándo, y el total nunca pasará de <strong>21 millones</strong>. No lo decide un comité ni se puede cambiar por votación de una empresa: cambiarlo exigiría que la inmensa mayoría de quienes ejecutan la red aceptara un programa distinto.</p>
+
+<p>Esa previsibilidad es la propiedad que más se cita a su favor. Puedes saber hoy, con bastante precisión, cuántos bitcoins existirán dentro de diez años. Con casi ningún otro activo financiero se puede decir lo mismo.</p>
+
+<h2>De dónde salen los bitcoins nuevos</h2>
+
+<p>Como viste en la lección anterior, el minero que añade un bloque recibe una recompensa en bitcoins recién creados. Esa es la única vía por la que nacen monedas. Al principio eran 50 bitcoins por bloque. Cada 210.000 bloques, que a un bloque cada diez minutos son unos cuatro años, la recompensa se divide entre dos. Ese recorte es el <a href="/glosario/halving">halving</a>.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Fecha</th><th>Recompensa por bloque</th><th>Bitcoins nuevos al día, aprox.</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Enero de 2009 (inicio)</td><td>50 BTC</td><td>7.200</td></tr>
+    <tr><td>28 de noviembre de 2012</td><td>25 BTC</td><td>3.600</td></tr>
+    <tr><td>9 de julio de 2016</td><td>12,5 BTC</td><td>1.800</td></tr>
+    <tr><td>11 de mayo de 2020</td><td>6,25 BTC</td><td>900</td></tr>
+    <tr><td>20 de abril de 2024</td><td>3,125 BTC</td><td>450</td></tr>
+    <tr><td>Hacia abril de 2028 (previsto)</td><td>1,5625 BTC</td><td>225</td></tr>
+  </tbody>
+</table>
+
+<p>La columna de la derecha sale de multiplicar la recompensa por los 144 bloques que se añaden de media cada día. La fecha de 2028 es una estimación: depende del ritmo real de los bloques y puede moverse unas semanas.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Bitcoins nuevos que salen cada día",
+  "subtitulo": "Cada halving parte la emisión por la mitad.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "2009-2012", "emision": 7200 },
+    { "etiqueta": "2012-2016", "emision": 3600 },
+    { "etiqueta": "2016-2020", "emision": 1800 },
+    { "etiqueta": "2020-2024", "emision": 900 },
+    { "etiqueta": "2024-2028", "emision": 450 },
+    { "etiqueta": "Desde 2028", "emision": 225 }
+  ],
+  "series": [{ "clave": "emision", "nombre": "BTC al día", "color": "#fbbf24" }],
+  "nota": "Recompensa por bloque × 144 bloques al día. 50 × 144 = 7.200; 3,125 × 144 = 450."
+}
+</script></div>
+
+<h2>Casi todos existen ya</h2>
+
+<p>Como la emisión empezó alta y se va reduciendo, la mayor parte de los bitcoins se creó en los primeros años. Hoy circulan cerca de 20 de los 21 millones. Lo que queda, alrededor de un millón, tardará más de un siglo en salir, cada vez más despacio.</p>
+
+<p>Eso tiene una consecuencia que enlaza con lo que quizá hayas visto en otras monedas: en bitcoin apenas queda dilución por delante. La oferta en circulación y la oferta máxima están muy cerca. Quien compra hoy no tiene que preocuparse de que dentro de tres años haya el triple de unidades, que es el problema de muchos tokens recién lanzados.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">Más del 94 %</span>
+  <span class="prose-dato-texto">La parte de los 21 millones de bitcoins que ya se ha emitido. El resto saldrá a lo largo de más de cien años.</span>
+</div>
+
+<h2>Los que no volverán a moverse</h2>
+
+<p>Hay una cifra más que conviene conocer. Una parte de los bitcoins emitidos se considera perdida para siempre: están en direcciones cuyas claves nadie tiene ya. Discos duros tirados, contraseñas olvidadas, dueños fallecidos sin dejar instrucciones.</p>
+
+<p>La firma de análisis Chainalysis ha estimado esa cantidad en torno a <strong>3,7 millones de bitcoins</strong>. Es una inferencia, no un recuento: considera perdidas las monedas que llevan muchos años sin moverse, y no hay forma de saber con certeza si alguien conserva esas claves. Pero el orden de magnitud dice dos cosas. La oferta realmente disponible es menor que la oficial. Y, sobre todo, <strong>perder el acceso a tus bitcoins es un riesgo real y frecuente</strong>, no una anécdota.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Nadie puede recuperar un bitcoin cuya clave se ha perdido: no hay servicio de atención al cliente ni botón de «he olvidado mi contraseña». Es la otra cara de no depender de un intermediario, y por eso la custodia tiene su propia lección en el módulo 4.</div>
+</div>
+
+<h2>Bitcoin se puede dividir</h2>
+
+<p>Un malentendido frecuente es pensar que, con tan pocas unidades y un precio alto, hay que comprar un bitcoin entero. No. Cada bitcoin se divide en cien millones de partes. La más pequeña se llama <a href="/glosario/satoshi">satoshi</a>, en honor al autor del documento original.</p>
+
+<p>Puedes comprar 20 € de bitcoin igual que puedes comprar 20.000 €. Tendrás una fracción, y esa fracción se comporta exactamente igual que una moneda entera: sube y baja en el mismo porcentaje. El precio por unidad no dice si es caro o barato; lo que importa es cuánto vale la red entera y qué parte tienes tú.</p>
+
+<h2>Lo que el halving dice del precio, y lo que no</h2>
+
+<p>Aquí es donde más se exagera. El razonamiento popular es: si cada cuatro años se emite la mitad, y la demanda sigue igual, el precio tiene que subir. Tiene una parte de verdad y un salto lógico.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que sí es cierto</p>
+    <p class="prose-vs-sub">Hechos comprobables</p>
+    <ul>
+      <li data-tono="favor">La emisión nueva se reduce a la mitad</li>
+      <li data-tono="favor">La fecha se conoce con años de antelación</li>
+      <li data-tono="favor">Los mineros tienen menos monedas nuevas que vender</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que no se deduce</p>
+    <p class="prose-vs-sub">Conclusiones que se cuelan</p>
+    <ul>
+      <li data-tono="contra">Que la demanda vaya a mantenerse</li>
+      <li data-tono="contra">Que el mercado no lo haya descontado ya</li>
+      <li data-tono="contra">Que lo ocurrido cuatro veces vaya a repetirse</li>
+    </ul>
+  </div>
+</div>
+
+<p>La segunda línea de la columna derecha es la clave. Un acontecimiento que todo el mundo conoce con años de antelación difícilmente es una sorpresa. Y fíjate en las cifras de la tabla: en 2024 la emisión diaria bajó en 450 bitcoins, una cantidad pequeña frente a lo que se negocia cada día. El efecto del halving sobre la oferta es cada vez menor, porque cada vez queda menos por recortar.</p>
+
+<p>El módulo 2 dedica una lección entera a los «ciclos de cuatro años». De momento quédate con la versión prudente: <strong>el halving es un hecho de la oferta, no una predicción del precio</strong>.</p>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "La oferta de bitcoin",
+  "afirmaciones": [
+    { "texto": "Nunca habrá más de 21 millones de bitcoins.", "verdadero": true, "explicacion": "Es el techo que fija el programa desde el primer día." },
+    { "texto": "Los bitcoins nuevos los emite una empresa cuando lo considera oportuno.", "verdadero": false, "explicacion": "Solo nacen como recompensa a quien añade un bloque, a un ritmo fijado de antemano." },
+    { "texto": "Tras el halving de abril de 2024, la recompensa por bloque es de 3,125 BTC.", "verdadero": true, "explicacion": "Pasó de 6,25 a 3,125. El siguiente recorte se espera hacia abril de 2028." },
+    { "texto": "Hay que comprar al menos un bitcoin entero.", "verdadero": false, "explicacion": "Se divide en cien millones de partes, los satoshis. Puedes comprar la fracción que quieras." },
+    { "texto": "Como el halving reduce la emisión, garantiza que el precio suba.", "verdadero": false, "explicacion": "Reduce la oferta nueva, pero el precio depende también de la demanda, y el mercado conoce la fecha con años de antelación." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: la oferta, hoy</h2>
+
+<p>En una web de datos de mercado, abre la ficha de bitcoin y apunta su oferta circulante y su oferta máxima. Divide la primera entre la segunda: ese es el porcentaje ya emitido. Después busca la altura actual de la cadena, es decir, el número del último bloque, y resta esa cifra de 1.050.000, que es el bloque del próximo halving. Divide el resultado entre 144 y tendrás los días que faltan, aproximadamente.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> habrá 21 millones de bitcoins como mucho, y casi todos existen ya. La emisión se parte por la mitad cada cuatro años: desde abril de 2024 son 3,125 BTC por bloque. Varios millones se dan por perdidos. El halving es un dato cierto sobre la oferta; sobre el precio no garantiza nada.</div>
+</div>

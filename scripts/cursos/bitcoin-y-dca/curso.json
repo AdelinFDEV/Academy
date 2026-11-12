@@ -1,0 +1,87 @@
+{
+  "slug": "bitcoin-y-dca",
+  "titulo": "Bitcoin y DCA a largo plazo",
+  "subtitulo": "Qué es bitcoin, por qué se mueve tanto y cómo comprarlo poco a poco con un plan.",
+  "descripcion": "Un curso para quien quiere comprar bitcoin poco a poco y no sabe por dónde empezar, o ya lo hace sin un plan. Explica qué es bitcoin y qué problema resuelve, por qué solo habrá 21 millones, qué le da valor y qué dicen de él los supervisores. Enseña con datos cuánto ha caído en el pasado y cuánto duran esas caídas, qué es el DCA, qué dice el estudio de Vanguard sobre comprar poco a poco frente a hacerlo de golpe, y lo que el DCA no arregla. Y termina con un plan: qué dinero puedes usar, cuánto, dónde comprar, cómo guardarlo, qué impuestos tiene en España y qué hacer cuando caiga un 50 %. No dice que bitcoin vaya a subir ni promete que el DCA rinda más: te deja un plan escrito que puedas sostener.",
+  "objetivos": [
+    "Explicar qué es bitcoin, qué problema resuelve y por qué su oferta está limitada a 21 millones.",
+    "Conocer con datos cuánto y con qué frecuencia cae el precio de bitcoin, y cuánto han durado sus grandes caídas.",
+    "Entender cómo funciona el DCA, qué dicen los estudios frente a invertir de golpe y qué no puede hacer por ti.",
+    "Decidir qué dinero puedes dedicar, cuánto y con qué frecuencia, después de separar tu fondo de emergencia.",
+    "Saber dónde comprar, cómo guardar tus bitcoins y qué impuestos tiene un DCA en España.",
+    "Escribir tu plan de aportaciones, con lo que harás en una caída fuerte y con tu criterio de salida."
+  ],
+  "nivel": "básico",
+  "portada": null,
+  "color": "#fbbf24",
+  "aviso": "formacion",
+  "logro": "Paso Firme",
+  "preguntas_final": 25,
+  "revisado": "2026-11-12",
+  "orden": 4,
+  "published": false,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Qué es bitcoin",
+      "descripcion": "De dónde sale, cuántos habrá y por qué alguien paga por él. Lo mínimo que hay que entender antes de poner un euro.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-es-bitcoin-y-que-problema-resuelve", "titulo": "Qué es bitcoin y qué problema resuelve", "resumen": "Dinero que se envía por internet sin banco de por medio. La idea de 2008, explicada sin tecnicismos, y lo que hace posible.", "minutos": 13, "archivo": "01-01-que-es-bitcoin-y-que-problema-resuelve.html" },
+        { "slug": "veintiun-millones-y-el-halving", "titulo": "21 millones y el halving", "resumen": "Por qué la oferta de bitcoin tiene techo, a qué ritmo se emite y qué ocurre cada cuatro años.", "minutos": 12, "archivo": "01-02-veintiun-millones-y-el-halving.html" },
+        { "slug": "que-le-da-valor-a-bitcoin", "titulo": "Qué le da valor a bitcoin", "resumen": "No paga dividendos ni intereses. De dónde sale su precio, los argumentos a favor y en contra, y lo que dicen los supervisores.", "minutos": 14, "archivo": "01-03-que-le-da-valor-a-bitcoin.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "El precio de bitcoin",
+      "descripcion": "Cuánto se mueve, cuánto ha llegado a caer y qué se sabe de sus ciclos. Con datos, sin promesas.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "la-volatilidad-de-bitcoin-en-numeros", "titulo": "La volatilidad, en números", "resumen": "Cuántas veces cae bitcoin un 10 % o más, cuánto cae de media y qué significa eso para tu dinero.", "minutos": 12, "archivo": "02-01-la-volatilidad-de-bitcoin-en-numeros.html" },
+        { "slug": "las-grandes-caidas-de-bitcoin", "titulo": "Las grandes caídas y cuánto duran", "resumen": "Cuatro veces ha perdido más de tres cuartas partes de su valor. Cuánto tardó en recuperarse y qué habrías sentido tú.", "minutos": 13, "archivo": "02-02-las-grandes-caidas-de-bitcoin.html" },
+        { "slug": "ciclos-halving-y-modelos-que-fallan", "titulo": "Ciclos, halving y modelos que fallan", "resumen": "El ciclo de cuatro años son cuatro observaciones. Por qué ningún modelo predice el precio y qué hacer con esa incertidumbre.", "minutos": 13, "archivo": "02-03-ciclos-halving-y-modelos-que-fallan.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "DCA: comprar poco a poco",
+      "descripcion": "El método, con sus cuentas: cómo funciona, qué dicen los estudios, qué no arregla y cómo se diseña.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-es-el-dca-y-como-funciona", "titulo": "Qué es el DCA y cómo funciona", "resumen": "La misma cantidad, cada cierto tiempo, sin mirar el precio. Por qué compra más cuando está barato y cómo se calcula tu precio medio.", "minutos": 12, "archivo": "03-01-que-es-el-dca-y-como-funciona.html" },
+        { "slug": "dca-o-todo-de-golpe", "titulo": "DCA o todo de golpe: lo que dicen los datos", "resumen": "El estudio de Vanguard, contado entero: quién gana más veces, por cuánto, y por qué aun así el DCA tiene sentido para mucha gente.", "minutos": 14, "archivo": "03-02-dca-o-todo-de-golpe.html" },
+        { "slug": "lo-que-el-dca-no-hace", "titulo": "Lo que el DCA no hace", "resumen": "No evita las pérdidas, no convierte un mal activo en bueno y no es gratis. Los tres malentendidos que más dinero cuestan.", "minutos": 12, "archivo": "03-03-lo-que-el-dca-no-hace.html" },
+        { "slug": "disena-tu-dca", "titulo": "Diseña tu DCA", "resumen": "Cantidad, frecuencia, día y plataforma. Cómo afectan las comisiones según el tamaño de cada compra y qué automatizar.", "minutos": 13, "archivo": "03-04-disena-tu-dca.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Antes de empezar: tu plan",
+      "descripcion": "Qué dinero, cuánto, dónde y con qué impuestos. Las decisiones que conviene tomar antes de la primera compra.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-dinero-que-no-vas-a-necesitar", "titulo": "El dinero que no vas a necesitar", "resumen": "Fondo de emergencia, deudas y horizonte: lo que tiene que estar resuelto antes de comprar nada que pueda caer a la mitad.", "minutos": 12, "archivo": "04-01-el-dinero-que-no-vas-a-necesitar.html" },
+        { "slug": "cuanto-de-tu-ahorro-en-bitcoin", "titulo": "Cuánto de tu ahorro", "resumen": "Una forma de decidir el tamaño que no depende de adivinar el precio: empezar por la caída que puedes soportar.", "minutos": 13, "archivo": "04-02-cuanto-de-tu-ahorro-en-bitcoin.html" },
+        { "slug": "donde-comprar-y-donde-guardar-bitcoin", "titulo": "Dónde comprar y dónde guardar", "resumen": "Exchange, wallet propia o un producto cotizado: qué tienes en cada caso, qué riesgo corres y cuándo cambiar de una a otra.", "minutos": 13, "archivo": "04-03-donde-comprar-y-donde-guardar-bitcoin.html" },
+        { "slug": "los-impuestos-de-un-dca-en-espana", "titulo": "Los impuestos de un DCA en España", "resumen": "Comprar no tributa; vender sí. Qué es el FIFO, por qué cada compra es un lote y qué registros guardar desde el primer día.", "minutos": 13, "archivo": "04-04-los-impuestos-de-un-dca-en-espana.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Mantener el plan",
+      "descripcion": "Lo difícil no es empezar un DCA: es no romperlo cuando cae un 50 %. Y saber, desde hoy, cuándo y cómo saldrás.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "aguantar-las-caidas", "titulo": "Aguantar las caídas", "resumen": "Por qué casi todos los planes se rompen en el peor momento, y las reglas que se deciden en frío para no hacerlo.", "minutos": 13, "archivo": "05-01-aguantar-las-caidas.html" },
+        { "slug": "cuando-vender-y-reequilibrar", "titulo": "Cuándo vender y reequilibrar", "resumen": "Un plan sin salida es medio plan. Tres formas de decidir cuándo vender que no exigen adivinar el techo.", "minutos": 13, "archivo": "05-02-cuando-vender-y-reequilibrar.html" },
+        { "slug": "tu-plan-de-dca-por-escrito", "titulo": "Tu plan por escrito", "resumen": "Todo el curso en una página que puedas firmar: tu plan de aportaciones, con su ejercicio final.", "minutos": 14, "archivo": "05-03-tu-plan-de-dca-por-escrito.html" }
+      ]
+    }
+  ]
+}

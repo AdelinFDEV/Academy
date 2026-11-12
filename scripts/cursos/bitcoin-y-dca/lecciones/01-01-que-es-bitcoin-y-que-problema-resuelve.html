@@ -1,0 +1,126 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Bitcoin es dinero que se envía por internet de una persona a otra sin pasar por un banco. La idea se publicó en 2008 y resolvía un problema concreto: cómo evitar que un dinero digital se gaste dos veces sin que nadie central lleve la cuenta. Aquí ves qué problema era, cómo se resuelve con una red de ordenadores que se vigilan entre sí, y qué significa eso para ti: lo bueno y lo que exige a cambio.</p>
+</div>
+
+<h2>Una idea de nueve páginas</h2>
+
+<p>El 31 de octubre de 2008, alguien que firmaba como Satoshi Nakamoto publicó un documento de nueve páginas titulado «Bitcoin: un sistema de dinero electrónico entre pares». Nadie sabe con certeza quién era, o quiénes. El documento empieza con una frase que resume todo lo demás: una versión de dinero electrónico puramente entre pares permitiría enviar pagos en línea directamente de una parte a otra, sin pasar por una institución financiera.</p>
+
+<p>La red empezó a funcionar en enero de 2009. Desde entonces no ha dejado de hacerlo, sin una empresa detrás, sin oficina y sin nadie al mando. Eso es <a href="/glosario/bitcoin">bitcoin</a>: un programa que ejecutan miles de ordenadores en todo el mundo, y la moneda que ese programa crea y contabiliza.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Se suele escribir Bitcoin, con mayúscula, para hablar de la red, y bitcoin, con minúscula, para la moneda. En el día a día se usa todo mezclado. Su símbolo es BTC.</div>
+</div>
+
+<h2>El problema: copiar es gratis</h2>
+
+<p>Todo lo digital se puede copiar. Una foto, una canción, un documento: enviarlos no hace que tú dejes de tenerlos. Con el dinero eso es un desastre. Si un euro digital fuera un archivo, podrías enviárselo a una persona y, con el mismo archivo, a otra. A esto se le llama <strong>el problema del doble gasto</strong>.</p>
+
+<p>La solución de siempre es un intermediario. Tu banco lleva una lista de cuánto tiene cada cliente. Cuando pagas, resta de tu línea y suma a la de otro. No puedes gastar dos veces el mismo dinero porque el banco lleva la cuenta y no te deja. Funciona bien, pero tiene un precio: <strong>dependes de ese intermediario</strong>. Puede cobrarte, tardar, equivocarse, bloquear tu cuenta o, en los casos extremos, quebrar.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Con intermediario</p>
+    <p class="prose-vs-sub">Un banco lleva la cuenta</p>
+    <ul>
+      <li data-tono="favor">Si te equivocas, a veces se puede deshacer</li>
+      <li data-tono="favor">Hay alguien a quien reclamar</li>
+      <li data-tono="contra">Puede bloquear o limitar tu dinero</li>
+      <li data-tono="contra">Tienes que fiarte de que lo hace bien</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Sin intermediario</p>
+    <p class="prose-vs-sub">La cuenta la lleva una red</p>
+    <ul>
+      <li data-tono="favor">Nadie puede impedirte enviar</li>
+      <li data-tono="favor">Las reglas no dependen de una empresa</li>
+      <li data-tono="contra">Un envío equivocado no tiene vuelta atrás</li>
+      <li data-tono="contra">Si pierdes tus claves, nadie te las devuelve</li>
+    </ul>
+  </div>
+</div>
+
+<h2>La solución: una lista que tiene todo el mundo</h2>
+
+<p>La propuesta de 2008 fue quitar al intermediario sin quitar la lista. En lugar de un banco con un libro de cuentas privado, hay <strong>un libro público del que miles de ordenadores guardan una copia idéntica</strong>. Ese libro es la <a href="/glosario/blockchain">blockchain</a>: una cadena de bloques, cada uno con un puñado de operaciones, enlazados de forma que cambiar uno antiguo obligaría a rehacer todos los posteriores.</p>
+
+<p>Cuando alguien envía bitcoins, lo anuncia a la red. Los ordenadores comprueban que tiene esas monedas y que no las ha gastado ya, y la operación entra en el siguiente bloque. Como todos tienen el libro entero, nadie puede colar un doble gasto: los demás lo verían.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Anuncias el envío.</strong> Lo firmas con tu <a href="/glosario/clave-privada">clave privada</a>, que demuestra que las monedas son tuyas sin revelar la clave.</li>
+  <li><strong>La red lo comprueba.</strong> Miles de ordenadores verifican que esas monedas existen y no se han gastado.</li>
+  <li><strong>Entra en un bloque.</strong> Un bloque nuevo se añade a la cadena aproximadamente cada diez minutos.</li>
+  <li><strong>Queda escrito.</strong> Cada bloque posterior lo entierra un poco más y lo hace más difícil de alterar.</li>
+</ol>
+
+<h2>Quién añade los bloques, y por qué lo hace</h2>
+
+<p>Falta una pieza: quién decide qué bloque es el siguiente. Si cualquiera pudiera añadir bloques sin coste, alguien con muchos ordenadores podría reescribir la historia a su favor.</p>
+
+<p>La respuesta se llama <a href="/glosario/prueba-de-trabajo">prueba de trabajo</a>. Para proponer un bloque hay que resolver antes un problema matemático que solo se resuelve probando combinaciones, gastando electricidad y máquinas. Quien lo consigue primero añade el bloque y recibe a cambio bitcoins recién creados. A esos participantes se les llama mineros, por analogía con los buscadores de oro: gastan recursos para poner monedas nuevas en circulación. El documento original usa esa misma comparación.</p>
+
+<p>El diseño tiene una lógica económica. Para falsear la historia haría falta más potencia de cálculo que la de todos los demás juntos. Y quien tuviera semejante potencia ganaría más siguiendo las reglas y cobrando las recompensas que destruyendo el sistema del que salen. La seguridad no depende de que nadie sea honrado: depende de que hacer trampa salga más caro que no hacerla.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">10 minutos</span>
+  <span class="prose-dato-texto">Lo que tarda, de media, en añadirse un bloque nuevo. La red ajusta sola la dificultad del problema para mantener ese ritmo, entren más mineros o salgan.</span>
+</div>
+
+<h2>Lo que esto significa para ti</h2>
+
+<p>Para comprar bitcoin no hace falta entender la criptografía, igual que no hace falta saber cómo funciona un motor para conducir. Pero sí conviene tener claras tres consecuencias prácticas del diseño, porque condicionan todo lo que harás en este curso.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Característica</th><th>Lo bueno</th><th>Lo que exige</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>No hay intermediario</td><td>Nadie puede congelar tus monedas</td><td>Nadie puede rescatarte si te equivocas</td></tr>
+    <tr><td>Las operaciones no se deshacen</td><td>Un pago recibido es definitivo</td><td>Un envío a una dirección errónea se pierde</td></tr>
+    <tr><td>El libro es público</td><td>Cualquiera puede comprobar que las reglas se cumplen</td><td>Tus movimientos se pueden rastrear si se conoce tu dirección</td></tr>
+  </tbody>
+</table>
+
+<p>La segunda columna es la que se anuncia. La tercera es la que se aprende por las malas. En el módulo 4 verás cómo decidir dónde guardar tus bitcoins teniendo las dos en cuenta.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Entender cómo funciona bitcoin no dice nada sobre si su precio subirá. Una tecnología puede ser ingeniosa y su moneda, una mala inversión, o al revés. De qué depende el precio es el tema de la lección 1.3 y de todo el módulo 2.</div>
+</div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "El recorrido de un envío de bitcoin",
+  "instrucciones": "Ordena los pasos desde que decides enviar.",
+  "pasos": [
+    "Firmas el envío con tu clave privada",
+    "Lo anuncias a la red",
+    "Los ordenadores comprueban que no has gastado ya esas monedas",
+    "Un minero lo incluye en un bloque nuevo",
+    "Los bloques siguientes lo hacen cada vez más difícil de alterar"
+  ]
+}
+</script></div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "¿Qué problema resolvía la propuesta de bitcoin de 2008?",
+  "opciones": [
+    "Que los pagos con tarjeta eran demasiado lentos",
+    "Que un dinero digital pudiera gastarse dos veces si nadie central llevaba la cuenta",
+    "Que los bancos no ofrecían intereses",
+    "Que no existían monedas comunes entre países"
+  ],
+  "correcta": 1,
+  "explicacion": "Es el problema del doble gasto. Bitcoin lo resuelve con un libro público que guardan miles de ordenadores, en lugar de con un intermediario."
+}
+</script></div>
+
+<h2>Ejercicio: mira la red funcionando</h2>
+
+<p>Abre un <a href="/glosario/explorador-de-bloques">explorador de bloques</a> de bitcoin; cualquiera de los que aparecen al buscarlo sirve. Localiza el último bloque añadido y apunta tres datos: su número, la hora a la que se añadió y cuántas operaciones contiene. Espera unos minutos y recarga la página. Verás aparecer el siguiente. Eso que estás mirando es el libro público del que habla esta lección, y lleva escribiéndose sin interrupción desde 2009.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> bitcoin es dinero digital que se envía sin intermediario. Evita el doble gasto con un libro público que guardan miles de ordenadores y que se amplía con un bloque cada diez minutos. A cambio de no depender de nadie, los errores son tuyos y no se deshacen.</div>
+</div>

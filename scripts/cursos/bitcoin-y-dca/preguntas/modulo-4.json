@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "bd-m4-01",
+    "leccion": "el-dinero-que-no-vas-a-necesitar",
+    "enunciado": "¿Qué tamaño de fondo de emergencia recomienda el Banco de España en sus materiales de educación financiera?",
+    "opciones": [
+      "El 10 % de lo que tengas invertido",
+      "Un mes de ingresos",
+      "Entre tres y seis meses de gastos",
+      "Dos años de gastos"
+    ],
+    "correcta": 2,
+    "explicacion": "Y en un producto seguro y líquido, del que se pueda disponer rápido y sin coste."
+  },
+  {
+    "clave": "bd-m4-02",
+    "leccion": "el-dinero-que-no-vas-a-necesitar",
+    "enunciado": "¿Dónde debe estar guardado el fondo de emergencia?",
+    "opciones": [
+      "En una wallet fría, para que no se toque",
+      "En la misma plataforma del DCA",
+      "En bitcoin, para que crezca mientras tanto",
+      "En un producto seguro y líquido, no en bitcoin"
+    ],
+    "correcta": 3,
+    "explicacion": "Su trabajo no es rentar, es estar disponible el día que haga falta sin haber perdido valor."
+  },
+  {
+    "clave": "bd-m4-03",
+    "leccion": "el-dinero-que-no-vas-a-necesitar",
+    "enunciado": "Tienes una tarjeta con saldo aplazado al 20 % anual. ¿Qué va antes, cancelarla o empezar el DCA?",
+    "opciones": [
+      "Cancelarla: es un 20 % asegurado que dejas de perder",
+      "El DCA: bitcoin puede rendir más del 20 %",
+      "Las dos cosas a la vez, a partes iguales",
+      "Ninguna: primero hay que esperar a que baje el precio"
+    ],
+    "correcta": 0,
+    "explicacion": "Ningún activo garantiza una rentabilidad así, y liquidar la deuda no tiene riesgo."
+  },
+  {
+    "clave": "bd-m4-04",
+    "leccion": "el-dinero-que-no-vas-a-necesitar",
+    "enunciado": "Vas a necesitar 8.000 € dentro de 18 meses para la entrada de un piso. ¿Es dinero para bitcoin?",
+    "opciones": [
+      "Sí, si se guarda en una wallet propia",
+      "No: una gran caída puede tardar años en recuperarse",
+      "Sí: 18 meses es largo plazo",
+      "Sí, siempre que se haga con DCA"
+    ],
+    "correcta": 1,
+    "explicacion": "Tras cada gran caída, bitcoin tardó entre dos y algo más de tres años en recuperar su máximo. El dinero con fecha no va ahí."
+  },
+  {
+    "clave": "bd-m4-05",
+    "leccion": "cuanto-de-tu-ahorro-en-bitcoin",
+    "enunciado": "Según la lección, ¿de qué pregunta conviene partir para decidir cuánto poner en bitcoin?",
+    "opciones": [
+      "De cuánto tienen otros en redes",
+      "De cuánto ha subido en el último año",
+      "De cuánto puedes perder sin abandonar el plan",
+      "De cuánto puedes ganar si se triplica"
+    ],
+    "correcta": 2,
+    "explicacion": "La pérdida tolerable depende de ti y se puede contestar. La ganancia depende de un precio que nadie conoce."
+  },
+  {
+    "clave": "bd-m4-06",
+    "leccion": "cuanto-de-tu-ahorro-en-bitcoin",
+    "enunciado": "La mayor pérdida que puedes tolerar son 800 €. Con una caída del 80 % como referencia, ¿cuál es tu posición máxima?",
+    "opciones": [
+      "640 €",
+      "800 €",
+      "4.000 €",
+      "1.000 €"
+    ],
+    "correcta": 3,
+    "explicacion": "800 ÷ 0,8 = 1.000 €. Tras una caída del 80 % quedarían 200 € y habrías perdido 800 €."
+  },
+  {
+    "clave": "bd-m4-07",
+    "leccion": "cuanto-de-tu-ahorro-en-bitcoin",
+    "enunciado": "Alguien tiene el 10 % de su ahorro en bitcoin, que cae un 80 %. Si el resto no cambia, ¿cuánto pierde su ahorro total?",
+    "opciones": [
+      "Un 8 %",
+      "Un 18 %",
+      "Un 10 %",
+      "Un 80 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Peso por caída: 10 % × 80 % = 8 %. Con la mitad del ahorro en bitcoin, sería un 40 %."
+  },
+  {
+    "clave": "bd-m4-08",
+    "leccion": "cuanto-de-tu-ahorro-en-bitcoin",
+    "enunciado": "¿Por qué un tamaño demasiado grande suele dar peor resultado que uno pequeño, aunque el activo acabe subiendo?",
+    "opciones": [
+      "Porque bitcoin sube menos cuando se tiene mucho",
+      "Porque en las caídas intermedias casi nadie aguanta y se vende abajo",
+      "Porque las posiciones grandes pagan más impuestos",
+      "Porque las plataformas limitan las posiciones grandes"
+    ],
+    "correcta": 1,
+    "explicacion": "Un tamaño que no puedes sostener no te da la rentabilidad del activo: te da la de haber vendido en el peor momento."
+  },
+  {
+    "clave": "bd-m4-09",
+    "leccion": "donde-comprar-y-donde-guardar-bitcoin",
+    "enunciado": "Dejas tus bitcoins en la plataforma donde los compraste. ¿Qué tienes en realidad?",
+    "opciones": [
+      "Un depósito garantizado por el Estado",
+      "Una participación en un fondo cotizado",
+      "Un saldo que la plataforma se compromete a entregarte",
+      "Las claves privadas de tus monedas"
+    ],
+    "correcta": 2,
+    "explicacion": "Las claves las tiene la plataforma. Si falla, no hay un fondo público que te devuelva las monedas."
+  },
+  {
+    "clave": "bd-m4-10",
+    "leccion": "donde-comprar-y-donde-guardar-bitcoin",
+    "enunciado": "¿Qué riesgo asumes al pasar tus bitcoins a una wallet propia?",
+    "opciones": [
+      "Que te cobren una comisión anual de gestión",
+      "Que la plataforma quiebre con tus monedas dentro",
+      "Que solo puedas operar en horario de bolsa",
+      "Perder la seed phrase o que alguien se haga con ella"
+    ],
+    "correcta": 3,
+    "explicacion": "Eliminas los riesgos de la plataforma y asumes toda la responsabilidad de las claves."
+  },
+  {
+    "clave": "bd-m4-11",
+    "leccion": "donde-comprar-y-donde-guardar-bitcoin",
+    "enunciado": "¿Qué describe mejor un producto cotizado de bitcoin?",
+    "opciones": [
+      "Exposición al precio desde un bróker, sin tener las monedas",
+      "Bitcoin con un precio mínimo garantizado",
+      "Una wallet gestionada por un banco",
+      "Una forma de guardar tus propias claves en bolsa"
+    ],
+    "correcta": 0,
+    "explicacion": "No puedes retirar ni enviar bitcoins: tienes un instrumento financiero que sigue su precio, con una comisión anual."
+  },
+  {
+    "clave": "bd-m4-12",
+    "leccion": "donde-comprar-y-donde-guardar-bitcoin",
+    "enunciado": "Vas a retirar por primera vez una cantidad importante a tu wallet. ¿Qué haces antes?",
+    "opciones": [
+      "Desactivar la verificación en dos pasos",
+      "Enviar primero una cantidad pequeña y comprobar que llega",
+      "Enviar todo de una vez para pagar una sola comisión",
+      "Compartir tu seed phrase con la plataforma"
+    ],
+    "correcta": 1,
+    "explicacion": "Un envío a una dirección equivocada no se puede deshacer. La prueba cuesta una comisión de red."
+  },
+  {
+    "clave": "bd-m4-13",
+    "leccion": "los-impuestos-de-un-dca-en-espana",
+    "enunciado": "¿Cuál de estas operaciones NO genera ganancia o pérdida en el IRPF?",
+    "opciones": [
+      "Vender bitcoin por euros",
+      "Pagar una compra con bitcoin",
+      "Comprar bitcoin con euros",
+      "Cambiar bitcoin por otra criptomoneda"
+    ],
+    "correcta": 2,
+    "explicacion": "Comprar y mantener no tributa. Las otras tres son formas de transmitirlo."
+  },
+  {
+    "clave": "bd-m4-14",
+    "leccion": "los-impuestos-de-un-dca-en-espana",
+    "enunciado": "¿Qué método obliga a usar la norma española para calcular la ganancia al vender?",
+    "opciones": [
+      "El precio de la última compra",
+      "El precio medio de todas las compras",
+      "El que elija el contribuyente cada año",
+      "FIFO: se consideran vendidas primero las unidades más antiguas"
+    ],
+    "correcta": 3,
+    "explicacion": "Y se aplica al conjunto de tus bitcoins, no por separado en cada plataforma."
+  },
+  {
+    "clave": "bd-m4-15",
+    "leccion": "los-impuestos-de-un-dca-en-espana",
+    "enunciado": "Compraste 0,002 BTC por 100 € y después 0,004 BTC por 100 €. Vendes 0,002 BTC por 150 €. ¿Qué ganancia sale con FIFO, antes de comisiones?",
+    "opciones": [
+      "50 €",
+      "100 €",
+      "83 €",
+      "150 €"
+    ],
+    "correcta": 0,
+    "explicacion": "Sale el lote más antiguo, que costó 100 €. 150 − 100 = 50 €. Con el precio medio saldría otra cifra, que no es la válida."
+  }
+]

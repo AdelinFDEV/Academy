@@ -1,0 +1,159 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Comprar bitcoin no tributa. Venderlo, cambiarlo por otra criptomoneda o pagar con él, sí. Y cuando llega ese día, Hacienda quiere saber cuánto ganaste, calculado con un método concreto: se venden primero las unidades más antiguas. Para quien hace DCA eso significa que cada compra es un lote que hay que tener apuntado. Aquí ves lo esencial para no llevarte sorpresas. No es asesoramiento fiscal: es lo mínimo que conviene saber antes de empezar.</p>
+</div>
+
+<h2>Cuándo se paga y cuándo no</h2>
+
+<p>En España, tener bitcoin no genera por sí mismo una obligación de pago en el IRPF. Lo que genera una ganancia o una pérdida patrimonial es desprenderte de él. Hay tres formas de hacerlo, y la segunda es la que más gente desconoce.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Operación</th><th>¿Tributa en el IRPF?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Comprar bitcoin con euros</td><td>No</td></tr>
+    <tr><td>Mantenerlo, suba lo que suba</td><td>No</td></tr>
+    <tr><td>Pasarlo de un exchange a tu wallet</td><td>No: sigue siendo tuyo</td></tr>
+    <tr><td>Venderlo por euros</td><td>Sí</td></tr>
+    <tr><td>Cambiarlo por otra criptomoneda</td><td>Sí: es una permuta</td></tr>
+    <tr><td>Pagar algo con él</td><td>Sí</td></tr>
+  </tbody>
+</table>
+
+<p>La quinta fila sorprende a muchos. Cambiar bitcoin por otra moneda, incluida una <a href="/glosario/stablecoin">stablecoin</a>, cuenta como venderlo. «Ponerse en estable» durante una caída no es esperar al margen: es una operación que hay que declarar, con su ganancia o su pérdida.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Para quien hace un DCA puro, comprando cada mes y sin vender, la consecuencia es sencilla: mientras solo compres, no hay nada que pagar por IRPF. Lo que sí hay es un registro que llevar, porque el día que vendas lo vas a necesitar entero.</div>
+</div>
+
+<h2>Cómo se calcula la ganancia</h2>
+
+<p>La ganancia o pérdida es la diferencia entre lo que obtienes al vender y lo que te costó lo que vendes. Las comisiones cuentan: las de compra aumentan el coste y las de venta reducen lo obtenido.</p>
+
+<blockquote><strong>Ganancia = (precio de venta − comisión de venta) − (precio de compra + comisión de compra)</strong></blockquote>
+
+<p>El problema es saber cuál fue el precio de compra cuando has comprado muchas veces a precios distintos. La norma española lo resuelve con un criterio obligatorio: el <a href="/glosario/fifo">FIFO</a>, del inglés <em>first in, first out</em>. Las primeras unidades que compraste son las primeras que se consideran vendidas.</p>
+
+<h2>El FIFO, con un DCA</h2>
+
+<p>Retoma tres de las compras del ejemplo del módulo 3 y supón que un tiempo después vendes una parte.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Lote</th><th>Fecha</th><th>Bitcoin</th><th>Precio de compra</th><th>Coste</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>Enero</td><td>0,0020</td><td>50.000 €</td><td>100 €</td></tr>
+    <tr><td>2</td><td>Febrero</td><td>0,0025</td><td>40.000 €</td><td>100 €</td></tr>
+    <tr><td>3</td><td>Marzo</td><td>0,0040</td><td>25.000 €</td><td>100 €</td></tr>
+  </tbody>
+</table>
+
+<p>Vendes 0,0030 bitcoin cuando el precio es de 60.000 €: obtienes 180 €. Según el FIFO, esas 0,0030 unidades salen así:</p>
+
+<ol class="prose-pasos">
+  <li><strong>Todo el lote 1:</strong> 0,0020 BTC, que costaron 100 €.</li>
+  <li><strong>Parte del lote 2:</strong> los 0,0010 BTC que faltan, a 40.000 €: 40 €.</li>
+  <li><strong>Coste total de lo vendido:</strong> 140 €.</li>
+  <li><strong>Ganancia:</strong> 180 € − 140 € = 40 €, antes de comisiones.</li>
+</ol>
+
+<p>Te quedan 0,0015 BTC del lote 2 y el lote 3 entero, que serán los siguientes en salir cuando vuelvas a vender.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "La misma venta, con FIFO y con el precio medio",
+  "subtitulo": "Vender 0,0030 BTC por 180 €. El método cambia la ganancia que declaras.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Con FIFO (el obligatorio)", "ganancia": 40 },
+    { "etiqueta": "Con el precio medio (no admitido)", "ganancia": 74 }
+  ],
+  "series": [{ "clave": "ganancia", "nombre": "Ganancia calculada", "color": "#fbbf24" }],
+  "nota": "FIFO: 180 − (100 + 40) = 40 €. Precio medio: 300 € ÷ 0,0085 BTC = 35.294 € por BTC; 0,0030 × 35.294 = 106 €; 180 − 106 = 74 €."
+}
+</script></div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Tu <a href="/glosario/precio-medio-de-compra">precio medio de compra</a> es muy útil para saber cómo vas, y es la cifra que te enseñan casi todas las aplicaciones. Pero para Hacienda no vale: el método obligatorio para particulares es el FIFO. Y se aplica al conjunto de tus bitcoins, no por separado en cada plataforma.</div>
+</div>
+
+<h2>Cuánto se paga</h2>
+
+<p>Las ganancias por vender criptomonedas van a la base del ahorro del IRPF, que tiene su propia escala por tramos. En el momento de revisar este curso, los tipos van del 19 % para los primeros 6.000 € de ganancia al 30 % para lo que supere los 300.000 €. Los tramos son marginales: cada tipo se aplica solo a la parte de la ganancia que cae en su tramo, no a toda.</p>
+
+<p>Dos reglas más que conviene conocer desde el principio:</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Las pérdidas cuentan</p>
+    <p class="prose-vs-sub">Si vendes por menos de lo que costó</p>
+    <ul>
+      <li data-tono="favor">Se restan de otras ganancias del año</li>
+      <li data-tono="favor">Lo que sobre se puede arrastrar a años siguientes</li>
+      <li data-tono="contra">Solo existen si vendes: una caída sin vender no es una pérdida fiscal</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Declarar no es lo mismo que pagar</p>
+    <p class="prose-vs-sub">Obligaciones informativas</p>
+    <ul>
+      <li data-tono="contra">Hay un modelo para informar de criptomonedas en el extranjero</li>
+      <li data-tono="contra">Las plataformas informan a Hacienda de tus operaciones</li>
+      <li data-tono="favor">Con todo bien apuntado, es un trámite</li>
+    </ul>
+  </div>
+</div>
+
+<h2>El modelo 721, en dos líneas</h2>
+
+<p>Además del IRPF existe una declaración solo informativa, el modelo 721, para quien tiene criptomonedas custodiadas por una empresa situada en el extranjero cuyo valor supere los 50.000 € a 31 de diciembre. No se paga nada con ella: se informa. Las que guardas tú en tu propia wallet, sin un tercero que las custodie, quedan fuera.</p>
+
+<p>Con un DCA normal tardarás tiempo en acercarte a esa cifra, si llegas. Pero conviene saber que existe, porque el umbral se mide por el valor de mercado, no por lo que aportaste: una subida fuerte puede llevarte a él sin haber puesto más dinero.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">50.000 €</span>
+  <span class="prose-dato-texto">El valor a 31 de diciembre a partir del cual hay que informar, con el modelo 721, de las criptomonedas que te custodia una empresa en el extranjero.</span>
+</div>
+
+<h2>Lo que tienes que guardar desde hoy</h2>
+
+<p>Todo lo anterior se reduce a un hábito: apuntar cada compra en el momento de hacerla. Dentro de cinco años, reconstruir doscientas compras a partir de correos y capturas es una pesadilla. Hacerlo al día son dos minutos al mes.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Fecha y hora</strong> de cada compra.</li>
+  <li><strong>Importe en euros</strong> que pagaste.</li>
+  <li><strong>Cantidad de bitcoin</strong> que recibiste.</li>
+  <li><strong>Comisión</strong>, por separado.</li>
+  <li><strong>Plataforma</strong> donde la hiciste.</li>
+</ol>
+
+<p>Descarga además el historial de la plataforma una vez al año y guárdalo fuera de ella. Las plataformas cierran, cambian de formato o dejan de dar datos antiguos, y la obligación de justificar tus cifras sigue siendo tuya.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Esto es un resumen para quien hace un DCA sencillo. La normativa cambia y tu caso puede tener particularidades. Tienes el recorrido completo en la <a href="/guias/fiscalidad-cripto-espana">guía de fiscalidad cripto en España</a>, y para decisiones con dinero importante, lo prudente es consultar a un asesor fiscal.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Llevas dos años comprando bitcoin cada mes sin vender nada. Durante una caída cambias la mitad por una stablecoin «para protegerte». ¿Qué has hecho, a efectos fiscales?",
+  "opciones": [
+    "Nada: sigues teniendo criptomonedas",
+    "Una permuta: has transmitido bitcoin y tienes que calcular la ganancia o la pérdida con FIFO",
+    "Una operación exenta, porque no has recibido euros",
+    "Una compra, que no tributa"
+  ],
+  "correcta": 1,
+  "explicacion": "Cambiar una criptomoneda por otra cuenta como venderla. La ganancia o pérdida se calcula empezando por los lotes más antiguos."
+}
+</script></div>
+
+<h2>Ejercicio del módulo: tu hoja de registro</h2>
+
+<p>Crea hoy la hoja donde vas a apuntar tus compras, con las cinco columnas de la lista: fecha, euros, bitcoin, comisión y plataforma. Añade una sexta que calcule el precio de cada compra y dos celdas arriba con el total invertido y tu precio medio. Si ya tienes compras hechas, pásalas ahora. Si no, déjala lista con la primera fila en blanco. Es la herramienta más aburrida del curso y la que más tiempo y disgustos te va a ahorrar.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> comprar no tributa; vender, cambiar por otra criptomoneda o pagar con bitcoin, sí. La ganancia se calcula con FIFO, lote a lote y sobre todos tus bitcoins, no con el precio medio. Apunta cada compra desde el primer día y guarda el historial fuera de la plataforma.</div>
+</div>

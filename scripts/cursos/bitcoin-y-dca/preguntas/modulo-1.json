@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "bd-m1-01",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "¿Qué proponía el documento original de bitcoin, publicado en 2008?",
+    "opciones": [
+      "Una bolsa de valores que funcionara las 24 horas",
+      "Una moneda digital emitida por los bancos centrales",
+      "Dinero electrónico que se envía entre dos partes sin institución financiera",
+      "Un sistema para abaratar los pagos con tarjeta"
+    ],
+    "correcta": 2,
+    "explicacion": "Lo dice su primera frase: pagos en línea directamente de una parte a otra, sin pasar por una institución financiera."
+  },
+  {
+    "clave": "bd-m1-02",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "¿Qué es el problema del doble gasto?",
+    "opciones": [
+      "Que hay que pagar impuestos al comprar y al vender",
+      "Que una moneda vale distinto en dos plataformas",
+      "Que las comisiones se cobran al enviar y al recibir",
+      "Que algo digital se puede copiar y, sin control, gastarse dos veces"
+    ],
+    "correcta": 3,
+    "explicacion": "Un dinero digital necesita que alguien, o algo, impida usar las mismas monedas dos veces."
+  },
+  {
+    "clave": "bd-m1-03",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "¿Cómo evita bitcoin el doble gasto sin un banco?",
+    "opciones": [
+      "Con un libro público de operaciones del que miles de ordenadores guardan copia",
+      "Con una empresa que revisa cada operación",
+      "Guardando las monedas en un servidor central",
+      "Limitando los envíos a uno por día"
+    ],
+    "correcta": 0,
+    "explicacion": "Ese libro es la blockchain. Como todos lo tienen entero, un doble gasto se detectaría."
+  },
+  {
+    "clave": "bd-m1-04",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "¿Qué hacen los mineros en la red de bitcoin?",
+    "opciones": [
+      "Deciden por votación el precio del día",
+      "Gastan potencia de cálculo para añadir bloques y reciben bitcoins nuevos a cambio",
+      "Aprueban qué personas pueden usar la red",
+      "Guardan las claves de los usuarios"
+    ],
+    "correcta": 1,
+    "explicacion": "Es la prueba de trabajo: resolver un problema costoso para ganarse el derecho a añadir el siguiente bloque."
+  },
+  {
+    "clave": "bd-m1-05",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "Envías bitcoins a una dirección equivocada. ¿Qué ocurre?",
+    "opciones": [
+      "Puedes reclamarlo a los mineros",
+      "Se anula si avisas antes de 24 horas",
+      "No se puede deshacer: nadie tiene poder para anular la operación",
+      "La red lo detecta y lo devuelve a los diez minutos"
+    ],
+    "correcta": 2,
+    "explicacion": "Es la otra cara de no tener intermediario: nadie puede bloquear tu dinero, y nadie puede rescatarte de un error."
+  },
+  {
+    "clave": "bd-m1-06",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "¿Cuál es el máximo de bitcoins que llegará a existir?",
+    "opciones": [
+      "21.000 millones",
+      "100 millones",
+      "No hay máximo",
+      "21 millones"
+    ],
+    "correcta": 3,
+    "explicacion": "El techo está fijado en el programa desde el primer día."
+  },
+  {
+    "clave": "bd-m1-07",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "¿Qué es el halving?",
+    "opciones": [
+      "La reducción a la mitad de la recompensa por bloque, cada 210.000 bloques",
+      "El cierre de la mitad de los mineros",
+      "Una caída del 50 % en el precio",
+      "La división de cada bitcoin en dos unidades"
+    ],
+    "correcta": 0,
+    "explicacion": "Ocurre aproximadamente cada cuatro años y reduce el ritmo al que se crean bitcoins nuevos."
+  },
+  {
+    "clave": "bd-m1-08",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "¿Cuál es la recompensa por bloque desde el halving de abril de 2024?",
+    "opciones": [
+      "12,5 BTC",
+      "3,125 BTC",
+      "6,25 BTC",
+      "1 BTC"
+    ],
+    "correcta": 1,
+    "explicacion": "Pasó de 6,25 a 3,125. El siguiente recorte, a 1,5625, se espera hacia abril de 2028."
+  },
+  {
+    "clave": "bd-m1-09",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "Con 3,125 BTC por bloque y unos 144 bloques al día, ¿cuántos bitcoins nuevos salen cada día?",
+    "opciones": [
+      "Unos 45",
+      "Unos 7.200",
+      "Unos 450",
+      "Unos 3.125"
+    ],
+    "correcta": 2,
+    "explicacion": "3,125 × 144 = 450. Al principio eran 7.200 al día."
+  },
+  {
+    "clave": "bd-m1-10",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "¿Qué enseña la estimación de que varios millones de bitcoins están perdidos?",
+    "opciones": [
+      "Que la red tiene un fallo de seguridad",
+      "Que el techo de 21 millones es falso",
+      "Que esos bitcoins se volverán a emitir",
+      "Que perder el acceso a tus monedas es un riesgo real, sin nadie que las recupere"
+    ],
+    "correcta": 3,
+    "explicacion": "Son monedas en direcciones cuyas claves nadie tiene. Es una inferencia, pero el riesgo que describe es muy real."
+  },
+  {
+    "clave": "bd-m1-11",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "Tienes 50 € y un bitcoin cuesta decenas de miles. ¿Puedes comprar?",
+    "opciones": [
+      "Sí: cada bitcoin se divide en cien millones de satoshis",
+      "Sí, pero solo media unidad como mínimo",
+      "No: hay que comprar unidades enteras",
+      "Solo si se juntan varios compradores"
+    ],
+    "correcta": 0,
+    "explicacion": "Una fracción sube y baja en el mismo porcentaje que la moneda entera."
+  },
+  {
+    "clave": "bd-m1-12",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "Alguien afirma: «tras el halving se emite la mitad, así que el precio tiene que subir». ¿Qué falla?",
+    "opciones": [
+      "El precio no depende de la oferta en ningún caso",
+      "Da por hecha la demanda y olvida que la fecha se conoce con años de antelación",
+      "La emisión se duplica en cada halving",
+      "El halving no reduce la emisión"
+    ],
+    "correcta": 1,
+    "explicacion": "El halving es un hecho cierto de la oferta. El precio depende también de la demanda, y el mercado puede haberlo descontado."
+  },
+  {
+    "clave": "bd-m1-13",
+    "leccion": "que-le-da-valor-a-bitcoin",
+    "enunciado": "¿De dónde sale el precio de bitcoin?",
+    "opciones": [
+      "De un precio mínimo garantizado por la red",
+      "Del coste de la electricidad que consume",
+      "De lo que otros estén dispuestos a pagar por él: no genera rentas",
+      "De los beneficios que reparte cada año"
+    ],
+    "correcta": 2,
+    "explicacion": "Como el oro, no produce flujos. Por eso nadie puede calcular cuánto «debería» valer."
+  },
+  {
+    "clave": "bd-m1-14",
+    "leccion": "que-le-da-valor-a-bitcoin",
+    "enunciado": "¿Qué dijo la advertencia conjunta de los supervisores europeos de marzo de 2022?",
+    "opciones": [
+      "Que bitcoin es una inversión adecuada para cualquier ahorrador",
+      "Que los depósitos en criptoactivos estaban garantizados",
+      "Que los criptoactivos quedaban prohibidos en la Unión Europea",
+      "Que muchos criptoactivos son muy arriesgados y se puede perder todo lo invertido"
+    ],
+    "correcta": 3,
+    "explicacion": "ESMA, EBA y EIOPA añadieron que no son adecuados para la mayoría de los minoristas como inversión ni como medio de pago."
+  },
+  {
+    "clave": "bd-m1-15",
+    "leccion": "que-le-da-valor-a-bitcoin",
+    "enunciado": "En enero de 2024 el supervisor estadounidense aprobó productos cotizados de bitcoin. ¿Qué significa?",
+    "opciones": [
+      "Que se puede comprar por canales tradicionales, no que el supervisor lo respalde",
+      "Que su precio quedó garantizado",
+      "Que el supervisor recomienda invertir en bitcoin",
+      "Que bitcoin dejó de ser un activo de riesgo"
+    ],
+    "correcta": 0,
+    "explicacion": "Su presidente aclaró ese día que la decisión no aprobaba ni respaldaba bitcoin, al que llamó especulativo y volátil."
+  }
+]

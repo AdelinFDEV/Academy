@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "bd-f-01",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "¿Qué hace posible enviar bitcoin sin un banco de por medio?",
+    "opciones": [
+      "Una empresa que valida cada pago",
+      "Un acuerdo entre los bancos centrales",
+      "Un libro público de operaciones que mantienen miles de ordenadores",
+      "Un servidor central con copia de seguridad"
+    ],
+    "correcta": 2,
+    "explicacion": "La blockchain sustituye al intermediario: todos tienen la lista entera y nadie puede colar un doble gasto."
+  },
+  {
+    "clave": "bd-f-02",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "¿De qué depende la seguridad de la red de bitcoin, según su diseño?",
+    "opciones": [
+      "De que el programa sea secreto",
+      "De que todos los participantes sean honrados",
+      "De la vigilancia de un supervisor público",
+      "De que hacer trampa cueste más que seguir las reglas"
+    ],
+    "correcta": 3,
+    "explicacion": "Para reescribir la historia haría falta más potencia de cálculo que la de todos los demás juntos, y con ella se gana más cobrando recompensas."
+  },
+  {
+    "clave": "bd-f-03",
+    "leccion": "que-es-bitcoin-y-que-problema-resuelve",
+    "enunciado": "Un amigo dice: «bitcoin es mejor que el banco porque nadie puede bloquearte el dinero». ¿Qué le falta a la frase?",
+    "opciones": [
+      "Que, a cambio, nadie puede deshacer un error ni devolverte unas claves perdidas",
+      "Que bitcoin sí tiene un servicio de reclamaciones",
+      "Que los envíos de bitcoin se pueden anular en 24 horas",
+      "Que los bancos tampoco pueden bloquear cuentas"
+    ],
+    "correcta": 0,
+    "explicacion": "No depender de un intermediario tiene las dos caras."
+  },
+  {
+    "clave": "bd-f-04",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "¿Por qué en bitcoin apenas queda dilución por delante?",
+    "opciones": [
+      "Porque el equipo tiene sus monedas bloqueadas",
+      "Porque casi toda su oferta máxima ya está emitida",
+      "Porque se queman monedas cada año",
+      "Porque no tiene oferta máxima"
+    ],
+    "correcta": 1,
+    "explicacion": "Más del 94 % de los 21 millones existe ya, y el resto saldrá a lo largo de más de un siglo."
+  },
+  {
+    "clave": "bd-f-05",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "¿Cada cuánto se produce un halving?",
+    "opciones": [
+      "Cuando lo deciden los mineros",
+      "Cada año, el 1 de enero",
+      "Cada 210.000 bloques, unos cuatro años",
+      "Cada vez que el precio se dobla"
+    ],
+    "correcta": 2,
+    "explicacion": "Está fijado por número de bloques, no por fecha. Por eso la del próximo es aproximada."
+  },
+  {
+    "clave": "bd-f-06",
+    "leccion": "veintiun-millones-y-el-halving",
+    "enunciado": "Alguien te dice que no puede comprar bitcoin porque «uno entero cuesta demasiado». ¿Qué le explicas?",
+    "opciones": [
+      "Que tiene razón y debe buscar una moneda más barata",
+      "Que espere a que baje a un precio asequible",
+      "Que solo se venden unidades enteras a empresas",
+      "Que puede comprar una fracción, y que sube y baja igual que la moneda entera"
+    ],
+    "correcta": 3,
+    "explicacion": "Cada bitcoin se divide en cien millones de satoshis. El precio por unidad no dice si es caro o barato."
+  },
+  {
+    "clave": "bd-f-07",
+    "leccion": "que-le-da-valor-a-bitcoin",
+    "enunciado": "¿En qué se parece bitcoin al oro como activo?",
+    "opciones": [
+      "En que no genera rentas: su valor depende de lo que otros paguen",
+      "En que su precio lo fija un organismo",
+      "En que reparte un dividendo anual",
+      "En que tiene un valor mínimo garantizado"
+    ],
+    "correcta": 0,
+    "explicacion": "Ninguno produce flujos. Por eso no hay una cuenta que fije su precio «justo»."
+  },
+  {
+    "clave": "bd-f-08",
+    "leccion": "que-le-da-valor-a-bitcoin",
+    "enunciado": "Lees: «bitcoin ya es seguro, hasta se puede comprar en bolsa con un producto aprobado». ¿Cómo lo matizas?",
+    "opciones": [
+      "Que los supervisores europeos lo recomiendan a minoristas",
+      "Que esté permitido y sea accesible no significa que esté respaldado ni que deje de ser de alto riesgo",
+      "Que esos productos garantizan el capital",
+      "Que tiene razón: la aprobación equivale a una garantía"
+    ],
+    "correcta": 1,
+    "explicacion": "El supervisor estadounidense aclaró que no lo aprobaba ni respaldaba, y los europeos avisan de que se puede perder todo."
+  },
+  {
+    "clave": "bd-f-09",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "¿Qué describe mejor la volatilidad de bitcoin?",
+    "opciones": [
+      "Sus caídas nunca superan el 10 %",
+      "Solo cae en las grandes crisis económicas",
+      "Cae un 10 % o más unas tres veces al año, también cuando la tendencia es alcista",
+      "Se mueve menos que una bolsa diversificada"
+    ],
+    "correcta": 2,
+    "explicacion": "Unas cincuenta caídas de al menos un 10 % desde 2010, con una media del 30 %."
+  },
+  {
+    "clave": "bd-f-10",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "Tienes 4.000 € en bitcoin y sufres una caída media, del 30 %. ¿Qué ves en tu cuenta?",
+    "opciones": [
+      "1.200 €",
+      "3.700 €",
+      "3.000 €",
+      "2.800 €"
+    ],
+    "correcta": 3,
+    "explicacion": "4.000 € menos un 30 % son 2.800 €. Y es lo normal, no lo excepcional."
+  },
+  {
+    "clave": "bd-f-11",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "Una posición cae un 80 %. ¿Cuánto tiene que subir para recuperar el valor inicial?",
+    "opciones": [
+      "Un 400 %",
+      "Un 80 %",
+      "Un 100 %",
+      "Un 160 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Si 100 pasa a 20, volver a 100 exige multiplicarse por cinco: una subida del 400 %."
+  },
+  {
+    "clave": "bd-f-12",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "¿Qué distingue a una «gran caída» de bitcoin de las caídas habituales?",
+    "opciones": [
+      "Solo afecta a las plataformas, no al precio",
+      "Es de más del 75 % y dura de dos a tres años",
+      "Ocurre varias veces al año",
+      "Es de un 25 % y dura un par de meses"
+    ],
+    "correcta": 1,
+    "explicacion": "Ha habido cuatro. Las habituales rondan el 25 % o el 30 % y se resuelven en pocos meses."
+  },
+  {
+    "clave": "bd-f-13",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "En el mínimo de una gran caída, ¿qué sabía quien tenía bitcoin sobre la recuperación?",
+    "opciones": [
+      "Que el siguiente halving la garantizaba",
+      "Que volvería en exactamente un año",
+      "Nada: no había forma de saber si el precio volvería ni cuándo",
+      "Que los supervisores sostendrían el precio"
+    ],
+    "correcta": 2,
+    "explicacion": "Mirar el gráfico entero es ver el final de la película. Otras monedas que cayeron lo mismo no volvieron."
+  },
+  {
+    "clave": "bd-f-14",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "Calculas que dentro de dos años tendrás 5.000 € en bitcoin. ¿Qué cifra deberías imaginar en tu cuenta para saber si el plan es sostenible?",
+    "opciones": [
+      "4.500 €, tras una caída del 10 %",
+      "10.000 €, si se dobla",
+      "5.000 €, porque el DCA evita las caídas",
+      "1.000 €, tras una caída del 80 %"
+    ],
+    "correcta": 3,
+    "explicacion": "Si no podrías ver esa cifra durante dos años sin vender, la cantidad es demasiado alta."
+  },
+  {
+    "clave": "bd-f-15",
+    "leccion": "ciclos-halving-y-modelos-que-fallan",
+    "enunciado": "¿Por qué no se puede saber si el precio subió tras cada halving «por» el halving?",
+    "opciones": [
+      "Porque en cada uno de esos periodos ocurrían además otras cosas muy favorables",
+      "Porque el precio bajó después de todos",
+      "Porque el halving no afecta a la oferta",
+      "Porque no hay datos de precios de esos años"
+    ],
+    "correcta": 0,
+    "explicacion": "Con cuatro casos distintos entre sí no se puede separar un efecto de otro."
+  },
+  {
+    "clave": "bd-f-16",
+    "leccion": "ciclos-halving-y-modelos-que-fallan",
+    "enunciado": "Un canal anuncia: «según el ciclo, hay que vender todo en tal mes». ¿Cómo lo tomas?",
+    "opciones": [
+      "Como un dato oficial de la red",
+      "Con desconfianza: una regla de fechas que todos conocen deja de funcionar o nunca funcionó",
+      "Como una obligación del propio programa",
+      "Como una señal fiable, porque se ha cumplido cuatro veces"
+    ],
+    "correcta": 1,
+    "explicacion": "Quienes más datos manejan dudan de que el ciclo continúe. Tu plan no debería depender de él."
+  },
+  {
+    "clave": "bd-f-17",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "Aportas 100 € el primer mes, con bitcoin a 40.000 €, y 100 € el segundo, con bitcoin a 20.000 €. ¿Cuánto bitcoin tienes?",
+    "opciones": [
+      "0,0050 BTC",
+      "0,0100 BTC",
+      "0,0075 BTC",
+      "0,0067 BTC"
+    ],
+    "correcta": 2,
+    "explicacion": "0,0025 el primer mes y 0,0050 el segundo. Con el mismo dinero, el mes barato compró el doble."
+  },
+  {
+    "clave": "bd-f-18",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "En el caso anterior, ¿cuál es tu precio medio de compra?",
+    "opciones": [
+      "40.000 €",
+      "30.000 €",
+      "20.000 €",
+      "26.667 €"
+    ],
+    "correcta": 3,
+    "explicacion": "200 € ÷ 0,0075 BTC = 26.667 €, por debajo de la media de los dos precios, que es 30.000 €."
+  },
+  {
+    "clave": "bd-f-19",
+    "leccion": "que-es-el-dca-y-como-funciona",
+    "enunciado": "¿Por qué el DCA funciona, sobre todo, como freno a tu propio comportamiento?",
+    "opciones": [
+      "Porque te hace comprar igual cuando sube que cuando cae, en contra del instinto",
+      "Porque limita cuánto puedes invertir",
+      "Porque impide vender durante un año",
+      "Porque avisa cuando el precio está caro"
+    ],
+    "correcta": 0,
+    "explicacion": "El instinto empuja a comprar con euforia y a parar con miedo. La regla fija lo evita."
+  },
+  {
+    "clave": "bd-f-20",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "Recibes 12.000 € de una herencia y quieres dedicar una parte a bitcoin. Te quita el sueño meterla de golpe. ¿Qué dicen los datos?",
+    "opciones": [
+      "Da exactamente igual en todos los casos",
+      "De golpe rinde más de media, pero repartirla en fechas fijas es razonable y mejor que no entrar",
+      "Lo mejor es esperar al momento perfecto",
+      "Repartirla siempre rinde más"
+    ],
+    "correcta": 1,
+    "explicacion": "De golpe ganó el 68 % de las veces. Repartir pierde menos en los peores casos y superó al efectivo el 69 %."
+  },
+  {
+    "clave": "bd-f-21",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "¿Sobre qué activos se hizo el estudio de Vanguard que compara invertir de golpe y repartir?",
+    "opciones": [
+      "Oro y materias primas",
+      "Criptomonedas pequeñas",
+      "Bolsa mundial y bonos, de 1976 a 2022",
+      "Bitcoin, de 2010 a 2022"
+    ],
+    "correcta": 2,
+    "explicacion": "Su lógica se puede trasladar a bitcoin; sus cifras, no, porque la volatilidad es de otra escala."
+  },
+  {
+    "clave": "bd-f-22",
+    "leccion": "dca-o-todo-de-golpe",
+    "enunciado": "Decides repartir una suma en bitcoin. ¿Cuál de estos planes es una regla y no una forma disfrazada de adivinar?",
+    "opciones": [
+      "Ir entrando según vea el mercado",
+      "Comprar cuando note que está barato",
+      "Esperar a una caída del 30 % para empezar",
+      "Seis partes iguales, el día 5 de cada uno de los próximos seis meses"
+    ],
+    "correcta": 3,
+    "explicacion": "Un calendario escrito se cumple sin opinar del precio. Las otras tres dependen de acertar el momento."
+  },
+  {
+    "clave": "bd-f-23",
+    "leccion": "lo-que-el-dca-no-hace",
+    "enunciado": "Un conocido aplica un DCA mensual a un token pequeño «porque a largo plazo el DCA siempre funciona». ¿Qué error comete?",
+    "opciones": [
+      "Confundir una forma de comprar con un criterio para elegir qué comprar",
+      "Aportar con poca frecuencia",
+      "No usar una wallet propia",
+      "Ninguno: el DCA sirve para cualquier activo"
+    ],
+    "correcta": 0,
+    "explicacion": "Promediar hacia abajo algo que no vuelve solo significa tener más de algo que no vale."
+  },
+  {
+    "clave": "bd-f-24",
+    "leccion": "lo-que-el-dca-no-hace",
+    "enunciado": "Una aplicación anuncia compras programadas «sin comisión». ¿Cómo compruebas lo que te cuestan?",
+    "opciones": [
+      "Mirando el precio del día siguiente",
+      "Comparando el precio al que se ejecutó tu compra con el de mercado en ese momento",
+      "No hace falta: sin comisión significa coste cero",
+      "Preguntando en redes sociales"
+    ],
+    "correcta": 1,
+    "explicacion": "El margen puede ir dentro del precio. La diferencia en porcentaje es tu coste real."
+  },
+  {
+    "clave": "bd-f-25",
+    "leccion": "lo-que-el-dca-no-hace",
+    "enunciado": "Aportas 100 € al mes en cuatro compras semanales de 25 €, con 1 € fijo por operación. ¿Qué parte se llevan las comisiones?",
+    "opciones": [
+      "Un 25 %",
+      "Un 0,25 %",
+      "Un 4 %",
+      "Un 1 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Cuatro euros sobre cien. Con una sola compra mensual sería un 1 %."
+  },
+  {
+    "clave": "bd-f-26",
+    "leccion": "disena-tu-dca",
+    "enunciado": "¿Qué pieza del diseño de un DCA cambia menos el resultado a largo plazo?",
+    "opciones": [
+      "La cantidad que aportas",
+      "Mantenerlo durante las caídas",
+      "El coste de cada compra",
+      "Que la compra sea semanal o mensual"
+    ],
+    "correcta": 3,
+    "explicacion": "A lo largo de años, los precios medios son muy parecidos. Lo que cambia con la frecuencia son las comisiones y los registros."
+  },
+  {
+    "clave": "bd-f-27",
+    "leccion": "disena-tu-dca",
+    "enunciado": "¿Qué día conviene programar la compra?",
+    "opciones": [
+      "Uno o dos días después de cobrar",
+      "El lunes, que siempre está más barato",
+      "El último día del mes",
+      "El día que el precio marque un mínimo"
+    ],
+    "correcta": 0,
+    "explicacion": "No hay un día mejor de forma fiable. El que funciona es el que hace que la aportación salga antes de gastar el dinero."
+  },
+  {
+    "clave": "bd-f-28",
+    "leccion": "disena-tu-dca",
+    "enunciado": "Tienes el DCA automatizado. ¿Qué sigue siendo trabajo tuyo?",
+    "opciones": [
+      "Decidir cada mes si la compra merece la pena",
+      "Revisar cada trimestre que las compras se ejecutan y a qué coste",
+      "Mirar el precio cada mañana",
+      "Nada: automático significa desatendido"
+    ],
+    "correcta": 1,
+    "explicacion": "Se automatiza la compra, no la supervisión. Mirar a diario solo da motivos para romper el plan."
+  },
+  {
+    "clave": "bd-f-29",
+    "leccion": "el-dinero-que-no-vas-a-necesitar",
+    "enunciado": "Gastas 1.200 € al mes y tienes personas a tu cargo. ¿Qué fondo de emergencia orientativo te correspondería antes de invertir?",
+    "opciones": [
+      "1.200 €",
+      "Entre 600 € y 1.200 €",
+      "Entre 4.800 € y 7.200 €",
+      "No hace falta si inviertes con DCA"
+    ],
+    "correcta": 2,
+    "explicacion": "De cuatro a seis meses de gastos, en un producto seguro y líquido."
+  },
+  {
+    "clave": "bd-f-30",
+    "leccion": "el-dinero-que-no-vas-a-necesitar",
+    "enunciado": "Un banco te ofrece un préstamo y piensas usarlo para comprar bitcoin. ¿Cuál es el problema?",
+    "opciones": [
+      "Que los préstamos no se pueden usar para invertir",
+      "Ninguno, si el tipo de interés es bajo",
+      "Que bitcoin no puede comprarse con dinero prestado",
+      "La deuda tiene cuotas fijas y bitcoin puede caer un 77 %: te quedas con toda la deuda"
+    ],
+    "correcta": 3,
+    "explicacion": "Es la forma más rápida de convertir una mala racha del mercado en un problema serio."
+  },
+  {
+    "clave": "bd-f-31",
+    "leccion": "cuanto-de-tu-ahorro-en-bitcoin",
+    "enunciado": "Tu tope es de 2.000 € y aportas 500 € al mes. ¿Qué te dice esa cuenta?",
+    "opciones": [
+      "Que la aportación es demasiado alta: llegas al tope en cuatro meses",
+      "Que el plan está bien equilibrado",
+      "Que deberías aportar más para llegar antes",
+      "Que el tope es demasiado alto"
+    ],
+    "correcta": 0,
+    "explicacion": "Un DCA que alcanza su límite enseguida ha dejado de ser un DCA."
+  },
+  {
+    "clave": "bd-f-32",
+    "leccion": "cuanto-de-tu-ahorro-en-bitcoin",
+    "enunciado": "Bitcoin ha subido mucho este año y te apetece poner el doble de lo que habías decidido. ¿Qué criterio estás usando?",
+    "opciones": [
+      "Tu pérdida tolerable",
+      "Lo que ha subido últimamente, que es justo cuando el riesgo de una caída es mayor",
+      "Tu plazo",
+      "Tu fondo de emergencia"
+    ],
+    "correcta": 1,
+    "explicacion": "El tamaño se decide por la caída que puedes soportar, no por la convicción ni por la subida reciente."
+  },
+  {
+    "clave": "bd-f-33",
+    "leccion": "donde-comprar-y-donde-guardar-bitcoin",
+    "enunciado": "¿Qué protección tienes si quiebra una plataforma autorizada donde guardabas tus bitcoins?",
+    "opciones": [
+      "Ninguna obligación recae sobre la plataforma",
+      "El Estado repone los bitcoins perdidos",
+      "La plataforma debe separar tus activos de los suyos, pero no hay un fondo público que te los devuelva",
+      "Un fondo de garantía cubre hasta 100.000 €, como en un banco"
+    ],
+    "correcta": 2,
+    "explicacion": "La segregación que exige la normativa europea es una mejora real, no una garantía de depósitos."
+  },
+  {
+    "clave": "bd-f-34",
+    "leccion": "donde-comprar-y-donde-guardar-bitcoin",
+    "enunciado": "Llevas año y medio de DCA y tu saldo en la plataforma ya te dolería perderlo. ¿Qué toca?",
+    "opciones": [
+      "Vender todo para no correr riesgos",
+      "Nada: con la verificación en dos pasos es suficiente",
+      "Abrir cuenta en una segunda plataforma y dejarlo todo ahí",
+      "Aprender autocustodia con calma y retirar a tu wallet, probando antes con una cantidad pequeña"
+    ],
+    "correcta": 3,
+    "explicacion": "La protección debe crecer con el importe. Y la primera retirada se prueba siempre con poco."
+  },
+  {
+    "clave": "bd-f-35",
+    "leccion": "los-impuestos-de-un-dca-en-espana",
+    "enunciado": "Retiras tus bitcoins del exchange a tu propia wallet. ¿Tienes que declarar una ganancia?",
+    "opciones": [
+      "No: siguen siendo tuyos, no los has transmitido",
+      "Sí, pero solo si superan los 6.000 €",
+      "Sí: toda retirada tributa",
+      "Sí, como si los hubieras vendido"
+    ],
+    "correcta": 0,
+    "explicacion": "Mover tus monedas entre tus propias cuentas no es desprenderse de ellas."
+  },
+  {
+    "clave": "bd-f-36",
+    "leccion": "los-impuestos-de-un-dca-en-espana",
+    "enunciado": "Tu aplicación te enseña tu precio medio de compra. ¿Puedes usarlo para calcular la ganancia que declaras?",
+    "opciones": [
+      "Sí: es el método oficial",
+      "No: sirve para saber cómo vas, pero Hacienda exige FIFO",
+      "Solo si la plataforma es española",
+      "Sí, si llevas más de un año comprando"
+    ],
+    "correcta": 1,
+    "explicacion": "El FIFO puede dar una ganancia distinta de la que saldría con el precio medio, y es el único admitido."
+  },
+  {
+    "clave": "bd-f-37",
+    "leccion": "los-impuestos-de-un-dca-en-espana",
+    "enunciado": "¿Qué conviene apuntar de cada compra desde el primer día?",
+    "opciones": [
+      "Solo el total invertido al final del año",
+      "Nada: la plataforma lo guarda siempre",
+      "Fecha, euros pagados, bitcoin recibido, comisión y plataforma",
+      "Solo el precio de bitcoin ese día"
+    ],
+    "correcta": 2,
+    "explicacion": "Las plataformas cierran o dejan de dar datos antiguos, y la obligación de justificar las cifras es tuya."
+  },
+  {
+    "clave": "bd-f-38",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "Tu posición ha caído un 55 %. Nada ha cambiado en tu trabajo ni en tus gastos, y tu plan decía seguir aportando. Te apetece parar «hasta que se aclare». ¿Qué haces?",
+    "opciones": [
+      "Doblar la aportación sin pensarlo",
+      "Parar y esperar a que suba para volver a entrar",
+      "Vender la mitad para recuperar algo",
+      "Seguir aportando: el precio no era motivo para cambiar el plan"
+    ],
+    "correcta": 3,
+    "explicacion": "Son los meses que más bitcoin dan por euro. Si quieres cambiar algo, por escrito y con un mes de espera."
+  },
+  {
+    "clave": "bd-f-39",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "¿Qué ventaja tiene reequilibrar frente a decidir «a ojo» cuándo vender?",
+    "opciones": [
+      "Que te hace vender tras las subidas y comprar tras las caídas sin adivinar nada",
+      "Que no genera impuestos",
+      "Que garantiza vender en el máximo",
+      "Que evita cualquier pérdida"
+    ],
+    "correcta": 0,
+    "explicacion": "Es una regla mecánica ligada al peso que decidiste. Eso sí: cada venta tributa, así que no conviene hacerlo cada mes."
+  },
+  {
+    "clave": "bd-f-40",
+    "leccion": "tu-plan-de-dca-por-escrito",
+    "enunciado": "Revisas un plan que dice: «compraré más cuando esté barato y venderé cuando vea que ha subido bastante». ¿Qué le pasa?",
+    "opciones": [
+      "Es demasiado conservador",
+      "Depende de adivinar el momento en la entrada y en la salida: no es un plan",
+      "Nada: es flexible y eso es bueno",
+      "Le falta solo indicar la plataforma"
+    ],
+    "correcta": 1,
+    "explicacion": "Un plan sustituye las impresiones por cifras y fechas que se pueden cumplir sin opinar del precio."
+  }
+]

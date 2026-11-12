@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "bd-m2-01",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "¿Qué mide la volatilidad de un activo?",
+    "opciones": [
+      "El número de personas que lo compran",
+      "La probabilidad de que quiebre",
+      "Cuánto se mueve su precio, hacia arriba y hacia abajo",
+      "Cuánto ha subido en el último año"
+    ],
+    "correcta": 2,
+    "explicacion": "No dice hacia dónde va el precio, sino cómo de brusco es el camino."
+  },
+  {
+    "clave": "bd-m2-02",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "Según el recuento de Grayscale Research, ¿cuántas veces ha caído bitcoin un 10 % o más desde 2010?",
+    "opciones": [
+      "Unas 500",
+      "Cuatro",
+      "Unas 5",
+      "Unas 50"
+    ],
+    "correcta": 3,
+    "explicacion": "Unas cincuenta, con una caída media del 30 %. De media, tres veces al año."
+  },
+  {
+    "clave": "bd-m2-03",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "¿Cuál ha sido la caída media de bitcoin en los episodios en que bajó al menos un 10 %?",
+    "opciones": [
+      "Un 30 %",
+      "Un 10 %",
+      "Un 5 %",
+      "Un 80 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Es el dato que conviene tener presente: lo normal, no lo excepcional, es ver un 30 % menos en algún momento."
+  },
+  {
+    "clave": "bd-m2-04",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "Tu posición cae un 30 %. ¿Cuánto tiene que subir desde ahí para volver al valor inicial?",
+    "opciones": [
+      "Un 70 %",
+      "Alrededor de un 43 %",
+      "Un 30 %",
+      "Un 15 %"
+    ],
+    "correcta": 1,
+    "explicacion": "Si 100 pasa a 70, volver a 100 exige subir 30 sobre 70: un 43 %. Las caídas y las subidas no son simétricas."
+  },
+  {
+    "clave": "bd-m2-05",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "¿Cuándo se producen las caídas del 25 % que describe el recuento de Grayscale?",
+    "opciones": [
+      "Solo durante las grandes crisis",
+      "Solo cuando bitcoin deja de negociarse",
+      "También dentro de las fases en que el precio sube",
+      "Únicamente el año posterior a un halving"
+    ],
+    "correcta": 2,
+    "explicacion": "Son las caídas de una fase alcista: un 25 % de media, durante dos o tres meses."
+  },
+  {
+    "clave": "bd-m2-06",
+    "leccion": "la-volatilidad-de-bitcoin-en-numeros",
+    "enunciado": "¿Por qué la volatilidad de bitcoin hace perder dinero a tanta gente?",
+    "opciones": [
+      "Porque las plataformas cobran más cuando cae",
+      "Porque cada caída destruye monedas",
+      "Porque la red se detiene en las caídas",
+      "Porque les empuja a vender tras una caída que no esperaban"
+    ],
+    "correcta": 3,
+    "explicacion": "La pérdida se hace real al vender. La volatilidad no quita el dinero: empuja a que te lo quites tú."
+  },
+  {
+    "clave": "bd-m2-07",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "¿Cuántas grandes caídas, de más del 75 %, ha tenido bitcoin?",
+    "opciones": [
+      "Cuatro",
+      "Más de veinte",
+      "Ninguna",
+      "Una"
+    ],
+    "correcta": 0,
+    "explicacion": "Tras los máximos de 2011, 2013, 2017 y 2021, con caídas de entre un 77 % y más de un 90 %."
+  },
+  {
+    "clave": "bd-m2-08",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "Alguien puso 1.000 € en el máximo de noviembre de 2021. ¿Cuánto valía su posición, aproximadamente, en el peor momento de la caída?",
+    "opciones": [
+      "Unos 900 €",
+      "Unos 230 €",
+      "Unos 500 €",
+      "Unos 770 €"
+    ],
+    "correcta": 1,
+    "explicacion": "La caída fue de alrededor del 77 %. Y fue la menor de las cuatro."
+  },
+  {
+    "clave": "bd-m2-09",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "¿Cuánto tardó bitcoin en volver a superar sus máximos de 2013, 2017 y 2021?",
+    "opciones": [
+      "Más de diez años",
+      "Entre tres y seis meses",
+      "Entre dos y algo más de tres años",
+      "Unas pocas semanas"
+    ],
+    "correcta": 2,
+    "explicacion": "Algo más de tres años, tres años y unos dos años y cuatro meses, respectivamente."
+  },
+  {
+    "clave": "bd-m2-10",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "¿Por qué el argumento «siempre se ha recuperado» no garantiza nada?",
+    "opciones": [
+      "Porque las recuperaciones fueron manipuladas",
+      "Porque en realidad nunca se ha recuperado",
+      "Porque solo se recuperó una vez",
+      "Porque cuatro casos son una muestra pequeña y nadie sabía, en el mínimo, que volvería"
+    ],
+    "correcta": 3,
+    "explicacion": "Las recuperaciones dicen de qué ha sido capaz, no qué ocurrirá. Otras monedas que cayeron lo mismo no volvieron."
+  },
+  {
+    "clave": "bd-m2-11",
+    "leccion": "las-grandes-caidas-de-bitcoin",
+    "enunciado": "Dos personas invierten lo mismo: una, todo en el máximo; otra, repartido durante la caída posterior. ¿Quién vuelve antes a positivo?",
+    "opciones": [
+      "La segunda: su precio medio queda muy por debajo del máximo",
+      "La primera: compró antes",
+      "Las dos el mismo día",
+      "Ninguna puede volver a positivo"
+    ],
+    "correcta": 0,
+    "explicacion": "Quien reparte vuelve a positivo cuando el precio supera su media, no cuando supera la cima."
+  },
+  {
+    "clave": "bd-m2-12",
+    "leccion": "ciclos-halving-y-modelos-que-fallan",
+    "enunciado": "¿En cuántas observaciones se apoya la idea del «ciclo de cuatro años» de bitcoin?",
+    "opciones": [
+      "En ninguna: es una regla del programa",
+      "En cuatro halvings",
+      "En un siglo de datos",
+      "En cuarenta ciclos"
+    ],
+    "correcta": 1,
+    "explicacion": "2012, 2016, 2020 y 2024. Con cuatro casos, y todos distintos, no se puede deducir una ley."
+  },
+  {
+    "clave": "bd-m2-13",
+    "leccion": "ciclos-halving-y-modelos-que-fallan",
+    "enunciado": "¿Qué opinaba Grayscale Research, en diciembre de 2025, sobre la tesis del ciclo de cuatro años?",
+    "opciones": [
+      "Que solo falla si no hay halving",
+      "Que permite predecir el mes del próximo máximo",
+      "Que cree que resultará incorrecta",
+      "Que es una ley que se cumple siempre"
+    ],
+    "correcta": 2,
+    "explicacion": "Argumentaba que no hubo una subida parabólica y que la estructura del mercado ha cambiado."
+  },
+  {
+    "clave": "bd-m2-14",
+    "leccion": "ciclos-halving-y-modelos-que-fallan",
+    "enunciado": "¿Cuál es un defecto común de los modelos que predicen el precio de bitcoin?",
+    "opciones": [
+      "Están prohibidos por los supervisores",
+      "Usan demasiados datos de demanda",
+      "Nunca han coincidido con el pasado",
+      "Se ajustan a los datos pasados y solo miran la oferta, no la demanda"
+    ],
+    "correcta": 3,
+    "explicacion": "Cualquier curva puede pasar por puntos ya conocidos. La demanda depende de cosas que ningún modelo captura."
+  },
+  {
+    "clave": "bd-m2-15",
+    "leccion": "ciclos-halving-y-modelos-que-fallan",
+    "enunciado": "Aceptas que no puedes predecir el precio. ¿Qué plan encaja con eso?",
+    "opciones": [
+      "Uno cuyo resultado no dependa de acertar el momento, como aportar una cantidad fija",
+      "Seguir el modelo que más haya acertado hasta ahora",
+      "Esperar al mínimo exacto para entrar de golpe",
+      "Comprar cuando el ciclo diga que toca"
+    ],
+    "correcta": 0,
+    "explicacion": "Si no se puede adivinar, lo sensato es no necesitarlo."
+  }
+]

@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "bd-m5-01",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "¿En qué momento se rompe la mayoría de los planes de aportaciones?",
+    "opciones": [
+      "En mitad de una caída larga",
+      "Durante las subidas fuertes",
+      "Al alcanzar el tope fijado",
+      "El primer mes"
+    ],
+    "correcta": 0,
+    "explicacion": "Primero se salta un mes «para ver qué pasa», luego otro, y el plan termina cerca del peor precio."
+  },
+  {
+    "clave": "bd-m5-02",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "¿Qué dice la aversión a la pérdida, según Kahneman y Tversky?",
+    "opciones": [
+      "Que solo duelen las pérdidas superiores al 50 %",
+      "Que una pérdida pesa aproximadamente el doble que una ganancia igual",
+      "Que las ganancias se olvidan antes de un mes",
+      "Que las pérdidas y las ganancias se sienten igual"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso un plan que parecía sólido en frío se tambalea al ver la pérdida real en pantalla."
+  },
+  {
+    "clave": "bd-m5-03",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "En un DCA con importe fijo, ¿qué compras aportan más bitcoin por euro?",
+    "opciones": [
+      "Todas aportan lo mismo",
+      "Las del primer mes",
+      "Las de los meses en que el precio está más bajo",
+      "Las de los meses en que el precio está más alto"
+    ],
+    "correcta": 2,
+    "explicacion": "En el ejemplo, los dos meses más bajos daban casi la mitad de todo el bitcoin con un tercio del dinero."
+  },
+  {
+    "clave": "bd-m5-04",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "¿Qué pasó en el ejemplo con quien se saltó los dos meses más bajos?",
+    "opciones": [
+      "Perdió todo lo invertido",
+      "Ganó más, porque arriesgó menos dinero",
+      "Evitó la caída y quedó igual",
+      "Su resultado bajó de un +33 % a un +10 %"
+    ],
+    "correcta": 3,
+    "explicacion": "Saltárselos no le protegió: subió su precio medio de 30.000 € a 36.364 €."
+  },
+  {
+    "clave": "bd-m5-05",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "¿Cuál de estos motivos justifica pausar las aportaciones?",
+    "opciones": [
+      "Has perdido ingresos o has gastado tu fondo de emergencia",
+      "Otra moneda ha subido más este mes",
+      "En redes dicen que bitcoin se acaba",
+      "El precio ha caído un 40 %"
+    ],
+    "correcta": 0,
+    "explicacion": "El plan se cambia cuando cambia tu situación, no cuando cambia el precio."
+  },
+  {
+    "clave": "bd-m5-06",
+    "leccion": "aguantar-las-caidas",
+    "enunciado": "¿Para qué sirve la regla de esperar un mes antes de aplicar un cambio al plan?",
+    "opciones": [
+      "Para pagar menos comisiones",
+      "Para que las decisiones tomadas por miedo no lleguen a ejecutarse",
+      "Para comprar siempre a mejor precio",
+      "Para cumplir una obligación fiscal"
+    ],
+    "correcta": 1,
+    "explicacion": "Casi todas las decisiones tomadas en mitad de una caída parecen otra cosa treinta días después."
+  },
+  {
+    "clave": "bd-m5-07",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "¿Por qué «vender en el máximo» no sirve como regla de salida?",
+    "opciones": [
+      "Porque bitcoin nunca hace máximos",
+      "Porque los impuestos son más altos en el máximo",
+      "Porque nadie reconoce un máximo hasta mucho después",
+      "Porque en el máximo no se puede vender"
+    ],
+    "correcta": 2,
+    "explicacion": "En cada techo, la mayoría estaba convencida de que quedaba recorrido."
+  },
+  {
+    "clave": "bd-m5-08",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "¿En qué consiste reequilibrar?",
+    "opciones": [
+      "En comprar más cada vez que el precio sube",
+      "En cambiar bitcoin por otra criptomoneda cada año",
+      "En vender todo y volver a comprar más barato",
+      "En devolver el peso de bitcoin en tu ahorro al porcentaje que decidiste"
+    ],
+    "correcta": 3,
+    "explicacion": "Si ha subido y pesa de más, se vende parte; si ha caído y pesa de menos, se aporta más."
+  },
+  {
+    "clave": "bd-m5-09",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "Tienes 1.000 € en bitcoin y 19.000 € en el resto. Bitcoin se triplica. ¿Cuánto pesa ahora en tu ahorro?",
+    "opciones": [
+      "Alrededor del 13,6 %",
+      "El 5 %",
+      "El 15 %",
+      "El 30 %"
+    ],
+    "correcta": 0,
+    "explicacion": "3.000 € sobre un total de 22.000 €. Sin decidir nada, tu exposición se ha multiplicado por más de dos y medio."
+  },
+  {
+    "clave": "bd-m5-10",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "¿Qué es un DCA de salida?",
+    "opciones": [
+      "Vender solo cuando el precio marca un nuevo máximo",
+      "Vender una parte fija cada cierto tiempo en lugar de todo de una vez",
+      "Dejar de aportar cuando el precio cae",
+      "Comprar el doble antes de vender"
+    ],
+    "correcta": 1,
+    "explicacion": "No garantiza el mejor precio, pero evita vender todo el peor día."
+  },
+  {
+    "clave": "bd-m5-11",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "Vas a necesitar dentro de dos años el dinero que tienes en bitcoin. ¿Qué es lo prudente?",
+    "opciones": [
+      "Esperar al último mes para vender todo",
+      "Comprar más para llegar antes a la cifra",
+      "Empezar a salir poco a poco antes de la fecha",
+      "Cambiarlo por otra criptomoneda más estable"
+    ],
+    "correcta": 2,
+    "explicacion": "Bitcoin ha tardado años en recuperarse de sus grandes caídas. Quien espera al final se la juega a que ese mes sea bueno."
+  },
+  {
+    "clave": "bd-m5-12",
+    "leccion": "cuando-vender-y-reequilibrar",
+    "enunciado": "Alguien no vende una ganancia del 200 % «para no pagar impuestos». ¿Qué riesgo corre?",
+    "opciones": [
+      "Que el impuesto se cobre aunque no venda",
+      "Que le suban el tipo por esperar",
+      "Ninguno: no vender nunca es lo más rentable",
+      "Ver desaparecer la ganancia por ahorrarse una parte pequeña de ella"
+    ],
+    "correcta": 3,
+    "explicacion": "El impuesto se paga sobre lo ganado. No haber vendido a tiempo sale mucho más caro."
+  },
+  {
+    "clave": "bd-m5-13",
+    "leccion": "tu-plan-de-dca-por-escrito",
+    "enunciado": "¿Por qué conviene tener el plan por escrito?",
+    "opciones": [
+      "Porque un plan mental cambia con el ánimo y acaba siguiendo al precio",
+      "Porque es obligatorio presentarlo a Hacienda",
+      "Porque lo exige la plataforma",
+      "Porque así se pagan menos comisiones"
+    ],
+    "correcta": 0,
+    "explicacion": "Escrito, es un punto fijo redactado sin presión. En el momento difícil solo hay que cumplirlo."
+  },
+  {
+    "clave": "bd-m5-14",
+    "leccion": "tu-plan-de-dca-por-escrito",
+    "enunciado": "Un plan dice: «aportaré 400 € al mes hasta llegar a mi tope de 2.000 €». ¿Qué fallo tiene?",
+    "opciones": [
+      "El tope es demasiado bajo",
+      "Llega al tope en cinco meses: es demasiado rápido para repartir compras",
+      "Ninguno: es un plan correcto",
+      "La aportación debería ser semanal"
+    ],
+    "correcta": 1,
+    "explicacion": "Un DCA sirve para repartir las compras entre muchos precios. En cinco meses casi no hay reparto."
+  },
+  {
+    "clave": "bd-m5-15",
+    "leccion": "tu-plan-de-dca-por-escrito",
+    "enunciado": "¿Qué te asegura un buen plan de DCA?",
+    "opciones": [
+      "No pasar nunca un periodo en pérdidas",
+      "Más rentabilidad que comprar de golpe",
+      "Saber qué harás tú en cada escenario y cuánto puedes perder como máximo",
+      "Que bitcoin subirá a largo plazo"
+    ],
+    "correcta": 2,
+    "explicacion": "Convierte una apuesta desordenada en un riesgo medido. Lo que haga el precio no depende del plan."
+  }
+]
