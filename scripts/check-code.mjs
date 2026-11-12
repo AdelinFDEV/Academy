@@ -359,6 +359,53 @@ function checkForo() {
     "Pide las columnas una a una: nada sale del foro sin pasar por un tipo de tipos.ts (FORO.md §6.0).");
 }
 
+// ── 7) El SQL del foro: ningún UPDATE ni DELETE sin WHERE ─────────────────
+// Supabase rechaza desde la API cualquier UPDATE o DELETE sin WHERE (extensión
+// pg-safeupdate), también dentro de una función. Un Postgres normal lo
+// acepta, así que las pruebas en local pasan y la función falla en producción
+// con el error 21000: pasó el 12-11-2026 con `foro_mantenimiento`, que lo
+// llama el cron de madrugada y nadie habría visto el fallo.
+//
+// Se mira el WHERE de la sentencia, no el de sus subconsultas: por eso se
+// quita antes lo que va entre paréntesis.
+function checkSqlForo() {
+  const sinParentesis = (s) => {
+    let out = "", nivel = 0;
+    for (const c of s) {
+      if (c === "(") nivel++;
+      else if (c === ")") nivel--;
+      else if (nivel === 0) out += c;
+    }
+    return out;
+  };
+
+  const sinWhere = [];
+  for (const entry of readdirSync("scripts")) {
+    if (!/^create-foro.*\.sql$/.test(entry)) continue;
+    const src = readFileSync(join("scripts", entry), "utf8").replace(/--[^\n]*/g, (m) => " ".repeat(m.length));
+    const re = /(^|[\s;])(update\s+public\.\w+|delete\s+from\s+public\.\w+)[\s\S]*?;/gi;
+    let m;
+    while ((m = re.exec(src))) {
+      const sentencia = m[0].replace(/^[\s;]+/, "");
+      if (!/\bwhere\b/i.test(sinParentesis(sentencia))) {
+        const linea = src.slice(0, m.index + m[0].length - sentencia.length).split("\n").length;
+        sinWhere.push(`${entry}:${linea}`);
+      }
+    }
+  }
+
+  if (sinWhere.length === 0) {
+    console.log(`${GREEN}✓${OFF} foro: ningún UPDATE ni DELETE sin WHERE en su SQL ${DIM}— 0 casos${OFF}`);
+  } else {
+    console.log(`${RED}✗${OFF} foro: UPDATE o DELETE sin WHERE ${RED}— ${sinWhere.length} caso(s)${OFF}`);
+    sinWhere.forEach((f) => console.log(`    scripts/${f}`));
+    problems.push([
+      "SQL del foro",
+      "Supabase rechaza un UPDATE o DELETE sin WHERE (pg-safeupdate), también dentro de una función. Si de verdad son todas las filas, escribe un WHERE que lo diga: `where id is not null`.",
+    ]);
+  }
+}
+
 // ── Ejecución ─────────────────────────────────────────────────────────────
 console.log("\nComprobaciones de código\n");
 checkEslint();
@@ -367,6 +414,7 @@ checkDateReparse();
 checkGuideCss();
 checkGuiasSeo();
 checkForo();
+checkSqlForo();
 
 if (problems.length) {
   console.log(`\n${RED}Falla la comprobación.${OFF} Qué hacer:\n`);

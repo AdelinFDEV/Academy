@@ -89,7 +89,11 @@ begin
       gracias = (
         select count(*) from public.foro_etiquetas e
         join public.foro_preguntas q on q.id = e.pregunta_id
-        where e.tipo = 'gracias' and q.estado = 'publicada' and q.autor_id = r.usuario_id)::integer;
+        where e.tipo = 'gracias' and q.estado = 'publicada' and q.autor_id = r.usuario_id)::integer
+  -- Con WHERE aunque sean todas las filas: Supabase rechaza desde la API
+  -- cualquier UPDATE sin él (extensión pg-safeupdate). Pasó el 12-11-2026: en
+  -- el Postgres de pruebas funcionaba y en Supabase daba error 21000.
+  where r.usuario_id is not null;
 
   if v_me_gusta + v_respuestas + v_etiquetas + v_puntos > 0 then
     insert into public.foro_moderacion (accion, motivo)
