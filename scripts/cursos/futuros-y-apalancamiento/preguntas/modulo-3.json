@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "fa-m3-01",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "¿Cuál es la distancia aproximada a la liquidación de un largo x10 con un mantenimiento del 0,5 %?",
+    "opciones": [
+      "Un 9,5 %",
+      "Un 0,5 %",
+      "Un 10,5 %",
+      "Un 5 %"
+    ],
+    "correcta": 0,
+    "explicacion": "100 % ÷ 10 − 0,5 % = 9,5 %."
+  },
+  {
+    "clave": "fa-m3-02",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "Largo x20 abierto a 50.000 €, con un mantenimiento del 0,5 %. ¿Precio de liquidación aproximado?",
+    "opciones": [
+      "45.000 €",
+      "47.750 €",
+      "49.750 €",
+      "52.250 €"
+    ],
+    "correcta": 1,
+    "explicacion": "Distancia del 4,5 %: 50.000 × (1 − 0,045) = 47.750 €."
+  },
+  {
+    "clave": "fa-m3-03",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "¿Dónde está el precio de liquidación de un corto respecto al de entrada?",
+    "opciones": [
+      "Por debajo",
+      "No tiene",
+      "Por encima",
+      "En el mismo precio"
+    ],
+    "correcta": 2,
+    "explicacion": "El corto pierde cuando el precio sube, así que su liquidación está arriba."
+  },
+  {
+    "clave": "fa-m3-04",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "¿Qué efecto tienen los pagos de funding sobre el precio de liquidación?",
+    "opciones": [
+      "Ninguno",
+      "Lo fijan para siempre",
+      "Lo alejan",
+      "Lo acercan, porque salen de tu margen"
+    ],
+    "correcta": 3,
+    "explicacion": "Cada pago reduce el saldo que respalda la posición."
+  },
+  {
+    "clave": "fa-m3-05",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "¿En qué se diferencia ser liquidado de salir con tu propio stop?",
+    "opciones": [
+      "En la liquidación pierdes casi todo el margen y pagas además una comisión de liquidación",
+      "El stop cancela el resto de posiciones",
+      "La liquidación es más barata",
+      "En nada: el resultado es el mismo"
+    ],
+    "correcta": 0,
+    "explicacion": "El stop limita la pérdida a lo que decidiste; la liquidación llega cuando ya no queda casi nada."
+  },
+  {
+    "clave": "fa-m3-06",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "Tu stop está a un 4 % y, con el multiplicador elegido, la liquidación queda a un 4,5 %. ¿Qué indica?",
+    "opciones": [
+      "Que la operación está bien montada",
+      "Que el multiplicador es demasiado alto",
+      "Que el stop debe alejarse",
+      "Que conviene pasar a margen cruzado"
+    ],
+    "correcta": 1,
+    "explicacion": "La liquidación debe quedar al menos al doble de distancia que el stop."
+  },
+  {
+    "clave": "fa-m3-07",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "¿Qué precio dispara la liquidación de una posición?",
+    "opciones": [
+      "El precio de apertura",
+      "El último precio negociado",
+      "El precio de marca",
+      "El precio medio del día"
+    ],
+    "correcta": 2,
+    "explicacion": "La liquidación compara el precio de marca con el nivel de liquidación."
+  },
+  {
+    "clave": "fa-m3-08",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "¿Cómo se construye el precio de marca?",
+    "opciones": [
+      "Lo fija cada día la plataforma a mano",
+      "Con el precio más alto del día",
+      "Con la última operación del contrato",
+      "A partir de un índice con el precio al contado en varias plataformas, más un ajuste"
+    ],
+    "correcta": 3,
+    "explicacion": "Al apoyarse en varios mercados, es muy difícil de mover desde un solo libro de órdenes."
+  },
+  {
+    "clave": "fa-m3-09",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "¿De qué protege el precio de marca?",
+    "opciones": [
+      "De las mechas aisladas en el libro de órdenes de una sola plataforma",
+      "De las caídas generales del mercado",
+      "De pagar funding",
+      "De pagar comisiones"
+    ],
+    "correcta": 0,
+    "explicacion": "Filtra el ruido de un libro. Si cae todo el mercado, la marca cae con él."
+  },
+  {
+    "clave": "fa-m3-10",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "Tu stop se activa a 48.000 €. ¿A qué precio se ejecuta?",
+    "opciones": [
+      "Siempre a 48.000 € exactos",
+      "Al que haya en el libro en ese momento, que puede ser peor",
+      "Al precio de liquidación",
+      "Al precio de marca"
+    ],
+    "correcta": 1,
+    "explicacion": "Al activarse lanza una orden. En un movimiento rápido puede cruzarse bastante peor."
+  },
+  {
+    "clave": "fa-m3-11",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "¿Con qué precio se calcula el resultado no realizado de una posición?",
+    "opciones": [
+      "Con el último precio",
+      "Con el precio de entrada",
+      "Con el precio de marca",
+      "Con el precio de quiebra"
+    ],
+    "correcta": 2,
+    "explicacion": "La marca valora la posición y decide la liquidación; la ejecución ocurre contra el libro."
+  },
+  {
+    "clave": "fa-m3-12",
+    "leccion": "fondo-de-seguro-y-adl",
+    "enunciado": "¿Qué es el precio de quiebra de una posición?",
+    "opciones": [
+      "El precio al que empieza la liquidación",
+      "El precio máximo del día",
+      "El precio al que se abre",
+      "El nivel en el que su margen vale exactamente cero"
+    ],
+    "correcta": 3,
+    "explicacion": "Está algo más allá del de liquidación. Cerrar peor que ese precio deja un agujero."
+  },
+  {
+    "clave": "fa-m3-13",
+    "leccion": "fondo-de-seguro-y-adl",
+    "enunciado": "¿Qué hace el fondo de seguro de una plataforma de futuros?",
+    "opciones": [
+      "Cubre el agujero de las posiciones que se cierran peor que su precio de quiebra",
+      "Devuelve al usuario lo perdido en una liquidación",
+      "Garantiza los depósitos si la plataforma quiebra",
+      "Paga el funding de los usuarios"
+    ],
+    "correcta": 0,
+    "explicacion": "Asegura que la contraparte cobra. No compensa a quien es liquidado."
+  },
+  {
+    "clave": "fa-m3-14",
+    "leccion": "fondo-de-seguro-y-adl",
+    "enunciado": "¿Cuándo se activa el desapalancamiento automático (ADL)?",
+    "opciones": [
+      "Cada vez que hay una liquidación",
+      "Cuando el fondo de seguro no alcanza a cubrir las posiciones en quiebra",
+      "Cuando un contrato vence",
+      "Cuando el funding es negativo"
+    ],
+    "correcta": 1,
+    "explicacion": "Es el último recurso: se cierran posiciones ganadoras del lado contrario."
+  },
+  {
+    "clave": "fa-m3-15",
+    "leccion": "fondo-de-seguro-y-adl",
+    "enunciado": "¿A quién afecta primero el desapalancamiento automático?",
+    "opciones": [
+      "A las posiciones que más pierden",
+      "A las cuentas más antiguas",
+      "A las posiciones contrarias con más ganancia y más apalancamiento",
+      "A quien no tiene stop"
+    ],
+    "correcta": 2,
+    "explicacion": "La cola se ordena, a grandes rasgos, por ganancia y multiplicador."
+  },
+  {
+    "clave": "fa-m3-16",
+    "leccion": "cascadas-de-liquidaciones",
+    "enunciado": "¿Por qué una caída con muchos largos apalancados tiende a acelerarse?",
+    "opciones": [
+      "Porque las plataformas bajan el precio a propósito",
+      "Porque los contratos vencen a la vez",
+      "Porque el funding obliga a vender",
+      "Porque cada liquidación es una venta forzosa que empuja el precio hacia las siguientes"
+    ],
+    "correcta": 3,
+    "explicacion": "Liquidar un largo es vender a mercado. Las ventas encadenadas forman la cascada."
+  },
+  {
+    "clave": "fa-m3-17",
+    "leccion": "cascadas-de-liquidaciones",
+    "enunciado": "Según CoinGlass, ¿cuánto se liquidó en unas 24 horas entre el 10 y el 11 de octubre de 2025?",
+    "opciones": [
+      "Más de 19.000 millones de dólares",
+      "Unos 1.900 millones de dólares",
+      "Unos 190 millones de dólares",
+      "Más de 190.000 millones de dólares"
+    ],
+    "correcta": 0,
+    "explicacion": "Es la mayor cifra registrada, y la propia CoinGlass la considera una estimación a la baja."
+  },
+  {
+    "clave": "fa-m3-18",
+    "leccion": "cascadas-de-liquidaciones",
+    "enunciado": "Bitcoin cae en torno a un 10 % dentro de un día. ¿Qué largos, en aislado y con un mantenimiento del 0,5 %, sobreviven?",
+    "opciones": [
+      "Todos",
+      "Los de x3 y x5",
+      "Solo los de x50",
+      "Los de x10 y x20"
+    ],
+    "correcta": 1,
+    "explicacion": "x3 aguanta un 32,8 % y x5 un 19,5 %. Con x10 la liquidación está al 9,5 %."
+  }
+]

@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "fa-f-01",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Cuál es la diferencia esencial entre comprar una moneda al contado y abrir un futuro sobre ella?",
+    "opciones": [
+      "No hay diferencia: son dos nombres de lo mismo",
+      "Al contado no se puede perder dinero",
+      "Al contado tienes la moneda; con el futuro, un contrato sobre su precio respaldado por una garantía",
+      "El futuro siempre es más barato"
+    ],
+    "correcta": 2,
+    "explicacion": "Con la moneda puedes esperar; con el contrato te pueden cerrar si la garantía se agota."
+  },
+  {
+    "clave": "fa-f-02",
+    "leccion": "contado-y-derivados",
+    "enunciado": "Posición de 3.000 € con 300 € de garantía. El precio sube un 4 % a tu favor. ¿Cuánto ganas?",
+    "opciones": [
+      "300 €",
+      "40 €",
+      "12 €",
+      "120 €"
+    ],
+    "correcta": 3,
+    "explicacion": "4 % de 3.000 € son 120 €: un 40 % de la garantía."
+  },
+  {
+    "clave": "fa-f-03",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Qué es la garantía o margen de una posición?",
+    "opciones": [
+      "El dinero del que la plataforma cobra tus pérdidas",
+      "La comisión de apertura",
+      "Un préstamo que hay que devolver con intereses",
+      "El precio de compra del contrato"
+    ],
+    "correcta": 0,
+    "explicacion": "Es una fianza: se retiene mientras la posición está abierta."
+  },
+  {
+    "clave": "fa-f-04",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "¿Por qué un futuro con vencimiento converge al precio al contado?",
+    "opciones": [
+      "Porque no admite apalancamiento",
+      "Porque el último día se liquida al precio real",
+      "Porque la plataforma lo ajusta a mano",
+      "Porque lo obliga el funding"
+    ],
+    "correcta": 1,
+    "explicacion": "La base se cierra a medida que se acerca la fecha."
+  },
+  {
+    "clave": "fa-f-05",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "Que un perpetuo no tenga vencimiento, ¿significa que puedes mantenerlo sin límite?",
+    "opciones": [
+      "Sí, mientras no lo cierres tú",
+      "Sí, y además sin coste",
+      "No: tiene precio de liquidación y un coste periódico de funding",
+      "No: caduca a los doce meses"
+    ],
+    "correcta": 2,
+    "explicacion": "Lo que no hace el calendario lo hacen la garantía y el funding."
+  },
+  {
+    "clave": "fa-f-06",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "En un contrato lineal, ¿en qué se cuentan la garantía y el resultado?",
+    "opciones": [
+      "En la propia criptomoneda del contrato",
+      "En acciones de la plataforma",
+      "En euros depositados en un banco",
+      "En una stablecoin, como USDT o USDC"
+    ],
+    "correcta": 3,
+    "explicacion": "En los inversos la garantía es la propia moneda, y una caída perjudica dos veces."
+  },
+  {
+    "clave": "fa-f-07",
+    "leccion": "largo-y-corto",
+    "enunciado": "Largo de 0,5 ETH a 2.000 €, cerrado a 1.900 €. ¿Resultado, sin comisiones?",
+    "opciones": [
+      "−50 €",
+      "+50 €",
+      "−100 €",
+      "−500 €"
+    ],
+    "correcta": 0,
+    "explicacion": "0,5 × (1.900 − 2.000) = −50 €."
+  },
+  {
+    "clave": "fa-f-08",
+    "leccion": "largo-y-corto",
+    "enunciado": "¿Con qué tipo de orden se cierra una posición corta?",
+    "opciones": [
+      "No se puede cerrar hasta el vencimiento",
+      "Con una orden de compra",
+      "Con una transferencia a la wallet",
+      "Con una orden de venta"
+    ],
+    "correcta": 1,
+    "explicacion": "Por eso las subidas se aceleran cuando muchos cortos cierran a la vez."
+  },
+  {
+    "clave": "fa-f-09",
+    "leccion": "largo-y-corto",
+    "enunciado": "¿Cuál es la ganancia máxima de un corto, sin apalancar?",
+    "opciones": [
+      "No tiene límite",
+      "Lo que se pague de funding",
+      "El 100 % del valor del contrato, si el precio llegara a cero",
+      "El 50 %"
+    ],
+    "correcta": 2,
+    "explicacion": "La ganancia tiene techo y la pérdida no: es lo contrario del largo."
+  },
+  {
+    "clave": "fa-f-10",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "Margen de 250 € con x8. ¿Valor nominal?",
+    "opciones": [
+      "8.000 €",
+      "31,25 €",
+      "258 €",
+      "2.000 €"
+    ],
+    "correcta": 3,
+    "explicacion": "Nominal = margen × apalancamiento = 250 × 8."
+  },
+  {
+    "clave": "fa-f-11",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "Con x25, ¿qué movimiento en contra agota aproximadamente el margen?",
+    "opciones": [
+      "Un 4 %",
+      "Un 40 %",
+      "Un 25 %",
+      "Un 2,5 %"
+    ],
+    "correcta": 0,
+    "explicacion": "100 % ÷ 25 = 4 %."
+  },
+  {
+    "clave": "fa-f-12",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "«Con 100 € controlas 10.000 €». ¿Qué omite esa frase?",
+    "opciones": [
+      "Que el precio no puede moverse",
+      "Que un 1 % en contra se lleva los 100 €",
+      "Que solo vale para posiciones cortas",
+      "Que hay que pagar los 10.000 € después"
+    ],
+    "correcta": 1,
+    "explicacion": "Eso es x100: el margen se agota con un movimiento del 1 %."
+  },
+  {
+    "clave": "fa-f-13",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "Nominal de 4.000 €, x8, mantenimiento del 1 %. ¿Colchón antes de la liquidación?",
+    "opciones": [
+      "400 €",
+      "40 €",
+      "460 €",
+      "500 €"
+    ],
+    "correcta": 2,
+    "explicacion": "Margen inicial 500 €, mantenimiento 40 €: 460 €."
+  },
+  {
+    "clave": "fa-f-14",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "¿Dónde es más alto el margen de mantenimiento desde el primer tramo?",
+    "opciones": [
+      "En las posiciones cortas",
+      "En el contrato de bitcoin",
+      "En las posiciones más pequeñas",
+      "En los contratos de monedas pequeñas, con menos liquidez"
+    ],
+    "correcta": 3,
+    "explicacion": "En los mercados más volátiles el colchón es más fino."
+  },
+  {
+    "clave": "fa-f-15",
+    "leccion": "margen-aislado-y-cruzado",
+    "enunciado": "¿Qué ventaja decisiva tiene el margen aislado para una apuesta direccional?",
+    "opciones": [
+      "La pérdida máxima queda decidida antes de empezar",
+      "Aguanta caídas mayores",
+      "Paga menos funding",
+      "No tiene liquidación"
+    ],
+    "correcta": 0,
+    "explicacion": "Un error no puede tocar el resto de la cuenta."
+  },
+  {
+    "clave": "fa-f-16",
+    "leccion": "margen-aislado-y-cruzado",
+    "enunciado": "En cruzado tienes tres largos en monedas distintas y el mercado cae. ¿Qué ocurre?",
+    "opciones": [
+      "Se compensan entre sí",
+      "Caen a la vez y comparten garantía: el riesgo se suma en lugar de repartirse",
+      "El saldo queda protegido",
+      "Solo se liquida la más pequeña"
+    ],
+    "correcta": 1,
+    "explicacion": "Las criptomonedas se mueven juntas. Tres largos no diversifican."
+  },
+  {
+    "clave": "fa-f-17",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "Tu cuenta pasa de 1.000 € a 250 €. ¿Qué ganancia necesitas para volver a 1.000 €?",
+    "opciones": [
+      "Un 400 %",
+      "Un 150 %",
+      "Un 300 %",
+      "Un 75 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Faltan 750 €, que son tres veces lo que queda."
+  },
+  {
+    "clave": "fa-f-18",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "¿Qué queda de 1.000 € tras cinco pérdidas seguidas del 10 % de la cuenta cada una?",
+    "opciones": [
+      "Unos 900 €",
+      "Nada",
+      "500 €",
+      "Unos 590 €"
+    ],
+    "correcta": 3,
+    "explicacion": "1.000 × 0,9 cinco veces: 590 €. Cada pérdida se aplica sobre lo que queda."
+  },
+  {
+    "clave": "fa-f-19",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "¿Qué mide la esperanza matemática de una forma de operar?",
+    "opciones": [
+      "Lo que se gana o se pierde de media por operación, combinando frecuencia y tamaño",
+      "El número de aciertos",
+      "La mayor ganancia conseguida",
+      "El apalancamiento medio"
+    ],
+    "correcta": 0,
+    "explicacion": "Se puede acertar mucho y perder, si las pérdidas son mucho mayores que las ganancias."
+  },
+  {
+    "clave": "fa-f-20",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "Corto x10 abierto a 50.000 €, mantenimiento del 0,5 %. ¿Precio de liquidación aproximado?",
+    "opciones": [
+      "55.250 €",
+      "54.750 €",
+      "45.250 €",
+      "50.250 €"
+    ],
+    "correcta": 1,
+    "explicacion": "Distancia del 9,5 % hacia arriba: 50.000 × 1,095."
+  },
+  {
+    "clave": "fa-f-21",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "¿Cuál de estas cosas aleja el precio de liquidación?",
+    "opciones": [
+      "Pagar la comisión de apertura",
+      "Que la plataforma suba el mantenimiento",
+      "Añadir margen a la posición",
+      "Pagar funding"
+    ],
+    "correcta": 2,
+    "explicacion": "Más saldo debajo de la posición, más recorrido."
+  },
+  {
+    "clave": "fa-f-22",
+    "leccion": "el-precio-de-liquidacion",
+    "enunciado": "¿Qué regla relaciona el stop con la liquidación?",
+    "opciones": [
+      "No hay relación entre ambos",
+      "El stop debe coincidir con la liquidación",
+      "El stop debe quedar más lejos que la liquidación",
+      "La liquidación debe quedar, como mínimo, al doble de distancia que el stop"
+    ],
+    "correcta": 3,
+    "explicacion": "Hace falta espacio porque un stop puede ejecutarse peor de lo marcado."
+  },
+  {
+    "clave": "fa-f-23",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "Una mecha baja el último precio de un contrato un 10 % durante un segundo, sin que el resto del mercado se mueva. ¿Liquida un largo cuyo nivel estaba en ese tramo?",
+    "opciones": [
+      "No, si el precio de marca no ha llegado a ese nivel",
+      "Solo si no había stop",
+      "Solo en margen cruzado",
+      "Sí, siempre"
+    ],
+    "correcta": 0,
+    "explicacion": "La liquidación depende del precio de marca, que no sigue las mechas de un solo libro."
+  },
+  {
+    "clave": "fa-f-24",
+    "leccion": "precio-de-marca-y-precio-ultimo",
+    "enunciado": "¿Contra qué se ejecutan tus órdenes?",
+    "opciones": [
+      "Contra el precio de marca",
+      "Contra el libro de órdenes, al último precio disponible",
+      "Contra el fondo de seguro",
+      "Contra el precio índice"
+    ],
+    "correcta": 1,
+    "explicacion": "La marca valora y activa; la ejecución ocurre en el libro."
+  },
+  {
+    "clave": "fa-f-25",
+    "leccion": "fondo-de-seguro-y-adl",
+    "enunciado": "¿Te devuelve el fondo de seguro lo que pierdes al ser liquidado?",
+    "opciones": [
+      "Sí, íntegramente",
+      "Sí, la mitad",
+      "No: su función es pagar a la contraparte de las posiciones en quiebra",
+      "Solo en margen aislado"
+    ],
+    "correcta": 2,
+    "explicacion": "Asegura al sistema contra los impagos, no al usuario contra sus pérdidas."
+  },
+  {
+    "clave": "fa-f-26",
+    "leccion": "fondo-de-seguro-y-adl",
+    "enunciado": "La plataforma cierra un corto ganador tuyo en pleno desplome, sin stop ni liquidación. ¿Qué mecanismo es?",
+    "opciones": [
+      "La llamada de margen",
+      "El vencimiento del contrato",
+      "El funding",
+      "El desapalancamiento automático"
+    ],
+    "correcta": 3,
+    "explicacion": "Cuando el fondo no cubre las quiebras, se cierran ganadores del lado contrario."
+  },
+  {
+    "clave": "fa-f-27",
+    "leccion": "cascadas-de-liquidaciones",
+    "enunciado": "¿Qué convierte una caída fuerte en un desplome durante una cascada?",
+    "opciones": [
+      "Que quienes ofrecían órdenes de compra las retiran y cada venta mueve más el precio",
+      "Que se cierra el mercado al contado",
+      "Que sube el funding",
+      "Que vencen los contratos"
+    ],
+    "correcta": 0,
+    "explicacion": "La liquidez desaparece justo cuando más falta hace."
+  },
+  {
+    "clave": "fa-f-28",
+    "leccion": "cascadas-de-liquidaciones",
+    "enunciado": "¿Qué estructura protegió mejor a quien tenía posiciones el 10 de octubre de 2025?",
+    "opciones": [
+      "Estar delante de la pantalla para cerrar a mano",
+      "Apalancamiento bajo, margen aislado y dinero fuera de la cuenta de futuros",
+      "Apalancamiento alto con stop muy ajustado",
+      "Margen cruzado con varias monedas pequeñas"
+    ],
+    "correcta": 1,
+    "explicacion": "No se podía prever la noticia; sí llevar una estructura que la aguantara."
+  },
+  {
+    "clave": "fa-f-29",
+    "leccion": "el-funding-rate",
+    "enunciado": "Largo de 5.000 € de nominal y 500 € de margen, con un funding del 0,05 % cada ocho horas. ¿Cuánto pagas en un día?",
+    "opciones": [
+      "2,50 €",
+      "0,75 €",
+      "7,50 €",
+      "25 €"
+    ],
+    "correcta": 2,
+    "explicacion": "0,05 % de 5.000 € son 2,50 € por intervalo; tres al día."
+  },
+  {
+    "clave": "fa-f-30",
+    "leccion": "el-funding-rate",
+    "enunciado": "¿Por qué ponerse en corto solo «para cobrar funding» no es dinero gratis?",
+    "opciones": [
+      "Porque el funding tributa al doble",
+      "Porque el funding lo cobra la plataforma",
+      "Porque los cortos no cobran funding",
+      "Porque el corto pierde si el precio sube, y el funding es alto justo cuando sube con fuerza"
+    ],
+    "correcta": 3,
+    "explicacion": "Es una apuesta direccional disfrazada, salvo que se compense con la moneda al contado."
+  },
+  {
+    "clave": "fa-f-31",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "¿Cuántas veces se paga comisión en una operación completa?",
+    "opciones": [
+      "Dos: al abrir y al cerrar",
+      "Una, al cerrar",
+      "Ninguna si se gana",
+      "Una, al abrir"
+    ],
+    "correcta": 0,
+    "explicacion": "Y las dos se calculan sobre el valor nominal."
+  },
+  {
+    "clave": "fa-f-32",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "Haces cinco operaciones al día con x20, todas a mercado con una tarifa del 0,05 %. ¿Qué parte de tu margen pagas al día en comisiones?",
+    "opciones": [
+      "Un 1 %",
+      "Un 10 %",
+      "Un 2 %",
+      "Un 0,5 %"
+    ],
+    "correcta": 1,
+    "explicacion": "Cada ida y vuelta cuesta un 2 % del margen. Cinco al día: un 10 %."
+  },
+  {
+    "clave": "fa-f-33",
+    "leccion": "el-interes-abierto",
+    "enunciado": "¿En qué se diferencia el interés abierto del volumen?",
+    "opciones": [
+      "Son lo mismo con distinto nombre",
+      "El volumen solo cuenta las compras",
+      "El interés abierto cuenta contratos vivos; el volumen, lo negociado en un periodo",
+      "El interés abierto empieza de cero cada día"
+    ],
+    "correcta": 2,
+    "explicacion": "Uno son los coches aparcados ahora; el otro, el tráfico del día."
+  },
+  {
+    "clave": "fa-f-34",
+    "leccion": "el-interes-abierto",
+    "enunciado": "El interés abierto está en máximos tras una subida larga. ¿Qué se puede afirmar?",
+    "opciones": [
+      "Que el precio seguirá subiendo",
+      "Que conviene abrir un corto",
+      "Que el precio va a caer mañana",
+      "Que hay mucho apalancamiento acumulado, y un giro podría ser más violento"
+    ],
+    "correcta": 3,
+    "explicacion": "Informa del tamaño de lo que puede pasar, no de cuándo ni hacia dónde."
+  },
+  {
+    "clave": "fa-f-35",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Por qué ESMA puso el límite más bajo de su tabla a las criptomonedas?",
+    "opciones": [
+      "Porque el límite depende de la volatilidad del subyacente, y es el más volátil",
+      "Porque solo operan profesionales",
+      "Porque no tienen precio",
+      "Porque son ilegales"
+    ],
+    "correcta": 0,
+    "explicacion": "A más volatilidad, menos apalancamiento permitido: 2 veces en criptomonedas."
+  },
+  {
+    "clave": "fa-f-36",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "Las plataformas de fuera de la Unión ofrecen x100 y el límite europeo para particulares es de 2 veces. ¿Qué conclusión es razonable?",
+    "opciones": [
+      "Que x100 es seguro si la plataforma lo ofrece",
+      "Que el acceso no elimina las razones por las que se limitó",
+      "Que los supervisores no tenían datos",
+      "Que el límite europeo es un error"
+    ],
+    "correcta": 1,
+    "explicacion": "El límite salió de los datos de pérdidas de las cuentas de particulares."
+  },
+  {
+    "clave": "fa-f-37",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "Cuenta de 4.000 €, riesgo del 1 %, stop a un 8 % de la entrada. ¿Valor nominal?",
+    "opciones": [
+      "320 €",
+      "40 €",
+      "500 €",
+      "4.000 €"
+    ],
+    "correcta": 2,
+    "explicacion": "Riesgo de 40 €: 40 ÷ 0,08 = 500 €."
+  },
+  {
+    "clave": "fa-f-38",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "Con un riesgo del 1 % por operación y stops razonables, ¿cuánto apalancamiento suele hacer falta?",
+    "opciones": [
+      "Exactamente x10",
+      "El máximo disponible",
+      "Al menos x50",
+      "Poco o ninguno: la posición calculada suele caber en la cuenta"
+    ],
+    "correcta": 3,
+    "explicacion": "Quien dice necesitar mucho multiplicador está arriesgando mucho más del 1 %."
+  },
+  {
+    "clave": "fa-f-39",
+    "leccion": "cobertura-y-tu-reglamento",
+    "enunciado": "¿Qué fija una cobertura mientras está puesta?",
+    "opciones": [
+      "El resultado: ni pierdes con las caídas ni ganas con las subidas",
+      "El funding",
+      "El precio de la moneda",
+      "La comisión"
+    ],
+    "correcta": 0,
+    "explicacion": "Cambias incertidumbre por un resultado fijo, con sus costes."
+  },
+  {
+    "clave": "fa-f-40",
+    "leccion": "cobertura-y-tu-reglamento",
+    "enunciado": "¿Cuál de las ocho reglas evita el mayor daño, según el curso?",
+    "opciones": [
+      "Operar solo por la mañana",
+      "Parar tras un número fijado de pérdidas seguidas o una caída fijada de la cuenta",
+      "Mirar el funding antes de abrir",
+      "Usar siempre órdenes limitadas"
+    ],
+    "correcta": 1,
+    "explicacion": "Las cuentas se vacían en la tarde de la revancha, no en una operación normal."
+  }
+]

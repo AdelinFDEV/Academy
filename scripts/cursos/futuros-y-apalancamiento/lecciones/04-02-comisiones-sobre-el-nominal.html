@@ -1,0 +1,135 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Las comisiones de futuros parecen diminutas: unas centésimas por ciento. Pero se cobran sobre el valor nominal, dos veces por operación, y con apalancamiento eso las multiplica respecto a tu dinero. Aquí aprendes a distinguir las dos tarifas que existen, a calcular lo que cuesta una operación de ida y vuelta sobre tu margen y a ver por qué quien opera muchas veces al día empieza cada jornada con una desventaja que casi nadie remonta.</p>
+</div>
+
+<h2>Dos tarifas: quien pone y quien toma</h2>
+
+<p>En casi todas las plataformas hay dos comisiones distintas, según cómo se ejecute tu orden en el <a href="/glosario/libro-de-ordenes">libro de órdenes</a>.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Maker (pone liquidez)</th><th>Taker (toma liquidez)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cómo es la orden</td><td>Limitada, a un precio que todavía no se cruza: se queda esperando en el libro</td><td>A mercado, o limitada que se cruza al instante con una orden que ya estaba</td></tr>
+    <tr><td>Tarifa</td><td>La más baja</td><td>La más alta, a menudo más del doble</td></tr>
+    <tr><td>Qué pagas a cambio</td><td>Puede no ejecutarse nunca</td><td>Se ejecuta ya, al precio que haya</td></tr>
+    <tr><td>Ejemplo de tarifa base</td><td>0,02 %</td><td>0,05 %</td></tr>
+  </tbody>
+</table>
+
+<p>Los porcentajes de la última fila son un ejemplo del orden de magnitud habitual para un usuario sin descuentos. Cada plataforma tiene su tabla, con rebajas por volumen. Lo que importa aquí no es la cifra exacta, sino sobre qué se aplica.</p>
+
+<p>Hay un dato que conviene recordar: las órdenes que más prisa tienen son siempre <em>taker</em>. Un <a href="/glosario/stop-loss">stop loss</a> que se ejecuta a mercado paga la tarifa alta. Una liquidación, también, y con recargo.</p>
+
+<h2>Se cobran sobre el nominal, y dos veces</h2>
+
+<blockquote><strong>Comisión = valor nominal × tarifa</strong>, al abrir y otra vez al cerrar.</blockquote>
+
+<p>Una operación completa son dos órdenes. Si las dos son a mercado con una tarifa del 0,05 %, el coste de ida y vuelta es del 0,1 % del nominal. Suena a nada. Ahora ponlo sobre tu margen.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Coste de una operación de ida y vuelta, sobre tu margen",
+  "subtitulo": "Con una tarifa taker del 0,05 % en cada orden: 0,1 % del nominal en total.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Sin apalancar", "coste": 0.1 },
+    { "etiqueta": "x5", "coste": 0.5 },
+    { "etiqueta": "x10", "coste": 1 },
+    { "etiqueta": "x20", "coste": 2 },
+    { "etiqueta": "x50", "coste": 5 },
+    { "etiqueta": "x100", "coste": 10 }
+  ],
+  "series": [{ "clave": "coste", "nombre": "Comisiones sobre el margen", "color": "#f472b6" }],
+  "nota": "Tarifa de ejemplo. El coste sobre el nominal es siempre el mismo; lo que cambia es cuánto dinero tuyo hay debajo."
+}
+</script></div>
+
+<p>Con x50, abrir y cerrar cuesta un 5 % de tu margen, <strong>antes de que el precio se haya movido</strong>. Con x100, un 10 %. Empiezas cada operación con esa pérdida ya anotada.</p>
+
+<p>Dicho de otra forma: el precio tiene que moverse un 0,1 % a tu favor solo para dejarte a cero. Con x100, donde la liquidación está a un 0,5 %, las comisiones se han comido una quinta parte de todo tu recorrido antes de empezar.</p>
+
+<h2>El coste completo de una operación</h2>
+
+<p>Junta lo visto en esta lección y en la anterior. Un largo de 10.000 € de nominal con x20 —500 € de margen—, abierto y cerrado a mercado, mantenido tres días con el funding en su nivel habitual:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Concepto</th><th>Cuenta</th><th>Importe</th><th>Sobre el margen</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Comisión de apertura</td><td>10.000 € × 0,05 %</td><td>5 €</td><td>1 %</td></tr>
+    <tr><td>Funding de tres días</td><td>10.000 € × 0,01 % × 9 pagos</td><td>9 €</td><td>1,8 %</td></tr>
+    <tr><td>Comisión de cierre</td><td>10.000 € × 0,05 %</td><td>5 €</td><td>1 %</td></tr>
+    <tr><td><strong>Total</strong></td><td></td><td><strong>19 €</strong></td><td><strong>3,8 %</strong></td></tr>
+  </tbody>
+</table>
+
+<p>A eso hay que añadir dos costes que no aparecen en ninguna factura: el <a href="/glosario/spread">spread</a>, la diferencia entre el mejor precio de compra y el de venta, que pagas al cruzar una orden a mercado; y el <a href="/glosario/slippage">slippage</a>, cuando tu orden es mayor que lo disponible al mejor precio. En los contratos grandes son pequeños. En los de monedas pequeñas pueden superar a la comisión.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">3,8 %</span>
+  <span class="prose-dato-texto">Lo que cuesta, sobre el margen, la operación del ejemplo: tres días con x20, entrando y saliendo a mercado. Es lo que hay que ganar para empatar.</span>
+</div>
+
+<h2>Lo que hace el número de operaciones</h2>
+
+<p>Una sola operación soporta bien esos costes si el movimiento que busca es amplio. El problema llega al multiplicar. Quien abre y cierra muchas posiciones al día, buscando movimientos de unas décimas, paga la comisión completa en cada una.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Una operación al día</span>
+    <p>Con x20 y órdenes a mercado: un 2 % del margen al día en comisiones. En un mes de veinte sesiones, un 40 %.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cinco al día</span>
+    <p>Un 10 % del margen cada día. En diez sesiones has pagado en comisiones el equivalente a todo tu margen.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Veinte al día</span>
+    <p>Un 40 % diario. Para no perder, cada operación tendría que ganar de media más de lo que cuesta, con una regularidad que nadie sostiene.</p>
+  </div>
+</div>
+
+<p>Por eso el <a href="/glosario/day-trading">day trading</a> con apalancamiento alto es tan difícil de hacer rentable. No hace falta operar mal: basta con operar mucho. La plataforma gana con cada orden, aciertes o falles, y ese es el motivo por el que su interfaz está diseñada para que operar sea fácil, rápido y frecuente.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Los concursos, los rangos por volumen y los bonos que premian operar más tienen un beneficiario claro, y no es quien opera. Cada euro de volumen que generas es comisión para la plataforma. Un descuento del 10 % en las tarifas a cambio de operar el triple no es un ahorro.</div>
+</div>
+
+<h2>Cómo reducir lo que pagas</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Opera menos.</strong> Es la única medida que reduce todas las comisiones a la vez.</li>
+  <li><strong>Entra con órdenes limitadas</strong> cuando no haya prisa. Pagas la tarifa baja y evitas el spread.</li>
+  <li><strong>Baja el apalancamiento.</strong> La comisión en euros es la misma, pero deja de ser una parte tan grande de tu margen.</li>
+  <li><strong>Busca movimientos amplios.</strong> Un coste del 0,1 % pesa poco frente a un objetivo del 5 % y mucho frente a uno del 0,3 %.</li>
+  <li><strong>Anota las comisiones de cada operación.</strong> En un diario, junto al resultado. Al sumarlas a final de mes se ve lo que ninguna pantalla enseña.</li>
+</ol>
+
+<p>Sobre el quinto punto: las plataformas muestran el resultado de cada operación, y a menudo las comisiones aparecen aparte, en otro listado. Es fácil terminar el mes creyendo que se ha quedado «más o menos a cero» y descubrir, al sumar, que las comisiones se han llevado una parte notable de la cuenta.</p>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Abres y cierras a mercado una posición de 8.000 € de nominal con 400 € de margen. La tarifa taker es del 0,05 %. ¿Cuánto pagas en comisiones y qué parte de tu margen supone?",
+  "opciones": [
+    "8 €, un 2 % del margen",
+    "4 €, un 1 % del margen",
+    "0,40 €, un 0,1 % del margen",
+    "80 €, un 20 % del margen"
+  ],
+  "correcta": 0,
+  "explicacion": "0,05 % de 8.000 € son 4 € por orden. Dos órdenes: 8 €, que sobre 400 € de margen es un 2 %."
+}
+</script></div>
+
+<h2>Ejercicio: tu factura de un mes</h2>
+
+<p>Busca la tabla de comisiones de futuros de una plataforma y apunta la tarifa <em>maker</em> y la <em>taker</em> del nivel más bajo. Imagina un mes en el que haces dos operaciones al día, veinte días, cada una de 2.000 € de nominal con x10, todas a mercado. Calcula el total de comisiones del mes y compáralo con el margen de una posición, 200 €. Repite la cuenta suponiendo que entras con órdenes limitadas y sales a mercado. La diferencia es lo que vale la paciencia.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> las comisiones se cobran sobre el nominal, al abrir y al cerrar, y las órdenes a mercado pagan la tarifa alta. Con una tarifa del 0,05 %, una operación completa cuesta el 2 % del margen con x20 y el 10 % con x100, antes de que el precio se mueva. Lo que más las reduce es operar menos y con menos apalancamiento.</div>
+</div>

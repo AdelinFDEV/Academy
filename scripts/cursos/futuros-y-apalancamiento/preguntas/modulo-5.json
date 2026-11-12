@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "fa-m5-01",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "Según ESMA, ¿qué porcentaje de las cuentas de particulares pierde dinero con CFD?",
+    "opciones": [
+      "Entre el 74 % y el 89 %",
+      "Entre el 10 % y el 20 %",
+      "El 100 %",
+      "Entre el 40 % y el 50 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Es el rango de los análisis de los supervisores nacionales, publicado en marzo de 2018."
+  },
+  {
+    "clave": "fa-m5-02",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Qué apalancamiento máximo fijó ESMA en 2018 para los CFD sobre criptomonedas ofrecidos a particulares?",
+    "opciones": [
+      "100 veces",
+      "2 veces",
+      "30 veces",
+      "10 veces"
+    ],
+    "correcta": 1,
+    "explicacion": "Es el límite más estricto de su tabla. Treinta veces es el de los principales pares de divisas."
+  },
+  {
+    "clave": "fa-m5-03",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Qué significa la protección de saldo negativo?",
+    "opciones": [
+      "Que el intermediario devuelve las pérdidas",
+      "Que no se cobran comisiones si se pierde",
+      "Que el cliente no puede perder más de lo que tiene en la cuenta",
+      "Que la cuenta no puede bajar del depósito inicial"
+    ],
+    "correcta": 2,
+    "explicacion": "Es una de las medidas que ESMA impuso a los intermediarios en 2018."
+  },
+  {
+    "clave": "fa-m5-04",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Qué prohíbe la primera parte de la resolución de la CNMV de julio de 2023?",
+    "opciones": [
+      "Tener cuentas en plataformas extranjeras",
+      "Comprar criptomonedas al contado",
+      "Usar órdenes stop",
+      "La publicidad de CFD dirigida a particulares o al público en general"
+    ],
+    "correcta": 3,
+    "explicacion": "Incluye patrocinios, personas de relevancia pública y cursos o cuentas de prueba gratuitos como reclamo."
+  },
+  {
+    "clave": "fa-m5-05",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Qué decidió la FCA británica sobre los derivados de criptoactivos?",
+    "opciones": [
+      "Prohibir su venta a particulares desde el 6 de enero de 2021",
+      "Limitar su apalancamiento a 30 veces",
+      "Permitirlos sin restricciones",
+      "Gravarlos con un impuesto especial"
+    ],
+    "correcta": 0,
+    "explicacion": "Estimó que la prohibición ahorraría a los particulares unos 53 millones de libras."
+  },
+  {
+    "clave": "fa-m5-06",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "En el estudio de Brasil, de quienes hicieron day trading más de 300 sesiones, ¿cuántos perdieron dinero?",
+    "opciones": [
+      "El 75 %",
+      "El 97 %",
+      "El 30 %",
+      "El 50 %"
+    ],
+    "correcta": 1,
+    "explicacion": "Y solo el 1,1 % ganó más que el salario mínimo."
+  },
+  {
+    "clave": "fa-m5-07",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Qué limitación tiene el estudio de Brasil para aplicarlo a las criptomonedas?",
+    "opciones": [
+      "Solo siguió a diez personas",
+      "Lo pagó una plataforma",
+      "Trata de futuros sobre un índice bursátil, no de criptomonedas",
+      "Tiene más de cincuenta años"
+    ],
+    "correcta": 2,
+    "explicacion": "El curso lo advierte. Aun así, su conclusión sobre la falta de aprendizaje es difícil de ignorar."
+  },
+  {
+    "clave": "fa-m5-08",
+    "leccion": "lo-que-dicen-los-datos-y-los-supervisores",
+    "enunciado": "¿Qué pierdes al operar en una plataforma de fuera de la Unión Europea?",
+    "opciones": [
+      "Nada: las normas son las mismas",
+      "Únicamente los bonos de bienvenida",
+      "Solo la interfaz en español",
+      "Los límites de apalancamiento, la protección garantizada y la posibilidad de reclamar a un supervisor de aquí"
+    ],
+    "correcta": 3,
+    "explicacion": "Las normas de ESMA y la CNMV obligan a los intermediarios autorizados en la Unión."
+  },
+  {
+    "clave": "fa-m5-09",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "¿De qué depende la pérdida si salta el stop?",
+    "opciones": [
+      "Del valor nominal y de la distancia al stop",
+      "Del margen depositado",
+      "Del funding del día",
+      "Del multiplicador elegido"
+    ],
+    "correcta": 0,
+    "explicacion": "Pérdida = nominal × distancia al stop. El multiplicador no entra en la cuenta."
+  },
+  {
+    "clave": "fa-m5-10",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "Cuenta de 2.000 €, riesgo del 1 %, entrada a 50.000 € y stop en 48.000 €. ¿Valor nominal de la posición?",
+    "opciones": [
+      "20 €",
+      "500 €",
+      "5.000 €",
+      "2.000 €"
+    ],
+    "correcta": 1,
+    "explicacion": "Riesgo de 20 €, distancia del 4 %: 20 ÷ 0,04 = 500 €."
+  },
+  {
+    "clave": "fa-m5-11",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "¿Cuál es el orden correcto de las decisiones?",
+    "opciones": [
+      "Dónde salgo, qué multiplicador, cuánto arriesgo",
+      "Qué tamaño, qué multiplicador, cuánto arriesgo",
+      "Cuánto arriesgo, dónde salgo, qué tamaño, qué multiplicador",
+      "Qué multiplicador, cuánto dinero, dónde salgo"
+    ],
+    "correcta": 2,
+    "explicacion": "El apalancamiento es lo último: el más bajo que permita abrir el tamaño calculado."
+  },
+  {
+    "clave": "fa-m5-12",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "Dos posiciones de 1.000 € de nominal con el stop al 4 %, una con x2 y otra con x10. ¿Cuál pierde más si salta el stop?",
+    "opciones": [
+      "La de x10 pierde cinco veces más",
+      "La de x2 pierde más",
+      "Depende del funding",
+      "Las dos pierden lo mismo: 40 €"
+    ],
+    "correcta": 3,
+    "explicacion": "Cambia el margen inmovilizado y la distancia a la liquidación, no la pérdida en el stop."
+  },
+  {
+    "clave": "fa-m5-13",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "Arriesgas 20 € por operación y una operación gana 60 €. ¿Cuántas R ha ganado?",
+    "opciones": [
+      "3R",
+      "60R",
+      "1R",
+      "0,33R"
+    ],
+    "correcta": 0,
+    "explicacion": "1R es lo que arriesgas. 60 ÷ 20 = 3."
+  },
+  {
+    "clave": "fa-m5-14",
+    "leccion": "el-tamano-lo-decide-el-riesgo",
+    "enunciado": "¿Qué ocurre cuando alejas el stop porque el precio se acerca?",
+    "opciones": [
+      "Reduces el riesgo de la operación",
+      "Pasas a arriesgar una cantidad que ya no has decidido",
+      "Evitas las comisiones",
+      "Mejoras la relación entre ganancia y pérdida"
+    ],
+    "correcta": 1,
+    "explicacion": "Un stop que se mueve deja de ser un límite."
+  },
+  {
+    "clave": "fa-m5-15",
+    "leccion": "cobertura-y-tu-reglamento",
+    "enunciado": "Tienes 0,5 BTC al contado y abres un corto de 0,5 BTC. Si el precio cae un 20 %, ¿cuál es el resultado conjunto?",
+    "opciones": [
+      "Pierdes un 40 %",
+      "Ganas un 20 %",
+      "Cero, antes de costes: lo que pierde el contado lo gana el corto",
+      "Pierdes un 20 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Es una cobertura: fija el resultado mientras está puesta."
+  },
+  {
+    "clave": "fa-m5-16",
+    "leccion": "cobertura-y-tu-reglamento",
+    "enunciado": "¿Qué riesgo tiene cubrir monedas al contado con un corto en un perpetuo?",
+    "opciones": [
+      "Que el contado deje de cotizar",
+      "Que las monedas al contado se liquiden",
+      "Ninguno: la cobertura es perfecta",
+      "Que una subida fuerte liquide el corto si no tiene margen suficiente"
+    ],
+    "correcta": 3,
+    "explicacion": "El valor de tus monedas no respalda el corto, salvo que sean su garantía."
+  },
+  {
+    "clave": "fa-m5-17",
+    "leccion": "cobertura-y-tu-reglamento",
+    "enunciado": "¿Qué alternativa más simple a la cobertura propone el curso?",
+    "opciones": [
+      "Vender una parte de la posición",
+      "Pasar a margen cruzado",
+      "Subir el apalancamiento",
+      "Abrir un largo adicional"
+    ],
+    "correcta": 0,
+    "explicacion": "Reducir no tiene liquidación, ni funding, ni contraparte."
+  },
+  {
+    "clave": "fa-m5-18",
+    "leccion": "cobertura-y-tu-reglamento",
+    "enunciado": "¿Qué conviene descargar y guardar cada año de la cuenta de futuros?",
+    "opciones": [
+      "Solo el saldo final",
+      "El historial de operaciones, las comisiones, el funding y las liquidaciones",
+      "Nada: la plataforma lo conserva siempre",
+      "Solo las operaciones ganadoras"
+    ],
+    "correcta": 1,
+    "explicacion": "Las plataformas limitan el tiempo que guardan el detalle, y hace falta para declarar bien."
+  }
+]

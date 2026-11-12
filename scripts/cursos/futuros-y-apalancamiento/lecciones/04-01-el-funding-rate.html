@@ -1,0 +1,133 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El funding es el pago periódico entre quienes van en largo y quienes van en corto en un contrato perpetuo. Es lo que mantiene el precio del contrato pegado al de la moneda, y es un coste que se calcula sobre el tamaño de la posición y se paga con tu margen. Aquí ves cómo se calcula, cuánto supone al cabo de un día, un mes y un año, qué pasa cuando se dispara y por qué no es una señal de hacia dónde irá el precio.</p>
+</div>
+
+<h2>Qué es y quién paga</h2>
+
+<p>En el módulo 1 viste para qué existe el <a href="/glosario/funding-rate">funding rate</a>: un <a href="/glosario/contrato-perpetuo">contrato perpetuo</a> no vence nunca, así que hace falta un mecanismo que impida que su precio se aleje del de la moneda al contado. Ese mecanismo es un pago que cruza de un lado a otro del contrato cada cierto tiempo.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Signo del funding</th><th>Qué indica</th><th>Quién paga</th><th>Quién cobra</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Positivo</td><td>El perpetuo cotiza por encima del contado: hay más presión compradora</td><td>Los largos</td><td>Los cortos</td></tr>
+    <tr><td>Negativo</td><td>El perpetuo cotiza por debajo: hay más presión vendedora</td><td>Los cortos</td><td>Los largos</td></tr>
+  </tbody>
+</table>
+
+<p>La documentación de Binance lo define como pagos periódicos transferidos entre los titulares de posiciones largas y cortas, y aclara que la plataforma no cobra comisión sobre ellos: van directamente de unos usuarios a otros. El intervalo por defecto es de ocho horas, a las 00:00, las 08:00 y las 16:00 en hora universal. Solo paga o cobra quien tiene la posición abierta en ese instante.</p>
+
+<h2>Cómo se calcula lo que pagas</h2>
+
+<blockquote><strong>Pago de funding = valor nominal de la posición × tipo de funding</strong></blockquote>
+
+<p>Aquí está la clave: se aplica sobre el <strong>valor nominal</strong>, no sobre tu margen. Es el mismo principio que con las pérdidas. Un tipo que parece insignificante deja de serlo cuando lo comparas con el dinero que has puesto de verdad.</p>
+
+<p>El tipo tiene dos partes. Una fija, que en Binance es del 0,01 % por intervalo —un 0,03 % al día—, y otra variable, que depende de cuánto se separe el contrato del contado. Cuando el mercado está tranquilo, el resultado se queda cerca de ese 0,01 %. Según el informe de derivados de BitMEX del tercer trimestre de 2025, ese es el nivel en torno al cual se ha estabilizado el mercado, y el funding fue positivo más del 92 % del tiempo en ese periodo.</p>
+
+<p>Un ejemplo inventado: un largo de 10.000 € de nominal, abierto con x10, es decir, con 1.000 € de margen.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Periodo</th><th>Pagos</th><th>Con funding del 0,01 %</th><th>Sobre el nominal</th><th>Sobre tu margen</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Un intervalo (8 h)</td><td>1</td><td>1 €</td><td>0,01 %</td><td>0,1 %</td></tr>
+    <tr><td>Un día</td><td>3</td><td>3 €</td><td>0,03 %</td><td>0,3 %</td></tr>
+    <tr><td>Un mes</td><td>90</td><td>90 €</td><td>0,9 %</td><td>9 %</td></tr>
+    <tr><td>Un año</td><td>1.095</td><td>1.095 €</td><td>10,95 %</td><td>109,5 %</td></tr>
+  </tbody>
+</table>
+
+<p>Con el funding en su nivel más corriente, mantener un largo x10 durante un año cuesta más que todo el margen que lo respalda. El precio tendría que subir casi un 11 % en ese año solo para que el funding no te dejara en pérdidas.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">10,95 %</span>
+  <span class="prose-dato-texto">Lo que cuesta al año, sobre el nominal, un funding constante del 0,01 % cada ocho horas. Con x10, equivale a más del 100 % de tu margen.</span>
+</div>
+
+<h2>Cuando el funding se dispara</h2>
+
+<p>El 0,01 % es el suelo habitual, no el techo. En momentos de euforia, cuando todo el mundo quiere estar en largo, el tipo sube. No es raro ver un 0,05 % o un 0,1 % por intervalo en una moneda de moda, y en las pequeñas puede ser mucho más.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Coste mensual del funding sobre el margen de un largo x10",
+  "subtitulo": "Según el tipo que se pague cada ocho horas, si se mantuviera todo el mes.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "0,01 % (habitual)", "coste": 9 },
+    { "etiqueta": "0,03 %", "coste": 27 },
+    { "etiqueta": "0,05 %", "coste": 45 },
+    { "etiqueta": "0,1 % (euforia)", "coste": 90 }
+  ],
+  "series": [{ "clave": "coste", "nombre": "Parte del margen que se paga en un mes", "color": "#f472b6" }],
+  "nota": "Ejemplo: 90 pagos al mes sobre un nominal diez veces mayor que el margen. Los tipos altos rara vez duran un mes entero, pero aparecen justo cuando más gente abre largos."
+}
+</script></div>
+
+<p>Dos detalles de la documentación de Binance completan el cuadro. El tipo tiene un tope, que en muchos contratos es del 2 % por intervalo. Y cuando lo alcanza, la plataforma puede acortar el intervalo de ocho horas a una: el pago máximo pasa a cobrarse cada hora.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">El funding se descuenta de tu margen, así que acerca el precio de liquidación. Una posición que al abrir tenía la liquidación a un 9,5 % puede tenerla bastante más cerca tras unas semanas de pagos, sin que el precio se haya movido en contra.</div>
+</div>
+
+<h2>Cobrar funding no es dinero gratis</h2>
+
+<p>Si los largos pagan casi siempre, ¿no basta con ponerse en corto y cobrar? El razonamiento olvida que el corto pierde si el precio sube, y que el funding es alto precisamente cuando el mercado sube con fuerza.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Corto «para cobrar funding»</p>
+    <p class="prose-vs-sub">Una apuesta direccional disfrazada</p>
+    <ul>
+      <li data-tono="favor">Cobras el funding mientras sea positivo</li>
+      <li data-tono="contra">Una subida del 5 % borra meses de cobros</li>
+      <li data-tono="contra">Con apalancamiento, puede liquidarte antes</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Contado más corto equivalente</p>
+    <p class="prose-vs-sub">Lo que hacen los profesionales</p>
+    <ul>
+      <li data-tono="favor">La moneda al contado compensa el corto</li>
+      <li data-tono="favor">El resultado es el funding, suba o baje el precio</li>
+      <li data-tono="contra">Exige capital, dos mercados y vigilar el margen del corto</li>
+    </ul>
+  </div>
+</div>
+
+<p>La segunda operación —comprar la moneda y abrir un corto del mismo tamaño— existe y la practican fondos con mucho capital. Según BitMEX, ese dinero es justamente lo que pone un techo al funding: cuando sube, entra capital a cobrarlo y lo hace bajar. Su informe de cierre de 2025 señala que la rentabilidad de esa operación había caído hasta niveles parecidos a los de la deuda pública. No es un atajo para un particular: es un negocio de márgenes estrechos.</p>
+
+<h2>Lo que el funding dice, y lo que no</h2>
+
+<p>Un funding muy alto indica que hay mucha gente pagando por estar en largo. Es tentador leerlo como «el mercado está recalentado y va a caer», o al revés, un funding muy negativo como «todos están en corto, va a subir». A veces ocurre. Muchas otras, el funding sigue alto durante semanas mientras el precio continúa subiendo.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">El funding mide el coste de una posición y el desequilibrio entre los dos lados en ese momento. No predice el precio. Úsalo para lo que sí sirve: saber cuánto te cuesta cada día mantener lo que tienes abierto.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Mantienes un largo de 20.000 € de nominal con 1.000 € de margen. El funding es del 0,02 % cada ocho horas. ¿Cuánto pagas en un día?",
+  "opciones": [
+    "12 €",
+    "4 €",
+    "0,60 €",
+    "60 €"
+  ],
+  "correcta": 0,
+  "explicacion": "0,02 % de 20.000 € son 4 € por intervalo. Tres intervalos al día: 12 €, el 1,2 % de tu margen."
+}
+</script></div>
+
+<h2>Ejercicio: el funding de hoy</h2>
+
+<p>Busca en una web de datos la tabla de funding de los contratos perpetuos; casi todas tienen una. Apunta el tipo actual de bitcoin y el de las dos monedas con el funding más alto del día. Para cada una, calcula lo que costaría mantener durante treinta días un largo de 5.000 € de nominal, y qué porcentaje supone sobre un margen de 500 €. Fíjate también en el intervalo: en algunos contratos no es de ocho horas.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el funding es un pago entre largos y cortos, normalmente cada ocho horas, que se calcula sobre el nominal. Con el tipo habitual del 0,01 %, un largo x10 paga cerca del 9 % de su margen al mes y más del 100 % al año. Sale de tu margen y acerca la liquidación, sube cuando hay euforia y no sirve para predecir el precio.</div>
+</div>

@@ -1,0 +1,128 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Las plataformas ofrecen dos formas de respaldar una posición. En margen aislado, solo responde el dinero que asignas a esa posición. En margen cruzado, responde todo el saldo de tu cuenta de futuros. La diferencia decide cuánto puedes perder en una sola operación, y viene elegida por defecto de una forma u otra según la plataforma. Aquí ves cómo funciona cada modo, con las cuentas, y cuál conviene a quien empieza.</p>
+</div>
+
+<h2>La misma posición, dos garantías distintas</h2>
+
+<p>Hasta ahora hemos hablado del <a href="/glosario/margen">margen</a> como si cada posición tuviera su propia fianza, separada del resto. Eso es el modo aislado. Existe otro, el <a href="/glosario/margen-cruzado">margen cruzado</a>, en el que la fianza es compartida: todo el saldo disponible en tu cuenta de futuros respalda todas tus posiciones a la vez.</p>
+
+<p>Supón que tienes 2.000 € en la cuenta de futuros y abres un largo de 5.000 € de nominal con x10, es decir, con 500 € de margen inicial.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Aislado</th><th>Cruzado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Dinero que respalda la posición</td><td>Los 500 € asignados</td><td>Los 2.000 € de la cuenta</td></tr>
+    <tr><td>Caída que provoca la liquidación</td><td>Alrededor del 9,5 %</td><td>Alrededor del 39,5 %</td></tr>
+    <tr><td>Pérdida máxima en esa operación</td><td>500 €</td><td>Casi 2.000 €</td></tr>
+    <tr><td>Qué queda tras la liquidación</td><td>1.500 € intactos</td><td>Prácticamente nada</td></tr>
+  </tbody>
+</table>
+
+<p>Las cifras son aproximadas y suponen un mantenimiento del 0,5 %. En cruzado, la posición aguanta una caída mucho mayor, porque hay más dinero debajo. Eso parece una ventaja, y a veces lo es. Pero mira la tercera fila: el precio de aguantar más es que, si llega la liquidación, se lleva la cuenta entera.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Lo que queda de una cuenta de 2.000 € tras liquidarse un largo x10 de 5.000 €",
+  "subtitulo": "La misma posición. Cambia solo el modo de margen.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Margen aislado", "queda": 1500 },
+    { "etiqueta": "Margen cruzado", "queda": 25 }
+  ],
+  "series": [{ "clave": "queda", "nombre": "Saldo que queda", "color": "#f472b6" }],
+  "nota": "Ejemplo inventado, con un mantenimiento del 0,5 % y sin comisiones. En cruzado la liquidación llega más tarde, pero consume todo el saldo."
+}
+</script></div>
+
+<h2>Lo que hace peligroso el cruzado</h2>
+
+<p>En cruzado, el multiplicador que marcas en la pantalla deja de describir tu riesgo. Has elegido x10, pero respaldas 5.000 € de posición con 2.000 €: tu apalancamiento efectivo es de dos veces y media. Suena prudente. El problema aparece cuando abres más posiciones.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Primera posición</span>
+    <p>5.000 € de nominal sobre 2.000 € de cuenta. Apalancamiento efectivo: 2,5 veces. La liquidación queda lejos.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Segunda y tercera</span>
+    <p>Otras dos de 5.000 € en monedas distintas. Nominal total: 15.000 €. Apalancamiento efectivo: 7,5 veces.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cae el mercado</span>
+    <p>Las tres caen a la vez, porque las criptomonedas se mueven juntas. Una caída del 13 % en todas liquida la cuenta.</p>
+  </div>
+</div>
+
+<p>Dos efectos se suman. Las ganancias no realizadas de una posición sostienen a las perdedoras, lo que permite aguantar pérdidas más tiempo del que conviene. Y como casi todas las criptomonedas caen a la vez, tener tres posiciones largas en monedas distintas no reparte el riesgo: lo triplica. En cruzado, <strong>una sola posición mala puede arrastrar a todas las demás</strong>.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">En cruzado, una posición que has olvidado o que dabas por pequeña puede consumir el saldo que creías reservado para otra cosa. Y la liquidación no cierra solo esa posición: puede cerrar todas, porque comparten garantía.</div>
+</div>
+
+<h2>Cuál elegir</h2>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Aislado</p>
+    <p class="prose-vs-sub">Cada posición, su fianza</p>
+    <ul>
+      <li data-tono="favor">Sabes al abrir lo máximo que puedes perder</li>
+      <li data-tono="favor">Un error no toca el resto de la cuenta</li>
+      <li data-tono="contra">Liquida antes: tiene menos colchón</li>
+      <li data-tono="contra">Tentación de añadir margen a mano cuando va mal</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Cruzado</p>
+    <p class="prose-vs-sub">Una fianza para todo</p>
+    <ul>
+      <li data-tono="favor">Aguanta movimientos temporales más amplios</li>
+      <li data-tono="favor">Útil para posiciones que se compensan entre sí</li>
+      <li data-tono="contra">La pérdida máxima es toda la cuenta</li>
+      <li data-tono="contra">El riesgo real no se ve en el multiplicador</li>
+    </ul>
+  </div>
+</div>
+
+<p>El cruzado tiene usos legítimos. Lo emplea quien mantiene a la vez un largo y un corto relacionados, o quien hace una <a href="/glosario/cobertura">cobertura</a>, porque la ganancia de un lado respalda la pérdida del otro. Para una apuesta direccional sencilla, que es lo que hace casi todo particular, el aislado tiene una ventaja que pesa más que todas las demás: <strong>la pérdida máxima está decidida antes de empezar</strong>.</p>
+
+<p>Si usas aislado, hay una regla que lo completa: el dinero que no esté asignado a una posición no debería estar en la cuenta de futuros. Lo que esté allí es lo que acabarás añadiendo a una operación perdedora en un mal momento.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Comprueba qué modo tienes seleccionado antes de cada operación. En muchas plataformas viene marcado el cruzado por defecto, el ajuste se guarda por contrato y no se puede cambiar con una posición abierta. Es un selector pequeño junto al del multiplicador.</div>
+</div>
+
+<h2>Ni uno ni otro sustituyen a una salida</h2>
+
+<p>Elegir aislado no es una estrategia de gestión del riesgo: es un cortafuegos. Limita el daño de un error, pero deja que el error llegue hasta la liquidación, que sigue siendo perder todo lo asignado. La salida de verdad es un <a href="/glosario/stop-loss">stop loss</a> colocado antes, a una distancia que hayas calculado. El modo de margen decide qué pasa si esa salida falla.</p>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Aislado o cruzado?",
+  "instrucciones": "Lleva cada frase al modo de margen que describe.",
+  "grupos": [
+    { "id": "aislado", "nombre": "Margen aislado" },
+    { "id": "cruzado", "nombre": "Margen cruzado" }
+  ],
+  "elementos": [
+    { "texto": "La pérdida máxima es lo que asignaste a la posición", "grupo": "aislado", "explicacion": "Solo responde ese dinero." },
+    { "texto": "Todo el saldo de la cuenta respalda la posición", "grupo": "cruzado", "explicacion": "La garantía es compartida." },
+    { "texto": "Las ganancias de una posición sostienen a otra que pierde", "grupo": "cruzado", "explicacion": "Al compartir saldo, unas compensan a otras." },
+    { "texto": "Se liquida antes ante el mismo movimiento", "grupo": "aislado", "explicacion": "Hay menos dinero debajo, así que el colchón es menor." },
+    { "texto": "Una liquidación puede dejar la cuenta casi a cero", "grupo": "cruzado", "explicacion": "Consume el saldo entero antes de cerrar." },
+    { "texto": "El multiplicador de la pantalla describe bien el riesgo", "grupo": "aislado", "explicacion": "En cruzado, el apalancamiento efectivo depende del saldo total y de todas las posiciones." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: tu apalancamiento efectivo</h2>
+
+<p>Aunque no operes, haz la cuenta con una situación imaginaria. Tienes 1.000 € en una cuenta de futuros en modo cruzado y tres posiciones largas abiertas, de 2.000 €, 3.000 € y 1.500 € de nominal. Calcula el nominal total y divídelo entre el saldo: ese es tu apalancamiento efectivo. Después calcula qué caída simultánea de las tres agotaría la cuenta. Por último, repite el cálculo suponiendo que las tres estuvieran en aislado con x10 y responde: ¿cuánto dinero quedaría fuera de riesgo?</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> en aislado arriesgas solo lo asignado a cada posición; en cruzado, todo el saldo de la cuenta de futuros. El cruzado aguanta más antes de liquidar, pero cuando liquida se lo lleva todo, y con varias posiciones tu riesgo real ya no es el multiplicador que ves. Para una apuesta direccional, aislado y con un stop puesto antes.</div>
+</div>

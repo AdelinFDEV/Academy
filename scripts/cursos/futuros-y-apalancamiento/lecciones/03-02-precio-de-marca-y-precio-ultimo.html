@@ -1,0 +1,128 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En la pantalla de un contrato de futuros hay dos precios. El último precio es el de la operación más reciente en esa plataforma. El precio de marca es una referencia calculada a partir de varios mercados, y es el que decide si te liquidan y cuánto vale tu posición. Aquí ves por qué existe, cómo se construye, en qué casos se separan los dos y qué tienes que revisar en tus órdenes para que no se disparen con el precio equivocado.</p>
+</div>
+
+<h2>Dos precios en la misma pantalla</h2>
+
+<p>El <strong>último precio</strong> es el más intuitivo: a cuánto se ha cruzado la operación más reciente de ese contrato, en esa plataforma. Es el que dibuja las velas del gráfico por defecto.</p>
+
+<p>El <a href="/glosario/precio-de-marca">precio de marca</a> no corresponde a ninguna operación. Es un precio de referencia que la plataforma calcula varias veces por segundo para responder a una pregunta: cuánto vale de verdad este contrato ahora mismo, con independencia de lo que acabe de pasar en este libro de órdenes concreto.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Último precio</th><th>Precio de marca</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>De dónde sale</td><td>De la última operación en esa plataforma</td><td>De un cálculo con precios de varias plataformas</td></tr>
+    <tr><td>Se mueve con</td><td>Cada orden que se ejecuta</td><td>El mercado en su conjunto</td></tr>
+    <tr><td>Decide la liquidación</td><td>No</td><td>Sí</td></tr>
+    <tr><td>Calcula el resultado no realizado</td><td>No</td><td>Sí</td></tr>
+    <tr><td>Precio al que se ejecutan tus órdenes</td><td>Sí: compras y vendes contra el libro</td><td>No</td></tr>
+  </tbody>
+</table>
+
+<p>La documentación de Binance lo dice sin rodeos: la liquidación ocurre cuando el precio de marca alcanza el precio de liquidación de la posición, y tanto ese precio como el resultado no realizado se calculan con el precio de marca. Las demás plataformas grandes funcionan de forma parecida.</p>
+
+<h2>Cómo se construye</h2>
+
+<p>Los detalles cambian de una plataforma a otra, pero la receta tiene dos ingredientes.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Un precio índice.</strong> La media, ponderada, del precio de la moneda al contado en varias plataformas grandes. Si una de ellas da un precio disparatado, se le quita peso o se la excluye.</li>
+  <li><strong>Un ajuste.</strong> Una corrección suavizada que recoge la diferencia habitual entre el contrato y el contado, relacionada con el funding.</li>
+</ol>
+
+<p>El resultado es un precio que sigue al mercado real y que es muy difícil de mover desde una sola plataforma. Para desplazarlo habría que mover a la vez el contado en varios sitios, lo que cuesta muchísimo más dinero.</p>
+
+<h2>Por qué existe: las mechas</h2>
+
+<p>Los mercados de futuros de monedas pequeñas tienen a veces muy poca <a href="/glosario/liquidez">liquidez</a>. Una sola orden grande a mercado puede barrer el <a href="/glosario/libro-de-ordenes">libro de órdenes</a> y dejar durante un segundo un precio un 10 % por debajo del real, que se recupera al instante. En el gráfico queda una línea vertical fina: una mecha.</p>
+
+<p>Si las liquidaciones dependieran del último precio, esa mecha cerraría a la fuerza todas las posiciones largas con el nivel de liquidación en ese tramo, aunque el mercado no se hubiera movido en ningún otro sitio. Peor aún: provocarla a propósito sería un negocio. Bastaría con empujar el precio hasta donde se amontonan las liquidaciones y comprar barato lo que se vende a la fuerza.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Una mecha en el último precio que el precio de marca no sigue",
+  "subtitulo": "Un largo con liquidación en 46.000 € no se cierra, aunque el último precio toque 45.000 €.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "10:00", "ultimo": 50000, "marca": 50000, "liq": 46000 },
+    { "etiqueta": "10:01", "ultimo": 49800, "marca": 49850, "liq": 46000 },
+    { "etiqueta": "10:02", "ultimo": 45000, "marca": 49300, "liq": 46000 },
+    { "etiqueta": "10:03", "ultimo": 49400, "marca": 49400, "liq": 46000 },
+    { "etiqueta": "10:04", "ultimo": 49700, "marca": 49650, "liq": 46000 }
+  ],
+  "series": [
+    { "clave": "ultimo", "nombre": "Último precio", "color": "#f472b6" },
+    { "clave": "marca", "nombre": "Precio de marca", "color": "#8fb0ff" },
+    { "clave": "liq", "nombre": "Precio de liquidación", "color": "#94a3b8" }
+  ],
+  "nota": "Ejemplo inventado. La liquidación compara el precio de marca con el nivel de liquidación; el último precio no cuenta."
+}
+</script></div>
+
+<p>El precio de marca protege de eso. Es una de las pocas reglas de este mercado que juega a favor del usuario.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Proteger de una mecha aislada no es proteger de una caída. Si el mercado entero baja, el contado baja en todas las plataformas, el precio de marca baja con él y las liquidaciones llegan igual. El precio de marca filtra el ruido de un libro de órdenes, no el movimiento real.</div>
+</div>
+
+<h2>Lo que implica para tus órdenes</h2>
+
+<p>Aquí está la parte práctica, y la que más disgustos da. Las órdenes condicionadas —el <a href="/glosario/stop-loss">stop loss</a> y el <a href="/glosario/take-profit">take profit</a>— necesitan un precio que las active. La mayoría de las plataformas dejan elegir cuál.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Activar con el último precio</p>
+    <p class="prose-vs-sub">Sigue lo que ves en el gráfico</p>
+    <ul>
+      <li data-tono="favor">Coincide con las velas que estás mirando</li>
+      <li data-tono="contra">Una mecha puede sacarte de una posición sana</li>
+      <li data-tono="contra">Más expuesto a movimientos de un solo libro</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Activar con el precio de marca</p>
+    <p class="prose-vs-sub">Sigue la referencia de la liquidación</p>
+    <ul>
+      <li data-tono="favor">Ignora las mechas aisladas</li>
+      <li data-tono="favor">Usa el mismo precio que decide la liquidación</li>
+      <li data-tono="contra">Puede no activarse donde el gráfico parece indicar</li>
+    </ul>
+  </div>
+</div>
+
+<p>No hay una opción correcta para todo, pero sí una incoherencia que conviene evitar: tener el stop activado con un precio y calcular su distancia a la liquidación con el otro. Si los dos usan el precio de marca, sabes que el stop saltará antes que la liquidación siempre que esté antes en la escala.</p>
+
+<p>Y un segundo aviso. Que el stop se <em>active</em> a un precio no significa que se <em>ejecute</em> a ese precio. Al activarse lanza una orden que se cruza contra el libro, al último precio disponible. En una caída rápida, la ejecución puede quedar bastante peor que el nivel marcado.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">En los momentos de mayor tensión, el último precio de un contrato y su precio de marca pueden separarse varios puntos durante minutos. Tu resultado en pantalla se calcula con uno y tus órdenes se ejecutan contra el otro. Si la distancia entre tu stop y tu liquidación es de un punto, esa separación basta para que todo falle.</div>
+</div>
+
+<h2>Cómo verlos en la pantalla</h2>
+
+<p>Casi todas las plataformas muestran los dos junto al nombre del contrato, y permiten cambiar el gráfico para que dibuje uno u otro. El precio índice suele aparecer también, al lado. Es buena costumbre mirar los tres antes de abrir: si el último precio va claramente separado de la marca, el contrato está en un momento anómalo y no es el mejor para entrar.</p>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Los dos precios",
+  "afirmaciones": [
+    { "texto": "La liquidación se dispara cuando el último precio toca el nivel de liquidación.", "verdadero": false, "explicacion": "Se dispara con el precio de marca, no con el último." },
+    { "texto": "El precio de marca se calcula a partir del precio al contado en varias plataformas.", "verdadero": true, "explicacion": "Parte de un precio índice que promedia varios mercados, más un ajuste." },
+    { "texto": "Si todo el mercado cae un 15 %, el precio de marca evita que te liquiden.", "verdadero": false, "explicacion": "Filtra mechas de un solo libro, no las caídas reales: si cae el contado, cae la marca." },
+    { "texto": "Tus órdenes se ejecutan contra el libro, al último precio disponible.", "verdadero": true, "explicacion": "La marca activa y valora; la ejecución ocurre en el libro de órdenes." },
+    { "texto": "Un stop que se activa a un precio se ejecuta siempre exactamente a ese precio.", "verdadero": false, "explicacion": "Al activarse lanza una orden; en un movimiento rápido puede ejecutarse peor." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: localiza los tres precios</h2>
+
+<p>En una plataforma de futuros, sin operar, abre el contrato perpetuo de bitcoin y el de una moneda pequeña. En cada uno, apunta el último precio, el precio de marca y el precio índice, y calcula la diferencia en porcentaje entre el primero y el segundo. Después busca en la ventana de crear una orden stop el selector del precio de activación y anota qué opción viene marcada por defecto. Es un ajuste que casi nadie mira y que decide cuándo sale.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el último precio es el de la operación más reciente en esa plataforma; el precio de marca es una referencia calculada con varios mercados. La liquidación y tu resultado no realizado dependen del precio de marca, lo que protege de las mechas aisladas pero no de las caídas reales. Revisa con qué precio se activan tus stops y recuerda que activarse no es ejecutarse.</div>
+</div>

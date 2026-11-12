@@ -1,0 +1,120 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En la pantalla de una plataforma, comprar bitcoin y abrir un futuro de bitcoin son dos botones casi iguales. Por dentro son cosas distintas: en un caso tienes la moneda; en el otro, un contrato sobre su precio. Aquí ves qué tienes en cada caso, qué puedes hacer con ello, por qué existen los derivados y cuál es la diferencia que explica casi todas las pérdidas: con la moneda puedes esperar; con el contrato, no siempre te dejan.</p>
+</div>
+
+<h2>Dos botones, dos cosas distintas</h2>
+
+<p>Cuando compras una criptomoneda en el mercado al contado, o <a href="/glosario/spot">spot</a>, pagas su precio y recibes la moneda. Es tuya. Puedes dejarla en la plataforma, enviarla a tu propia wallet, pagar con ella o guardarla diez años. Si el precio cae a la mitad, sigues teniendo la misma cantidad de monedas, y nadie te obliga a vender.</p>
+
+<p>Cuando abres un contrato de <a href="/glosario/futuros">futuros</a>, no compras ninguna moneda. Firmas un acuerdo con otra persona, a través de la plataforma, cuyo resultado depende de cómo se mueva el precio. Si sube y habías apostado por la subida, la otra parte te paga la diferencia. Si baja, pagas tú. <strong>Lo que tienes no es bitcoin: es una posición sobre el precio de bitcoin.</strong></p>
+
+<p>A estos contratos se les llama <strong>derivados</strong>, porque su valor deriva del de otra cosa, que se conoce como activo subyacente. Un <a href="/glosario/cfd">CFD</a> es otro tipo de derivado; una opción, otro. Los futuros son, con diferencia, el más negociado en las criptomonedas.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Al contado</p>
+    <p class="prose-vs-sub">Compras la moneda</p>
+    <ul>
+      <li data-tono="favor">Es tuya: puedes retirarla y guardarla</li>
+      <li data-tono="favor">Pierdes como mucho lo que pagaste</li>
+      <li data-tono="favor">Nadie te la vende a la fuerza si cae</li>
+      <li data-tono="contra">Solo ganas si el precio sube</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Con futuros</p>
+    <p class="prose-vs-sub">Abres un contrato sobre el precio</p>
+    <ul>
+      <li data-tono="contra">No tienes la moneda: no se puede retirar</li>
+      <li data-tono="contra">Te pueden cerrar la posición a la fuerza</li>
+      <li data-tono="contra">Mantenerla abierta tiene un coste periódico</li>
+      <li data-tono="favor">Puedes ganar también si el precio baja</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Lo que pones no es el precio: es una garantía</h2>
+
+<p>Aquí está la segunda gran diferencia. Al contado, para tener bitcoin por valor de 1.000 € hay que pagar 1.000 €. En futuros, para abrir una posición de 1.000 € basta con depositar una parte, por ejemplo 100 €. Ese depósito es la garantía, o <a href="/glosario/margen">margen</a>: el dinero del que la plataforma cobrará tus pérdidas si el precio va en tu contra.</p>
+
+<p>La relación entre el tamaño de la posición y lo que has puesto es el <a href="/glosario/apalancamiento">apalancamiento</a>. En el ejemplo, diez veces. Le dedicaremos el módulo 2 entero; por ahora basta con una idea: las ganancias y las pérdidas se calculan sobre los 1.000 €, no sobre tus 100 €.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>El precio se mueve</th><th>1.000 € al contado</th><th>Posición de 1.000 € con 100 € de garantía</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>+5 %</td><td>+50 € (un 5 % de lo puesto)</td><td>+50 € (un 50 % de lo puesto)</td></tr>
+    <tr><td>−5 %</td><td>−50 € (un 5 %)</td><td>−50 € (un 50 %)</td></tr>
+    <tr><td>−10 %</td><td>−100 € (un 10 %): sigues teniendo las monedas</td><td>−100 €: la garantía se ha agotado y la posición se cierra</td></tr>
+  </tbody>
+</table>
+
+<p>Fíjate en la última fila. Quien compró al contado ha perdido un 10 % y puede esperar. Quien abrió el contrato ya no tiene posición: la plataforma la ha cerrado, porque no quedaba dinero para cubrir más pérdidas. A eso se le llama <a href="/glosario/liquidacion">liquidación</a>. Si al día siguiente el precio se recupera, a esa persona ya le da igual.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">−10 %</span>
+  <span class="prose-dato-texto">Lo que basta que caiga el precio para perder toda la garantía de una posición de diez veces. Al contado, esa misma caída deja intactas las monedas.</span>
+</div>
+
+<h2>Para qué se inventaron</h2>
+
+<p>Los futuros no nacieron para especular. Nacieron en los mercados agrícolas, para que un agricultor pudiera fijar hoy el precio al que vendería su cosecha dentro de seis meses, y un molinero el precio al que la compraría. Los dos se quitaban de encima un riesgo: el de que el precio cambiara por el camino. Ese uso se llama <a href="/glosario/cobertura">cobertura</a>, y sigue existiendo.</p>
+
+<p>Para que el agricultor encuentre siempre a alguien dispuesto a firmar, hacen falta además personas que acepten el riesgo que él no quiere, a cambio de la posibilidad de ganar. Son los especuladores. En los mercados tradicionales conviven los dos grupos. En los futuros de criptomonedas, la inmensa mayoría de los particulares pertenece al segundo: no cubre nada, apuesta por una dirección.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Los futuros son un juego de suma cero antes de costes. Lo que gana quien acierta lo pierde quien se equivoca, euro a euro. Después de las comisiones que cobra la plataforma, la suma es negativa: entre todos los participantes sale menos dinero del que entró.</div>
+</div>
+
+<h2>Lo que cambia para ti</h2>
+
+<p>Resumido en tres consecuencias prácticas, que se desarrollan en el resto del curso:</p>
+
+<ol class="prose-pasos">
+  <li><strong>No basta con acertar la dirección.</strong> Hay que acertarla sin que, por el camino, el precio toque el nivel al que te cierran.</li>
+  <li><strong>El tiempo juega en contra.</strong> Mantener un contrato abierto cuesta dinero cada pocas horas. Las monedas se pueden guardar gratis.</li>
+  <li><strong>Dependes por completo de la plataforma.</strong> No hay nada que retirar a tu wallet: tu posición existe solo en sus registros, con sus reglas.</li>
+</ol>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Contado o futuros?",
+  "instrucciones": "Lleva cada característica al mercado al que corresponde.",
+  "grupos": [
+    { "id": "contado", "nombre": "Al contado" },
+    { "id": "futuros", "nombre": "Futuros" }
+  ],
+  "elementos": [
+    { "texto": "Puedes enviar lo comprado a tu propia wallet", "grupo": "contado", "explicacion": "Al contado recibes la moneda. Un contrato no se puede retirar." },
+    { "texto": "Te pueden cerrar la posición a la fuerza", "grupo": "futuros", "explicacion": "Si la garantía no cubre las pérdidas, la plataforma liquida." },
+    { "texto": "Puedes ganar si el precio baja", "grupo": "futuros", "explicacion": "Un contrato permite apostar por la caída." },
+    { "texto": "Una caída del 10 % te deja con las mismas monedas", "grupo": "contado", "explicacion": "Pierdes valor, no unidades, y nadie te obliga a vender." },
+    { "texto": "Depositas solo una parte del valor de la posición", "grupo": "futuros", "explicacion": "Esa parte es el margen, la garantía de tus pérdidas." },
+    { "texto": "Mantenerlo abierto tiene un coste periódico", "grupo": "futuros", "explicacion": "Los contratos perpetuos pagan o cobran funding cada pocas horas." }
+  ]
+}
+</script></div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Abres una posición de futuros de 2.000 € depositando 200 € de garantía. El precio cae un 5 %. ¿Cuánto has perdido?",
+  "opciones": [
+    "100 €, la mitad de tu garantía",
+    "10 €, el 5 % de lo que depositaste",
+    "200 €, toda la garantía",
+    "Nada, mientras no cierres"
+  ],
+  "correcta": 0,
+  "explicacion": "La pérdida se calcula sobre el tamaño de la posición: 5 % de 2.000 € son 100 €, que se descuentan de tus 200 €."
+}
+</script></div>
+
+<h2>Ejercicio: mira lo que tienes</h2>
+
+<p>Abre la aplicación de la plataforma que uses, sin operar. Localiza dónde está el mercado al contado y dónde el de futuros o derivados, si lo ofrece. Fíjate en tres cosas: cómo se llaman los pares en cada sitio, si en el de futuros aparece un selector de multiplicador y si antes de dejarte entrar te pide hacer un test o aceptar una advertencia. Anota lo que dice esa advertencia. Volveremos a ella en el módulo 5.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> al contado compras la moneda y es tuya; en futuros abres un contrato sobre su precio y depositas una garantía. Las ganancias y las pérdidas se calculan sobre el tamaño del contrato, no sobre lo que pusiste, y si la garantía se agota la posición se cierra aunque el precio se recupere después.</div>
+</div>

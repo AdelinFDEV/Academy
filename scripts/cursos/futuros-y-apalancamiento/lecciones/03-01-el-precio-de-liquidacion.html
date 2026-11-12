@@ -1,0 +1,142 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Toda posición apalancada tiene un precio al que la plataforma la cierra sin preguntarte. Se puede calcular antes de abrir, con una fórmula sencilla, y debería ser lo primero que mires. Aquí aprendes a estimarlo en largo y en corto, ves cómo se acerca al precio de entrada a medida que sube el multiplicador, entiendes qué lo mueve mientras la posición está abierta y por qué tu salida tiene que estar siempre mucho antes.</p>
+</div>
+
+<h2>Qué es y de dónde sale</h2>
+
+<p>El precio de <a href="/glosario/liquidacion">liquidación</a> es el nivel al que tu saldo de margen se queda en el margen de mantenimiento. En ese punto la plataforma toma el control de la posición y la cierra. No es una decisión de nadie: lo ejecuta un programa, a cualquier hora, en cuanto se cumple la condición.</p>
+
+<p>Con lo visto en el módulo anterior, la cuenta sale sola. Puedes perder tu margen inicial menos el de mantenimiento. Expresado como porcentaje del precio:</p>
+
+<blockquote><strong>Distancia a la liquidación ≈ (100 % ÷ apalancamiento) − % de mantenimiento</strong><br><strong>En largo: precio de liquidación ≈ entrada × (1 − distancia)</strong><br><strong>En corto: precio de liquidación ≈ entrada × (1 + distancia)</strong></blockquote>
+
+<p>Es una aproximación, válida para margen aislado y sin contar comisiones ni funding. La plataforma te enseña la cifra exacta en la ventana de la orden antes de confirmar. Saber hacer la cuenta sirve para lo que la pantalla no te dice: si esa distancia es razonable.</p>
+
+<h2>La tabla que hay que mirar antes de elegir multiplicador</h2>
+
+<p>Un largo abierto con bitcoin a 50.000 €, con un mantenimiento del 0,5 %. Las cifras son un ejemplo: el porcentaje de mantenimiento cambia según la plataforma y el contrato.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Apalancamiento</th><th>Distancia</th><th>Liquidación de un largo</th><th>Liquidación de un corto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>x2</td><td>49,5 %</td><td>25.250 €</td><td>74.750 €</td></tr>
+    <tr><td>x5</td><td>19,5 %</td><td>40.250 €</td><td>59.750 €</td></tr>
+    <tr><td>x10</td><td>9,5 %</td><td>45.250 €</td><td>54.750 €</td></tr>
+    <tr><td>x20</td><td>4,5 %</td><td>47.750 €</td><td>52.250 €</td></tr>
+    <tr><td>x50</td><td>1,5 %</td><td>49.250 €</td><td>50.750 €</td></tr>
+    <tr><td>x100</td><td>0,5 %</td><td>49.750 €</td><td>50.250 €</td></tr>
+  </tbody>
+</table>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Cuánto puede moverse el precio en tu contra antes de la liquidación",
+  "subtitulo": "En porcentaje del precio de entrada, según el apalancamiento.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "x2", "distancia": 49.5 },
+    { "etiqueta": "x5", "distancia": 19.5 },
+    { "etiqueta": "x10", "distancia": 9.5 },
+    { "etiqueta": "x20", "distancia": 4.5 },
+    { "etiqueta": "x50", "distancia": 1.5 },
+    { "etiqueta": "x100", "distancia": 0.5 }
+  ],
+  "series": [{ "clave": "distancia", "nombre": "Distancia a la liquidación", "color": "#f472b6" }],
+  "nota": "Margen aislado, mantenimiento del 0,5 %, sin comisiones ni funding. Con x100, el mantenimiento se come la mitad del recorrido."
+}
+</script></div>
+
+<p>Mira la última fila. Con x100 pones un 1 % de margen, pero la mitad se la reserva el mantenimiento: te liquidan con un movimiento del 0,5 %. Con bitcoin a 50.000 €, son 250 €. El precio se mueve eso en lo que tardas en leer este párrafo.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">250 €</span>
+  <span class="prose-dato-texto">Lo que tiene que moverse un bitcoin de 50.000 € para liquidar una posición x100 en el ejemplo. No es una predicción: es ruido.</span>
+</div>
+
+<h2>Lo que mueve el precio de liquidación con la posición abierta</h2>
+
+<p>La cifra que ves al abrir no es fija. Varias cosas la desplazan, casi todas en tu contra.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Qué ocurre</th><th>Efecto sobre la liquidación</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Pagas funding</td><td>Se acerca: cada pago sale de tu margen</td></tr>
+    <tr><td>Pagas la comisión de apertura</td><td>Se acerca un poco desde el primer segundo</td></tr>
+    <tr><td>Añades margen a la posición</td><td>Se aleja</td></tr>
+    <tr><td>Aumentas el tamaño de la posición</td><td>Cambia: se recalcula con el nuevo precio medio y el nuevo nominal</td></tr>
+    <tr><td>La plataforma sube el mantenimiento</td><td>Se acerca, sin que hayas hecho nada</td></tr>
+    <tr><td>En cruzado, otra posición pierde</td><td>Se acerca: comparten saldo</td></tr>
+  </tbody>
+</table>
+
+<p>La quinta fila sorprende a mucha gente. Las plataformas pueden modificar los requisitos de margen de un contrato, y suelen hacerlo precisamente cuando el mercado se agita. Una posición que tenía un colchón razonable puede quedarse con uno menor de un día para otro.</p>
+
+<h2>La liquidación no es gratis</h2>
+
+<p>Podría parecer que ser liquidado equivale a que se ejecute un stop muy lejano. No es igual. Cuando la plataforma liquida, además de quedarse con lo perdido, cobra una comisión de liquidación sobre el nominal de la posición, y se cancelan tus órdenes pendientes en ese contrato. Lo que quede del margen de mantenimiento, si queda algo, no siempre vuelve a tu cuenta: depende de la plataforma y de cómo se haya cerrado.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Salir con tu stop</p>
+    <p class="prose-vs-sub">Decides tú, antes</p>
+    <ul>
+      <li data-tono="favor">Pierdes una parte del margen, la que fijaste</li>
+      <li data-tono="favor">Pagas la comisión normal de una orden</li>
+      <li data-tono="favor">Te queda dinero para la siguiente operación</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Salir por liquidación</p>
+    <p class="prose-vs-sub">Decide la plataforma</p>
+    <ul>
+      <li data-tono="contra">Pierdes prácticamente todo el margen</li>
+      <li data-tono="contra">Pagas además una comisión de liquidación</li>
+      <li data-tono="contra">En cruzado, puede cerrar el resto de posiciones</li>
+    </ul>
+  </div>
+</div>
+
+<h2>La regla: el stop, lejos de la liquidación</h2>
+
+<p>De aquí sale la norma práctica más importante del curso. Tu <a href="/glosario/stop-loss">stop loss</a> tiene que estar claramente antes del precio de liquidación, con espacio de sobra entre los dos.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Decide primero dónde está tu salida.</strong> El precio al que tu idea deja de tener sentido. Sale del gráfico y de tu plan, no del multiplicador.</li>
+  <li><strong>Calcula el precio de liquidación.</strong> Con el multiplicador que pensabas usar.</li>
+  <li><strong>Compara.</strong> Si la liquidación queda antes que tu stop, o pegada a él, el multiplicador es demasiado alto.</li>
+  <li><strong>Baja el multiplicador hasta que sobre espacio.</strong> Una referencia razonable: que la liquidación quede, como mínimo, al doble de distancia que el stop.</li>
+</ol>
+
+<p>El espacio hace falta porque un stop no garantiza el precio. En una caída rápida, la orden se ejecuta al precio que haya, que puede ser peor que el marcado: es el <a href="/glosario/slippage">slippage</a>. Si el stop y la liquidación están juntos, un salto del precio puede pasarse el primero y llegar a la segunda.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Si para que tu operación «tenga sentido» necesitas un multiplicador con el que la liquidación queda antes que tu stop, la operación no tiene sentido. Lo que te está diciendo la cuenta es que la posición es demasiado grande para el dinero que la respalda.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Abres un corto con x20 cuando el precio es de 2.000 €. El mantenimiento es del 0,5 %. ¿A qué precio aproximado te liquidan?",
+  "opciones": [
+    "2.090 €",
+    "1.910 €",
+    "2.400 €",
+    "2.010 €"
+  ],
+  "correcta": 0,
+  "explicacion": "Distancia: 100 % ÷ 20 − 0,5 % = 4,5 %. En corto la liquidación está por encima: 2.000 × 1,045 = 2.090 €."
+}
+</script></div>
+
+<h2>Ejercicio: tres posiciones sobre el papel</h2>
+
+<p>Elige una moneda y apunta su precio. Calcula el precio de liquidación de un largo con x3, x10 y x25, suponiendo un mantenimiento del 0,5 %. Ahora abre su gráfico diario de los últimos tres meses y cuenta cuántos días el precio mínimo estuvo más de un 4,5 % por debajo del precio de apertura de ese mismo día. Cada uno de esos días habría liquidado un largo x20 abierto por la mañana. Apunta el número.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la distancia a la liquidación es, aproximadamente, 100 % entre el apalancamiento menos el porcentaje de mantenimiento: 9,5 % con x10 y 0,5 % con x100 en el ejemplo. El funding, las comisiones y los cambios de requisitos la acortan. Ser liquidado cuesta más que salir con un stop, así que el stop va primero y el multiplicador se ajusta para que la liquidación quede lejos.</div>
+</div>

@@ -1,0 +1,132 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El apalancamiento es la relación entre el tamaño de tu posición y el dinero que has puesto. No aumenta lo que sabes ni mejora tus aciertos: multiplica por el mismo número las ganancias y las pérdidas, medidas sobre tu dinero. Aquí aprendes las tres cifras de cualquier posición —nominal, margen y multiplicador—, ves qué le pasa a tu garantía con cada punto que se mueve el precio y entiendes por qué un multiplicador alto no es «más ganancia», sino menos recorrido antes de perderlo todo.</p>
+</div>
+
+<h2>Tres cifras que hay que saber siempre</h2>
+
+<p>Toda posición apalancada se describe con tres números. Si conoces dos, el tercero sale solo.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Cifra</th><th>Qué es</th><th>En el ejemplo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Valor nominal</strong></td><td>El tamaño real de la posición: unidades por precio</td><td>0,1 BTC × 50.000 € = 5.000 €</td></tr>
+    <tr><td><strong>Margen</strong></td><td>El dinero tuyo que respalda la posición</td><td>500 €</td></tr>
+    <tr><td><strong>Apalancamiento</strong></td><td>Nominal dividido entre margen</td><td>5.000 ÷ 500 = 10 veces</td></tr>
+  </tbody>
+</table>
+
+<p>El <a href="/glosario/apalancamiento">apalancamiento</a> se escribe «x10» o «10x», y se lee «diez veces». Significa que por cada euro tuyo controlas diez euros de posición. La plataforma no te presta los otros nueve para que te los lleves: te deja abrir un contrato diez veces mayor que tu depósito, y se asegura de cerrarlo antes de que tus pérdidas superen ese depósito.</p>
+
+<blockquote><strong>Margen = valor nominal ÷ apalancamiento</strong><br><strong>Pérdida o ganancia sobre tu margen = movimiento del precio × apalancamiento</strong></blockquote>
+
+<p>La segunda fórmula es la que hay que tener grabada. Con x10, un movimiento del 1 % en el precio es un 10 % de tu <a href="/glosario/margen">margen</a>. Con x50, es la mitad de tu margen.</p>
+
+<h2>El mismo movimiento, con distintos multiplicadores</h2>
+
+<p>Imagina que pones 500 € y el precio se mueve un 2 % en tu contra. Un 2 % es algo que bitcoin hace cualquier día normal, sin que haya ninguna noticia.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Lo que pierdes de 500 € de margen si el precio se mueve un 2 % en contra",
+  "subtitulo": "El movimiento es el mismo. Lo que cambia es cuánta posición hay encima de tu dinero.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Sin apalancar", "perdida": 10 },
+    { "etiqueta": "x2", "perdida": 20 },
+    { "etiqueta": "x5", "perdida": 50 },
+    { "etiqueta": "x10", "perdida": 100 },
+    { "etiqueta": "x20", "perdida": 200 },
+    { "etiqueta": "x50", "perdida": 500 }
+  ],
+  "series": [{ "clave": "perdida", "nombre": "Pérdida", "color": "#f472b6" }],
+  "nota": "Ejemplo inventado, sin comisiones. Con x50, un 2 % en contra se lleva el margen entero."
+}
+</script></div>
+
+<p>Con x50, un movimiento del 2 % agota los 500 €. No hace falta una crisis: hace falta un martes cualquiera.</p>
+
+<h2>Cuánto recorrido te deja cada multiplicador</h2>
+
+<p>Dale la vuelta a la fórmula y obtienes el dato más importante de esta lección: cuánto tiene que moverse el precio en tu contra para que pierdas todo el margen.</p>
+
+<blockquote><strong>Movimiento que agota el margen ≈ 100 % ÷ apalancamiento</strong></blockquote>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Apalancamiento</th><th>Movimiento en contra que agota el margen</th><th>Con qué frecuencia ocurre en bitcoin</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>x2</td><td>50 %</td><td>En las grandes caídas, cada varios años</td></tr>
+    <tr><td>x5</td><td>20 %</td><td>Varias veces en un mal año</td></tr>
+    <tr><td>x10</td><td>10 %</td><td>Unas tres veces al año, de media</td></tr>
+    <tr><td>x20</td><td>5 %</td><td>Muchas veces al año</td></tr>
+    <tr><td>x50</td><td>2 %</td><td>Casi cualquier día</td></tr>
+    <tr><td>x100</td><td>1 %</td><td>Varias veces en un mismo día</td></tr>
+  </tbody>
+</table>
+
+<p>La tercera fila tiene fuente. Según un recuento de la gestora Grayscale publicado a finales de 2025, bitcoin ha caído un 10 % o más unas cincuenta veces desde 2010, alrededor de tres al año. Quien mantiene un largo x10 sin margen adicional está, estadísticamente, a pocos meses de que se lo cierren. En la práctica el cierre llega algo antes de agotar el margen, como verás en el módulo 3, así que las cifras reales son un poco peores que las de la tabla.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">1 %</span>
+  <span class="prose-dato-texto">Lo que tiene que moverse el precio en contra para perder todo el margen con x100. Es menos de lo que bitcoin oscila en una hora cualquiera.</span>
+</div>
+
+<h2>El error de base: creer que multiplica las ganancias</h2>
+
+<p>La publicidad del apalancamiento enseña siempre la mitad buena: «con 100 € controlas 10.000 €». Es cierto, y es engañoso, porque sugiere que el multiplicador añade algo. No añade nada: cambia la escala.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que parece</p>
+    <p class="prose-vs-sub">«Gano diez veces más»</p>
+    <ul>
+      <li data-tono="favor">Un +3 % se convierte en un +30 %</li>
+      <li data-tono="favor">Con poco dinero se mueve una posición grande</li>
+      <li data-tono="favor">Los aciertos lucen mucho</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que es</p>
+    <p class="prose-vs-sub">«Me echan diez veces antes»</p>
+    <ul>
+      <li data-tono="contra">Un −3 % se convierte en un −30 %</li>
+      <li data-tono="contra">Un −10 % deja sin posición, aunque luego suba</li>
+      <li data-tono="contra">Comisiones y funding también se multiplican</li>
+    </ul>
+  </div>
+</div>
+
+<p>El punto decisivo es el segundo de la derecha. Sin apalancar, una caída del 10 % seguida de una subida del 20 % te deja en ganancias. Con x10, la caída te ha sacado del mercado y la subida la ves desde fuera. <strong>El apalancamiento no solo aumenta lo que puedes perder: cambia el tipo de riesgo.</strong> Añade la posibilidad de perderlo todo por un movimiento temporal del que el precio se recupera.</p>
+
+<p>Hay además un efecto sobre quien opera. Ver cómo el resultado sube y baja un 20 % en minutos empuja a decidir con prisa, a cerrar ganancias pronto y a aguantar pérdidas. La alta <a href="/glosario/volatilidad">volatilidad</a> del activo, multiplicada por diez, es más de lo que casi nadie gestiona con calma.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">El multiplicador que eliges en la plataforma y el riesgo que corres son cosas distintas. Se puede arriesgar poco con x10 y mucho con x2: depende de cuánto de tu dinero total respalda la posición y de dónde sales. Es la idea del módulo 5, y es lo que separa a quien usa el margen como herramienta de quien lo usa como lotería.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Abres una posición con 300 € de margen y apalancamiento x20. ¿Cuál es el valor nominal, y cuánto pierdes si el precio se mueve un 3 % en contra?",
+  "opciones": [
+    "Nominal de 6.000 €; pierdes 180 €",
+    "Nominal de 6.000 €; pierdes 9 €",
+    "Nominal de 320 €; pierdes 60 €",
+    "Nominal de 600 €; pierdes 18 €"
+  ],
+  "correcta": 0,
+  "explicacion": "300 × 20 = 6.000 € de nominal. El 3 % de 6.000 son 180 €: el 60 % de tu margen."
+}
+</script></div>
+
+<h2>Ejercicio: tu tabla de recorrido</h2>
+
+<p>Busca en un gráfico de bitcoin la mayor caída dentro de un mismo día en el último mes y la mayor del último año, en porcentaje. Compáralas con la tabla de esta lección y responde por escrito: ¿qué multiplicadores habrían sobrevivido a la peor jornada del mes? ¿Y a la del año? Haz lo mismo con una moneda pequeña que conozcas. Verás que el multiplicador máximo que aguanta la realidad es mucho más bajo que el que ofrece el selector.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> margen es nominal entre apalancamiento, y tu resultado sobre el margen es el movimiento del precio multiplicado por ese número. El margen se agota con un movimiento en contra de aproximadamente 100 % dividido entre el apalancamiento: 10 % con x10, 2 % con x50. El multiplicador no mejora tus aciertos; acorta lo que puedes equivocarte.</div>
+</div>

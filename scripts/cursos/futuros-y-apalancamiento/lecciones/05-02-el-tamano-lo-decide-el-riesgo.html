@@ -1,0 +1,147 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Casi todo el mundo abre una posición en este orden: elige el multiplicador, pone el dinero que tiene y, si acaso, coloca un stop. El orden correcto es el contrario. Primero se decide cuánto se acepta perder; después, a qué precio se sale; de ahí sale el tamaño; y el apalancamiento es lo último, casi un detalle. Aquí aprendes ese procedimiento con sus cuentas y ves por qué dos posiciones con multiplicadores muy distintos pueden tener exactamente el mismo riesgo.</p>
+</div>
+
+<h2>El multiplicador no es el riesgo</h2>
+
+<p>Es la idea más importante del curso y la que peor se entiende. El riesgo de una operación es <strong>cuánto dinero pierdes si sale mal</strong>. Eso depende de dos cosas: lo grande que es la posición y lo lejos que está tu salida. El multiplicador no aparece en la cuenta.</p>
+
+<blockquote><strong>Pérdida si salta el stop = valor nominal × distancia al stop</strong></blockquote>
+
+<p>Una posición de 1.000 € de nominal con el <a href="/glosario/stop-loss">stop loss</a> a un 4 % pierde 40 € si salta. Da igual que la hayas abierto con 1.000 € de margen, sin apalancar, o con 100 € de margen y x10. La pérdida es de 40 €.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Posición de 1.000 € de nominal, stop al 4 %</th><th>Margen inmovilizado</th><th>Pérdida si salta el stop</th><th>Liquidación (aprox.)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Sin apalancar</td><td>1.000 €</td><td>40 €</td><td>No hay</td></tr>
+    <tr><td>x2</td><td>500 €</td><td>40 €</td><td>A un 49,5 %</td></tr>
+    <tr><td>x5</td><td>200 €</td><td>40 €</td><td>A un 19,5 %</td></tr>
+    <tr><td>x10</td><td>100 €</td><td>40 €</td><td>A un 9,5 %</td></tr>
+    <tr><td>x20</td><td>50 €</td><td>40 €</td><td>A un 4,5 %: pegada al stop</td></tr>
+  </tbody>
+</table>
+
+<p>Lo que cambia el multiplicador son dos cosas: cuánto dinero queda inmovilizado como garantía y a qué distancia queda la liquidación. Usado así, el <a href="/glosario/apalancamiento">apalancamiento</a> es una cuestión de eficiencia del capital, no de ambición. Lo que lo vuelve peligroso es usarlo para abrir posiciones más grandes de las que tu cuenta puede soportar.</p>
+
+<h2>El procedimiento, en cuatro pasos</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Decide cuánto arriesgas.</strong> Un porcentaje pequeño y fijo de tu cuenta de operar por cada operación. La referencia más extendida entre quienes viven de esto es el 1 %, y raramente más del 2 %.</li>
+  <li><strong>Decide dónde sales.</strong> El precio al que tu idea queda invalidada. Sale del gráfico, no de lo que te gustaría perder.</li>
+  <li><strong>Calcula el tamaño.</strong> Divide el dinero que arriesgas entre la distancia al stop.</li>
+  <li><strong>Elige el multiplicador.</strong> El más bajo que te permita abrir ese tamaño, comprobando que la liquidación queda lejos del stop.</li>
+</ol>
+
+<blockquote><strong>Valor nominal = dinero que arriesgas ÷ distancia al stop (en tanto por uno)</strong></blockquote>
+
+<p>Es el cálculo del <a href="/glosario/tamano-de-posicion">tamaño de posición</a>, el mismo que se usa al contado. Con futuros solo se añade el cuarto paso.</p>
+
+<h2>Un ejemplo completo</h2>
+
+<p>Tienes 2.000 € en tu cuenta de operar y decides arriesgar un 1 % por operación. Quieres abrir un largo en bitcoin a 50.000 € y tu análisis dice que, si baja de 48.000 €, la idea ya no vale.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Paso</th><th>Cuenta</th><th>Resultado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 · Riesgo</td><td>1 % de 2.000 €</td><td>20 €</td></tr>
+    <tr><td>2 · Distancia al stop</td><td>(50.000 − 48.000) ÷ 50.000</td><td>4 %</td></tr>
+    <tr><td>3 · Valor nominal</td><td>20 € ÷ 0,04</td><td>500 €</td></tr>
+    <tr><td>4 · Multiplicador</td><td>Con x5: margen de 100 €, liquidación a un 19,5 %</td><td>Casi cinco veces más lejos que el stop</td></tr>
+  </tbody>
+</table>
+
+<p>La posición es de 500 €: 0,01 bitcoin. Si el stop salta, pierdes 20 € más las comisiones, y te quedan 1.980 €. Podrías fallar diez veces seguidas y seguir teniendo más de 1.800 €.</p>
+
+<p>Fíjate en que, con una cuenta de 2.000 €, la posición que sale de la cuenta es de 500 €. No hace falta apalancamiento para abrirla: cabe cuatro veces en tu saldo. <strong>Con un riesgo del 1 % y stops razonables, casi nunca se necesita un multiplicador alto.</strong> Quien dice necesitarlo es que está arriesgando mucho más del 1 %.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Tamaño de posición para arriesgar 20 €, según lo lejos que esté el stop",
+  "subtitulo": "Cuanto más lejos la salida, más pequeña tiene que ser la posición.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Stop al 1 %", "nominal": 2000 },
+    { "etiqueta": "Stop al 2 %", "nominal": 1000 },
+    { "etiqueta": "Stop al 4 %", "nominal": 500 },
+    { "etiqueta": "Stop al 8 %", "nominal": 250 },
+    { "etiqueta": "Stop al 10 %", "nominal": 200 }
+  ],
+  "series": [{ "clave": "nominal", "nombre": "Valor nominal", "color": "#f472b6" }],
+  "nota": "Riesgo fijo de 20 € por operación, sin comisiones. El tamaño es el riesgo dividido entre la distancia al stop."
+}
+</script></div>
+
+<h2>La comprobación que falta: stop y liquidación</h2>
+
+<p>El cuarto paso tiene una condición que ya viste en el módulo 3. La liquidación tiene que quedar bastante más allá del stop, como mínimo al doble de distancia. Si no, un salto del precio puede saltarse la orden y llegar al cierre forzoso.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Bien montada</p>
+    <p class="prose-vs-sub">Stop al 4 %, x5</p>
+    <ul>
+      <li data-tono="favor">Liquidación a un 19,5 %</li>
+      <li data-tono="favor">Si el stop se ejecuta un punto peor, pierdes 25 € en vez de 20 €</li>
+      <li data-tono="favor">El resto de la cuenta no se entera</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Mal montada</p>
+    <p class="prose-vs-sub">Stop al 4 %, x20</p>
+    <ul>
+      <li data-tono="contra">Liquidación a un 4,5 %</li>
+      <li data-tono="contra">Medio punto de salto y te liquidan en lugar de salir</li>
+      <li data-tono="contra">El funding y las comisiones acercan aún más el cierre</li>
+    </ul>
+  </div>
+</div>
+
+<p>Las dos tienen el mismo tamaño y el mismo stop. La de la derecha solo ahorra 75 € de margen inmovilizado, y a cambio convierte una salida ordenada en una moneda al aire.</p>
+
+<h2>El riesgo se mide en R</h2>
+
+<p>Una vez fijas cuánto arriesgas, tienes una unidad para medir todo lo demás. A ese importe se le llama 1R. En el ejemplo, 1R son 20 €. Una operación que gana 60 € ha ganado 3R; una que pierde 20 € ha perdido 1R. Es el <a href="/glosario/r-multiplo">múltiplo R</a>.</p>
+
+<p>Medir así tiene una ventaja enorme: separa la calidad de tus decisiones del tamaño de tu cuenta. Y permite comprobar si tu forma de operar tiene sentido. Si tus pérdidas son siempre de 1R y tus ganancias, de media, de 2R, te basta acertar algo más de una de cada tres veces para no perder, antes de costes.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Incluye los costes en la cuenta. Si entre comisiones y funding una operación te cuesta 2 €, y arriesgas 20 €, tu pérdida real cuando salta el stop es de 22 €. En posiciones pequeñas o muy apalancadas, los costes pueden ser una parte seria de 1R.</div>
+</div>
+
+<h2>Lo que este método no arregla</h2>
+
+<p>Calcular bien el tamaño limita lo que pierdes en cada operación. No hace que tus operaciones sean buenas. Si la idea no tiene ventaja, perderás igual, solo que despacio. Lo que cambia es que tendrás tiempo y dinero para darte cuenta, en lugar de descubrirlo con la cuenta a cero.</p>
+
+<p>Y exige una disciplina que es más difícil que la cuenta: no mover el stop cuando el precio se acerca, y no saltarse el cálculo «solo esta vez» porque la operación parece clarísima. Es donde fallan casi todos, por <a href="/glosario/exceso-de-confianza">exceso de confianza</a>.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Un stop que mueves cuando el precio se acerca no es un stop: es un deseo. Si al llegar a tu nivel decides «darle un poco más de margen», has pasado de arriesgar 1R a arriesgar una cantidad que ya no has decidido tú.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Tu cuenta es de 5.000 € y arriesgas un 1 % por operación. Entras a 100 € y pones el stop en 95 €. ¿Qué valor nominal debe tener la posición?",
+  "opciones": [
+    "1.000 €",
+    "5.000 €",
+    "250 €",
+    "50 €"
+  ],
+  "correcta": 0,
+  "explicacion": "Riesgo: 1 % de 5.000 = 50 €. Distancia al stop: 5 %. Nominal: 50 ÷ 0,05 = 1.000 €."
+}
+</script></div>
+
+<h2>Ejercicio: monta una operación entera</h2>
+
+<p>Con la cuenta y el porcentaje que elegiste en el ejercicio del módulo 2, haz el procedimiento completo sobre el papel. Elige una moneda, mira su gráfico y decide un precio de entrada y un stop que tengan sentido para ti. Calcula: el riesgo en euros, la distancia al stop, el valor nominal, el margen con x3 y con x10 y el precio de liquidación en los dos casos. Comprueba la regla del doble. Añade las comisiones de ida y vuelta. Escribe, por último, cuánto es 1R y a qué precio estaría una ganancia de 2R.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el riesgo de una operación es el valor nominal por la distancia al stop; el multiplicador no entra en la cuenta. Decide primero cuánto arriesgas (un 1 % de la cuenta es la referencia), luego dónde sales, y divide: de ahí sale el tamaño. El apalancamiento es lo último, el más bajo que permita abrirla dejando la liquidación al menos al doble de distancia que el stop.</div>
+</div>

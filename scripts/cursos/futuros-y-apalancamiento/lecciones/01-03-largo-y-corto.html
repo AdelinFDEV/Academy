@@ -1,0 +1,135 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Un contrato tiene dos lados. Quien va en largo gana si el precio sube; quien va en corto, si baja. Aquí aprendes a calcular el resultado de una posición en cada sentido, ves por qué el corto no es el espejo exacto del largo y entiendes una idea que ordena todo lo demás: cada euro que gana un lado lo pierde el otro.</p>
+</div>
+
+<h2>Los dos lados de un contrato</h2>
+
+<p>Para que exista un contrato de <a href="/glosario/futuros">futuros</a> hacen falta dos personas con opiniones opuestas. Una abre una posición larga, o <em>long</em>: gana si el precio sube. La otra abre una posición corta, o <em>short</em>: gana si baja. Es lo que resume la expresión <a href="/glosario/long-short">long y short</a>.</p>
+
+<p>No hace falta tener la moneda para ir en corto. No se vende nada que se posea: se firma un contrato cuyo resultado es positivo si el precio cae. Es la gran novedad respecto al contado, donde solo se gana con las subidas.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Posición larga</th><th>Posición corta</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Gana cuando el precio</td><td>Sube</td><td>Baja</td></tr>
+    <tr><td>Se abre con una orden de</td><td>Compra</td><td>Venta</td></tr>
+    <tr><td>Se cierra con una orden de</td><td>Venta</td><td>Compra</td></tr>
+    <tr><td>La liquidan si el precio</td><td>Baja demasiado</td><td>Sube demasiado</td></tr>
+  </tbody>
+</table>
+
+<h2>Cómo se calcula el resultado</h2>
+
+<p>La cuenta es la misma en los dos sentidos, con el signo cambiado. Lo que importa es el tamaño de la posición —cuántas unidades controla el contrato— y la diferencia entre el precio de entrada y el de salida.</p>
+
+<blockquote><strong>Resultado en largo = unidades × (precio de salida − precio de entrada)</strong><br><strong>Resultado en corto = unidades × (precio de entrada − precio de salida)</strong></blockquote>
+
+<p>Un ejemplo inventado, con cifras redondas. Dos personas abren una posición de 0,1 bitcoin cuando el precio es de 50.000 €: el contrato vale 5.000 €. Una va en largo y la otra en corto.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>El precio pasa a</th><th>Largo de 0,1 BTC</th><th>Corto de 0,1 BTC</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>55.000 € (+10 %)</td><td>+500 €</td><td>−500 €</td></tr>
+    <tr><td>52.000 € (+4 %)</td><td>+200 €</td><td>−200 €</td></tr>
+    <tr><td>48.000 € (−4 %)</td><td>−200 €</td><td>+200 €</td></tr>
+    <tr><td>45.000 € (−10 %)</td><td>−500 €</td><td>+500 €</td></tr>
+  </tbody>
+</table>
+
+<p>Suma cualquier fila: da cero. Lo que gana uno es exactamente lo que pierde el otro. Mientras la posición sigue abierta, ese resultado se llama no realizado: es lo que ganarías o perderías si cerraras en ese instante. Solo al cerrar se convierte en dinero de verdad, y pasa a ser tu <a href="/glosario/pnl">PnL</a> realizado.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Resultado de una posición de 0,1 BTC abierta a 50.000 €",
+  "subtitulo": "Las dos líneas son simétricas: lo que gana un lado lo pierde el otro.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "40.000 €", "largo": -1000, "corto": 1000 },
+    { "etiqueta": "45.000 €", "largo": -500, "corto": 500 },
+    { "etiqueta": "50.000 €", "largo": 0, "corto": 0 },
+    { "etiqueta": "55.000 €", "largo": 500, "corto": -500 },
+    { "etiqueta": "60.000 €", "largo": 1000, "corto": -1000 }
+  ],
+  "series": [
+    { "clave": "largo", "nombre": "Posición larga", "color": "#f472b6" },
+    { "clave": "corto", "nombre": "Posición corta", "color": "#8fb0ff" }
+  ],
+  "nota": "Ejemplo inventado, sin comisiones ni funding. En el eje, el precio de bitcoin al cerrar."
+}
+</script></div>
+
+<h2>Por qué el corto no es el espejo del largo</h2>
+
+<p>En la tabla parecen simétricos. En la práctica hay tres diferencias que conviene tener claras antes de abrir un corto.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">En largo</p>
+    <p class="prose-vs-sub">Apuestas por la subida</p>
+    <ul>
+      <li data-tono="contra">El precio puede caer, como mucho, un 100 %</li>
+      <li data-tono="favor">La ganancia posible no tiene techo</li>
+      <li data-tono="contra">Suele pagar el funding, que casi siempre es positivo</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">En corto</p>
+    <p class="prose-vs-sub">Apuestas por la bajada</p>
+    <ul>
+      <li data-tono="contra">El precio puede subir un 200 %, un 500 % o más</li>
+      <li data-tono="contra">La ganancia posible tiene techo: el 100 %, si llega a cero</li>
+      <li data-tono="favor">Suele cobrar el funding</li>
+    </ul>
+  </div>
+</div>
+
+<p>La primera es aritmética. Un precio no puede bajar de cero, así que la pérdida máxima de un largo, sin contar el apalancamiento, es el valor entero del contrato. Pero no hay límite a lo que puede subir, y con él a lo que puede perder un corto. En las monedas pequeñas, subidas del 100 % en un día no son raras.</p>
+
+<p>La segunda es el funding. Según el informe de derivados de BitMEX del tercer trimestre de 2025, fue positivo más del 92 % del tiempo en ese periodo: lo habitual es que paguen los largos y cobren los cortos. No es un regalo, sino el precio que pone el mercado a estar en el lado más concurrido.</p>
+
+<p>La tercera es la más peligrosa, y tiene nombre propio.</p>
+
+<h2>El «short squeeze»</h2>
+
+<p>Para cerrar un corto hay que comprar. Si el precio sube deprisa, los cortos empiezan a acumular pérdidas; algunos cierran por voluntad propia y a otros los liquida la plataforma. En los dos casos, cerrar significa comprar, y esas compras empujan el precio todavía más arriba, lo que liquida a los siguientes. El movimiento se alimenta de sí mismo.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Muchos cortos acumulados.</strong> Una moneda cae durante semanas y apostar a que seguirá cayendo parece evidente.</li>
+  <li><strong>Una subida brusca.</strong> Una noticia, o simplemente una compra grande en un mercado con poca <a href="/glosario/liquidez">liquidez</a>.</li>
+  <li><strong>Primeras liquidaciones.</strong> Los cortos más apalancados se cierran a la fuerza, comprando.</li>
+  <li><strong>El precio se dispara.</strong> Cada cierre empuja el precio y alcanza al siguiente nivel de liquidaciones.</li>
+</ol>
+
+<p>Lo mismo ocurre al revés con los largos, y es más frecuente: una caída liquida largos, que al cerrarse venden y la agravan. Lo veremos con un caso real en el módulo 3.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Que una moneda te parezca claramente sobrevalorada no hace seguro ponerse en corto. Puede subir mucho más antes de caer, y con apalancamiento no hace falta que suba mucho para que te cierren. Tener razón sobre el destino no sirve si no sobrevives al camino.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Abres un corto de 0,5 ETH con el precio a 2.000 €. Cierras cuando está a 1.800 €. ¿Cuál es el resultado, sin contar comisiones?",
+  "opciones": [
+    "+100 €",
+    "−100 €",
+    "+200 €",
+    "+1.000 €"
+  ],
+  "correcta": 0,
+  "explicacion": "En corto se gana lo que baja: 0,5 × (2.000 − 1.800) = 0,5 × 200 = 100 €."
+}
+</script></div>
+
+<h2>Ejercicio: la cuenta en los dos sentidos</h2>
+
+<p>Elige una moneda y apunta su precio de hoy. Imagina una posición de un tamaño que te resulte fácil, por ejemplo la que valga 1.000 € a ese precio. Calcula las unidades, y después el resultado en largo y en corto si el precio sube un 3 %, un 8 % y un 20 %, y si baja lo mismo. Hazlo a mano, sin calculadora de la plataforma. Cuando en el módulo siguiente añadamos el apalancamiento, esta cuenta no cambiará: lo único que cambia es cuánto dinero tuyo hay debajo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> en largo ganas si el precio sube y en corto si baja; el resultado es el tamaño por la diferencia de precios, y lo que gana un lado lo pierde el otro. El corto tiene la ganancia limitada y la pérdida abierta, y cerrar un corto es comprar: por eso las subidas bruscas se aceleran cuando hay muchos cortos atrapados.</div>
+</div>

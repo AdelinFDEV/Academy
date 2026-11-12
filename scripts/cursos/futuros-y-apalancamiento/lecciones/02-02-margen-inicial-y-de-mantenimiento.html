@@ -1,0 +1,144 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Hay dos márgenes, y confundirlos sale caro. El inicial es lo que tienes que poner para abrir la posición. El de mantenimiento es lo mínimo que tiene que quedar para que no te la cierren. Tu colchón real es la distancia entre los dos, y siempre es menor que lo que depositaste. Aquí ves cómo se calcula cada uno, cómo se va consumiendo el colchón y qué opciones tienes cuando se acerca al límite.</p>
+</div>
+
+<h2>El margen es una garantía, no un pago</h2>
+
+<p>En la lección anterior usamos <a href="/glosario/margen">margen</a> como «el dinero que pones». Es hora de afinar. El margen no es el precio de nada: es una fianza. La plataforma la retiene mientras la posición está abierta, descuenta de ella las pérdidas y te la devuelve, con el resultado sumado o restado, al cerrar.</p>
+
+<p>La plataforma no quiere perder dinero por tu operación. Si el precio va en tu contra, tu pérdida es la ganancia de quien está al otro lado del contrato, y alguien tiene que pagársela. La garantía existe para que ese alguien seas siempre tú. Por eso hay dos umbrales.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Margen inicial</th><th>Margen de mantenimiento</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Qué es</td><td>Lo que se exige para abrir</td><td>Lo mínimo que debe quedar para seguir abierta</td></tr>
+    <tr><td>Cómo se calcula</td><td>Nominal ÷ apalancamiento</td><td>Nominal × un porcentaje que fija la plataforma</td></tr>
+    <tr><td>De qué depende</td><td>Del multiplicador que elijas</td><td>Del tamaño de la posición y de la moneda</td></tr>
+    <tr><td>Qué pasa si no llegas</td><td>No puedes abrir</td><td>Te liquidan</td></tr>
+  </tbody>
+</table>
+
+<h2>Un ejemplo completo</h2>
+
+<p>Abres un largo de 0,1 bitcoin a 50.000 €, con apalancamiento x10. Supongamos que la plataforma exige un margen de mantenimiento del 0,5 % del nominal. Es un porcentaje de ejemplo: cada plataforma publica su tabla, y cambia según la moneda y el tamaño.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Concepto</th><th>Cuenta</th><th>Importe</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Valor nominal</td><td>0,1 × 50.000 €</td><td>5.000 €</td></tr>
+    <tr><td>Margen inicial</td><td>5.000 € ÷ 10</td><td>500 €</td></tr>
+    <tr><td>Margen de mantenimiento</td><td>5.000 € × 0,5 %</td><td>25 €</td></tr>
+    <tr><td><strong>Colchón real</strong></td><td>500 € − 25 €</td><td><strong>475 €</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Has puesto 500 €, pero no puedes perder 500 € antes de que te cierren: puedes perder 475 €. Cuando lo que queda de tu garantía baja a 25 €, la posición se liquida. La plataforma no espera a que llegues a cero, porque necesita un margen de seguridad para cerrar tu posición en el mercado sin que el resultado sea negativo.</p>
+
+<h2>Cómo se consume el colchón</h2>
+
+<p>Mientras la posición está abierta, el saldo que la respalda cambia con cada movimiento del precio: es tu margen inicial más o menos el resultado no realizado. Las plataformas lo resumen en un indicador, la <strong>ratio de margen</strong>: el margen de mantenimiento dividido entre el saldo de margen. Cuando llega al 100 %, hay liquidación.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Saldo de margen de un largo x10 de 5.000 € a medida que cae el precio",
+  "subtitulo": "Empieza en 500 €. La liquidación llega cuando baja a 25 €, no a cero.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "Precio de entrada", "saldo": 500 },
+    { "etiqueta": "−2 %", "saldo": 400 },
+    { "etiqueta": "−4 %", "saldo": 300 },
+    { "etiqueta": "−6 %", "saldo": 200 },
+    { "etiqueta": "−8 %", "saldo": 100 },
+    { "etiqueta": "−9,5 %", "saldo": 25 }
+  ],
+  "series": [{ "clave": "saldo", "nombre": "Saldo de margen", "color": "#f472b6" }],
+  "nota": "Ejemplo inventado, con un margen de mantenimiento del 0,5 % y sin contar comisiones ni funding, que lo reducen todavía más."
+}
+</script></div>
+
+<p>Con una caída del 9,5 %, el saldo es de 25 € y la posición se cierra. No del 10 %, como sugería la regla rápida de la lección anterior: algo antes. Y en la realidad, antes todavía, porque del saldo se descuentan también las comisiones y los pagos de funding que hayas ido haciendo.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">475 €</span>
+  <span class="prose-dato-texto">Lo que puede perder la posición del ejemplo antes de ser liquidada. Los otros 25 € son el margen de mantenimiento: no forman parte de tu colchón.</span>
+</div>
+
+<h2>El mantenimiento crece con el tamaño</h2>
+
+<p>Las plataformas aplican el margen de mantenimiento por tramos. A las posiciones pequeñas les piden un porcentaje bajo; a las grandes, uno más alto, y además les limitan el apalancamiento máximo. La razón es que cerrar a la fuerza una posición enorme mueve el precio y es más difícil hacerlo sin pérdidas.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Posición pequeña</span>
+    <p>Mantenimiento bajo, del orden de unas décimas por ciento, y multiplicadores muy altos disponibles.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Posición mediana</span>
+    <p>El porcentaje de mantenimiento sube y el multiplicador máximo permitido baja.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Posición grande</span>
+    <p>Mantenimiento de varios puntos y apalancamiento máximo reducido a unas pocas veces.</p>
+  </div>
+</div>
+
+<p>Para un particular con importes modestos, lo relevante es otra cosa: en las monedas pequeñas, con menos <a href="/glosario/liquidez">liquidez</a>, el mantenimiento es más alto desde el primer tramo. Es decir, en los mercados más volátiles el colchón es más fino. Consulta siempre la tabla del contrato concreto antes de abrir.</p>
+
+<h2>Qué puedes hacer cuando se acerca el límite</h2>
+
+<p>Antes de liquidar, la plataforma suele avisar. Ese aviso es la versión moderna de la «llamada de margen» de los mercados tradicionales. No es obligatorio que llegue a tiempo: en un movimiento rápido, entre el aviso y el cierre pueden pasar segundos. Tienes tres salidas.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Reducir o cerrar</p>
+    <p class="prose-vs-sub">Aceptas la pérdida</p>
+    <ul>
+      <li data-tono="favor">La pérdida queda limitada a lo ya perdido</li>
+      <li data-tono="favor">Conservas el resto de tu dinero</li>
+      <li data-tono="contra">Duele: hay que reconocer el error</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Añadir margen</p>
+    <p class="prose-vs-sub">Alejas la liquidación</p>
+    <ul>
+      <li data-tono="favor">La posición sigue viva</li>
+      <li data-tono="contra">Pones más dinero en una operación que va mal</li>
+      <li data-tono="contra">Si sigue en contra, pierdes lo de antes y lo nuevo</li>
+    </ul>
+  </div>
+</div>
+
+<p>La tercera es no hacer nada y esperar a que el precio gire, que es la que elige casi todo el mundo y la que termina en liquidación. Añadir margen a una posición perdedora sin haberlo planeado antes es, casi siempre, una forma de <a href="/glosario/aversion-a-la-perdida">aversión a la pérdida</a>: se paga por no tener que admitir que la operación ha fallado.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La liquidación no es tu sistema de salida: es el de la plataforma. Está pensada para protegerla a ella, no a ti, y actúa cuando ya has perdido casi todo el margen. Tu salida tiene que estar mucho antes, con una orden de <a href="/glosario/stop-loss">stop loss</a> puesta al abrir.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Abres una posición de 10.000 € de nominal con x20. La plataforma exige un mantenimiento del 1 %. ¿Cuánto puedes perder antes de que te liquiden?",
+  "opciones": [
+    "400 €",
+    "500 €",
+    "100 €",
+    "10.000 €"
+  ],
+  "correcta": 0,
+  "explicacion": "Margen inicial: 10.000 ÷ 20 = 500 €. Mantenimiento: 1 % de 10.000 = 100 €. Colchón: 500 − 100 = 400 €."
+}
+</script></div>
+
+<h2>Ejercicio: lee una tabla de márgenes</h2>
+
+<p>Busca en la web de una plataforma de futuros la página de «niveles de margen» o «apalancamiento y margen» de dos contratos: el perpetuo de bitcoin y el de una moneda pequeña. Anota, para el primer tramo de cada uno, el apalancamiento máximo y el porcentaje de mantenimiento. Con esos dos datos, calcula el colchón de una posición de 1.000 € de nominal al máximo apalancamiento en cada contrato. Compara los dos resultados.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el margen inicial es lo que pones para abrir; el de mantenimiento, lo mínimo que debe quedar. Te liquidan cuando tu saldo de margen baja hasta el mantenimiento, no cuando llega a cero, así que tu colchón real es la diferencia entre los dos. El mantenimiento es más alto en posiciones grandes y en monedas pequeñas.</div>
+</div>

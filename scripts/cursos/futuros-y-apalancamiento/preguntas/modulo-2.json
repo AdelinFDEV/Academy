@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "fa-m2-01",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "Una posición de 8.000 € de valor nominal con x20. ¿Cuál es el margen?",
+    "opciones": [
+      "8.000 €",
+      "4.000 €",
+      "400 €",
+      "160 €"
+    ],
+    "correcta": 2,
+    "explicacion": "Margen = nominal ÷ apalancamiento = 8.000 ÷ 20 = 400 €."
+  },
+  {
+    "clave": "fa-m2-02",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "Con apalancamiento x10, el precio se mueve un 3 % en tu contra. ¿Cuánto pierdes sobre tu margen?",
+    "opciones": [
+      "Un 0,3 %",
+      "Un 3 %",
+      "Un 13 %",
+      "Un 30 %"
+    ],
+    "correcta": 3,
+    "explicacion": "El resultado sobre el margen es el movimiento del precio multiplicado por el apalancamiento."
+  },
+  {
+    "clave": "fa-m2-03",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "Aproximadamente, ¿qué movimiento en contra agota el margen de una posición x50?",
+    "opciones": [
+      "Un 2 %",
+      "Un 20 %",
+      "Un 5 %",
+      "Un 50 %"
+    ],
+    "correcta": 0,
+    "explicacion": "100 % ÷ 50 = 2 %. Es un movimiento que bitcoin hace casi cualquier día."
+  },
+  {
+    "clave": "fa-m2-04",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "¿Qué significa «x10»?",
+    "opciones": [
+      "Que ganarás diez veces más",
+      "Que el valor de la posición es diez veces el dinero que has puesto",
+      "Que puedes abrir diez posiciones",
+      "Que la comisión se multiplica por diez"
+    ],
+    "correcta": 1,
+    "explicacion": "Es la relación entre el valor nominal y el margen. Multiplica igual ganancias y pérdidas."
+  },
+  {
+    "clave": "fa-m2-05",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "Según el recuento de Grayscale citado en el curso, ¿con qué frecuencia cae bitcoin un 10 % o más?",
+    "opciones": [
+      "Todas las semanas",
+      "Una vez cada diez años",
+      "Unas tres veces al año, de media",
+      "Una vez cada cuatro años"
+    ],
+    "correcta": 2,
+    "explicacion": "Unas cincuenta veces desde 2010. Por eso un largo x10 sin más margen tiene los meses contados."
+  },
+  {
+    "clave": "fa-m2-06",
+    "leccion": "el-apalancamiento-en-numeros",
+    "enunciado": "¿Qué añade el apalancamiento que no existe al contado?",
+    "opciones": [
+      "La posibilidad de que el precio caiga",
+      "El pago de impuestos",
+      "La necesidad de una wallet",
+      "La posibilidad de perderlo todo por un movimiento temporal del que el precio se recupera"
+    ],
+    "correcta": 3,
+    "explicacion": "No solo aumenta la pérdida: te saca del mercado antes de que el precio pueda volver."
+  },
+  {
+    "clave": "fa-m2-07",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "¿Qué es el margen de mantenimiento?",
+    "opciones": [
+      "Lo mínimo que debe quedar en la posición para que no la liquiden",
+      "La comisión por mantener la posición abierta",
+      "El beneficio mínimo para poder cerrar",
+      "Lo que hay que depositar para abrir"
+    ],
+    "correcta": 0,
+    "explicacion": "Si tu saldo de margen baja hasta ese nivel, la plataforma liquida."
+  },
+  {
+    "clave": "fa-m2-08",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "Posición de 5.000 € de nominal con x10 y un mantenimiento del 0,5 %. ¿Cuánto puedes perder antes de la liquidación?",
+    "opciones": [
+      "5.000 €",
+      "475 €",
+      "500 €",
+      "25 €"
+    ],
+    "correcta": 1,
+    "explicacion": "Margen inicial 500 €, mantenimiento 25 €. El colchón es la diferencia: 475 €."
+  },
+  {
+    "clave": "fa-m2-09",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "¿Cuándo se produce la liquidación?",
+    "opciones": [
+      "Cuando el precio vuelve al de entrada",
+      "Cuando pierdes el 50 % del margen",
+      "Cuando el saldo de margen baja hasta el margen de mantenimiento",
+      "Cuando el saldo de margen llega exactamente a cero"
+    ],
+    "correcta": 2,
+    "explicacion": "La plataforma no espera a cero: necesita un resto para cerrar la posición sin pérdidas."
+  },
+  {
+    "clave": "fa-m2-10",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "¿Cómo suele cambiar el margen de mantenimiento con el tamaño de la posición?",
+    "opciones": [
+      "Baja cuanto mayor es la posición",
+      "Es siempre el mismo",
+      "Desaparece a partir de cierto tamaño",
+      "Sube por tramos: las posiciones grandes pagan un porcentaje mayor"
+    ],
+    "correcta": 3,
+    "explicacion": "Cerrar a la fuerza una posición grande es más difícil, así que se le exige más colchón."
+  },
+  {
+    "clave": "fa-m2-11",
+    "leccion": "margen-inicial-y-de-mantenimiento",
+    "enunciado": "Una posición se acerca a la liquidación y añades margen sin haberlo planeado. ¿Qué estás haciendo?",
+    "opciones": [
+      "Poner más dinero en una operación que ya va mal",
+      "Bajar el valor nominal",
+      "Reducir el riesgo de la operación",
+      "Asegurar el beneficio"
+    ],
+    "correcta": 0,
+    "explicacion": "Aleja la liquidación, pero si el precio sigue en contra pierdes lo de antes y lo nuevo."
+  },
+  {
+    "clave": "fa-m2-12",
+    "leccion": "margen-aislado-y-cruzado",
+    "enunciado": "En margen aislado, ¿qué dinero responde de una posición?",
+    "opciones": [
+      "El de las posiciones ganadoras",
+      "Solo el asignado a esa posición",
+      "Todo el saldo de la cuenta de futuros",
+      "Todo lo que tengas en la plataforma"
+    ],
+    "correcta": 1,
+    "explicacion": "Cada posición tiene su propia fianza, separada del resto."
+  },
+  {
+    "clave": "fa-m2-13",
+    "leccion": "margen-aislado-y-cruzado",
+    "enunciado": "¿Cuál es el principal riesgo del margen cruzado?",
+    "opciones": [
+      "Que no permite usar stop",
+      "Que cobra más comisión",
+      "Que una liquidación puede consumir todo el saldo de la cuenta de futuros",
+      "Que liquida antes que el aislado"
+    ],
+    "correcta": 2,
+    "explicacion": "Aguanta más antes de liquidar, pero cuando liquida se lleva la cuenta entera."
+  },
+  {
+    "clave": "fa-m2-14",
+    "leccion": "margen-aislado-y-cruzado",
+    "enunciado": "Tienes 2.000 € en cruzado y tres posiciones largas de 5.000 € cada una. ¿Cuál es tu apalancamiento efectivo?",
+    "opciones": [
+      "10 veces",
+      "3 veces",
+      "2,5 veces",
+      "7,5 veces"
+    ],
+    "correcta": 3,
+    "explicacion": "15.000 € de nominal entre 2.000 € de saldo: 7,5 veces, sea cual sea el multiplicador marcado."
+  },
+  {
+    "clave": "fa-m2-15",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "Pierdes un 50 % de tu cuenta. ¿Qué ganancia necesitas sobre lo que queda para volver al punto de partida?",
+    "opciones": [
+      "Un 100 %",
+      "Un 75 %",
+      "Un 150 %",
+      "Un 50 %"
+    ],
+    "correcta": 0,
+    "explicacion": "De 1.000 a 500 €; para volver a 1.000 hay que doblar."
+  },
+  {
+    "clave": "fa-m2-16",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "Con una tasa de acierto del 50 %, ¿qué probabilidad hay de encadenar cinco fallos seguidos en cien operaciones?",
+    "opciones": [
+      "Es imposible",
+      "Ronda el 80 %",
+      "Un 50 %",
+      "Menos del 5 %"
+    ],
+    "correcta": 1,
+    "explicacion": "Las rachas largas son normales en cualquier serie larga. Hay que contar con ellas."
+  },
+  {
+    "clave": "fa-m2-17",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "Un operador acierta el 70 % de las veces, gana 50 € por acierto y pierde 200 € por fallo. Tras 10 operaciones, ¿cómo va?",
+    "opciones": [
+      "Gana 350 €",
+      "Gana 250 €",
+      "Pierde 250 €",
+      "Queda a cero"
+    ],
+    "correcta": 2,
+    "explicacion": "7 × 50 = 350 € ganados; 3 × 200 = 600 € perdidos. Importa cuánto, no cuántas veces."
+  },
+  {
+    "clave": "fa-m2-18",
+    "leccion": "la-asimetria-de-las-perdidas",
+    "enunciado": "Mantienes una exposición de cinco veces mientras el precio sube un 10 % y luego baja un 10 %. ¿Qué te queda de 1.000 €?",
+    "opciones": [
+      "990 €",
+      "950 €",
+      "1.000 €",
+      "750 €"
+    ],
+    "correcta": 3,
+    "explicacion": "+50 % y luego −50 %: 1.000 → 1.500 → 750. El vaivén desgasta una posición apalancada."
+  }
+]

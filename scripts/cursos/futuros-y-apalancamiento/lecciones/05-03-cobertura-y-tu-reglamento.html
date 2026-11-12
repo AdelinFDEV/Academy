@@ -1,0 +1,134 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Hay un uso de los futuros que reduce el riesgo en lugar de aumentarlo: la cobertura. Aquí ves cómo funciona con un ejemplo, lo que cuesta y por qué para la mayoría existe una alternativa más simple. Después, lo que conviene guardar de cara a Hacienda. Y para terminar, el curso entero convertido en un reglamento de una página: las reglas que deberían estar escritas antes de abrir la primera posición, y las preguntas que deciden si deberías abrirla.</p>
+</div>
+
+<h2>La cobertura: un futuro para perder menos</h2>
+
+<p>Supón que tienes 0,5 bitcoin comprados al contado y guardados. No quieres venderlos, pero temes una caída fuerte en las próximas semanas. Una <a href="/glosario/cobertura">cobertura</a> consiste en abrir una posición que gane justo cuando la que ya tienes pierde. En este caso, un corto de 0,5 bitcoin en un perpetuo.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>El precio pasa de 50.000 € a</th><th>Tus 0,5 BTC al contado</th><th>Tu corto de 0,5 BTC</th><th>Resultado conjunto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>40.000 € (−20 %)</td><td>−5.000 €</td><td>+5.000 €</td><td>0 €</td></tr>
+    <tr><td>50.000 € (igual)</td><td>0 €</td><td>0 €</td><td>0 €</td></tr>
+    <tr><td>60.000 € (+20 %)</td><td>+5.000 €</td><td>−5.000 €</td><td>0 €</td></tr>
+  </tbody>
+</table>
+
+<p>Mientras la cobertura está puesta, te da igual lo que haga el precio. Has cambiado la incertidumbre por un resultado fijo. Ese es el uso para el que se inventaron los futuros, y la tercera fila muestra su precio: si el mercado sube, tampoco ganas.</p>
+
+<h2>Lo que cuesta y lo que puede fallar</h2>
+
+<p>La tabla es limpia; la realidad, menos. Una cobertura con perpetuos tiene costes y riesgos propios, y todos los has visto ya en el curso.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">A favor</p>
+    <p class="prose-vs-sub">Lo que consigues</p>
+    <ul>
+      <li data-tono="favor">No vendes tus monedas: no hay venta que declarar por ellas</li>
+      <li data-tono="favor">Se pone y se quita en segundos</li>
+      <li data-tono="favor">El corto suele cobrar el funding</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">En contra</p>
+    <p class="prose-vs-sub">Lo que arriesgas</p>
+    <ul>
+      <li data-tono="contra">Si el precio sube mucho, el corto puede liquidarse: hay que dotarlo de margen</li>
+      <li data-tono="contra">En una jornada extrema, el desapalancamiento automático puede cerrártelo</li>
+      <li data-tono="contra">Comisiones, y funding en contra si se vuelve negativo</li>
+      <li data-tono="contra">Al cerrar el corto, su resultado sí tributa</li>
+    </ul>
+  </div>
+</div>
+
+<p>El primer punto de la derecha es el que más sorprende. Tus monedas al contado suben de valor, pero ese valor no respalda el corto, salvo que estén depositadas como garantía en la misma plataforma. Si el precio sube un 30 % y el corto solo tenía margen para un 20 %, te lo liquidan: has perdido la cobertura y el margen, y sigues con las monedas.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Para la mayoría de los particulares hay una cobertura más simple y sin ninguno de esos riesgos: vender una parte. Si te preocupa tanto una caída como para cubrirte, probablemente tienes más de lo que puedes soportar. Reducir la posición no tiene liquidación, ni funding, ni contraparte.</div>
+</div>
+
+<h2>Lo que hay que guardar para Hacienda</h2>
+
+<p>Las ganancias y pérdidas de operar con futuros se declaran en el IRPF. Este curso no entra en cómo calificar cada caso, porque no hemos localizado un criterio publicado por la Dirección General de Tributos específico para los futuros de criptomonedas, y el tratamiento puede depender del producto y de la plataforma. Lo que sí es seguro es lo que necesitarás para que alguien lo calcule bien.</p>
+
+<ol class="prose-pasos">
+  <li><strong>El historial completo de operaciones.</strong> Cada apertura y cada cierre, con fecha, tamaño, precio y resultado.</li>
+  <li><strong>Las comisiones.</strong> Suelen estar en un listado aparte del de las operaciones.</li>
+  <li><strong>Los pagos y cobros de funding.</strong> También en su propio listado, y son muchos: tres al día por posición.</li>
+  <li><strong>Las liquidaciones</strong> y sus comisiones.</li>
+  <li><strong>Los movimientos de entrada y salida</strong> de la cuenta de futuros, y el valor en euros de la moneda en la que se liquidan los resultados.</li>
+</ol>
+
+<p>Descárgalo cada año. Las plataformas limitan el tiempo que conservan el detalle, pueden cerrar o dejar de atender a tu país, y reconstruir mil operaciones de hace tres años es casi imposible. El punto de partida general está en la <a href="/guias/fiscalidad-cripto-espana">guía de fiscalidad cripto en España</a>; con un volumen de operaciones alto, consulta con un asesor.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Operar mucho genera un problema fiscal aunque el resultado sea malo. Cientos de operaciones hay que documentarlas y declararlas igual, ganes o pierdas, y las pérdidas solo se aprovechan si están bien declaradas.</div>
+</div>
+
+<h2>Tu reglamento, en una página</h2>
+
+<p>Todo el curso cabe en ocho reglas. Escríbelas, adaptadas a ti, antes de abrir nada. Lo que no esté decidido en frío lo decidirás con una posición en rojo delante.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Regla</th><th>De dónde sale</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 · Solo opero con dinero que puedo perder entero, y solo ese está en la cuenta de futuros</td><td>Módulo 2</td></tr>
+    <tr><td>2 · Arriesgo como máximo un ___ % de la cuenta por operación</td><td>Módulos 2 y 5</td></tr>
+    <tr><td>3 · Decido el stop antes de entrar, lo pongo al abrir y no lo alejo</td><td>Módulos 3 y 5</td></tr>
+    <tr><td>4 · El tamaño sale del riesgo y del stop, no del multiplicador</td><td>Módulo 5</td></tr>
+    <tr><td>5 · Margen aislado, y la liquidación al menos al doble de distancia que el stop</td><td>Módulos 2 y 3</td></tr>
+    <tr><td>6 · Miro el funding y las comisiones antes de abrir, y los apunto</td><td>Módulo 4</td></tr>
+    <tr><td>7 · Tras ___ pérdidas seguidas, o un ___ % de caída de la cuenta, paro hasta el día siguiente</td><td>Módulo 2</td></tr>
+    <tr><td>8 · Anoto cada operación en un diario: motivo, tamaño, resultado en R y lo que sentí</td><td>Módulo 5</td></tr>
+  </tbody>
+</table>
+
+<p>La séptima es la que evita el daño mayor. Las cuentas no se vacían en una operación normal: se vacían en la tarde en que, después de dos pérdidas, alguien triplica el tamaño para recuperar. Un límite de parada escrito es la única defensa que funciona contra uno mismo. La octava es la que permite mejorar: sin un <a href="/glosario/diario-de-trading">diario de trading</a> no hay forma de saber si lo que haces tiene ventaja o solo suerte.</p>
+
+<p>El conjunto de las ocho es lo que se llama un <a href="/glosario/plan-de-trading">plan de trading</a>, reducido a lo mínimo.</p>
+
+<h2>La pregunta anterior a todas</h2>
+
+<p>Queda una decisión que este curso no puede tomar por ti: si deberías operar futuros. Tres preguntas ayudan a contestarla con honestidad.</p>
+
+<ul>
+  <li><strong>¿Para qué los necesito?</strong> Si lo que buscas es exposición a una criptomoneda, comprarla al contado te la da sin liquidación, sin funding y sin contraparte.</li>
+  <li><strong>¿Tengo alguna razón para creer que estaré en la minoría que no pierde?</strong> Una razón que se pueda escribir y comprobar, no una sensación.</li>
+  <li><strong>¿Puedo cumplir las ocho reglas un día malo?</strong> No el día que las escribo: el día que llevo tres pérdidas.</li>
+</ul>
+
+<p>Decidir que no, con lo que ahora sabes, es un resultado perfectamente válido de este curso. Probablemente el más rentable.</p>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Reduce el riesgo o lo aumenta?",
+  "instrucciones": "Lleva cada decisión al grupo que le corresponde.",
+  "grupos": [
+    { "id": "reduce", "nombre": "Reduce el riesgo" },
+    { "id": "aumenta", "nombre": "Lo aumenta" }
+  ],
+  "elementos": [
+    { "texto": "Poner el stop al abrir y no moverlo", "grupo": "reduce", "explicacion": "La pérdida máxima queda decidida de antemano." },
+    { "texto": "Subir el multiplicador para abrir una posición mayor", "grupo": "aumenta", "explicacion": "Más nominal sobre el mismo dinero: más pérdida por cada punto." },
+    { "texto": "Usar margen aislado", "grupo": "reduce", "explicacion": "Un error no puede tocar el resto de la cuenta." },
+    { "texto": "Añadir margen a una posición que va perdiendo", "grupo": "aumenta", "explicacion": "Pones más dinero en una operación que ya ha fallado." },
+    { "texto": "Parar tras un número fijo de pérdidas seguidas", "grupo": "reduce", "explicacion": "Corta la racha antes de que llegue la operación de revancha." },
+    { "texto": "Abrir varias posiciones largas en monedas distintas, en cruzado", "grupo": "aumenta", "explicacion": "Caen juntas y comparten garantía: el riesgo se suma." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio final: tu reglamento</h2>
+
+<p>Copia las ocho reglas y rellena los huecos con tus cifras: el porcentaje de riesgo por operación, el número de pérdidas seguidas y la caída de la cuenta que te hacen parar. Añade debajo tus respuestas a las tres preguntas finales, por escrito. Guarda la hoja donde la veas antes de abrir la plataforma. Si después de escribirla decides no operar futuros, guarda la hoja igualmente: es la explicación de por qué.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una cobertura abre la posición contraria a la que ya tienes y fija el resultado, a cambio de costes y de su propio riesgo de liquidación; a menudo basta con vender una parte. Guarda cada año el historial de operaciones, comisiones y funding. Y escribe tus reglas antes de empezar: dinero que puedes perder, riesgo fijo, stop previo, tamaño por riesgo, margen aislado, costes a la vista, límite de parada y diario.</div>
+</div>

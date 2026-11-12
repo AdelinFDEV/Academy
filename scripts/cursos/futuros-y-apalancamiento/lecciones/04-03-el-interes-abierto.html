@@ -1,0 +1,148 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El interés abierto es la cantidad de contratos que siguen vivos en un momento dado: posiciones abiertas que nadie ha cerrado todavía. Mide cuánto dinero apalancado hay comprometido en un mercado, y es distinto del volumen. Aquí aprendes a diferenciarlos, a leer el interés abierto junto al precio, a entender por qué la «proporción de largos y cortos» engaña y a usar el dato para lo que de verdad sirve: saber cuánta pólvora hay acumulada, no hacia dónde va a estallar.</p>
+</div>
+
+<h2>Qué mide</h2>
+
+<p>Cada contrato de <a href="/glosario/futuros">futuros</a> tiene dos lados: un largo y un corto. El <a href="/glosario/interes-abierto">interés abierto</a> cuenta cuántos contratos existen en este momento, sumando todas las posiciones de un lado. Se suele expresar en dólares o en unidades de la moneda.</p>
+
+<p>Se confunde a menudo con el <a href="/glosario/volumen">volumen</a>, y no tienen nada que ver.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Volumen</th><th>Interés abierto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Qué cuenta</td><td>Cuánto se ha negociado en un periodo</td><td>Cuántos contratos están abiertos ahora</td></tr>
+    <tr><td>Se parece a</td><td>El tráfico que ha pasado por una carretera hoy</td><td>Los coches que hay aparcados en este instante</td></tr>
+    <tr><td>Empieza de cero</td><td>Cada día</td><td>Nunca: se arrastra de un día al siguiente</td></tr>
+    <tr><td>Puede bajar</td><td>No dentro del periodo: solo se acumula</td><td>Sí, cuando se cierran posiciones</td></tr>
+  </tbody>
+</table>
+
+<p>Una misma operación puede subir, bajar o dejar igual el interés abierto, según lo que haga cada parte.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Sube</span>
+    <p>Los dos lados abren una posición nueva. Nace un contrato que antes no existía.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Baja</span>
+    <p>Los dos lados cierran una posición que tenían. Un contrato desaparece.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">No cambia</span>
+    <p>Uno abre y el otro cierra. El contrato cambia de manos, pero sigue habiendo los mismos.</p>
+  </div>
+</div>
+
+<h2>Cómo se lee junto al precio</h2>
+
+<p>Por sí solo, el interés abierto dice poco. Combinado con el movimiento del precio, permite hacerse una idea de qué está pasando por dentro. La tabla clásica es esta, y hay que leerla como una descripción, no como una receta.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Precio</th><th>Interés abierto</th><th>Lectura más probable</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Sube</td><td>Sube</td><td>Entra dinero nuevo acompañando la subida: se abren posiciones</td></tr>
+    <tr><td>Sube</td><td>Baja</td><td>La subida se debe en buena parte a cortos que cierran, comprando</td></tr>
+    <tr><td>Baja</td><td>Sube</td><td>Se abren posiciones nuevas durante la caída</td></tr>
+    <tr><td>Baja</td><td>Baja</td><td>Largos que cierran o son liquidados: el mercado se vacía</td></tr>
+  </tbody>
+</table>
+
+<p>La cuarta fila es la huella de una cascada. Cuando el precio se desploma y el interés abierto cae a plomo a la vez, lo que se está viendo es la desaparición de contratos por liquidación. Tras una jornada así, el mercado queda con mucho menos apalancamiento que el día anterior.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "linea",
+  "titulo": "Precio e interés abierto durante una subida y una cascada",
+  "subtitulo": "Índices con base 100. El interés abierto crece más rápido que el precio y se desploma con él.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Semana 1", "precio": 100, "oi": 100 },
+    { "etiqueta": "Semana 2", "precio": 106, "oi": 118 },
+    { "etiqueta": "Semana 3", "precio": 111, "oi": 139 },
+    { "etiqueta": "Semana 4", "precio": 115, "oi": 165 },
+    { "etiqueta": "Cascada", "precio": 98, "oi": 104 },
+    { "etiqueta": "Semana 6", "precio": 104, "oi": 109 }
+  ],
+  "series": [
+    { "clave": "precio", "nombre": "Precio", "color": "#8fb0ff" },
+    { "clave": "oi", "nombre": "Interés abierto", "color": "#f472b6" }
+  ],
+  "nota": "Ejemplo inventado. Cuando el interés abierto sube mucho más deprisa que el precio, la subida se apoya cada vez más en posiciones apalancadas."
+}
+</script></div>
+
+<h2>La trampa de la «proporción de largos y cortos»</h2>
+
+<p>Muchas webs muestran un indicador llamado ratio de largos y cortos, con frases como «el 70 % está en largo». Parece decir que hay más dinero apostando a la subida. No puede ser eso: por cada contrato largo hay exactamente un contrato corto. En dinero, la proporción es siempre de uno a uno.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que parece decir</p>
+    <p class="prose-vs-sub">«Hay más largos que cortos»</p>
+    <ul>
+      <li data-tono="contra">Que hay más dinero en un lado</li>
+      <li data-tono="contra">Que el mercado «piensa» que va a subir</li>
+      <li data-tono="contra">Que conviene ir con la mayoría, o contra ella</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que dice de verdad</p>
+    <p class="prose-vs-sub">Cuenta cuentas, no dinero</p>
+    <ul>
+      <li data-tono="favor">Que hay más cuentas en largo que en corto</li>
+      <li data-tono="favor">Que los cortos son menos, pero con posiciones mayores</li>
+      <li data-tono="favor">Que muchos pequeños están en un lado y pocos grandes en el otro</li>
+    </ul>
+  </div>
+</div>
+
+<p>Si el 70 % de las cuentas está en largo y el dinero es el mismo en los dos lados, el 30 % restante tiene posiciones más grandes de media. Lo que el indicador describe, cuando describe algo, es el reparto entre muchos particulares y unos pocos participantes con más capital. No dice quién tiene razón.</p>
+
+<h2>Para qué sirve de verdad</h2>
+
+<p>El interés abierto no predice la dirección. Lo que mide es cuánta posición apalancada hay acumulada, y eso sí es información útil sobre el <em>tamaño</em> de lo que puede pasar.</p>
+
+<ul>
+  <li><strong>Interés abierto en máximos tras una subida larga.</strong> Hay mucho apalancamiento comprometido. Si el precio gira, hay más posiciones que liquidar y la caída puede ser más violenta. No dice cuándo girará.</li>
+  <li><strong>Interés abierto grande respecto al tamaño de la moneda.</strong> En una moneda pequeña, un interés abierto comparable a una parte importante de su <a href="/glosario/market-cap">capitalización</a> significa que los derivados mandan sobre el precio, y que los movimientos bruscos son más probables.</li>
+  <li><strong>Interés abierto que se desploma.</strong> Se ha limpiado apalancamiento. El mercado es, durante un tiempo, menos frágil.</li>
+</ul>
+
+<p>Piénsalo como la presión de una caldera. Saber que está alta no te dice a qué hora reventará ni por dónde, pero sí que no es buen momento para arrimarse con una posición grande y un colchón pequeño.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Desconfía de quien presente el interés abierto, el funding o la proporción de largos y cortos como una señal de compra o de venta. Son datos públicos que mira todo el mundo a la vez. Si bastaran para predecir el precio, dejarían de funcionar en cuanto alguien los usara.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Cada web calcula el interés abierto con las plataformas que tiene integradas, así que las cifras totales no coinciden entre fuentes. Usa siempre la misma para comparar un día con otro, y fíjate en la tendencia más que en el número.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "El precio de una moneda cae un 12 % en una hora y su interés abierto baja un 30 % a la vez. ¿Qué es lo más probable que haya pasado?",
+  "opciones": [
+    "Se han cerrado o liquidado muchas posiciones largas",
+    "Ha entrado mucho dinero nuevo apostando a la caída",
+    "Hay más cuentas en corto que en largo",
+    "El contrato ha cambiado de fecha de vencimiento"
+  ],
+  "correcta": 0,
+  "explicacion": "Precio e interés abierto bajando juntos indican contratos que desaparecen: largos que cierran o son liquidados."
+}
+</script></div>
+
+<h2>Ejercicio: precio e interés abierto, lado a lado</h2>
+
+<p>En una web de datos de derivados, abre el gráfico del interés abierto de bitcoin de los últimos tres meses y ponlo junto al del precio. Localiza la mayor caída del interés abierto en un solo día y mira qué hizo el precio ese día. Después busca un tramo en el que el interés abierto subiera con fuerza mientras el precio apenas se movía. Escribe en dos líneas qué crees que pasaba en cada caso, usando la tabla de esta lección.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el interés abierto es el número de contratos vivos; el volumen, lo negociado en un periodo. Leído junto al precio describe si se abren o se cierran posiciones, y cuando cae a plomo con el precio es la huella de una cascada. Por cada largo hay un corto, así que la «proporción de largos y cortos» cuenta cuentas, no dinero. Mide cuánto apalancamiento hay, no hacia dónde irá el precio.</div>
+</div>

@@ -1,0 +1,87 @@
+{
+  "slug": "futuros-y-apalancamiento",
+  "titulo": "Futuros y apalancamiento",
+  "subtitulo": "Margen, liquidación y funding: las cuentas que hay que saber hacer antes de abrir una posición.",
+  "descripcion": "Un curso para entender los futuros de criptomonedas antes de tocarlos, o para saber por qué perdiste si ya los has tocado. Explica qué compras de verdad cuando abres un contrato, en qué se diferencia un perpetuo de un futuro con vencimiento y qué significa ir en largo o en corto. Enseña con cuentas qué es el apalancamiento, qué es el margen, cómo se calcula el precio de liquidación, por qué manda el precio de marca y qué ocurre en una cascada como la de octubre de 2025. Repasa lo que cuesta mantener una posición —funding y comisiones sobre el nominal— y lo que dicen los datos de los supervisores sobre quién gana y quién pierde. No enseña a ganar con futuros ni recomienda operarlos: te deja sabiendo calcular, antes de abrir nada, cuánto arriesgas y a qué precio te cierran.",
+  "objetivos": [
+    "Distinguir comprar una criptomoneda de abrir un contrato sobre su precio, y un perpetuo de un futuro con vencimiento.",
+    "Calcular el valor nominal, el margen y la pérdida de una posición apalancada ante cualquier movimiento del precio.",
+    "Estimar el precio de liquidación de una posición y entender por qué lo decide el precio de marca.",
+    "Explicar qué son el fondo de seguro, el desapalancamiento automático y una cascada de liquidaciones.",
+    "Calcular lo que cuestan el funding y las comisiones sobre el dinero que realmente has puesto.",
+    "Decidir el tamaño de una posición a partir de la pérdida que aceptas, y no del multiplicador que ofrece la plataforma."
+  ],
+  "nivel": "intermedio",
+  "portada": null,
+  "color": "#f472b6",
+  "aviso": "formacion",
+  "logro": "Margen de Seguridad",
+  "preguntas_final": 25,
+  "revisado": "2026-11-13",
+  "orden": 5,
+  "published": false,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Qué es un futuro",
+      "descripcion": "Qué tienes cuando abres un contrato, qué tipos hay y cómo se gana —y se pierde— en las dos direcciones.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "contado-y-derivados", "titulo": "Contado y derivados: qué compras de verdad", "resumen": "Comprar una moneda y abrir un contrato sobre su precio se parecen en la pantalla y no tienen nada que ver por dentro.", "minutos": 12, "archivo": "01-01-contado-y-derivados.html" },
+        { "slug": "futuros-con-vencimiento-y-perpetuos", "titulo": "Futuros con vencimiento y perpetuos", "resumen": "De dónde vienen los futuros, qué cambió el contrato perpetuo y por qué es el producto que mueve la mayor parte del mercado.", "minutos": 13, "archivo": "01-02-futuros-con-vencimiento-y-perpetuos.html" },
+        { "slug": "largo-y-corto", "titulo": "Largo y corto: las dos direcciones", "resumen": "Cómo se gana cuando el precio baja, cómo se calcula el resultado en cada sentido y por qué el corto no es el espejo exacto del largo.", "minutos": 12, "archivo": "01-03-largo-y-corto.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Apalancamiento y margen",
+      "descripcion": "El multiplicador no crea dinero: acerca el precio al que lo pierdes todo. Las cuentas, una a una.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-apalancamiento-en-numeros", "titulo": "El apalancamiento, en números", "resumen": "Valor nominal, margen y multiplicador. Qué le pasa a tu dinero con cada punto que se mueve el precio.", "minutos": 13, "archivo": "02-01-el-apalancamiento-en-numeros.html" },
+        { "slug": "margen-inicial-y-de-mantenimiento", "titulo": "Margen inicial y margen de mantenimiento", "resumen": "Lo que pones para abrir y lo mínimo que tiene que quedar para que no te cierren. La distancia entre los dos es todo tu colchón.", "minutos": 12, "archivo": "02-02-margen-inicial-y-de-mantenimiento.html" },
+        { "slug": "margen-aislado-y-cruzado", "titulo": "Margen aislado y margen cruzado", "resumen": "En un modo arriesgas lo que asignas a la posición; en el otro, toda la cuenta. Cuál elegir y por qué importa tanto.", "minutos": 12, "archivo": "02-03-margen-aislado-y-cruzado.html" },
+        { "slug": "la-asimetria-de-las-perdidas", "titulo": "La asimetría de las pérdidas", "resumen": "Perder la mitad obliga a doblar para volver. Por qué con apalancamiento basta una mala racha, aunque aciertes más veces de las que fallas.", "minutos": 13, "archivo": "02-04-la-asimetria-de-las-perdidas.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "La liquidación",
+      "descripcion": "A qué precio te cierran, quién lo decide y qué pasa cuando miles de posiciones saltan a la vez.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-precio-de-liquidacion", "titulo": "El precio de liquidación", "resumen": "La cuenta que hay que hacer antes de abrir: cuánto puede moverse el precio en tu contra según el multiplicador.", "minutos": 13, "archivo": "03-01-el-precio-de-liquidacion.html" },
+        { "slug": "precio-de-marca-y-precio-ultimo", "titulo": "Precio de marca y último precio", "resumen": "Hay dos precios en la pantalla y solo uno decide si te liquidan. Por qué existe y qué implica para tus órdenes.", "minutos": 12, "archivo": "03-02-precio-de-marca-y-precio-ultimo.html" },
+        { "slug": "fondo-de-seguro-y-adl", "titulo": "Fondo de seguro y desapalancamiento automático", "resumen": "Qué ocurre con una posición cuando se liquida, quién cubre el agujero y por qué pueden cerrarte una operación ganadora.", "minutos": 12, "archivo": "03-03-fondo-de-seguro-y-adl.html" },
+        { "slug": "cascadas-de-liquidaciones", "titulo": "Cascadas: el 10 de octubre de 2025", "resumen": "Cómo una caída se alimenta de sus propias liquidaciones, contado con la mayor jornada de cierres forzosos registrada.", "minutos": 13, "archivo": "03-04-cascadas-de-liquidaciones.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Lo que cuesta mantener una posición",
+      "descripcion": "Funding, comisiones y lo que dice el interés abierto. Costes que se calculan sobre el nominal y se pagan con tu margen.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "el-funding-rate", "titulo": "El funding rate", "resumen": "El pago periódico entre largos y cortos que mantiene el perpetuo pegado al precio real, y lo que supone al cabo de un mes.", "minutos": 13, "archivo": "04-01-el-funding-rate.html" },
+        { "slug": "comisiones-sobre-el-nominal", "titulo": "Comisiones: se pagan sobre el nominal", "resumen": "Un 0,05 % parece nada. Multiplicado por el apalancamiento y por el número de operaciones, es lo que decide el resultado.", "minutos": 12, "archivo": "04-02-comisiones-sobre-el-nominal.html" },
+        { "slug": "el-interes-abierto", "titulo": "El interés abierto y lo que no dice", "resumen": "Cuántos contratos hay vivos, cómo se lee junto al precio y por qué no es una señal de compra ni de venta.", "minutos": 12, "archivo": "04-03-el-interes-abierto.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Antes de abrir nada",
+      "descripcion": "Lo que dicen los datos sobre quién gana, cómo se decide el tamaño y el reglamento que conviene tener escrito.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "lo-que-dicen-los-datos-y-los-supervisores", "titulo": "Lo que dicen los datos y los supervisores", "resumen": "Entre el 74 % y el 89 % de las cuentas pierde. De dónde sale la cifra, qué han hecho los reguladores y qué significa operar fuera.", "minutos": 14, "archivo": "05-01-lo-que-dicen-los-datos-y-los-supervisores.html" },
+        { "slug": "el-tamano-lo-decide-el-riesgo", "titulo": "El tamaño lo decide el riesgo, no el multiplicador", "resumen": "El orden correcto de las decisiones: primero cuánto aceptas perder, después dónde sales, y el apalancamiento sale solo.", "minutos": 13, "archivo": "05-02-el-tamano-lo-decide-el-riesgo.html" },
+        { "slug": "cobertura-y-tu-reglamento", "titulo": "Cobertura, impuestos y tu reglamento", "resumen": "El único uso de los futuros que reduce riesgo, lo que hay que guardar para Hacienda y las reglas que conviene escribir antes de empezar.", "minutos": 13, "archivo": "05-03-cobertura-y-tu-reglamento.html" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Perder y ganar no pesan lo mismo. Si pierdes la mitad de tu dinero, necesitas doblar lo que queda para volver al principio. Esa asimetría es aritmética pura y existe sin apalancamiento, pero el apalancamiento la convierte en el centro del problema: hace que las pérdidas grandes sean frecuentes. Aquí ves las cuentas, entiendes por qué una racha normal de fallos basta para vaciar una cuenta y por qué se puede acertar más de la mitad de las veces y aun así perderlo todo.</p>
+</div>
+
+<h2>La cuenta que casi nadie hace</h2>
+
+<p>Tienes 1.000 € y pierdes un 50 %. Te quedan 500 €. Para volver a 1.000 € no necesitas ganar un 50 %: necesitas un 100 %. Has bajado por una rampa y tienes que subir por una pared.</p>
+
+<blockquote><strong>Ganancia necesaria para recuperar = pérdida ÷ (100 % − pérdida)</strong></blockquote>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Ganancia necesaria para recuperar una pérdida",
+  "subtitulo": "Cuanto mayor es la pérdida, más se dispara lo que hace falta para volver.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Tras perder un 10 %", "recuperar": 11 },
+    { "etiqueta": "Tras perder un 20 %", "recuperar": 25 },
+    { "etiqueta": "Tras perder un 30 %", "recuperar": 43 },
+    { "etiqueta": "Tras perder un 50 %", "recuperar": 100 },
+    { "etiqueta": "Tras perder un 75 %", "recuperar": 300 },
+    { "etiqueta": "Tras perder un 90 %", "recuperar": 900 }
+  ],
+  "series": [{ "clave": "recuperar", "nombre": "Hay que ganar", "color": "#f472b6" }],
+  "nota": "Cifras redondeadas. Tras perder el 100 % no hay ganancia que sirva: no queda nada que multiplicar."
+}
+</script></div>
+
+<p>Las pérdidas pequeñas se recuperan casi con lo mismo que se perdió. Las grandes, no. A eso se refiere la palabra <a href="/glosario/drawdown">drawdown</a> cuando se mide la caída de una cuenta desde su máximo: un 10 % es una molestia y un 75 % es, en la práctica, empezar de cero.</p>
+
+<p>Todo el arte de sobrevivir en los mercados se reduce a mantenerse en la parte izquierda de ese gráfico. Y el apalancamiento es la herramienta que más rápido te lleva a la derecha.</p>
+
+<h2>Subir y bajar lo mismo no te deja igual</h2>
+
+<p>Hay un segundo efecto, menos conocido. Si un activo sube un 10 % y después baja un 10 %, no vuelve al punto de partida: 100 pasa a 110 y luego a 99. Se pierde un 1 %. Con movimientos pequeños apenas se nota. Con movimientos multiplicados, se nota mucho.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>El precio hace +10 % y luego −10 %</th><th>Tu resultado en cada tramo</th><th>De 1.000 € te quedan</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Sin apalancar</td><td>+10 % y −10 %</td><td>990 €</td></tr>
+    <tr><td>Exposición constante de x3</td><td>+30 % y −30 %</td><td>910 €</td></tr>
+    <tr><td>Exposición constante de x5</td><td>+50 % y −50 %</td><td>750 €</td></tr>
+  </tbody>
+</table>
+
+<p>El precio ha terminado un 1 % por debajo. Quien mantuvo cinco veces de exposición durante el viaje ha perdido un 25 %. Un mercado que sube y baja sin ir a ningún sitio —que es lo que hacen los mercados buena parte del tiempo— va desgastando una posición apalancada aunque la dirección de fondo sea correcta.</p>
+
+<h2>Las rachas son normales</h2>
+
+<p>La tercera pieza es la probabilidad. Supón que aciertas la mitad de tus operaciones, lo que ya es un resultado respetable. ¿Qué probabilidad hay de encadenar cinco fallos seguidos en algún momento de cien operaciones? La intuición dice que poca. La cuenta dice que ronda el 80 %.</p>
+
+<p>Las rachas de pérdidas no son mala suerte ni señal de que algo se ha roto: son lo que hace el azar con cualquier serie larga. La pregunta no es si llegará una racha de cinco, sino qué quedará de tu cuenta cuando llegue.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Lo que queda de 1.000 € tras cinco pérdidas seguidas",
+  "subtitulo": "Según la parte de la cuenta que se pierde en cada operación fallida.",
+  "formato": "eur",
+  "datos": [
+    { "etiqueta": "1 % por operación", "queda": 951 },
+    { "etiqueta": "2 % por operación", "queda": 904 },
+    { "etiqueta": "5 % por operación", "queda": 774 },
+    { "etiqueta": "10 % por operación", "queda": 590 },
+    { "etiqueta": "25 % por operación", "queda": 237 },
+    { "etiqueta": "50 % por operación", "queda": 31 }
+  ],
+  "series": [{ "clave": "queda", "nombre": "Saldo restante", "color": "#f472b6" }],
+  "nota": "Cada pérdida se aplica sobre lo que queda. Cinco fallos seguidos ocurren con frecuencia en cualquier serie larga de operaciones."
+}
+</script></div>
+
+<p>Quien pierde un 1 % o un 2 % de la cuenta en cada fallo sale de la racha con un rasguño. Quien pierde un 25 % sale con menos de la cuarta parte, y necesita más que triplicar para volver. La diferencia entre los dos no es el acierto: es el tamaño.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">31 €</span>
+  <span class="prose-dato-texto">Lo que queda de 1.000 € tras cinco pérdidas seguidas del 50 % de la cuenta. Es lo que pierde por operación quien pone la mitad de su saldo en una posición x10 y deja que se liquide.</span>
+</div>
+
+<h2>Acertar más veces de las que fallas, y perder</h2>
+
+<p>Junta las tres piezas y aparece el patrón más habitual de quien opera con mucho apalancamiento: gana a menudo, pierde pocas veces, y cada pérdida es enorme.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Operador A</p>
+    <p class="prose-vs-sub">Acierta el 70 %</p>
+    <ul>
+      <li data-tono="favor">Gana 50 € en cada acierto</li>
+      <li data-tono="contra">Pierde 200 € en cada fallo, porque no pone salida</li>
+      <li data-tono="contra">En 10 operaciones: +350 € y −600 € = −250 €</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Operador B</p>
+    <p class="prose-vs-sub">Acierta el 40 %</p>
+    <ul>
+      <li data-tono="contra">Falla más veces de las que acierta</li>
+      <li data-tono="favor">Pierde 50 € en cada fallo y gana 150 € en cada acierto</li>
+      <li data-tono="favor">En 10 operaciones: +600 € y −300 € = +300 €</li>
+    </ul>
+  </div>
+</div>
+
+<p>Las cifras son inventadas. Lo que muestran es la <a href="/glosario/esperanza-matematica">esperanza matemática</a>: lo que importa no es cuántas veces ganas, sino cuánto ganas cuando aciertas frente a cuánto pierdes cuando fallas. El apalancamiento alto empuja hacia el perfil del operador A, porque las ganancias se recogen pronto, por miedo a que desaparezcan, y las pérdidas se dejan correr hasta la liquidación, que es la pérdida más grande posible.</p>
+
+<p>Añade a eso lo que pasa por dentro después de una liquidación. La reacción más común es intentar recuperar lo perdido de inmediato, con una posición mayor. Es el <a href="/glosario/revenge-trading">revenge trading</a>, y con un selector de x50 a un clic es la forma más rápida de convertir una mala tarde en una cuenta vacía.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">El saldo cero es un punto del que no se vuelve. Una estrategia puede ser rentable de media y arruinar igualmente a quien la sigue, si en algún momento del camino una racha lo deja sin dinero para la operación siguiente. Por eso la primera regla no es ganar: es no llegar nunca a cero.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Tu cuenta cae de 2.000 € a 1.200 €. ¿Qué ganancia necesitas sobre lo que queda para volver a 2.000 €?",
+  "opciones": [
+    "Un 67 %",
+    "Un 40 %",
+    "Un 50 %",
+    "Un 80 %"
+  ],
+  "correcta": 0,
+  "explicacion": "Has perdido un 40 %. Para pasar de 1.200 a 2.000 hacen falta 800 €, que son el 66,7 % de 1.200."
+}
+</script></div>
+
+<h2>Ejercicio: tu racha de cinco</h2>
+
+<p>Escribe cuánto dinero tienes, o tendrías, en una cuenta de operar. Decide un porcentaje de pérdida por operación fallida y calcula qué quedaría tras cinco fallos seguidos, aplicando cada pérdida sobre el saldo restante. Después calcula qué ganancia necesitarías para volver al punto de partida. Repite con la mitad y con el doble de ese porcentaje. Quédate con el mayor porcentaje con el que, mirando el resultado, seguirías operando con la cabeza fría. Ese número lo usaremos en el módulo 5.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una pérdida del 50 % exige un 100 % para recuperarse, y una del 90 %, un 900 %. Las rachas de cinco fallos son normales en cualquier serie larga, así que lo que decide si sobrevives es cuánto pierdes en cada fallo. El apalancamiento alto hace grandes las pérdidas y pequeñas las ganancias: se puede acertar siete de cada diez veces y perder dinero.</div>
+</div>

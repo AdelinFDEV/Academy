@@ -1,0 +1,122 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Hay dos familias de futuros. Los clásicos tienen fecha de vencimiento: ese día el contrato se liquida y deja de existir. Los perpetuos no caducan nunca, y para que su precio no se despegue del de la moneda usan un pago periódico entre los participantes. Aquí ves cómo funciona cada uno, por qué el perpetuo se ha quedado con la mayor parte del mercado y qué significa eso para quien lo opera.</p>
+</div>
+
+<h2>El futuro clásico: un precio y una fecha</h2>
+
+<p>Un contrato de <a href="/glosario/futuros">futuros</a> tradicional es un acuerdo para intercambiar algo a un precio fijado hoy, en una fecha futura concreta. Tiene tres datos: el activo, el precio pactado y el día de vencimiento. Cuando llega ese día, el contrato se liquida: se compara el precio pactado con el precio real y una parte paga a la otra la diferencia. Después, el contrato desaparece.</p>
+
+<p>En las criptomonedas, casi todos se liquidan en dinero: nadie entrega bitcoins a nadie. Solo cambia de manos la diferencia.</p>
+
+<p>Como el vencimiento está lejos, el precio del futuro no tiene por qué coincidir con el de la moneda al contado. Suele cotizar algo por encima, y esa diferencia se llama <strong>base</strong>. Se va cerrando a medida que se acerca la fecha, porque el último día los dos precios tienen que coincidir.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Tres meses antes</span>
+    <p>El contado está a 50.000 € y el futuro a 51.000 €. La base es de 1.000 €.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Un mes antes</span>
+    <p>La base se ha estrechado: quien compra el futuro ya no paga tanto de más por esperar.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El día del vencimiento</span>
+    <p>El futuro se liquida al precio del contado. La base es cero y el contrato deja de existir.</p>
+  </div>
+</div>
+
+<p>Las cifras son inventadas, para ver el mecanismo. Quien quiera seguir expuesto después del vencimiento tiene que abrir un contrato nuevo con una fecha posterior, y pagar otra vez comisiones y la base del nuevo. Es incómodo, y ese fue el hueco que vino a llenar el segundo tipo.</p>
+
+<h2>El perpetuo: un futuro que no caduca</h2>
+
+<p>El <a href="/glosario/contrato-perpetuo">contrato perpetuo</a> es un futuro sin fecha de vencimiento. Puedes mantenerlo abierto una hora o un año, mientras tu garantía aguante. La plataforma BitMEX lo lanzó para bitcoin en 2016, y en pocos años se convirtió en el producto dominante.</p>
+
+<p>Pero quitar el vencimiento crea un problema. En el futuro clásico, lo que obliga al precio del contrato a acercarse al de la moneda es que el último día se liquidan al mismo precio. Sin último día, nada lo ata: el perpetuo podría cotizar un 10 % por encima del contado y quedarse ahí.</p>
+
+<p>La solución es el <a href="/glosario/funding-rate">funding rate</a>, o tasa de financiación: un pago periódico, normalmente cada ocho horas, entre quienes apuestan por la subida y quienes apuestan por la bajada.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Situación</th><th>Quién paga a quién</th><th>Qué efecto busca</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>El perpetuo cotiza por encima del contado</td><td>Los que van en largo pagan a los que van en corto</td><td>Encarece estar en largo, abarata estar en corto: el precio del contrato baja</td></tr>
+    <tr><td>El perpetuo cotiza por debajo del contado</td><td>Los que van en corto pagan a los que van en largo</td><td>Lo contrario: el precio del contrato sube</td></tr>
+  </tbody>
+</table>
+
+<p>El pago no va a la plataforma: va de unos usuarios a otros. La documentación de Binance, la plataforma con más volumen, lo dice con esas palabras. Lo que sí cobra la plataforma son las comisiones de cada operación, que veremos en el módulo 4, junto con las cuentas del funding.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Que un perpetuo no caduque no significa que puedas mantenerlo indefinidamente. No tiene fecha de vencimiento, pero sí tiene un precio de liquidación, y un coste que se paga cada pocas horas. Lo que no hace el calendario lo hacen tu garantía y el funding.</div>
+</div>
+
+<h2>Por qué el perpetuo se quedó con el mercado</h2>
+
+<p>Los perpetuos mueven hoy mucho más dinero que las propias monedas. Según datos de la firma de análisis CryptoQuant recogidos por la prensa especializada, en 2025 se negociaron en perpetuos unos 61,8 billones de dólares, frente a unos 18,6 billones al contado. Es un orden de magnitud, no una cifra exacta: cada proveedor de datos cuenta de forma algo distinta.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Volumen negociado en las plataformas en 2025",
+  "subtitulo": "En billones de dólares. Los perpetuos triplican con holgura al contado.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Contratos perpetuos", "volumen": 61.8 },
+    { "etiqueta": "Mercado al contado", "volumen": 18.6 }
+  ],
+  "series": [{ "clave": "volumen", "nombre": "Billones de dólares", "color": "#f472b6" }],
+  "nota": "Fuente: CryptoQuant, recogido por la prensa especializada. Orden de magnitud: otros proveedores dan cifras distintas."
+}
+</script></div>
+
+<p>Las razones de ese éxito son las mismas que lo hacen peligroso:</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que atrae</p>
+    <p class="prose-vs-sub">Visto desde quien opera</p>
+    <ul>
+      <li data-tono="favor">Un solo contrato por moneda, sin fechas que renovar</li>
+      <li data-tono="favor">Su precio va muy pegado al del contado</li>
+      <li data-tono="favor">Permite apalancamientos muy altos</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que cuesta</p>
+    <p class="prose-vs-sub">Visto desde el resultado</p>
+    <ul>
+      <li data-tono="contra">Sin fecha de fin, es fácil dejar correr una pérdida</li>
+      <li data-tono="contra">El funding se paga mientras siga abierto</li>
+      <li data-tono="contra">Con multiplicadores altos, un movimiento corriente liquida</li>
+    </ul>
+  </div>
+</div>
+
+<p>Hay un detalle que ayuda a entender la escala. Ese volumen no es dinero que la gente haya puesto: es el valor nominal de los contratos, y la mayor parte está apalancada. Detrás de una posición de 10.000 € puede haber 500 € de garantía. Por eso el volumen de derivados puede superar varias veces al de las monedas reales.</p>
+
+<h2>Lineales e inversos, en una línea</h2>
+
+<p>Verás dos variantes más. En los contratos <strong>lineales</strong>, los más comunes, la garantía y el resultado se cuentan en una <a href="/glosario/stablecoin">stablecoin</a> como USDT o USDC: ganas o pierdes dólares. En los <strong>inversos</strong>, la garantía es la propia criptomoneda, de modo que si el precio cae pierdes dos veces: por la posición y porque tu garantía vale menos. Todos los ejemplos de este curso usan contratos lineales.</p>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Vencimiento y perpetuos",
+  "afirmaciones": [
+    { "texto": "Un contrato perpetuo no tiene fecha de vencimiento.", "verdadero": true, "explicacion": "Es lo que lo distingue del futuro clásico." },
+    { "texto": "Como no vence, una posición en un perpetuo nunca se puede cerrar a la fuerza.", "verdadero": false, "explicacion": "No tiene fecha, pero sí precio de liquidación." },
+    { "texto": "El funding lo cobra la plataforma como comisión.", "verdadero": false, "explicacion": "Se paga entre usuarios: de los largos a los cortos o al revés." },
+    { "texto": "Si el perpetuo cotiza por encima del contado, pagan los que van en largo.", "verdadero": true, "explicacion": "Así se encarece el lado más demandado y el precio vuelve hacia el contado." },
+    { "texto": "En un futuro con vencimiento, el precio del contrato y el del contado coinciden el último día.", "verdadero": true, "explicacion": "El contrato se liquida al precio real, así que la base se cierra." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: encuentra los dos precios</h2>
+
+<p>En cualquier web de datos de mercado, busca bitcoin y abre la pestaña de mercados. Verás dos listas: contado y perpetuos. Apunta el precio en un par al contado y en el perpetuo de la misma plataforma, en el mismo instante. Calcula la diferencia en porcentaje. Será muy pequeña, casi siempre de centésimas. Esa cercanía no es natural: es el funding haciendo su trabajo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el futuro clásico tiene fecha de vencimiento y ese día se iguala al contado. El perpetuo no caduca y se mantiene pegado al precio real mediante el funding, un pago periódico entre largos y cortos. Es el producto más negociado del mercado, y que no tenga fecha no significa que puedas mantenerlo sin coste ni sin riesgo de liquidación.</div>
+</div>

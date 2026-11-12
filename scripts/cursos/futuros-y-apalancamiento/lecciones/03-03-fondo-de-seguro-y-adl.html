@@ -1,0 +1,135 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Cuando una posición se liquida, alguien tiene que cerrarla en el mercado, y no siempre se consigue a un precio que cubra la pérdida. Para esos casos las plataformas tienen dos mecanismos: un fondo de seguro que paga el agujero y, si el fondo no alcanza, el desapalancamiento automático, que cierra posiciones ganadoras de otros usuarios. Aquí ves el recorrido completo de una liquidación y por qué una operación que va bien puede cerrarse sin que tú hagas nada.</p>
+</div>
+
+<h2>El problema que hay que resolver</h2>
+
+<p>En un contrato de <a href="/glosario/futuros">futuros</a>, lo que pierde un lado se lo debe al otro. Si un largo pierde 500 €, hay un corto que ha ganado 500 €, y espera cobrarlos. Mientras el perdedor tenga margen suficiente, no hay problema: sale de su garantía.</p>
+
+<p>El problema aparece cuando el precio se mueve tan deprisa que la posición no se puede cerrar a tiempo. Hay un nivel, llamado <strong>precio de quiebra</strong>, en el que el margen del perdedor vale exactamente cero. Si la plataforma logra cerrar la posición antes de ese precio, sobra algo. Si solo consigue cerrarla después, falta dinero: el perdedor debe más de lo que tenía.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Nivel (largo x10 abierto a 50.000 €)</th><th>Precio</th><th>Qué significa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Entrada</td><td>50.000 €</td><td>Margen completo</td></tr>
+    <tr><td>Liquidación</td><td>45.250 €</td><td>Queda solo el margen de mantenimiento; la plataforma toma el control</td></tr>
+    <tr><td>Quiebra</td><td>45.000 €</td><td>El margen vale cero</td></tr>
+    <tr><td>Por debajo de la quiebra</td><td>Menos de 45.000 €</td><td>La posición debe más de lo que había</td></tr>
+  </tbody>
+</table>
+
+<p>Entre la liquidación y la quiebra hay, en el ejemplo, 250 € por bitcoin de margen de maniobra. En un mercado tranquilo es de sobra. En una caída de varios puntos por minuto, no.</p>
+
+<h2>El recorrido de una liquidación</h2>
+
+<ol class="prose-pasos">
+  <li><strong>El precio de marca toca tu nivel.</strong> La plataforma toma el control de la posición y cancela tus órdenes pendientes en ese contrato.</li>
+  <li><strong>Se intenta cerrar en el mercado.</strong> En muchas plataformas, las posiciones grandes se reducen por tramos en lugar de cerrarse de golpe.</li>
+  <li><strong>Si se cierra mejor que el precio de quiebra,</strong> lo que sobra va en todo o en parte al fondo de seguro, a través de una comisión de liquidación.</li>
+  <li><strong>Si se cierra peor,</strong> el fondo de seguro pone la diferencia para que la contraparte cobre.</li>
+  <li><strong>Si el fondo no alcanza,</strong> se activa el desapalancamiento automático.</li>
+</ol>
+
+<h2>El fondo de seguro</h2>
+
+<p>Es una reserva que mantiene cada plataforma para cubrir las posiciones que quiebran. Se alimenta sobre todo de las propias liquidaciones: cada vez que una posición se cierra a mejor precio que el de quiebra, el sobrante engorda el fondo. La documentación de Binance explica que su fondo asume las pérdidas de las posiciones en quiebra «en la medida de lo posible» y se queda también con los beneficios que puedan generar.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que hace</p>
+    <p class="prose-vs-sub">Y por qué te conviene</p>
+    <ul>
+      <li data-tono="favor">Garantiza que quien gana cobra</li>
+      <li data-tono="favor">Evita, normalmente, que debas dinero a la plataforma</li>
+      <li data-tono="favor">Hace innecesario tocar a otros usuarios casi siempre</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que no hace</p>
+    <p class="prose-vs-sub">Y conviene no confundir</p>
+    <ul>
+      <li data-tono="contra">No te devuelve lo perdido en una liquidación</li>
+      <li data-tono="contra">No es un seguro de depósitos ni cubre una quiebra de la plataforma</li>
+      <li data-tono="contra">Su tamaño es limitado, y en los contratos pequeños, menor</li>
+    </ul>
+  </div>
+</div>
+
+<p>El nombre lleva a engaño. No asegura a los usuarios contra sus pérdidas: asegura al sistema contra los impagos. Quien se beneficia de él es quien está al otro lado de una posición que quiebra.</p>
+
+<h2>El desapalancamiento automático</h2>
+
+<p>Queda el último caso: el precio se mueve tanto, y en tantos contratos a la vez, que el fondo no puede cubrir todos los agujeros. Para ese escenario existe el desapalancamiento automático, que se suele abreviar ADL por sus siglas en inglés. Según la documentación de Binance, cuando las pérdidas de una posición en quiebra no pueden cubrirse con el fondo, el sistema liquida esa posición junto con posiciones contrarias de otros usuarios que no están en quiebra.</p>
+
+<p>En la práctica: si quiebran muchos largos y no hay dinero para pagar a los cortos, la plataforma <strong>cierra a la fuerza parte de los cortos que iban ganando</strong>, al precio de quiebra de los largos. Esos cortos cobran lo ganado hasta ese punto, pero pierden la posición.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">A quién le toca</span>
+    <p>La cola se ordena, a grandes rasgos, por ganancia y apalancamiento: primero los que más ganan con más multiplicador.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cómo se avisa</span>
+    <p>Las plataformas muestran un indicador de posición en esa cola, normalmente unas barras o luces junto a cada posición abierta.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Con qué frecuencia</span>
+    <p>Es raro. Se reserva para jornadas extremas, y pueden pasar años sin que ocurra en un contrato grande.</p>
+  </div>
+</div>
+
+<p>Que sea raro no lo hace irrelevante. Ocurre exactamente en los días en que una posición ganadora más importa. Quien tenía un corto para compensar las monedas que guarda al contado puede encontrarse, en plena caída, con que la protección ha desaparecido y las monedas siguen bajando.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">El desapalancamiento automático demuestra una idea que conviene tener presente: en futuros, tu ganancia solo existe si el otro lado puede pagarla. Tu contraparte real no es la plataforma, sino otros usuarios apalancados, y cuando demasiados quiebran a la vez, las reglas reparten el daño entre los que quedan.</div>
+</div>
+
+<h2>¿Puedes acabar debiendo dinero?</h2>
+
+<p>En los futuros de criptomonedas, lo habitual es que la plataforma absorba el agujero con su fondo y tu saldo se quede en cero, no en negativo. Pero «lo habitual» no es una garantía legal: depende de las condiciones de cada plataforma, y en margen cruzado lo que puede quedar en cero es la cuenta entera.</p>
+
+<p>En los productos apalancados que los intermediarios europeos ofrecen a clientes minoristas, la protección frente al saldo negativo sí es una obligación fijada por los supervisores. Lo veremos en el módulo 5. Una plataforma de fuera de la Unión Europea no está sujeta a esa norma.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0 €</span>
+  <span class="prose-dato-texto">Lo que te devuelve el fondo de seguro cuando te liquidan. Su función es pagar a tu contraparte, no compensarte a ti.</span>
+</div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "Qué ocurre cuando una posición se liquida",
+  "instrucciones": "Ordena los pasos, del primero al último recurso.",
+  "pasos": [
+    "El precio de marca alcanza el precio de liquidación",
+    "La plataforma toma el control y cancela las órdenes pendientes",
+    "Se intenta cerrar la posición en el mercado",
+    "Si el cierre es peor que el precio de quiebra, paga el fondo de seguro",
+    "Si el fondo no alcanza, se cierran posiciones ganadoras del lado contrario"
+  ]
+}
+</script></div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Tienes un corto con ganancias durante un desplome. La plataforma lo cierra sin que tú lo pidas y sin que hayas tocado ningún stop. ¿Qué ha pasado, con más probabilidad?",
+  "opciones": [
+    "Se ha activado el desapalancamiento automático porque el fondo de seguro no cubría las quiebras de los largos",
+    "Te han liquidado por falta de margen",
+    "El contrato ha llegado a su fecha de vencimiento",
+    "El funding ha agotado tu garantía"
+  ],
+  "correcta": 0,
+  "explicacion": "Una posición ganadora no se liquida por margen. El cierre forzoso de ganadores del lado contrario es el ADL, el último recurso."
+}
+</script></div>
+
+<h2>Ejercicio: busca el fondo y el indicador</h2>
+
+<p>En la web de una plataforma de futuros, busca la página del fondo de seguro: casi todas publican su saldo, a veces por contrato. Apunta el del perpetuo de bitcoin y el de una moneda pequeña, y compara la diferencia. Después localiza, en la documentación o en la pantalla de posiciones, cómo es el indicador de la cola de desapalancamiento automático. No hace falta tener una posición abierta para encontrarlo en las guías de ayuda.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> tras la liquidación, la plataforma cierra tu posición en el mercado. Si lo hace peor que el precio de quiebra, el fondo de seguro paga la diferencia a la contraparte; si el fondo no alcanza, se cierran a la fuerza posiciones ganadoras del lado contrario. El fondo no te devuelve nada, y una ganancia en futuros depende de que quien pierde pueda pagar.</div>
+</div>

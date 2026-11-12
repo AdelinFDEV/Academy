@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "fa-m4-01",
+    "leccion": "el-funding-rate",
+    "enunciado": "¿Qué es el funding de un contrato perpetuo?",
+    "opciones": [
+      "El interés de un préstamo bancario",
+      "Una comisión que cobra la plataforma por operar",
+      "Un pago periódico entre quienes van en largo y quienes van en corto",
+      "Un impuesto sobre las ganancias"
+    ],
+    "correcta": 2,
+    "explicacion": "Va de unos usuarios a otros. La plataforma no cobra comisión sobre él."
+  },
+  {
+    "clave": "fa-m4-02",
+    "leccion": "el-funding-rate",
+    "enunciado": "¿Sobre qué cantidad se calcula el pago de funding?",
+    "opciones": [
+      "Sobre el margen depositado",
+      "Sobre la ganancia acumulada",
+      "Sobre el saldo total de la cuenta",
+      "Sobre el valor nominal de la posición"
+    ],
+    "correcta": 3,
+    "explicacion": "Pago = nominal × tipo. Por eso pesa tanto respecto al dinero que has puesto."
+  },
+  {
+    "clave": "fa-m4-03",
+    "leccion": "el-funding-rate",
+    "enunciado": "El funding es positivo. ¿Quién paga?",
+    "opciones": [
+      "Los largos pagan a los cortos",
+      "Nadie",
+      "Los cortos pagan a los largos",
+      "Los dos pagan a la plataforma"
+    ],
+    "correcta": 0,
+    "explicacion": "Un funding positivo indica más presión compradora: pagan los que van en largo."
+  },
+  {
+    "clave": "fa-m4-04",
+    "leccion": "el-funding-rate",
+    "enunciado": "Largo de 10.000 € de nominal con un funding del 0,01 % cada ocho horas. ¿Cuánto pagas en un día?",
+    "opciones": [
+      "1 €",
+      "3 €",
+      "30 €",
+      "0,10 €"
+    ],
+    "correcta": 1,
+    "explicacion": "0,01 % de 10.000 € es 1 € por intervalo, y hay tres al día."
+  },
+  {
+    "clave": "fa-m4-05",
+    "leccion": "el-funding-rate",
+    "enunciado": "Con un funding constante del 0,01 % cada ocho horas, ¿cuánto cuesta al año sobre el nominal?",
+    "opciones": [
+      "Un 0,01 %",
+      "Un 1 %",
+      "Cerca del 11 %",
+      "Un 50 %"
+    ],
+    "correcta": 2,
+    "explicacion": "1.095 pagos del 0,01 %: un 10,95 % del nominal. Con x10, más del 100 % del margen."
+  },
+  {
+    "clave": "fa-m4-06",
+    "leccion": "el-funding-rate",
+    "enunciado": "Según el informe de BitMEX del tercer trimestre de 2025, ¿cómo fue el funding la mayor parte del tiempo?",
+    "opciones": [
+      "Exactamente cero",
+      "Negativo, más del 92 % del tiempo",
+      "Positivo la mitad del tiempo",
+      "Positivo, más del 92 % del tiempo"
+    ],
+    "correcta": 3,
+    "explicacion": "Lo habitual es que paguen los largos, con un nivel de referencia en torno al 0,01 %."
+  },
+  {
+    "clave": "fa-m4-07",
+    "leccion": "el-funding-rate",
+    "enunciado": "¿Qué efecto tiene pagar funding durante semanas sobre una posición?",
+    "opciones": [
+      "Reduce el margen y acerca el precio de liquidación",
+      "Aumenta el valor nominal",
+      "Aleja la liquidación",
+      "No tiene efecto hasta cerrar"
+    ],
+    "correcta": 0,
+    "explicacion": "Cada pago se descuenta del margen que respalda la posición."
+  },
+  {
+    "clave": "fa-m4-08",
+    "leccion": "el-funding-rate",
+    "enunciado": "¿Qué dice un funding muy alto sobre la dirección futura del precio?",
+    "opciones": [
+      "Que el contrato va a vencer",
+      "Nada seguro: mide el coste y el desequilibrio del momento, no predice",
+      "Que el precio va a subir",
+      "Que el precio va a caer"
+    ],
+    "correcta": 1,
+    "explicacion": "Puede seguir alto durante semanas mientras el precio continúa subiendo."
+  },
+  {
+    "clave": "fa-m4-09",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "¿Qué es una orden «taker»?",
+    "opciones": [
+      "La que no paga comisión",
+      "La que se queda esperando en el libro",
+      "La que se ejecuta al instante contra una orden que ya estaba en el libro",
+      "La que solo sirve para cerrar"
+    ],
+    "correcta": 2,
+    "explicacion": "Toma liquidez y paga la tarifa alta. Las órdenes a mercado son siempre taker."
+  },
+  {
+    "clave": "fa-m4-10",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "Abres y cierras a mercado una posición de 10.000 € de nominal con una tarifa del 0,05 %. ¿Cuánto pagas en total?",
+    "opciones": [
+      "0,50 €",
+      "50 €",
+      "5 €",
+      "10 €"
+    ],
+    "correcta": 3,
+    "explicacion": "5 € al abrir y 5 € al cerrar: 0,1 % del nominal."
+  },
+  {
+    "clave": "fa-m4-11",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "Con una tarifa del 0,05 % por orden y x20, ¿qué parte de tu margen cuesta una operación de ida y vuelta?",
+    "opciones": [
+      "Un 2 %",
+      "Un 0,1 %",
+      "Un 0,05 %",
+      "Un 20 %"
+    ],
+    "correcta": 0,
+    "explicacion": "0,1 % del nominal multiplicado por 20: un 2 % del margen, antes de que el precio se mueva."
+  },
+  {
+    "clave": "fa-m4-12",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "¿Qué medida reduce a la vez todas las comisiones?",
+    "opciones": [
+      "Usar solo órdenes a mercado",
+      "Operar menos veces",
+      "Abrir posiciones más grandes",
+      "Subir el apalancamiento"
+    ],
+    "correcta": 1,
+    "explicacion": "Cada orden paga. Menos órdenes, menos comisiones, spread y slippage."
+  },
+  {
+    "clave": "fa-m4-13",
+    "leccion": "comisiones-sobre-el-nominal",
+    "enunciado": "¿Qué tarifa paga normalmente un stop que se ejecuta a mercado?",
+    "opciones": [
+      "Ninguna",
+      "La de maker, la más baja",
+      "La de taker, la más alta",
+      "La mitad de la normal"
+    ],
+    "correcta": 2,
+    "explicacion": "Las órdenes con prisa toman liquidez, y eso cuesta la tarifa alta."
+  },
+  {
+    "clave": "fa-m4-14",
+    "leccion": "el-interes-abierto",
+    "enunciado": "¿Qué mide el interés abierto?",
+    "opciones": [
+      "Lo negociado en las últimas 24 horas",
+      "El tipo de interés del funding",
+      "El número de usuarios de la plataforma",
+      "El número de contratos que siguen abiertos en ese momento"
+    ],
+    "correcta": 3,
+    "explicacion": "Son posiciones vivas. El volumen, en cambio, mide lo negociado en un periodo."
+  },
+  {
+    "clave": "fa-m4-15",
+    "leccion": "el-interes-abierto",
+    "enunciado": "¿Cuándo sube el interés abierto?",
+    "opciones": [
+      "Cuando las dos partes de una operación abren una posición nueva",
+      "Cuando una abre y la otra cierra",
+      "Cada vez que hay una operación",
+      "Cuando las dos partes cierran una posición"
+    ],
+    "correcta": 0,
+    "explicacion": "Nace un contrato que antes no existía."
+  },
+  {
+    "clave": "fa-m4-16",
+    "leccion": "el-interes-abierto",
+    "enunciado": "El precio cae con fuerza y el interés abierto se desploma a la vez. ¿Qué indica?",
+    "opciones": [
+      "Que no ha pasado nada relevante",
+      "Largos que cierran o son liquidados",
+      "Dinero nuevo entrando en largo",
+      "Que el funding es positivo"
+    ],
+    "correcta": 1,
+    "explicacion": "Desaparecen contratos mientras el precio baja: es la huella de una cascada."
+  },
+  {
+    "clave": "fa-m4-17",
+    "leccion": "el-interes-abierto",
+    "enunciado": "Una web dice que «el 70 % está en largo». ¿Qué significa?",
+    "opciones": [
+      "Que solo el 30 % de los contratos tiene contraparte",
+      "Que el precio subirá",
+      "Que el 70 % de las cuentas está en largo, no el 70 % del dinero",
+      "Que hay más dinero en largo que en corto"
+    ],
+    "correcta": 2,
+    "explicacion": "Por cada contrato largo hay uno corto. El indicador cuenta cuentas."
+  },
+  {
+    "clave": "fa-m4-18",
+    "leccion": "el-interes-abierto",
+    "enunciado": "¿Para qué sirve de verdad el interés abierto?",
+    "opciones": [
+      "Para predecir el próximo movimiento",
+      "Para calcular tus comisiones",
+      "Para conocer el precio de liquidación",
+      "Para saber cuánto apalancamiento hay acumulado, no hacia dónde irá el precio"
+    ],
+    "correcta": 3,
+    "explicacion": "Mide la presión de la caldera, no cuándo ni por dónde reventará."
+  }
+]

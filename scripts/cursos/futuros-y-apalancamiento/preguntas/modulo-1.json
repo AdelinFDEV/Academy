@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "fa-m1-01",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Qué tienes cuando abres un contrato de futuros sobre bitcoin?",
+    "opciones": [
+      "Una participación en la plataforma",
+      "Bitcoins que puedes retirar a tu wallet",
+      "Una posición sobre el precio de bitcoin, no la moneda",
+      "Un depósito que paga intereses"
+    ],
+    "correcta": 2,
+    "explicacion": "Un futuro es un contrato cuyo resultado depende del precio. No recibes la moneda ni puedes retirarla."
+  },
+  {
+    "clave": "fa-m1-02",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Por qué se llama «derivado» a un contrato de futuros?",
+    "opciones": [
+      "Porque procede de una moneda anterior",
+      "Porque deriva las pérdidas a la plataforma",
+      "Porque se negocia en un mercado secundario",
+      "Porque su valor deriva del de otro activo, el subyacente"
+    ],
+    "correcta": 3,
+    "explicacion": "Un derivado no vale por sí mismo: su valor depende del precio de otra cosa."
+  },
+  {
+    "clave": "fa-m1-03",
+    "leccion": "contado-y-derivados",
+    "enunciado": "Compras 1.000 € de una moneda al contado y cae un 10 %. ¿Qué ocurre?",
+    "opciones": [
+      "Pierdes 100 € de valor, pero conservas las mismas monedas y nadie te obliga a vender",
+      "Pierdes los 1.000 €",
+      "Tienes que depositar más dinero",
+      "La plataforma vende tus monedas automáticamente"
+    ],
+    "correcta": 0,
+    "explicacion": "Al contado no hay liquidación: pierdes valor, no unidades, y puedes esperar."
+  },
+  {
+    "clave": "fa-m1-04",
+    "leccion": "contado-y-derivados",
+    "enunciado": "Abres una posición de 1.000 € con 100 € de garantía y el precio cae un 10 %. ¿Qué ocurre?",
+    "opciones": [
+      "La plataforma te presta más dinero para aguantar",
+      "La garantía se agota y la posición se cierra, aunque el precio se recupere después",
+      "No pasa nada mientras no cierres tú",
+      "Pierdes 10 €, el 10 % de tu garantía"
+    ],
+    "correcta": 1,
+    "explicacion": "La pérdida es el 10 % de 1.000 €: 100 €, toda la garantía. Sin garantía, la posición se liquida."
+  },
+  {
+    "clave": "fa-m1-05",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Sobre qué cantidad se calculan las ganancias y las pérdidas de un futuro?",
+    "opciones": [
+      "Sobre la garantía depositada",
+      "Sobre la comisión pagada",
+      "Sobre el tamaño de la posición",
+      "Sobre el saldo total de la cuenta"
+    ],
+    "correcta": 2,
+    "explicacion": "El resultado se calcula sobre el valor del contrato, no sobre lo que pusiste."
+  },
+  {
+    "clave": "fa-m1-06",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Para qué se inventaron originalmente los futuros?",
+    "opciones": [
+      "Para sustituir a las monedas",
+      "Para especular con apalancamiento",
+      "Para evitar pagar impuestos",
+      "Para fijar hoy un precio y protegerse de sus cambios, lo que se llama cobertura"
+    ],
+    "correcta": 3,
+    "explicacion": "Nacieron en los mercados agrícolas, para que productor y comprador se quitaran el riesgo del precio."
+  },
+  {
+    "clave": "fa-m1-07",
+    "leccion": "contado-y-derivados",
+    "enunciado": "¿Qué significa que los futuros son un juego de suma cero antes de costes?",
+    "opciones": [
+      "Que lo que gana una parte lo pierde la otra, euro a euro",
+      "Que las comisiones son cero",
+      "Que el precio siempre vuelve al punto de partida",
+      "Que nadie puede perder dinero"
+    ],
+    "correcta": 0,
+    "explicacion": "No se crea valor: el resultado de un lado es el contrario del otro. Con comisiones, la suma es negativa."
+  },
+  {
+    "clave": "fa-m1-08",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "¿Qué ocurre con un futuro clásico el día de su vencimiento?",
+    "opciones": [
+      "Pasa a ser un contrato perpetuo",
+      "Se liquida al precio real y el contrato deja de existir",
+      "Se renueva solo por otro periodo",
+      "Se convierte automáticamente en monedas"
+    ],
+    "correcta": 1,
+    "explicacion": "El último día se compara el precio pactado con el real, se paga la diferencia y el contrato desaparece."
+  },
+  {
+    "clave": "fa-m1-09",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "¿Qué es la «base» de un futuro con vencimiento?",
+    "opciones": [
+      "La comisión de apertura",
+      "El precio al que se liquida una posición",
+      "La diferencia entre el precio del futuro y el precio al contado",
+      "La garantía mínima para abrir"
+    ],
+    "correcta": 2,
+    "explicacion": "Suele cotizar algo por encima del contado, y esa diferencia se cierra al acercarse la fecha."
+  },
+  {
+    "clave": "fa-m1-10",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "¿Qué distingue a un contrato perpetuo de un futuro clásico?",
+    "opciones": [
+      "No tiene precio de liquidación",
+      "Solo permite posiciones largas",
+      "No admite apalancamiento",
+      "No tiene fecha de vencimiento"
+    ],
+    "correcta": 3,
+    "explicacion": "El perpetuo puede mantenerse abierto indefinidamente, mientras la garantía aguante."
+  },
+  {
+    "clave": "fa-m1-11",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "¿Para qué sirve el funding en un contrato perpetuo?",
+    "opciones": [
+      "Para mantener el precio del contrato cerca del precio al contado",
+      "Para cubrir las liquidaciones",
+      "Para pagar los intereses de la plataforma",
+      "Para recompensar a quien más opera"
+    ],
+    "correcta": 0,
+    "explicacion": "Sin vencimiento, nada ataría el precio del contrato al de la moneda. El funding hace ese trabajo."
+  },
+  {
+    "clave": "fa-m1-12",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "El perpetuo cotiza por encima del precio al contado. ¿Quién paga el funding?",
+    "opciones": [
+      "Los que van en corto pagan a los que van en largo",
+      "Los que van en largo pagan a los que van en corto",
+      "Los dos lados pagan a la plataforma",
+      "Nadie: solo se paga si cotiza por debajo"
+    ],
+    "correcta": 1,
+    "explicacion": "Se encarece el lado más demandado para que el precio del contrato vuelva hacia el contado."
+  },
+  {
+    "clave": "fa-m1-13",
+    "leccion": "futuros-con-vencimiento-y-perpetuos",
+    "enunciado": "Según los datos de CryptoQuant recogidos por la prensa, ¿qué movió más dinero en las plataformas en 2025?",
+    "opciones": [
+      "Los dos por igual",
+      "El mercado al contado, con el doble que los perpetuos",
+      "Los contratos perpetuos, con más del triple que el contado",
+      "Los futuros con vencimiento"
+    ],
+    "correcta": 2,
+    "explicacion": "Unos 61,8 billones de dólares en perpetuos frente a unos 18,6 al contado. Es un orden de magnitud."
+  },
+  {
+    "clave": "fa-m1-14",
+    "leccion": "largo-y-corto",
+    "enunciado": "¿Cuándo gana una posición corta?",
+    "opciones": [
+      "Cuando el precio no se mueve",
+      "Cuando vence el contrato",
+      "Cuando el precio sube",
+      "Cuando el precio baja"
+    ],
+    "correcta": 3,
+    "explicacion": "El corto es la apuesta por la bajada: gana lo que cae el precio."
+  },
+  {
+    "clave": "fa-m1-15",
+    "leccion": "largo-y-corto",
+    "enunciado": "Abres un largo de 0,2 BTC a 50.000 € y cierras a 52.000 €. ¿Cuál es el resultado, sin comisiones?",
+    "opciones": [
+      "+400 €",
+      "−400 €",
+      "+200 €",
+      "+2.000 €"
+    ],
+    "correcta": 0,
+    "explicacion": "0,2 × (52.000 − 50.000) = 0,2 × 2.000 = 400 €."
+  },
+  {
+    "clave": "fa-m1-16",
+    "leccion": "largo-y-corto",
+    "enunciado": "Abres un corto de 2 unidades a 100 € y cierras a 110 €. ¿Cuál es el resultado, sin comisiones?",
+    "opciones": [
+      "+20 €",
+      "−20 €",
+      "−10 €",
+      "+220 €"
+    ],
+    "correcta": 1,
+    "explicacion": "En corto se pierde lo que sube: 2 × (100 − 110) = −20 €."
+  },
+  {
+    "clave": "fa-m1-17",
+    "leccion": "largo-y-corto",
+    "enunciado": "¿Por qué la pérdida posible de un corto es mayor que la de un largo?",
+    "opciones": [
+      "Porque el funding siempre lo pagan los cortos",
+      "Porque los cortos no admiten stop",
+      "Porque el precio puede subir sin límite, pero no puede bajar de cero",
+      "Porque los cortos pagan más comisión"
+    ],
+    "correcta": 2,
+    "explicacion": "Un precio puede multiplicarse por cinco, pero solo puede caer un 100 %."
+  },
+  {
+    "clave": "fa-m1-18",
+    "leccion": "largo-y-corto",
+    "enunciado": "¿Qué es un «short squeeze»?",
+    "opciones": [
+      "El cierre de un contrato por vencimiento",
+      "Una caída provocada por la venta de cortos",
+      "Una comisión extra por mantener un corto",
+      "Una subida que se acelera porque los cortos, al cerrar, tienen que comprar"
+    ],
+    "correcta": 3,
+    "explicacion": "Cerrar un corto es comprar. Las compras forzosas empujan el precio y liquidan a más cortos."
+  }
+]
