@@ -253,6 +253,40 @@ function esMalsonante(alias: string): boolean {
     || hayTacoSuelto(unaVez(e), MALSONANTES.map(unaVez).filter((m) => m.length >= 3), INOCENTES.map(unaVez));
 }
 
+// ── Las mismas palabras, en un texto largo (el foro) ────────────────────────
+//
+// En un alias se busca el taco DENTRO de la palabra («xXputoXx»). En un texto
+// eso no vale: «reputación», «disputa» o «analizar» los llevan dentro y no
+// cabe una lista de inocentes para todo el idioma. Aquí se compara PALABRA A
+// PALABRA, entera, y se juntan las letras sueltas («p u t a», «p.u.t.a»).
+
+/** Palabras de `MALSONANTES` que en un texto sobre dinero son normales:
+ *  «pago retrasado», «corrida bancaria», «un análisis anal…» no; «anal» sí
+ *  es parte de «análisis» pero como palabra suelta casi no aparece. */
+const NORMALES_EN_TEXTO = new Set(
+  ["retrasado", "corrida", "sexo", "sex", "anal", "rape", "teta", "tetas", "perra", "meado", "cagar", "pene"].map(esqueleto),
+);
+const TACOS_DE_TEXTO = new Set(MALSONANTES.filter((m) => !NORMALES_EN_TEXTO.has(m)));
+
+/**
+ * ¿Lleva el texto una palabra malsonante? Devuelve true también para su
+ * plural. El texto debe venir sin tildes y en minúsculas (la forma de
+ * comparar del foro, `paraComparar`).
+ */
+export function tacoEnTexto(texto: string): boolean {
+  // Letras sueltas separadas por un espacio o un signo: se juntan en una palabra.
+  const junto = texto.replace(/\b([a-z0-9])(?:[\s._*-]+([a-z0-9])\b)+/g, (m) => m.replace(/[\s._*-]+/g, ""));
+  for (const palabra of junto.split(/[^a-z0-9]+/)) {
+    if (palabra.length < 3) continue;
+    const e = esqueleto(palabra);
+    if (TACOS_DE_TEXTO.has(e)) return true;
+    // Plurales: «putas», «cabrones». En esqueleto la «s» final sigue siendo «s».
+    if (e.endsWith("es") && TACOS_DE_TEXTO.has(e.slice(0, -2))) return true;
+    if (e.endsWith("s") && TACOS_DE_TEXTO.has(e.slice(0, -1))) return true;
+  }
+  return false;
+}
+
 /**
  * null si vale; si no, el motivo en una frase, para enseñárselo al usuario.
  *

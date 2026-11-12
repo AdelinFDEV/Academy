@@ -37,7 +37,7 @@ Cubre **toda la web**, no solo `/api`. Los tramos salen de lo que cuesta cada ru
 |---|---|---|---|
 | `pago` | 10 / 15 min | `/api/checkout`, `/api/stripe/portal`, `/api/account/delete` | Nadie paga dos veces seguidas; no hay uso legítimo intensivo |
 | `externo` | 40 / 60 s | `/api/market-data`, `/api/portfolio/prices` | Queman cuota de una API gratuita ajena: si se agota, nadie ve precios |
-| `escritura` | 80 / 60 s | likes, guardados, compartidos y visitas de las guías, quiz, badges, cursos | Escriben en la BD sin necesidad de sesión: es lo que atrae al spam |
+| `escritura` | 80 / 60 s | likes, guardados, compartidos y visitas de las guías, quiz, badges, cursos, perfil y **el foro entero** (`/api/foro`) | Escriben en la BD: es lo que atrae al spam. En el foro es solo la primera capa: sus límites de verdad se cuentan por usuario en la base de datos (`FORO.md` §6.5) |
 | `api` | 150 / 60 s | resto de `/api` | Lectura autenticada |
 | `paginas` | 300 / 60 s | navegación real | Una IP puede ser una oficina entera |
 | `prefetch` | 900 / 60 s | precargas de Next (`Next-Router-Prefetch`) | Van aparte o rompen la web (ver abajo) |

@@ -134,6 +134,10 @@ const RUTAS_ESCRITURA = [
   // El perfil público (alias y foto). El plazo de 30 días entre cambios de
   // alias lo pone la propia ruta, en la base de datos.
   "/api/perfil",
+  // El foro entero. Es la primera capa: los límites de verdad (preguntas y
+  // respuestas al día, me gusta, reportes) se cuentan POR USUARIO en la base
+  // de datos, dentro de cada función (FORO.md §6.5).
+  "/api/foro",
 ];
 
 /**

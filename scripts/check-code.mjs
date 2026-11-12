@@ -295,6 +295,70 @@ function checkGuiasSeo() {
   ]);
 }
 
+// ── 6) El foro es un módulo cerrado ───────────────────────────────────────
+// FORO.md §6.0. Las tablas `foro_*` no tienen policies ni permisos para el
+// navegador: todo pasa por la clave de servicio, y por eso importa DÓNDE se
+// usa. Tres reglas que nada más vigila, y que al romperse no fallan a la vista:
+//
+//   · Solo `src/lib/foro/` nombra una tabla o una función `foro_`. Una página
+//     o una ruta que consulte la tabla por su cuenta se salta el filtro, los
+//     permisos y la lista de campos que pueden salir al navegador.
+//   · Todo el módulo, menos `limites.ts` y `tipos.ts`, empieza por
+//     `import "server-only"`. Si un componente de cliente lo importa, la
+//     compilación falla en vez de mandar la clave de servicio al navegador.
+//   · En `datos/` no hay `select("*")`: cada lectura pide sus columnas. El día
+//     que una tabla gane una columna privada, no sale sola.
+function checkForo() {
+  const modulo = join("src", "lib", "foro");
+  const PARA_EL_NAVEGADOR = new Set(["limites.ts", "tipos.ts"]);
+  const fuera = [];
+  const sinServerOnly = [];
+  const selectTodo = [];
+
+  const sinComentarios = (src) =>
+    src
+      .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "))
+      .replace(/(^|[^:])\/\/[^\n]*/g, (m, antes) => antes + " ".repeat(m.length - antes.length));
+
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir)) {
+      const p = join(dir, entry);
+      if (statSync(p).isDirectory()) { walk(p); continue; }
+      if (!/\.tsx?$/.test(entry)) continue;
+      const bruto = readFileSync(p, "utf8");
+      const ref = p.split(/src[\\/]/)[1].replace(/\\/g, "/");
+      const dentro = p.startsWith(modulo);
+
+      if (!dentro) {
+        sinComentarios(bruto).split(/\r?\n/).forEach((line, i) => {
+          if (/["'`]foro_[a-z_]+/.test(line)) fuera.push(`${ref}:${i + 1}`);
+        });
+        continue;
+      }
+      if (!PARA_EL_NAVEGADOR.has(entry) && !/^\s*import "server-only";/.test(bruto)) sinServerOnly.push(ref);
+      if (/\.select\(\s*(?:["'`]\*["'`])?\s*\)/.test(sinComentarios(bruto))) selectTodo.push(ref);
+    }
+  };
+  walk("src");
+
+  const informar = (lista, ok, ko, pista) => {
+    if (lista.length === 0) {
+      console.log(`${GREEN}✓${OFF} ${ok} ${DIM}— 0 casos${OFF}`);
+      return;
+    }
+    console.log(`${RED}✗${OFF} ${ko} ${RED}— ${lista.length} caso(s)${OFF}`);
+    lista.forEach((f) => console.log(`    src/${f}`));
+    problems.push(["El foro, módulo cerrado", pista]);
+  };
+
+  informar(fuera, "foro: nadie fuera de src/lib/foro nombra sus tablas", "foro: tablas o funciones foro_ fuera del módulo",
+    "Solo src/lib/foro/ puede nombrar una tabla o función foro_. Llama a datos/ o a acciones/ (FORO.md §6.0).");
+  informar(sinServerOnly, 'foro: todo el módulo lleva import "server-only"', 'foro: archivos sin import "server-only"',
+    'Todo src/lib/foro/ menos limites.ts y tipos.ts empieza por `import "server-only";` (FORO.md §6.0).');
+  informar(selectTodo, "foro: ninguna lectura pide todas las columnas", "foro: select sin columnas en el módulo",
+    "Pide las columnas una a una: nada sale del foro sin pasar por un tipo de tipos.ts (FORO.md §6.0).");
+}
+
 // ── Ejecución ─────────────────────────────────────────────────────────────
 console.log("\nComprobaciones de código\n");
 checkEslint();
@@ -302,6 +366,7 @@ checkMetadata();
 checkDateReparse();
 checkGuideCss();
 checkGuiasSeo();
+checkForo();
 
 if (problems.length) {
   console.log(`\n${RED}Falla la comprobación.${OFF} Qué hacer:\n`);
