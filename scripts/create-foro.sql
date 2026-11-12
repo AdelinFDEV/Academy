@@ -270,7 +270,7 @@ create table if not exists public.foro_puntos (
                               'ganadora', 'me_gusta', 'gracias', 'interesante', 'yo_tambien',
                               'respuesta', 'pregunta', 'elegir_ganadora',
                               'retirado', 'sancion')),
-  puntos        integer     not null check (puntos <> 0 and puntos between -100 and 100),
+  puntos        integer     not null check (puntos <> 0 and puntos between -100000 and 100000),
   pregunta_id   bigint,
   respuesta_id  uuid,
   origen_id     uuid,

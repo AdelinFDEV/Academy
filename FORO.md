@@ -232,7 +232,7 @@ Todas bloquean la fila que tocan (`select … for update`) antes de comprobar na
 - **Texto plano.** Nunca se pinta HTML del usuario: nada de `dangerouslySetInnerHTML`; React escapa el texto. Los saltos de línea se respetan. Si algún día hay formato, es un subconjunto mínimo (negrita, listas, código) convertido en el servidor con lista blanca.
 - **Normalizar antes de validar y contar**: Unicode NFC, quitar caracteres invisibles (ancho cero, control, dirección del texto), colapsar espacios y saltos repetidos. Si no, las palabras vetadas se esquivan con un carácter invisible en medio. Tope de marcas combinadas por letra (el texto «zalgo» que se sale de su línea) y de saltos de línea.
 - **Para comparar con los filtros se usa una segunda forma, más agresiva** (NFKC, sin tildes, minúsculas, letras parecidas de otros alfabetos pasadas a la latina): «ｅｓｔａｆａ» o una «а» cirílica no esquivan nada. Se guarda el texto en NFC; la forma agresiva solo sirve para detectar.
-- **Duplicados**: huella del texto normalizado. El mismo texto dos veces del mismo usuario se rechaza (cubre también el doble clic y el reintento); de usuarios distintos, va a revisión (cuentas coordinadas).
+- **Duplicados**: huella del texto normalizado. El mismo texto dos veces se rechaza, sea del mismo usuario (cubre también el doble clic y el reintento) o de otro (cuentas coordinadas, o copiar la pregunta de alguien).
 - **Enlaces**: solo a dominios de una lista blanca (la propia web, YouTube, exploradores de bloques y webs oficiales que apruebe el admin). Los demás, rechazados. Todo enlace sale con `rel="nofollow ugc noopener noreferrer"`. Se analizan con `new URL()` y se compara el **dominio exacto**: solo `https:`, sin usuario ni contraseña en la URL, sin puerto y sin dominios `xn--` (los que imitan a otro con letras parecidas). El enlace se pinta como componente de React a partir del texto, nunca como HTML.
 - **El JSON-LD lleva texto de usuarios** (§12): al escribirlo en la página, cada `<` se escapa como `<`. Sin eso, un `</script>` dentro de una pregunta cerraría la etiqueta y lo siguiente se ejecutaría como código en la página de todos.
 - **Detectores que rechazan el mensaje en el acto** (decidido el 12-11-2026; no se guarda, y el usuario ve qué tiene que quitar): algo que parezca una **frase semilla** (12 o 24 palabras seguidas de la lista BIP-39), una **clave privada**, una dirección de cartera pidiendo envíos, teléfonos y emails, «escríbeme por privado», enlaces de WhatsApp o Telegram, códigos de referido y promesas de rentabilidad («x10 asegurado»). Son las estafas típicas del sector. Un falso positivo se arregla afinando el detector, y cada rechazo se cuenta (sin guardar el texto) para ver cuál se pasa de estricto.
@@ -408,10 +408,10 @@ El objetivo es premiar **ayudar bien**, no publicar mucho. Por eso lo que más d
 | **Respuesta publicada** | +1 | 5 al día |
 | **Pregunta publicada** | +1 | 2 al día |
 | **Elegir ganadora** en tu pregunta | +2 | — |
-| Mensaje tuyo **retirado por moderación** | −10 | — |
+| Mensaje tuyo **borrado por el admin** | −10 | — |
 | **Sanción** | −25 (aviso), −50 (suspensión) | — |
 
-Quitar un me gusta o una etiqueta quita sus puntos. El total que se enseña nunca baja de 0.
+Ocultar un mensaje (por reportes o por el admin) le quita los puntos que había ganado, sin multa: es reversible, y al restaurarlo vuelven. Los −10 son solo para lo que el admin **borra**, que es definitivo. Quitar un me gusta o una etiqueta quita sus puntos. El total que se enseña nunca baja de 0.
 
 ### 10.3 Niveles
 
@@ -567,7 +567,7 @@ Cada fase deja algo comprobado y no empieza hasta que la anterior cumple su crit
 | 0 | **Decisiones** | Cerrar las decisiones pendientes | ✅ Cerradas el 12-11-2026, en el §0 |
 | 1 | **Perfil público** | Alias, foto, reglas del alias | ✅ Hecho, con `scripts/create-perfil-publico.sql` ejecutado (comprobado en Supabase el 12-11-2026) |
 | 2 | **Esquema** | Tablas, estados, `check`, únicos, índices, RLS sin policies y `revoke` a `anon` y `authenticated`. Un solo SQL, idempotente (`scripts/create-foro.sql`) | ✅ Hecho el 12-11-2026. Con la clave anónima: las 16 tablas rechazan leer y escribir (42501) y ninguna función se puede llamar. Con el token de un usuario se prueba en la fase 9; sus permisos son los mismos, y lo confirma la consulta final del SQL |
-| 3 | **Funciones atómicas** | Las del §6.3, el libro de puntos y los límites del §6.5, en Postgres | Las pruebas de concurrencia del §9.4 en verde contra una base de prueba |
+| 3 | **Funciones atómicas** | Las del §6.3, el libro de puntos y los límites del §6.5, en Postgres | Escritas el 12-11-2026 en `scripts/create-foro-funciones.sql` (26 funciones) y probadas con 152 casos en un Postgres de pruebas (PGlite): permisos, límites, réplicas, me gusta, etiquetas, ganadora, reportes, moderación, sanciones, solo lectura, tope global y borrado de cuenta. **Falta**: que el admin lo ejecute en Supabase, y los casos de dos peticiones a la vez del §9.4 (50 me gusta simultáneos, dos eligiendo ganadora), que necesitan varias conexiones y se prueban contra la API en la fase 9 |
 | 4 | **API** | `/api/foro/*` con las comprobaciones del §6.2, normalización, detectores y filtro de palabras, y las reglas del §6.0 en `npm run check` | Cada ruta rechaza cada caso de «Permisos» y «Contenido» del §15 |
 | 5 | **Imágenes** | Subida firmada, comprobación, recodificado, buckets y limpieza (§6.6) | Los casos de «Imágenes» del §15 en verde |
 | 6 | **Moderación** | `/admin/foro`: reportes, ocultados, alertas, sanciones y registro | El admin puede hacer cada acción del §7, y todas quedan en el registro |
