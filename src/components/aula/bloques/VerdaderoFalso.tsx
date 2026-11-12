@@ -91,7 +91,7 @@ export default function VerdaderoFalso({ datos }: { datos: DatosVF }) {
             <div className="aula-vf-botones">
               {[true, false].map((v) => {
                 const estado =
-                  respuesta === null ? "" : v === actual.verdadero ? " is-buena" : v === respuesta ? " is-mala" : " is-apagada";
+                  respuesta === null ? "" : v === actual.verdadero ? " is-buena" : v === respuesta ? " is-mala" : " is-neutra";
                 return (
                   <button
                     key={String(v)}
@@ -113,7 +113,11 @@ export default function VerdaderoFalso({ datos }: { datos: DatosVF }) {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <strong>{actual.verdadero ? "Verdadero." : "Falso."}</strong> {actual.explicacion}
+                <p className="aula-feedback-cab">
+                  {respuesta === actual.verdadero ? <Check size={16} strokeWidth={3} aria-hidden="true" /> : <X size={16} strokeWidth={3} aria-hidden="true" />}
+                  {respuesta === actual.verdadero ? "Correcto" : "No"}: es {actual.verdadero ? "verdadero" : "falso"}
+                </p>
+                {actual.explicacion && <p>{actual.explicacion}</p>}
                 <button type="button" className="aula-btn aula-btn--small" onClick={siguiente}>
                   {indice + 1 < total ? "Siguiente" : "Ver resultado"} <ArrowRight size={14} aria-hidden="true" />
                 </button>

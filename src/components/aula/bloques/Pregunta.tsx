@@ -8,6 +8,10 @@ import { Marco } from "./comun";
 /**
  * Pregunta de repaso dentro de una lección. No puntúa nada: sirve para que
  * el alumno compruebe al momento si lo ha entendido, con la explicación.
+ *
+ * Al contestar se marcan la buena y, si falló, la que eligió. **Las demás se
+ * quedan legibles** (`is-neutra`): hasta el 12-11-2026 bajaban al 45 % de
+ * opacidad y, sobre el fondo oscuro, parecía que habían desaparecido.
  * (La solución viaja al navegador, y no pasa nada: esto no es el examen.
  * Las preguntas del examen NO van nunca en un bloque.)
  *
@@ -36,7 +40,7 @@ export default function Pregunta({ datos: p }: { datos: DatosPregunta }) {
       <div className="aula-opciones" role="radiogroup" aria-label={p.enunciado}>
         {p.opciones.map((o, i) => {
           const estado =
-            elegida === null ? "" : i === p.correcta ? " is-buena" : i === elegida ? " is-mala" : " is-apagada";
+            elegida === null ? "" : i === p.correcta ? " is-buena" : i === elegida ? " is-mala" : " is-neutra";
           return (
             <button
               key={i}
@@ -60,13 +64,19 @@ export default function Pregunta({ datos: p }: { datos: DatosPregunta }) {
         {elegida !== null && (
           <motion.div
             className={`aula-feedback ${acierto ? "is-buena" : "is-mala"}`}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            role="status"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            <strong>{acierto ? "Correcto." : "No es esa."}</strong> {p.explicacion}
-            <button type="button" className="aula-btn-texto" onClick={() => setElegida(null)}>
-              <RotateCcw size={13} aria-hidden="true" /> Repetir
+            <p className="aula-feedback-cab">
+              {acierto ? <Check size={16} strokeWidth={3} aria-hidden="true" /> : <X size={16} strokeWidth={3} aria-hidden="true" />}
+              {acierto ? "Correcto" : "No es esa"}
+            </p>
+            {p.explicacion && <p>{p.explicacion}</p>}
+            <button type="button" className="aula-btn aula-btn--ghost aula-btn--small" onClick={() => setElegida(null)}>
+              <RotateCcw size={13} aria-hidden="true" /> Intentarlo otra vez
             </button>
           </motion.div>
         )}

@@ -17,6 +17,7 @@ Lo que hay en este archivo:
 11. [Diccionario, aviso legal y textos](#11--diccionario-aviso-legal-y-textos)
 12. [Subir, probar y publicar](#12--subir-probar-y-publicar)
 13. [Dónde aparece un curso en la web](#13--dónde-aparece-un-curso-en-la-web)
+14. [La plantilla visual del aula](#14--la-plantilla-visual-del-aula)
 
 ---
 
@@ -417,3 +418,33 @@ Todo sale solo de Supabase al publicarlo; no hay que tocar estas páginas:
 | `/dashboard` | La vitrina de certificados |
 | `/dashboard/logros` | El logro, en «Cursos» |
 | `/cursos/verificar/<codigo>` | La verificación pública de cada certificado |
+
+---
+
+## 14 · La plantilla visual del aula
+
+**Todos los cursos se ven igual por dentro, y un curso nuevo no trae ni una línea de CSS.** El aula es una plantilla (rehecha el 12-11-2026, a petición del admin, que pidió que los cursos futuros la usen): el curso pone el contenido y su `color`, y la plantilla pone todo lo demás. Vive en `src/app/aula/aula.css` y en `src/components/aula/`.
+
+**Lo que el alumno ve, de arriba abajo:**
+
+| Pieza | Qué hace | Dónde |
+|---|---|---|
+| Barra superior | «Salir», el curso (lleva a su portada), **un tramo por módulo** que se rellena con sus lecciones y se pone verde al aprobar su examen, y «Seguir donde lo dejé» | `AulaShell.tsx` |
+| Temario | Un camino: cada módulo con su ficha (número, visto o candado) y su nota al aprobarlo; las lecciones cuelgan de un raíl con la actual marcada. Plegable con la tecla T; en móvil, panel que se abre desde la barra de arriba | `AulaShell.tsx`, `AulaCuerpo.tsx` |
+| Portada del aula | El anillo de avance, **el siguiente paso como botón principal**, cuatro cifras y el cronograma por módulos | `aula/[curso]/page.tsx` |
+| Lección | Módulo y título, etiquetas (minutos, revisión, completada), **las paradas del módulo** (una por lección y el examen al final), una línea de avance de lectura bajo la barra, y al final una tarjeta que dice qué viene después | `aula/[curso]/[leccion]/page.tsx`, `ProgresoLectura.tsx` |
+| Bloques | Una tarjeta común (`Marco`) con su etiqueta y un color por familia: comprobar, minijuego, calculadora, gráfico | `bloques/comun.tsx` |
+| Examen | Tres cifras antes de empezar (preguntas, nota de corte, espera), barra de contestadas, una pregunta por pantalla en su tarjeta, y el resultado con la corrección | `Examen.tsx` |
+
+**Las reglas de la plantilla** (valen para cualquier pieza nueva del aula):
+
+- **El color entra solo por `--aula-acento`.** Nada de hexadecimales de un curso concreto en el CSS. Los derivados ya existen: `--aula-acento-suave` (fondos) y `--aula-acento-linea` (bordes).
+- **Sobre el color del curso, el texto es `--aula-sobre-acento` (`#0a1628`), nunca blanco.**
+- **Las superficies son tres**: `--aula-panel` (tarjetas), `--aula-panel-alto` (encima de una tarjeta) y `--aula-hundido` (dentro de una tarjeta: opciones, cartas, cifras). No inventes una cuarta.
+- **Un estado nunca se dice solo con transparencia.** Al contestar una pregunta se marcan la buena (`is-buena`) y, si falló, la elegida (`is-mala`); **las demás se quedan legibles** (`is-neutra`). Hasta el 12-11-2026 bajaban al 45 % de opacidad y, sobre el fondo oscuro, parecía que las opciones desaparecían: lo notó el admin.
+- **Las opciones de una pregunta son siempre `.aula-opciones` / `.aula-opcion`**, las mismas en el bloque `pregunta` y en el examen. Un bloque nuevo con respuestas las reutiliza.
+- **En móvil, nada flota sobre los botones de abajo.** El botón del temario va en la barra superior.
+- **Se anima con `transform` y `opacity`**, y todo está en la lista de `prefers-reduced-motion` del final de `aula.css`. Si añades una transición, añádela ahí.
+- **El texto de la lección no se toca desde el aula**: el vocabulario `.prose-*` es el de toda la web (`globals.css`). El aula solo le da ritmo (`.aula-prose`), como el trazo del color del curso sobre cada `<h2>`.
+
+**Para un curso nuevo no hay que hacer nada de esto**: basta con seguir los puntos 5 a 8. Esta sección es para quien toque el aula.

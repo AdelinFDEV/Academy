@@ -5,9 +5,9 @@ import type { ContextoAula } from "@/lib/cursos";
 import { formatoNota, type EstadoExamen } from "@/lib/cursos-progreso";
 
 /**
- * El esqueleto de todas las pantallas del aula: barra superior con el
- * progreso y el temario a la izquierda, que se puede plegar (en móvil, en un
- * panel). Cómo se enseña lo decide AulaCuerpo.
+ * El esqueleto de todas las pantallas del aula: barra superior con el curso y
+ * el avance módulo a módulo, y el temario a la izquierda, que se puede plegar
+ * (en móvil, en un panel). Cómo se enseña lo decide AulaCuerpo.
  *
  * El temario dice en cada fila si está hecha, abierta o cerrada, y es el
  * mismo cálculo que decide si se puede entrar (`estadoCurso`): lo que se ve
@@ -46,7 +46,9 @@ function piezasTemario(ctx: ContextoAula, activo: Activo) {
   const cabecera = (
       <Link href={`/aula/${slug}`} className={`aula-temario-inicio${"inicio" in activo ? " is-activo" : ""}`}>
         <span className="aula-temario-curso">{curso.curso.titulo}</span>
-        <span className="aula-temario-pct">{estado.porcentaje} % completado</span>
+        <span className="aula-temario-pct">
+          <b>{estado.porcentaje} %</b> · {estado.leccionesHechas} de {estado.leccionesTotales} lecciones
+        </span>
         <span className="aula-barra"><i style={{ width: `${estado.porcentaje}%` }} /></span>
       </Link>
   );
@@ -59,14 +61,18 @@ function piezasTemario(ctx: ContextoAula, activo: Activo) {
             ("leccion" in activo && modulo.lecciones.some((l) => l.slug === activo.leccion)) ||
             ("examen" in activo && activo.examen === modulo.orden);
           return (
-            <li key={modulo.id} className={`aula-temario-modulo${desbloqueado ? "" : " is-bloqueado"}`}>
+            <li key={modulo.id} className={`aula-temario-modulo${examen.tipo === "aprobado" ? " is-hecho" : desbloqueado ? "" : " is-bloqueado"}`}>
               <details open={contieneActivo || (desbloqueado && examen.tipo !== "aprobado")}>
                 <summary>
-                  <span className="aula-temario-modnum">{String(modulo.orden).padStart(2, "0")}</span>
-                  <span className="aula-temario-modtit">{modulo.titulo}</span>
-                  <span className="aula-temario-modcuenta">
-                    {examen.tipo === "aprobado" ? <Check size={13} strokeWidth={3} aria-label="Aprobado" /> : desbloqueado ? `${hechas}/${modulo.lecciones.length}` : <Lock size={12} aria-label="Bloqueado" />}
+                  <span className="aula-temario-modnum">
+                    {examen.tipo === "aprobado" ? <Check size={14} strokeWidth={3} aria-label="Aprobado" /> : desbloqueado ? modulo.orden : <Lock size={12} aria-label="Bloqueado" />}
                   </span>
+                  <span className="aula-temario-modtit">{modulo.titulo}</span>
+                  {desbloqueado && (
+                    <span className="aula-temario-modcuenta">
+                      {examen.tipo === "aprobado" ? formatoNota(examen.nota) : `${hechas}/${modulo.lecciones.length}`}
+                    </span>
+                  )}
                 </summary>
                 <ul>
                   {modulo.lecciones.map((l) => {
@@ -166,10 +172,26 @@ export default function AulaShell({ ctx, activo, children }: { ctx: ContextoAula
       <header className="aula-barra-sup">
         <Link href={`/cursos/${curso.curso.slug}`} className="aula-volver">
           <ArrowLeft size={16} aria-hidden="true" />
-          <span>Ficha del curso</span>
+          <span>Salir</span>
         </Link>
-        <div className="aula-barra-progreso" aria-label={`${estado.porcentaje} % del curso completado`}>
-          <span className="aula-barra"><i style={{ width: `${estado.porcentaje}%` }} /></span>
+        <Link href={`/aula/${curso.curso.slug}`} className="aula-barra-curso" title="Ir a la portada del curso">
+          <span className="aula-barra-curso-rotulo">Curso</span>
+          <span className="aula-barra-curso-nombre">{curso.curso.titulo}</span>
+        </Link>
+        {/* Un tramo por módulo: aprobado, a medias (por sus lecciones) o sin empezar. */}
+        <div className="aula-barra-progreso" role="img" aria-label={`${estado.porcentaje} % del curso completado`}>
+          <span className="aula-tramos">
+            {estado.modulos.map(({ modulo, hechas, examen }) => {
+              const aprobado = examen.tipo === "aprobado";
+              // El examen cuenta como una parada más: sin aprobarlo, el tramo no se llena.
+              const lleno = aprobado ? 1 : hechas / (modulo.lecciones.length + 1);
+              return (
+                <i key={modulo.id} className={aprobado ? "is-hecho" : undefined}>
+                  <b style={{ transform: `scaleX(${lleno})` }} />
+                </i>
+              );
+            })}
+          </span>
           <span className="aula-barra-pct">{estado.porcentaje} %</span>
         </div>
         {hrefSiguiente && !("inicio" in activo) && (

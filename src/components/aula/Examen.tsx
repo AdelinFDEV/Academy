@@ -152,12 +152,15 @@ export default function Examen(props: PropsExamen) {
       <div className="aula-examen-intro">
         <span className="aula-examen-icono"><ClipboardCheck size={28} strokeWidth={1.8} aria-hidden="true" /></span>
         <h1 className="aula-h1">{props.titulo}</h1>
+        <div className="aula-examen-cifras">
+          <div><strong>{props.numPreguntas}</strong><span>preguntas, todas obligatorias</span></div>
+          <div><strong>{nota(props.notaMinima)}</strong><span>sobre 10 para aprobar</span></div>
+          <div><strong>24 h</strong><span>de espera si suspendes</span></div>
+        </div>
         <ul className="aula-examen-reglas">
-          <li><strong>{props.numPreguntas} preguntas</strong>, sacadas al azar de un banco más grande: cada intento es distinto.</li>
-          <li><strong>Todas son obligatorias.</strong> No se puede entregar con ninguna en blanco.</li>
+          <li>Las preguntas salen <strong>al azar de un banco más grande</strong>: cada intento es distinto.</li>
           <li><strong>Las respuestas incorrectas restan</strong>: cada fallo quita una parte de un acierto, así que contestar al azar no sale a cuenta.</li>
-          <li>Nota de 0 a 10. <strong>Apruebas con un {nota(props.notaMinima)}</strong>{props.examen === "final" ? " y ganas el certificado y el logro del curso." : " y se abre el módulo siguiente."}</li>
-          <li>Si suspendes, puedes repetirlo <strong>pasadas 24 horas</strong>, con otras preguntas.</li>
+          <li>Al aprobar{props.examen === "final" ? " ganas el certificado y el logro del curso." : " se abre el módulo siguiente."}</li>
           <li>Puedes cerrar y volver: el examen sigue abierto y tus respuestas se guardan.</li>
         </ul>
         {props.intentosPrevios > 0 && (
@@ -180,6 +183,10 @@ export default function Examen(props: PropsExamen) {
         <span className="aula-kicker">{props.titulo}</span>
         <span className="aula-examen-contador">{contestadas} de {preguntas.length} contestadas</span>
       </header>
+
+      <div className="aula-examen-avance" aria-hidden="true">
+        <span className="aula-barra"><i style={{ width: `${preguntas.length ? (contestadas / preguntas.length) * 100 : 0}%` }} /></span>
+      </div>
 
       <nav className="aula-examen-puntos" aria-label="Preguntas">
         {preguntas.map((q, i) => (
