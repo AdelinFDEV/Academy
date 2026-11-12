@@ -244,12 +244,25 @@ function PasoFirmeBadgeIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function MargenBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Una balanza desequilibrada: poco dinero a un lado, mucha posición al otro */}
+      <path d="M12 4v16M8 20h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M4.5 8.5 19.5 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M2.5 14.5 4.5 8.5l2 6a2.1 2.1 0 0 1-4 0Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M16.5 13.5 19.5 5.5l3 8a3.1 3.1 0 0 1-6 0Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 // Icono propio por curso. Sin entrada, el birrete genérico.
 const CURSO_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode> = {
   "psicologia-del-trading": (size) => <PsicologiaBadgeIcon size={size} />,
   "seguridad-cripto": (size) => <SeguridadBadgeIcon size={size} />,
   "coinmarketcap-y-coingecko": (size) => <DatosBadgeIcon size={size} />,
   "bitcoin-y-dca": (size) => <PasoFirmeBadgeIcon size={size} />,
+  "futuros-y-apalancamiento": (size) => <MargenBadgeIcon size={size} />,
 };
 
 export function iconoCurso(slug: string, size: number): React.ReactNode {
