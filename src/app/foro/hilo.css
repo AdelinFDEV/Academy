@@ -2,42 +2,78 @@
    EL FORO — un hilo (/foro/<id>-<titulo>)
    ══════════════════════════════════════════════════════════════════════════
 
-   Lo importa `src/components/foro/HiloCompleto.tsx`. Prefijo: fh-.
+   Lo importa `src/components/foro/HiloCompleto.tsx`. Prefijo: fh- (y lo de
+   participar que solo vive en el hilo: el «me gusta» y las etiquetas, fp-).
+   Rehecho desde cero el 12-11-2026, con el resto del foro.
 
-   La pregunta manda: va sin caja, como el arranque de un artículo. Las
-   respuestas son una lista separada por líneas, y las réplicas cuelgan de la
-   suya con una sola sangría (el hilo tiene un nivel, FORO.md §2). El verde se
-   reserva para una cosa: la respuesta elegida. */
+   · La pregunta abre como un artículo: titular grande y, debajo, su texto en
+     una tarjeta con un filo del color de su categoría.
+   · Cada respuesta es una tarjeta con un RIEL a la izquierda, donde vive su
+     «me gusta». Es lo que ordena las respuestas, así que se ve de un vistazo.
+   · La elegida es la única verde de la página: cinta arriba, borde y riel.
+   · Las réplicas cuelgan de su respuesta con UNA sangría y una línea que las
+     une: el hilo tiene un solo nivel (FORO.md §2).
+   · A la derecha, una ficha fija con las cifras del hilo y el botón de
+     responder, para no tener que bajar hasta el final. */
 
-.fh-main { max-width: 780px; }
+/* ── Cabecera: el titular de la pregunta ───────────────────────────────── */
 
-/* ── La pregunta ───────────────────────────────────────────────────────── */
-
-.fh-pregunta { margin-bottom: 2.6rem; }
+.fh-cabecera {
+  max-width: 54rem;
+  margin-bottom: 2.2rem;
+}
 
 .fh-sellos {
   display: flex;
-  gap: 0.4rem;
-  min-height: 0;
-  margin-bottom: 0.7rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
 }
 
-.fh-sellos:empty { display: none; }
-
 .fh-titulo {
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.4rem;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
-  font-weight: 700;
-  line-height: 1.18;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
+  font-size: clamp(1.75rem, 4.2vw, 2.7rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  color: #fff;
   overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.fh-rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  align-items: start;
+  gap: 2.2rem;
+}
+
+.fh-principal { min-width: 0; }
+
+/* ── La pregunta ───────────────────────────────────────────────────────── */
+
+.fh-pregunta {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2.8rem;
+  padding: 1.8rem 1.9rem 1.3rem;
+}
+
+/* El filo de color, arriba: de la categoría, que se apaga hacia la derecha. */
+.fh-pregunta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cat) 0%, color-mix(in srgb, var(--cat) 20%, transparent) 70%, transparent 100%);
 }
 
 .fh-texto-pregunta {
-  margin-top: 1.5rem;
-  font-size: 1.06rem;
+  font-size: 1.08rem;
   color: var(--text-primary);
 }
 
@@ -45,190 +81,539 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   gap: 0.7rem;
-  margin-top: 1.5rem;
+  margin-top: 1.6rem;
   list-style: none;
 }
 
 .fh-imagenes a {
   display: block;
   overflow: hidden;
-  border: 1px solid var(--hairline);
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--fo-borde);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  transition: border-color 0.18s ease, transform 0.18s ease;
 }
 
-.fh-imagenes a:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+.fh-imagenes a:hover { border-color: var(--fo-borde-vivo); transform: translateY(-2px); }
+.fh-imagenes a:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 3px; }
+.fh-imagenes img { display: block; width: 100%; height: 9.5rem; object-fit: cover; }
 
-.fh-imagenes img {
-  display: block;
-  width: 100%;
-  height: 9rem;
-  object-fit: cover;
+.fh-pregunta-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem 1.2rem;
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--fo-borde);
 }
 
-.fh-pie-pregunta {
+.fh-pregunta-acciones {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.7rem 1.2rem;
-  margin-top: 1.6rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--hairline);
+  justify-content: flex-end;
+  gap: 0.6rem;
 }
 
-.fh-etiquetas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.3rem;
-  list-style: none;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.fh-etiquetas b {
-  margin-right: 0.15rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
-}
+.fh-pregunta-acciones .fp-acciones { margin-top: 0; }
 
 .fh-marca {
   font-size: 0.74rem;
   font-style: italic;
   color: var(--text-muted);
+  white-space: nowrap;
 }
+
+/* ── Las etiquetas: tres teclas ────────────────────────────────────────── */
+
+.fp-etiquetas { min-width: 0; }
+
+.fh-etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  list-style: none;
+}
+
+.fp-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.3rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--fo-borde-vivo);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.fp-etiqueta b {
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--fo-borde-vivo);
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+button.fp-etiqueta:hover:not(:disabled) {
+  border-color: var(--accent-orange-soft);
+  background: var(--accent-orange-light);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+button.fp-etiqueta:disabled { cursor: default; }
+button.fp-etiqueta:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 2px; }
+
+.fp-etiqueta.is-puesta {
+  border-color: var(--accent-orange);
+  background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  color: #fff;
+}
+
+.fp-etiqueta.is-puesta svg { color: var(--accent-orange-soft); }
+.fp-etiqueta.is-puesta b { border-left-color: color-mix(in srgb, var(--accent-orange) 60%, transparent); }
+.fp-etiqueta.es-propia { cursor: default; }
 
 /* ── Las respuestas ────────────────────────────────────────────────────── */
 
 .fh-respuestas-cab {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 0.6rem 1rem;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--hairline);
+  gap: 0.7rem 1rem;
+  margin-bottom: 1.1rem;
 }
 
-.fh-respuestas-cab h2 {
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-}
-
+/* El orden, como un interruptor de dos posiciones. */
 .fh-orden {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.8rem;
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--fo-borde);
+  border-radius: 999px;
+  background: rgba(6, 13, 26, 0.5);
 }
 
-.fh-orden a { color: var(--text-muted); text-decoration: none; }
-.fh-orden a:hover { color: var(--text-primary); }
-.fh-orden a.is-activo { color: var(--text-primary); font-weight: 600; }
+.fh-orden a {
+  padding: 0.38rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
 
-.fh-lista { list-style: none; }
+.fh-orden a:hover { color: #fff; }
+.fh-orden a.is-activo { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+.fh-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  list-style: none;
+}
 
 .fh-respuesta {
-  padding: 1.5rem 0;
-  border-bottom: 1px solid var(--hairline);
+  overflow: hidden;
   /* Al llegar por un aviso (#r-…), que la barra fija no tape el mensaje. */
   scroll-margin-top: calc(var(--nav-h) + 1rem);
 }
 
-.fh-respuesta .fo-texto { margin-top: 0.9rem; }
+.fh-respuesta:target { border-color: var(--accent-orange); }
 
-/* La elegida: una raya verde a la izquierda y su rótulo. Sin fondo de color:
-   tiene que leerse igual de bien que las demás. */
-.fh-respuesta.is-ganadora {
-  margin-left: -1.1rem;
-  padding-left: 1.1rem;
-  border-left: 3px solid var(--free-green);
+.fh-respuesta-dentro {
+  display: grid;
+  grid-template-columns: 4.4rem minmax(0, 1fr);
 }
 
-.fh-ganadora {
-  margin-bottom: 0.8rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--free-green);
+.fh-respuesta-cuerpo {
+  min-width: 0;
+  padding: 1.4rem 1.6rem 1.2rem 1.4rem;
 }
 
-.fh-pie {
+.fh-mensaje-cab {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem 1rem;
-  margin-top: 0.9rem;
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.9rem;
 }
 
-.fh-pie:empty { display: none; }
+/* ── El riel del «me gusta» ────────────────────────────────────────────── */
 
-.fh-megusta b {
-  font-weight: 700;
-  color: var(--text-primary);
+.fh-riel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.3rem 0.4rem;
+  border-right: 1px solid var(--fo-borde);
+  background: rgba(6, 13, 26, 0.35);
+}
+
+.fp-megusta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--fo-borde-vivo);
+  background: rgba(255, 255, 255, 0.03);
+  font: inherit;
+  color: var(--text-muted);
+  transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+button.fp-megusta { cursor: pointer; }
+button.fp-megusta:disabled { cursor: default; }
+button.fp-megusta:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 2px; }
+
+.fp-megusta b {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: #fff;
   font-variant-numeric: tabular-nums;
+}
+
+button.fp-megusta:hover:not(:disabled) {
+  border-color: #ff7a93;
+  background: rgba(255, 122, 147, 0.1);
+  color: #ff9fb2;
+  transform: translateY(-1px);
+}
+
+.fp-megusta.is-puesto { border-color: #ff7a93; background: rgba(255, 122, 147, 0.14); color: #ff7a93; }
+.fp-megusta.es-propio { border-style: dashed; }
+
+/* En el riel: en vertical, el corazón encima de la cifra, sin texto. */
+.fh-riel .fp-megusta {
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 3.2rem;
+  padding: 0.7rem 0 0.6rem;
+  border-radius: 14px;
+}
+
+.fh-riel .fp-megusta b { font-size: 1.15rem; line-height: 1; }
+.fh-riel .fp-megusta-texto { display: none; }
+
+/* Si no puede participar, la invitación sale al lado del riel, no dentro. */
+.fh-riel .fp-invitacion,
+.fh-riel .fp-error {
+  position: absolute;
+  top: 1.3rem;
+  left: calc(100% + 0.8rem);
+  z-index: 5;
+  width: min(22rem, 68vw);
+  margin: 0;
+  box-shadow: var(--fo-sombra);
+}
+
+.fh-riel .fp-error {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  border-radius: 12px;
+  background: #0b1526;
+}
+
+/* ── La respuesta elegida ──────────────────────────────────────────────── */
+
+.fh-respuesta.is-ganadora {
+  border-color: color-mix(in srgb, var(--fo-verde) 50%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--fo-verde) 9%, transparent) 0%, transparent 42%),
+    var(--fo-cristal), rgba(13, 26, 48, 0.72);
+  box-shadow: var(--fo-filo), 0 26px 60px -34px var(--fo-verde);
+}
+
+.fh-cinta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--fo-verde) 30%, transparent);
+  background: color-mix(in srgb, var(--fo-verde) 14%, transparent);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fo-verde);
+}
+
+.fh-respuesta.is-ganadora .fh-riel {
+  border-right-color: color-mix(in srgb, var(--fo-verde) 28%, transparent);
+  background: color-mix(in srgb, var(--fo-verde) 6%, transparent);
 }
 
 /* ── Las réplicas: un solo nivel ───────────────────────────────────────── */
 
 .fh-replicas {
-  margin-top: 1.2rem;
-  padding-left: 1.2rem;
-  border-left: 1px solid var(--hairline);
+  position: relative;
+  margin-top: 1.3rem;
+  padding-left: 1.3rem;
   list-style: none;
 }
 
+/* La línea que las une a su respuesta. */
+.fh-replicas::before {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  bottom: 0.9rem;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--fo-borde-vivo) 0%, var(--fo-borde) 100%);
+}
+
 .fh-replica {
-  padding: 0.85rem 0;
+  position: relative;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--fo-borde);
+  border-radius: 14px;
+  background: rgba(6, 13, 26, 0.42);
   scroll-margin-top: calc(var(--nav-h) + 1rem);
 }
 
-.fh-replica + .fh-replica { border-top: 1px solid var(--hairline); }
-.fh-replica .fo-texto { margin-top: 0.5rem; font-size: 0.93rem; line-height: 1.6; }
-.fh-replica .fh-pie { margin-top: 0.5rem; }
+.fh-replica + .fh-replica { margin-top: 0.6rem; }
+.fh-replica:target { border-color: var(--accent-orange); }
+
+/* El codo que la engancha a la línea. */
+.fh-replica::before {
+  content: "";
+  position: absolute;
+  top: 1.5rem;
+  left: -1.3rem;
+  width: 1.3rem;
+  height: 2px;
+  background: var(--fo-borde-vivo);
+}
+
+.fh-replica .fh-mensaje-cab { margin-bottom: 0.45rem; }
+.fh-replica .fo-texto { font-size: 0.95rem; line-height: 1.62; }
 
 .fh-cita {
-  margin-top: 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
   font-size: 0.76rem;
   color: var(--text-muted);
 }
 
-/* ── Cierre ────────────────────────────────────────────────────────────── */
+.fh-cita b { color: var(--text-secondary); font-weight: 600; }
+
+.fh-replica-pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.2rem 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.fh-replica-pie .fp-acciones { flex: 1; min-width: 0; margin-top: 0; }
+.fh-replica-pie .fp-acciones > .fp-fila { margin-left: 0; }
+
+/* En una réplica el «me gusta» va en línea, pequeño. */
+.fh-replica-pie .fp-megusta { padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.78rem; }
+.fh-replica-pie .fp-megusta svg { width: 14px; height: 14px; }
+.fh-replica-pie .fp-megusta-texto { display: none; }
+
+/* ── Responder y cierre ────────────────────────────────────────────────── */
+
+.fh-responder {
+  margin-top: 1.6rem;
+  padding: 1.5rem 1.6rem;
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.fh-responder-titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.fh-responder-titulo svg { color: var(--accent-orange-soft); }
+.fh-responder .fp-invitacion { margin-top: 0; }
 
 .fh-cerrado {
-  margin-top: 1.5rem;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--hairline);
-  border-radius: 12px;
-  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.6rem;
+  padding: 1rem 1.2rem;
+  border: 1px dashed var(--fo-borde-vivo);
+  border-radius: 16px;
+  font-size: 0.9rem;
   color: var(--text-secondary);
 }
 
 .fh-opiniones {
-  margin: 2.6rem 0 1.2rem;
+  max-width: 46rem;
+  margin: 3rem 0 1.2rem;
   font-size: 0.8rem;
   line-height: 1.55;
   color: var(--text-muted);
 }
 
-@media (max-width: 600px) {
-  .fh-respuesta.is-ganadora { margin-left: -0.8rem; padding-left: 0.8rem; }
-  .fh-replicas { padding-left: 0.8rem; }
+/* ── La columna lateral ────────────────────────────────────────────────── */
+
+.fh-lateral {
+  position: sticky;
+  top: calc(var(--nav-h) + 1.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fh-ficha { padding: 1.3rem; }
+
+.fh-ficha dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 1rem;
+}
+
+.fh-ficha dl > div { display: flex; flex-direction: column-reverse; gap: 0.2rem; text-align: center; }
+.fh-ficha dl > div + div { border-left: 1px solid var(--fo-borde); }
+
+.fh-ficha dd {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.fh-ficha dt {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fh-estado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.fh-estado::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+}
+
+.fh-estado.is-resuelto { background: color-mix(in srgb, var(--fo-verde) 12%, transparent); color: var(--fo-verde); }
+.fh-estado.is-resuelto::before { background: var(--fo-verde); }
+
+.fh-ficha-boton { width: 100%; margin-top: 0.8rem; }
+
+.fh-recordatorio { padding: 1.2rem 1.3rem; }
+
+.fh-recordatorio h2 {
+  margin-bottom: 0.7rem;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.fh-recordatorio ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  list-style: none;
+}
+
+.fh-recordatorio li {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.fh-recordatorio li::before {
+  content: "";
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-orange-soft);
+}
+
+.fh-recordatorio a { font-size: 0.8rem; font-weight: 700; color: var(--accent-orange-soft); text-decoration: none; }
+.fh-recordatorio a:hover { color: #fff; }
+
+/* ── Pantallas más estrechas ───────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .fh-rejilla { grid-template-columns: 1fr; }
+  .fh-lateral { position: static; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .fh-pregunta { padding: 1.3rem 1.15rem 1rem; }
+  .fh-texto-pregunta { font-size: 1rem; }
+  /* En el móvil el riel se tumba: una franja arriba, con el «me gusta» en línea. */
+  .fh-respuesta-dentro { grid-template-columns: 1fr; }
+  .fh-riel {
+    flex-direction: row;
+    align-items: center;
+    padding: 0.6rem 1.1rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--fo-borde);
+  }
+  .fh-riel .fp-megusta { flex-direction: row; width: auto; padding: 0.4rem 0.85rem; border-radius: 999px; }
+  .fh-riel .fp-megusta b { font-size: 0.95rem; }
+  .fh-riel .fp-megusta-texto { display: inline; font-size: 0.78rem; }
+  .fh-riel .fp-invitacion,
+  .fh-riel .fp-error { top: calc(100% + 0.5rem); left: 1.1rem; width: calc(100vw - 4.4rem); }
+  .fh-respuesta-cuerpo { padding: 1.1rem 1.15rem 1rem; }
+  .fh-replicas { padding-left: 0.9rem; }
+  .fh-replica::before { left: -0.9rem; width: 0.9rem; }
+  .fh-responder { padding: 1.2rem 1.15rem; }
+  .fh-lateral { grid-template-columns: 1fr; }
   .fh-imagenes { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ── Responder a la pregunta ───────────────────────────────────────────── */
-
-.fh-responder { margin-top: 2rem; }
-
-.fh-responder h3 {
-  margin-bottom: 0.8rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-primary);
+@media (prefers-reduced-motion: reduce) {
+  .fp-megusta,
+  .fp-etiqueta,
+  .fh-imagenes a,
+  .fh-orden a { transition: none; }
+  button.fp-megusta:hover:not(:disabled),
+  button.fp-etiqueta:hover:not(:disabled),
+  .fh-imagenes a:hover { transform: none; }
 }

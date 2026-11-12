@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { HandHeart, Lightbulb, Users, type LucideIcon } from "lucide-react";
 import { pedirForo } from "@/components/foro/pedir";
 import { ETIQUETAS, type EtiquetaId } from "@/lib/foro/limites";
 import { useHilo } from "./ContextoHilo";
 import Invitacion from "./Invitacion";
 
 type Cuentas = { interesante: number; gracias: number; yo_tambien: number };
+
+const ICONO: Record<EtiquetaId, LucideIcon> = { interesante: Lightbulb, gracias: HandHeart, yo_tambien: Users };
 
 /**
  * Las tres etiquetas de una pregunta: Interesante, Gracias y Yo también.
@@ -42,26 +45,32 @@ export default function Etiquetas({ inicial }: { inicial: Cuentas }) {
   return (
     <div className="fp-etiquetas">
       <ul className="fh-etiquetas" aria-label="Valoraciones de la pregunta">
-        {ETIQUETAS.map((e) =>
-          mio?.esAutorDeLaPregunta ? (
-            <li key={e.id} title={e.ayuda}>
-              <b>{cuentas[e.id]}</b> {e.nombre}
+        {ETIQUETAS.map((e) => {
+          const Icono = ICONO[e.id];
+          const puesta = mio?.etiquetas.includes(e.id) ?? false;
+          return mio?.esAutorDeLaPregunta ? (
+            <li key={e.id} className="fp-etiqueta es-propia" title={e.ayuda}>
+              <Icono size={15} strokeWidth={2.2} aria-hidden="true" />
+              {e.nombre}
+              <b>{cuentas[e.id]}</b>
             </li>
           ) : (
             <li key={e.id}>
               <button
                 type="button"
-                className={`fp-accion${mio?.etiquetas.includes(e.id) ? " is-puesto" : ""}`}
-                aria-pressed={mio?.etiquetas.includes(e.id) ?? false}
+                className={`fp-etiqueta${puesta ? " is-puesta" : ""}`}
+                aria-pressed={puesta}
                 title={e.ayuda}
                 disabled={!mio || enviando !== null}
                 onClick={() => alternar(e.id)}
               >
-                <b>{cuentas[e.id]}</b> {e.nombre}
+                <Icono size={15} strokeWidth={2.2} aria-hidden="true" />
+                {e.nombre}
+                <b>{cuentas[e.id]}</b>
               </button>
             </li>
-          ),
-        )}
+          );
+        })}
       </ul>
       {error && <p className="fp-error" role="alert">{error}</p>}
       {invitar !== null && <Invitacion motivo={invitar} onCerrar={() => setInvitar(null)} />}

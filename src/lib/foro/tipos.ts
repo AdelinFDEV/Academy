@@ -151,6 +151,8 @@ export type HiloEnListado = {
   slug: string;
   titulo: string;
   categoria: { slug: string; nombre: string };
+  /** Las primeras líneas de la pregunta, para el listado. */
+  extracto: string;
   autor: AutorForo;
   fecha: string;
   ultimaActividad: string;
@@ -169,6 +171,8 @@ export type ListadoForo = {
   pagina: number;
   paginas: number;
   total: number;
+  /** Las cifras de todo el foro, para la cabecera. */
+  cifras: { preguntas: number; respuestas: number; resueltas: number };
 };
 
 /** Una respuesta o una réplica, tal como se pinta. */

@@ -26,6 +26,12 @@ const DOS_DIAS = 48 * 60 * 60 * 1000;
 
 type Cliente = ReturnType<typeof bd>;
 
+/** Las primeras palabras de un texto, en una línea y sin cortar una palabra. */
+function extracto(texto: unknown, max = 180): string {
+  const t = String(texto ?? "").replace(/\s+/g, " ").trim();
+  return t.length > max ? `${t.slice(0, max).replace(/\s+\S*$/, "")}…` : t;
+}
+
 /** Alias, foto y nivel de un puñado de usuarios. El mapa no sale de este archivo. */
 async function autores(cliente: Cliente, ids: (string | null)[]): Promise<Map<string, NonNullable<AutorForo>>> {
   const unicos = Array.from(new Set(ids.filter((x): x is string => typeof x === "string" && x !== "")));
@@ -79,7 +85,7 @@ export async function listado(categoria: string | null, pagina: number): Promise
 
   let consulta = cliente
     .from("foro_preguntas")
-    .select("id, slug, titulo, categoria, autor_id, creada_at, ultima_actividad_at, respuestas, ganadora_id, fijada, yo_tambien", { count: "exact" })
+    .select("id, slug, titulo, cuerpo, categoria, autor_id, creada_at, ultima_actividad_at, respuestas, ganadora_id, fijada, yo_tambien", { count: "exact" })
     .eq("estado", "publicada");
   if (actual) consulta = consulta.eq("categoria", actual.slug);
   const { data: filas, count } = await consulta
@@ -88,7 +94,11 @@ export async function listado(categoria: string | null, pagina: number): Promise
     .order("id", { ascending: false })
     .range(desde, desde + HILOS_POR_PAGINA - 1);
 
-  const quien = await autores(cliente, (filas ?? []).map((f) => f.autor_id as string | null));
+  const [quien, cRespuestas, cResueltas] = await Promise.all([
+    autores(cliente, (filas ?? []).map((f) => f.autor_id as string | null)),
+    cliente.from("foro_respuestas").select("id", { count: "exact", head: true }).eq("estado", "publicada"),
+    cliente.from("foro_preguntas").select("id", { count: "exact", head: true }).eq("estado", "publicada").not("ganadora_id", "is", null),
+  ]);
   const nombreDe = new Map(cats.map((c) => [c.slug, c.nombre]));
 
   const hilos: HiloEnListado[] = (filas ?? []).map((f) => ({
@@ -96,6 +106,7 @@ export async function listado(categoria: string | null, pagina: number): Promise
     slug: String(f.slug),
     titulo: String(f.titulo),
     categoria: { slug: String(f.categoria), nombre: nombreDe.get(String(f.categoria)) ?? String(f.categoria) },
+    extracto: extracto(f.cuerpo),
     autor: f.autor_id ? (quien.get(String(f.autor_id)) ?? null) : null,
     fecha: String(f.creada_at),
     ultimaActividad: String(f.ultima_actividad_at),
@@ -113,6 +124,11 @@ export async function listado(categoria: string | null, pagina: number): Promise
     pagina: n,
     paginas: Math.max(1, Math.ceil(total / HILOS_POR_PAGINA)),
     total,
+    cifras: {
+      preguntas: cats.reduce((n, c) => n + c.hilos, 0),
+      respuestas: cRespuestas.count ?? 0,
+      resueltas: cResueltas.count ?? 0,
+    },
   };
 }
 
@@ -286,7 +302,7 @@ export async function ultimosHilos(cuantos: number): Promise<HiloEnListado[]> {
   const [{ data: filas }, { data: cats }] = await Promise.all([
     cliente
       .from("foro_preguntas")
-      .select("id, slug, titulo, categoria, autor_id, creada_at, ultima_actividad_at, respuestas, ganadora_id, fijada, yo_tambien")
+      .select("id, slug, titulo, cuerpo, categoria, autor_id, creada_at, ultima_actividad_at, respuestas, ganadora_id, fijada, yo_tambien")
       .eq("estado", "publicada")
       .order("creada_at", { ascending: false })
       .order("id", { ascending: false })
@@ -300,6 +316,7 @@ export async function ultimosHilos(cuantos: number): Promise<HiloEnListado[]> {
     slug: String(f.slug),
     titulo: String(f.titulo),
     categoria: { slug: String(f.categoria), nombre: nombreDe.get(String(f.categoria)) ?? String(f.categoria) },
+    extracto: extracto(f.cuerpo, 140),
     autor: f.autor_id ? (quien.get(String(f.autor_id)) ?? null) : null,
     fecha: String(f.creada_at),
     ultimaActividad: String(f.ultima_actividad_at),

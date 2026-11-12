@@ -2,17 +2,19 @@
    EL FORO — sus dos últimas preguntas en la portada de la web
    ══════════════════════════════════════════════════════════════════════════
    Lo importa `src/components/foro/ForoEnPortada.tsx`, que sale en `/` debajo
-   de las guías. Prefijo: fpo-.
+   de las guías. Prefijo: fpo-. Rehecho el 12-11-2026, con el foro.
 
    Vive aquí y no en home.css porque es del foro: si el foro cambia, cambia
-   esto. La firma y el sello (`fo-`) salen de `foro.css`, que el componente
-   importa también: una sola definición, no dos copias.
+   esto. La tarjeta, la etiqueta de categoría, la firma y el sello (`fo-`)
+   salen de `foro.css`, que el componente importa también: una sola
+   definición, no dos copias. La sección lleva `fo-pagina` para tener sus
+   variables.
 
-   Dos tarjetas a lo ancho, sobrias: van justo después de la sección de
-   guías, que es la que tiene que mandar en la portada. */
+   Dos tarjetas a lo ancho, cada una con el lomo del color de su categoría.
+   Van justo después de las guías, que son las que mandan en la portada. */
 
 .fpo {
-  padding: 2.8rem 1.25rem 3rem;
+  padding: 3rem 1.25rem 3.2rem;
   border-top: 1px solid var(--hairline);
 }
 
@@ -27,39 +29,43 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 0.8rem 1.5rem;
-  margin-bottom: 1.4rem;
-}
-
-.fpo-antetitulo {
-  display: block;
-  margin-bottom: 0.45rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent-orange-soft);
+  margin-bottom: 1.6rem;
 }
 
 .fpo-titulo {
+  margin-top: 0.9rem;
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 3vw, 1.8rem);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  color: var(--text-primary);
+  font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: #fff;
+}
+
+.fpo-titulo em {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, var(--accent-orange-soft) 0%, var(--accent-orange) 55%, #ffd4a8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .fpo-todas {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.86rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent-orange-soft);
   text-decoration: none;
 }
 
-.fpo-todas:hover { color: var(--text-primary); }
+.fpo-todas svg { transition: transform 0.18s ease; }
+.fpo-todas:hover { color: #fff; }
+.fpo-todas:hover svg { transform: translateX(3px); }
 .fpo-todas:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; border-radius: 4px; }
 
 .fpo-lista {
@@ -70,19 +76,29 @@
 }
 
 .fpo-hilo {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.7rem;
   height: 100%;
-  padding: 1.3rem 1.4rem;
-  border: var(--card-border);
-  border-radius: 16px;
-  background: var(--bg-card);
+  padding: 1.4rem 1.5rem 1.3rem 1.7rem;
+  overflow: hidden;
   text-decoration: none;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.fpo-hilo:hover { border-color: rgba(240, 244, 255, 0.2); transform: translateY(-2px); }
+/* El lomo: el color de la categoría, de arriba abajo. */
+.fpo-hilo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--cat), color-mix(in srgb, var(--cat) 20%, transparent));
+}
+
+.fpo-hilo:hover { border-color: color-mix(in srgb, var(--cat) 50%, transparent); transform: translateY(-3px); }
 .fpo-hilo:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
 
 .fpo-meta {
@@ -92,21 +108,26 @@
   gap: 0.5rem;
 }
 
-.fpo-categoria {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
+.fpo-pregunta {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: #fff;
+  overflow-wrap: anywhere;
 }
 
-.fpo-pregunta {
+.fpo-extracto {
   flex: 1;
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
-  overflow-wrap: anywhere;
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .fpo-pie {
@@ -115,20 +136,28 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem 1rem;
+  margin-top: 0.3rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--fo-borde);
 }
 
 .fpo-respuestas {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
+.fpo-respuestas b { font-family: var(--font-display); font-size: 1rem; font-weight: 800; color: #fff; }
+.fpo-hilo.is-resuelto .fpo-respuestas b { color: var(--fo-verde); }
+
 @media (max-width: 760px) {
-  .fpo { padding: 2.2rem 1.1rem 2.4rem; }
+  .fpo { padding: 2.4rem 1.1rem 2.6rem; }
   .fpo-lista { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fpo-hilo { transition: none; }
+  .fpo-hilo,
+  .fpo-todas svg { transition: none; }
   .fpo-hilo:hover { transform: none; }
+  .fpo-todas:hover svg { transform: none; }
 }

@@ -1,57 +1,138 @@
 /* ══════════════════════════════════════════════════════════════════════════
    EL FORO — el ranking (/foro/ranking)
    ══════════════════════════════════════════════════════════════════════════
-   Lo importa `src/app/foro/ranking/page.tsx`. Prefijo: fr-.
-   Cuatro listas en dos columnas. El oro es solo para los tres primeros. */
+   Lo importa `src/components/foro/vistas/VistaRanking.tsx`. Prefijo: fr-.
+   Rehecho desde cero el 12-11-2026.
 
-.fr-main { max-width: 960px; }
+   La pantalla va en oro (lo pasa `MarcoForo` por `--cat`): es el color del
+   reconocimiento en toda la web. Arriba, un podio de verdad, con sus tres
+   peanas a distinta altura y el primero en el centro; debajo, las tablas. */
 
-.fr-rejilla {
+.fr-cabecera { padding: 0.6rem 0 2.8rem; }
+
+.fr-mes { margin-bottom: 3.4rem; }
+
+.fr-mes-rejilla {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.2rem;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 2rem;
 }
 
-.fr-tabla {
-  padding: 1.2rem 1.3rem;
-  border: var(--card-border);
-  border-radius: 16px;
-  background: var(--bg-card);
+/* ── El podio ──────────────────────────────────────────────────────────── */
+
+.fr-podio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.8rem;
+  list-style: none;
 }
 
-.fr-tabla header { margin-bottom: 0.8rem; }
+.fr-escalon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
 
-.fr-tabla h2 {
+.fr-podio-foto {
+  width: 4.2rem;
+  height: 4.2rem;
+  margin-bottom: 0.7rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 5px var(--fo-borde-vivo);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.fr-podio-foto:not(.is-variante) { background: linear-gradient(145deg, var(--accent-orange-soft), var(--accent-orange)); color: #fff; }
+
+.fr-podio-alias {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.fr-tabla header p,
-.fr-vacio {
-  font-size: 0.78rem;
+.fr-escalon > small { margin-bottom: 0.8rem; font-size: 0.74rem; color: var(--text-muted); }
+
+/* La peana: su altura dice el puesto antes que el número. */
+.fr-peana {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.3rem;
+  width: 100%;
+  padding-top: 1rem;
+  border: 1px solid var(--fo-borde);
+  border-bottom: 0;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.01) 100%);
+}
+
+.fr-escalon--1 .fr-peana { height: 9.5rem; }
+.fr-escalon--2 .fr-peana { height: 7rem; }
+.fr-escalon--3 .fr-peana { height: 5.4rem; }
+
+.fr-peana-puesto {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
   color: var(--text-muted);
 }
 
-.fr-vacio { padding: 1.2rem 0; }
+.fr-peana-puntos {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
 
-.fr-tabla ol { list-style: none; }
+.fr-peana-puntos small { font-family: var(--font-family); font-size: 0.7rem; font-weight: 500; color: var(--text-muted); }
 
+/* El primero: oro. Es lo único dorado del podio. */
+.fr-escalon--1 .fr-podio-foto { width: 5.4rem; height: 5.4rem; box-shadow: 0 0 0 3px var(--bg-dark), 0 0 0 5px var(--premium-gold), 0 18px 40px -14px var(--premium-gold); }
+.fr-escalon--1 .fr-podio-alias { font-size: 1.15rem; }
+
+.fr-escalon--1 .fr-peana {
+  border-color: var(--premium-gold-soft);
+  background: linear-gradient(180deg, rgba(230, 180, 85, 0.3) 0%, rgba(230, 180, 85, 0.03) 100%);
+}
+
+.fr-escalon--1 .fr-peana-puesto { color: var(--premium-gold); }
+
+/* ── Las filas (el resto del mes y las tablas) ─────────────────────────── */
+
+.fr-resto { padding: 0.5rem 1.2rem; list-style: none; }
+
+.fr-resto li,
 .fr-tabla li {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  padding: 0.55rem 0;
-  border-top: 1px solid var(--hairline);
+  gap: 0.75rem;
+  padding: 0.6rem 0;
 }
+
+.fr-resto li + li,
+.fr-tabla li + li { border-top: 1px solid var(--fo-borde); }
 
 .fr-puesto {
   flex: none;
-  width: 1.5rem;
+  width: 1.6rem;
   font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 800;
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
   text-align: center;
@@ -59,69 +140,108 @@
 
 .fr-tabla li.es-podio .fr-puesto { color: var(--premium-gold); }
 
-.fr-foto {
-  flex: none;
-  width: 1.9rem;
-  height: 1.9rem;
-  border-radius: 50%;
-  font-size: 0.78rem;
-}
+.fr-foto { flex: none; width: 2.1rem; height: 2.1rem; border-radius: 50%; font-size: 0.82rem; font-weight: 700; }
+.fr-foto:not(.is-variante) { background: linear-gradient(145deg, var(--accent-orange-soft), var(--accent-orange)); color: #fff; }
 
-.fr-quien {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  line-height: 1.25;
-}
-
-.fr-quien b {
-  overflow: hidden;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
+.fr-quien { flex: 1; display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.fr-quien b { overflow: hidden; font-size: 0.9rem; font-weight: 700; color: #fff; text-overflow: ellipsis; white-space: nowrap; }
 .fr-quien small { font-size: 0.72rem; color: var(--text-muted); }
 
 .fr-cifra {
   flex: none;
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
   font-variant-numeric: tabular-nums;
 }
 
-.fr-cifra small { font-family: var(--font-family); font-size: 0.7rem; font-weight: 400; color: var(--text-muted); }
+/* ── Las tres tablas ───────────────────────────────────────────────────── */
 
-.fr-niveles {
-  margin-top: 2rem;
-  font-size: 0.86rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
+.fr-rejilla {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 3.4rem;
 }
 
-.fr-niveles h2 {
+.fr-tabla { padding: 1.3rem 1.35rem 0.9rem; }
+
+.fr-tabla header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 0.6rem;
+}
+
+.fr-tabla-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 12px;
+  background: rgba(230, 180, 85, 0.13);
+  box-shadow: inset 0 0 0 1px rgba(230, 180, 85, 0.3);
+  color: var(--premium-gold);
+}
+
+.fr-tabla h3 {
+  font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  color: #fff;
 }
 
-.fr-niveles ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.4rem;
-  margin-bottom: 0.8rem;
+.fr-tabla header p,
+.fr-vacio { font-size: 0.76rem; color: var(--text-muted); }
+
+.fr-vacio { padding: 1.4rem 0 1rem; }
+.fr-tabla ol { list-style: none; }
+
+/* ── Niveles ───────────────────────────────────────────────────────────── */
+
+.fr-escala {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   list-style: none;
 }
 
-.fr-niveles b { font-weight: 600; color: var(--text-primary); }
-.fr-niveles a { color: var(--accent-orange-soft); text-decoration: underline; text-underline-offset: 2px; }
+.fr-escala li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1.2rem 1.3rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.fr-escala li + li { border-left: 1px solid var(--fo-borde); }
+.fr-escala svg { margin-bottom: 0.3rem; color: var(--premium-gold); }
+.fr-escala b { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: #fff; }
+
+.fr-nota {
+  max-width: 44rem;
+  margin-top: 1.1rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.fr-nota a { color: var(--accent-orange-soft); text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 960px) {
+  .fr-mes-rejilla { grid-template-columns: 1fr; }
+  .fr-rejilla { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 720px) {
-  .fr-rejilla { grid-template-columns: 1fr; }
+  .fr-podio-foto { width: 3.2rem; height: 3.2rem; font-size: 1.1rem; }
+  .fr-escalon--1 .fr-podio-foto { width: 4rem; height: 4rem; }
+  .fr-podio-alias { font-size: 0.86rem; }
+  .fr-escalon--1 .fr-podio-alias { font-size: 0.95rem; }
+  .fr-escala { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fr-escala li:nth-child(3) { border-left: 0; }
+  .fr-escala li:nth-child(n + 3) { border-top: 1px solid var(--fo-borde); }
 }

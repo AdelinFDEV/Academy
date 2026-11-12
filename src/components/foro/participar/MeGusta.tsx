@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Heart } from "lucide-react";
 import { pedirForo } from "@/components/foro/pedir";
 import { useHilo } from "./ContextoHilo";
 import Invitacion from "./Invitacion";
@@ -45,8 +46,10 @@ export default function MeGusta({ respuestaId, inicial }: { respuestaId: string;
 
   if (esMio) {
     return (
-      <span className="fh-megusta">
-        <b>{cuenta}</b> me gusta
+      <span className="fp-megusta es-propio" title="Los me gusta de tu mensaje">
+        <Heart size={17} strokeWidth={2.2} aria-hidden="true" />
+        <b>{cuenta}</b>
+        <span className="fp-megusta-texto">me gusta</span>
       </span>
     );
   }
@@ -55,12 +58,15 @@ export default function MeGusta({ respuestaId, inicial }: { respuestaId: string;
     <>
       <button
         type="button"
-        className={`fp-accion fp-megusta${puesto ? " is-puesto" : ""}`}
+        className={`fp-megusta${puesto ? " is-puesto" : ""}`}
         aria-pressed={puesto}
+        aria-label={`${cuenta} me gusta. ${puesto ? "Quitar el mío" : "Dar me gusta"}`}
         disabled={enviando || !mio}
         onClick={alternar}
       >
-        <b>{cuenta}</b> Me gusta
+        <Heart size={17} strokeWidth={2.2} fill={puesto ? "currentColor" : "none"} aria-hidden="true" />
+        <b>{cuenta}</b>
+        <span className="fp-megusta-texto">me gusta</span>
       </button>
       {error && <span className="fp-error" role="alert">{error}</span>}
       {invitar !== null && <Invitacion motivo={invitar} onCerrar={() => setInvitar(null)} />}

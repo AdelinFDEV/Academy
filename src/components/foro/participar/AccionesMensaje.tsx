@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BadgeCheck, CornerDownRight, Flag, Pencil, Trash2 } from "lucide-react";
 import { pedirForo } from "@/components/foro/pedir";
 import { LIMITES, MOTIVOS_REPORTE, type MotivoReporteId } from "@/lib/foro/limites";
 import { useHilo } from "./ContextoHilo";
@@ -109,14 +110,18 @@ export default function AccionesMensaje({
     <div className="fp-acciones">
       <div className="fp-fila">
         {respuestaId && !hiloCerrado && (
-          <button type="button" className="fp-accion" onClick={() => abrir("replicar")}>Replicar</button>
+          <button type="button" className="fp-accion" onClick={() => abrir("replicar")}>
+            <CornerDownRight size={14} strokeWidth={2.3} aria-hidden="true" /> Replicar
+          </button>
         )}
         {esRespuesta && !esGanadora && !hiloCerrado && mio.esAutorDeLaPregunta && !esMio && (
-          <button type="button" className="fp-accion fp-accion--elegir" onClick={() => abrir("ganadora")}>Elegir como respuesta</button>
+          <button type="button" className="fp-accion fp-accion--elegir" onClick={() => abrir("ganadora")}>
+            <BadgeCheck size={14} strokeWidth={2.3} aria-hidden="true" /> Elegir como respuesta
+          </button>
         )}
         {!esMio && (
           <button type="button" className="fp-accion" disabled={yaReportado} onClick={() => abrir("reportar")}>
-            {yaReportado ? "Reportado" : "Reportar"}
+            <Flag size={13} strokeWidth={2.3} aria-hidden="true" /> {yaReportado ? "Reportado" : "Reportar"}
           </button>
         )}
         {editable && (
@@ -125,11 +130,13 @@ export default function AccionesMensaje({
             className="fp-accion"
             onClick={() => { setNuevoTexto(texto); setNuevoTitulo(titulo ?? ""); abrir("editar"); }}
           >
-            Editar
+            <Pencil size={13} strokeWidth={2.3} aria-hidden="true" /> Editar
           </button>
         )}
         {esMio && !esGanadora && (
-          <button type="button" className="fp-accion" onClick={() => abrir("borrar")}>Borrar</button>
+          <button type="button" className="fp-accion" onClick={() => abrir("borrar")}>
+            <Trash2 size={13} strokeWidth={2.3} aria-hidden="true" /> Borrar
+          </button>
         )}
       </div>
 

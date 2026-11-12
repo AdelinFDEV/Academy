@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ListadoHilos from "@/components/foro/ListadoHilos";
 import { avisoDeModo } from "@/components/foro/modo";
 import { listado } from "@/lib/foro/datos/hilos";
+import { ranking } from "@/lib/foro/datos/ranking";
 import { entradaAlForo } from "@/lib/foro/permisos";
 
 // El modo del foro y lo publicado cambian en cualquier momento, y lo oculto
@@ -29,8 +30,15 @@ export default async function ForoPage({ searchParams }: { searchParams: Promise
   if (!visible) notFound();
 
   const { pagina } = await searchParams;
-  const datos = await listado(null, Number(pagina ?? "1"));
+  const [datos, tablas] = await Promise.all([listado(null, Number(pagina ?? "1")), ranking()]);
   if (!datos) notFound();
 
-  return <ListadoHilos datos={datos} conSesion={usuarioId !== null} aviso={avisoDeModo(modo)} />;
+  return (
+    <ListadoHilos
+      datos={datos}
+      conSesion={usuarioId !== null}
+      aviso={avisoDeModo(modo)}
+      destacados={tablas.puntosDelMes.slice(0, 3)}
+    />
+  );
 }

@@ -5,6 +5,7 @@ import HiloCompleto from "@/components/foro/HiloCompleto";
 import ListadoHilos from "@/components/foro/ListadoHilos";
 import { avisoDeModo } from "@/components/foro/modo";
 import { hilo, listado } from "@/lib/foro/datos/hilos";
+import { ranking } from "@/lib/foro/datos/ranking";
 import { entradaAlForo } from "@/lib/foro/permisos";
 import { breadcrumbSchema, qaPageSchema } from "@/lib/schema";
 
@@ -101,7 +102,7 @@ export default async function ForoRefPage({ params, searchParams }: Props) {
     );
   }
 
-  const datos = await listado(ref, Number(pagina ?? "1"));
+  const [datos, tablas] = await Promise.all([listado(ref, Number(pagina ?? "1")), ranking()]);
   if (!datos) notFound();
-  return <ListadoHilos datos={datos} conSesion={conSesion} aviso={aviso} />;
+  return <ListadoHilos datos={datos} conSesion={conSesion} aviso={aviso} destacados={tablas.puntosDelMes.slice(0, 3)} />;
 }

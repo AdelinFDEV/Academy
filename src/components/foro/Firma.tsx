@@ -12,7 +12,11 @@ import { fechaCorta, fechaLarga } from "./fechas";
 export default function Firma({ autor, fecha, compacta = false }: { autor: AutorForo; fecha: string; compacta?: boolean }) {
   return (
     <span className={`fo-firma${compacta ? " fo-firma--compacta" : ""}`}>
-      <AvatarUsuario avatar={autor?.avatar} inicial={autor ? autor.alias.slice(0, 1).toUpperCase() : "·"} className="fo-firma-foto" />
+      <AvatarUsuario
+        avatar={autor?.avatar}
+        inicial={autor ? autor.alias.slice(0, 1).toUpperCase() : "?"}
+        className={`fo-firma-foto${autor ? "" : " es-nadie"}`}
+      />
       <span className="fo-firma-texto">
         <span className="fo-firma-alias">
           {autor ? autor.alias : "Usuario eliminado"}

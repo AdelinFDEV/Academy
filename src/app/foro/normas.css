@@ -1,34 +1,182 @@
 /* ══════════════════════════════════════════════════════════════════════════
    EL FORO — las normas de la comunidad (/foro/normas)
    ══════════════════════════════════════════════════════════════════════════
-   Lo importa `src/app/foro/normas/page.tsx`. Prefijo: fn-.
-   Un texto para leer entero: columna estrecha y nada que distraiga. */
+   Lo importa `src/components/foro/vistas/VistaNormas.tsx`. Prefijo: fn-.
+   Rehecho desde cero el 12-11-2026.
 
-.fn-main { max-width: 700px; }
+   Un texto para leer entero: un índice que se queda fijo a la izquierda y
+   cada sección en su tarjeta, con su número grande. La de lo prohibido
+   lleva el filo rojo: es la que no se puede saltar nadie. */
+
+.fn-cabecera { padding: 0.6rem 0 2.6rem; }
+
+.fn-rejilla {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  align-items: start;
+  gap: 2.4rem;
+}
+
+/* ── El índice ─────────────────────────────────────────────────────────── */
+
+.fn-indice {
+  position: sticky;
+  top: calc(var(--nav-h) + 1.4rem);
+}
+
+.fn-indice ol {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--fo-borde);
+  list-style: none;
+}
+
+.fn-indice a {
+  display: flex;
+  gap: 0.7rem;
+  margin-left: -1px;
+  padding: 0.5rem 0 0.5rem 1rem;
+  border-left: 1px solid transparent;
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.fn-indice a span {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--cat) 75%, #fff);
+}
+
+.fn-indice a:hover { border-left-color: var(--cat); color: #fff; }
+.fn-indice a:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 2px; }
+
+/* ── Las secciones ─────────────────────────────────────────────────────── */
 
 .fn-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 46rem;
   font-size: 0.98rem;
   line-height: 1.7;
   color: var(--text-secondary);
 }
 
-.fn-texto h2 {
-  margin: 2.2rem 0 0.8rem;
-  font-size: 1.12rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+.fn-seccion {
+  position: relative;
+  padding: 1.7rem 1.9rem 1.8rem;
+  overflow: hidden;
+  /* Que el título no quede debajo de la barra al llegar desde el índice. */
+  scroll-margin-top: calc(var(--nav-h) + 1.2rem);
 }
 
-.fn-texto ul { padding-left: 1.15rem; }
-.fn-texto li { margin-bottom: 0.55rem; }
-.fn-texto li::marker { color: var(--text-muted); }
-.fn-texto b { font-weight: 600; color: var(--text-primary); }
+/* El número, grande y casi transparente, en la esquina. */
+.fn-num {
+  position: absolute;
+  top: 0.5rem;
+  right: 1.3rem;
+  font-family: var(--font-display);
+  font-size: 3.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
 
-.fn-texto a {
+.fn-seccion h2 {
+  position: relative;
+  margin-bottom: 1rem;
+  padding-right: 4rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+
+.fn-seccion ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.fn-seccion li { position: relative; padding-left: 1.4rem; }
+
+.fn-seccion li::before {
+  content: "";
+  position: absolute;
+  top: 0.72em;
+  left: 0.1rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--cat) 70%, transparent);
+}
+
+.fn-seccion b { font-weight: 600; color: #fff; }
+
+.fn-seccion a {
   color: var(--accent-orange-soft);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
-.fn-aceptar { margin-top: 2.6rem; }
+/* Lo prohibido. */
+.fn-seccion.es-prohibido {
+  border-color: color-mix(in srgb, var(--fo-rojo) 38%, transparent);
+  background:
+    radial-gradient(70% 60% at 100% 0%, color-mix(in srgb, var(--fo-rojo) 12%, transparent) 0%, transparent 70%),
+    var(--fo-cristal),
+    rgba(13, 26, 48, 0.72);
+}
+
+.fn-seccion.es-prohibido li::before {
+  top: 0.82em;
+  width: 0.55rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--fo-rojo);
+}
+
+.fn-seccion.es-prohibido .fn-num { color: color-mix(in srgb, var(--fo-rojo) 14%, transparent); }
+
+/* ── Aceptarlas ────────────────────────────────────────────────────────── */
+
+.fn-aceptar {
+  margin-top: 0.6rem;
+  padding: 1.6rem 1.9rem;
+  border-color: color-mix(in srgb, var(--accent-orange) 45%, transparent);
+  border-radius: var(--fo-radio);
+  background:
+    radial-gradient(80% 140% at 0% 0%, color-mix(in srgb, var(--accent-orange) 16%, transparent) 0%, transparent 60%),
+    rgba(6, 13, 26, 0.6);
+  font-size: 0.96rem;
+}
+
+.fn-texto > .fp-invitacion { margin-top: 0.6rem; padding: 1.6rem 1.9rem; border-radius: var(--fo-radio); }
+
+@media (max-width: 900px) {
+  .fn-rejilla { grid-template-columns: 1fr; gap: 1.6rem; }
+  /* En el móvil el índice sobra: son siete tarjetas seguidas. */
+  .fn-indice { display: none; }
+}
+
+@media (max-width: 720px) {
+  .fn-seccion { padding: 1.4rem 1.2rem 1.5rem; }
+  .fn-aceptar { padding: 1.3rem 1.2rem; }
+  .fn-aceptar .fp-btn { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fn-indice a { transition: none; }
+}
