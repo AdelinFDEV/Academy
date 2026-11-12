@@ -3,6 +3,8 @@ import { cache } from "react";
 import NavPrincipal from "@/components/NavPrincipal";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavSaludo, { type PlanUsuario } from "@/components/NavSaludo";
+import { MessagesSquare } from "lucide-react";
+import { foroALaVista } from "@/lib/foro/permisos";
 import { createClient } from "@/lib/supabase/server";
 
 interface Props {
@@ -51,6 +53,9 @@ const perfilDelUsuario = cache(async (): Promise<{ nombre: string; plan: PlanUsu
 export default async function SiteNav({ user, isPremium, userName, isAdmin }: Props) {
   const perfil = user ? await perfilDelUsuario() : { nombre: "", plan: "free" as const, avatar: null };
   const nombre = userName ?? perfil.nombre;
+  // El foro solo sale en los menús para quien puede entrar: todos cuando esté
+  // abierto, y solo el admin mientras está cerrado (FORO.md §16).
+  const foro = await foroALaVista(user);
 
   return (
     <nav className="blog-nav">
@@ -60,6 +65,14 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
       <div className="blog-nav-center">
         {/* Nova se decide por el plan leído aquí y no por `isPremium`: hay páginas que no lo pasan. */}
         <NavPrincipal logueado={user} premium={!!isPremium} conNova={perfil.plan !== "free"} />
+        {/* El foro va fuera de la cápsula: dentro están las tres piezas de
+            pago, que salen del catálogo de herramientas, y el foro no es una. */}
+        {foro && (
+          <Link href="/foro" className="nav-foro">
+            <MessagesSquare size={16} strokeWidth={2.2} aria-hidden="true" />
+            Foro
+          </Link>
+        )}
       </div>
       <div className="blog-nav-end">
         {/* Identidad y accesos personales, en un solo sitio. Pulsando el
@@ -80,7 +93,7 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
           </span>
         )}
 
-        <BlogMobileMenu user={user} isPremium={isPremium} userName={nombre} isAdmin={isAdmin} avatar={perfil.avatar} />
+        <BlogMobileMenu user={user} isPremium={isPremium} userName={nombre} isAdmin={isAdmin} avatar={perfil.avatar} foro={foro} />
       </div>
     </nav>
   );

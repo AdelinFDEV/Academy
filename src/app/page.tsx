@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import PremiumHome from "@/components/PremiumHome";
 import GuidesHomeSection from "@/components/GuidesHomeSection";
+import ForoEnPortada from "@/components/foro/ForoEnPortada";
 import HeroVideo from "@/components/HeroVideo";
 import HeroSlider, { type ResumenHero } from "@/components/HeroSlider";
 import YouTubeLatestSection from "@/components/YouTubeLatestSection";
@@ -116,6 +117,10 @@ export default async function HomePage() {
           Desde el 10-10-2026 la academia son las guías: el bloque entero
           sube aquí, tras el hero. */}
       <GuidesHomeSection />
+
+      {/* ── Lo último del foro, debajo de las guías ──
+          Solo sale si el foro existe para quien mira y hay preguntas. */}
+      <ForoEnPortada conSesion={!!user} />
 
 
       {/* ── Cuerpo ──

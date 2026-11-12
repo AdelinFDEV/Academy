@@ -114,3 +114,24 @@ export const entradaAlForo = cache(async () => {
   const acceso = await accesoAlForo(usuarioId);
   return { usuarioId, ...acceso };
 });
+
+/**
+ * ¿Se enseña el foro en los menús y en la portada a quien está mirando?
+ *
+ * Solo a quien puede entrar: a todos con el foro abierto o en solo lectura, y
+ * solo al admin mientras está cerrado. Un enlace a `/foro` que da 404 es peor
+ * que no tener enlace.
+ *
+ * Sin sesión NO se leen cookies (solo el modo): la barra sale en casi todas
+ * las páginas, y leerlas aquí volvería dinámica a cualquiera que hoy no lo
+ * sea. Si algo falla, es que no: la barra no se puede caer por el foro.
+ */
+export async function foroALaVista(conSesion: boolean): Promise<boolean> {
+  try {
+    if (conSesion) return (await entradaAlForo()).visible;
+    const { data } = await bd().from("foro_ajustes").select("modo").maybeSingle();
+    return typeof data?.modo === "string" && data.modo !== "cerrado";
+  } catch {
+    return false;
+  }
+}

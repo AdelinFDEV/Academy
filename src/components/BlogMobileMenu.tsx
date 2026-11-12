@@ -3,10 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserRound,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookA, BookOpenText, Crown, LayoutDashboard, LogOut, Shield, UserRound, type LucideIcon, MessagesSquare } from "lucide-react";
 import LogoutButton from "./LogoutButton";
 import AvatarUsuario from "./AvatarUsuario";
 import GuideSearch from "./GuideSearch";
@@ -19,6 +16,8 @@ interface Props {
   isAdmin?: boolean;
   /** La foto que eligió el usuario en «Mi perfil»; sin ella, su inicial. */
   avatar?: string | null;
+  /** El foro existe para quien mira (lo decide `SiteNav` en el servidor). */
+  foro?: boolean;
 }
 
 type Entrada = {
@@ -56,6 +55,16 @@ const GRATIS: Entrada[] = [
 ];
 
 /**
+ * El foro, en la columna de lo gratuito: leerlo es libre. No sale del
+ * catálogo de herramientas porque no es una herramienta, igual que las guías
+ * y el diccionario. Solo se añade a la lista si el foro existe para quien mira.
+ */
+const FORO: Entrada = { id: "foro", ruta: "/foro", label: "Foro", linea: "Preguntas y respuestas de la comunidad", icon: MessagesSquare, color: "#ff8552" };
+
+/** Las entradas que no salen del catálogo: su ruta es siempre la misma. */
+const FUERA_DEL_CATALOGO = new Set(["guias", "glosario", "foro"]);
+
+/**
  * El menú de la web, a pantalla completa. Rehecho desde cero el 31-10-2026.
  *
  * Dos columnas de destinos —lo de pago y lo gratuito— y un panel lateral con
@@ -66,7 +75,7 @@ const GRATIS: Entrada[] = [
  * `destinoPorRuta`, según quién mire (la ficha pública a quien no tiene
  * acceso, la herramienta a quien sí).
  */
-export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null }: Props) {
+export default function BlogMobileMenu({ user, isPremium = false, userName, isAdmin = false, avatar = null, foro = false }: Props) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const primerEnlace = useRef<HTMLAnchorElement>(null);
@@ -112,7 +121,7 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
           <div className="mm-cuerpo">
             <nav className="mm-nav" aria-label="Secciones de la academia">
               <Grupo titulo="Mejora como trader" nota="Incluido en Premium" entradas={PREMIUM} desde={0} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
-              <Grupo titulo="Aprende cripto" nota="Gratis, a tu ritmo" entradas={GRATIS} desde={PREMIUM.length} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
+              <Grupo titulo="Aprende cripto" nota="Gratis, a tu ritmo" entradas={foro ? [GRATIS[0], GRATIS[1], FORO, ...GRATIS.slice(2)] : GRATIS} desde={PREMIUM.length} activo={activo} destino={destino} close={close} primerEnlace={primerEnlace} />
             </nav>
 
             <aside className="mm-lado" aria-label="Tu cuenta">
@@ -207,7 +216,7 @@ function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEn
         {entradas.map((e, i) => {
           const Icono = e.icon;
           const proximamente = herramientaProxima(e.id);
-          const href = e.id === "guias" || e.id === "glosario" ? e.ruta : destino(e.ruta);
+          const href = FUERA_DEL_CATALOGO.has(e.id) ? e.ruta : destino(e.ruta);
           return (
             <li key={e.id} style={{ "--i": desde + i } as React.CSSProperties}>
               <Link
@@ -238,6 +247,6 @@ function Grupo({ titulo, nota, entradas, desde, activo, destino, close, primerEn
 
 /** ¿Está anunciada pero aún sin abrir? Hoy, los Cursos hasta que se publique el primero. */
 function herramientaProxima(id: string): boolean {
-  if (id === "guias" || id === "glosario") return false;
+  if (FUERA_DEL_CATALOGO.has(id)) return false;
   return herramienta(id).acceso === "proximamente";
 }

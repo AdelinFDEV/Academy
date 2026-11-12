@@ -275,3 +275,37 @@ export async function urlsParaSitemap(): Promise<{ path: string; modificada: str
     return [];
   }
 }
+
+/**
+ * Las últimas preguntas publicadas, de la más nueva a la más antigua. Para la
+ * portada de la web: son las mismas filas del listado, sin el recuento por
+ * categoría, que ahí no hace falta.
+ */
+export async function ultimosHilos(cuantos: number): Promise<HiloEnListado[]> {
+  const cliente = bd();
+  const [{ data: filas }, { data: cats }] = await Promise.all([
+    cliente
+      .from("foro_preguntas")
+      .select("id, slug, titulo, categoria, autor_id, creada_at, ultima_actividad_at, respuestas, ganadora_id, fijada, yo_tambien")
+      .eq("estado", "publicada")
+      .order("creada_at", { ascending: false })
+      .order("id", { ascending: false })
+      .limit(Math.max(1, Math.min(cuantos, 10))),
+    cliente.from("foro_categorias").select("slug, nombre"),
+  ]);
+  const quien = await autores(cliente, (filas ?? []).map((f) => f.autor_id as string | null));
+  const nombreDe = new Map((cats ?? []).map((c) => [String(c.slug), String(c.nombre)]));
+  return (filas ?? []).map((f) => ({
+    id: Number(f.id),
+    slug: String(f.slug),
+    titulo: String(f.titulo),
+    categoria: { slug: String(f.categoria), nombre: nombreDe.get(String(f.categoria)) ?? String(f.categoria) },
+    autor: f.autor_id ? (quien.get(String(f.autor_id)) ?? null) : null,
+    fecha: String(f.creada_at),
+    ultimaActividad: String(f.ultima_actividad_at),
+    respuestas: Number(f.respuestas),
+    resuelto: f.ganadora_id != null,
+    fijado: Boolean(f.fijada),
+    yoTambien: Number(f.yo_tambien),
+  }));
+}
