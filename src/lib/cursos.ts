@@ -342,7 +342,14 @@ export async function contextoAula(slug: string): Promise<ContextoAula | { error
   const curso = await cursoPorSlug(slug, sesion.esAdmin);
   if (!curso) return { error: "Ese curso no existe.", status: 404 };
 
-  const datos = await datosAlumno(sesion.userId, curso);
+  let datos = await datosAlumno(sesion.userId, curso);
   const estado = estadoCurso(curso.modulos, datos.completadas, datos.intentos, { esAdmin: sesion.esAdmin });
+
+  // Final aprobado y sin certificado: la emisión falló al corregir. Se emite
+  // ahora (ver `repararCertificado`) y se vuelve a leer lo del alumno.
+  if (estado.final.tipo === "aprobado" && !datos.certificado) {
+    const { repararCertificado } = await import("@/lib/cursos-examen");
+    if (await repararCertificado(sesion, curso, estado)) datos = await datosAlumno(sesion.userId, curso);
+  }
   return { sesion, curso, datos, estado };
 }

@@ -6,7 +6,7 @@ import AulaShell from "@/components/aula/AulaShell";
 import Examen from "@/components/aula/Examen";
 import { exigirAula } from "../../../contexto";
 import { claveDesdeTexto, estadoDeExamen, moduloDeExamen, preguntasDeIntento } from "@/lib/cursos-examen";
-import { fechaLarga, formatoNota } from "@/lib/cursos-progreso";
+import { NOTA_MINIMA_FINAL, fechaLarga, formatoNota } from "@/lib/cursos-progreso";
 
 type Props = { params: Promise<{ curso: string; examen: string }> };
 
@@ -96,7 +96,7 @@ export default async function ExamenPage({ params }: Props) {
         examen={clave}
         titulo={titulo}
         numPreguntas={modulo ? modulo.preguntas_examen : curso.curso.preguntas_final}
-        notaMinima={modulo ? modulo.nota_minima : 5}
+        notaMinima={modulo ? modulo.nota_minima : NOTA_MINIMA_FINAL}
         intentosPrevios={examen.tipo === "disponible" ? examen.intentosPrevios : 0}
         abierto={abierto}
         siguiente={siguiente}

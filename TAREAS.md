@@ -22,6 +22,12 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00e. La portada no tiene `<h1>` (12-11-2026)
+
+Visto al rehacer el certificado: el único `<h1>` de la portada era el de la **muestra del certificado** del slider («Tu nombre aquí»), porque el componente pintaba el nombre como `<h1>`. Ya no lo hace (`CURSOS.md` §9), así que la portada se queda sin ninguno. Comprobar: `curl -s https://adelinacademy.com/ | grep -c "<h1"`.
+
+- [ ] **Darle a la portada su `<h1>`** en `HeroSlider.tsx` o `src/app/page.tsx`, con la consulta que se quiere ganar, y uno solo.
+
 ### 00c. SEO del Diario de Trading: lo que falta (10-11-2026)
 
 Hecho el 10-11-2026: la ficha `/herramientas/diario` tiene título y descripción centrados en «diario de trading» (sin «Nova», que no se busca), la respuesta «Qué es un diario de trading» arriba, cuatro preguntas nuevas (qué es, si es gratis, por qué no un Excel, si usa IA: **no**, y así se dice) y su `WebApplication` con el precio de Stripe en el JSON-LD. Términos nuevos en el diccionario: `diario-de-trading` y `win-rate`, enlazados desde `revenge-trading` y `efecto-disposicion`. Guía nueva y gratuita `/guias/como-hacer-un-diario-de-trading`, con calculadora de R y esperanza, quiz y logro «Bitácora al Día». **Nunca se anuncia el Diario como «con IA»**: Nova son reglas. Falta, en orden:

@@ -21,6 +21,8 @@
 export const ESPERA_TRAS_SUSPENSO_MS = 24 * 60 * 60 * 1000;
 export const PESO_MODULOS = 0.4;
 export const PESO_FINAL = 0.6;
+/** La nota de corte del examen final. La de cada módulo es su `nota_minima`. */
+export const NOTA_MINIMA_FINAL = 5;
 
 /** Lo que se estima que tarda un examen. Cuenta en el cronograma. */
 export const MINUTOS_EXAMEN_MODULO = 15;

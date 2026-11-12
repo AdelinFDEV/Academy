@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatoNota } from "@/lib/cursos-progreso";
 import { ArrowLeft, ArrowRight, Check, X, ClipboardCheck, AlertTriangle, BookOpen, Award, RotateCcw } from "lucide-react";
 
 /**
@@ -51,7 +52,8 @@ export interface PropsExamen {
   siguiente: { href: string; etiqueta: string };
 }
 
-const nota = (n: number) => n.toFixed(2).replace(/\.?0+$/, "").replace(".", ",");
+// La misma función que usan el certificado y el aula: una sola forma de escribir una nota.
+const nota = formatoNota;
 
 export default function Examen(props: PropsExamen) {
   const [intento, setIntento] = useState(props.abierto);

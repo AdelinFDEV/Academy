@@ -1,7 +1,7 @@
 import "server-only";
 import { randomBytes } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { notaCertificado, puntuar, type EstadoCurso } from "@/lib/cursos-progreso";
+import { NOTA_MINIMA_FINAL, notaCertificado, puntuar, type EstadoCurso } from "@/lib/cursos-progreso";
 import type { CursoCompleto, Sesion } from "@/lib/cursos";
 
 /**
@@ -191,25 +191,38 @@ export async function entregarIntento(
   }
   if (intento.estado !== "abierto") return { error: "Este examen ya se entregó.", status: 409 };
 
-  const ids = intento.preguntas as string[];
+  const sorteadas = intento.preguntas as string[];
+  const { data: filas, error: errorFilas } = await db
+    .from("curso_preguntas")
+    .select("id, opciones, correcta, explicacion, leccion_id")
+    .in("id", sorteadas);
+  if (errorFilas) {
+    console.error("[cursos] No se pudieron leer las preguntas del intento:", errorFilas.message);
+    return { error: "No se pudo corregir el examen. Inténtalo otra vez.", status: 500 };
+  }
+  const porId = new Map(((filas ?? []) as Omit<FilaPregunta, "enunciado">[]).map((p) => [p.id, p]));
+  const preguntas = sorteadas.map((id) => porId.get(id)).filter((p): p is NonNullable<typeof p> => !!p);
+
+  // Se exigen y se corrigen las preguntas que SIGUEN en el banco, que son las
+  // que el alumno ve (`preguntasDeIntento`). Si `subir-curso.mjs` retira una
+  // con un intento abierto, exigirla dejaba ese examen sin poder entregarse
+  // nunca: el navegador no la enseña y el servidor la seguía pidiendo.
+  const ids = preguntas.map((p) => p.id);
+  if (ids.length === 0) return { error: "Este examen se ha quedado sin preguntas. Escríbenos y lo reabrimos.", status: 409 };
   const sinContestar = ids.filter((id) => !Number.isInteger(respuestas[id]));
   if (sinContestar.length) {
     return { error: `Faltan ${sinContestar.length} preguntas por contestar. Son todas obligatorias.`, status: 400 };
   }
-
-  const { data: filas } = await db
-    .from("curso_preguntas")
-    .select("id, opciones, correcta, explicacion, leccion_id")
-    .in("id", ids);
-  const porId = new Map(((filas ?? []) as Omit<FilaPregunta, "enunciado">[]).map((p) => [p.id, p]));
-  const preguntas = ids.map((id) => porId.get(id)).filter((p): p is NonNullable<typeof p> => !!p);
+  if (preguntas.some((p) => respuestas[p.id] < 0 || respuestas[p.id] >= p.opciones.length)) {
+    return { error: "Hay una respuesta que no corresponde a ninguna opción.", status: 400 };
+  }
 
   const { nota, aciertos, fallos } = puntuar(
     preguntas.map((p) => ({ id: p.id, opciones: p.opciones.length, correcta: p.correcta })),
     respuestas,
   );
   const modulo = curso.modulos.find((m) => m.id === intento.modulo_id) ?? null;
-  const notaMinima = modulo ? modulo.nota_minima : 5;
+  const notaMinima = modulo ? modulo.nota_minima : NOTA_MINIMA_FINAL;
   const aprobado = nota >= notaMinima;
 
   // Solo se cierra si seguía abierto: dos entregas a la vez no corrigen dos veces.
@@ -307,19 +320,47 @@ async function emitirCertificado(sesion: Sesion, curso: CursoCompleto, notaExame
     return { codigo: existente.codigo as string, notaFinal };
   }
 
-  const fila = {
-    user_id: sesion.userId,
-    curso_id: curso.curso.id,
-    nota_final: notaFinal,
-    nota_modulos: notaModulos,
-    nota_examen: notaExamen,
-    nombre: sesion.nombre,
-    codigo: codigoCertificado(),
-  };
-  const { error } = await db.from("curso_certificados").insert(fila);
-  if (error) {
-    console.error("[cursos] No se pudo emitir el certificado:", error.message);
-    return null;
+  // Hasta tres intentos: lo único que puede chocar es el código (único) o que
+  // otra petición del mismo alumno lo haya emitido a la vez; entonces vale ese.
+  let ultimoError = "";
+  for (let vuelta = 0; vuelta < 3; vuelta++) {
+    const fila = {
+      user_id: sesion.userId,
+      curso_id: curso.curso.id,
+      nota_final: notaFinal,
+      nota_modulos: notaModulos,
+      nota_examen: notaExamen,
+      nombre: sesion.nombre,
+      codigo: codigoCertificado(),
+    };
+    const { error } = await db.from("curso_certificados").insert(fila);
+    if (!error) return { codigo: fila.codigo, notaFinal };
+    ultimoError = error.message;
+
+    const { data: yaEmitido } = await db
+      .from("curso_certificados")
+      .select("codigo, nota_final")
+      .eq("user_id", sesion.userId)
+      .eq("curso_id", curso.curso.id)
+      .maybeSingle();
+    if (yaEmitido) return { codigo: yaEmitido.codigo as string, notaFinal: Number(yaEmitido.nota_final) };
   }
-  return { codigo: fila.codigo, notaFinal };
+  console.error("[cursos] No se pudo emitir el certificado:", ultimoError);
+  return null;
+}
+
+/**
+ * Repara el único estado del que el alumno no podía salir solo: el examen
+ * final APROBADO y ningún certificado. Pasa si la emisión falla justo después
+ * de corregir (un corte con la base de datos): el intento ya consta como
+ * aprobado, así que el final no se puede repetir, y sin certificado no hay ni
+ * vitrina ni logro. `contextoAula()` llama aquí en cuanto lo ve, con la nota
+ * del intento que aprobó, que es la misma con la que se habría emitido.
+ *
+ * No abre ninguna puerta: sin un intento del final aprobado y guardado por el
+ * servidor no emite nada.
+ */
+export async function repararCertificado(sesion: Sesion, curso: CursoCompleto, estado: EstadoCurso): Promise<boolean> {
+  if (estado.final.tipo !== "aprobado") return false;
+  return (await emitirCertificado(sesion, curso, estado.final.nota)) !== null;
 }

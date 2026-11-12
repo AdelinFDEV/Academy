@@ -69,6 +69,13 @@ const curso = leerJson(join(dir, "curso.json"));
 if (!curso) finalizar();
 if (curso.slug !== slug) errores.push(`curso.json: el slug es "${curso.slug}" y la carpeta "${slug}"`);
 for (const campo of ["titulo", "logro", "modulos"]) if (!curso[campo]) errores.push(`curso.json: falta "${campo}"`);
+// El `color` tiñe la portada, el aula y el certificado: un valor que no sea un
+// hexadecimal de seis cifras rompe los `color-mix()` de todos ellos a la vez.
+if (curso.color !== undefined && !/^#[0-9a-fA-F]{6}$/.test(curso.color)) errores.push(`curso.json: "color" tiene que ser un hexadecimal de seis cifras (#5ec8c4), y es "${curso.color}"`);
+if (curso.nivel !== undefined && !["básico", "intermedio", "avanzado"].includes(curso.nivel)) errores.push(`curso.json: "nivel" tiene que ser básico, intermedio o avanzado`);
+// Las variantes de DisclaimerRiesgo.tsx (y del check de `cursos.aviso` en el SQL).
+if (curso.aviso !== undefined && !["general", "fiscal", "portfolio", "diario", "formacion"].includes(curso.aviso)) errores.push(`curso.json: no existe el aviso "${curso.aviso}"`);
+if (curso.preguntas_final !== undefined && !(Number.isInteger(curso.preguntas_final) && curso.preguntas_final > 0)) errores.push(`curso.json: "preguntas_final" tiene que ser un entero mayor que 0`);
 if (["verificar"].includes(slug)) errores.push(`"${slug}" no vale como slug: es una ruta reservada de /cursos`);
 
 const lecciones = new Map(); // slug → { modulo, html }

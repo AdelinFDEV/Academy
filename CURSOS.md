@@ -85,7 +85,7 @@ La paleta sale del campo **`color`** de `curso.json` (un hexadecimal). Ese únic
 
 - la portada del curso, la ficha y las tarjetas de `/cursos`;
 - el acento del aula (temario, botones, barras de progreso);
-- **el certificado**: las cintas del medallón, el resplandor de la banda azul noche y el tono del oro (`--cert-acento` en `components/aula/certificado.css`);
+- **el certificado**: el sello con la nota, la roseta del fondo, los filetes, el resplandor de la franja azul noche y el código (`--cert-acento` en `components/aula/certificado.css`). Es su único color: no lleva oro fijo;
 - la vitrina de certificados del dashboard.
 
 No hay que tocar CSS para cambiar de paleta: basta con el `color`.
@@ -276,11 +276,13 @@ El catálogo vive en `src/components/aula/Bloque.tsx` (una sola lista) y en `BLO
 - El examen de un módulo se abre al completar **todas** sus lecciones.
 - El módulo siguiente se abre al **aprobar** ese examen con `nota_minima` (5).
 - Suspender obliga a esperar **24 horas** antes de repetir.
-- El examen final se abre con todos los módulos aprobados, y se aprueba con **5**.
+- El examen final se abre con todos los módulos aprobados, y se aprueba con **5** (`NOTA_MINIMA_FINAL`).
 - Nota de 0 a 10: cada acierto suma 1 y **cada fallo resta 1/(opciones − 1)**. Contestar al azar da de media 0.
 - **Certificado = 40 % media de los módulos + 60 % examen final.**
 - El admin lo ve todo abierto y sin esperas, para revisar.
 - **Rehacer el curso** (08-11-2026): quien ya tiene el certificado puede rehacerlo para mejorar la nota, con el botón de la portada del aula (`BotonRehacer` → `api/cursos/rehacer`). Se borran sus lecciones completadas y sus intentos de ese curso y el cronograma vuelve a empezar; **el certificado se conserva** mientras tanto. Al aprobar de nuevo el final, `emitirCertificado` lo **sobrescribe con la nueva nota, aunque sea más baja, y conserva el mismo código** (su verificación sigue valiendo).
+- **Se corrigen las preguntas que siguen en el banco.** Si al subir el curso se retira una pregunta que estaba sorteada en un examen abierto, ese examen se corrige sin ella (antes se quedaba sin poder entregarse: el alumno no la veía y el servidor la seguía exigiendo).
+- **Final aprobado sin certificado se repara solo.** Si la emisión falla justo al corregir, el alumno quedaba atascado: el final no se repite y no había certificado ni logro. `contextoAula()` lo detecta en la siguiente visita al aula y lo emite con la nota del intento aprobado (`repararCertificado` en `cursos-examen.ts`).
 - Las respuestas correctas **nunca** llegan al navegador: `curso_preguntas` no tiene policies y todo se corrige en el servidor (`src/lib/cursos-examen.ts`).
 
 **Los bancos:**
@@ -316,9 +318,12 @@ Formato de cada pregunta:
 
 **El certificado** es un solo componente: `src/components/aula/Certificado.tsx` (+ `certificado.css`). Lo pintan el aula, la verificación pública, la vitrina y todas las **muestras** (`muestra` = marca de agua «Muestra»): ficha del curso, `/cursos`, `/premium`, el slider de la portada y la vitrina vacía. Cambiar el diseño ahí lo cambia en todas partes.
 
-- Diseño (08-11-2026): marco de pan de oro, banda azul noche con medallón y cintas, papel marfil con guilloché, nombre en serif (Fraunces, servida con `next/font`), pie con fecha, emisor «AdelinBTC Academy» y código con sello holográfico. **Hereda la paleta del curso** por `color`.
+- Diseño («Grabado», 12-11-2026): hoja marfil con una roseta guilloché de fondo y doble filete, texto centrado en serif (Fraunces, servida con `next/font`), franja azul noche con la fecha, el emisor «AdelinBTC Academy» y el código, y entre las dos **el sello con la nota final**, flanqueado por las dos notas que la componen. **Hereda la paleta del curso** por `color`, que es su único color (sello, roseta, filetes, franja y código).
+- **Solo lleva datos reales**: nombre, curso, logro, las tres notas, fecha, código y su dirección de verificación. Nada de horas, avales ni organismos.
+- **Sin encabezados**: el nombre y el curso son `<p>`, no `<h1>`/`<h2>`. Las muestras salen en la portada, `/premium` y `/cursos`, y un `<h1>` dentro les ponía un segundo título («Tu nombre aquí»).
+- El nombre y el título del curso **se encogen solos** si son largos (`cuerpoSegunLargo`), para que no desborden.
 - Se mide en `cqw`: se ve igual en miniatura que impreso. Se descarga con «Guardar como PDF» (A4 apaisado; la regla `@media print` deja solo el certificado).
-- Se emite **solo** al aprobar el final (`emitirCertificado` en `cursos-examen.ts`), con un código de 10 caracteres y verificación pública en `/cursos/verificar/<codigo>`.
+- Se emite **solo** con el examen final aprobado (`emitirCertificado` en `cursos-examen.ts`, al corregir; o `repararCertificado` si aquella emisión falló), con un código de 10 caracteres y verificación pública en `/cursos/verificar/<codigo>`.
 - **No se firma con el nombre de ninguna persona.**
 
 **La vitrina** (`src/components/VitrinaCertificados.tsx`) sale en la portada del dashboard (forma `estante`, debajo del perfil) y en `/dashboard/certificados` (forma `completa`). Vive fuera de `/aula` a propósito: **lo ganado se descarga siempre, aunque se deje Premium.**
@@ -375,7 +380,7 @@ node --env-file=.env.local scripts/subir-curso.mjs <slug> --probar   # solo comp
 node --env-file=.env.local scripts/subir-curso.mjs <slug>            # comprueba y sube
 ```
 
-`--probar` valida el JSON, que cada lección tenga su archivo, que cada bloque exista y su JSON se lea, que las correctas estén en rango y que los bancos alcancen. Subir **actualiza** (no borra lecciones: se llevaría el progreso de los alumnos). Las preguntas retiradas sí se borran.
+`--probar` valida el JSON (también que `color` sea un hexadecimal de seis cifras y que `nivel` y `aviso` existan), que cada lección tenga su archivo, que cada bloque exista y su JSON se lea, que las correctas estén en rango y que los bancos alcancen. Subir **actualiza** (no borra lecciones: se llevaría el progreso de los alumnos). Las preguntas retiradas sí se borran.
 
 **Antes de publicar, recórrelo como alumno** (en local con `npm run dev`, con una cuenta Premium de prueba y con una gratuita):
 
