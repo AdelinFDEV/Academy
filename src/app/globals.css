@@ -67,16 +67,25 @@ body {
      siempre. */
   width: 100%;
   overflow-x: hidden;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE/Edge */
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari, Opera */
+/* La barra de scroll de la web, visible y naranja (12-11-2026, pedido por el
+   admin): estaba oculta y había quien no sabía que la página seguía hacia
+   abajo. `scrollbar-color` sirve en Chrome, Edge y Firefox; Safari aún no lo
+   entiende y usa las reglas -webkit- de abajo. */
+html {
+  scrollbar-color: var(--accent-orange) var(--bg-dark);
+}
+
+@supports not (scrollbar-color: auto) {
+  html::-webkit-scrollbar { width: 12px; }
+  html::-webkit-scrollbar-track { background: var(--bg-dark); }
+  html::-webkit-scrollbar-thumb {
+    background: var(--accent-orange);
+    border: 3px solid var(--bg-dark);
+    border-radius: 999px;
+  }
+  html::-webkit-scrollbar-thumb:hover { background: var(--accent-orange-soft); }
 }
 
 h1,
