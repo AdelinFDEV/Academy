@@ -54,3 +54,70 @@ export type AvisoForo = {
   hilo: { id: number; slug: string; titulo: string } | null;
   respuestaId: string | null;
 };
+
+// ── El panel de moderación (/admin/foro) ────────────────────────────────────
+// Tampoco aquí hay ids de usuario: el admin sanciona AL AUTOR DE UN MENSAJE y
+// el servidor busca quién es (`acciones/moderar.ts`).
+
+export type AutorEnModeracion = {
+  /** null = la cuenta ya no existe. */
+  alias: string | null;
+  puntos: number;
+  /** Sanciones que ha tenido (cualquiera, vigentes o no). */
+  sanciones: number;
+  /** Mensajes suyos ocultados o borrados por moderación. */
+  retirados: number;
+  /** Lleva menos de 7 días en el foro. */
+  nuevo: boolean;
+};
+
+export type MensajeModerado = {
+  /** Para React: "p:12" o "r:<uuid>". */
+  clave: string;
+  preguntaId: number;
+  respuestaId: string | null;
+  clase: "pregunta" | "respuesta" | "replica";
+  hilo: { slug: string; titulo: string };
+  texto: string;
+  estado: string;
+  fecha: string;
+  imagenes: number;
+  autor: AutorEnModeracion;
+  /** Los reportes ABIERTOS sobre este mensaje. */
+  reportes: { motivo: string; detalle: string; fecha: string }[];
+};
+
+export type SancionForo = {
+  id: string;
+  alias: string | null;
+  tipo: string;
+  hasta: string | null;
+  motivo: string;
+  fecha: string;
+};
+
+export type EntradaRegistro = {
+  id: number;
+  fecha: string;
+  /** El alias de quien lo hizo, o «Sistema». */
+  actor: string;
+  accion: string;
+  motivo: string;
+  hilo: { id: number; titulo: string } | null;
+  /** Sobre quién, si aplica. */
+  sobre: string | null;
+};
+
+export type AlertaDeVotos = { de: string; a: string; votos: number };
+
+export type PanelModeracion = {
+  modo: string;
+  cifras: { preguntas: number; respuestas: number; reportesAbiertos: number; ocultos: number; participantes: number };
+  /** Mensajes con reportes abiertos: los de «estafa» primero. */
+  cola: MensajeModerado[];
+  /** Mensajes ocultos sin reportes abiertos (ocultados por el admin). */
+  ocultos: MensajeModerado[];
+  sanciones: SancionForo[];
+  registro: EntradaRegistro[];
+  alertas: AlertaDeVotos[];
+};

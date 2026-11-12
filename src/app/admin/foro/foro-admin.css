@@ -1,0 +1,322 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   MODERACIÓN DEL FORO — /admin/foro
+   ══════════════════════════════════════════════════════════════════════════
+
+   Solo lo de esta página (FORO.md §16: un CSS por pantalla, nada del foro en
+   globals.css ni en admin.css). Prefijo: fa-.
+
+   Es una herramienta de trabajo, no un escaparate: texto que se lee de un
+   vistazo, la acción a mano y el rojo reservado para lo que no se deshace. */
+
+.fa { max-width: 980px; }
+
+.fa-seccion { margin-bottom: 1.5rem; }
+
+.fa-titulo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+.fa-cuenta {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.fa-vacio,
+.fa-nota {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.fa-nota { margin: -0.4rem 0 0.8rem; }
+
+.fa-aviso {
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--premium-gold-soft);
+  border-radius: 12px;
+  background: rgba(230, 180, 85, 0.07);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.fa-error {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: #ff8a8a;
+}
+
+/* ── Un mensaje de la cola ─────────────────────────────────────────────── */
+
+.fa-mensaje {
+  margin-bottom: 0.9rem;
+  padding: 1.1rem 1.25rem;
+  border: var(--card-border);
+  border-left: 3px solid rgba(240, 244, 255, 0.14);
+  border-radius: 14px;
+  background: var(--bg-card);
+}
+
+.fa-mensaje.is-estafa { border-left-color: #ff6b6b; }
+
+.fa-mensaje-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.6rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.fa-clase {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+}
+
+.fa-chip {
+  padding: 0.12rem 0.5rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.fa-chip--oculto { border-color: var(--premium-gold-soft); color: var(--premium-gold); }
+.fa-chip--estafa { border-color: rgba(255, 107, 107, 0.5); color: #ff8a8a; }
+
+.fa-hilo {
+  flex: 1 1 12rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fa-cuando { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Lo que escribió el usuario, tal cual: se respetan sus saltos de línea y
+   una palabra larguísima no rompe la tarjeta. */
+.fa-texto {
+  max-height: 14rem;
+  overflow-y: auto;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+}
+
+.fa-autor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  margin: 0.8rem 0 0;
+  font-size: 0.78rem;
+}
+
+.fa-autor dt {
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.fa-autor dd { color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.fa-autor dd.es-malo { color: #ff8a8a; }
+
+.fa-reportes {
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--hairline);
+  list-style: none;
+}
+
+.fa-reportes li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.6rem;
+  padding: 0.2rem 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.fa-reportes b { color: var(--text-primary); font-weight: 600; }
+.fa-reportes span { flex: 1 1 14rem; min-width: 0; overflow-wrap: anywhere; }
+.fa-reportes time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+
+/* ── Acciones ──────────────────────────────────────────────────────────── */
+
+.fa-acciones { margin-top: 0.9rem; }
+
+.fa-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.fa-btn {
+  padding: 0.42rem 0.8rem;
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.fa-btn:hover:not(:disabled) { border-color: rgba(240, 244, 255, 0.28); color: var(--text-primary); }
+.fa-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.fa-btn:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.fa-btn--peligro { border-color: rgba(255, 107, 107, 0.35); color: #ff8a8a; }
+.fa-btn--peligro:hover:not(:disabled) { border-color: #ff6b6b; color: #ffb3b3; }
+
+.fa-btn--firme { background: rgba(240, 244, 255, 0.08); color: var(--text-primary); }
+.fa-btn--firme.fa-btn--peligro { background: rgba(255, 107, 107, 0.12); }
+
+.fa-panel {
+  margin-top: 0.8rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.fa-panel-fila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 0.7rem;
+}
+
+.fa-panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.fa-panel label span { font-weight: 400; color: var(--text-muted); }
+
+.fa-panel select,
+.fa-panel textarea {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  background: var(--bg-dark);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.fa-panel textarea { width: 100%; resize: vertical; }
+.fa-panel-motivo { margin-bottom: 0.7rem; }
+.fa-panel .fa-nota { margin: 0.6rem 0 0; }
+
+/* ── El interruptor ────────────────────────────────────────────────────── */
+
+.fa-modo-opciones {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: 11px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.fa-modo-opcion {
+  padding: 0.45rem 0.95rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.fa-modo-opcion:hover:not(:disabled) { color: var(--text-primary); }
+.fa-modo-opcion:disabled { cursor: default; }
+.fa-modo-opcion.is-actual { background: rgba(240, 244, 255, 0.1); color: var(--text-primary); }
+.fa-modo-opcion.is-pendiente { outline: 1px solid var(--accent-orange); color: var(--text-primary); }
+.fa-modo-opcion:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.fa-modo-ayuda {
+  margin: 0.7rem 0 0.8rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+/* ── Listas: sanciones, alertas y registro ─────────────────────────────── */
+
+.fa-lista { list-style: none; font-size: 0.84rem; color: var(--text-secondary); }
+.fa-lista li { padding: 0.45rem 0; border-top: 1px solid var(--hairline); }
+.fa-lista li:first-child { border-top: 0; }
+.fa-lista b { color: var(--text-primary); font-weight: 600; }
+
+.fa-lista--filas li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fa-lista small,
+.fa-registro small {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.fa-registro {
+  max-height: 26rem;
+  overflow-y: auto;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  scrollbar-width: thin;
+}
+
+.fa-registro li {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0.8rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.fa-registro li:first-child { border-top: 0; }
+.fa-registro time { font-size: 0.74rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.fa-registro b { color: var(--text-primary); font-weight: 600; }
+
+@media (max-width: 600px) {
+  .fa-mensaje { padding: 0.95rem 1rem; }
+  .fa-registro li { grid-template-columns: 1fr; gap: 0.15rem; }
+  .fa-lista--filas li { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+}

@@ -140,7 +140,8 @@ En construcción desde el 12-11-2026. Ese día se cerraron las once decisiones (
 
 - [ ] **Fase 4 — API:** escrita (`src/lib/foro/` y `/api/foro/*`), con el filtro de texto probado (77 casos) y las rutas probadas sin sesión. **Falta probarla con sesiones de verdad**: gratuito, Premium, suspendido, 2FA a medias y campos de más. Necesita cuentas de prueba en Supabase, que hay que crear con permiso del admin y borrar después.
 - [ ] **Casos de dos peticiones a la vez** del §9.4 de `FORO.md` (50 me gusta simultáneos, dos eligiendo ganadora): con esas mismas cuentas de prueba, contra la API.
-- [ ] **Fases 6 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: moderación, avisos, puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
+- [ ] **Fase 6 — Moderación:** `/admin/foro` y sus rutas están escritos. **Falta que el admin lo use con su sesión** (necesita tener activada la verificación en dos pasos: sin ella ve el panel pero no modera) y la edición de un mensaje por el admin, que pide una función nueva de Postgres.
+- [ ] **Fases 7 a 14**, en el orden y con los criterios de salida de la §16 de `FORO.md`: avisos (la campana y la lista; la parte de base de datos ya está), puntos y ranking, romperlo, legal, diseño, SEO, beta cerrada y apertura.
 - [ ] **D15**, antes de la fase 6: si se reconoce a un expulsado que vuelve con otra cuenta (final de `FORO.md`).
 
 ---

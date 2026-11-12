@@ -4,7 +4,7 @@ import type { z } from "zod";
 import { SITE_URL } from "@/lib/site";
 import { errorForo } from "./errores";
 import { LIMITES } from "./limites";
-import { sesion } from "./permisos";
+import { sesion, sesionAdmin } from "./permisos";
 
 /**
  * La puerta de TODA ruta de `/api/foro/*` (FORO.md §6.2).
@@ -94,10 +94,30 @@ export function rutaForo<E extends z.ZodType>(
   esquema: E,
   accion: (usuarioId: string, datos: z.infer<E>) => Promise<ResultadoAccion>,
 ) {
+  return ruta(esquema, accion, sesion);
+}
+
+/**
+ * Lo mismo, para las rutas de MODERACIÓN (`/api/admin/foro/*`): además de
+ * todo lo anterior, quien llama tiene que ser admin y haber pasado la
+ * verificación en dos pasos en esta sesión (`sesionAdmin`).
+ */
+export function rutaForoAdmin<E extends z.ZodType>(
+  esquema: E,
+  accion: (adminId: string, datos: z.infer<E>) => Promise<ResultadoAccion>,
+) {
+  return ruta(esquema, accion, sesionAdmin);
+}
+
+function ruta<E extends z.ZodType>(
+  esquema: E,
+  accion: (usuarioId: string, datos: z.infer<E>) => Promise<ResultadoAccion>,
+  quienEs: () => Promise<{ ok: true; usuarioId: string } | { ok: false; error: string }>,
+) {
   return async function POST(request: Request): Promise<NextResponse> {
     if (!esDeLaWeb(request)) return fallo("origen");
 
-    const quien = await sesion();
+    const quien = await quienEs();
     if (!quien.ok) return fallo(quien.error);
 
     const cuerpo = await leerJson(request);

@@ -38,6 +38,30 @@ export async function sesion(): Promise<Sesion> {
 }
 
 /**
+ * La sesión de quien modera. Tres cosas, y las tres en el servidor:
+ *   · hay sesión;
+ *   · HA PASADO la verificación en dos pasos en esta sesión (`aal2`). Aquí no
+ *     vale «si la tiene»: quien puede ocultar, borrar y sancionar tiene que
+ *     tenerla activada. Con solo la contraseña del admin robada no se modera;
+ *   · su rol es `admin`, leído de la base de datos en ese momento.
+ * Las funciones de Postgres vuelven a comprobar el rol por su cuenta.
+ */
+export async function sesionAdmin(): Promise<{ ok: true; usuarioId: string } | { ok: false; error: "sin_sesion" | "falta_2fa_admin" | "no_admin" }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "sin_sesion" };
+
+  const { data: perfil } = await bd().from("profiles").select("role").eq("id", user.id).maybeSingle();
+  // Antes que el 2FA: a quien no es admin no se le dice ni que existe el requisito.
+  if (perfil?.role !== "admin") return { ok: false, error: "no_admin" };
+
+  const { data: aal, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (error || !aal || aal.currentLevel !== "aal2") return { ok: false, error: "falta_2fa_admin" };
+
+  return { ok: true, usuarioId: user.id };
+}
+
+/**
  * ¿Puede participar ahora mismo? Devuelve null si sí, o el código del motivo.
  * Es la misma función que usan por dentro todas las acciones: una sola regla,
  * escrita una vez, en la base de datos.

@@ -33,6 +33,7 @@ const ERRORES: Record<string, Entrada> = {
   foro_cerrado: E(404, "No encontrado."),
   solo_lectura: E(503, "El foro está en modo de solo lectura en este momento. Vuelve a intentarlo más tarde."),
   no_admin: E(403, "Acceso denegado."),
+  falta_2fa_admin: E(403, "Para moderar el foro tienes que tener activada la verificación en dos pasos y haberla pasado en esta sesión. Actívala en «Mi perfil»."),
 
   // ── Lo que pides ──
   // Lo que no existe y lo que no puedes ver responden IGUAL (FORO.md §6.2).
