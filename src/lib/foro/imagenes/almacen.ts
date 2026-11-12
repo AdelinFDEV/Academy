@@ -57,6 +57,10 @@ export async function borrarOriginal(id: string): Promise<void> {
 export async function guardarLista(id: string, webp: Buffer): Promise<boolean> {
   const { error } = await bd().storage.from(PRIVADO).upload(lista(id), webp, {
     contentType: "image/webp",
+    // Dos minutos de caché, no la hora que pone Supabase por defecto: la copia
+    // pública hereda este valor, y una imagen retirada por moderación seguiría
+    // sirviéndose desde la caché todo ese tiempo.
+    cacheControl: "120",
     upsert: false,
   });
   if (error) console.error("[foro] no se pudo guardar una imagen recodificada");
