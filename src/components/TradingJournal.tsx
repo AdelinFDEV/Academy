@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Filter, X, Check, NotebookPen } from "lucide-react";
 import { TjSegmented, TjSelect } from "@/components/trading/TjControls";
@@ -137,10 +137,15 @@ export default function TradingJournal({
   }
 
   // Al cambiar de vista, si la barra ya iba fija encima del contenido, se sube
-  // hasta dejarla justo en su sitio, con la vista nueva empezando debajo. Sin
-  // animación: con el desplazamiento suave, el cambio de contenido lo dejaba a
-  // medias y la barra tapaba la primera tarjeta (10-11-2026).
-  useEffect(() => {
+  // hasta dejarla justo en su sitio, con la vista nueva empezando debajo.
+  //
+  // Va en useLayoutEffect y con "instant" a propósito (12-11-2026): se corrige
+  // ANTES de pintar, así que la barra —que es sticky— no se mueve ni un píxel y
+  // solo cambia lo de debajo. Con useEffect se veía un fotograma en la posición
+  // vieja, y "auto" hereda el `scroll-behavior: smooth` de globals.css, que lo
+  // animaba a destiempo: ese era el «salto de ancla» al cambiar de pestaña.
+  // El min-height de .tj-vista garantiza que siempre haya sitio para subir.
+  useLayoutEffect(() => {
     if (vistaPrevia.current === view) return;
     vistaPrevia.current = view;
     const ancla = anclaRef.current;
@@ -148,7 +153,7 @@ export default function TradingJournal({
     if (!ancla || !tabs) return;
     const fija = parseFloat(getComputedStyle(tabs).top) || 0;
     const top = ancla.getBoundingClientRect().top;
-    if (top < fija) window.scrollBy({ top: top - fija, behavior: "auto" });
+    if (top < fija) window.scrollBy({ top: top - fija, behavior: "instant" });
   }, [view]);
 
   // Cuenta completa: lo que no cambia al filtrar.
@@ -448,14 +453,17 @@ export default function TradingJournal({
         )}
       </AnimatePresence>
 
-      <AnimatePresence mode="wait" initial={false}>
+      {/* Sin AnimatePresence ni salida a propósito (12-11-2026): con mode="wait"
+          la vista vieja se iba, la página se quedaba un instante sin contenido,
+          se encogía y el navegador recolocaba el scroll; al llegar la nueva,
+          volvía a crecer. Ahora la nueva sustituye a la vieja en el mismo
+          fotograma y solo aparece con un fundido. */}
       <motion.div
         key={trades.length === 0 ? "vacio" : view}
         className="tj-vista"
-        initial={{ opacity: 0, y: 14 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       >
       {trades.length === 0 ? (
         <>
@@ -530,7 +538,6 @@ export default function TradingJournal({
         </>
       )}
       </motion.div>
-      </AnimatePresence>
     </div>
   );
 }

@@ -67,15 +67,18 @@
  * `backwards`, no `both`: al acabar, la animación deja de mandar y vuelven los
  * estilos normales (los relieves al pasar el ratón necesitan su transform).
  */
-.tj-vista { display: flex; flex-direction: column; gap: 1.75rem; }
-.tj-vista > * { animation: tj-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
-.tj-vista > :nth-child(2) { animation-delay: 70ms; }
-.tj-vista > :nth-child(3) { animation-delay: 140ms; }
-.tj-vista > :nth-child(4) { animation-delay: 210ms; }
-.tj-vista > :nth-child(5) { animation-delay: 280ms; }
-.tj-vista > :nth-child(n + 6) { animation-delay: 350ms; }
+/* El alto mínimo (12-11-2026): una vista corta (Emociones, Hitos) ya no encoge
+   la página al cambiar de pestaña. Si encogía, el navegador recolocaba el
+   scroll y la barra de pestañas daba un salto. Con esto siempre cabe la vista
+   empezando justo debajo de la barra fija. */
+.tj-vista { display: flex; flex-direction: column; gap: 1.75rem; min-height: calc(100svh - var(--nav-h)); }
+.tj-vista > * { animation: tj-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.tj-vista > :nth-child(2) { animation-delay: 40ms; }
+.tj-vista > :nth-child(3) { animation-delay: 80ms; }
+.tj-vista > :nth-child(4) { animation-delay: 120ms; }
+.tj-vista > :nth-child(n + 5) { animation-delay: 160ms; }
 
-@keyframes tj-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes tj-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 :where(.trading-journal) .tone-win { --tone: var(--tj-win); color: var(--tone); }
 :where(.trading-journal) .tone-loss { --tone: var(--tj-loss); color: var(--tone); }
