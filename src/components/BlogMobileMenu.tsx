@@ -8,7 +8,7 @@ import LogoutButton from "./LogoutButton";
 import AvatarUsuario from "./AvatarUsuario";
 import GuideSearch from "./GuideSearch";
 import { destinoPorRuta, herramienta } from "@/lib/herramientas";
-import { INSTAGRAM_DM_URL } from "@/lib/contacto";
+import { INSTAGRAM_DM_URL, YOUTUBE_URL } from "@/lib/contacto";
 import { InstagramIcon } from "./SocialLinks";
 
 interface Props {
@@ -178,6 +178,19 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                 <span className="mm-instagram-texto">
                   <strong>Escríbeme por Instagram</strong>
                   <small>@adelinbtc · te contesto yo</small>
+                </span>
+                <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" />
+              </a>
+
+              <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-instagram mm-youtube">
+                <span className="mm-instagram-icono" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z" />
+                  </svg>
+                </span>
+                <span className="mm-instagram-texto">
+                  <strong>Mi canal de YouTube</strong>
+                  <small>@AdelinBTC · todos mis vídeos</small>
                 </span>
                 <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" />
               </a>

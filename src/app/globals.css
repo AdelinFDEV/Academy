@@ -1990,6 +1990,15 @@ html {
 .mm-instagram-texto small { font-size: 0.8rem; color: rgba(226, 232, 240, 0.65); }
 .mm-instagram:focus-visible { outline: 2px solid #ee4a8b; outline-offset: 3px; }
 
+/* La misma tarjeta, en el rojo de YouTube. */
+.mm-youtube {
+  background:
+    linear-gradient(160deg, #2a1218, #170b10) padding-box,
+    linear-gradient(135deg, #ff5a5a, #e01b1b 60%, #8f1010) border-box;
+}
+.mm-youtube .mm-instagram-icono { background: linear-gradient(180deg, #ff4d4d, #e01b1b); }
+.mm-youtube:focus-visible { outline-color: #ff7a7a; }
+
 .nav-foro-movil {
   display: none;
   flex-shrink: 0;
