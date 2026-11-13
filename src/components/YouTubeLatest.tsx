@@ -40,7 +40,6 @@ export default function YouTubeLatest({ videos }: { videos: YouTubeVideo[] }) {
 
   return (
     <section className="ytl" aria-labelledby="ytl-titulo">
-      <span className="ytl-luz" aria-hidden="true" />
       <div className="ytl-inner">
         <header className="ytl-cabecera">
           <div>

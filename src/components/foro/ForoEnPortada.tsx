@@ -36,8 +36,6 @@ export default async function ForoEnPortada({ conSesion }: { conSesion: boolean 
 export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
   return (
     <section className="fpo fo-pagina" aria-labelledby="fpo-titulo">
-      <span className="fpo-luz fpo-luz--violeta" aria-hidden="true" />
-      <span className="fpo-luz fpo-luz--naranja" aria-hidden="true" />
       <div className="fpo-inner">
         <header className="fpo-cabecera">
           <div>
@@ -89,11 +87,28 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
 
         {/* La invitación: lo que llena el bloque y le da un porqué. */}
         <aside className="fpo-invita" aria-label="Participa en el foro">
-          <svg className="fpo-invita-dibujo" viewBox="0 0 220 180" aria-hidden="true">
-            <path d="M28 22h112a18 18 0 0 1 18 18v52a18 18 0 0 1-18 18H82l-30 24v-24H28a18 18 0 0 1-18-18V40a18 18 0 0 1 18-18Z" />
-            <path d="M120 74h72a16 16 0 0 1 16 16v40a16 16 0 0 1-16 16h-8v20l-26-20h-38a16 16 0 0 1-16-16V90a16 16 0 0 1 16-16Z" />
-          </svg>
-          <span className="fpo-invita-sello">Comunidad</span>
+          <span className="fpo-invita-borde" aria-hidden="true" />
+          <span className="fpo-invita-orbe" aria-hidden="true" />
+
+          {/* Una conversación dibujada, en bucle: llega una pregunta, alguien
+              escribe y llega la respuesta. Son rayas, no texto: es un adorno y
+              no pone en boca de nadie algo que no ha dicho. */}
+          <div className="fpo-chat" aria-hidden="true">
+            <div className="fpo-burbuja fpo-burbuja--a">
+              <i className="fpo-chat-cara" />
+              <span><b /><b /></span>
+            </div>
+            <div className="fpo-burbuja fpo-burbuja--b">
+              <span><b /><b /><b /></span>
+              <i className="fpo-chat-cara fpo-chat-cara--b" />
+            </div>
+            <div className="fpo-burbuja fpo-burbuja--c">
+              <i className="fpo-chat-cara fpo-chat-cara--c" />
+              <span className="fpo-escribiendo"><em /><em /><em /></span>
+            </div>
+          </div>
+
+          <span className="fpo-invita-sello"><span className="fpo-invita-vivo" /> Comunidad</span>
           <p className="fpo-invita-titulo">¿Se te ha quedado <em>una duda</em>?</p>
           <p className="fpo-invita-texto">
             El foro es el sitio para preguntar lo que no te haya quedado claro de una guía o de un curso, y para

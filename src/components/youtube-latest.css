@@ -5,21 +5,36 @@
   --ytl-rojo: #ff3d3d;
   position: relative;
   isolation: isolate;
-  padding: 3.4rem 1.25rem 3.8rem;
-  border-top: 1px solid var(--hairline);
+  padding: 4.2rem 1.25rem 4.6rem;
   overflow: hidden;
+  /* Su propio fondo: casi negro, cálido, como una sala de cine. Distinto del
+     índigo del foro que tiene encima. */
+  background:
+    radial-gradient(ellipse 55% 240px at 50% 0%, rgba(255, 61, 61, 0.16), transparent 70%),
+    linear-gradient(180deg, #0c0a14 0%, #0b0a12 60%, #0a0b16 100%);
 }
 
-.ytl-luz {
+/* El separador: la misma rendija de luz que el foro, en rojo. */
+.ytl::before {
+  content: "";
   position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(880px, 86%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 61, 61, 0.95) 40%, rgba(255, 150, 110, 0.9) 60%, transparent);
+  transform: translateX(-50%);
+}
+
+/* Rayas finas en diagonal, que se apagan hacia abajo. */
+.ytl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   z-index: -1;
-  top: -140px;
-  left: 8%;
-  width: 560px;
-  height: 420px;
-  border-radius: 50%;
-  background: rgba(255, 61, 61, 0.14);
-  filter: blur(100px);
+  background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 14px);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -195,7 +210,7 @@
   .ytl-lado { grid-template-rows: none; }
 }
 @media (max-width: 640px) {
-  .ytl { padding: 2.6rem 1.1rem 3rem; }
+  .ytl { padding: 3.2rem 1.1rem 3.4rem; }
   .ytl-canal { width: 100%; }
   .ytl-play { width: 60px; height: 60px; }
   .ytl-principal-texto { padding: 1rem 1.1rem; }

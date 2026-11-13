@@ -13,19 +13,42 @@
    Dos tarjetas a lo ancho, cada una con el lomo del color de su categoría.
    Van justo después de las guías, que son las que mandan en la portada. */
 
+/* El fondo es de esta sección y de ninguna otra: índigo, con una trama de
+   puntos que se apaga hacia abajo. Arriba, el separador: una línea de luz que
+   se desvanece hacia los lados y un resplandor corto debajo, como si la
+   sección anterior dejara pasar la luz por una rendija. */
 .fpo {
   position: relative;
   isolation: isolate;
-  padding: 3.4rem 1.25rem 3.6rem;
-  border-top: 1px solid var(--hairline);
+  padding: 4.2rem 1.25rem 4.4rem;
   overflow: hidden;
+  background:
+    radial-gradient(ellipse 55% 240px at 50% 0%, rgba(139, 108, 242, 0.2), transparent 70%),
+    linear-gradient(180deg, #0d1130 0%, #0b0f2a 55%, #0a0d24 100%);
 }
 
-/* Dos luces de fondo, quietas: violeta a la derecha (la comunidad) y naranja
-   a la izquierda. Le quitan lo plano sin animar nada. */
-.fpo-luz { position: absolute; z-index: -1; border-radius: 50%; filter: blur(90px); pointer-events: none; }
-.fpo-luz--violeta { top: -120px; right: -80px; width: 520px; height: 420px; background: rgba(139, 108, 242, 0.22); }
-.fpo-luz--naranja { bottom: -160px; left: -120px; width: 460px; height: 380px; background: rgba(255, 107, 43, 0.12); }
+.fpo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(880px, 86%);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.9) 35%, rgba(255, 150, 100, 0.9) 65%, transparent);
+  transform: translateX(-50%);
+}
+
+.fpo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgba(167, 139, 250, 0.22) 1px, transparent 1.4px);
+  background-size: 26px 26px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
+  pointer-events: none;
+}
 
 .fpo-inner {
   max-width: 1200px;
@@ -143,40 +166,144 @@
 .fpo-lista--una .fpo-pregunta { font-size: 1.5rem; }
 .fpo-lista--una .fpo-extracto { -webkit-line-clamp: 4; line-clamp: 4; font-size: 0.98rem; }
 
-/* ── La invitación ── */
-.fpo-invita {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 0.7rem;
-  min-height: 300px;
-  padding: 1.7rem 1.6rem 1.6rem;
-  overflow: hidden;
-  border: 1px solid rgba(167, 139, 250, 0.35);
-  border-radius: 22px;
-  background:
-    radial-gradient(340px 220px at 100% 0%, rgba(255, 122, 61, 0.34), transparent 70%),
-    linear-gradient(155deg, #3a2a86 0%, #241a5c 45%, #14123a 100%);
-  box-shadow: 0 30px 60px -36px rgba(110, 80, 230, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+/* ── La invitación ──
+   Violeta y naranja, con el borde girando despacio y una conversación
+   dibujada que no para: es lo único que se mueve en la sección. */
+@property --fpo-giro {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
 }
 
-/* Dos bocadillos dibujados a línea, arriba a la derecha. */
-.fpo-invita-dibujo {
-  position: absolute;
-  top: 0.4rem;
-  right: 0.2rem;
-  width: 200px;
-  height: auto;
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.2);
-  stroke-width: 2.5;
-  stroke-linejoin: round;
+.fpo-invita {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-height: 400px;
+  padding: 1.5rem 1.6rem 1.6rem;
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(360px 240px at 105% -5%, rgba(255, 122, 61, 0.5), transparent 68%),
+    radial-gradient(300px 260px at -10% 105%, rgba(96, 165, 250, 0.3), transparent 70%),
+    linear-gradient(155deg, #4a34a8 0%, #2c1f73 42%, #171246 100%);
+  box-shadow:
+    0 40px 80px -40px rgba(124, 92, 246, 0.9),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 1px 0 rgba(255, 255, 255, 0.22) inset;
 }
-.fpo-invita-dibujo path:last-child { fill: rgba(255, 122, 61, 0.2); stroke: rgba(255, 170, 120, 0.7); }
+
+/* El borde: un haz de luz que da la vuelta a la tarjeta. */
+.fpo-invita-borde {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--fpo-giro), transparent 0deg, rgba(255, 190, 150, 0.95) 40deg, rgba(196, 170, 255, 0.9) 90deg, transparent 150deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: fpo-giro 9s linear infinite;
+}
+
+/* Una luz que respira detrás de la conversación. */
+.fpo-invita-orbe {
+  position: absolute;
+  z-index: -1;
+  top: -60px;
+  right: -40px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 160, 110, 0.55), transparent 65%);
+  animation: fpo-respira 7s ease-in-out infinite;
+}
+
+/* ── La conversación ── */
+.fpo-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1;
+  justify-content: center;
+  min-height: 150px;
+  margin-bottom: 0.4rem;
+}
+
+.fpo-burbuja {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  max-width: 78%;
+  opacity: 0;
+  animation: fpo-llega 10s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.fpo-burbuja--b { align-self: flex-end; animation-name: fpo-llega-b; }
+.fpo-burbuja--c { animation-name: fpo-llega-c; }
+
+.fpo-burbuja > span {
+  display: grid;
+  gap: 6px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px 16px 16px 5px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+}
+.fpo-burbuja--b > span {
+  border-color: rgba(255, 190, 150, 0.5);
+  border-radius: 16px 16px 5px 16px;
+  background: linear-gradient(135deg, rgba(255, 138, 76, 0.85), rgba(255, 107, 43, 0.7));
+}
+
+/* Las rayas que hacen de texto. */
+.fpo-burbuja b { display: block; height: 7px; border-radius: 99px; background: rgba(255, 255, 255, 0.7); }
+.fpo-burbuja--a b:nth-child(1) { width: 132px; }
+.fpo-burbuja--a b:nth-child(2) { width: 84px; }
+.fpo-burbuja--b b:nth-child(1) { width: 150px; }
+.fpo-burbuja--b b:nth-child(2) { width: 118px; }
+.fpo-burbuja--b b:nth-child(3) { width: 64px; }
+
+.fpo-chat-cara { flex: none; width: 26px; height: 26px; border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 50%; background: linear-gradient(135deg, #8fb8ff, #5a7cf0); }
+.fpo-chat-cara--b { background: linear-gradient(135deg, #ffc38f, #ff7a3d); }
+.fpo-chat-cara--c { background: linear-gradient(135deg, #b7f5cf, #34d399); }
+
+/* «Está escribiendo»: tres puntos que no paran. */
+.fpo-escribiendo { display: flex !important; align-items: center; gap: 5px !important; height: 36px; padding: 0 0.95rem !important; }
+.fpo-escribiendo em { width: 7px; height: 7px; border-radius: 50%; background: #fff; animation: fpo-punto 1.2s ease-in-out infinite; }
+.fpo-escribiendo em:nth-child(2) { animation-delay: 0.16s; }
+.fpo-escribiendo em:nth-child(3) { animation-delay: 0.32s; }
+
+@keyframes fpo-giro { to { --fpo-giro: 360deg; } }
+@keyframes fpo-respira { 0%, 100% { transform: scale(1); opacity: 0.75; } 50% { transform: scale(1.18); opacity: 1; } }
+@keyframes fpo-punto { 0%, 60%, 100% { transform: translateY(0); opacity: 0.45; } 30% { transform: translateY(-5px); opacity: 1; } }
+/* Diez segundos: pregunta, respuesta, alguien escribe, y vuelta a empezar. */
+@keyframes fpo-llega {
+  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  6%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes fpo-llega-b {
+  0%, 22% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  28%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+@keyframes fpo-llega-c {
+  0%, 46% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  52%, 88% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: translateY(-8px); }
+}
+
+.fpo-invita-vivo { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25); }
 
 .fpo-invita-sello {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   align-self: flex-start;
   padding: 4px 11px;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -308,13 +435,15 @@
 .fpo-hilo.is-resuelto .fpo-respuestas b { color: var(--fo-verde); }
 
 @media (max-width: 760px) {
-  .fpo { padding: 2.4rem 1.1rem 2.6rem; }
+  .fpo { padding: 3.2rem 1.1rem 3.2rem; }
   .fpo-cuerpo { grid-template-columns: 1fr; }
-  .fpo-invita { min-height: 0; padding-top: 5.5rem; }
+  .fpo-invita { min-height: 0; }
   .fpo-lista--una .fpo-pregunta { font-size: 1.25rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .fpo-invita-borde, .fpo-invita-orbe, .fpo-escribiendo em { animation: none; }
+  .fpo-burbuja { animation: none; opacity: 1; }
   .fpo-hilo, .fpo-invita-boton { transition: none; }
   .fpo-hilo:hover, .fpo-invita-boton:hover { transform: none; }
 }
