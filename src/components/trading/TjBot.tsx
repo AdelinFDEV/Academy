@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import {
   AnimatePresence, animate, motion, useMotionValue, useTransform, useVelocity,
@@ -58,6 +58,43 @@ const readSeen = () => {
   }
 };
 
+/*
+ * Además de «visto» (se abrió el bocadillo), se apunta qué SECCIONES de este
+ * análisis se han leído ya: el punto rojo de una sección con algo importante se
+ * va en cuanto se entra en ella, y no vuelve al cerrar y abrir. Se guarda junto
+ * a la huella del análisis: con un análisis nuevo, la lista empieza vacía.
+ */
+const LEIDAS_KEY = "tj-bot-leidas";
+
+const readLeidas = () => {
+  try {
+    return localStorage.getItem(LEIDAS_KEY);
+  } catch {
+    return null;
+  }
+};
+
+function seccionesLeidas(guardado: string | null, firma: string): string[] {
+  if (!guardado) return [];
+  try {
+    const dato: unknown = JSON.parse(guardado);
+    if (typeof dato !== "object" || dato === null) return [];
+    const { firma: f, secciones } = dato as { firma?: unknown; secciones?: unknown };
+    return f === firma && Array.isArray(secciones) ? secciones.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function marcarLeida(firma: string, secciones: string[]) {
+  try {
+    localStorage.setItem(LEIDAS_KEY, JSON.stringify({ firma, secciones }));
+  } catch {
+    // Sin almacenamiento: el punto volverá a salir al abrir de nuevo, sin más.
+  }
+  window.dispatchEvent(new Event(SEEN_EVENT));
+}
+
 function markSeen(signature: string) {
   try {
     localStorage.setItem(SEEN_KEY, signature);
@@ -74,6 +111,7 @@ function markSeen(signature: string) {
 export function reiniciarNova() {
   try {
     localStorage.removeItem(SEEN_KEY);
+    localStorage.removeItem(LEIDAS_KEY);
     localStorage.removeItem(NOVA_FIRMA);
     localStorage.removeItem(NOVA_RESUMEN);
   } catch {
@@ -375,6 +413,25 @@ export default function TjBot({ report, onAction }: {
     }))
     .filter(g => (g.s === "semana" ? report.objetivo != null : g.items.length > 0));
   const at = Math.min(step, sections.length - 1);
+
+  // Qué secciones de este análisis se han leído ya (ver LEIDAS_KEY).
+  const leidasGuardadas = useSyncExternalStore(subscribeSeen, readLeidas, () => null);
+  const leidas = useMemo(() => seccionesLeidas(leidasGuardadas, report.signature), [leidasGuardadas, report.signature]);
+  const seccionAbierta = sections[at]?.s;
+
+  // Leer es estar delante de la sección con el bocadillo abierto: se apunta y
+  // su punto rojo desaparece.
+  useEffect(() => {
+    if (!open || !seccionAbierta || leidas.includes(seccionAbierta)) return;
+    marcarLeida(report.signature, [...leidas, seccionAbierta]);
+  }, [open, seccionAbierta, leidas, report.signature]);
+
+  // Si el análisis cambia con el bocadillo abierto (se acaba de hacer lo que
+  // Nova pedía), lo nuevo se está leyendo en ese momento: también cuenta como
+  // visto, y el punto rojo de Nova no reaparece al cerrar.
+  useEffect(() => {
+    if (open && unseen) markSeen(report.signature);
+  }, [open, unseen, report.signature]);
   const current = sections[at];
   const next = sections[at + 1];
   const isLast = at >= sections.length - 1;
@@ -859,7 +916,7 @@ export default function TjBot({ report, onAction }: {
                             {i === at && <motion.span layoutId="tjbot-index-on" className="tjbot-index-on" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
                             <span className="tjbot-index-emoji" aria-hidden="true">{SECTION_EMOJI[g.s]}</span>
                             <span className="tjbot-index-label">{SECTION_LABEL[g.s]}</span>
-                            {urgent && <span className="tjbot-index-dot" title="Tiene algo importante" />}
+                            {urgent && !leidas.includes(g.s) && <span className="tjbot-index-dot" title="Tiene algo importante sin leer" />}
                             <span className="tjbot-index-count">{count}</span>
                           </button>
                         );
