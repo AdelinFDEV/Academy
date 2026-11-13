@@ -33,7 +33,58 @@ Notas: rivales que ya la cubren, el hueco que dejan, datos que hay que comprobar
 
 ---
 
-## Las ideas
+## Criptomonedas por explicar — top 50 de CoinGecko
+
+Una guía por moneda, poco a poco, como las de Worldcoin, Render, Hyperliquid y XRP. La lista sale del **top 50 por capitalización de CoinGecko a 13-11-2026**, quitando lo que no toca explicar. El ranking cambia cada día: antes de empezar una, se vuelve a mirar.
+
+```bash
+curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50"   | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>JSON.parse(d).forEach(c=>console.log(c.market_cap_rank,c.symbol.toUpperCase(),c.name)))"
+```
+
+**Quedan 27.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
+
+| # | Moneda | Grupo | Nota |
+|---|---|---|---|
+| 2 | Ethereum (ETH) | Plataforma de contratos | La segunda del mercado y la base de casi todo DeFi. La más buscada de la lista |
+| 4 | BNB (BNB) | Token de exchange · plataforma | De Binance; también mueve su propia red (BNB Chain) |
+| 7 | Solana (SOL) | Plataforma de contratos | |
+| 8 | TRON (TRX) | Plataforma de contratos | Muy usada para mover USDT |
+| 11 | Zcash (ZEC) | Privacidad | Comprobar su situación regulatoria en la UE antes de escribir |
+| 13 | Monero (XMR) | Privacidad | Igual que Zcash: muchos exchanges europeos la han retirado |
+| 15 | LEO Token (LEO) | Token de exchange | De Bitfinex |
+| 16 | WhiteBIT Coin (WBT) | Token de exchange | De WhiteBIT |
+| 17 | Chainlink (LINK) | Infraestructura (oráculos) | |
+| 18 | Cardano (ADA) | Plataforma de contratos | |
+| 19 | Stellar (XLM) | Pagos | Pariente de XRP: enlazar con su guía |
+| 21 | NEAR Protocol (NEAR) | Plataforma de contratos | |
+| 23 | Bitcoin Cash (BCH) | Pagos | Nació de una división de Bitcoin |
+| 24 | Litecoin (LTC) | Pagos | |
+| 25 | Avalanche (AVAX) | Plataforma de contratos | |
+| 26 | Uniswap (UNI) | DeFi (intercambio) | Enlazar con el curso *DeFi y stablecoins* |
+| 27 | Canton (CC) | Plataforma para instituciones | Poco explicada en español: buen hueco |
+| 28 | Sui (SUI) | Plataforma de contratos | |
+| 29 | Gram, antes Toncoin (GRAM) | Plataforma de contratos | La red de Telegram. CoinGecko la lista ya como «Gram»: comprobar el cambio de nombre y de símbolo |
+| 32 | Hedera (HBAR) | Plataforma de contratos | |
+| 34 | Rain (RAIN) | DeFi (opciones y mercados de predicción) | Reciente y con subida rápida en el ranking: comprobar que sigue arriba antes de dedicarle una guía |
+| 38 | Bittensor (TAO) | Inteligencia artificial | |
+| 40 | Cronos (CRO) | Token de exchange · plataforma | De Crypto.com |
+| 41 | Quant (QNT) | Infraestructura (interoperabilidad) | |
+| 43 | OKB (OKB) | Token de exchange | De OKX |
+| 46 | Ethena (ENA) | DeFi | El token del protocolo; su dólar sintético (USDe) es una de las estables excluidas |
+| 50 | Aave (AAVE) | DeFi (préstamos) | Enlazar con el curso *DeFi y stablecoins* |
+
+**Fuera de la lista, y por qué:**
+
+- **Ya explicadas en la web**: Bitcoin (curso *Bitcoin y DCA*), XRP y Hyperliquid (tienen guía).
+- **Estables**: USDT, USDC, USDS, USDe, DAI, USD1, RLUSD, PYUSD, USDG y USDF. Se explican en el curso *DeFi y stablecoins*, no una a una.
+- **Memes**: Dogecoin, Shiba Inu, Pepe y MemeCore (una red hecha para memes, que CoinGecko clasifica como meme).
+- **Activos tradicionales tokenizados**, que no son una criptomoneda propia sino un activo de fuera envuelto en un token: Figure HELOC (préstamos hipotecarios), Tether Gold y PAX Gold (oro), Ondo USDY y Circle USYC (deuda del Tesoro de EE. UU.) y Spiko Amundi (un fondo monetario en euros). Si interesan, darían para **una sola guía** sobre la tokenización de activos.
+
+**Orden recomendado para empezar:** Ethereum, Solana, BNB, Cardano y Chainlink. Son las más buscadas de la lista y las que más enlazan con lo que ya hay (cursos de DeFi y de CoinMarketCap/CoinGecko).
+
+---
+
+## Otras ideas
 
 Salen de repasar los cursos (13-11-2026): temas que encajan mejor como guía que como curso. Sin búsqueda objetivo todavía; se fija con la Fase 0 de la auditoría SEO al empezar.
 
