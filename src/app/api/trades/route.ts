@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { borrarCapturasDeOperacion, esUuid } from "@/lib/diarioCapturas";
 import { NextResponse } from "next/server";
 
 const RESULTS = ["win", "loss", "breakeven"] as const;
@@ -192,5 +193,8 @@ export async function DELETE(req: Request) {
     .eq("user_id", user.id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // Sus capturas, si las tenía. La ruta lleva el id del usuario, así que aquí
+  // nadie puede borrar las de otro.
+  if (esUuid(id)) await borrarCapturasDeOperacion(user.id, id);
   return NextResponse.json({ ok: true });
 }

@@ -246,10 +246,16 @@ export default function TradingJournal({
     setEditing(null);
   }
 
-  function onSaved(saved: Trade) {
+  /**
+   * Entra una operación guardada. Puede llegar dos veces seguidas: primero con
+   * sus datos (y el formulario sigue abierto mientras suben las capturas) y
+   * después ya con ellas. Por eso se busca por id en vez de fiarse de `editing`.
+   */
+  function onSaved(saved: Trade, cerrar = true) {
     setTrades(prev =>
-      (editing ? prev.map(t => (t.id === editing.id ? saved : t)) : [...prev, saved]).sort(byChronology)
+      (prev.some(t => t.id === saved.id) ? prev.map(t => (t.id === saved.id ? saved : t)) : [...prev, saved]).sort(byChronology)
     );
+    if (!cerrar) return;
     closeForm();
     void syncLogros();
   }
@@ -456,7 +462,7 @@ export default function TradingJournal({
             <div id="tj-reset-texto">
               <p>Se borrará para siempre:</p>
               <ul>
-                <li>{trades.length === 1 ? "Tu operación" : `Tus ${trades.length} operaciones`}</li>
+                <li>{trades.length === 1 ? "Tu operación" : `Tus ${trades.length} operaciones`}, con sus capturas</li>
                 <li>Tu capital inicial</li>
                 <li>{diasApuntados === 1 ? "El día con emociones y notas" : `Los ${diasApuntados} días con emociones y notas`}</li>
                 <li>Los hitos del diario que hayas conseguido</li>

@@ -17,6 +17,10 @@ export interface Trade {
   strategy: string | null;
   notes: string | null;
   created_at: string;
+  /** Cuándo se subió la captura del gráfico antes de entrar. Ausente o null = no hay. */
+  captura_antes?: string | null;
+  /** Lo mismo, con la de después de cerrar. Ver `TjCapturas.tsx`. */
+  captura_despues?: string | null;
 }
 
 /** Riesgo por encima del cual una operación se considera agresiva. */

@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
+import { borrarCapturasDeUsuario } from "@/lib/diarioCapturas";
 
 /**
  * Reiniciar el diario: se borra TODO lo que es del diario, para empezar de cero.
- *   · las operaciones y el capital inicial;
+ *   · las operaciones, con sus capturas, y el capital inicial;
  *   · las emociones y notas de cada día (diario_dias);
  *   · los hitos del diario ganados (user_badges «diario-%»), que vuelven a
  *     bloqueados. El resto de logros (guías, cursos…) no se tocan.
@@ -31,6 +32,9 @@ export async function POST() {
     .eq("user_id", user.id);
 
   if (tradesError) return NextResponse.json({ error: tradesError.message }, { status: 500 });
+
+  // Las capturas de sus operaciones: toda su carpeta del bucket privado.
+  await borrarCapturasDeUsuario(user.id);
 
   // Emociones y notas: la policy de diario_dias deja a cada uno borrar las suyas.
   const { error: diasError } = await supabase

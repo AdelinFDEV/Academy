@@ -7,6 +7,7 @@ import { TjSelect } from "./TjControls";
 import { MONTHS, WEEKDAY_NAMES, dateTime, moneyStr, pctStr, pnlStr, rStr, ratioStr, toneOf } from "./tjFormat";
 import { RISK_LIMIT_PCT, computeStats, rOf, resultTone, type Trade, type TradeContext, type TradeResult } from "./tjStats";
 import { animoInfo, fechaKey, type DiasMap } from "./tjDias";
+import { TjCapturasVista } from "./TjCapturas";
 
 const PAGE = 25;
 
@@ -298,7 +299,7 @@ export default function TjTradeLog({ trades, ctx, dias, onEdit, onDelete }: Prop
                                 {t.direction === "long" ? "Long" : "Short"}
                               </span>
                             </span>
-                            <span className="tjo-sub">{t.strategy ?? "Sin estrategia"}{t.notes ? " · con nota" : ""}</span>
+                            <span className="tjo-sub">{t.strategy ?? "Sin estrategia"}{t.notes ? " · con nota" : ""}{t.captura_antes || t.captura_despues ? " · con capturas" : ""}</span>
                           </span>
                           <span className="tjo-risk">
                             {moneyStr(t.risk_amount)}
@@ -364,6 +365,7 @@ export default function TjTradeLog({ trades, ctx, dias, onEdit, onDelete }: Prop
                                 <p className={t.notes ? "tjo-notes" : "tjo-notes is-empty"}>
                                   {t.notes ?? "Sin notas. Apuntar por qué entraste es lo que dentro de tres meses te dirá si falló el método o la disciplina."}
                                 </p>
+                                <TjCapturasVista trade={t} />
                               </div>
                             </motion.div>
                           )}

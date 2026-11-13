@@ -22,6 +22,15 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00h. Diario: capturas de antes y después de cada operación (13-11-2026)
+
+Cada operación admite dos imágenes opcionales, la del gráfico antes de entrar y la de después de cerrar (`TjCapturas.tsx`, `/api/trades/captura`, `src/lib/diarioCapturas.ts`). Van a un bucket privado, recodificadas a WebP por el servidor.
+
+- [ ] **Ejecutar `scripts/add-trades-capturas.sql` en Supabase** (lo hace el admin). Hasta entonces, subir una captura da un aviso de que falta ese SQL; el resto del Diario funciona igual.
+- [ ] **Probarlo con una sesión real**: subir, pegar con Ctrl+V, arrastrar, cambiar, quitar, ampliar, y que borrar la operación o reiniciar el diario se lleve las capturas. Solo se ha verificado que compila.
+- [ ] **Anunciarlo en la ficha `/herramientas/diario` y en el anuncio del Diario de las guías** cuando esté probado: hoy ninguna de las dos lo menciona.
+- [ ] **Que Nova las use**: por ejemplo, animar a subirlas a quien no lo hace, o recordarlas al revisar una racha de pérdidas. Sin hacer.
+
 ### 00g. Ocho guías de criptomonedas en borrador: lo que queda (13-11-2026)
 
 Ethereum, Solana, Cardano, Chainlink, BNB, TRON, Monero y Stellar están escritas, auditadas y en `BORRADORES` (`src/lib/guides.ts`). En producción dan 404 a quien no es admin hasta que se publiquen.

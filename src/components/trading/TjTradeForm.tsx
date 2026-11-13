@@ -7,6 +7,7 @@ import { pctStr, pnlStr, ratioStr, toneOf } from "./tjFormat";
 import { RISK_LIMIT_PCT, type Direction, type Trade, type TradeResult } from "./tjStats";
 import TjDayJournal from "./TjDayJournal";
 import { fechaKey, type DiaDiario, type DiasMap } from "./tjDias";
+import { SIN_CAPTURAS, TIPOS_CAPTURA, TjCapturasCampo, capturaDe, type CapturasPendientes } from "./TjCapturas";
 
 const NOTES_MAX = 150;
 
@@ -71,7 +72,8 @@ interface Props {
   pairOptions: string[];
   strategyOptions: string[];
   equity: number | null;
-  onSaved: (trade: Trade) => void;
+  /** `cerrar = false`: los datos ya están guardados, pero faltan las capturas. */
+  onSaved: (trade: Trade, cerrar?: boolean) => void;
   onClose: () => void;
   /** Ánimo y nota por día: el formulario enseña los del día de la operación. */
   dias: DiasMap;
@@ -82,6 +84,11 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
   const [form, setForm] = useState<FormState>(() => fromTrade(editing, initialDate));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [capturas, setCapturas] = useState<CapturasPendientes>(SIN_CAPTURAS);
+  // La operación tal como está en el servidor. Una nueva pasa a tener una en
+  // cuanto se guardan sus datos: si después falla una captura y se reintenta,
+  // se edita esa en vez de crear otra igual.
+  const [guardada, setGuardada] = useState<Trade | null>(editing);
 
   const set = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm(f => ({ ...f, [k]: v }));
 
@@ -105,12 +112,43 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
     setError("");
     try {
       const res = await fetch("/api/trades", {
-        method: editing ? "PATCH" : "POST",
+        method: guardada ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, date: inputValueToIso(form.date), ...(editing ? { id: editing.id } : {}) }),
+        body: JSON.stringify({ ...form, date: inputValueToIso(form.date), ...(guardada ? { id: guardada.id } : {}) }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Error al guardar");
-      onSaved(await res.json());
+      let trade: Trade = await res.json();
+      // La respuesta de editar no trae cambios en las capturas, pero sí su estado actual.
+      setGuardada(trade);
+
+      // Las capturas van después y una a una: necesitan el id de la operación.
+      const pendientes = TIPOS_CAPTURA.filter((tipo) => capturas[tipo].archivo || (capturas[tipo].quitar && capturaDe(trade, tipo)));
+      if (pendientes.length) onSaved(trade, false);
+      for (const tipo of pendientes) {
+        const { archivo } = capturas[tipo];
+        let r: Response;
+        if (archivo) {
+          const datos = new FormData();
+          datos.set("id", trade.id);
+          datos.set("tipo", tipo);
+          datos.set("archivo", archivo, `${tipo}.webp`);
+          r = await fetch("/api/trades/captura", { method: "POST", body: datos });
+        } else {
+          r = await fetch("/api/trades/captura", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: trade.id, tipo }),
+          });
+        }
+        if (!r.ok) {
+          const motivo = (await r.json().catch(() => null))?.error ?? "no se pudo subir";
+          throw new Error(`La operación está guardada, pero la captura no: ${motivo}`);
+        }
+        trade = await r.json();
+        setGuardada(trade);
+        setCapturas((c) => ({ ...c, [tipo]: SIN_CAPTURAS[tipo] }));
+      }
+      onSaved(trade);
     } catch (err) {
       setError(errorMessage(err));
     } finally {
@@ -210,6 +248,8 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
           </div>
         </dl>
 
+        <TjCapturasCampo editing={guardada} pendientes={capturas} onChange={setCapturas} />
+
         {/* Emociones del día, en el mismo recuadro: se guardan aparte, al pulsar el ánimo o al salir de la nota. */}
         <TjDayJournal
           key={fechaDia}
@@ -224,7 +264,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
         <div className="tj-actions is-end">
           <button type="button" className="tj-btn" onClick={onClose}>Cancelar</button>
           <button type="submit" className="tj-btn is-primary" disabled={submitting}>
-            {submitting ? "Guardando..." : editing ? "Guardar cambios" : "Guardar operación"}
+            {submitting ? "Guardando..." : guardada ? "Guardar cambios" : "Guardar operación"}
           </button>
         </div>
       </form>
