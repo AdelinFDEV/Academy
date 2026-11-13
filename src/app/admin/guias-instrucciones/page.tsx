@@ -1,545 +1,443 @@
+import Link from "next/link";
+
+/**
+ * /admin/guias-instrucciones · La fuente de verdad de cómo se hace una guía.
+ * AGENTS.md manda aquí antes de escribir una sola línea de una guía.
+ *
+ * Reescrita el 13-11-2026 con el objetivo a la vista: las guías son la puerta
+ * de entrada desde Google y tienen que convertir esa visita en cuenta y en
+ * Premium. Todo lo de SEO que no es propio de una guía vive en
+ * /admin/seo-instrucciones, para no tener dos versiones de lo mismo.
+ */
+
+const INDICE = [
+  ["objetivo", "Para qué sirve una guía"],
+  ["tema", "Antes de escribir"],
+  ["flujo", "El flujo, paso a paso"],
+  ["anatomia", "Anatomía de una guía"],
+  ["escritura", "Cómo se escribe"],
+  ["anuncios", "Mini anuncios internos"],
+  ["interactivos", "Piezas interactivas"],
+  ["cuenta", "Cuenta, quiz y logro"],
+  ["tecnica", "Arquitectura técnica"],
+  ["diseno", "Diseño"],
+  ["seo", "El SEO que lleva puesto"],
+  ["checklist", "Lista de cierre"],
+  ["despues", "Después de publicar"],
+] as const;
+
+function Seccion({ id, n, titulo, children }: { id: string; n: string; titulo: string; children: React.ReactNode }) {
+  return (
+    <section className="agi-section" id={id}>
+      <h2 className="agi-section-title">
+        <span className="agi-section-num">{n}</span>
+        {titulo}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function Paso({ n, titulo, children }: { n: number; titulo: string; children: React.ReactNode }) {
+  return (
+    <div className="agi-step">
+      <div className="agi-step-num">{n}</div>
+      <div>
+        <strong>{titulo}</strong>
+        <p>{children}</p>
+      </div>
+    </div>
+  );
+}
+
+function Punto({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="agi-check-item">
+      <input type="checkbox" readOnly />
+      <span>{children}</span>
+    </label>
+  );
+}
+
 export default function GuiasInstruccionesPage() {
   return (
     <div className="admin-guide-instructions">
-
       <div className="agi-hero">
-        <div className="agi-hero-label">SOLO ADMIN · REFERENCIA INTERNA</div>
-        <h1 className="agi-hero-title">Sistema de Guías Interactivas</h1>
+        <div className="agi-hero-label">Referencia interna · fuente de verdad</div>
+        <h1 className="agi-hero-title">Cómo se hace una guía</h1>
         <p className="agi-hero-sub">
-          Instrucciones completas para construir, publicar y gestionar las guías de AdelinBTC Academy.
-          Lee esto antes de crear cualquier guía nueva o si se pierde el contexto de la conversación.
+          Las guías son gratuitas y son lo que Google enseña de la academia. Cada una tiene dos trabajos: responder
+          mejor que nadie a lo que alguien ha buscado, y presentarle, sin estorbar, lo que la academia vende. Léelo
+          entero antes de empezar una guía nueva.
         </p>
       </div>
 
-      {/* ── BLOQUE 1: FILOSOFÍA ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">01</span>
-          Filosofía y propósito
-        </h2>
+      <nav className="agi-indice" aria-label="Índice">
+        {INDICE.map(([id, texto], i) => (
+          <a key={id} href={`#${id}`}><span>{String(i + 1).padStart(2, "0")}</span>{texto}</a>
+        ))}
+      </nav>
+
+      <Seccion id="objetivo" n="01" titulo="Para qué sirve una guía">
         <div className="agi-card">
-          <p>Las guías son <strong>portales de aprendizaje independientes</strong> dentro de la web. No son artículos. Son experiencias completas: el alumno entra, aprende, interactúa, se puntúa y sale con un logro. La interactividad es <strong>primordial</strong> — sin ella, una guía no cumple su función.</p>
-          <ul className="agi-list">
-            <li>Temática exclusiva: <strong>criptomonedas y su ecosistema</strong> (Bitcoin, DeFi, NFTs, exchanges, wallets, trading, etc.)</li>
-            <li>Cada guía es un componente React <strong>creado completamente por Claude</strong> a partir de un tema que da el admin</li>
-            <li>El admin revisa la guía en HTML/preview y da luz verde antes de que se implemente</li>
-            <li>Una vez publicada, la guía se puede <strong>editar desde el panel admin</strong> en la sección Guías</li>
-          </ul>
-        </div>
-        <div className="agi-card" style={{ marginTop: "1rem" }}>
-          <p className="agi-warning">⚠️ <strong>Cada guía nueva es siempre un componente React nuevo e independiente</strong> (archivo propio + CSS propio, ver bloque 03). Esto es al revés que las entradas del blog (<code>/admin/posts-instrucciones</code>), que nunca son componentes de código — son filas en Supabase. No mezclar los dos patrones. Decisión explícita del admin — detalle completo en <code>AGENTS.md</code>.</p>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 2: WORKFLOW ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">02</span>
-          Flujo de creación — paso a paso
-        </h2>
-        <div className="agi-steps">
-          <div className="agi-step">
-            <div className="agi-step-num">1</div>
-            <div>
-              <strong>Admin da el tema</strong>
-              <p>Ejemplo: «Crea una guía sobre qué es Bitcoin y cómo funciona la blockchain»</p>
-            </div>
+          <p>
+            La academia vive de tres piezas de pago: el <strong>Diario de Trading con Nova</strong>, el{" "}
+            <strong>Portfolio Adelin</strong> y los <strong>Cursos</strong>. Nadie busca esas piezas en Google: busca
+            «qué es XRP» o «cómo declarar criptomonedas». <strong>La guía es la respuesta a esa búsqueda, y el camino
+            hacia lo demás.</strong>
+          </p>
+          <div className="agi-embudo">
+            <div><b>1 · Google</b><span>Alguien busca una duda concreta</span></div>
+            <div><b>2 · La guía</b><span>La resuelve entera, gratis y sin cuenta</span></div>
+            <div><b>3 · La cuenta</b><span>El quiz y su logro piden registrarse</span></div>
+            <div><b>4 · Premium</b><span>Un mini anuncio le enseña la pieza que le encaja</span></div>
           </div>
-          <div className="agi-step">
-            <div className="agi-step-num">2</div>
-            <div>
-              <strong>Claude pide la foto de portada</strong>
-              <p className="agi-warning" style={{ marginTop: 8 }}>⚠️ <strong>Todas las guías son GRATIS</strong> desde el 31-10-2026: ninguna va tras Premium, así que ya no se pregunta. Lo que sí lleva toda guía es su <strong>foto de portada</strong>, en <code>public/guias/[slug].webp</code> (WebP, 1.600 px de ancho, calidad 82) y en el campo <code>portada</code> de <code>GUIDES</code>. Sin ella la tarjeta pinta una portada de tipografía, que vale de transición pero no para publicar.</p>
-            </div>
-          </div>
-          <div className="agi-step">
-            <div className="agi-step-num">3</div>
-            <div>
-              <strong>Claude construye la guía completa</strong>
-              <p>Redacta el contenido, elige los componentes interactivos adecuados (quiz, flashcards, gráficas, calculadora si encaja), define qué secciones van abiertas y cuáles tras el registro, asigna dificultad y crea el badge de logro correspondiente.</p>
-            </div>
-          </div>
-          <div className="agi-step">
-            <div className="agi-step-num">4</div>
-            <div>
-              <strong>Admin revisa en preview</strong>
-              <p>Claude muestra la guía. El admin la aprueba o solicita cambios. Sin aprobación explícita, no se implementa nada.</p>
-            </div>
-          </div>
-          <div className="agi-step">
-            <div className="agi-step-num">5</div>
-            <div>
-              <strong>Claude implementa</strong>
-              <p>Crea <code>/src/app/guias/[slug]/page.tsx</code>, su <code>[slug].css</code> propio y los componentes interactivos que haga falta. Después añade la entrada de la guía en <code>src/lib/guides.ts</code> — y con eso ya está publicada. <strong>No hay que tocar Supabase</strong> (ver bloque 03).</p>
-            </div>
-          </div>
-          <div className="agi-step">
-            <div className="agi-step-num">6</div>
-            <div>
-              <strong>Admin publica desde el panel</strong>
-              <p>La guía aparece en <code>/guias</code> y en el menú de Educación. Se puede despublicar o editar en cualquier momento desde <code>/admin/guias</code>.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 3: ARQUITECTURA TÉCNICA ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">03</span>
-          Arquitectura técnica
-        </h2>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">URLs y rutas</h3>
-          <div className="agi-card">
-            <div className="agi-code-row"><span className="agi-code-path">/guias</span><span>Listado de todas las guías publicadas</span></div>
-            <div className="agi-code-row"><span className="agi-code-path">/guias/[slug]</span><span>Guía individual — portal independiente</span></div>
-            <div className="agi-code-row"><span className="agi-code-path">/admin/guias</span><span>Gestión de guías (editar, publicar, despublicar)</span></div>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">CSS — un archivo por guía, siempre</h3>
-          <div className="agi-card">
-            <p className="agi-warning">⚠️ Cada guía nueva lleva su propio archivo <code>src/app/guias/[slug]/[slug].css</code>, importado solo en esa guía — <strong>nunca</strong> en <code>guias.css</code> ni en <code>globals.css</code>. Regla completa y motivo en <code>AGENTS.md</code> → «Regla especial: cada guía nueva, su propio archivo CSS». Así <code>guias.css</code> se queda solo con lo que de verdad comparten todas las guías, y no vuelve a crecer sin control.</p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Dónde vive el catálogo de guías ⭐</h3>
-          <div className="agi-card">
-            <p className="agi-warning">⚠️ <strong>El catálogo de guías NO está en Supabase: está en el código.</strong> La fuente única de verdad es <code>src/lib/guides.ts</code> (array <code>GUIDES</code>). Publicar una guía nueva es añadir su objeto ahí — no hay que insertar ninguna fila en ninguna tabla.</p>
-            <p style={{ marginTop: 12 }}>Todo lo demás se deriva solo de ese array, y por eso una guía nueva funciona entera sin tocar la base de datos:</p>
-            <ul className="agi-list">
-              <li><code>/guias</code> y la home leen <code>GUIDES</code> para pintar el listado y la guía destacada</li>
-              <li><code>/api/guide-badge</code> valida el <code>badgeId</code> contra <code>GUIDES</code> — el badge de una guía nueva es válido automáticamente</li>
-              <li><code>/api/guide-quiz-completion</code> valida el <code>slug</code> contra <code>GUIDES</code></li>
-              <li><code>Badges.tsx</code> construye <code>GUIDE_BADGE_DEFS</code> desde <code>GUIDES</code>, así que el badge aparece solo en Logros</li>
-            </ul>
-          </div>
-          <div className="agi-card agi-card--mono" style={{ marginTop: "1rem" }}>
-            <div className="agi-table-def">
-              <div className="agi-table-name">GuideMeta — campos de src/lib/guides.ts</div>
-              <div className="agi-table-fields">
-                slug · title · shortTitle · description · difficulty (básico|intermedio|avanzado) · sections · badge · badgeId · readTime · color · topics[] · tags[] · muro (registro|null) · portada · imagenPropia?
-              </div>
-            </div>
-          </div>
-          <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p>⚠️ <strong>El último elemento del array es la guía más reciente</strong>: la home enseña las cuatro últimas (lo usa <code>GuidesHomeSection</code>). Añade siempre la guía nueva al final.</p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Tablas de Supabase que SÍ existen</h3>
-          <div className="agi-card">
-            <p>Son todas tablas de <strong>eventos por usuario</strong>, indexadas por <code>guide_slug</code> o por <code>badge_id</code>. No guardan la definición de la guía, así que <strong>no requieren registro previo</strong>: empiezan a llenarse solas en cuanto un usuario interactúa.</p>
-          </div>
-          <div className="agi-card agi-card--mono" style={{ marginTop: "1rem" }}>
-            <div className="agi-table-def">
-              <div className="agi-table-name">guide_likes · guide_saves · guide_shares</div>
-              <div className="agi-table-fields">user_id · guide_slug — las escribe <code>GuideInteractions</code></div>
-            </div>
-            <div className="agi-table-def">
-              <div className="agi-table-name">guide_quiz_completions</div>
-              <div className="agi-table-fields">user_id · guide_slug · score · total — vía <code>/api/guide-quiz-completion</code></div>
-            </div>
-            <div className="agi-table-def">
-              <div className="agi-table-name">user_badges</div>
-              <div className="agi-table-fields">user_id · badge_id — vía <code>/api/guide-badge</code>. Compartida con los badges de racha y de artículos</div>
-            </div>
-          </div>
-          <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p className="agi-warning">⛔ <strong>Las tablas <code>guides</code>, <code>guide_sections</code>, <code>user_guide_progress</code> y <code>achievements</code> no existen y no se usan en ninguna parte del código.</strong> Aparecían en versiones anteriores de este manual como arquitectura prevista, pero el sistema se implementó finalmente sobre <code>src/lib/guides.ts</code>. Si lees esas tablas en algún sitio, está desactualizado.</p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Librerías de componentes visuales</h3>
-          <div className="agi-card">
-            <div className="agi-lib-row"><span className="agi-lib-name">Recharts</span><span>Gráficas principales (línea, barras, área). Animadas, responsivas.</span></div>
-            <div className="agi-lib-row"><span className="agi-lib-name">Framer Motion</span><span>Animaciones de entrada al hacer scroll, transiciones de sección.</span></div>
-            <div className="agi-lib-row"><span className="agi-lib-name">Lucide React</span><span>Ya instalado. Iconografía de guías.</span></div>
-            <div className="agi-lib-row"><span className="agi-lib-name">@dnd-kit/core</span><span>Drag and drop simple cuando sea aplicable.</span></div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 4: DISEÑO ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">04</span>
-          Sistema de diseño — identidad visual de guías
-        </h2>
-        <div className="agi-card">
-          <p className="agi-warning">⚠️ Las guías tienen su propia identidad premium dentro de la web — <strong>oro + naranja + navy + blanco</strong>. El oro es el color dominante de las guías. El naranja aparece en puntos de acción e interacción. Nunca se mezclan con otros colores.</p>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Paleta completa de guías — 4 colores, cada uno con su rol</h3>
-          <div className="agi-palette agi-palette--4col">
-            <div className="agi-swatch agi-swatch--gold">
-              <span className="agi-swatch-name">Oro</span>
-              <span className="agi-swatch-var">--gold</span>
-              <span className="agi-swatch-hex">#e6b455</span>
-              <span className="agi-swatch-use">Color DOMINANTE de guías. Títulos en gradiente, eyebrows, CTAs principales, borders de cards, stats, badges de acceso, pills de características, sección titles. Es lo que hace que las guías se vean como un portal premium diferenciado.</span>
-            </div>
-            <div className="agi-swatch agi-swatch--orange">
-              <span className="agi-swatch-name">Naranja</span>
-              <span className="agi-swatch-var">--accent-orange</span>
-              <span className="agi-swatch-hex">#ff6b2b</span>
-              <span className="agi-swatch-use">Color de ACCIÓN e INTERACCIÓN. Botones de quiz (enviar, siguiente), respuesta seleccionada en flashcards, progreso de barra de sección, iconos de componentes interactivos, hover states dentro del contenido de la guía.</span>
-            </div>
-            <div className="agi-swatch agi-swatch--navy">
-              <span className="agi-swatch-name">Navy</span>
-              <span className="agi-swatch-var">--bg-dark / #060f1f</span>
-              <span className="agi-swatch-hex">#0a1628 / #060f1f</span>
-              <span className="agi-swatch-use">Fondos de página, cards y secciones. Usar gradientes entre #060f1f → #0a1628 → #0c1a2e para dar profundidad. El hero de /guias usa el fondo más oscuro (#060f1f) para máximo contraste con el oro.</span>
-            </div>
-            <div className="agi-swatch agi-swatch--white">
-              <span className="agi-swatch-name">Blanco</span>
-              <span className="agi-swatch-var">--text-primary / --text-secondary</span>
-              <span className="agi-swatch-hex">#ffffff / #dce8f8</span>
-              <span className="agi-swatch-use">Títulos y cuerpo de texto. El texto secundario (#dce8f8) para descripciones y párrafos de contenido de guía. Nunca negro, nunca gris neutro sobre fondo navy.</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Variables CSS disponibles para guías</h3>
-          <div className="agi-card agi-card--mono">
-            <div className="agi-table-def">
-              <div className="agi-table-name">Oro</div>
-              <div className="agi-table-fields">
-                --gold: #e6b455 &nbsp;·&nbsp; --gold-soft: rgba(230,180,85,0.18) &nbsp;·&nbsp; --gold-glow: rgba(230,180,85,0.08) &nbsp;·&nbsp; --gold-border: rgba(230,180,85,0.25)
-              </div>
-            </div>
-            <div className="agi-table-def">
-              <div className="agi-table-name">Naranja (ya existía en la web)</div>
-              <div className="agi-table-fields">
-                --accent-orange: #ff6b2b &nbsp;·&nbsp; --accent-orange-soft: #ff8552 &nbsp;·&nbsp; --accent-orange-glow: rgba(255,107,43,0.15)
-              </div>
-            </div>
-            <div className="agi-table-def">
-              <div className="agi-table-name">Fondos</div>
-              <div className="agi-table-fields">
-                --bg-dark: #0a1628 &nbsp;·&nbsp; --bg-card: #112240 &nbsp;·&nbsp; fondo hero: #060f1f
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Estructura visual aprobada — replicar en cada guía</h3>
-          <div className="agi-card">
-            <p>Este es el sistema visual validado por el admin. Toda guía nueva debe seguir esta estructura:</p>
-            <ul className="agi-list">
-              <li><strong>Hero de guía:</strong> fondo <code>#060f1f → #0a1628</code>, glow dorado central radial, eyebrow en oro, título grande con última línea en gradiente oro, pills de características con fondo <code>gold-soft</code> y borde <code>gold-border</code></li>
-              <li><strong>Cards de contenido:</strong> gradiente <code>#0f2040 → #0a1628</code>, borde <code>gold-border</code>, glow dorado en esquina superior derecha, border-radius 18–20px</li>
-              <li><strong>CTA principal (empezar guía):</strong> gradiente <code>var(--gold) → #f5c842</code>, texto navy oscuro, font-weight 800</li>
-              <li><strong>CTAs secundarios / interacciones (quiz, flashcards):</strong> color naranja <code>var(--accent-orange)</code></li>
-              <li><strong>Separadores de sección:</strong> <code>border-top: 1px solid var(--gold-border)</code></li>
-              <li><strong>Stats destacados:</strong> número grande en oro, label en text-muted, fondo gold-soft</li>
-              <li><strong>Sección titles dentro de guía:</strong> texto en oro, uppercase, letter-spacing</li>
-              <li><strong>Topics/pills informativos:</strong> fondo <code>rgba(255,255,255,0.04)</code>, borde <code>rgba(255,255,255,0.08)</code>, texto muted — para diferenciarlos de las pills de características</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Layout</h3>
-          <div className="agi-card">
-            <ul className="agi-list">
-              <li>Las guías ocupan <strong>todo el ancho disponible</strong> — portales independientes, no artículos en columna estrecha</li>
-              <li>Contenido: <code>max-width: 1100px; margin: 0 auto</code></li>
-              <li>Secciones alternas: fondos <code>#060f1f</code> y <code>#0a1628</code> para separar sin usar colores ajenos</li>
-              <li>Imagen de cabecera: opcional. Full-width con overlay oscuro y título encima</li>
-              <li>Índice (guías largas): sidebar sticky a izquierda en desktop, colapsable en móvil</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Cierre obligatorio — toda guía termina igual</h3>
-          <div className="agi-card">
-            <p>
-              Las tres últimas piezas de <code>src/app/guias/[slug]/page.tsx</code> son <strong>fijas y no negociables</strong>, siempre en este orden.
-              Una guía sin ellas está incompleta:
-            </p>
-            <ul className="agi-list">
-              <li><strong>1. Guías relacionadas</strong> — <code>&lt;GuiasRelacionadas slug={"{"}SLUG{"}"} /&gt;</code>, <strong>a la vista de todos</strong>: Googlebot entra sin sesión, y es el único enlace que reciben unas guías de otras</li>
-              <li><strong>2. Interacciones</strong> — <code>&lt;GuideInteractions /&gt;</code> dentro de <code>section.gbc-section.gbc-interactions-section</code> (me gusta, guardar, compartir)</li>
-              <li><strong>3. Footer</strong> — <code>&lt;Footer /&gt;</code></li>
-            </ul>
-            <div className="agi-card agi-card--mono">
-              {`<GuiasRelacionadas slug={SLUG} />`}<br />
-              <br />
-              {`{/* ── Interacciones ── */}`}<br />
-              {`<section className="gbc-section gbc-interactions-section">`}<br />
-              {`  ...<GuideInteractions ... />`}<br />
-              {`</section>`}<br />
-              <br />
-              {`<Footer />`}
-            </div>
-            <p>
-              <strong>Antes de la asesoría eran otras tres.</strong> Entre las interacciones y el footer iba la banda de asesoría 1:1, que se retiró de toda la web
-              el 4 de septiembre de 2026. El 3 de octubre se confirmó que la asesoría no vuelve. No la añadas a
-              ninguna guía.
-            </p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Dificultad — badge visual</h3>
-          <div className="agi-card">
-            <div className="agi-diff-row">
-              <span className="agi-diff-badge agi-diff--basic">Básico</span>
-              <span>Verde suave — primera vez que el usuario toca el tema</span>
-            </div>
-            <div className="agi-diff-row">
-              <span className="agi-diff-badge agi-diff--intermediate">Intermedio</span>
-              <span>Naranja — requiere haber leído guías básicas o tener noción del tema</span>
-            </div>
-            <div className="agi-diff-row">
-              <span className="agi-diff-badge agi-diff--advanced">Avanzado</span>
-              <span>Rojo suave — conceptos técnicos profundos</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 5: COMPONENTES INTERACTIVOS ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">05</span>
-          Inventario de componentes interactivos
-        </h2>
-        <p className="agi-section-intro">Claude elige qué componentes incluir según el tema. No se fuerza ningún componente — cada uno debe tener sentido pedagógico en la guía.</p>
-
-        <div className="agi-components-grid">
-
-          <div className="agi-comp-card">
-            <div className="agi-comp-icon">📊</div>
-            <div className="agi-comp-name">QuizBlock</div>
-            <div className="agi-comp-desc">Preguntas de opción múltiple, verdadero/falso o completar huecos. Al enviarlo se guarda <code>score</code> / <code>total</code> en <code>guide_quiz_completions</code>, y si se acierta entero se desbloquea el badge de la guía.</div>
-            <div className="agi-comp-rule">⚡ Obligatorio en toda guía. Al menos 3 preguntas por guía.</div>
-          </div>
-
-          <div className="agi-comp-card">
-            <div className="agi-comp-icon">🃏</div>
-            <div className="agi-comp-name">FlashcardDeck</div>
-            <div className="agi-comp-desc">Tarjetas con concepto en el anverso y definición en el reverso. Se voltean con clic o swipe. Ideales para glosario de términos clave de la guía.</div>
-            <div className="agi-comp-rule">Usar cuando la guía introduce 4+ términos nuevos.</div>
-          </div>
-
-          <div className="agi-comp-card">
-            <div className="agi-comp-icon">📈</div>
-            <div className="agi-comp-name">ChartBlock</div>
-            <div className="agi-comp-desc">Gráficas con Recharts: línea (precio histórico), barras (comparativas), área (dominancia de mercado). Animadas al entrar en viewport. Si hay datos reales disponibles por API, se usan; si no, datos de ejemplo representativos con nota «Datos orientativos».</div>
-            <div className="agi-comp-rule">Animar siempre. Nunca mostrar gráfica estática.</div>
-          </div>
-
-          <div className="agi-comp-card">
-            <div className="agi-comp-icon">🧮</div>
-            <div className="agi-comp-name">CalculatorBlock</div>
-            <div className="agi-comp-desc">Calculadoras interactivas solo cuando añaden valor real: ROI de inversión, coste de minería, equivalencia entre satoshis y euros, etc. El usuario introduce valores y ve el resultado en tiempo real.</div>
-            <div className="agi-comp-rule">Solo incluir si la calculadora es pedagógicamente relevante para el tema.</div>
-          </div>
-
-          <div className="agi-comp-card">
-            <div className="agi-comp-icon">🎯</div>
-            <div className="agi-comp-name">DragDropBlock</div>
-            <div className="agi-comp-desc">Ejercicio de arrastrar y soltar: ordenar pasos de un proceso, emparejar conceptos con definiciones, clasificar elementos. Simple, sin complejidad visual innecesaria. Usando @dnd-kit.</div>
-            <div className="agi-comp-rule">Máximo un DragDrop por guía. Solo si el contenido lo justifica.</div>
-          </div>
-
-          <div className="agi-comp-card">
-            <div className="agi-comp-icon">📏</div>
-            <div className="agi-comp-name">ProgressTracker</div>
-            <div className="agi-comp-desc">Componente <code>GuideProgressBar</code>: barra de progreso de lectura en la parte superior, ligada al scroll. Es <strong>puramente visual y no persiste nada</strong>. Las visitas las cuenta solo la medición de toda la web (<code>RegistroVisita</code>, en el layout raíz): la guía no necesita nada.</div>
-            <div className="agi-comp-rule">Obligatorio en toda guía de más de 2 secciones.</div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ── BLOQUE 6: ACCESO Y PAYWALL ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">06</span>
-          Acceso: la guía abierta, el quiz con cuenta
-        </h2>
-        <div className="agi-card">
-          <p><strong>Desde el 31-10-2026 toda guía se lee entera, sin cuenta ni pago</strong>, herramientas interactivas incluidas. Es lo mismo que ve Googlebot, que entra sin sesión.</p>
-          <ul className="agi-list">
-            <li><strong>Lo único que pide cuenta gratuita es el quiz</strong>: guarda el resultado y desbloquea el logro de la guía, y eso necesita saber de quién es</li>
-            <li>En el <code>page.tsx</code>: <code>{"{isRegistered ? <GuideXxxQuiz /> : <GuideQuizCuenta slug={SLUG} />}"}</code> dentro de <code>section#quiz</code>. Nada más va condicionado a la sesión</li>
-            <li><code>GuideQuizCuenta</code> pinta la invitación a registrarse con el nombre del logro y vuelve a la guía tras el registro</li>
-          </ul>
-        </div>
-        <div className="agi-card" style={{ marginTop: '1rem' }}>
-          <p><strong>Regla siempre activa:</strong> el primer bloque de texto de la primera sección siempre es visible, independientemente del tipo de guía. El paywall corta <em>después</em> de dar al usuario un vistazo real del contenido.</p>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 7: PUNTUACIÓN Y LOGROS ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">07</span>
-          Puntuación y sistema de logros
-        </h2>
-        <div className="agi-card">
-          <h3 className="agi-subsection-title" style={{ marginTop: 0 }}>Puntuación del quiz</h3>
-          <ul className="agi-list">
-            <li>Se registra como <code>score</code> sobre <code>total</code> (ej: 4 de 5) al enviar el quiz</li>
-            <li>Se guarda en la tabla <code>guide_quiz_completions</code> vía <code>/api/guide-quiz-completion</code></li>
-            <li>El endpoint valida el <code>guide_slug</code> contra <code>GUIDES</code>: si la guía no está en <code>src/lib/guides.ts</code>, devuelve 400 y no guarda nada</li>
-            <li>Requiere sesión: sin usuario logueado responde 401</li>
-          </ul>
-        </div>
-        <div className="agi-card" style={{ marginTop: '1rem' }}>
-          <h3 className="agi-subsection-title" style={{ marginTop: 0 }}>Logros (Achievements)</h3>
-          <ul className="agi-list">
-            <li>Cada guía tiene un badge único que se desbloquea al <strong>acertar el quiz entero</strong> (todas las respuestas correctas)</li>
-            <li>El badge se define <strong>en el código</strong>, con los campos <code>badge</code> (nombre) y <code>badgeId</code> del objeto de la guía en <code>src/lib/guides.ts</code> — no hay tabla de definiciones</li>
-            <li><code>Badges.tsx</code> deriva <code>GUIDE_BADGE_DEFS</code> de <code>GUIDES</code>, así que el badge aparece en Logros automáticamente sin tocar ese archivo</li>
-            <li>El desbloqueo se persiste en <code>user_badges</code> vía <code>/api/guide-badge</code>, que valida el <code>badgeId</code> contra <code>GUIDES</code></li>
-            <li>El quiz llama a <code>saveGuideBadge(badgeId)</code> de <code>src/lib/guideBadge.ts</code>, que además dispara el popup de desbloqueo</li>
-            <li>Convención de <code>badgeId</code>: <code>guide-[tema]</code> (ej. <code>guide-fiscalidad-cripto</code>)</li>
-            <li>Los logros de racha (días seguidos en la academia) y los de cursos y diario coexisten en la misma tabla</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 8: SEO DE UNA GUÍA ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">08</span>
-          SEO — las cuatro cosas que hay que poner a mano
-        </h2>
-        <div className="agi-card">
-          <p>Una guía es un <strong>componente propio</strong>, no una plantilla rellenada. Eso significa que nada de lo que hace el sitio por ti con una entrada ocurre aquí solo: <strong>cada guía tiene que traer su SEO puesto a mano</strong>.</p>
-          <p className="agi-note">
-            <strong>Olvidarlo no rompe nada visible.</strong> La guía se ve perfecta en el navegador y el fallo solo se nota semanas después, al mirar por qué no aparece en Google. Por eso <code>npm run check</code> comprueba las tres primeras y <strong>cancela el push</strong> si falta alguna.
+          <p>
+            El orden no se negocia: <strong>primero se gana la visita, después se le ofrece algo</strong>. Una guía que
+            vende antes de responder pierde al lector y, con él, la posición en Google.
           </p>
         </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">1 · La canónica, en su <code>metadata</code></h3>
-          <div className="agi-card agi-card--mono">
-            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-{`export const metadata: Metadata = {
-  alternates: { canonical: "/guias/tu-slug" },
-  title: "…",
-  description: "…",
-};`}
-            </pre>
-          </div>
-          <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p><strong>Siempre en ruta relativa</strong>, nunca la URL entera: la resuelve el <code>metadataBase</code> del layout raíz. Y <strong>jamás en un <code>layout.tsx</code></strong> — en Next los metadatos del layout los heredan todas las rutas hijas, así que una canónica ahí le pondría la misma URL a media web.</p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">2 · El JSON-LD: el muro y las migas de pan</h3>
-          <div className="agi-card agi-card--mono">
-            <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-{`import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
-
-// Dentro del return, al principio:
-<GuideBreadcrumbJsonLd slug={SLUG} />`}
-            </pre>
-          </div>
-          <div className="agi-card" style={{ marginTop: "1rem" }}>
-            <p>Emite dos cosas: el <code>Article</code> de la guía, con <code>isAccessibleForFree</code> según el campo <code>muro</code> de <code>GUIDES</code> (siempre <code>true</code>: toda guía se lee entera sin cuenta), y las migas. <strong>Rellena <code>muro</code> con la verdad</strong>: es lo que le dice a Google que la guía está cerrada a propósito y no es corta.</p>
-            <p>El nombre que sale en las migas lo saca de <code>GUIDES</code>, no del <code>title</code> de la metadata — que es más corto a propósito. Es intencionado: el de <code>GUIDES</code> es el que se ve en <code>/guias</code>, y el dato estructurado <strong>tiene que coincidir con lo visible</strong> o Google lo trata como spam.</p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">3 · El alta en <code>GUIDES</code></h3>
-          <div className="agi-card">
-            <p>Añadir la guía al array <code>GUIDES</code> de <code>src/lib/guides.ts</code>. <strong>El sitemap recorre ese array, no la carpeta <code>src/app/guias/</code></strong>: una guía con su <code>page.tsx</code> pero sin su entrada ahí <strong>es invisible para Google</strong>, y además no aparece en el listado.</p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">4 · Los límites de título y descripción</h3>
-          <div className="agi-card">
-            <p>El layout raíz añade <code> | AdelinBTC</code> (12 caracteres) a cada título. Google corta sobre los 60, así que al título propio le quedan <strong>48</strong>. La descripción, <strong>160</strong>.</p>
-            <p style={{ marginTop: "0.6rem" }}>Los del <code>openGraph</code> quedan fuera de ese límite a propósito: no llevan sufijo y las redes no cortan tan pronto. Pueden ser más largos y descriptivos.</p>
-            <p className="agi-note">
-              <strong>La palabra clave, delante.</strong> Lo que Google recorta es el final, así que una keyword al final desaparece justo cuando más falta hace. En agosto de 2026 hubo que reescribir los títulos de las 7 guías: el de fiscalidad llegaba a <strong>101 caracteres</strong>.
-            </p>
-          </div>
-        </div>
-
-        <div className="agi-subsection">
-          <h3 className="agi-subsection-title">Enlaces dentro de la guía</h3>
-          <div className="agi-card">
-            <p>Enlaza al <strong>diccionario</strong> (<code>/glosario/&lt;slug&gt;</code>) la jerga que un principiante no domina, y a otras guías o entradas cuando el texto ya las menciona. <strong>El ancla tiene que ser una palabra que ya estaba escrita</strong> — nunca se añade una frase para colocar un enlace, ni se escribe «pincha aquí».</p>
-            <p style={{ marginTop: "0.6rem" }}>Comprueba el destino antes: un término del diccionario <strong>sin <code>extended</code> devuelve 404</strong>, y una guía que no esté en <code>GUIDES</code> tampoco existe. Y nunca enlaces externos.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 9: INSTRUCCIONES PARA CLAUDE ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">09</span>
-          Checklist para Claude al crear una guía nueva
-        </h2>
-        <div className="agi-checklist">
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Foto de portada</strong> en <code>public/guias/[slug].webp</code> (WebP, 1.600 px, calidad 82) y su ruta en el campo <code>portada</code></span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir slug SEO-friendly: <code>/guias/[tema-especifico]</code></span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Establecer dificultad: Básico / Intermedio / Avanzado</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Envolver el quiz con <code>GuideQuizCuenta</code> para quien no tiene sesión (ver bloque 06)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Identificar qué componentes interactivos son pertinentes para el tema</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear <code>src/app/guias/[slug]/[slug].css</code> propio — nunca añadir a <code>guias.css</code> ni a <code>globals.css</code></span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Redactar contenido completo (no esqueletos, no placeholders)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear mínimo 3 preguntas de quiz relevantes y no triviales</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Usar SOLO colores: <code>--accent-orange</code>, navy (<code>--bg-dark</code>, <code>--bg-card</code>), blanco (<code>--text-primary</code>)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Layout full-width con <code>max-width: 1100px</code> en contenido</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Definir qué secciones son gratuitas (primeras 1–2) y cuáles tienen paywall</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Crear el badge de logro: nombre + descripción + emoji</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Cerrar la guía con el bloque obligatorio</strong>: <code>&lt;GuiasRelacionadas /&gt;</code> → interacciones → <code>&lt;Footer /&gt;</code> (ver bloque 04)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Mostrar preview al admin y esperar aprobación antes de implementar</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir <code>alternates: {"{"} canonical: &quot;/guias/[slug]&quot; {"}"}</code></strong> a su <code>metadata</code> (bloque 08)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir <code>&lt;GuideBreadcrumbJsonLd slug={"{"}SLUG{"}"} /&gt;</code></strong> dentro del <code>return</code> (bloque 08)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><code>title</code> de <strong>48 caracteres o menos</strong> y <code>description</code> de 160 o menos, con la keyword delante (bloque 08)</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Añadir la entrada de la guía al final del array <code>GUIDES</code> en <code>src/lib/guides.ts</code></strong> — es lo único que hace falta para publicarla. <strong>Supabase no se toca</strong></span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Comprobar que <code>badgeId</code> sigue la convención <code>guide-[tema]</code> y que el <code>badge</code> tiene nombre</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Verificar sin sesión que la guía se lee entera y el quiz pide cuenta, y con sesión que el quiz funciona</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span>Pasar <code>npm run check &amp;&amp; npx tsc --noEmit</code> — el <code>check</code> verifica la canónica, las migas y el alta en <code>GUIDES</code> — y comprobar la guía en el navegador antes de dar por cerrada</span></label>
-          <label className="agi-check-item"><input type="checkbox" readOnly /><span><strong>Ofrecer la auditoría SEO</strong> — «¿empiezo la auditoría SEO de la guía?» — y si el admin dice que sí, ejecutar <code>AUDITORIA-SEO.md</code> entero sobre ella. Ojo en las guías: lo que Google ve es <strong>solo lo renderizado en el servidor</strong>, no lo que vive dentro de los componentes interactivos</span></label>
-        </div>
-      </section>
-
-      {/* ── BLOQUE 10: GESTIÓN POST-PUBLICACIÓN ── */}
-      <section className="agi-section">
-        <h2 className="agi-section-title">
-          <span className="agi-section-num">10</span>
-          Gestión post-publicación
-        </h2>
         <div className="agi-card">
-          <p className="agi-warning">⚠️ <strong>El panel <code>/admin/guias</code> no existe.</strong> Se planteó en su día, pero el sistema acabó siendo enteramente de código, así que hoy las guías se gestionan editando archivos — no desde una interfaz.</p>
-        </div>
-        <div className="agi-card" style={{ marginTop: "1rem" }}>
-          <p>Qué se toca para cada cambio:</p>
+          <p><strong>Una guía está bien hecha si cumple las cuatro:</strong></p>
           <ul className="agi-list">
-            <li><strong>Título, descripción, dificultad, tiempo de lectura, topics o tags</strong> → el objeto de esa guía en <code>src/lib/guides.ts</code></li>
-            <li><strong>Cambiar la portada</strong> → el archivo en <code>public/guias/</code> y el campo <code>portada</code> en <code>src/lib/guides.ts</code></li>
-            <li><strong>Despublicar</strong> → quitar su entrada de <code>GUIDES</code>. La ruta <code>/guias/[slug]</code> seguirá existiendo y accesible por URL directa; para cortarla del todo hay que borrar o proteger la carpeta</li>
-            <li><strong>Contenido, secciones o componentes interactivos</strong> → pedir a Claude que edite <code>/src/app/guias/[slug]/page.tsx</code> y sus componentes</li>
-            <li><strong>Estilos de esa guía</strong> → su <code>[slug].css</code>, nunca <code>guias.css</code> ni <code>globals.css</code></li>
+            <li><strong>Responde</strong> a una búsqueda real, y la respuesta está en el primer párrafo.</li>
+            <li><strong>Aporta algo propio</strong> que no está en las diez primeras de Google: una herramienta, un dato contrastado, un ejemplo con números, la experiencia de quien opera.</li>
+            <li><strong>Es de fiar</strong>: cada cifra con su fuente y su fecha, y los riesgos contados sin maquillaje. Todo el contenido de la academia es de dinero, y Google le aplica su listón más alto.</li>
+            <li><strong>Lleva a algún sitio</strong>: al diccionario, a otra guía, a la cuenta gratuita y a una pieza de pago.</li>
           </ul>
         </div>
-        <div className="agi-card" style={{ marginTop: "1rem" }}>
-          <p>Las <strong>estadísticas de uso</strong> sí están en Supabase y se pueden consultar por <code>guide_slug</code>: <code>guide_likes</code>, <code>guide_saves</code>, <code>guide_shares</code> y <code>guide_quiz_completions</code> (puntuaciones del quiz). Las visitas de cada guía están en <strong>Analítica</strong> (<code>/admin</code>), en «Páginas más vistas».</p>
-        </div>
-      </section>
+      </Seccion>
 
+      <Seccion id="tema" n="02" titulo="Antes de escribir">
+        <div className="agi-card">
+          <p><strong>El tema.</strong> Sale de <code>GUIAS-PENDIENTES.md</code> o lo da el admin. Temática única: criptomonedas y su ecosistema.</p>
+          <p><strong>La búsqueda.</strong> Antes de proponer nada se decide <strong>una</strong> consulta principal, escrita como la escribiría una persona («qué es render», «cómo declarar criptomonedas en España»), y se miran los primeros resultados de Google para esa consulta: qué responden, qué formato tienen y qué les falta. Lo que les falta es la guía. El método completo está en <Link href="/admin/seo-instrucciones#metodo">SEO, bloque «El método»</Link>.</p>
+          <p><strong>Las fuentes.</strong> Se investiga antes de escribir. Por orden de peso: documentación oficial del proyecto y supervisores (ESMA, CNMV, AEAT, BOE), datos en cadena y exploradores, estudios con su año, y prensa especializada solo para hechos. Cada cifra que entre en la guía lleva su fuente y su fecha en el propio texto.</p>
+        </div>
+        <div className="agi-card">
+          <p><strong>Lo que se le pregunta al admin antes de empezar</strong>, si no lo ha dicho:</p>
+          <ul className="agi-list">
+            <li>La consulta principal, si no está clara, y a quién va dirigida (quien empieza o quien ya opera).</li>
+            <li>La <strong>foto de portada</strong>: toda guía lleva la suya.</li>
+            <li>Qué pieza de pago encaja mejor con el tema, si hay duda (ver «Mini anuncios internos»).</li>
+          </ul>
+          <p className="agi-note">Ya no se pregunta si la guía es gratis o de pago: desde el 31-10-2026 <strong>todas son gratuitas</strong> y se leen enteras sin cuenta.</p>
+        </div>
+      </Seccion>
+
+      <Seccion id="flujo" n="03" titulo="El flujo, paso a paso">
+        <div className="agi-steps">
+          <Paso n={1} titulo="Tema, consulta y fuentes">Se cierra la consulta principal, se miran los resultados de Google y se reúnen las fuentes. Sin esto no se escribe.</Paso>
+          <Paso n={2} titulo="Esquema">Las secciones, en el orden en que el lector se hace las preguntas, con la pieza interactiva de cada una y dónde van los mini anuncios. El admin lo ve antes de que se escriba el cuerpo.</Paso>
+          <Paso n={3} titulo="Términos del diccionario">Toda palabra técnica se enlaza al diccionario en su primera aparición. Las que no existan se crean ahora, con una definición buena (<code>PLANTILLA-DICCIONARIO.md</code>). Es una regla intocable y no espera a que nadie la pida.</Paso>
+          <Paso n={4} titulo="Construcción">Su <code>page.tsx</code>, su <code>[slug].css</code>, sus piezas interactivas y su quiz, con el contenido completo: nada de esqueletos ni textos de relleno.</Paso>
+          <Paso n={5} titulo="Auditoría SEO">Al terminar se pregunta siempre: «¿Empiezo la auditoría SEO de la guía?». Si el admin dice que sí, se ejecuta <code>AUDITORIA-SEO.md</code> entero. Si dice que no, se anota que queda sin auditar.</Paso>
+          <Paso n={6} titulo="Aprobación">El admin la revisa y da el «sí» explícito. Sin él no se publica nada.</Paso>
+          <Paso n={7} titulo="Publicación">Se añade al final de <code>GUIDES</code> y se despliega. Darla de alta y desplegar <strong>la publica</strong>: no hay paso intermedio para echarse atrás.</Paso>
+          <Paso n={8} titulo="Seguimiento">A las dos y a las seis semanas se mira en Analítica y en Search Console cómo va (bloque 13).</Paso>
+        </div>
+      </Seccion>
+
+      <Seccion id="anatomia" n="04" titulo="Anatomía de una guía">
+        <p className="agi-section-intro">El orden de los bloques, de arriba abajo. Es el mismo en todas, para que el lector y Google sepan siempre dónde está cada cosa.</p>
+        <div className="agi-tabla-envoltura">
+          <table className="agi-tabla">
+            <thead><tr><th>Bloque</th><th>Qué lleva</th><th>Por qué</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Hero</strong></td><td>Un solo H1 con la consulta dentro, y debajo <strong>la respuesta en dos o tres frases</strong>. Dificultad, minutos de lectura y fecha de última revisión.</td><td>Quien llega de Google decide en segundos si se queda. La respuesta va antes que cualquier adorno.</td></tr>
+              <tr><td><strong>Índice</strong></td><td>Enlaces a cada sección (<code>.gbc-index</code>).</td><td>Deja saltar a lo que uno busca, y Google usa esos saltos para llevar al lector al punto exacto.</td></tr>
+              <tr><td><strong>Secciones</strong></td><td>Cada una responde a una pregunta. H2 escrito como la pregunta o como su respuesta, nunca un rótulo vacío («Introducción»).</td><td>Google puede posicionar una sección suelta, no solo la página entera.</td></tr>
+              <tr><td><strong>Pieza interactiva</strong></td><td>Dentro de la sección que explica, nunca como relleno entre dos.</td><td>Es lo que una guía tiene y un artículo no. Y retiene.</td></tr>
+              <tr><td><strong>Mini anuncio 1</strong></td><td>Opcional, en formato «línea», tras la sección que habla de lo que la pieza resuelve.</td><td>El interés está en su punto más alto justo ahí.</td></tr>
+              <tr><td><strong>Riesgos</strong></td><td>Una sección propia con lo que puede salir mal.</td><td>Es contenido de dinero: callar los riesgos resta confianza al lector y a Google.</td></tr>
+              <tr><td><strong>Mini anuncio 2</strong></td><td>En formato «tarjeta», después de todo el contenido y antes del quiz.</td><td>Quien ha llegado hasta aquí es quien más probablemente quiere seguir.</td></tr>
+              <tr><td><strong>Quiz</strong></td><td>Con cuenta. Sin sesión, la invitación a registrarse con el nombre del logro.</td><td>Es el paso de visitante a usuario registrado.</td></tr>
+              <tr><td><strong>Cierre fijo</strong></td><td><code>GuiasRelacionadas</code> → interacciones → <code>Footer</code>.</td><td>Las relacionadas son el único enlace que unas guías reciben de otras.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="agi-card agi-card--mono">
+          {`<GuiaAnuncio producto="…" estado={…} />   {/* antes del quiz */}`}<br />
+          {`<section id="quiz" className="gbc-section">…</section>`}<br />
+          {`<GuiasRelacionadas slug={SLUG} />`}<br />
+          {`<section className="gbc-section gbc-interactions-section">…<GuideInteractions /></section>`}<br />
+          {`<Footer />`}
+        </div>
+        <div className="agi-card">
+          <p className="agi-warning"><strong>Lo que Google lee es lo que sale del servidor.</strong> El texto que solo aparece al pulsar, girar una tarjeta o mover un control dentro de un componente de cliente puede no contar. La explicación completa va siempre escrita en la sección; la pieza interactiva la refuerza, no la sustituye.</p>
+        </div>
+      </Seccion>
+
+      <Seccion id="escritura" n="05" titulo="Cómo se escribe">
+        <div className="agi-card">
+          <ul className="agi-list">
+            <li><strong>La respuesta, primero.</strong> Cada sección abre con la respuesta y luego la desarrolla. Nada de «en este apartado veremos».</li>
+            <li><strong>Para alguien listo que no sabe del tema.</strong> Frases cortas, un ejemplo con números en cuanto aparece una idea abstracta, y cada palabra técnica enlazada al diccionario la primera vez.</li>
+            <li><strong>Algo propio en cada guía.</strong> Un cálculo, una comparación, un caso real, un dato verificado en cadena. Resumir lo que ya dicen otros no posiciona: Google lo dice así en su guía oficial.</li>
+            <li><strong>Cifras con fuente y fecha</strong> en el propio texto («a noviembre de 2026, según…»). Una cifra sin fecha envejece en silencio.</li>
+            <li><strong>Sin promesas.</strong> Ni rentabilidades, ni «la mejor», ni «seguro». Se cuenta lo que es, lo que puede salir mal y para quién no es.</li>
+            <li><strong>Sin relleno.</strong> No hay número mágico de palabras: Google no lo tiene. La guía dura lo que tarda en responder bien.</li>
+            <li><strong>Sin emojis</strong> en títulos ni cuerpo. Los iconos, de Lucide.</li>
+            <li><strong>Ángulo hispanohablante</strong>: euros, ejemplos y normativa que le sirvan a quien lee desde España o América.</li>
+          </ul>
+        </div>
+      </Seccion>
+
+      <Seccion id="anuncios" n="06" titulo="Mini anuncios internos">
+        <div className="agi-card">
+          <p>
+            Son las llamadas a las piezas de pago dentro de una guía. Se hacen con un solo componente,{" "}
+            <code>GuiaAnuncio</code> (<code>src/components/GuiaAnuncio.tsx</code>), para que todas las guías vendan con
+            la misma voz y los mismos textos comprobados.
+          </p>
+          <div className="agi-card agi-card--mono">
+            {`import GuiaAnuncio from "@/components/GuiaAnuncio";`}<br /><br />
+            {`<GuiaAnuncio`}<br />
+            {`  producto="diario"            // diario · portfolio · cursos · premium`}<br />
+            {`  variante="tarjeta"           // tarjeta (por defecto) · linea`}<br />
+            {`  estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"}`}<br />
+            {`/>`}
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Qué pieza encaja con cada tema</h3>
+          <div className="agi-tabla-envoltura">
+            <table className="agi-tabla">
+              <thead><tr><th>Si la guía va de…</th><th>Se anuncia</th><th>Porque el lector se pregunta…</th></tr></thead>
+              <tbody>
+                <tr><td>Operar: trading, futuros, exchanges, gestión del riesgo</td><td><strong>Diario de Trading</strong> (<code>diario</code>)</td><td>«¿Y cómo sé si lo estoy haciendo bien?»</td></tr>
+                <tr><td>Una criptomoneda o un proyecto concreto</td><td><strong>Portfolio Adelin</strong> (<code>portfolio</code>)</td><td>«¿Y tú qué compras?»</td></tr>
+                <tr><td>Conceptos básicos: blockchain, wallets, seguridad</td><td><strong>Cursos</strong> (<code>cursos</code>)</td><td>«¿Por dónde sigo aprendiendo?»</td></tr>
+                <tr><td>Temas transversales: fiscalidad, regulación</td><td><strong>Premium</strong> (<code>premium</code>)</td><td>«¿Qué más tiene esta academia?»</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="agi-subsection">
+          <h3 className="agi-subsection-title">Las reglas</h3>
+          <div className="agi-card">
+            <ul className="agi-list">
+              <li><strong>Nunca antes de la respuesta.</strong> El primero va, como pronto, después de la segunda sección. Ni en el hero ni justo debajo.</li>
+              <li><strong>Dos como máximo</strong>, y de piezas distintas: una «línea» a mitad y una «tarjeta» antes del quiz. Con una guía corta, solo la tarjeta.</li>
+              <li><strong>El botón lleva a la ficha pública</strong> de la pieza, no al pago. La guía despierta el interés; la ficha explica y vende.</li>
+              <li><strong>El precio, siempre a la vista.</strong> Nunca se esconde que es de pago. El componente lo saca de <code>PREMIUM_PRICE_EUR</code>.</li>
+              <li><strong>A quien ya es Premium no se le vende</strong>: ve un acceso directo a su herramienta, o nada. Lo decide el componente con <code>estado</code>.</li>
+              <li><strong>Ni ventanas emergentes, ni barras que tapen el texto, ni cuentas atrás.</strong> Google penaliza lo que se interpone entre el lector y el contenido.</li>
+              <li><strong>No se promete lo que la pieza no hace.</strong> Los textos del componente están comprobados contra el código. Para cambiarlos o añadir una ventaja, primero se abre la herramienta y se comprueba.</li>
+              <li><strong>Nunca rentabilidades.</strong> El Portfolio enseña la cartera real, también lo que va en pérdidas; no se anuncia como una forma de ganar.</li>
+            </ul>
+          </div>
+          <div className="agi-card">
+            <p><strong>Además del componente</strong>, la mejor llamada es una frase dentro del propio texto, donde ya se habla del problema, con un enlace normal a la ficha: «…estas cuentas las hace solo el <em>Diario de Trading</em> de la academia». El ancla es el nombre de la pieza, nunca «pincha aquí».</p>
+            <p className="agi-note">La guía del diario de trading tiene sus propias llamadas (<code>GuiaDiarioCta</code>), más grandes, porque la guía entera trata de lo que hace esa pieza. Es la excepción, no el modelo.</p>
+          </div>
+        </div>
+      </Seccion>
+
+      <Seccion id="interactivos" n="07" titulo="Piezas interactivas">
+        <p className="agi-section-intro">Se elige la que ayuda a entender, no la que adorna. Las compartidas ya existen; las propias de un tema se crean dentro de la carpeta de la guía.</p>
+        <div className="agi-components-grid">
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">Quiz de la guía</div>
+            <div className="agi-comp-desc">Un componente por guía (<code>Guide…Quiz.tsx</code>, en su carpeta). Cinco preguntas que obligan a haber entendido, no a recordar una palabra. Guarda la nota y, con todas acertadas, desbloquea el logro.</div>
+            <div className="agi-comp-rule">Obligatorio. Con cinco preguntas, el logro pide 5 de 5.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">GuideFlipCards</div>
+            <div className="agi-comp-desc">Tarjetas que se giran: una idea por delante y su explicación por detrás. Para mitos frente a realidad, o ventajas frente a riesgos.</div>
+            <div className="agi-comp-rule">Lo importante va también en el texto: el reverso puede no leerlo Google.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">GuideSpotlightCards</div>
+            <div className="agi-comp-desc">Tarjetas con foco al pasar el ratón, para listas cortas de usos, actores o características.</div>
+            <div className="agi-comp-rule">De tres a seis tarjetas. Con más, una tabla.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">GuideHeroStats · GuideAnimatedStat</div>
+            <div className="agi-comp-desc">Cifras destacadas, en el hero o dentro de una sección. Cada cifra, con su fuente y su fecha cerca.</div>
+            <div className="agi-comp-rule">Solo cifras que se puedan sostener dentro de un año, o con su fecha bien visible.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">Gráficas (Recharts)</div>
+            <div className="agi-comp-desc">Línea, barras o área. Si los datos son reales, con su fuente; si son un ejemplo, se dice: «datos orientativos».</div>
+            <div className="agi-comp-rule">Un solo eje y una idea por gráfica.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">Calculadora o simulador propio</div>
+            <div className="agi-comp-desc">Cuando el tema tiene una cuenta que el lector querría hacer con sus números (como <code>GuideDiarioCalc</code>). Es lo que más diferencia una guía de las de la competencia.</div>
+            <div className="agi-comp-rule">Solo si la cuenta es útil de verdad. El resultado se explica en texto debajo.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">GuideVideoEmbed</div>
+            <div className="agi-comp-desc">Un vídeo del canal, en modo de privacidad mejorada. Se carga solo al pulsar.</div>
+            <div className="agi-comp-rule">Solo vídeos propios que traten justo ese tema.</div>
+          </div>
+          <div className="agi-comp-card">
+            <div className="agi-comp-name">GuideProgressBar</div>
+            <div className="agi-comp-desc">La barra de lectura de arriba. Es visual y no guarda nada.</div>
+            <div className="agi-comp-rule">En toda guía.</div>
+          </div>
+        </div>
+        <div className="agi-card">
+          <p>Librerías instaladas: <strong>Recharts</strong> (gráficas), <strong>Framer Motion</strong> (animaciones de entrada) y <strong>Lucide</strong> (iconos). No se añade una dependencia para una sola guía sin preguntarlo antes.</p>
+        </div>
+      </Seccion>
+
+      <Seccion id="cuenta" n="08" titulo="Cuenta, quiz y logro">
+        <div className="agi-card">
+          <p><strong>Toda guía se lee entera sin cuenta ni pago</strong>, piezas interactivas incluidas. Es lo mismo que ve Google, que entra sin sesión.</p>
+          <ul className="agi-list">
+            <li><strong>Lo único que pide cuenta gratuita es el quiz</strong>: guarda la nota y da el logro, y para eso hay que saber de quién es.</li>
+            <li>En el <code>page.tsx</code>: <code>{"{isRegistered ? <GuideXxxQuiz /> : <GuideQuizCuenta slug={SLUG} />}"}</code> dentro de <code>section#quiz</code>. Nada más depende de la sesión, salvo el <code>estado</code> de los mini anuncios.</li>
+            <li><code>GuideQuizCuenta</code> invita a registrarse con el nombre del logro y devuelve a la guía después.</li>
+          </ul>
+        </div>
+        <div className="agi-card">
+          <ul className="agi-list">
+            <li>La nota se guarda en <code>guide_quiz_completions</code> por <code>/api/guide-quiz-completion</code>, que valida el <code>slug</code> contra <code>GUIDES</code>.</li>
+            <li>El logro se define en el código: campos <code>badge</code> (nombre) y <code>badgeId</code> (<code>guide-[tema]</code>) de la guía en <code>GUIDES</code>. Aparece solo en Logros.</li>
+            <li>Se desbloquea al acertar el quiz entero: el quiz llama a <code>saveGuideBadge(badgeId)</code>, que lo guarda en <code>user_badges</code> y lanza el aviso.</li>
+          </ul>
+        </div>
+      </Seccion>
+
+      <Seccion id="tecnica" n="09" titulo="Arquitectura técnica">
+        <div className="agi-card">
+          <p className="agi-warning"><strong>Una guía es código, no una fila en la base de datos.</strong> Cada guía es un componente propio en <code>src/app/guias/[slug]/</code>, y el catálogo es el array <code>GUIDES</code> de <code>src/lib/guides.ts</code>. Publicar no toca Supabase.</p>
+          <div className="agi-code-row"><span className="agi-code-path">src/app/guias/[slug]/page.tsx</span><span>La guía. Componente de servidor.</span></div>
+          <div className="agi-code-row"><span className="agi-code-path">src/app/guias/[slug]/[slug].css</span><span>Sus estilos propios. <strong>Nunca</strong> en <code>guias.css</code> ni en <code>globals.css</code>.</span></div>
+          <div className="agi-code-row"><span className="agi-code-path">src/app/guias/[slug]/Guide…Quiz.tsx</span><span>Su quiz y sus piezas propias.</span></div>
+          <div className="agi-code-row"><span className="agi-code-path">src/app/guias/guias.css</span><span>Solo lo que comparten todas (<code>gbc-</code>, <code>gan-</code>).</span></div>
+          <div className="agi-code-row"><span className="agi-code-path">public/guias/[slug].webp</span><span>La portada: WebP, 1.600 px de ancho, calidad 82.</span></div>
+          <div className="agi-code-row"><span className="agi-code-path">src/lib/guides.ts</span><span>El alta en <code>GUIDES</code>. Siempre <strong>al final</strong>: la portada enseña las últimas.</span></div>
+        </div>
+        <div className="agi-card agi-card--mono">
+          <div className="agi-table-def">
+            <div className="agi-table-name">GuideMeta · campos de GUIDES</div>
+            <div className="agi-table-fields">slug · title · shortTitle · description · difficulty (básico | intermedio | avanzado) · sections · badge · badgeId · readTime · color · topics[] · tags[] · muro (null: se lee entera) · portada · imagenPropia?</div>
+          </div>
+        </div>
+        <div className="agi-card">
+          <p>De <code>GUIDES</code> sale todo lo demás, solo: el listado <code>/guias</code>, la portada, el sitemap, las guías relacionadas, los logros y la validación de las rutas del quiz.</p>
+          <p>En Supabase solo hay <strong>lo que hace cada usuario</strong>, y se llena solo: <code>guide_likes</code>, <code>guide_saves</code>, <code>guide_shares</code>, <code>guide_quiz_completions</code> y <code>user_badges</code>. Las visitas las cuenta la medición de toda la web; la guía no añade nada para eso.</p>
+        </div>
+      </Seccion>
+
+      <Seccion id="diseno" n="10" titulo="Diseño">
+        <div className="agi-card">
+          <p>Las guías tienen identidad propia dentro de la web: <strong>oro, naranja, navy y blanco</strong>. El oro manda; el naranja es para lo que se pulsa.</p>
+        </div>
+        <div className="agi-palette agi-palette--4col">
+          <div className="agi-swatch agi-swatch--gold">
+            <span className="agi-swatch-name">Oro</span>
+            <span className="agi-swatch-var">--gold · #e6b455</span>
+            <span className="agi-swatch-use">Dominante: antetítulos, títulos en degradado, bordes de tarjeta, cifras, pastillas.</span>
+          </div>
+          <div className="agi-swatch agi-swatch--orange">
+            <span className="agi-swatch-name">Naranja</span>
+            <span className="agi-swatch-var">--accent-orange · #ff6b2b</span>
+            <span className="agi-swatch-use">Acción: botones, respuesta elegida, barra de progreso, botón del mini anuncio.</span>
+          </div>
+          <div className="agi-swatch agi-swatch--navy">
+            <span className="agi-swatch-name">Navy</span>
+            <span className="agi-swatch-var">#060f1f · #0a1628 · #0f2040</span>
+            <span className="agi-swatch-use">Fondos. Secciones alternas entre los dos primeros para separar sin otro color.</span>
+          </div>
+          <div className="agi-swatch agi-swatch--white">
+            <span className="agi-swatch-name">Blanco</span>
+            <span className="agi-swatch-var">#ffffff · #dce8f8</span>
+            <span className="agi-swatch-use">Títulos y cuerpo. Nunca gris neutro sobre navy.</span>
+          </div>
+        </div>
+        <div className="agi-card">
+          <ul className="agi-list">
+            <li><strong>Ancho</strong>: la guía ocupa toda la pantalla; el contenido, <code>max-width: 1100px</code>; el texto corrido, 800 px.</li>
+            <li><strong>Hero</strong>: fondo <code>#060f1f → #0a1628</code>, antetítulo en oro y la última línea del título en degradado oro.</li>
+            <li><strong>Tarjetas</strong>: degradado <code>#0f2040 → #0a1628</code>, borde <code>--gold-border</code>, radio de 18 a 20 px.</li>
+            <li><strong>Móvil primero</strong>: se comprueba a 375 px. Tablas y gráficas con su propio desplazamiento lateral; la página nunca se desborda.</li>
+            <li><strong>Movimiento</strong>: entradas suaves al hacer scroll y nada que parpadee. Se respeta <code>prefers-reduced-motion</code>.</li>
+          </ul>
+        </div>
+        <div className="agi-card">
+          <div className="agi-diff-row"><span className="agi-diff-badge agi-diff--basic">Básico</span><span>Primera vez que se toca el tema.</span></div>
+          <div className="agi-diff-row"><span className="agi-diff-badge agi-diff--intermediate">Intermedio</span><span>Pide haber leído las básicas o tener nociones.</span></div>
+          <div className="agi-diff-row"><span className="agi-diff-badge agi-diff--advanced">Avanzado</span><span>Conceptos técnicos a fondo.</span></div>
+        </div>
+      </Seccion>
+
+      <Seccion id="seo" n="11" titulo="El SEO que lleva puesto">
+        <div className="agi-card">
+          <p>Una guía es un componente propio, así que nada se pone solo. Estas cuatro cosas van a mano en cada guía, y <code>npm run check</code> cancela el <code>push</code> si falta alguna de las tres primeras. <strong>Todo lo demás de SEO</strong> (cómo clasifica Google, el método, los datos estructurados, lo prohibido) está en <Link href="/admin/seo-instrucciones">SEO</Link>.</p>
+        </div>
+        <div className="agi-card agi-card--mono">
+          <pre style={{ whiteSpace: "pre-wrap", margin: 0 }}>
+{`export const metadata: Metadata = {
+  alternates: { canonical: "/guias/tu-slug" },   // 1 · relativa, y nunca en un layout
+  title: "…",                                     // 4 · la consulta delante, 48 caracteres
+  description: "…",                               //     160 caracteres
+};
+
+<GuideBreadcrumbJsonLd slug={SLUG} />             // 2 · Article + migas, dentro del return`}
+          </pre>
+        </div>
+        <div className="agi-card">
+          <ul className="agi-list">
+            <li><strong>1 · Canónica</strong> en su <code>metadata</code>, en ruta relativa. Jamás en un <code>layout.tsx</code>: la heredarían todas las rutas hijas.</li>
+            <li><strong>2 · <code>GuideBreadcrumbJsonLd</code></strong>: emite el <code>Article</code> y las migas. El nombre lo saca de <code>GUIDES</code>, que es el que se ve en <code>/guias</code>: el dato estructurado tiene que coincidir con lo visible.</li>
+            <li><strong>3 · El alta en <code>GUIDES</code></strong>: el sitemap recorre ese array, no la carpeta. Sin su entrada, la guía es invisible para Google.</li>
+            <li><strong>4 · Título y descripción</strong>: el layout añade « | AdelinBTC» (12 caracteres), así que al título le quedan 48 antes de que Google lo corte en una pantalla normal. La consulta, delante.</li>
+          </ul>
+        </div>
+      </Seccion>
+
+      <Seccion id="checklist" n="12" titulo="Lista de cierre">
+        <div className="agi-checklist">
+          <Punto><strong>Consulta principal</strong> decidida y resultados de Google revisados antes de escribir</Punto>
+          <Punto>Slug corto y descriptivo, y comprobado contra los <code>Disallow</code> de <code>robots.ts</code></Punto>
+          <Punto><strong>Respuesta en el primer párrafo</strong>, con la consulta en el H1</Punto>
+          <Punto>Cada H2 es una pregunta o su respuesta; un solo H1</Punto>
+          <Punto>Al menos <strong>una cosa propia</strong> que no esté en los primeros resultados</Punto>
+          <Punto>Cada cifra con su <strong>fuente y su fecha</strong>; sección de riesgos escrita</Punto>
+          <Punto><strong>Términos técnicos enlazados al diccionario</strong> en su primera aparición; los que faltaban, creados</Punto>
+          <Punto>Enlaces a otras guías donde el texto ya las menciona, con destino comprobado</Punto>
+          <Punto><strong>Mini anuncios</strong>: uno o dos, con la pieza que encaja, ninguno antes de la segunda sección</Punto>
+          <Punto>Quiz de cinco preguntas, envuelto con <code>GuideQuizCuenta</code> para quien no tiene sesión</Punto>
+          <Punto>Logro con nombre y <code>badgeId</code> <code>guide-[tema]</code></Punto>
+          <Punto>Su <code>[slug].css</code> propio; nada nuevo en <code>guias.css</code> ni en <code>globals.css</code></Punto>
+          <Punto>Foto de portada en <code>public/guias/[slug].webp</code> y su ruta en <code>portada</code></Punto>
+          <Punto>Cierre fijo: <code>GuiasRelacionadas</code> → interacciones → <code>Footer</code></Punto>
+          <Punto>Canónica, <code>GuideBreadcrumbJsonLd</code>, título de 48 y descripción de 160</Punto>
+          <Punto>Lo esencial está en el HTML del servidor, no solo dentro de una pieza interactiva</Punto>
+          <Punto>Probada sin sesión (se lee entera, el quiz pide cuenta) y con sesión (el quiz guarda)</Punto>
+          <Punto><code>npm run check &amp;&amp; npx tsc --noEmit</code> en verde</Punto>
+          <Punto><strong>Auditoría SEO ofrecida</strong>, y hecha o anotada como pendiente</Punto>
+          <Punto><strong>«Sí» explícito del admin</strong> antes de dar de alta en <code>GUIDES</code></Punto>
+        </div>
+      </Seccion>
+
+      <Seccion id="despues" n="13" titulo="Después de publicar">
+        <div className="agi-card">
+          <p><strong>Qué mirar, y cuándo.</strong> Google tarda: lo normal es que una guía nueva se mueva durante semanas.</p>
+          <ul className="agi-list">
+            <li><strong>A los dos o tres días</strong>: que está indexada (Search Console, Inspección de URL).</li>
+            <li><strong>A las dos semanas</strong>: en <Link href="/admin">Analítica</Link>, sus visitas en «Páginas más vistas» y en «Páginas de entrada», y de qué canal llegan.</li>
+            <li><strong>A las seis semanas</strong>: en Search Console, con qué consultas aparece y en qué posición. Si sale entre los puestos 5 y 20 para una consulta, se refuerza la sección que la responde.</li>
+            <li><strong>Cada seis meses</strong>, o cuando cambie el proyecto o la norma: se revisan las cifras y se actualiza la fecha de revisión solo si se ha cambiado algo de verdad.</li>
+          </ul>
+        </div>
+        <div className="agi-card">
+          <p><strong>Qué se toca para cada cambio:</strong></p>
+          <ul className="agi-list">
+            <li><strong>Título, descripción, dificultad, minutos, temas</strong>: su objeto en <code>GUIDES</code>.</li>
+            <li><strong>Contenido o piezas</strong>: su <code>page.tsx</code> y sus componentes. Reescribir media guía es publicar otra página en la misma URL: se vuelve a ofrecer la auditoría SEO.</li>
+            <li><strong>Portada</strong>: el archivo en <code>public/guias/</code> y el campo <code>portada</code>.</li>
+            <li><strong>Retirar una guía</strong>: se quita de <code>GUIDES</code> y se borra su carpeta entera. Si Google ya la conocía, su URL se da de alta en <code>src/lib/retiradas.ts</code> para que responda 410.</li>
+          </ul>
+          <p className="agi-note">No hay panel para editar guías: se gestionan en el código. Las cifras de uso (me gusta, guardados, compartidos y notas del quiz) están en Supabase, por <code>guide_slug</code>.</p>
+        </div>
+      </Seccion>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
@@ -402,6 +403,9 @@ export default async function WorldcoinPage() {
           <GuideVideoEmbed youtubeId="SXYGxTEcP_w" title="¿Qué es Worldcoin? Explicado" />
         </div>
       </section>
+
+      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      <GuiaAnuncio producto="portfolio" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
       {/* ── QUIZ ── */}
       <section id="quiz" className="gbc-section">

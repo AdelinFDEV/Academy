@@ -9,7 +9,8 @@ import Icon from "@/components/Icon";
 const links = [
   { href: "/admin", label: "Analítica", nota: "Tráfico, usuarios y Premium", icon: "bar-chart" as const, color: "naranja" },
   { href: "/admin/foro", label: "Foro", nota: "Moderación y reportes", icon: "chat" as const, color: "violeta" },
-  { href: "/admin/guias-instrucciones", label: "Guías", nota: "Cómo se construyen", icon: "book" as const, color: "turquesa" },
+  { href: "/admin/guias-instrucciones", label: "Guías", nota: "Cómo se hace una guía", icon: "book" as const, color: "turquesa" },
+  { href: "/admin/seo-instrucciones", label: "SEO", nota: "Cómo aparecer en Google", icon: "search" as const, color: "azul" },
 ];
 
 export default function AdminNav() {

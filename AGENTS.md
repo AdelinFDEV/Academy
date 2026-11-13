@@ -14,6 +14,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Vas a hacer… | Lee **antes** de empezar |
 |---|---|
 | Una **guía** interactiva | `/admin/guias-instrucciones` |
+| **SEO** de cualquier página (guía, término, curso, ficha, hilo): cómo clasifica Google y el método | `/admin/seo-instrucciones` |
 | Un **curso de pago** nuevo, o tocar uno: temario, lecciones, exámenes, certificado, logro | [`CURSOS.md`](./CURSOS.md) — **entero, antes de empezar** |
 | Un **término del diccionario**, corto o ampliado | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | La **auditoría SEO** de lo que acabas de montar | [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) · ver el punto 2 |
@@ -24,7 +25,9 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
 | Apuntar o consultar **cursos y guías que queremos lanzar** en el futuro (ideas aún sin empezar) | [`CURSOS-PENDIENTES.md`](./CURSOS-PENDIENTES.md) · [`GUIAS-PENDIENTES.md`](./GUIAS-PENDIENTES.md) |
 
-La primera fila es **la fuente de verdad** de las guías: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan.
+Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan. El panel de SEO es el «cómo y por qué», para cualquier página; `AUDITORIA-SEO.md` es el protocolo que se ejecuta fase a fase sobre una guía terminada.
+
+**Las guías venden con `GuiaAnuncio`** (`src/components/GuiaAnuncio.tsx`): el mini anuncio de una pieza de pago, nunca antes de la respuesta y dos como máximo por guía. Sus reglas, en el panel de guías.
 
 **Desde el 10-10-2026 la web es solo guías.** No hay entradas, noticias, categorías ni comentarios: se retiró todo el sistema, con sus tablas. `/post/…` y `/categoria/…` responden **410** (`src/lib/retiradas.ts`). No lo vuelvas a crear sin que el admin lo pida.
 

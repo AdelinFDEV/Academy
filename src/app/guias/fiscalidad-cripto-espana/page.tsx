@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import GuiaAnuncio from "@/components/GuiaAnuncio";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
@@ -824,6 +825,9 @@ export default async function FiscalidadCriptoEspanaPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      <GuiaAnuncio producto="premium" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
       {/* ── QUIZ ── */}
       <section id="quiz" className="gbc-section">
