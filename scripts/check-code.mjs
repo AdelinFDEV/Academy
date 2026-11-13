@@ -406,6 +406,62 @@ function checkSqlForo() {
   }
 }
 
+// ── 8) Opciones de quiz y de ejercicio que desaparecen ────────────────────
+// Pasó el 13-11-2026 en los quiz de las guías: cada opción era un
+// `motion.button` que entraba con una variante heredada (opacidad 0 → 1) y, al
+// confirmar, recibía su propio `animate`. Con eso framer-motion deja de aplicar
+// la variante heredada y el botón vuelve a su estado inicial: invisible. La
+// respuesta correcta y la elegida desaparecían justo cuando había que verlas.
+//
+// Dos reglas: los quiz de las guías usan el motor común (GuideQuizBase), sin
+// copia propia; y en el motor y en los ejercicios del aula, un botón de opción
+// no lleva `initial`, `animate` ni `variants`: su estado lo pone una clase y el
+// movimiento, el CSS, partiendo siempre de un botón visible.
+function checkOpcionesVisibles() {
+  const fallos = [];
+  const guiasDir = join("src", "app", "guias");
+  for (const guia of readdirSync(guiasDir)) {
+    const dir = join(guiasDir, guia);
+    if (!statSync(dir).isDirectory()) continue;
+    for (const f of readdirSync(dir)) {
+      if (!/Quiz\.tsx$/.test(f)) continue;
+      if (/from "framer-motion"/.test(readFileSync(join(dir, f), "utf8"))) {
+        fallos.push(`${join(dir, f)} — un quiz de guía con animación propia: usa GuideQuizBase`);
+      }
+    }
+  }
+  const mirar = [join("src", "components", "GuideQuizBase.tsx")];
+  const aula = join("src", "components", "aula");
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir)) {
+      const p = join(dir, entry);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (/\.tsx$/.test(entry)) mirar.push(p);
+    }
+  };
+  walk(aula);
+  for (const p of mirar) {
+    const src = readFileSync(p, "utf8");
+    for (const m of src.matchAll(/<motion\.button[\s\S]*?<\/motion\.button>/g)) {
+      if (/\b(initial|animate|variants)=/.test(m[0])) {
+        const linea = src.slice(0, m.index).split("\n").length;
+        fallos.push(`${p}:${linea} — motion.button con initial, animate o variants`);
+      }
+    }
+  }
+
+  if (fallos.length === 0) {
+    console.log(`${GREEN}✓${OFF} opciones de quiz y ejercicios siempre visibles ${DIM}— 0 casos${OFF}`);
+  } else {
+    console.log(`${RED}✗${OFF} opciones que pueden desaparecer ${RED}— ${fallos.length} caso(s)${OFF}`);
+    fallos.forEach((f) => console.log(`    ${f}`));
+    problems.push([
+      "Opciones de quiz",
+      "Un botón de respuesta no puede depender de framer-motion para verse. Usa un <button> normal, marca el estado con una clase y anima con CSS desde un estado visible.",
+    ]);
+  }
+}
+
 // ── Ejecución ─────────────────────────────────────────────────────────────
 console.log("\nComprobaciones de código\n");
 checkEslint();
@@ -415,6 +471,7 @@ checkGuideCss();
 checkGuiasSeo();
 checkForo();
 checkSqlForo();
+checkOpcionesVisibles();
 
 if (problems.length) {
   console.log(`\n${RED}Falla la comprobación.${OFF} Qué hacer:\n`);

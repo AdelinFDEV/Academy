@@ -107,7 +107,6 @@ export default function GuideQuizBase({ slug, badgeId, badgeName, preguntas }: {
   const [confirmed, setConfirmed] = useState(false);
   const [answers, setAnswers] = useState<boolean[]>([]);
   const [done, setDone] = useState(false);
-  const [shake, setShake] = useState(false);
   const optsRef = useRef<HTMLDivElement>(null);
 
   const q = QUESTIONS[current];
@@ -124,12 +123,7 @@ export default function GuideQuizBase({ slug, badgeId, badgeName, preguntas }: {
     const ox = rect ? (rect.left + rect.width / 2) / window.innerWidth : 0.5;
     const oy = rect ? rect.top / window.innerHeight : 0.5;
 
-    if (correct) {
-      fireConfetti(ox, oy);
-    } else {
-      setShake(true);
-      setTimeout(() => setShake(false), 500);
-    }
+    if (correct) fireConfetti(ox, oy);
   };
 
   const next = () => {
@@ -241,13 +235,10 @@ export default function GuideQuizBase({ slug, badgeId, badgeName, preguntas }: {
         >
           <div className="gbc-quiz-q">{q.q}</div>
 
-          <motion.div
-            ref={optsRef}
-            className="gbc-quiz-opts"
-            initial="hidden"
-            animate="show"
-            variants={{ show: { transition: { staggerChildren: 0.06 } } }}
-          >
+          {/* Botones normales, sin framer-motion: una opción no puede depender de
+              una animación para verse. Al confirmar, el estado lo pone una clase
+              (`ok` / `ko`) y el movimiento lo hace el CSS (guias.css, `.wq-opt`). */}
+          <div ref={optsRef} className="gbc-quiz-opts">
             {q.opts.map((o, i) => {
               let cls = "gbc-quiz-opt wq-opt";
               if (confirmed) {
@@ -257,31 +248,23 @@ export default function GuideQuizBase({ slug, badgeId, badgeName, preguntas }: {
                 cls += " sel";
               }
               return (
-                <motion.button
+                <button
                   key={i}
+                  type="button"
                   className={cls}
+                  style={{ "--i": i } as React.CSSProperties}
                   onClick={() => !confirmed && setSelected(i)}
                   disabled={confirmed}
-                  variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
-                  whileTap={!confirmed ? { scale: 0.97 } : undefined}
-                  animate={
-                    confirmed && i === selected && i !== q.ok && shake
-                      ? { x: [0, -9, 9, -7, 7, -4, 4, 0] }
-                      : confirmed && i === q.ok
-                      ? { boxShadow: ["0 0 0px rgba(74,222,128,0)", "0 0 24px rgba(74,222,128,0.55)", "0 0 10px rgba(74,222,128,0.25)"] }
-                      : undefined
-                  }
-                  transition={{ duration: 0.5 }}
                 >
                   <span className="wq-opt-marker">
                     {confirmed && i === q.ok && <Check size={15} />}
                     {confirmed && i === selected && i !== q.ok && <X size={15} />}
                   </span>
                   {o}
-                </motion.button>
+                </button>
               );
             })}
-          </motion.div>
+          </div>
 
           <AnimatePresence>
             {confirmed && (

@@ -209,6 +209,16 @@
 .wq-progress-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
 
 .wq-opt { display: flex; align-items: center; gap: 10px; }
+/* El movimiento de las opciones va aquí y no en framer-motion. Regla: el botón
+   es visible sin animación; la animación solo añade. `backwards` deja la
+   opacidad 0 nada más que durante el retraso de entrada. */
+@keyframes wq-entra { from { opacity: 0; transform: translateY(12px); } }
+@keyframes wq-tiembla { 0%, 100% { transform: translateX(0); } 15% { transform: translateX(-9px); } 30% { transform: translateX(9px); } 45% { transform: translateX(-7px); } 60% { transform: translateX(7px); } 80% { transform: translateX(-4px); } }
+.wq-opt { animation: wq-entra 0.3s ease backwards; animation-delay: calc(var(--i, 0) * 60ms); }
+.wq-opt.ko { animation: wq-tiembla 0.45s ease; }
+.wq-opt.ok { box-shadow: 0 0 14px rgba(74,222,128,0.3); }
+.wq-opt:disabled { opacity: 1; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .wq-opt, .wq-opt.ko, .gbc-quiz-opt.ok { animation: none; } }
 
 .wq-opt-marker { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex-shrink: 0; }
 
