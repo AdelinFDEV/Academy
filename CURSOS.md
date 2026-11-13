@@ -110,8 +110,9 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 | Cómo leer CoinMarketCap y CoinGecko | `coinmarketcap-y-coingecko` | `#ff8a7a` | Coral | Escrito el 12-11-2026 |
 | Bitcoin y DCA a largo plazo | `bitcoin-y-dca` | `#fbbf24` | Ámbar | Escrito el 13-11-2026 |
 | Futuros y apalancamiento | `futuros-y-apalancamiento` | `#f472b6` | Rosa | Escrito el 13-11-2026 |
+| Análisis técnico sin humo | `analisis-tecnico-sin-humo` | `#a3e635` | Verde lima | Escrito el 13-11-2026 |
 
-Ideas libres para los siguientes: azul cobalto `#6f9bff`, verde lima `#a3e635`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
+Ideas libres para los siguientes: azul cobalto `#6f9bff`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
 
 ### La tarjeta del curso en `/cursos` — el mismo formato para todos
 
@@ -153,6 +154,7 @@ El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no 
 | Cómo leer CoinMarketCap y CoinGecko | Una lupa de cristal y metal satinado sobre unas barras de datos de cristal | Una rejilla tenue de tabla de datos detrás | `#ff8a7a` (pendiente de generar) |
 | Bitcoin y DCA a largo plazo | Una escalera de peldaños de cristal, iguales, que sube hacia la derecha, con una moneda lisa de metal satinado, sin símbolo, apoyada en el peldaño más alto | Una rejilla tenue de calendario detrás | `#fbbf24` (pendiente de generar) |
 | Futuros y apalancamiento | Una balanza de precisión de cristal y metal satinado, muy desequilibrada, con una pesa pequeña en un plato y una grande en el otro | Una línea de precio tenue que cae en escalones por detrás | `#f472b6` (pendiente de generar) |
+| Análisis técnico sin humo | Una única vela japonesa de cristal translúcido, alta, con su mecha de metal satinado, de la que se desprende una voluta fina de humo que se deshace | Una rejilla tenue de gráfico detrás | `#a3e635` (pendiente de generar) |
 
 Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
 
