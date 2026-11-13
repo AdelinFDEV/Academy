@@ -75,6 +75,13 @@ body {
    entiende y usa las reglas -webkit- de abajo. */
 html {
   scrollbar-color: var(--accent-orange) var(--bg-dark);
+  /* El hueco de la barra se reserva siempre (13-11-2026). Al abrir algo que
+     bloquea el scroll (Nova en el centro, un aviso, una captura ampliada) la
+     barra desaparecía, la ventana ganaba sus 12 px y toda la web daba un salto
+     de lado. Con el hueco reservado, la barra se va y el contenido no se mueve.
+     Vale para cualquier ventana emergente, presente o futura: no hay que
+     compensar nada a mano en cada una. */
+  scrollbar-gutter: stable;
 }
 
 @supports not (scrollbar-color: auto) {
