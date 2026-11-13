@@ -224,7 +224,7 @@ export default function GuiasInstruccionesPage() {
             <ul className="agi-list">
               <li><strong>Nunca antes de la respuesta.</strong> El primero va, como pronto, después de la segunda sección. Ni en el hero ni justo debajo.</li>
               <li><strong>Dos como mínimo, en todas las guías</strong> (pedido por el admin el 13-11-2026): un «compacto» un poco antes de la mitad y una «tarjeta» al final, antes del quiz. Es por quien no lee el artículo entero. De piezas distintas, para no repetir el mismo mensaje.</li>
-              <li><strong>Siempre con imagen y con un botón que se vea.</strong> Nada de franjas de una línea: el anuncio lleva su imagen, un titular y un botón naranja que dice qué pasa al pulsarlo. La imagen la pone el componente; si hay capturas reales de la pieza, mejor que un dibujo.</li>
+              <li><strong>Siempre con imagen y con un botón que se vea.</strong> Nada de franjas de una línea: el anuncio lleva su imagen, un titular y un botón naranja que dice qué pasa al pulsarlo. La imagen la pone el componente: una ilustración por pieza, en <code>public/anuncios/</code>, sin texto ni cifras dentro.</li>
               <li><strong>Un tercero solo si la guía es muy larga</strong> (más de diez secciones), y nunca dos seguidos sin al menos dos secciones entre ellos.</li>
               <li><strong>El botón lleva a la ficha pública</strong> de la pieza, no al pago. La guía despierta el interés; la ficha explica y vende.</li>
               <li><strong>El precio, siempre a la vista.</strong> Nunca se esconde que es de pago. El componente lo saca de <code>PREMIUM_PRICE_EUR</code>.</li>

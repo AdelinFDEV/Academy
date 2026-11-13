@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Award, Check } from "lucide-react";
-import NovaMini from "@/components/NovaMini";
+import { ArrowRight, Check } from "lucide-react";
 import { HERRAMIENTAS } from "@/lib/herramientas";
 import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
 
@@ -15,7 +14,7 @@ import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
  *  · De productos distintos, elegidos por el tema de la guía.
  *  · Nunca antes de la respuesta: el primero va, como pronto, tras la segunda
  *    sección. Google mide a quien vuelve al buscador porque le recibió un anuncio.
- *  · Siempre con su imagen y con un botón que diga qué pasa al pulsarlo.
+ *  · Siempre con su imagen (`public/anuncios/`) y con un botón que diga qué pasa al pulsarlo.
  *  · El botón lleva a la ficha pública, no al pago: aquí se despierta el
  *    interés; la venta la hace la ficha.
  *  · Nunca se esconde que es de pago: el precio va siempre a la vista.
@@ -99,106 +98,19 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
   },
 };
 
-/** Dos portadas reales de cursos publicados (`public/cursos/<slug>/portada.webp`, 1600 × 558). */
-const PORTADAS = ["bitcoin-y-dca", "seguridad-cripto"];
-
-const Curva = () => (
-  <svg viewBox="0 0 240 70" preserveAspectRatio="none" className="gan-curva-svg">
-    <path className="gan-curva-area" d="M0 56 L30 48 L56 53 L88 34 L116 40 L150 20 L178 27 L240 6 L240 70 L0 70 Z" />
-    <path className="gan-curva" d="M0 56 L30 48 L56 53 L88 34 L116 40 L150 20 L178 27 L240 6" />
-  </svg>
-);
-
-const Rosco = () => (
-  <svg viewBox="0 0 120 120" className="gan-rosco">
-    <circle cx="60" cy="60" r="44" pathLength="100" strokeDasharray="44 56" strokeDashoffset="0" className="gan-rosco-a" />
-    <circle cx="60" cy="60" r="44" pathLength="100" strokeDasharray="23 77" strokeDashoffset="-46" className="gan-rosco-b" />
-    <circle cx="60" cy="60" r="44" pathLength="100" strokeDasharray="16 84" strokeDashoffset="-71" className="gan-rosco-c" />
-    <circle cx="60" cy="60" r="44" pathLength="100" strokeDasharray="9 91" strokeDashoffset="-89" className="gan-rosco-d" />
-  </svg>
-);
-
-const Diploma = () => (
-  <div className="gan-diploma">
-    <small>Certificado de aprovechamiento</small>
-    <strong>Tu nombre</strong>
-    <i />
-    <div><span>Examen final aprobado</span><b><Award size={15} strokeWidth={2.2} /></b></div>
-  </div>
-);
-
 /**
- * La imagen de cada anuncio: una maqueta de la pieza, dibujada con HTML y CSS
- * para que se vea nítida a cualquier tamaño. Enseña CÓMO ES la herramienta,
- * nunca cifras: los precios y los porcentajes van tapados («••••») porque los
- * de verdad son contenido de pago y unos inventados serían una promesa.
- * Solo los cursos llevan fotos reales: sus portadas.
+ * La imagen de cada anuncio: una ilustración por pieza, en
+ * `public/anuncios/<producto>.webp` (800 × 598, generadas por el admin el
+ * 13-11-2026). No llevan texto ni cifras a propósito: el titular lo pone el
+ * anuncio, y una cifra dibujada sería una promesa de rentabilidad.
  *
- * Todas miden lo mismo (300 px de ancho); el formato compacto las encoge
- * enteras con `transform`, así que aquí dentro se trabaja siempre en píxeles.
+ * Para cambiar una, se sustituye el archivo con el mismo nombre y tamaño.
  */
 function Figura({ producto }: { producto: ProductoAnuncio }) {
-  if (producto === "cursos") {
-    return (
-      <div className="gan-figura" aria-hidden="true">
-        <div className="gan-mock gan-mock--cursos">
-          {PORTADAS.map((slug) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img key={slug} src={`/cursos/${slug}/portada.webp`} alt="" width={230} height={80} loading="lazy" decoding="async" />
-          ))}
-          <Diploma />
-        </div>
-      </div>
-    );
-  }
-  if (producto === "diario") {
-    return (
-      <div className="gan-figura" aria-hidden="true">
-        <div className="gan-mock gan-mock--diario">
-          <div className="gan-win">
-            <div className="gan-win-barra"><i /><i /><i /><span>Diario de Trading</span><em>Esta semana</em></div>
-            <Curva />
-            <div className="gan-kpis">
-              <div><small>Win rate</small><span style={{ width: "62%" }} /></div>
-              <div><small>R medio</small><span style={{ width: "48%" }} /></div>
-              <div><small>Riesgo</small><span style={{ width: "30%" }} /></div>
-            </div>
-          </div>
-          <div className="gan-nova">
-            <NovaMini size={46} face="happy" />
-            <p>Has movido el stop dos veces esta semana.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  if (producto === "portfolio") {
-    return (
-      <div className="gan-figura" aria-hidden="true">
-        <div className="gan-mock gan-mock--portfolio">
-          <div className="gan-win">
-            <div className="gan-win-barra"><i /><i /><i /><span>Portfolio Adelin</span><em>En vivo</em></div>
-            <div className="gan-pf">
-              <Rosco />
-              <ul>
-                <li><b className="gan-pf-a" /><span><u style={{ width: 44 }} /><small>Entrada ••••</small></span><em className="sube">+••%</em></li>
-                <li><b className="gan-pf-b" /><span><u style={{ width: 36 }} /><small>Entrada ••••</small></span><em className="sube">+••%</em></li>
-                <li><b className="gan-pf-c" /><span><u style={{ width: 52 }} /><small>Entrada ••••</small></span><em className="baja">−••%</em></li>
-                <li><b className="gan-pf-d" /><span><u style={{ width: 30 }} /><small>Entrada ••••</small></span><em className="sube">+••%</em></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
   return (
     <div className="gan-figura" aria-hidden="true">
-      <div className="gan-mock gan-mock--premium">
-        <div className="gan-pieza"><Curva /><span>Diario</span></div>
-        <div className="gan-pieza gan-pieza--centro"><Rosco /><span>Portfolio</span></div>
-        <div className="gan-pieza"><Diploma /><span>Cursos</span></div>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={`/anuncios/${producto}.webp`} alt="" width={800} height={598} loading="lazy" decoding="async" />
     </div>
   );
 }
