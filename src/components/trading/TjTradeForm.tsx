@@ -261,7 +261,8 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                 <div className="tjf-fila">
                   <div className="field">
                     <label>Par</label>
-                    <TjCombobox value={form.pair} onChange={v => set("pair", v.toUpperCase())} options={pairOptions} placeholder="BTC/USDT" required />
+                    <TjCombobox value={form.pair} onChange={v => set("pair", v.toUpperCase())} options={pairOptions} placeholder="BTC/USDT, o el que operes" required maxLength={30} />
+                    <p className="tjf-ayuda">Elige uno o escribe el tuyo: oro, un índice, una acción… Lo que apuntes se queda en tu lista.</p>
                   </div>
                   <div className="field">
                     <label>Fecha y hora</label>
@@ -353,7 +354,7 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
                 <legend><b>4</b> El porqué</legend>
                 <div className="field">
                   <label>Estrategia <em>opcional</em></label>
-                  <TjCombobox value={form.strategy} onChange={v => set("strategy", v)} options={strategyOptions} placeholder="Scalping, swing, breakout..." />
+                  <TjCombobox value={form.strategy} onChange={v => set("strategy", v)} options={strategyOptions} placeholder="Scalping, swing, breakout... o la tuya" maxLength={60} />
                 </div>
                 <div className="field">
                   <label htmlFor="tj-notes">

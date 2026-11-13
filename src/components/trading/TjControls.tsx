@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Info, Plus } from "lucide-react";
 import { WEEKDAYS, MONTHS } from "./tjFormat";
 
 function useClickOutside<T extends HTMLElement = HTMLDivElement>(open: boolean, onClose: () => void) {
@@ -134,12 +134,14 @@ export function TjCombobox({
   options,
   placeholder,
   required = false,
+  maxLength,
 }: {
   value: string;
   onChange: (v: string) => void;
   options: string[];
   placeholder?: string;
   required?: boolean;
+  maxLength?: number;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(open, () => setOpen(false));
@@ -148,6 +150,12 @@ export function TjCombobox({
     ? options.filter(o => o.toLowerCase().includes(value.toLowerCase()) && o !== value)
     : options
   ).slice(0, 8);
+  // La lista son sugerencias, no un cerrojo: lo que se escribe vale aunque no
+  // esté en ella. Si no está, la primera fila del menú lo dice con todas las
+  // letras (13-11-2026: el campo parecía un desplegable y no se veía que
+  // admitía cualquier par).
+  const escrito = value.trim();
+  const esNuevo = escrito !== "" && !options.some(o => o.toLowerCase() === escrito.toLowerCase());
 
   return (
     <div className="tj-select" ref={ref}>
@@ -159,9 +167,22 @@ export function TjCombobox({
         onFocus={() => setOpen(true)}
         autoComplete="off"
         required={required}
+        maxLength={maxLength}
       />
-      {open && filtered.length > 0 && (
+      {open && (filtered.length > 0 || esNuevo) && (
         <ul className="tj-select-menu" role="listbox">
+          {esNuevo && (
+            <li
+              role="option"
+              aria-selected="true"
+              className="tj-select-option is-nuevo"
+              onClick={() => { onChange(escrito); setOpen(false); }}
+            >
+              <Plus size={14} aria-hidden="true" />
+              <span>Usar <strong>{escrito}</strong></span>
+              <small>no está en la lista</small>
+            </li>
+          )}
           {filtered.map(opt => (
             <li
               key={opt}

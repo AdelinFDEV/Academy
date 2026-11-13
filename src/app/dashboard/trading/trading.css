@@ -2473,6 +2473,10 @@
 .tjf .field input, .tjf .field textarea, .tjf .tj-select-btn { min-height: 48px; border-radius: 12px; font-size: 0.98rem; }
 .tjf .field textarea { min-height: 0; padding-top: 0.75rem; resize: none; line-height: 1.5; }
 .tjf-ayuda { margin: 0; font-size: 0.78rem; line-height: 1.5; color: var(--text-muted); }
+/* La fila «Usar …» de un desplegable que admite texto libre (TjCombobox). */
+.tj-select-option.is-nuevo { display: flex; align-items: center; gap: 0.45rem; border-bottom: 1px solid var(--hairline); color: var(--accent-orange-soft); }
+.tj-select-option.is-nuevo strong { color: var(--text-primary); }
+.tj-select-option.is-nuevo small { margin-left: auto; font-size: 0.7rem; color: var(--text-muted); }
 
 .tjf-dinero { position: relative; }
 .tjf-dinero > span { position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%); font-size: 1rem; font-weight: 700; color: var(--text-muted); pointer-events: none; }

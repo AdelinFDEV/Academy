@@ -67,6 +67,11 @@ function parseTradeBody(body: TradeBody): ParsedTrade {
     return { ok: false, error: "Faltan campos obligatorios" };
   }
 
+  // El par es texto libre: el usuario puede operar algo que no está en la lista
+  // de sugerencias. Solo se limpia y se acota.
+  const par = String(pair).trim().replace(/\s+/g, " ").toUpperCase().slice(0, 30);
+  if (!par) return { ok: false, error: "Escribe el par" };
+
   const risk = parseFloat(risk_amount);
   const gain = parseFloat(expected_gain);
 
@@ -97,7 +102,7 @@ function parseTradeBody(body: TradeBody): ParsedTrade {
     ok: true,
     values: {
       date,
-      pair: String(pair).toUpperCase(),
+      pair: par,
       direction,
       risk_amount: risk,
       expected_gain: gain,
