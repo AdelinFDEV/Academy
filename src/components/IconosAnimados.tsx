@@ -53,24 +53,6 @@ export function IconoDiario({ size = 16 }: { size?: number }) {
   );
 }
 
-/**
- * Foro: dos bocadillos de conversación. El de atrás, más tenue, se mece; en
- * el de delante, tres puntos saltan como alguien escribiendo. El de atrás se
- * dibuja solo por la parte que asoma, para que no se crucen las líneas.
- * Va en la barra (NavForo).
- */
-export function IconoForo({ size = 16 }: { size?: number }) {
-  return (
-    <svg className="ia ia--foro" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path className="ia-bocadillo-atras" d="M8 6.3V5.5A2.5 2.5 0 0 1 10.5 3h8A2.5 2.5 0 0 1 21 5.5v4a2.5 2.5 0 0 1-2.5 2.5l1.1 2.9-3.1-2.9" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M5.5 7.5H13a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-2.5 2.5H8.2l-3.6 3.1v-3.3A2.5 2.5 0 0 1 3 15v-5a2.5 2.5 0 0 1 2.5-2.5z" fill="currentColor" fillOpacity="0.16" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-      <circle className="ia-punto" cx="6.2" cy="12.5" r="1.1" fill="currentColor" />
-      <circle className="ia-punto" cx="9.25" cy="12.5" r="1.1" fill="currentColor" />
-      <circle className="ia-punto" cx="12.3" cy="12.5" r="1.1" fill="currentColor" />
-    </svg>
-  );
-}
-
 /* ── Los del slider de la portada (animados en home.css) ─────────────────── */
 
 /** En vivo: un punto con una onda que se expande. */
