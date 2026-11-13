@@ -22,14 +22,19 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="admin-layout">
       <aside className="admin-sidebar">
         <div className="admin-sidebar-top">
-          <div className="admin-brand">
-            adelin<span>btc</span>
-            <small>Admin</small>
-          </div>
+          <Link href="/admin" className="admin-brand" aria-label="Panel de administración">
+            <span className="admin-brand-marca" aria-hidden="true">A</span>
+            <span className="admin-brand-texto">
+              <b>adelin<span>btc</span></b>
+              <small>Panel de control</small>
+            </span>
+          </Link>
         </div>
+        <p className="admin-nav-titulo">Secciones</p>
         <AdminNav />
         <div className="admin-sidebar-footer">
-          <Link href="/dashboard" className="admin-nav-link-small">← Mi dashboard</Link>
+          <Link href="/" className="admin-nav-link-small">Ver la web</Link>
+          <Link href="/dashboard" className="admin-nav-link-small">Mi dashboard</Link>
           <LogoutButton />
         </div>
       </aside>

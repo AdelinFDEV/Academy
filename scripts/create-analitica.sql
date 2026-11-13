@@ -62,6 +62,13 @@ as $$
     'vistas',     (select count(*) from v),
     'visitas',    (select count(*) from visitas_dia),
     'con_sesion', (select count(distinct user_id) from v),
+    -- Visitas de una sola página: llegaron y se fueron.
+    'rebotes',    (select count(*) from (select 1 from v group by visitante, dia having count(*) = 1) r),
+    -- A qué hora (de Rumanía) se ve la web: páginas vistas por tramo.
+    'por_hora', coalesce((
+      select jsonb_agg(jsonb_build_object('hora', hora, 'n', n) order by hora)
+      from (select extract(hour from creada at time zone 'Europe/Bucharest')::int as hora, count(*) as n from v group by 1) h
+    ), '[]'::jsonb),
     'por_dia', coalesce((
       select jsonb_agg(jsonb_build_object('dia', dia, 'visitantes', visitantes, 'vistas', vistas) order by dia)
       from (select dia, count(distinct visitante) as visitantes, count(*) as vistas from v group by dia) d
@@ -114,6 +121,121 @@ $$;
 
 revoke all on function public.analitica_trafico(timestamptz, timestamptz) from public, anon, authenticated;
 grant execute on function public.analitica_trafico(timestamptz, timestamptz) to service_role;
+
+-- ── Visitantes que no cuentan: el admin ──
+-- Cuando el servidor ve que quien navega es un admin, apunta aquí su código de
+-- hoy y borra lo que ese código hubiera dejado antes de iniciar sesión. Desde
+-- ese momento, ese navegador no cuenta en todo el día, tampoco sin sesión.
+-- El código cambia cada día, así que cada fila caduca sola; el cron las purga.
+create table if not exists public.visitas_excluidas (
+  visitante text primary key check (char_length(visitante) = 16),
+  creada    timestamptz not null default now()
+);
+alter table public.visitas_excluidas enable row level security;
+revoke all on public.visitas_excluidas from anon, authenticated;
+
+create or replace function public.visita_excluir(p_visitante text)
+returns void
+language sql
+set search_path = public
+as $$
+  insert into public.visitas_excluidas (visitante) values (p_visitante)
+  on conflict (visitante) do nothing;
+  delete from public.visitas where visitante = p_visitante;
+$$;
+
+-- Guarda una página vista, salvo que el visitante esté excluido hoy.
+create or replace function public.visita_registrar(
+  p_ruta text, p_visitante text, p_user uuid, p_entrada boolean, p_canal text, p_referente text,
+  p_utm_source text, p_utm_medium text, p_utm_campaign text, p_pais text, p_dispositivo text, p_sistema text
+)
+returns void
+language sql
+set search_path = public
+as $$
+  insert into public.visitas (ruta, visitante, user_id, entrada, canal, referente, utm_source, utm_medium, utm_campaign, pais, dispositivo, sistema)
+  select p_ruta, p_visitante, p_user, p_entrada, p_canal, p_referente, p_utm_source, p_utm_medium, p_utm_campaign, p_pais, p_dispositivo, p_sistema
+  where not exists (select 1 from public.visitas_excluidas e where e.visitante = p_visitante);
+$$;
+
+revoke all on function public.visita_excluir(text) from public, anon, authenticated;
+revoke all on function public.visita_registrar(text, text, uuid, boolean, text, text, text, text, text, text, text, text) from public, anon, authenticated;
+grant execute on function public.visita_excluir(text) to service_role;
+grant execute on function public.visita_registrar(text, text, uuid, boolean, text, text, text, text, text, text, text, text) to service_role;
+
+-- ── La academia: cuentas, Premium y uso, SIN administradores ──
+-- Todo se cuenta en la base de datos (nada de traer filas y contarlas fuera:
+-- la API corta en 1.000 sin avisar). Los admins no cuentan en ninguna cifra:
+-- ni como usuarios, ni sus lecciones, operaciones o certificados de prueba.
+create or replace function public.analitica_academia(p_desde timestamptz, p_hasta timestamptz)
+returns jsonb
+language sql
+stable
+set search_path = public
+as $$
+  with u as (
+    select * from public.profiles where role <> 'admin'
+  ),
+  nuevos as (
+    select id from u where created_at >= p_desde and created_at < p_hasta
+  ),
+  -- Cada cosa que un usuario ha hecho con la academia, una fila.
+  hechos as (
+    select user_id from public.curso_inscripciones
+    union all select user_id from public.curso_progreso
+    union all select user_id from public.trades
+    union all select user_id from public.diario_dias
+    union all select user_id from public.guide_quiz_completions
+    union all select user_id from public.saved_terms
+    union all select user_id from public.guide_saves
+  ),
+  ultimos as (
+    select id from u order by created_at desc limit 30
+  )
+  select jsonb_build_object(
+    'usuarios',     (select count(*) from u),
+    'premium',      (select count(*) from u where role = 'premium'),
+    -- Los que pagan de verdad: con suscripción de Stripe en vigor. Un Premium
+    -- dado a mano desde el panel no genera dinero.
+    'premium_pago', (select count(*) from u where role = 'premium' and stripe_subscription_id is not null
+                       and subscription_status in ('active', 'trialing', 'past_due')),
+    'cancelaran',   (select count(*) from u where role = 'premium' and subscription_cancel_at_period_end),
+    'registros',    (select count(*) from nuevos),
+    'activados',    (select count(*) from nuevos n where exists (select 1 from hechos h where h.user_id = n.id)),
+    'altas',        (select count(*) from u where premium_since >= p_desde and premium_since < p_hasta),
+    'bajas',        (select count(*) from u where role = 'free' and premium_since is not null
+                       and subscription_current_period_end >= p_desde and subscription_current_period_end < p_hasta),
+    'registros_dia', coalesce((
+      select jsonb_agg(jsonb_build_object('dia', dia, 'n', n) order by dia)
+      from (select (created_at at time zone 'Europe/Bucharest')::date as dia, count(*) as n
+            from u where created_at >= p_desde and created_at < p_hasta group by 1) d
+    ), '[]'::jsonb),
+    'uso', jsonb_build_object(
+      'lecciones',    (select count(*) from public.curso_progreso t join u on u.id = t.user_id where t.completada_at >= p_desde and t.completada_at < p_hasta),
+      'cursos',       (select count(*) from public.curso_inscripciones t join u on u.id = t.user_id where t.created_at >= p_desde and t.created_at < p_hasta),
+      'examenes',     (select count(*) from public.curso_intentos t join u on u.id = t.user_id where t.entregado_at >= p_desde and t.entregado_at < p_hasta),
+      'certificados', (select count(*) from public.curso_certificados t join u on u.id = t.user_id where t.created_at >= p_desde and t.created_at < p_hasta),
+      'operaciones',  (select count(*) from public.trades t join u on u.id = t.user_id where t.created_at >= p_desde and t.created_at < p_hasta),
+      'quizzes',      (select count(*) from public.guide_quiz_completions t join u on u.id = t.user_id where t.completed_at >= p_desde and t.completed_at < p_hasta),
+      'terminos',     (select count(*) from public.saved_terms t join u on u.id = t.user_id where t.created_at >= p_desde and t.created_at < p_hasta)
+    ),
+    'cursos', coalesce((
+      select jsonb_agg(jsonb_build_object('titulo', c.titulo, 'inscritos', i.n, 'certificados', ce.n) order by i.n desc, c.orden)
+      from public.cursos c
+      cross join lateral (select count(*) as n from public.curso_inscripciones t join u on u.id = t.user_id where t.curso_id = c.id) i
+      cross join lateral (select count(*) as n from public.curso_certificados t join u on u.id = t.user_id where t.curso_id = c.id) ce
+      where c.published
+    ), '[]'::jsonb),
+    -- Cuántas cosas ha hecho cada uno de los 30 últimos registrados.
+    'acciones', coalesce((
+      select jsonb_object_agg(h.user_id, h.n)
+      from (select user_id, count(*) as n from hechos where user_id in (select id from ultimos) group by 1) h
+    ), '{}'::jsonb)
+  );
+$$;
+
+revoke all on function public.analitica_academia(timestamptz, timestamptz) from public, anon, authenticated;
+grant execute on function public.analitica_academia(timestamptz, timestamptz) to service_role;
 
 -- ── Lo que se retira: las dos tablas de visitas anteriores ──
 -- `site_visits` (solo la ruta) y `guide_visits` (la misma visita, repetida para

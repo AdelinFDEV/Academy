@@ -2,32 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { CSSProperties } from "react";
 import Icon from "@/components/Icon";
 
+/** Cada sección, su color: el mismo que lleva su página por dentro (`--sec`). */
 const links = [
-  { href: "/admin",                      label: "Analítica",   icon: "bar-chart" as const, priority: true },
-  { href: "/admin/foro",                 label: "Foro",        icon: "chat" as const,      priority: true },
-  { href: "/admin/guias-instrucciones",  label: "Guías · Ref", icon: "book" as const },
+  { href: "/admin", label: "Analítica", nota: "Tráfico, usuarios y Premium", icon: "bar-chart" as const, color: "naranja" },
+  { href: "/admin/foro", label: "Foro", nota: "Moderación y reportes", icon: "chat" as const, color: "violeta" },
+  { href: "/admin/guias-instrucciones", label: "Guías", nota: "Cómo se construyen", icon: "book" as const, color: "turquesa" },
 ];
 
 export default function AdminNav() {
   const pathname = usePathname();
-
-  function isActive(href: string) {
-    if (href === "/admin") return pathname === "/admin";
-    return pathname.startsWith(href);
-  }
+  const activo = (href: string) => (href === "/admin" ? pathname === "/admin" : pathname.startsWith(href));
 
   return (
-    <nav className="admin-nav">
+    <nav className="admin-nav" aria-label="Secciones del panel">
       {links.map((l) => (
         <Link
           key={l.href}
           href={l.href}
-          className={`admin-nav-link${l.priority ? " admin-nav-link--priority" : ""}${isActive(l.href) ? " active" : ""}`}
+          className={`admin-nav-link${activo(l.href) ? " active" : ""}`}
+          aria-current={activo(l.href) ? "page" : undefined}
+          style={{ "--c": `var(--c-${l.color})`, "--c-rgb": `var(--c-${l.color}-rgb)` } as CSSProperties}
         >
-          <Icon name={l.icon} size={16} />
-          <span>{l.label}</span>
+          <span className="admin-nav-icono"><Icon name={l.icon} size={17} /></span>
+          <span className="admin-nav-textos">
+            {l.label}
+            <small>{l.nota}</small>
+          </span>
         </Link>
       ))}
     </nav>

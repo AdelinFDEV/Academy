@@ -16,6 +16,10 @@ export default function RegistroVisita() {
 
   useEffect(() => {
     if (!ruta || ruta.startsWith("/admin")) return;
+    // Ni en local ni desde un navegador automatizado: el servidor también lo
+    // filtra (solo cuenta producción), esto ahorra la petición.
+    if (/^(localhost|127\.|\[::1\]|192\.168\.|10\.)/.test(location.hostname) || /\.(localhost|test|vercel\.app)$/.test(location.hostname)) return;
+    if (navigator.webdriver) return;
 
     let referente: string | null = null;
     try {

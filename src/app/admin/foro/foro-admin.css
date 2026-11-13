@@ -8,7 +8,12 @@
    Es una herramienta de trabajo, no un escaparate: texto que se lee de un
    vistazo, la acción a mano y el rojo reservado para lo que no se deshace. */
 
-.fa { max-width: 980px; }
+/* Color de la sección: violeta. Los tonos vienen de admin.css. */
+.fa {
+  --sec: var(--c-violeta);
+  --sec-rgb: var(--c-violeta-rgb);
+  max-width: 1020px;
+}
 
 .fa-seccion { margin-bottom: 1.5rem; }
 
@@ -17,16 +22,30 @@
   align-items: baseline;
   gap: 0.55rem;
   margin-bottom: 0.8rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--text-primary);
+  color: var(--ad-texto);
+}
+
+.fa-titulo::before {
+  content: "";
+  align-self: center;
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: var(--sec);
+  box-shadow: 0 0 0 4px rgb(var(--sec-rgb) / 0.16);
 }
 
 .fa-cuenta {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgb(var(--sec-rgb) / 0.14);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--sec);
   font-variant-numeric: tabular-nums;
 }
 
@@ -60,10 +79,11 @@
 .fa-mensaje {
   margin-bottom: 0.9rem;
   padding: 1.1rem 1.25rem;
-  border: var(--card-border);
-  border-left: 3px solid rgba(240, 244, 255, 0.14);
-  border-radius: 14px;
-  background: var(--bg-card);
+  border: 1px solid var(--ad-borde);
+  border-left: 3px solid rgb(var(--sec-rgb) / 0.6);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--ad-tarjeta-2), var(--ad-tarjeta));
+  box-shadow: var(--ad-sombra);
 }
 
 .fa-mensaje.is-estafa { border-left-color: #ff6b6b; }
@@ -88,7 +108,7 @@
 
 .fa-chip {
   padding: 0.12rem 0.5rem;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--ad-borde);
   border-radius: 999px;
   font-size: 0.7rem;
   color: var(--text-secondary);
@@ -144,7 +164,7 @@
 .fa-reportes {
   margin-top: 0.8rem;
   padding-top: 0.7rem;
-  border-top: 1px solid var(--hairline);
+  border-top: 1px solid var(--ad-borde);
   list-style: none;
 }
 
@@ -174,7 +194,7 @@
 
 .fa-btn {
   padding: 0.42rem 0.8rem;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--ad-borde);
   border-radius: 9px;
   background: transparent;
   font: inherit;
@@ -187,18 +207,18 @@
 
 .fa-btn:hover:not(:disabled) { border-color: rgba(240, 244, 255, 0.28); color: var(--text-primary); }
 .fa-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.fa-btn:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+.fa-btn:focus-visible { outline: 2px solid var(--sec); outline-offset: 2px; }
 
 .fa-btn--peligro { border-color: rgba(255, 107, 107, 0.35); color: #ff8a8a; }
 .fa-btn--peligro:hover:not(:disabled) { border-color: #ff6b6b; color: #ffb3b3; }
 
-.fa-btn--firme { background: rgba(240, 244, 255, 0.08); color: var(--text-primary); }
+.fa-btn--firme { background: rgb(var(--sec-rgb) / 0.16); border-color: rgb(var(--sec-rgb) / 0.4); color: #fff; }
 .fa-btn--firme.fa-btn--peligro { background: rgba(255, 107, 107, 0.12); }
 
 .fa-panel {
   margin-top: 0.8rem;
   padding: 0.9rem 1rem;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--ad-borde);
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.18);
 }
@@ -224,7 +244,7 @@
 .fa-panel select,
 .fa-panel textarea {
   padding: 0.5rem 0.65rem;
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--ad-borde);
   border-radius: 9px;
   background: var(--bg-dark);
   font: inherit;
@@ -242,9 +262,9 @@
 .fa-modo-opciones {
   display: inline-flex;
   padding: 3px;
-  border: 1px solid var(--hairline);
-  border-radius: 11px;
-  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--ad-borde-fuerte);
+  border-radius: 12px;
+  background: rgba(8, 18, 34, 0.55);
 }
 
 .fa-modo-opcion {
@@ -261,9 +281,9 @@
 
 .fa-modo-opcion:hover:not(:disabled) { color: var(--text-primary); }
 .fa-modo-opcion:disabled { cursor: default; }
-.fa-modo-opcion.is-actual { background: rgba(240, 244, 255, 0.1); color: var(--text-primary); }
-.fa-modo-opcion.is-pendiente { outline: 1px solid var(--accent-orange); color: var(--text-primary); }
-.fa-modo-opcion:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+.fa-modo-opcion.is-actual { background: linear-gradient(135deg, #b9a2ff, #8b6cf2); color: #fff; box-shadow: 0 8px 18px -8px rgb(var(--sec-rgb) / 0.9); }
+.fa-modo-opcion.is-pendiente { outline: 1px solid var(--sec); color: var(--text-primary); }
+.fa-modo-opcion:focus-visible { outline: 2px solid var(--sec); outline-offset: 2px; }
 
 .fa-modo-ayuda {
   margin: 0.7rem 0 0.8rem;
@@ -274,7 +294,7 @@
 /* ── Listas: sanciones, alertas y registro ─────────────────────────────── */
 
 .fa-lista { list-style: none; font-size: 0.84rem; color: var(--text-secondary); }
-.fa-lista li { padding: 0.45rem 0; border-top: 1px solid var(--hairline); }
+.fa-lista li { padding: 0.45rem 0; border-top: 1px solid var(--ad-borde); }
 .fa-lista li:first-child { border-top: 0; }
 .fa-lista b { color: var(--text-primary); font-weight: 600; }
 
@@ -308,7 +328,7 @@
   grid-template-columns: 7.5rem 1fr;
   gap: 0.8rem;
   padding: 0.5rem 0;
-  border-top: 1px solid var(--hairline);
+  border-top: 1px solid var(--ad-borde);
 }
 
 .fa-registro li:first-child { border-top: 0; }

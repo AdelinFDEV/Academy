@@ -15,7 +15,8 @@ const DIAS_VISITAS = 400;
  *  · El mantenimiento del foro: recalcula contadores y puntos desde sus filas,
  *    avisa a quien puede elegir ganadora, purga lo caducado y limpia las
  *    imágenes que no se usaron (FORO.md §9.2 y §13).
- *  · Borrar las visitas de más de 400 días (tabla `visitas`).
+ *  · Borrar las visitas de más de 400 días (tabla `visitas`) y los códigos
+ *    caducados del admin (`visitas_excluidas`).
  *
  * Hasta el 13-11-2026 también hacía la foto diaria de YouTube y copiaba los
  * cobros de Stripe al libro de dinero; las dos eran solo para /admin/objetivos
@@ -44,6 +45,12 @@ export async function GET(request: NextRequest) {
     .delete({ count: "exact" })
     .lt("creada", limite);
   if (error) console.error("[cron-diario] Error borrando visitas antiguas:", error.code);
+
+  // Los códigos del admin apuntados para no contarlo: cambian cada día, así que
+  // a los dos días ya no sirven para nada.
+  const caducadas = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString();
+  const { error: errExcluidas } = await createAdminClient().from("visitas_excluidas").delete().lt("creada", caducadas);
+  if (errExcluidas) console.error("[cron-diario] Error purgando visitas_excluidas:", errExcluidas.code);
 
   return NextResponse.json({ foro, visitasBorradas: error ? null : count });
 }
