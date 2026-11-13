@@ -1940,23 +1940,35 @@ html {
    botón de las caras) se esconde, y solo con sesión. Un botón sólido de la
    familia de «Registrarse», a la altura de la hamburguesa y con sus mismas
    esquinas: la primera versión (borde fino y un punto) no se leía como botón. */
-/* ── Instagram en la barra: contacto directo ── */
-.nav-instagram {
+/* ── Las redes en la barra: Instagram (mensaje directo) y YouTube (el canal) ──
+   Dos botones cuadrados gemelos, cada uno con el color por el que se reconoce. */
+.nav-red {
   display: none;
   flex-shrink: 0;
   place-items: center;
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: linear-gradient(45deg, #f58529, #dd2a7b 50%, #8134af);
   color: #fff;
-  box-shadow: 0 10px 22px -12px rgba(221, 42, 123, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.nav-instagram:hover { transform: translateY(-1px); box-shadow: 0 14px 26px -12px rgba(221, 42, 123, 1), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
-.nav-instagram:focus-visible { outline: 2px solid #ee4a8b; outline-offset: 3px; }
-@media (min-width: 900px) { .nav-instagram { display: grid; } }
-@media (prefers-reduced-motion: reduce) { .nav-instagram { transition: none; } .nav-instagram:hover { transform: none; } }
+.nav-red--instagram {
+  background: linear-gradient(45deg, #f58529, #dd2a7b 50%, #8134af);
+  box-shadow: 0 10px 22px -12px rgba(221, 42, 123, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.nav-red--youtube {
+  background: linear-gradient(180deg, #ff4d4d, #e01b1b);
+  box-shadow: 0 10px 22px -12px rgba(255, 45, 45, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.nav-red:hover { transform: translateY(-1px); }
+.nav-red--instagram:hover { box-shadow: 0 14px 26px -12px rgba(221, 42, 123, 1), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.nav-red--youtube:hover { box-shadow: 0 14px 26px -12px rgba(255, 45, 45, 1), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+.nav-red--instagram:focus-visible { outline: 2px solid #ee4a8b; outline-offset: 3px; }
+.nav-red--youtube:focus-visible { outline: 2px solid #ff7a7a; outline-offset: 3px; }
+/* Los dos van juntos, como pareja. */
+.nav-red + .nav-red { margin-left: -0.45rem; }
+@media (min-width: 900px) { .nav-red { display: grid; } }
+@media (prefers-reduced-motion: reduce) { .nav-red { transition: none; } .nav-red:hover { transform: none; } }
 
 /* Y en el menú a pantalla completa, como tarjeta. */
 .mm-instagram {
