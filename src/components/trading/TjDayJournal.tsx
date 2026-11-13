@@ -19,7 +19,7 @@ const LECTURA: Record<Animo, string> = {
  * pintan con el color del ánimo (`--mood`), así que no dependen de los emojis
  * del sistema, que en cada dispositivo salen distintos.
  */
-function Cara({ valor }: { valor: Animo }) {
+export function Cara({ valor }: { valor: Animo }) {
   return (
     <svg viewBox="0 0 48 48" className="tjd-cara" aria-hidden="true">
       <circle cx="24" cy="24" r="21" className="tjd-cara-fondo" />

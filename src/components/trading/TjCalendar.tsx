@@ -1,12 +1,14 @@
 "use client";
 
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Crown, X, ArrowUpRight, ArrowDownRight, Pencil, Plus, NotebookPen } from "lucide-react";
+import { Activity, CalendarCheck, ChevronLeft, ChevronRight, Crown, Target, TrendingDown, TrendingUp, X, ArrowUpRight, ArrowDownRight, Pencil, Plus, NotebookPen } from "lucide-react";
 import { TjSegmented } from "./TjControls";
 import { WEEKDAYS, WEEKDAY_NAMES, MONTHS, pnlStr, rStr, toneOf } from "./tjFormat";
 import { rOf, resultTone, type Trade } from "./tjStats";
 import { animoDeMedia, animoInfo, fechaKey, type DiaDiario, type DiasMap } from "./tjDias";
+import { Cara } from "./TjDayJournal";
 
 interface DayInfo {
   pnl: number;
@@ -152,13 +154,23 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
-      if (e.key === "ArrowLeft") shift(-1);
+      if (e.key === "Escape") setSelected(null);
+      // Con la ventana de un día abierta, las flechas no cambian de mes por detrás.
+      else if (selected != null) return;
+      else if (e.key === "ArrowLeft") shift(-1);
       else if (e.key === "ArrowRight") shift(1);
-      else if (e.key === "Escape") setSelected(null);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   });
+
+  // Con la ventana de un día abierta, la página de detrás no se desplaza.
+  useEffect(() => {
+    if (selected == null) return;
+    const antes = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = antes; };
+  }, [selected]);
 
   const isCurrent = mode === "year" ? year === now.getFullYear() : year === now.getFullYear() && month === now.getMonth();
 
@@ -166,13 +178,24 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
     <section className="tj-card tjc" aria-label="Calendario de operaciones">
       <header className="tjc-head">
         <div className="tjc-head-main">
-          <h2 className="tjc-title">
-            {mode === "month" ? (
-              <><span className="cap">{MONTHS[month]}</span> <span className="tjc-year">{year}</span></>
-            ) : (
-              <>{year}</>
-            )}
-          </h2>
+          <div className="tjc-titulo">
+            <h2 className="tjc-title">
+              {mode === "month" ? (
+                <><span className="cap">{MONTHS[month]}</span> <span className="tjc-year">{year}</span></>
+              ) : (
+                <>{year}</>
+              )}
+            </h2>
+            {mode === "month" && isCurrent && (() => {
+              const total = new Date(year, month + 1, 0).getDate();
+              return (
+                <span className="tjc-avance">
+                  <i aria-hidden="true"><b style={{ width: `${(now.getDate() / total) * 100}%` }} /></i>
+                  Día {now.getDate()} de {total}
+                </span>
+              );
+            })()}
+          </div>
           <div className="tjc-nav">
             <button type="button" onClick={() => shift(-1)} aria-label={mode === "year" ? "Año anterior" : "Mes anterior"} title="Flecha izquierda">
               <ChevronLeft size={16} />
@@ -224,6 +247,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
       <>
         <dl className="tjc-band">
           <div className={`tjc-band-main tone-${toneOf(valueOf(sum))}`}>
+            <span className="tjc-band-ico" aria-hidden="true">{valueOf(sum) < 0 ? <TrendingDown size={16} /> : <TrendingUp size={16} />}</span>
             <dt>Resultado del mes</dt>
             <dd>{sum.count ? fmt(sum) : "—"}</dd>
             {prev.count > 0 && (
@@ -233,16 +257,29 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
               </dd>
             )}
           </div>
-          <div><dt>Operaciones</dt><dd>{sum.count}</dd></div>
-          <div><dt>Acierto</dt><dd>{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd></div>
-          <div><dt>Días en verde</dt><dd>{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd></div>
-          <div className={best ? "tone-win" : undefined}>
-            <dt>Mejor día</dt>
-            <dd>{best ? `${best.day} · ${fmt(best.info)}` : "—"}</dd>
+          <div>
+            <span className="tjc-band-ico" aria-hidden="true"><Activity size={15} /></span>
+            <dt>Operaciones</dt><dd>{sum.count}</dd>
           </div>
-          <div className="tjc-band-mood">
+          <div>
+            <span className="tjc-band-ico" aria-hidden="true"><Target size={15} /></span>
+            <dt>Acierto</dt><dd>{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd>
+            {sum.count > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>}
+          </div>
+          <div>
+            <span className="tjc-band-ico" aria-hidden="true"><CalendarCheck size={15} /></span>
+            <dt>Días en verde</dt><dd>{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd>
+            {sum.days > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.green / sum.days) * 100}%` }} /></i>}
+          </div>
+          <div className={best ? "tjc-band-mejor" : undefined}>
+            <span className="tjc-band-ico" aria-hidden="true"><Crown size={15} /></span>
+            <dt>Mejor día</dt>
+            <dd>{best ? `${best.day} de ${MONTHS[month]}` : "—"}</dd>
+            {best && <dd className="tjc-band-sub">{fmt(best.info)}</dd>}
+          </div>
+          <div className={`tjc-band-mood${moodAvg ? ` mood-${moodAvg.value}` : ""}`}>
             <dt>Ánimo del mes</dt>
-            <dd>{moodAvg ? <><span aria-hidden="true">{moodAvg.emoji}</span> {moodAvg.label}</> : "—"}</dd>
+            <dd>{moodAvg ? <><Cara valor={moodAvg.value} /> {moodAvg.label}</> : "—"}</dd>
           </div>
         </dl>
 
@@ -288,6 +325,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                       const label = [
                         `${day} de ${MONTHS[month]}`,
                         info ? `${fmt(info)} en ${info.trades.length} ${info.trades.length === 1 ? "operación" : "operaciones"}` : "sin operaciones",
+                        isBest && "mejor día del mes",
                         mood && `ánimo: ${mood.label.toLowerCase()}`,
                         dia?.nota && "con nota",
                       ].filter(Boolean).join(", ");
@@ -318,15 +356,15 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                             hueco, así que nada se pisa; si la casilla se estrecha, se ocultan
                             por orden según su propio ancho, no el de la pantalla.
                           */}
+                          {isBest && <span className="tjc-corona" title="Tu mejor día del mes" aria-hidden="true"><Crown size={17} strokeWidth={2.3} /></span>}
                           <span className="tjc-num">{day}</span>
-                          {mood && <span className="tjc-mood" title={mood.label} aria-hidden="true">{mood.emoji}</span>}
+                          {mood && <span className="tjc-mood" title={mood.label} aria-hidden="true"><Cara valor={mood.value} /></span>}
                           {info && <strong className="tjc-pnl">{fmt(info)}</strong>}
                           {info && <DayDots trades={info.trades} />}
                           {!info && <span className="tjc-plus" aria-hidden="true"><Plus size={14} /></span>}
-                          {(dia?.nota || isBest) && (
+                          {dia?.nota && (
                             <span className="tjc-flags" aria-hidden="true">
-                              {dia?.nota && <NotebookPen size={12} className="tjc-flag-note" />}
-                              {isBest && <Crown size={12} className="tjc-flag-best" />}
+                              <NotebookPen size={12} className="tjc-flag-note" />
                             </span>
                           )}
                         </button>
@@ -338,6 +376,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                         <>
                           <strong>{fmt(wk)}</strong>
                           <span className="tjc-week-meta">{wk.count} op. · {Math.round((wk.wins / wk.count) * 100)} %</span>
+                          <i className="tjc-week-barra" aria-hidden="true"><b style={{ width: `${(wk.wins / wk.count) * 100}%` }} /></i>
                         </>
                       ) : (
                         <span className="tjc-week-meta">—</span>
@@ -350,20 +389,34 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
           </AnimatePresence>
         </div>
 
-        <AnimatePresence initial={false}>
-          {selected != null && infoOf(year, month, selected) && (
-            <motion.div
-              key={`${year}-${month}-${selected}`}
-              className="tjc-detail"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        <ul className="tjc-leyenda" aria-label="Qué significa cada marca">
+          <li><i className="tone-win" /> Ganada</li>
+          <li><i className="tone-loss" /> Perdida</li>
+          <li><i className="tone-be" /> Breakeven</li>
+          <li><span className="tjc-leyenda-corona"><Crown size={11} strokeWidth={2.4} /></span> Mejor día del mes</li>
+          <li><NotebookPen size={12} /> Con nota</li>
+          <li><span className="tjc-leyenda-mas"><Plus size={11} /></span> Pulsa un día vacío para apuntar</li>
+        </ul>
+
+        {/* Las operaciones del día pulsado: una ventana en el centro de la pantalla
+            (pedido por el admin el 13-11-2026; antes se desplegaba bajo el calendario
+            y había que bajar a buscarla). Va en un portal para quedar por encima de
+            todo; `tjc-dia-velo` recibe las variables de color del Diario en el CSS. */}
+        {selected != null && infoOf(year, month, selected) && createPortal(
+          <div className="tjc-dia-velo" onClick={() => setSelected(null)}>
+            <div
+              className={`tjc-dia${best?.day === selected ? " is-mejor" : ""}`}
+              role="dialog" aria-modal="true" aria-label={`Operaciones del ${selected} de ${MONTHS[month]}`}
+              onClick={e => e.stopPropagation()}
             >
+              {best?.day === selected && (
+                <p className="tjc-dia-mejor"><span className="tjc-leyenda-corona" aria-hidden="true"><Crown size={11} strokeWidth={2.4} /></span> Tu mejor día de {MONTHS[month]}</p>
+              )}
               {renderDayDetail(selected, infoOf(year, month, selected)!)}
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>,
+          document.body,
+        )}
       </>
     );
   }
@@ -389,7 +442,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
             <strong className={`tone-${toneOf(info.pnl)}`}>{pnlStr(info.pnl)}</strong>
             <span className={`tone-${toneOf(info.r)}`}>{rStr(info.r)}</span>
           </div>
-          <button type="button" className="tj-icon-btn" onClick={() => setSelected(null)} aria-label="Cerrar el detalle del día" title="Cerrar (Esc)">
+          <button type="button" className="tj-icon-btn" onClick={() => setSelected(null)} aria-label="Cerrar el detalle del día" title="Cerrar (Esc)" autoFocus>
             <X size={15} />
           </button>
         </div>
@@ -409,7 +462,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                 <span className="tjc-detail-strategy">{t.strategy ?? ""}</span>
                 <span className={`tjc-detail-r tone-${toneOf(r ?? 0)}`}>{r != null ? rStr(r) : "—"}</span>
                 <strong className={`tone-${toneOf(t.pnl)}`}>{pnlStr(t.pnl)}</strong>
-                <button type="button" className="tj-icon-btn" onClick={() => onEdit(t)} aria-label={`Editar ${t.pair} de las ${timeOf(t.date)}`} title="Editar">
+                <button type="button" className="tj-icon-btn" onClick={() => { setSelected(null); onEdit(t); }} aria-label={`Editar ${t.pair} de las ${timeOf(t.date)}`} title="Editar">
                   <Pencil size={13} />
                 </button>
               </li>
@@ -419,7 +472,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
         <button
           type="button"
           className="tjc-detail-add"
-          onClick={() => onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes()))}
+          onClick={() => { setSelected(null); onAdd(isToday ? now : new Date(year, month, day, now.getHours(), now.getMinutes())); }}
         >
           <Plus size={14} /> Añadir otra operación este día
         </button>

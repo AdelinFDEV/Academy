@@ -12,7 +12,8 @@
  * sin color el anillo, las barras y los filos.
  */
 .trading-journal,
-.tjbot-stage {
+.tjbot-stage,
+.tjc-dia-velo {
   /* Mismos valores que TJ_COLORS en tjFormat.ts (los gráficos SVG los necesitan literales). */
   --tj-win: #5fd39a;
   --tj-loss: #ff5c5c;
@@ -1794,6 +1795,72 @@
 .tjc-day.is-future { background: none; border-style: dashed; border-color: rgba(240, 244, 255, 0.04); }
 .tjc-day.is-future .tjc-num { opacity: 0.35; }
 
+/* ── Calendario: el plus de diseño del 13-11-2026 ──
+   La corona del mejor día, las fichas del mes con su icono, las caras
+   dibujadas del ánimo, la barra de la semana y la leyenda. Van aquí juntas,
+   después de las reglas base, porque varias las pisan a propósito. */
+
+/* Cabecera: el nombre del mes, y por dónde va el mes en curso. */
+.tjc-titulo { display: grid; gap: 0.35rem; }
+.tjc-title .cap { background: linear-gradient(120deg, #fff 30%, var(--premium-gold)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.tjc-avance { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
+.tjc-avance i { display: block; width: 88px; height: 4px; border-radius: 99px; background: rgba(240, 244, 255, 0.09); overflow: hidden; }
+.tjc-avance b { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent-orange), var(--premium-gold)); }
+
+/* La franja pasa de una tira con filetes a seis fichas sueltas. */
+.tjc-band { gap: 0.6rem; overflow: visible; border: 0; border-radius: 0; background: none; }
+.tjc-band > div { position: relative; padding: 0.8rem 0.95rem 0.85rem; border: 1px solid var(--hairline); border-radius: 14px; transition: transform 0.15s ease, border-color 0.15s ease; }
+.tjc-band > div:hover { transform: translateY(-2px); border-color: rgba(240, 244, 255, 0.2); }
+.tjc-band-ico { position: absolute; top: 0.6rem; right: 0.6rem; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: rgba(240, 244, 255, 0.06); color: var(--text-muted); }
+.tjc-band .tjc-band-main .tjc-band-ico { background: color-mix(in srgb, var(--tone) 18%, transparent); color: var(--tone); }
+.tjc-band dt { padding-right: 2rem; }
+.tjc-band-barra { display: block; height: 4px; margin-top: 0.35rem; border-radius: 99px; background: rgba(240, 244, 255, 0.09); overflow: hidden; }
+.tjc-band-barra b { display: block; height: 100%; border-radius: 99px; background: var(--tj-win); }
+.tjc-band .tjc-band-mejor { border-color: rgba(230, 180, 85, 0.55); background: linear-gradient(150deg, rgba(230, 180, 85, 0.2), var(--tj-panel-solid) 70%); }
+.tjc-band .tjc-band-mejor .tjc-band-ico { background: linear-gradient(180deg, #ffe08a, #e6b455 60%, #c98a1c); color: #3a2500; box-shadow: 0 6px 14px -6px rgba(230, 180, 85, 0.9); }
+.tjc-band .tjc-band-mejor dd { color: var(--premium-gold); }
+.tjc-band dd.tjc-band-sub { font-family: var(--font-family); font-size: 0.76rem; font-weight: 700; color: var(--tj-win); }
+.tjc-band-mood .tjd-cara { width: 22px; height: 22px; filter: none; flex-shrink: 0; }
+
+/* Las casillas. */
+.tjc-day.is-today { border-color: rgba(240, 244, 255, 0.4); }
+.tjc-day.is-today .tjc-num { box-shadow: 0 0 0 3px rgba(240, 244, 255, 0.16); animation: tjc-hoy 2.6s ease-in-out infinite; }
+.tjc-mood .tjd-cara { display: block; width: 18px; height: 18px; filter: none; stroke-width: 3.2; }
+
+/* La corona: se posa sobre la casilla del mejor día del mes. */
+.tjc-day.is-best { z-index: 1; border-color: var(--premium-gold); background: linear-gradient(165deg, rgba(230, 180, 85, 0.34), rgba(230, 180, 85, 0.07) 70%); box-shadow: 0 0 0 1px rgba(230, 180, 85, 0.55), 0 0 26px -6px rgba(230, 180, 85, 0.55), 0 16px 32px -18px rgba(230, 180, 85, 0.95); }
+.tjc-day.is-best .tjc-pnl { color: #ffe08a; text-shadow: 0 0 16px rgba(230, 180, 85, 0.55); }
+.tjc-day.is-best.is-selected { box-shadow: 0 0 0 2px var(--premium-gold), 0 16px 32px -16px rgba(230, 180, 85, 0.95); }
+.tjc-corona { position: absolute; top: -14px; left: 50%; z-index: 2; display: grid; place-items: center; width: 34px; height: 26px; margin-left: -17px; border-radius: 10px 10px 8px 8px; background: linear-gradient(180deg, #fff0b8, #e6b455 55%, #c98a1c); box-shadow: 0 8px 16px -6px rgba(230, 180, 85, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -2px 0 rgba(120, 78, 0, 0.35); color: #3a2500; pointer-events: none; animation: tjc-corona 3.4s ease-in-out infinite; }
+.tjc-corona svg { fill: rgba(58, 37, 0, 0.2); }
+.tjc-corona::after { content: ""; position: absolute; top: -5px; right: -6px; width: 8px; height: 8px; background: #fff7d6; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: tjc-destello 2.2s ease-in-out infinite; }
+@keyframes tjc-corona { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-3px) rotate(4deg); } }
+@keyframes tjc-destello { 0%, 100% { opacity: 0; transform: scale(0.4); } 50% { opacity: 1; transform: scale(1); } }
+@keyframes tjc-hoy { 0%, 100% { box-shadow: 0 0 0 3px rgba(240, 244, 255, 0.16); } 50% { box-shadow: 0 0 0 6px rgba(240, 244, 255, 0.04); } }
+
+/* La semana: cuántas se ganaron, en una barra. */
+.tjc-week-barra { display: block; width: 100%; height: 4px; margin-top: 0.25rem; border-radius: 99px; background: color-mix(in srgb, var(--tj-loss) 55%, transparent); overflow: hidden; }
+.tjc-week-barra b { display: block; height: 100%; border-radius: 99px 0 0 99px; background: var(--tj-win); }
+
+/* La leyenda. */
+.tjc-leyenda { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.2rem; margin: 1.1rem 0 0; padding: 0.85rem 0 0; border-top: 1px solid var(--hairline); list-style: none; font-size: 0.74rem; font-weight: 600; color: var(--text-muted); }
+.tjc-leyenda li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.tjc-leyenda i { width: 8px; height: 8px; border-radius: 50%; background: var(--tone); }
+.tjc-leyenda-corona { display: grid; place-items: center; width: 20px; height: 16px; border-radius: 6px 6px 5px 5px; background: linear-gradient(180deg, #fff0b8, #e6b455 55%, #c98a1c); color: #3a2500; }
+.tjc-leyenda-mas { display: grid; place-items: center; width: 18px; height: 18px; border: 1px dashed var(--tj-accent-line); border-radius: 6px; color: var(--tj-accent); }
+
+@media (max-width: 640px) {
+  .tjc-corona { top: -11px; width: 26px; height: 20px; margin-left: -13px; border-radius: 8px 8px 6px 6px; }
+  .tjc-corona svg { width: 13px; height: 13px; }
+  .tjc-leyenda { gap: 0.4rem 0.9rem; font-size: 0.7rem; }
+  .tjc-leyenda li:last-child { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tjc-corona, .tjc-corona::after, .tjc-day.is-today .tjc-num { animation: none; }
+  .tjc-band > div { transition: none; }
+  .tjc-band > div:hover { transform: none; }
+}
+
 /* ── Vista Año: doce meses en miniatura ── */
 
 .tjy-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
@@ -1877,16 +1944,18 @@
 .tjc-week strong { font-family: var(--font-display); font-size: 0.98rem; font-weight: 600; color: var(--tone); }
 .tjc-week-meta { font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
 
-/* Detalle del día pulsado: se despliega bajo el calendario, en PC y en móvil. */
-.tjc-detail { overflow: hidden; }
+/* Detalle del día pulsado: una ventana en el centro de la pantalla. Va en un
+   portal, fuera de .trading-journal: por eso lleva sus propios tonos. */
+.tjc-dia-velo { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1.2rem; background: rgba(4, 8, 18, 0.8); backdrop-filter: blur(6px); font-variant-numeric: tabular-nums; animation: tj-reset-velo 0.18s ease; }
+.tjc-dia-velo .tone-win { --tone: var(--tj-win); color: var(--tone); }
+.tjc-dia-velo .tone-loss { --tone: var(--tj-loss); color: var(--tone); }
+.tjc-dia-velo .tone-be { --tone: var(--tj-be); color: var(--tone); }
+.tjc-dia { width: min(100%, 720px); max-height: calc(100dvh - 2.4rem); overflow-y: auto; padding: 1.4rem 1.5rem 1.5rem; border: 1px solid var(--tj-accent-line); border-radius: 20px; background: radial-gradient(120% 80% at 0% 0%, rgba(230, 180, 85, 0.13), transparent 60%), var(--tj-panel-solid); box-shadow: 0 34px 90px -24px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(0, 0, 0, 0.4); color: var(--text-primary); animation: tj-reset-entra 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+.tjc-dia.is-mejor { border-color: var(--premium-gold); box-shadow: 0 34px 90px -24px rgba(0, 0, 0, 0.95), 0 0 40px -10px rgba(230, 180, 85, 0.55); }
+.tjc-dia-mejor { display: inline-flex; align-items: center; gap: 0.45rem; margin: 0 0 0.9rem; padding: 0.3rem 0.75rem 0.3rem 0.4rem; border: 1px solid rgba(230, 180, 85, 0.5); border-radius: 99px; background: rgba(230, 180, 85, 0.13); font-size: 0.78rem; font-weight: 700; color: var(--premium-gold); }
+@media (prefers-reduced-motion: reduce) { .tjc-dia-velo, .tjc-dia { animation: none; } }
 
-.tjc-detail-inner {
-  margin-top: 1.1rem;
-  padding: 1rem 1.1rem;
-  border: 1px solid var(--tj-accent-line);
-  border-radius: 13px;
-  background: linear-gradient(160deg, rgba(230, 180, 85, 0.07), transparent 60%), rgba(7, 12, 24, 0.35);
-}
+.tjc-detail-inner { margin: 0; }
 
 .tjc-detail-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
 .tjc-detail-head > div:first-child { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; margin-right: auto; }
@@ -1967,7 +2036,6 @@
 
 .tjc-flags { grid-area: flags; display: inline-flex; align-items: center; gap: 4px; height: 12px; }
 .tjc-flag-note { color: var(--text-muted); }
-.tjc-flag-best { color: var(--premium-gold); }
 
 /* Un día sin operaciones pero con ánimo toma un velo de su color. */
 .tjc-day.is-open[class*="mood-"] {
