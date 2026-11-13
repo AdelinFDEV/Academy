@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useSyncExternalStore } from "react";
-import { ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, CalendarDays, Minus, Moon, Sun, Sunset } from "lucide-react";
 import { pctStr, pnlStr, toneOf } from "./tjFormat";
 import { periodReads, type Trade } from "./tjStats";
 import AvatarUsuario from "@/components/AvatarUsuario";
@@ -12,12 +12,18 @@ const noSubscribe = () => () => {};
  * El saludo depende de la hora del visitante, no de la del servidor. En el
  * servidor (y en la hidratación) sale «Hola»; en el navegador, el que toca.
  */
-function useGreeting(): string {
+function useGreeting(): { texto: string; Icono: typeof Sun; momento: "dia" | "tarde" | "noche" } {
   const hour = useSyncExternalStore(noSubscribe, () => new Date().getHours(), () => null);
-  if (hour == null) return "Hola";
-  if (hour >= 6 && hour < 14) return "Buenos días";
-  if (hour >= 14 && hour < 21) return "Buenas tardes";
-  return "Buenas noches";
+  if (hour == null) return { texto: "Hola", Icono: Sun, momento: "dia" };
+  if (hour >= 6 && hour < 14) return { texto: "Buenos días", Icono: Sun, momento: "dia" };
+  if (hour >= 14 && hour < 21) return { texto: "Buenas tardes", Icono: Sunset, momento: "tarde" };
+  return { texto: "Buenas noches", Icono: Moon, momento: "noche" };
+}
+
+/** La fecha de hoy, en el reloj del visitante. En el servidor no sale: allí es otra hora. */
+const fechaDeHoy = () => new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long" });
+function useFechaDeHoy(): string | null {
+  return useSyncExternalStore(noSubscribe, fechaDeHoy, () => null);
 }
 
 export default function TjWelcome({
@@ -40,18 +46,26 @@ export default function TjWelcome({
   /** Nova, el asistente (TjBot), bajo el saludo. */
   bot: React.ReactNode;
 }) {
-  const greeting = useGreeting();
+  const { texto: saludo, Icono: IconoMomento, momento } = useGreeting();
+  const hoy = useFechaDeHoy();
   const reads = useMemo(() => periodReads(trades, now), [trades, now]);
 
   return (
     <header className="tjw">
       <div className="tjw-top">
         <div className="tjw-hello">
-          <div className="tjw-title-fila">
-            {avatar && <AvatarUsuario avatar={avatar} inicial={(name.charAt(0) || "U").toUpperCase()} className="tjw-foto" />}
+          {/* El saludo (rehecho el 13-11-2026): una franja del mismo ancho que la
+              habitación de Nova, que hace de marquesina sobre ella. La foto con su
+              aro, el momento del día con su icono, el nombre en grande y la fecha. */}
+          <div className={`tjw-saludo is-${momento}`}>
+            <span className="tjw-foto-aro">
+              <AvatarUsuario avatar={avatar} inicial={(name.charAt(0) || "U").toUpperCase()} className="tjw-foto" />
+            </span>
             <h1 className="tjw-title">
-              {greeting}, <span className="tjw-name">{name}</span>
+              <span className="tjw-momento"><IconoMomento size={14} aria-hidden="true" /> {saludo}</span>
+              <span className="tjw-name">{name}</span>
             </h1>
+            {hoy && <span className="tjw-fecha"><CalendarDays size={13} aria-hidden="true" /> {hoy}</span>}
           </div>
           {/* Nova: lo que antes era la frase de la cabecera ahora lo cuenta él, y mucho más. */}
           {bot}
