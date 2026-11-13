@@ -45,7 +45,7 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 
 | # | Moneda | Grupo | Nota |
 |---|---|---|---|
-| 2 | Ethereum (ETH) | Plataforma de contratos | La segunda del mercado y la base de casi todo DeFi. La más buscada de la lista |
+| 2 | Ethereum (ETH) | Plataforma de contratos | La segunda del mercado y la base de casi todo DeFi |
 | 4 | BNB (BNB) | Token de exchange · plataforma | De Binance; también mueve su propia red (BNB Chain) |
 | 7 | Solana (SOL) | Plataforma de contratos | |
 | 8 | TRON (TRX) | Plataforma de contratos | Muy usada para mover USDT |
@@ -80,7 +80,7 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 - **Memes**: Dogecoin, Shiba Inu, Pepe y MemeCore (una red hecha para memes, que CoinGecko clasifica como meme).
 - **Activos tradicionales tokenizados**, que no son una criptomoneda propia sino un activo de fuera envuelto en un token: Figure HELOC (préstamos hipotecarios), Tether Gold y PAX Gold (oro), Ondo USDY y Circle USYC (deuda del Tesoro de EE. UU.) y Spiko Amundi (un fondo monetario en euros). Si interesan, darían para **una sola guía** sobre la tokenización de activos.
 
-**Orden recomendado para empezar:** Ethereum, Solana, BNB, Cardano y Chainlink. Son las más buscadas de la lista y las que más enlazan con lo que ya hay (cursos de DeFi y de CoinMarketCap/CoinGecko).
+**Orden recomendado para empezar:** Ethereum, Solana, BNB, Cardano y Chainlink. Están en la parte alta de la lista, son redes o protocolos con uso propio (BNB es de Binance, pero mueve su propia red) y sin problemas regulatorios a la vista y son las que más enlazan con lo que ya hay (cursos de DeFi y de CoinMarketCap/CoinGecko). El volumen de búsqueda real de cada una se mira en la Fase 0 de la auditoría SEO antes de elegir.
 
 ---
 
