@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { MessageCircle } from "lucide-react";
 import AvatarUsuario from "@/components/AvatarUsuario";
 
 /**
@@ -46,14 +47,16 @@ export default function NavForo() {
  * donde el de escritorio se esconde): entre la marca y la foto de perfil.
  *
  * Más simple a propósito (pedido por el admin el 13-11-2026): ahí no caben las
- * caras. Una pastilla de la altura de la hamburguesa con el punto que late y
- * la palabra. El menú sigue llevando el foro también.
+ * caras. Un botón sólido, de la familia de «Registrarse» (degradado naranja,
+ * brillo arriba, sombra), con un bocadillo y la palabra: la primera versión,
+ * con borde y un punto, no se leía como botón. Solo sale con sesión: sin ella,
+ * la barra del móvil lleva únicamente «Entrar» y «Registrarse» (`SiteNav`).
  */
 export function NavForoMovil() {
   const activo = useEnElForo();
   return (
     <Link href="/foro" className={`nav-foro-movil${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
-      <span className="nav-foro-latido" aria-hidden="true" />
+      <MessageCircle size={16} strokeWidth={2.4} aria-hidden="true" />
       Foro
     </Link>
   );

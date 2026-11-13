@@ -75,8 +75,11 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
             «Mi dashboard» fue un botón suelto aquí al lado durante unas horas:
             dos accesos personales pegados competían por el mismo hueco. */}
         {/* El foro en móvil: solo se ve por debajo de 1200 px, donde se esconde
-            el de escritorio (globals.css, «El foro en la barra del móvil»). */}
-        {foro && <NavForoMovil />}
+            el de escritorio (globals.css, «El foro en la barra del móvil»).
+            Solo con sesión: sin ella, ahí van únicamente «Entrar» y
+            «Registrarse» (pedido por el admin el 13-11-2026); el foro sigue
+            en el menú. */}
+        {foro && user && <NavForoMovil />}
 
         {user && nombre && <NavSaludo nombre={nombre} plan={perfil.plan} avatar={perfil.avatar} />}
 
