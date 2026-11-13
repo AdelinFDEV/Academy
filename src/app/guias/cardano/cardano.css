@@ -1,0 +1,43 @@
+/* Guía «Qué es Cardano». Prefijo: ada-. Lo común está en ../guias.css. */
+
+/* ── Las cinco etapas, en fila ── */
+.ada-etapas { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 26px 0 0; padding: 0; }
+.ada-etapas li { display: grid; gap: 8px; align-content: start; padding: 18px 16px; border: 1px solid var(--gold-border); border-radius: 14px; background: rgba(15,32,64,0.5); }
+.ada-etapa-n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--gold); font-size: 14px; font-weight: 800; color: #1a1204; }
+.ada-etapa-nombre { font-size: 17px; font-weight: 700; color: #fff; }
+.ada-etapa-nombre small { display: block; margin-top: 2px; font-size: 12px; font-weight: 600; color: var(--gold); }
+.ada-etapa-que { font-size: 14px; line-height: 1.55; color: #dce8f8; }
+
+/* ── Calculadora de staking ── */
+.ada-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.ada-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.ada-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: end; }
+.ada-calc-campos label { display: grid; gap: 9px; }
+.ada-calc-campos label > span { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #dce8f8; }
+.ada-calc-campos label strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+.ada-calc-campos input:not([type="range"]) { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.ada-calc-campos input[type="range"] { width: 100%; height: 44px; accent-color: var(--accent-orange); }
+.ada-calc-campos input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
+
+.ada-calc-resultados { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; margin-top: 22px; }
+.ada-calc-resultados > div { display: grid; gap: 5px; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.ada-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
+.ada-calc-resultados span { font-size: 13px; color: #b0c4d8; }
+.ada-calc-resultados strong { font-size: 22px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.ada-calc-resultados .es-principal strong { font-size: 30px; color: var(--gold); }
+.ada-calc-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+/* ── Cómo elegir un pool: cuatro pasos ── */
+.ada-pasos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.ada-pasos > div { position: relative; padding: 20px 20px 20px 62px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(15,32,64,0.45); }
+.ada-pasos span { position: absolute; top: 20px; left: 18px; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent-orange); font-size: 14px; font-weight: 800; color: #fff; }
+.ada-pasos h3 { margin: 0 0 6px; font-size: 17px; font-weight: 700; color: #fff; }
+.ada-pasos p { margin: 0; font-size: 15px; line-height: 1.6; color: #dce8f8; }
+
+@media (max-width: 980px) {
+  .ada-etapas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .ada-etapas, .ada-pasos, .ada-calc-campos, .ada-calc-resultados { grid-template-columns: 1fr; }
+  .ada-calc { padding: 18px 16px; }
+}

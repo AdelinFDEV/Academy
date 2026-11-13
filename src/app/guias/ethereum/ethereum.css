@@ -1,0 +1,51 @@
+/* Guía «Qué es Ethereum». Prefijo: eth-. Lo común está en ../guias.css. */
+
+.eth-formula { padding: 14px 18px; border: 1px dashed var(--gold-border); border-radius: 12px; text-align: center; font-size: 18px; color: #fff; }
+
+/* ── Calculadora de gas ── */
+.eth-gas { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.eth-gas-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.eth-gas-ops { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.eth-gas-op { display: grid; gap: 4px; padding: 13px 14px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(255,255,255,0.03); font: inherit; font-size: 15px; font-weight: 600; text-align: left; color: #dce8f8; cursor: pointer; transition: border-color 0.2s ease, background-color 0.2s ease; }
+.eth-gas-op small { font-size: 12px; font-weight: 400; color: #9db2d3; font-variant-numeric: tabular-nums; }
+.eth-gas-op:hover { border-color: rgba(255,107,43,0.5); }
+.eth-gas-op.is-activa { border-color: var(--accent-orange); background: rgba(255,107,43,0.12); color: #fff; }
+.eth-gas-op:focus-visible, .eth-gas-campos input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.eth-gas-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.eth-gas-campos label { display: grid; gap: 7px; font-size: 13px; color: #9db2d3; }
+.eth-gas-campos input { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+
+.eth-gas-resultado { display: grid; gap: 4px; margin-top: 20px; padding: 18px 20px; border-radius: 14px; background: var(--gold-soft); text-align: center; }
+.eth-gas-resultado span { font-size: 13px; color: #dce8f8; }
+.eth-gas-resultado strong { font-size: 34px; font-weight: 800; line-height: 1.1; color: var(--gold); font-variant-numeric: tabular-nums; }
+.eth-gas-resultado small { font-size: 13px; color: #b0c4d8; font-variant-numeric: tabular-nums; }
+.eth-gas-nota { margin: 12px 0 0; font-size: 12.5px; color: #9db2d3; }
+
+/* ── Las actualizaciones, en línea de tiempo ── */
+.eth-hitos { list-style: none; margin: 26px 0 0; padding: 0; border-left: 2px solid var(--gold-border); }
+.eth-hitos li { position: relative; display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 18px; padding: 0 0 22px 24px; }
+.eth-hitos li:last-child { padding-bottom: 0; }
+.eth-hitos li::before { content: ""; position: absolute; top: 6px; left: -6px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); }
+.eth-hito-fecha { font-size: 13px; font-weight: 700; color: var(--gold); font-variant-numeric: tabular-nums; }
+.eth-hito-cuerpo { font-size: 15.5px; line-height: 1.6; color: #dce8f8; }
+.eth-hito-cuerpo strong { display: block; color: #fff; }
+
+/* ── Los tres errores ── */
+.eth-errores { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.eth-error { position: relative; padding: 22px 20px 20px; border: 1px solid rgba(248,113,113,0.25); border-radius: 16px; background: rgba(248,113,113,0.05); }
+.eth-error-n { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(248,113,113,0.18); font-size: 14px; font-weight: 800; color: #fca5a5; }
+.eth-error h3 { margin: 14px 0 8px; font-size: 18px; font-weight: 700; color: #fff; }
+.eth-error p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+.eth-error a { color: var(--gold); text-underline-offset: 3px; }
+
+@media (max-width: 820px) {
+  .eth-errores { grid-template-columns: 1fr; }
+  .eth-gas-ops { grid-template-columns: 1fr; }
+  .eth-gas { padding: 18px 16px; }
+  .eth-hitos li { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 480px) {
+  .eth-gas-campos { grid-template-columns: 1fr; }
+  .eth-gas-resultado strong { font-size: 28px; }
+}

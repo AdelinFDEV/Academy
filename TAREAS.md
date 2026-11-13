@@ -22,6 +22,17 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
+### 00g. Guías de Ethereum, Solana, Cardano y Chainlink: lo que queda (13-11-2026)
+
+Están escritas, auditadas y en `BORRADORES` (`src/lib/guides.ts`). En producción dan 404 a quien no es admin hasta que se publiquen.
+
+- [ ] **Portadas** (las pasa el admin): a WebP de 1.600 px y calidad 82 en `public/guias/<slug>.webp`, y el campo `portada` de cada una en `BORRADORES`.
+- [ ] **Publicarlas desde `/admin/acciones`** (lo hace el admin), una cada dos o tres días y en este orden: Ethereum, Solana, Cardano, Chainlink. La de Solana enlaza a `/guias/ethereum`: si se publica antes, ese enlace da 404.
+- [ ] **Después de publicar cada una**: ascenderla de `BORRADORES` a `GUIDES`, darle al menos dos enlaces entrantes desde guías o fichas ya publicadas (Fase 10) y repetir `npm run check:seo -- guias/<slug> "<moneda>"`. Hoy fallan solo esas dos comprobaciones, enlaces entrantes y sitemap, que un borrador no puede cumplir.
+- [ ] **Fichas del diccionario que estas guías explican en el texto pero no enlazan**, porque aún no existen: capa 2, hard fork, slashing, oráculo, mediana, cliente validador y delegación. Solo se creó `prueba-de-participacion`. Cada una va como ficha ampliada (Parte B de la plantilla) y después se enlaza en su primera aparición en las cuatro guías.
+- [ ] **Una experiencia propia del admin en cada guía** (Fase 8): hoy ninguna la tiene.
+- [ ] **Revisar las cifras que caducan** antes de publicar: rendimiento del staking de ETH, SOL y ADA, inflación de SOL y el cupo del staking de LINK. Están fechadas en el texto como de 2026.
+
 ### 00f. Cinco cursos nuevos: lo que queda (13-11-2026)
 
 Los cinco cursos pedidos el 12-11-2026 están escritos, subidos y **publicados** desde el 13-11-2026: `coinmarketcap-y-coingecko`, `bitcoin-y-dca`, `futuros-y-apalancamiento`, `analisis-tecnico-sin-humo` y `defi-y-stablecoins`. Sus paletas, motivos e ilustraciones están en el registro de `CURSOS.md`. Queda:

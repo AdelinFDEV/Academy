@@ -189,7 +189,10 @@ const sinScripts = html.replace(/<script[\s\S]*?<\/script>/g, " ");
  * entero y las cifras dejan de describir el artículo — daba 5.416 palabras en
  * una ficha de 1.445.
  */
-const INICIOS = ['class="post-content', 'class="termino-body', 'class="gbc-wrap', "<main"];
+// En una guía el cuerpo empieza en su hero, no en `gbc-wrap`: dentro de ese
+// envoltorio va también la barra de la web, y desde el 13-11-2026 la barra lleva
+// los botones de Instagram y YouTube, que no son enlaces del artículo.
+const INICIOS = ['class="post-content', 'class="termino-body', 'class="gbc-hero', 'class="gbc-wrap', "<main"];
 const FINALES = ['<section class="termino-faq', '<section class="tvid', '<section class="termino-relacionados',
   'class="post-cierre', "<footer"];
 const desde = INICIOS.map((m) => html.indexOf(m)).filter((i) => i >= 0)[0] ?? 0;

@@ -48,5 +48,9 @@ export async function guiasVisiblesRecientes(): Promise<GuideMeta[]> {
 export async function borradorSinPublicar(slug: string): Promise<GuiaBorrador | null> {
   const borrador = BORRADORES.find((b) => b.slug === slug);
   if (!borrador) return null;
+  // En el servidor de desarrollo un borrador se sirve como si ya fuera público
+  // (con su JSON-LD y sin aviso): es lo que deja pasarle `npm run check:seo`,
+  // que entra sin sesión, ANTES de publicarlo. En producción no ocurre nunca.
+  if (process.env.NODE_ENV === "development") return null;
   return (await borradoresPublicados()).has(slug) ? null : borrador;
 }
