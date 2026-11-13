@@ -304,17 +304,17 @@
   height: 10px;
   border: 2px solid #0b1426;
   border-radius: 999px;
-  background: var(--accent-orange);
+  background: #ff6b6b;
 }
 
-.nova-nav-ping.con-cifra { width: auto; min-width: 16px; height: 16px; padding: 0 3px; background: var(--accent-orange); }
+.nova-nav-ping.con-cifra { width: auto; min-width: 16px; height: 16px; padding: 0 3px; background: linear-gradient(180deg, #ff8f8f, #ff5c5c); }
 .nova-nav-ping b { font-size: 0.56rem; font-weight: 800; line-height: 1; color: #fff; }
 
 .nova-nav-ping::after {
   content: "";
   position: absolute;
   inset: -2px;
-  border: 2px solid var(--accent-orange);
+  border: 2px solid #ff6b6b;
   border-radius: inherit;
   animation: nova-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 }

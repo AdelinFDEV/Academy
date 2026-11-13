@@ -1070,12 +1070,10 @@ html {
      hueco debajo. */
   height: var(--nav-h);
   padding: 0 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(240, 244, 255, 0.06);
   position: sticky;
   top: 0;
-  /* Casi negro y translúcido (13-11-2026): sobrio, y vale igual sobre
-     cualquier página, sea cual sea su fondo. */
-  background: rgba(9, 9, 13, 0.8);
+  background: linear-gradient(180deg, rgba(8, 16, 32, 0.94) 0%, rgba(10, 20, 38, 0.86) 100%);
   z-index: 400;
 }
 
@@ -1810,9 +1808,136 @@ html {
   margin: 0 auto 1.8rem;
 }
 
+/* ── Las tres piezas en la barra de escritorio (NavPrincipal.tsx) ─────────
+   Segunda vuelta del 07-11-2026: sin luces alrededor (se probó un borde de luz
+   giratorio y un resplandor dorado, y el admin lo vio exagerado). Una cápsula
+   de cristal sobria, con aire entre los enlaces, y al final el muelle de Nova
+   (nova.css). La burbuja de luz la mueve framer-motion (layoutId): se desliza
+   hasta el enlace con el ratón encima y toma su color. */
+
+.nav-principal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 6px 8px;
+  list-style: none;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 10px 30px -18px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+}
+
+/* ── El foro en la barra (NavForo.tsx) ───────────────────────────────────
+   Va al lado de la cápsula de las tres piezas y tiene que verse DISTINTO de
+   ellas: no es una herramienta de pago, es el sitio donde está la gente.
+
+   Tercera versión, desde cero (13-11-2026): ni pastilla naranja ni icono.
+   Tres caras de la comunidad apiladas, el nombre y un punto que late. El
+   cristal es el mismo de la barra, para que no grite; el naranja aparece
+   solo al pasar el ratón y dentro del foro.
+
+   Se esconde con `.blog-nav-center` cuando la barra se queda sin sitio; ahí
+   el foro sigue en el menú. */
+.nav-foro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 42px;
+  margin-left: 0.35rem;
+  padding: 0 1.05rem 0 0.4rem;
+  border: 1px solid rgba(240, 244, 255, 0.09);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgba(240, 244, 255, 0.78);
+  outline: none;
+  transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Las caras: apiladas, cada una con un aro del color del fondo que la separa
+   de la de al lado. Se mecen a destiempo, como quien habla por turnos. */
+.nav-foro-caras {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-foro-cara.avatar-usuario {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #0b1730;
+  animation: nav-foro-turno 3.6s ease-in-out infinite;
+  transition: margin 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-foro-cara + .nav-foro-cara { margin-left: -10px; }
+.nav-foro-cara:nth-child(2) { animation-delay: 0.4s; }
+.nav-foro-cara:nth-child(3) { animation-delay: 0.8s; }
+
+@keyframes nav-foro-turno {
+  0%, 70%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-2px); }
+}
+
+/* El punto que late: actividad, no un aviso sin leer. */
+.nav-foro-latido {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+}
+
+.nav-foro-latido::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  animation: nav-foro-latido 2.4s ease-out infinite;
+}
+
+@keyframes nav-foro-latido {
+  0% { transform: scale(1); opacity: 0.6; }
+  70%, 100% { transform: scale(2.8); opacity: 0; }
+}
+
+/* Con el ratón encima: las caras se abren en abanico y entra el naranja. */
+.nav-foro:hover,
+.nav-foro:focus-visible {
+  border-color: color-mix(in srgb, var(--accent-orange) 45%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-orange) 14%, transparent) 0%, color-mix(in srgb, var(--accent-orange) 5%, transparent) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px -16px var(--accent-orange);
+  color: #fff;
+}
+
+.nav-foro:hover .nav-foro-cara + .nav-foro-cara,
+.nav-foro:focus-visible .nav-foro-cara + .nav-foro-cara { margin-left: -4px; }
+
+.nav-foro:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 3px; }
+
+/* Dentro del foro: el borde y el fondo del naranja, y el punto quieto. */
+.nav-foro.is-activo {
+  border-color: var(--accent-orange);
+  background: color-mix(in srgb, var(--accent-orange) 16%, transparent);
+  color: #fff;
+}
+
+.nav-foro.is-activo .nav-foro-latido::after { animation: none; opacity: 0; }
+
 /* ── El foro en la barra del móvil (NavForoMovil) ─────────────────────────
    Solo por debajo de 1200 px, que es donde `.blog-nav-center` (y con él el
-   enlace de escritorio) se esconde, y solo con sesión. Un botón sólido de la
+   botón de las caras) se esconde, y solo con sesión. Un botón sólido de la
    familia de «Registrarse», a la altura de la hamburguesa y con sus mismas
    esquinas: la primera versión (borde fino y un punto) no se leía como botón. */
 /* ── Las redes en la barra: Instagram (mensaje directo) y YouTube (el canal) ──
@@ -1874,86 +1999,6 @@ html {
 .mm-youtube .mm-instagram-icono { background: linear-gradient(180deg, #ff4d4d, #e01b1b); }
 .mm-youtube:focus-visible { outline-color: #ff7a7a; }
 
-/* ── La barra de escritorio, sobria (NavPrincipal.tsx y NavForo.tsx) ──────
-   Rehecha el 13-11-2026. Enlaces de texto, un solo acento (el naranja) y una
-   línea bajo el activo. Sin cápsulas, sin iconos de colores y sin burbujas.
-   Nova conserva su sitio junto al Diario (nova.css). */
-.nav-principal {
-  display: flex;
-  align-items: center;
-  gap: 0.15rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.nav-principal li { display: flex; align-items: center; }
-
-.nav-principal-enlace,
-.nav-foro {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: var(--nav-h);
-  padding: 0 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  white-space: nowrap;
-  text-decoration: none;
-  color: rgba(240, 244, 255, 0.6);
-  transition: color 0.2s ease;
-}
-
-/* La línea: crece desde el centro. Media con el ratón, entera en la página activa. */
-.nav-principal-enlace::after,
-.nav-foro::after {
-  content: "";
-  position: absolute;
-  right: 1rem;
-  bottom: 0;
-  left: 1rem;
-  height: 2px;
-  border-radius: 2px 2px 0 0;
-  background: var(--accent-orange);
-  transform: scaleX(0);
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.nav-principal-enlace:hover,
-.nav-principal-enlace:focus-visible,
-.nav-principal-enlace.is-activo,
-.nav-foro:hover,
-.nav-foro:focus-visible,
-.nav-foro.is-activo {
-  color: #fff;
-  outline: none;
-}
-.nav-principal-enlace:hover::after,
-.nav-foro:hover::after { transform: scaleX(0.45); }
-.nav-principal-enlace.is-activo::after,
-.nav-foro.is-activo::after { transform: scaleX(1); }
-.nav-principal-enlace:focus-visible,
-.nav-foro:focus-visible { box-shadow: inset 0 0 0 2px var(--accent-orange-soft); border-radius: 8px; }
-
-/* El foro va tras una raya fina: es otra cosa que las tres piezas. */
-.nav-foro { margin-left: 0.9rem; }
-.nav-foro::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: -0.5rem;
-  width: 1px;
-  height: 18px;
-  background: rgba(255, 255, 255, 0.14);
-  transform: translateY(-50%);
-}
-.nav-foro-punto { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-orange); }
-
-@media (prefers-reduced-motion: reduce) {
-  .nav-principal-enlace, .nav-foro, .nav-principal-enlace::after, .nav-foro::after { transition: none; }
-}
-
 .nav-foro-movil {
   display: none;
   flex-shrink: 0;
@@ -2000,14 +2045,80 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-foro-movil { transition: none; }
+  .nav-foro, .nav-foro-movil, .nav-foro-cara.avatar-usuario { transition: none; }
   .nav-foro-movil:hover, .nav-foro-movil:active { transform: none; }
+  .nav-foro-cara.avatar-usuario, .nav-foro-latido::after { animation: none; }
+  .nav-foro-latido::after { opacity: 0; }
+}
+
+.nav-principal-enlace {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  height: 42px;
+  padding: 0 1.25rem 0 0.5rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-decoration: none;
+  color: rgba(240, 244, 255, 0.66);
+  transition: color 0.25s ease;
+}
+
+.nav-principal-enlace:hover,
+.nav-principal-enlace:focus-visible,
+.nav-principal-enlace.is-activo {
+  color: #fff;
+  outline: none;
 }
 
 /* La burbuja: un degradado del color de la pieza, con borde de luz, un brillo
    arriba como de cristal y un resplandor debajo. Va detrás del texto. */
+.nav-principal-burbuja {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+    color-mix(in srgb, var(--c) 13%, rgba(10, 18, 34, 0.92));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 40%, transparent);
+}
 
 /* El icono en una pastilla redonda de su color: se enciende con la burbuja. */
+.nav-principal-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 10%, transparent) 70%);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 28%, transparent);
+  color: var(--c);
+  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-principal-enlace:hover .nav-principal-icono,
+.nav-principal-enlace:focus-visible .nav-principal-icono,
+.nav-principal-enlace.is-activo .nav-principal-icono {
+  background: var(--c);
+  box-shadow: none;
+  color: #070c18;
+  transform: rotate(-8deg) scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-principal-icono { transition: none; }
+  .nav-principal-enlace:hover .nav-principal-icono,
+  .nav-principal-enlace.is-activo .nav-principal-icono { transform: none; }
+}
+
 
 @media (max-width: 1200px) {
 
@@ -9412,6 +9523,10 @@ select {
 }
 
 /* Con el ratón encima, todo al doble de velocidad. */
+.nav-principal-enlace:hover .ia-birrete,
+.nav-principal-enlace:hover .ia-borla { animation-duration: 1.6s; }
+.nav-principal-enlace:hover .ia-barra { animation-duration: 1.3s; }
+.nav-principal-enlace:hover .ia-linea { animation-duration: 1.8s; }
 
 @media (prefers-reduced-motion: reduce) {
   .ia-birrete, .ia-borla, .ia-barra { animation: none; }
