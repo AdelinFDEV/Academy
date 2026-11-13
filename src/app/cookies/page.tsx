@@ -96,6 +96,14 @@ export default function CookiesPage() {
               </td>
             </tr>
             <tr>
+              <td>Estadística propia</td>
+              <td>Siempre</td>
+              <td>
+                Recuento de visitas en nuestro propio servidor. <strong>No usa cookies ni almacenamiento</strong> en
+                tu navegador y no guarda tu dirección IP, por lo que está exenta de consentimiento
+              </td>
+            </tr>
+            <tr>
               <td>Cloudflare Web Analytics</td>
               <td>Siempre</td>
               <td>

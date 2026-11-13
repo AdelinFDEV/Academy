@@ -123,8 +123,8 @@ const RUTAS_EXTERNAS = [
 
 const RUTAS_ESCRITURA = [
   "/api/guide-shares",
-  "/api/guide-visit",
-  "/api/site-visit",
+  // La medición propia de visitas: una por página vista.
+  "/api/visita",
   "/api/guide-likes",
   "/api/guide-saves",
   "/api/guide-quiz-completion",

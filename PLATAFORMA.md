@@ -54,26 +54,6 @@ Esa segunda barrera es la que importa de verdad: **la clave anónima va en el na
 
 ---
 
-# Objetivos y diario del negocio (/admin/objetivos): solo el admin, ni para leer
-
-Desde el 04-10-2026. Las tablas —`objetivos`, `objetivo_registros`, `objetivo_marcas`, `contenido_plan`, `ideas`, `diario_notas`, `diario_intenciones`, `metricas_diarias`, `dias_balance` y `movimientos`— con **RLS activado y cero policies**, más el bucket **privado** `diario` para las fotos (se sirven con URLs firmadas de una hora). Todo lo crea `scripts/create-objetivos.sql`, que es idempotente: se puede volver a ejecutar entero. A diferencia del portfolio, aquí **ni siquiera se lee** con la clave anónima: el diario guarda cómo se siente el admin con su negocio, y no lo ve nadie más.
-
-- **Leer:** la página de servidor, con `createAdminClient()`, detrás del layout de `/admin` que exige rol admin.
-- **Escribir:** `/api/admin/plan/[recurso]` y `/api/admin/plan/[recurso]/[id]`, con `requireAdmin()` y los validadores de `src/lib/objetivosValidar.ts`, que solo dejan pasar las columnas que conocen.
-- **El progreso de los objetivos automáticos no se guarda**: se calcula al leer en `src/lib/objetivosServidor.ts` (`src/lib/objetivos.ts` es la parte pura, que también importa el cliente). Sale de la API de YouTube, `profiles` (sin administradores), `movimientos` y `metricas_diarias`. Los vídeos y los Shorts se cuentan con `subidasEntre()` (`src/lib/actividadMes.ts`), por su fecha real de subida, la misma fuente que el calendario; sin API no hay otra fuente y cuentan cero. Los ingresos Premium son **lo cobrado de verdad** (filas `stripe` de `movimientos`), no una estimación. Telegram (canal, métrica y gráficas) se retiró el 05-11-2026.
-- **El progreso manual sí se guarda, uno por periodo** en `objetivo_registros`: es lo que da historial a los objetivos que se repiten cada semana o cada mes. `objetivos.progreso_manual` queda por compatibilidad y ya no se lee.
-- **Suscriptores de YouTube**: necesitan `YOUTUBE_API_KEY`. El cron de las 04:00 (`/api/cron/diario`) guarda una foto diaria en `metricas_diarias`; sin clave no guarda nada y el objetivo se queda en 0.
-- **No añadas una policy** «para que el admin pueda». Mismo error que en el portfolio, y aquí con datos más personales.
-- **El dinero es un solo libro: `movimientos`** (desde el 06-10-2026). Cada fila es un ingreso o un gasto. Escriben ahí tres sitios y **nada más**: el **cierre del día** (`/api/admin/plan/dia`, origen `cierre`, una fila por fuente y día, **nunca Premium**), el formulario de la pestaña **Dinero** (`/admin/objetivos/dinero`) (origen `manual`, con concepto, puntual o fijo cada mes, **nunca Premium ni comisiones**) y **Stripe** (origen `stripe`, desde el 10-10-2026): `sincronizarCobrosStripe()` (`src/lib/cobrosStripe.ts`) copia cada movimiento real del saldo —cobro como ingreso `premium` en bruto, su comisión como gasto `comisiones`, devoluciones y disputas como gasto `devoluciones`— con el id de Stripe en `externo` (único), así que repetirlo no duplica. La lanzan el webhook de Stripe al darse un alta o una renovación y el cron diario, sobre el último mes. Guardar un cierre **sustituye solo las filas `cierre` de ese día**: lo manual se queda, y el cierre lo enseña aparte para no repetirlo. Con `parcial` (el marcado rápido del calendario) el dinero no se toca. Las rutas genéricas solo cambian o borran filas `manual`. **No vuelvas a leer ni escribir `ingresos_dia` ni `gastos`**: quedaron como copia del traspaso y se pueden borrar. Una segunda tabla de ingresos es exactamente cómo se cuenta el dinero dos veces.
-- **Series largas, siempre con `todasLasFilas()`** (`src/lib/supabase/todasLasFilas.ts`). Supabase corta en 1.000 filas sin dar error, y en una serie ordenada de antigua a reciente lo que se pierde es lo último: la gráfica se congela. Las fotos diarias, el dinero y el diario ya pasan por ahí.
-- **Pestaña Crecimiento** (`/admin/objetivos/crecimiento`, `cargarCrecimiento()` en `src/lib/crecimiento.ts`): lo publicado en el mes (vídeos de la API de YouTube y guías con `publicada` en `GUIDES`) y suscriptores de YouTube (`metricas_diarias` + API).
-- **La meta de 1.000 €/mes** (`MetaIngresos.tsx`) mide todo el libro de ingresos **menos el sueldo del trabajo actual** (fuente `trabajo`, lista `FUENTES_FUERA_DE_META`): la meta es poder dejarlo. El trabajo sí sale en el calendario, el cierre y la pestaña Dinero; en la meta se enseña aparte, sin sumar.
-- **Ideas → calendario**: «📅 Planificar» crea la pieza (estado `idea`, título = primera línea, la idea entera en `notas` si es más larga) y tacha la idea. Los tipos que ofrece por canal salen de `TIPOS_POR_CANAL` (`src/lib/objetivos.ts`).
-- **El objetivo «Beneficio»** resta todo el libro (`movimientos`) en el periodo; los fijos de cada mes cuentan **en proporción a los días** del periodo que caen en ese mes, para que un objetivo semanal no cargue con el mes entero.
-- **Pestaña Dinero** (`/admin/objetivos/dinero`, desde el 10-10-2026): «Tu dinero» y «Ganancias y gastos» (de `movimientos`) y Premium (`cargarPremium()` en `src/lib/crecimiento.ts`). Activos y MRR salen de las suscripciones de hoy (lo que se va a cobrar); lo cobrado, de las filas `stripe` de `movimientos`, igual que el objetivo de ingresos: no vuelvas a estimarlo. **Una sola gráfica de ingresos por mes** (la de ingresos frente a gastos): no añadas otra con los mismos datos.
-
----
-
 # El marco legal es RUMANO — no vuelvas a escribir normativa española
 
 Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa española porque apunta a público español, pero **el titular reside y opera desde Rumanía**, así que las leyes nacionales aplicables son las rumanas:
@@ -100,14 +80,23 @@ Cambiado el **6 de septiembre de 2026**. El sitio nació citando normativa espa�
 
 ---
 
-# Analítica: dos capas, y el banner manda sobre una de ellas
+# Analítica: tres capas, y el banner manda sobre una de ellas
 
 | Herramienta | Cookies | ¿Consentimiento? | Qué da |
 |---|---|---|---|
+| **Medición propia** (tabla `visitas`, panel `/admin`) | No | No lo necesita | Visitantes por día, canal, país, dispositivo, páginas, y su cruce con registros y Premium. Mide al 100 % |
 | **Cloudflare Web Analytics** | No | No lo necesita | Visitas, páginas, referentes. Mide al 100 % |
 | **Google Analytics 4** (`G-G74GVKVZRY`) | Sí | **Obligatorio** | Embudos, conversiones, retención. Solo mide a quien acepta |
 
-Las dos conviven a propósito: Cloudflare da el recuento real, GA4 el comportamiento.
+Conviven a propósito: la medición propia es la que manda en el panel y se cruza con las cuentas; Cloudflare es la referencia externa; GA4, el detalle de comportamiento de quien acepta.
+
+**La medición propia** (desde el 13-11-2026; sustituye a `site_visits` y `guide_visits`):
+
+- `RegistroVisita` (layout raíz) manda cada página vista a `/api/visita`. **Sin cookies ni almacenamiento**: lo único que recuerda, en memoria, es si ya contó la primera página de la pestaña, la «entrada», que es la única que lleva el origen (referente y UTM).
+- **La IP no se guarda.** `visitante` es un hash de IP + navegador + una sal que cambia cada día (`src/lib/visitas.ts`; secreto `ANALITICA_SAL`, o la clave de servicio si falta). Cuenta visitantes únicos de un día y no permite seguir a nadie entre días. Si cambias lo que se guarda, cambia también la fila de «Datos de uso» de `/privacidad`.
+- No cuentan los robots, `/admin`, `/api` ni las visitas del admin.
+- Tabla con RLS y cero policies: escribe y lee solo el servidor con la clave de servicio. El panel lo calcula todo con `analitica_trafico(desde, hasta)` y `src/lib/analitica.ts`. El cron borra las filas de más de 400 días.
+- SQL: `scripts/create-analitica.sql`, idempotente.
 
 **La regla que no se puede romper: el banner de cookies gobierna qué scripts se cargan.** Hasta el 06-09-2026 el banner era decorativo —guardaba la elección y no la leía nadie— porque no había nada opcional. Ahora `src/lib/consent.ts` es la fuente única del consentimiento, y **cualquier script de terceros que use cookies se engancha ahí**, igual que `GoogleAnalytics.tsx`: nada de `<Script>` sueltos en el layout.
 
@@ -175,7 +164,7 @@ Desde el 31-08-2026 el sitio emite JSON-LD. Todo pasa por dos piezas: los constr
 | Dónde | Qué emite | ¿Hay que hacer algo? |
 |---|---|---|
 | **Todas las rutas** | `Organization` + `WebSite` | No. Van en el layout raíz, una sola vez |
-| **Guía** | `Article` + `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return`, junto al `<GuideVisitTracker>` |
+| **Guía** | `Article` + `BreadcrumbList` | **Sí: añadir `<GuideBreadcrumbJsonLd slug={SLUG} />`** dentro del `return` |
 | **Hilo del foro** | `QAPage` + `BreadcrumbList` | No. Lo emite `src/app/foro/[ref]/page.tsx` con `qaPageSchema`, y solo con el foro abierto. El texto es de usuarios: no lo escribas a mano, `<JsonLd>` escapa los `<` |
 | **Página pública nueva** | Nada por defecto | Solo si el tipo aporta algo real. Una página sin tipo propio no necesita ninguno |
 

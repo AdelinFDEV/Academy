@@ -73,7 +73,7 @@ Decidido por el admin el 05-11-2026: **no hay Telegram en ningún sitio**. Hecho
 - [ ] **El aviso de que se acaba el Premium** iba por Telegram a quien había cancelado y le quedaban 3 días. Ya no existe: decidir si se manda por email (`cancel_warning_period_end` en `profiles` sigue sirviendo para no repetirlo).
 - [ ] **Pedido por el admin el 05-11-2026: revisar la seguridad y que todo funcione solo desde la web, ahora que no hay Telegram.**
   - **Gestionar la cuenta desde el dashboard:** el usuario tiene que poder hacer ahí todo lo que antes pasaba por el bot o por Telegram: ver su plan, renovar o cancelar Premium (portal de Stripe), cambiar contraseña y 2FA, borrar su cuenta y escribir a soporte. Hecho el 06-11-2026: todo vive en «Mi perfil» (`/dashboard/perfil`) y `/cuenta` redirige allí; el portal de Stripe vuelve a `/dashboard/perfil#suscripcion`. Queda revisar que el flujo entero funciona sin Telegram (sobre todo renovar y cancelar).
-  - **Seguridad:** repasar las rutas que tocaban Telegram (webhook de Stripe, borrado de cuenta, cambio de rol desde `/admin/users`) y que el resto sigue protegido (RLS de `profiles`, `CRON_SECRET` del cron nuevo, limitador).
+  - **Seguridad:** repasar las rutas que tocaban Telegram (webhook de Stripe, borrado de cuenta, cambio de rol desde la tabla de usuarios de `/admin`) y que el resto sigue protegido (RLS de `profiles`, `CRON_SECRET` del cron nuevo, limitador).
   - **Ni una mención ni lógica de Telegram:** buscar en el código, los textos, el SQL, las variables de entorno y los emails (`grep -rni telegram src scripts *.md`) y que no quede nada que dependa de él. Lo que sí queda a propósito: comentarios que explican que se retiró y los scripts SQL históricos.
 
 ### 000. Herramientas retiradas (31-10-2026)
@@ -82,13 +82,12 @@ Hecho en el código: fuera Watchlist, Liberaciones de Tokens, Radar Diario, Mi P
 
 - [ ] **Borrar de Google el rastro del Trading en Directo** (pedido por el admin el 08-11-2026).
   - **Por qué:** el servicio ya no existe y no se ofrece, y no se puede anunciar en ningún sitio (`AGENTS.md`). Pero el 08-11-2026, al buscar la web en Google, debajo de la portada seguían saliendo como enlaces destacados «Trading en Directo» y «Herramientas de trading e…» (la landing `/herramientas`, también retirada). Quien llega por ahí cree que el servicio sigue, pulsa y se encuentra «Esta página ya no existe». Es una promesa falsa en el escaparate más visible de la web, y el admin la quiere fuera.
-  - **Lo que ya está hecho, y no hay que repetir:** en la web no queda nada. Comprobado el 08-11-2026 en producción: `/trading-en-directo`, `/herramientas`, `/radar-diario` y `/calendario-de-liberaciones` responden **410 Gone** con `X-Robots-Tag: noindex` (`src/lib/retiradas.ts` + `src/proxy.ts`), ninguna está en el sitemap, el código del servicio se borró el 31-10-2026 y la última frase que hablaba de «operativa en directo» (`TerminoVideo.tsx`) se cambió ese día. Lo que enseña Google es su caché de antes del 31-10.
+  - **Lo que ya está hecho, y no hay que repetir:** en la web no queda nada. Comprobado el 08-11-2026 en producción: `/trading-en-directo`, `/herramientas`, `/radar-diario` y `/calendario-de-liberaciones` responden **410 Gone** con `X-Robots-Tag: noindex` (`src/lib/retiradas.ts` + `src/proxy.ts`), ninguna está en el sitemap, el código del servicio se borró el 31-10-2026 y la última frase que hablaba de «operativa en directo» (`TerminoVideo.tsx`) se cambió ese día. En Supabase, `cursos_aviso_check` ya no admite la variante `directo` (aplicado y comprobado el 08-11-2026). Lo que enseña Google es su caché de antes del 31-10.
   - **Lo que falta, y solo puede hacerlo el admin desde Search Console** (Claude no tiene acceso):
     1. *Indexación → Retiradas → Nueva solicitud → Quitar temporalmente la URL*, una por una: `https://adelinacademy.com/trading-en-directo` y `https://adelinacademy.com/herramientas`. Las saca de los resultados en uno o dos días; sin esto, Google tarda semanas en volver a pasar.
     2. *Sitemaps*: reenviar `sitemap.xml`.
     3. Opcional: *Inspección de URLs* de cada una para confirmar que Google ya ve el 410.
   - **Cómo se cierra:** buscar `site:adelinacademy.com directo` y `site:adelinacademy.com herramientas` en Google. Si no sale ninguna de las dos, se borra esta tarea. La retirada temporal dura unos seis meses; para entonces el 410 ya las habrá sacado para siempre.
-  - **Ligado:** el SQL que quita la variante de aviso `directo` de `cursos.aviso` (al final de `scripts/create-cursos.sql`). Ningún curso la usa (comprobado el 12-11-2026), pero la regla de la tabla no se puede leer desde la API: si no consta que se ejecutó, relanzar esas últimas líneas, que son idempotentes.
 
 
 ### 00. La web es solo guías (empezado el 10-10-2026)
@@ -99,13 +98,6 @@ Decidido por el admin el 10-10-2026: **no hay noticias, ni entradas, ni categor�
 - [ ] **Reenviar el sitemap en Search Console.**
 - [ ] **Plantilla común de guía de criptomoneda**, para que cada guía nueva sea contenido y no código: mismas secciones y diseño, y una «última revisión» visible.
 - [ ] **CSS muerto en `src/app/globals.css`**: los estilos de la página de entrada (`.post-*`), el feed (`.feed-*`, `.hero-post-*`), los comentarios, la barra de categorías (`.cat-nav-*`), `/articulos` (`.articulos-*`), el índice y la barra de lectura (`.toc-*`, `.reading-progress*`) y lo del admin (`.admin-top-post*`, `.admin-donut*`, `.admin-bar-*`, `.users-reads`). No se pinta nada, pero pesa. Quitarlo con cuidado: algunos bloques comparten reglas con cosas vivas.
-
-### 0. Objetivos: lo que falta
-
-Hecho entre el 04 y el 05-10-2026, en `/admin/objetivos`: objetivos (repetibles, con historial, +1 y métricas automáticas) con el gran objetivo de 1.000 €/mes arriba; calendario de mes y de semana con panel del día y cierre del día; ideas por canal con tick; diario con intenciones, lo que afecta y motiva, y análisis por periodos largos; y Crecimiento con la actividad del mes. Los canales son **YouTube y Web**. Las fases que dependían del bot de Telegram (notas e ideas desde el móvil, resumen diario y balance del domingo) se cayeron con él el 05-11-2026. Falta:
-
-- [ ] **Suscriptores de YouTube exactos.** La YouTube Data API pública REDONDEA la cifra a tres cifras significativas (el 05-10-2026 daba 17.200 con 17.224 reales), así que la pestaña Crecimiento y los objetivos de suscriptores solo se mueven de 100 en 100. La solución es la **YouTube Analytics API**: con OAuth de la cuenta del canal da los suscriptores ganados y perdidos de cada día, exactos. Partir de un total exacto conocido (17.224 el 05-10-2026) y sumar el neto diario en el cron de las 04:00, guardándolo en `metricas_diarias`. Necesita: credenciales OAuth en Google Cloud, conectar la cuenta una vez y guardar el refresh token en Vercel.
-- [ ] **Ideas sugeridas** en Objetivos a partir de las consultas de Search Console que aún no tienen contenido.
 
 ### 0b. Cursos para Premium — el primero: fiscalidad cripto en España
 

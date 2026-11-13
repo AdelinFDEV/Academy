@@ -14,7 +14,6 @@ import GuideAnimatedStat from "@/components/GuideAnimatedStat";
 import GuideSpotlightCards from "@/components/GuideSpotlightCards";
 import GuideInteractions from "@/components/GuideInteractions";
 import GuideFlipCards from "@/components/GuideFlipCards";
-import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
@@ -138,7 +137,6 @@ export default async function QueEsLaBlockchainPage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideVisitTracker guideSlug={SLUG} />
       <GuideProgressBar />
 
       {/* Nav */}

@@ -7,7 +7,6 @@ import GuideProgressBar from "@/components/GuideProgressBar";
 import GuideHeroStats from "@/components/GuideHeroStats";
 import GuideFlipCards from "@/components/GuideFlipCards";
 import GuideInteractions from "@/components/GuideInteractions";
-import GuideVisitTracker from "@/components/GuideVisitTracker";
 import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 import GuiasRelacionadas from "@/components/GuiasRelacionadas";
 import GuideQuizCuenta from "@/components/GuideQuizCuenta";
@@ -224,7 +223,6 @@ export default async function DiarioTradingGuidePage() {
   return (
     <div className="gbc-wrap">
       <GuideBreadcrumbJsonLd slug={SLUG} />
-      <GuideVisitTracker guideSlug={SLUG} />
       <GuideProgressBar />
 
       <SiteNav user={!!user} isPremium={isPremium} userName={user ? userName : undefined} isAdmin={isAdmin} />

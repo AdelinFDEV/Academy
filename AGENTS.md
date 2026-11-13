@@ -30,7 +30,9 @@ La primera fila es **la fuente de verdad** de las guías: lo que diga el panel m
 
 **Desde el 31-10-2026 la web vive de tres piezas de pago —Diario de Trading, Portfolio Adelin y Cursos— y las guías son gratuitas, todas.** Las herramientas son cuatro: Diario, Portfolio Adelin, Predicción de Precio y Logros. Se retiraron Watchlist, Liberaciones de Tokens, Radar Diario, Mi Portfolio, la Calculadora de Riesgo, la landing `/herramientas` y el **Trading en Directo** (el servicio ya no se ofrece: no lo anuncies en ningún texto); sus URLs responden **410**. Al quitar algo, **se borra para siempre todo su código**: componentes, CSS, rutas, textos que lo prometen.
 
-**Desde el 05-11-2026 no hay Telegram en ningún sitio**: ni canal, ni bot, ni vinculación de cuentas, ni avisos. Se retiró entero, con sus tablas. Las redes son Instagram y YouTube, y el contacto directo es Instagram (`INSTAGRAM_DM_URL`). El único cron es `/api/cron/diario` (foto de YouTube y red de seguridad de los cobros de Stripe). No lo vuelvas a meter sin que el admin lo pida.
+**Desde el 05-11-2026 no hay Telegram en ningún sitio**: ni canal, ni bot, ni vinculación de cuentas, ni avisos. Se retiró entero, con sus tablas. Las redes son Instagram y YouTube, y el contacto directo es Instagram (`INSTAGRAM_DM_URL`). No lo vuelvas a meter sin que el admin lo pida. El único cron es `/api/cron/diario`: el mantenimiento del foro y borrar las visitas de más de 400 días.
+
+**Desde el 13-11-2026 el panel es una sola página, Analítica (`/admin`)**, con su medición propia de visitas (`PLATAFORMA.md`): no hay `/admin/users` ni `/admin/premium`, ni las tablas `site_visits` y `guide_visits`. **Tampoco hay `/admin/objetivos`**: ni objetivos, ni calendario, ni diario del negocio, ni libro de dinero, ni foto diaria de YouTube. Se borró entero, con sus tablas. No lo vuelvas a crear sin que el admin lo pida.
 
 ---
 
@@ -63,7 +65,7 @@ Ninguno lo caza el compilador y todos se han roto, o han estado a punto, al meno
 
 | Regla | Detalle |
 |---|---|
-| **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**: no hay paso intermedio para echarse atrás. Ponle su `publicada` (la fecha) al darla de alta | `/admin/guias-instrucciones` |
+| **Nunca publiques una guía sin aprobación explícita.** Darla de alta en `GUIDES` y desplegar **la publica**: no hay paso intermedio para echarse atrás. | `/admin/guias-instrucciones` |
 | **SIEMPRE: toda palabra técnica, o que merezca explicarse, se define en el diccionario y se enlaza en su primera aparición**, en toda guía, curso o texto. Si no existe, **se crea en el momento y ya como ficha detallada** (Parte B de la plantilla: 1.200-1.600 palabras, sus cinco `<h2>`, FAQ, `seoTitle` y `seoDescription`; nunca la versión corta de 150-250, pedido por el admin el 10-11-2026), **sin esperar a que nadie lo pida**, y antes de publicar. Ante la duda, se crea. Es la que más se olvida, porque el texto «se entiende igual». El admin lo pidió expresamente el 08-11-2026 | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **`term` no se cambia jamás**: es la clave de `saved_terms`, y tocarlo deja huérfanos los favoritos de todos los usuarios | [`PLANTILLA-DICCIONARIO.md`](./PLANTILLA-DICCIONARIO.md) |
 | **Un curso no se escribe sin informe aprobado.** Primero la investigación con fuentes y URL en `informes/`, después el curso | [`CURSOS.md`](./CURSOS.md) |

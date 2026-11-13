@@ -6,7 +6,7 @@ Aquí se apuntan las **guías que queremos hacer en el futuro**: el tema, la bú
 
 - Una idea entra aquí cuando el admin la quiere tener en cuenta, aunque no tenga fecha.
 - Cuando se empieza a montar, **se mueve a `TAREAS.md`** y **se borra de aquí** en el mismo commit. Lo publicado no se queda en esta lista.
-- Todas las guías son **gratuitas** (desde el 31-10-2026). Una guía nueva lleva su `[slug].css`, su alta en `GUIDES` con su fecha de `publicada` y la auditoría SEO, y no se publica sin el «sí» del admin.
+- Todas las guías son **gratuitas** (desde el 31-10-2026). Una guía nueva lleva su `[slug].css`, su alta en `GUIDES` y la auditoría SEO, y no se publica sin el «sí» del admin.
 
 Para ver las que ya existen:
 

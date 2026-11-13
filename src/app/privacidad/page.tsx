@@ -92,7 +92,7 @@ export default function PrivacidadPage() {
             <tr>
               <td>Datos de uso agregados</td>
               <td>Navegación por el Sitio</td>
-              <td>Estadística interna (páginas y contenidos visitados). <strong>No registramos tu dirección IP ni tu navegador</strong> en estas métricas</td>
+              <td>Estadística interna: páginas visitadas, web o campaña de procedencia, país, tipo de dispositivo y sistema operativo. <strong>No guardamos tu dirección IP</strong>: con ella y tu navegador calculamos un código anónimo que cambia cada día, solo para contar visitantes distintos, y que no permite reconocerte de un día a otro. No usa cookies</td>
             </tr>
           </tbody>
         </table>
@@ -180,7 +180,7 @@ export default function PrivacidadPage() {
         <ul>
           <li><strong>Datos de cuenta y contenido propio:</strong> mientras mantengas la cuenta activa. Si la eliminas, se borran de inmediato (salvo lo que la ley obligue a conservar).</li>
           <li><strong>Datos de facturación y suscripción:</strong> el plazo exigido por la normativa mercantil y fiscal (con carácter general, hasta 5 años).</li>
-          <li><strong>Estadística de uso agregada:</strong> se conserva de forma disociada; al eliminar tu cuenta se anonimiza para no vincularla a ti.</li>
+          <li><strong>Estadística de uso:</strong> como máximo 400 días, y después se borra. Al eliminar tu cuenta se anonimiza para no vincularla a ti.</li>
           <li><strong>Consentimiento de comunicaciones comerciales:</strong> hasta que lo retires.</li>
         </ul>
       </section>

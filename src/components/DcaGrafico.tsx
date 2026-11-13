@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import type { CompraCalculada } from "@/lib/dca";
-import { formatoES } from "@/lib/objetivos";
+import { formatoES } from "@/lib/formato";
 
 interface Props {
   /** Las compras realizadas, en cualquier orden: aquí se ordenan por fecha. */

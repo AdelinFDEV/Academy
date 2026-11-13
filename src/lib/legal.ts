@@ -75,5 +75,5 @@ export const LEGAL = {
     url: "https://www.dataprotection.ro",
   },
   /** Fecha de última actualización de las políticas (formato legible). */
-  ultimaActualizacion: "6 de septiembre de 2026",
+  ultimaActualizacion: "13 de noviembre de 2026",
 } as const;

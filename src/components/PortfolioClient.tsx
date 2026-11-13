@@ -6,7 +6,7 @@ import {
   ChevronDown, Scale,
 } from "lucide-react";
 import CifraAnimada from "@/components/CifraAnimada";
-import { formatoES } from "@/lib/objetivos";
+import { formatoES } from "@/lib/formato";
 
 interface Position {
   id: string;

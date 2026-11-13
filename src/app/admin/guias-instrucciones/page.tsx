@@ -142,10 +142,6 @@ export default function GuiasInstruccionesPage() {
               <div className="agi-table-fields">user_id · guide_slug — las escribe <code>GuideInteractions</code></div>
             </div>
             <div className="agi-table-def">
-              <div className="agi-table-name">guide_visits</div>
-              <div className="agi-table-fields">guide_slug — la escribe <code>GuideVisitTracker</code></div>
-            </div>
-            <div className="agi-table-def">
               <div className="agi-table-name">guide_quiz_completions</div>
               <div className="agi-table-fields">user_id · guide_slug · score · total — vía <code>/api/guide-quiz-completion</code></div>
             </div>
@@ -361,7 +357,7 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-comp-card">
             <div className="agi-comp-icon">📏</div>
             <div className="agi-comp-name">ProgressTracker</div>
-            <div className="agi-comp-desc">Componente <code>GuideProgressBar</code>: barra de progreso de lectura en la parte superior, ligada al scroll. Es <strong>puramente visual y no persiste nada</strong>. Quien sí registra la visita es <code>GuideVisitTracker</code>, que escribe en <code>guide_visits</code>.</div>
+            <div className="agi-comp-desc">Componente <code>GuideProgressBar</code>: barra de progreso de lectura en la parte superior, ligada al scroll. Es <strong>puramente visual y no persiste nada</strong>. Las visitas las cuenta solo la medición de toda la web (<code>RegistroVisita</code>, en el layout raíz): la guía no necesita nada.</div>
             <div className="agi-comp-rule">Obligatorio en toda guía de más de 2 secciones.</div>
           </div>
 
@@ -451,7 +447,7 @@ export default function GuiasInstruccionesPage() {
             <pre style={{ whiteSpace: "pre-wrap", margin: 0, fontSize: "0.8rem", color: "var(--text-secondary)" }}>
 {`import GuideBreadcrumbJsonLd from "@/components/GuideBreadcrumbJsonLd";
 
-// Dentro del return, junto al <GuideVisitTracker>:
+// Dentro del return, al principio:
 <GuideBreadcrumbJsonLd slug={SLUG} />`}
             </pre>
           </div>
@@ -540,7 +536,7 @@ export default function GuiasInstruccionesPage() {
           </ul>
         </div>
         <div className="agi-card" style={{ marginTop: "1rem" }}>
-          <p>Las <strong>estadísticas de uso</strong> sí están en Supabase y se pueden consultar por <code>guide_slug</code>: <code>guide_visits</code> (visitas), <code>guide_likes</code>, <code>guide_saves</code>, <code>guide_shares</code> y <code>guide_quiz_completions</code> (puntuaciones del quiz).</p>
+          <p>Las <strong>estadísticas de uso</strong> sí están en Supabase y se pueden consultar por <code>guide_slug</code>: <code>guide_likes</code>, <code>guide_saves</code>, <code>guide_shares</code> y <code>guide_quiz_completions</code> (puntuaciones del quiz). Las visitas de cada guía están en <strong>Analítica</strong> (<code>/admin</code>), en «Páginas más vistas».</p>
         </div>
       </section>
 

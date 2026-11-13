@@ -6,7 +6,7 @@ import {
   Wallet, Scale, CalendarClock,
 } from "lucide-react";
 import { calcularDCA, PRECIO_OBJETIVO, type CompraDCA } from "@/lib/dca";
-import { formatoES } from "@/lib/objetivos";
+import { formatoES } from "@/lib/formato";
 import DcaGrafico from "@/components/DcaGrafico";
 import CifraAnimada from "@/components/CifraAnimada";
 

@@ -8,7 +8,7 @@ import JsonLd from "@/components/JsonLd";
 import BadgeNotifier from "@/components/BadgeNotifier";
 import CookieBanner from "@/components/CookieBanner";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
-import SiteVisitTracker from "@/components/SiteVisitTracker";
+import RegistroVisita from "@/components/RegistroVisita";
 import StreakTracker from "@/components/StreakTracker";
 import GlosarioPopupGlobal, { type TerminoCorto } from "@/components/GlosarioPopupGlobal";
 import AcordeonesSuaves from "@/components/AcordeonesSuaves";
@@ -107,7 +107,7 @@ export default function RootLayout({
         {children}
         <BadgeNotifier />
         <CookieBanner />
-        <SiteVisitTracker />
+        <RegistroVisita />
         <StreakTracker />
         <GlosarioPopupGlobal terminos={TERMINOS_POPUP} />
         <AcordeonesSuaves />

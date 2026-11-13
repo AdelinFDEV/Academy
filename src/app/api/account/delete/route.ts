@@ -24,9 +24,8 @@ const OWNED_TABLES = [
 // Tablas de analítica/auditoría: no se borran, se anonimizan (user_id →
 // null) para no perder totales históricos ni el rastro de facturación.
 const ANONYMIZE_TABLES = [
-  "guide_visits",
   "guide_shares",
-  "site_visits",
+  "visitas",
   "subscription_log",
 ] as const;
 
