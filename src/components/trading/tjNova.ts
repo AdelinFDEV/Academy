@@ -943,6 +943,19 @@ const de = (nombre: string) => (nombre.startsWith("el ") ? `del ${nombre.slice(3
     });
   }
 
+  // ───────── Sin capital inicial no se empieza ─────────
+  // Lo primero que pide Nova, y lo único (pedido por el admin el 13-11-2026):
+  // sin ese dato no hay balance, ni riesgo en %, ni rentabilidad. Todo lo demás
+  // que hubiera pensado decir se descarta; el Diario no deja avanzar sin él.
+  if (capital == null || capital <= 0) {
+    out.length = 0;
+    add({
+      section: "hoy", key: "sin-capital", emoji: "💰", tone: "accent", priority: 100,
+      text: `¡Bienvenido a tu diario, ${name}! Antes de apuntar nada necesito un dato: ¿con cuánto capital empiezas? Con él calculo tu balance, tu rentabilidad y cuánto arriesgas en cada operación.`,
+      teaser: "Antes de empezar: tu capital inicial 💰", action: { kind: "capital", label: "Poner mi capital inicial" },
+    });
+  }
+
   // ───────── Destacados, recorte, cara y frases ─────────
   const byPriority = [...out].sort((a, b) => b.priority - a.priority);
   // Lo más importante se elige entre TODO, antes de recortar los capítulos.

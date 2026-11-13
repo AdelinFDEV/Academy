@@ -19,8 +19,10 @@ export async function PATCH(req: Request) {
   const { capital } = await req.json();
   const value = parseFloat(capital);
 
-  if (isNaN(value) || value < 0) {
-    return NextResponse.json({ error: "Capital inválido" }, { status: 400 });
+  // Mayor que cero: con 0 no se puede calcular ni rentabilidad ni riesgo en %,
+  // y el Diario lo trata como «sin definir».
+  if (!Number.isFinite(value) || value <= 0) {
+    return NextResponse.json({ error: "El capital inicial tiene que ser mayor que cero" }, { status: 400 });
   }
 
   // RLS de UPDATE en `profiles` sigue rota (ver AGENTS.md/memoria) — se usa

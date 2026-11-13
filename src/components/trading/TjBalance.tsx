@@ -18,6 +18,8 @@ interface Props {
   onEditingChange: (editing: boolean) => void;
   onCapitalSaved: (value: number) => void;
   onReset: () => void;
+  /** Aún no hay capital: el formulario está siempre a la vista y no se puede cerrar. */
+  obligatorio?: boolean;
 }
 
 /**
@@ -26,7 +28,7 @@ interface Props {
  * la forma de la curva. Aquí también se define o cambia el capital y se resetea.
  * Se monta con key={capital}: al guardar un capital nuevo, el campo empieza limpio.
  */
-export default function TjBalance({ totalPnl, capital, series, editing, onEditingChange, onCapitalSaved, onReset }: Props) {
+export default function TjBalance({ totalPnl, capital, series, editing, onEditingChange, onCapitalSaved, onReset, obligatorio = false }: Props) {
   const [input, setInput] = useState(capital?.toString() ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -38,8 +40,8 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const value = parseFloat(input);
-    if (isNaN(value) || value < 0) {
-      setError("Introduce un capital válido");
+    if (!Number.isFinite(value) || value <= 0) {
+      setError("Escribe una cantidad mayor que cero");
       return;
     }
     setSaving(true);
@@ -63,8 +65,8 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
   return (
     <div className="tjb">
       <div className="tjb-head">
-        <span className="tjb-eyebrow">{current != null ? "Balance actual" : "P&L acumulado"}</span>
-        <div className="tjb-tools">
+        <span className="tjb-eyebrow">{obligatorio ? "Primer paso" : current != null ? "Balance actual" : "P&L acumulado"}</span>
+        {!obligatorio && <div className="tjb-tools">
           <button
             type="button" className="tj-icon-btn" onClick={() => { onEditingChange(!editing); setError(""); }}
             aria-label={capital == null ? "Definir capital inicial" : "Cambiar capital inicial"} title="Capital inicial"
@@ -74,23 +76,23 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
           <button type="button" className="tj-icon-btn tone-loss" onClick={onReset} aria-label="Resetear el diario" title="Resetear el diario">
             <RotateCcw size={14} />
           </button>
-        </div>
+        </div>}
       </div>
 
-      {editing ? (
+      {editing || obligatorio ? (
         <form className="tjb-form" onSubmit={save}>
           <div className="field">
-            <label htmlFor="tj-capital">Capital inicial ($)</label>
+            <label htmlFor="tj-capital">{obligatorio ? "¿Con cuánto capital empiezas? ($)" : "Capital inicial ($)"}</label>
             <input
-              id="tj-capital" type="number" step="any" min="0" autoFocus required
+              id="tj-capital" type="number" step="any" min="0.01" inputMode="decimal" autoFocus required
               value={input} onChange={(e) => setInput(e.target.value)} placeholder="1000"
             />
           </div>
           <div className="tj-actions">
             <button type="submit" className="tj-btn is-primary" disabled={saving}>
-              {saving ? "Guardando..." : "Guardar"}
+              {saving ? "Guardando..." : obligatorio ? "Empezar mi diario" : "Guardar"}
             </button>
-            <button type="button" className="tj-btn" onClick={() => onEditingChange(false)}>Cancelar</button>
+            {!obligatorio && <button type="button" className="tj-btn" onClick={() => onEditingChange(false)}>Cancelar</button>}
           </div>
           {error && <p className="auth-error">{error}</p>}
         </form>

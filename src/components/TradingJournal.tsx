@@ -206,7 +206,22 @@ export default function TradingJournal({
     }
   }
 
+  /**
+   * Sin capital inicial el Diario no empieza (pedido por el admin el 13-11-2026):
+   * no hay pestañas, ni calendario, ni formulario de operación. Solo Nova
+   * pidiéndolo y el campo para escribirlo. Un capital de 0 cuenta como sin definir.
+   */
+  const sinCapital = !(capital != null && capital > 0);
+
+  /** Lleva al campo del capital, que está en la cabecera. */
+  function pedirCapital() {
+    const campo = document.getElementById("tj-capital");
+    campo?.scrollIntoView({ block: "center", behavior: "smooth" });
+    campo?.focus({ preventScroll: true });
+  }
+
   function openNew(date: Date | null = null) {
+    if (sinCapital) { pedirCapital(); return; }
     setEditing(null);
     setNewDate(date);
     setFormOpen(true);
@@ -319,7 +334,7 @@ export default function TradingJournal({
   /** Los botones de los mensajes de Nova: cada uno lleva a hacer lo que propone. */
   function onBotAction(kind: BotActionKind) {
     if (kind === "nuevo") openNew();
-    else if (kind === "capital") setEditingCapital(true);
+    else if (kind === "capital") { if (sinCapital) pedirCapital(); else setEditingCapital(true); }
     else goTo(kind);
   }
 
@@ -332,8 +347,9 @@ export default function TradingJournal({
       series={account.series}
       editing={editingCapital}
       onEditingChange={setEditingCapital}
-      onCapitalSaved={v => { setCapital(v); void syncLogros(); }}
+      onCapitalSaved={v => { if (sinCapital) closeForm(); setCapital(v); void syncLogros(); }}
       onReset={openReset}
+      obligatorio={sinCapital}
     />
   );
 
@@ -397,7 +413,7 @@ export default function TradingJournal({
       <TjWelcome name={userName} avatar={userAvatar} trades={trades} capital={capital} now={now} balance={balance} bot={<TjBot report={botReport} onAction={onBotAction} />} />
       <div ref={anclaRef} className="tj-scroll-anchor tj-ancla-vista" aria-hidden="true" />
       <div className="tj-topbar" ref={tabsRef}>
-        {trades.length > 0 && (
+        {!sinCapital && trades.length > 0 && (
           <div className="tj-tabs">
             <TjSegmented label="Vista del diario" value={view} onChange={goTo} options={VIEWS} />
             {(view === "analisis" || view === "operaciones") && filtering && (
@@ -405,7 +421,7 @@ export default function TradingJournal({
             )}
           </div>
         )}
-        {canAdd && <button type="button" className="btn-primary btn-small tj-new" onClick={() => openNew()} title="Nueva operación (atajo: tecla N)" aria-label="Nueva operación" aria-keyshortcuts="N">
+        {!sinCapital && canAdd && <button type="button" className="btn-primary btn-small tj-new" onClick={() => openNew()} title="Nueva operación (atajo: tecla N)" aria-label="Nueva operación" aria-keyshortcuts="N">
           <Plus size={16} /> <span className="tj-hide-sm">Nueva operación</span>
         </button>}
       </div>
@@ -430,7 +446,7 @@ export default function TradingJournal({
 
       <AnimatePresence initial={false}>
         {/* Una operación nueva a medias se cierra al salir del Resumen; una edición sigue abierta. */}
-        {formOpen && (editing || canAdd) && (
+        {!sinCapital && formOpen && (editing || canAdd) && (
           <motion.div
             ref={formRef}
             className="tj-scroll-anchor"
@@ -459,13 +475,27 @@ export default function TradingJournal({
           volvía a crecer. Ahora la nueva sustituye a la vieja en el mismo
           fotograma y solo aparece con un fundido. */}
       <motion.div
-        key={trades.length === 0 ? "vacio" : view}
+        key={sinCapital ? "sin-capital" : trades.length === 0 ? "vacio" : view}
         className="tj-vista"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
       >
-      {trades.length === 0 ? (
+      {sinCapital ? (
+        <section className="tj-card tj-onboarding tj-capital-paso">
+          <span className="tj-label"><NotebookPen size={15} /> Primer paso: tu capital inicial</span>
+          <p className="tj-capital-texto">
+            El diario empieza por saber con cuánto dinero operas. Con ese dato se calculan tu balance, tu
+            rentabilidad en % y cuánto arriesgas en cada operación. Hasta que lo pongas no se puede apuntar nada.
+          </p>
+          <ol>
+            <li><span>1</span> Escribe arriba el capital con el que empiezas, en dólares.</li>
+            <li><span>2</span> Guárdalo. Podrás cambiarlo después con el lápiz del balance.</li>
+            <li><span>3</span> Apunta tu primera operación.</li>
+          </ol>
+          <button type="button" className="tj-btn is-primary" onClick={pedirCapital}>Poner mi capital inicial</button>
+        </section>
+      ) : trades.length === 0 ? (
         <>
           {calendar}
           {summary}

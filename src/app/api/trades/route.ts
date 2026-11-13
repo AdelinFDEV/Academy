@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { NextResponse } from "next/server";
 
 const RESULTS = ["win", "loss", "breakeven"] as const;
@@ -126,6 +127,18 @@ export async function GET() {
 export async function POST(req: Request) {
   const { user, supabase } = await getAuthenticatedPremiumUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  // El Diario no empieza sin capital inicial. La pantalla ya lo impide; esto es
+  // para que tampoco se pueda saltar llamando a la API. La columna no se puede
+  // leer con la clave de la sesión, por eso se usa el cliente de servicio.
+  const { data: perfil } = await createAdminClient()
+    .from("profiles")
+    .select("trading_starting_capital")
+    .eq("id", user.id)
+    .single();
+  if (!(Number(perfil?.trading_starting_capital) > 0)) {
+    return NextResponse.json({ error: "Antes de apuntar una operación, define tu capital inicial." }, { status: 409 });
+  }
 
   const body = await req.json();
   const parsed = parseTradeBody(body);

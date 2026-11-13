@@ -2464,6 +2464,9 @@
 .tjm-all { align-self: flex-start; }
 
 
+/* El paso obligatorio: sin capital inicial el Diario no enseña nada más. */
+.tj-capital-paso { max-width: 720px; margin-inline: auto; }
+.tj-capital-texto { margin: 0.9rem 0 0; font-size: 0.95rem; line-height: 1.65; color: var(--text-secondary); }
 .tj-onboarding ol { display: flex; flex-direction: column; gap: 0.7rem; margin: 1rem 0 1.3rem; padding: 0; list-style: none; }
 .tj-onboarding li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--text-secondary); }
 
