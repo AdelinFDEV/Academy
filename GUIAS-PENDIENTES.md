@@ -41,18 +41,15 @@ Una guía por moneda, poco a poco, como las de Worldcoin, Render, Hyperliquid y 
 curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50"   | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>JSON.parse(d).forEach(c=>console.log(c.market_cap_rank,c.symbol.toUpperCase(),c.name)))"
 ```
 
-**Quedan 27.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
+**Quedan 22.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
 
 | # | Moneda | Grupo | Nota |
 |---|---|---|---|
 | 2 | Ethereum (ETH) | Plataforma de contratos | La segunda del mercado y la base de casi todo DeFi |
-| 4 | BNB (BNB) | Token de exchange · plataforma | De Binance; también mueve su propia red (BNB Chain) |
 | 7 | Solana (SOL) | Plataforma de contratos | |
 | 8 | TRON (TRX) | Plataforma de contratos | Muy usada para mover USDT |
-| 11 | Zcash (ZEC) | Privacidad | Comprobar su situación regulatoria en la UE antes de escribir |
-| 13 | Monero (XMR) | Privacidad | Igual que Zcash: muchos exchanges europeos la han retirado |
-| 15 | LEO Token (LEO) | Token de exchange | De Bitfinex |
-| 16 | WhiteBIT Coin (WBT) | Token de exchange | De WhiteBIT |
+| 11 | Zcash (ZEC) | Privacidad | Dentro por decisión del admin. Explicar su situación en la UE, con fuente y fecha |
+| 13 | Monero (XMR) | Privacidad | Dentro por decisión del admin. Igual que Zcash: explicar con fuente por qué muchos exchanges europeos la han retirado |
 | 17 | Chainlink (LINK) | Infraestructura (oráculos) | |
 | 18 | Cardano (ADA) | Plataforma de contratos | |
 | 19 | Stellar (XLM) | Pagos | Pariente de XRP: enlazar con su guía |
@@ -67,9 +64,7 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 | 32 | Hedera (HBAR) | Plataforma de contratos | |
 | 34 | Rain (RAIN) | DeFi (opciones y mercados de predicción) | Reciente y con subida rápida en el ranking: comprobar que sigue arriba antes de dedicarle una guía |
 | 38 | Bittensor (TAO) | Inteligencia artificial | |
-| 40 | Cronos (CRO) | Token de exchange · plataforma | De Crypto.com |
 | 41 | Quant (QNT) | Infraestructura (interoperabilidad) | |
-| 43 | OKB (OKB) | Token de exchange | De OKX |
 | 46 | Ethena (ENA) | DeFi | El token del protocolo; su dólar sintético (USDe) es una de las estables excluidas |
 | 50 | Aave (AAVE) | DeFi (préstamos) | Enlazar con el curso *DeFi y stablecoins* |
 
@@ -77,10 +72,11 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 
 - **Ya explicadas en la web**: Bitcoin (curso *Bitcoin y DCA*), XRP y Hyperliquid (tienen guía).
 - **Estables**: USDT, USDC, USDS, USDe, DAI, USD1, RLUSD, PYUSD, USDG y USDF. Se explican en el curso *DeFi y stablecoins*, no una a una.
+- **Tokens de exchange** (decidido por el admin el 13-11-2026): BNB, LEO Token, WhiteBIT Coin, Cronos y OKB. Son la moneda de la casa de un exchange; se explican, si hace falta, dentro de lo que cuenta de cada exchange, no como guía propia.
 - **Memes**: Dogecoin, Shiba Inu, Pepe y MemeCore (una red hecha para memes, que CoinGecko clasifica como meme).
 - **Activos tradicionales tokenizados**, que no son una criptomoneda propia sino un activo de fuera envuelto en un token: Figure HELOC (préstamos hipotecarios), Tether Gold y PAX Gold (oro), Ondo USDY y Circle USYC (deuda del Tesoro de EE. UU.) y Spiko Amundi (un fondo monetario en euros). Si interesan, darían para **una sola guía** sobre la tokenización de activos.
 
-**Orden recomendado para empezar:** Ethereum, Solana, BNB, Cardano y Chainlink. Están en la parte alta de la lista, son redes o protocolos con uso propio (BNB es de Binance, pero mueve su propia red) y sin problemas regulatorios a la vista y son las que más enlazan con lo que ya hay (cursos de DeFi y de CoinMarketCap/CoinGecko). El volumen de búsqueda real de cada una se mira en la Fase 0 de la auditoría SEO antes de elegir.
+**Orden recomendado para empezar:** Ethereum, Solana, Cardano y Chainlink. Están en la parte alta de la lista, son redes o protocolos con uso propio y son las que más enlazan con lo que ya hay (cursos de DeFi y de CoinMarketCap/CoinGecko). El volumen de búsqueda real de cada una se mira en la Fase 0 de la auditoría SEO antes de elegir.
 
 ---
 
