@@ -1,6 +1,6 @@
 # El foro — plan de construcción
 
-**Estado: en construcción desde el 12-11-2026.** Hecho: el perfil público (alias y foto, en «Mi perfil»). El plan de seguridad se reforzó ese día (§1 puntos 1, 7 y 8, §5, §6.0, §6.1, §6.2, §6.4, §6.6 y §15): el navegador ya no lee las tablas, cada permiso se comprueba dos veces y el foro es un módulo cerrado.
+**Estado: abierto al público desde el 13-11-2026** (decisión del admin, sin la beta cerrada de la fase 13; primer hilo: la bienvenida del admin, id 1). Las fases 9 y 10 siguen pendientes con el foro ya abierto. En construcción desde el 12-11-2026. Hecho: el perfil público (alias y foto, en «Mi perfil»). El plan de seguridad se reforzó ese día (§1 puntos 1, 7 y 8, §5, §6.0, §6.1, §6.2, §6.4, §6.6 y §15): el navegador ya no lee las tablas, cada permiso se comprueba dos veces y el foro es un módulo cerrado.
 
 **Orden innegociable: primero la seguridad y la moderación, luego la lógica, y el diseño al final.** Si una regla de aquí molesta al construir, se cambia aquí primero, con el admin, y después en el código. Nunca al revés.
 
@@ -193,7 +193,7 @@ Reglas, y las vigila `npm run check` (se añaden a `scripts/check-code.mjs` en l
 - **Funciones `SECURITY DEFINER`** para cada acción compuesta (§6.3), con `set search_path = ''` y todos los nombres con su esquema. Postgres da permiso de ejecución **a todo el mundo por defecto**, y Supabase publica cada función de `public` en `/rest/v1/rpc/…`: por eso cada una lleva su `revoke execute … from public, anon, authenticated` y su `grant execute … to service_role`, y el SQL termina con una consulta que lista quién puede ejecutar qué.
 - **Cada función vuelve a comprobar el permiso** con `foro_puede_participar(usuario)` (Premium o admin en `profiles.role`, sin sanción vigente, con alias y con las normas aceptadas), dentro de la misma transacción. Cierra también el hueco entre que la API comprueba y la base de datos escribe.
 - `foro_moderacion` y `foro_puntos`: sin `update` ni `delete` para nadie salvo `service_role`, y un trigger que lo rechaza también para él salvo en la purga programada.
-- **Interruptor de emergencia**: una fila en `foro_ajustes` con el modo del foro (`cerrado` = solo el admin lo ve, `lectura` = se lee pero nadie publica, `abierto`). Las funciones lo leen: pasar a `lectura` corta toda escritura en el acto, sin desplegar nada. Hasta la fase 13 está en `cerrado`.
+- **Interruptor de emergencia**: una fila en `foro_ajustes` con el modo del foro (`cerrado` = solo el admin lo ve, `lectura` = se lee pero nadie publica, `abierto`). Las funciones lo leen: pasar a `lectura` corta toda escritura en el acto, sin desplegar nada. Estuvo en `cerrado` hasta el 13-11-2026; desde entonces, `abierto`.
 - **Tope global**: si en una hora se publican más de 30 preguntas entre todas las cuentas, el foro pasa solo a `lectura` y avisa al admin. Un ataque coordinado no lo llena antes de que nadie mire.
 
 ### 6.2 La API (`/api/foro/*`)

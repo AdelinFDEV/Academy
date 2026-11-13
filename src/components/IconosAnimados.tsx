@@ -53,14 +53,20 @@ export function IconoDiario({ size = 16 }: { size?: number }) {
   );
 }
 
-/** Foro: un bocadillo con tres puntos que saltan, como alguien escribiendo. Va en la barra (NavForo). */
+/**
+ * Foro: dos bocadillos de conversación. El de atrás, más tenue, se mece; en
+ * el de delante, tres puntos saltan como alguien escribiendo. El de atrás se
+ * dibuja solo por la parte que asoma, para que no se crucen las líneas.
+ * Va en la barra (NavForo).
+ */
 export function IconoForo({ size = 16 }: { size?: number }) {
   return (
     <svg className="ia ia--foro" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.6 3.8c-.5.4-1.2 0-1.2-.6V16A1.6 1.6 0 0 1 4 14.4z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-      <circle className="ia-punto" cx="8.4" cy="9.6" r="1.25" fill="currentColor" />
-      <circle className="ia-punto" cx="12" cy="9.6" r="1.25" fill="currentColor" />
-      <circle className="ia-punto" cx="15.6" cy="9.6" r="1.25" fill="currentColor" />
+      <path className="ia-bocadillo-atras" d="M8 6.3V5.5A2.5 2.5 0 0 1 10.5 3h8A2.5 2.5 0 0 1 21 5.5v4a2.5 2.5 0 0 1-2.5 2.5l1.1 2.9-3.1-2.9" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5.5 7.5H13a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-2.5 2.5H8.2l-3.6 3.1v-3.3A2.5 2.5 0 0 1 3 15v-5a2.5 2.5 0 0 1 2.5-2.5z" fill="currentColor" fillOpacity="0.16" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <circle className="ia-punto" cx="6.2" cy="12.5" r="1.1" fill="currentColor" />
+      <circle className="ia-punto" cx="9.25" cy="12.5" r="1.1" fill="currentColor" />
+      <circle className="ia-punto" cx="12.3" cy="12.5" r="1.1" fill="currentColor" />
     </svg>
   );
 }
