@@ -1,0 +1,154 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En marzo de 2023, la segunda mayor stablecoin del mundo cotizó durante un fin de semana a 88 céntimos. Tenía reservas de buena calidad y un emisor regulado, y aun así perdió la paridad. Aquí ves qué pasó, las tres causas por las que una moneda estable deja de serlo y cómo distinguirlas mientras ocurre, lo que ha cambiado en Europa con el reglamento MiCA y qué se puede decidir de antemano para que un episodio así no te obligue a improvisar.</p>
+</div>
+
+<h2>El fin de semana de USDC</h2>
+
+<p>El viernes 10 de marzo de 2023, las autoridades de Estados Unidos intervinieron Silicon Valley Bank. Esa noche, Circle, el emisor de USDC, comunicó que tenía allí 3.300 millones de dólares de las reservas: alrededor del 8 % del total.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Viernes 10</span>
+    <p>Cierra el banco. Circle confirma que parte de las reservas de USDC está dentro.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Sábado 11</span>
+    <p>Los bancos están cerrados: no se puede canjear. USDC llega a cotizar en torno a 0,88 dólares.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Domingo 12</span>
+    <p>Las autoridades anuncian que todos los depósitos del banco estarán disponibles el lunes.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Lunes 13</span>
+    <p>Circle comunica que el depósito queda accesible. USDC vuelve al entorno de 1,00.</p>
+  </div>
+</div>
+
+<p>Haz la cuenta que el mercado no hizo. Si se hubiera perdido la totalidad de ese 8 %, cada USDC habría quedado respaldado por unos 92 céntimos. Con cualquier recuperación parcial del depósito, por bastante más. El precio bajó a 88.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "USDC en marzo de 2023: el peor caso posible frente al precio de mercado",
+  "subtitulo": "En céntimos de dólar por cada USDC.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Paridad", "centimos": 100 },
+    { "etiqueta": "Si se perdía todo el depósito", "centimos": 92 },
+    { "etiqueta": "Mínimo en el mercado", "centimos": 88 }
+  ],
+  "series": [{ "clave": "centimos", "nombre": "Céntimos por USDC", "color": "#22d3ee" }],
+  "nota": "El 8 % de las reservas estaba en el banco intervenido. El mercado llegó a cotizar por debajo del peor escenario."
+}
+</script></div>
+
+<p>¿Por qué cayó por debajo del peor caso? Porque durante el fin de semana el mecanismo que sostiene la paridad estaba apagado. Los bancos no abrían, así que nadie podía canjear tokens por dólares. Sin canje no hay arbitraje, y sin arbitraje el precio lo decide quien tiene más prisa por salir.</p>
+
+<p>Varias stablecoins descentralizadas cayeron también ese fin de semana, porque tenían USDC entre sus garantías. El riesgo de un emisor se había transmitido a monedas que, en teoría, no dependían de él.</p>
+
+<h2>Tres causas de un desvío</h2>
+
+<p>No todas las pérdidas de paridad son iguales. Un <a href="/glosario/depeg">depeg</a> puede tener tres orígenes, con desenlaces muy distintos.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Causa</th><th>Qué ocurre</th><th>Desenlace habitual</th><th>Ejemplo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Falta de liquidez o pánico</td><td>Muchos venden a la vez y el canje no está disponible</td><td>Se recupera cuando vuelve el canje</td><td>USDC, marzo de 2023</td></tr>
+    <tr><td>Agujero en las reservas</td><td>Lo que respalda la moneda vale menos de lo emitido</td><td>La moneda se queda por debajo, en proporción al agujero</td><td>—</td></tr>
+    <tr><td>Fallo del mecanismo</td><td>El sistema que debía sostener el precio lo hunde</td><td>Puede llegar a cero</td><td>TerraUSD, mayo de 2022</td></tr>
+  </tbody>
+</table>
+
+<p>El caso de USDC empezó pareciendo el segundo y resultó ser el primero. Esa es la dificultad: mientras ocurre, las tres causas se ven igual en la pantalla. El precio baja, las redes se llenan de mensajes alarmados y nadie tiene toda la información.</p>
+
+<h2>Cómo leerlo mientras ocurre</h2>
+
+<p>No hay forma de saber con certeza cómo acabará. Hay preguntas que ayudan a situarse.</p>
+
+<ol class="prose-pasos">
+  <li><strong>¿Se conoce el tamaño del problema?</strong> Un emisor que dice «tenemos este importe, en este sitio» da una cifra con la que calcular. El silencio es mucho peor.</li>
+  <li><strong>¿Cuánto es sobre el total?</strong> Un 8 % de las reservas en riesgo acota la pérdida máxima. Un respaldo que depende entero de un activo que se hunde, no.</li>
+  <li><strong>¿Funciona el canje?</strong> Si está cerrado por horario, el precio se desvía más de lo que justifican los datos.</li>
+  <li><strong>¿Qué respalda la moneda?</strong> Activos ajenos al proyecto se pueden vender. Un token propio no vale nada si falla la confianza.</li>
+  <li><strong>¿Es un problema de una plataforma o de la moneda?</strong> A veces una stablecoin cae en un mercado concreto, por falta de compradores allí, y sigue en un dólar en los demás.</li>
+</ol>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Vender en pleno pánico</p>
+    <p class="prose-vs-sub">A 0,88, por ejemplo</p>
+    <ul>
+      <li data-tono="favor">Te quita la incertidumbre de encima</li>
+      <li data-tono="contra">Conviertes en definitiva una pérdida del 12 %</li>
+      <li data-tono="contra">Si se recupera, la habrás regalado</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Aguantar</p>
+    <p class="prose-vs-sub">Esperando que vuelva</p>
+    <ul>
+      <li data-tono="favor">Si era un problema de liquidez, no pierdes nada</li>
+      <li data-tono="contra">Si era un fallo del mecanismo, puedes perderlo todo</li>
+      <li data-tono="contra">Decides con muy poca información</li>
+    </ul>
+  </div>
+</div>
+
+<p>Ninguna de las dos es correcta por principio. Quien vendió USDC a 0,88 perdió un 12 % sin necesidad. Quien aguantó UST lo perdió todo. La única decisión que funciona en los dos casos se toma antes: no tener en una sola stablecoin más de lo que estarías dispuesto a ver temblar.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0,88 $</span>
+  <span class="prose-dato-texto">El mínimo aproximado de USDC el 11 de marzo de 2023, con el 92 % de sus reservas intacto. Con el canje cerrado, el precio lo fijó el miedo.</span>
+</div>
+
+<h2>Lo que ha cambiado en Europa: MiCA</h2>
+
+<p>La Unión Europea aprobó en 2023 un reglamento sobre los mercados de criptoactivos, conocido como MiCA, que es plenamente aplicable desde diciembre de 2024. Dedica una parte importante a las stablecoins.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Lo que exige a quien emite una stablecoin en la UE</th><th>Qué problema ataca</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Estar autorizado como entidad de crédito o de dinero electrónico</td><td>Que haya un supervisor detrás</td></tr>
+    <tr><td>Mantener reservas con reglas sobre su composición y custodia</td><td>Que el respaldo exista y se pueda vender</td></tr>
+    <tr><td>Permitir a los titulares el reembolso al valor nominal</td><td>Que el canje no sea solo para grandes clientes</td></tr>
+    <tr><td>No pagar intereses por tener la moneda</td><td>Que no se comercialice como un producto de ahorro</td></tr>
+  </tbody>
+</table>
+
+<p>La consecuencia práctica llegó a principios de 2025. En enero, el supervisor europeo de los mercados y la Comisión Europea indicaron que los proveedores debían dejar de ofrecer las stablecoins no conformes con el reglamento como muy tarde al final del primer trimestre. Las grandes plataformas retiraron USDT y algunas otras de la negociación al contado para sus clientes europeos antes del 31 de marzo de 2025.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Que una stablecoin no esté autorizada en la Unión Europea no dice que sea insolvente: dice que su emisor no se ha sometido a esas reglas. Y que una sí lo esté no la hace infalible. Para quien reside aquí, el efecto es práctico: qué monedas puede comprar en plataformas reguladas, y con qué derechos frente al emisor.</div>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">MiCA regula a los emisores y a los proveedores de servicios. Un protocolo que funciona solo, sin una empresa detrás, queda en buena medida fuera. Las stablecoins que uses dentro de DeFi pueden no tener ninguna de las protecciones de la tabla, aunque se llamen igual que las que compras en una plataforma autorizada.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Una stablecoin con reservas cae a 0,90 un sábado. Su emisor ha comunicado que el 6 % de sus reservas está en un banco intervenido y el resto, en deuda pública. ¿Qué describe mejor la situación?",
+  "opciones": [
+    "La pérdida máxima es del 6 %, y parte de la caída se debe a que el canje está cerrado",
+    "La moneda va a cero, como TerraUSD",
+    "Es seguro que el lunes valdrá un dólar",
+    "El emisor ha perdido el 90 % de las reservas"
+  ],
+  "correcta": 0,
+  "explicacion": "El problema está acotado: en el peor caso, 94 céntimos de respaldo. Que cotice a 90 refleja pánico y ausencia de arbitraje, no el valor de las reservas. Tampoco hay garantía de recuperación total."
+}
+</script></div>
+
+<h2>Ejercicio: tu plan para un desvío</h2>
+
+<p>Con la lista de stablecoins que has ido completando, responde por escrito a tres preguntas. Primera: ¿qué parte de tus ahorros está en cada una, y qué supondría que una de ellas cayera un 15 % durante una semana? Segunda: ¿dónde consultarías la información oficial del emisor si ocurriera? Apunta la dirección de su página de comunicados. Tercera: ¿cuál es el máximo que quieres tener en una sola stablecoin? Escribe una cifra. Si hoy la superas, decide cómo y cuándo vas a corregirlo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> USDC cayó a 0,88 en marzo de 2023 con el 92 % de sus reservas a salvo, porque el canje estaba cerrado y sin arbitraje manda el miedo. Un desvío puede venir de falta de liquidez, de un agujero en las reservas o de un fallo del mecanismo, y mientras ocurre se parecen. MiCA exige en Europa autorización, reservas y reembolso. Lo que protege de verdad se decide antes: cuánto tienes en cada una.</div>
+</div>

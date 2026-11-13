@@ -1,0 +1,183 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Cuando un préstamo deja de estar suficientemente garantizado, el protocolo no llama a nadie: permite que un tercero pague parte de la deuda y se quede con parte de la garantía, con un descuento. Aquí ves esa operación con sus números, cuánto te cuesta, quién la hace y por qué; y de dónde saca el protocolo el precio con el que decide, el oráculo, que es una de las piezas que más veces se ha usado para vaciar un protocolo.</p>
+</div>
+
+<h2>Quién liquida, y por qué</h2>
+
+<p>Un contrato no puede hacer nada por sí solo: alguien tiene que enviarle una operación. Por eso las liquidaciones las ejecutan terceros, llamados liquidadores. Son programas que vigilan todos los préstamos abiertos y actúan en cuanto uno baja del límite.</p>
+
+<p>Lo hacen por dinero. El protocolo les ofrece una bonificación: pagan parte de la deuda de un usuario y reciben a cambio garantía por un valor algo mayor. Esa diferencia es su beneficio, y sale de tu garantía.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Tu factor de salud baja de 1.</strong> El préstamo queda abierto a la <a href="/glosario/liquidacion">liquidación</a>.</li>
+  <li><strong>Un liquidador paga parte de tu deuda</strong> con sus propios fondos.</li>
+  <li><strong>El contrato le entrega garantía tuya</strong> por el valor pagado más la bonificación.</li>
+  <li><strong>Tu préstamo queda más pequeño</strong> y, normalmente, otra vez por encima de 1.</li>
+</ol>
+
+<h2>Una liquidación, con números</h2>
+
+<p>Sigue el ejemplo de la lección anterior: 10.000 $ en ether como garantía, umbral del 80 % y 6.000 $ de deuda. El ether cae un 26 % y la garantía pasa a valer 7.400 $. Supón una bonificación del 5 %, que es un valor de ejemplo: cada protocolo fija la suya para cada moneda.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Antes de la liquidación</th><th>Después</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Garantía</td><td>7.400 $</td><td>4.250 $</td></tr>
+    <tr><td>Deuda</td><td>6.000 $</td><td>3.000 $</td></tr>
+    <tr><td>Factor de salud</td><td>0,99</td><td>1,13</td></tr>
+    <tr><td>Tu patrimonio en el protocolo</td><td>1.400 $</td><td>1.250 $</td></tr>
+  </tbody>
+</table>
+
+<p>El liquidador ha pagado 3.000 $ de tu deuda, la mitad, y se ha llevado 3.150 $ de tu ether. Los 150 $ de diferencia son la penalización. Tu posición sigue viva, más pequeña.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">150 $</span>
+  <span class="prose-dato-texto">Lo que cuesta la liquidación del ejemplo, con una bonificación del 5 % sobre los 3.000 $ pagados. Se suma a lo que ya habías perdido por la caída del precio.</span>
+</div>
+
+<p>Dos detalles de la documentación de Aave. Se puede liquidar hasta el 50 % de la deuda si el factor de salud sigue por encima de 0,95; por debajo de ese nivel, o en posiciones pequeñas, hasta el 100 %. En una caída muy rápida, por tanto, la posición puede cerrarse entera.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Liquidación en un protocolo</p>
+    <p class="prose-vs-sub">Lo que has visto aquí</p>
+    <ul>
+      <li data-tono="favor">Suele ser parcial: conservas parte de la posición</li>
+      <li data-tono="contra">Pagas una penalización sobre lo liquidado</li>
+      <li data-tono="contra">Puede repetirse si el precio sigue cayendo</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Reducir tú antes</p>
+    <p class="prose-vs-sub">Devolver parte de la deuda</p>
+    <ul>
+      <li data-tono="favor">Sin penalización</li>
+      <li data-tono="favor">Eliges cuánto y cuándo</li>
+      <li data-tono="contra">Exige estar atento y tener con qué devolver</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Cómo no llegar ahí</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Medida</th><th>Qué consigue</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Pedir mucho menos del máximo</td><td>Un factor de salud de 2 o más aguanta una caída del 50 %</td></tr>
+    <tr><td>Guardar fuera fondos para devolver</td><td>Poder reducir la deuda sin vender la garantía en el peor momento</td></tr>
+    <tr><td>Poner alertas sobre el factor</td><td>Enterarte antes de que actúe un liquidador</td></tr>
+    <tr><td>No usar como garantía lo que no puedes perder</td><td>Que una liquidación sea un coste y no un desastre</td></tr>
+  </tbody>
+</table>
+
+<p>Y una advertencia sobre las posiciones en bucle, las que depositan, piden, compran y vuelven a depositar. Deshacerlas en una caída exige varias operaciones seguidas, cada una con su gas, justo cuando la red está saturada y las comisiones se multiplican. Son las primeras en ser liquidadas.</p>
+
+<h2>El oráculo: de dónde sale el precio</h2>
+
+<p>Para calcular el factor de salud, el contrato necesita saber cuánto vale el ether en dólares. Pero una blockchain no puede consultar internet. Alguien tiene que escribir ese precio dentro de la cadena. Ese servicio es el <a href="/glosario/oraculo">oráculo</a>.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Fuentes</span>
+    <p>El precio de la moneda en varias plataformas y mercados.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Agregación</span>
+    <p>Varios operadores independientes recogen esos precios y calculan un valor común, descartando los extremos.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Publicación</span>
+    <p>Ese valor se escribe en la blockchain cada cierto tiempo, o cuando el precio cambia más de un umbral.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Uso</span>
+    <p>El protocolo lo lee y decide con él quién puede pedir y a quién se liquida.</p>
+  </div>
+</div>
+
+<p>Todo el protocolo depende de ese número. Si el oráculo dice que tu garantía vale la mitad, te liquidan, aunque no sea cierto. Y si dice que un token vale diez veces más de lo real, alguien puede depositarlo y llevarse prestado todo lo que haya.</p>
+
+<h2>Cuando el precio miente</h2>
+
+<p>Los fallos de oráculo son una de las causas más repetidas de pérdidas en DeFi. Tienen tres formas.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Fallo</th><th>Cómo ocurre</th><th>Consecuencia</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Manipulación</td><td>El protocolo toma el precio de un solo fondo con poco dinero. Alguien lo mueve con una operación grande durante un instante</td><td>El atacante pide prestado contra una garantía inflada y no devuelve</td></tr>
+    <tr><td>Retraso</td><td>El precio se publica cada cierto tiempo y el mercado se mueve más deprisa</td><td>Liquidaciones que llegan tarde y dejan deuda sin cubrir</td></tr>
+    <tr><td>Precio local</td><td>Un activo cae en un mercado concreto por falta de compradores y el oráculo toma ese precio</td><td>Se liquidan posiciones que estaban bien garantizadas</td></tr>
+  </tbody>
+</table>
+
+<p>La primera se ha repetido muchas veces, y suele apoyarse en préstamos que se piden y se devuelven dentro de una misma operación, sin garantía. Permiten a cualquiera disponer durante unos segundos de un capital enorme, suficiente para mover el precio de un fondo pequeño.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Dinero necesario para doblar el precio en un fondo, según su tamaño",
+  "subtitulo": "Fondo de producto constante: hay que aportar un 41 % de la moneda que ya contiene.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Fondo con 100.000 $ por lado", "coste": 41 },
+    { "etiqueta": "Fondo con 1 millón por lado", "coste": 414 },
+    { "etiqueta": "Fondo con 10 millones por lado", "coste": 4142 }
+  ],
+  "series": [{ "clave": "coste", "nombre": "Miles de dólares", "color": "#22d3ee" }],
+  "nota": "Cálculo con la fórmula x × y = k. Un protocolo que tome el precio de un fondo pequeño puede ser engañado con poco capital."
+}
+</script></div>
+
+<p>La cuenta del gráfico sale de la fórmula de la lección 3.1. Para doblar el precio en un fondo hay que aumentar en un 41 % la moneda con la que se compra. En un fondo de cien mil dólares, eso son cuarenta y un mil. Un protocolo de préstamos que se fíe de ese precio está dejando la llave puesta.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Como usuario no puedes auditar un oráculo, pero sí hacer dos preguntas a la documentación: de dónde sale el precio de cada moneda y qué monedas acepta el protocolo como garantía. Si acepta tokens pequeños, con poca liquidez, el riesgo de manipulación es real aunque tú solo deposites stablecoins.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Los oráculos más usados combinan muchos mercados y muchos operadores, lo que los hace caros de manipular. No son infalibles: siguen siendo un tercero en el que el protocolo confía. «Sin intermediarios» nunca es del todo cierto.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un liquidador paga 2.000 $ de tu deuda y la bonificación de liquidación es del 5 %. ¿Cuánta garantía pierdes, y cuál es la penalización?",
+  "opciones": [
+    "Pierdes 2.100 $ de garantía: 100 $ de penalización",
+    "Pierdes 2.000 $ de garantía: sin penalización",
+    "Pierdes 1.900 $ de garantía: ganas 100 $",
+    "Pierdes toda la garantía"
+  ],
+  "correcta": 0,
+  "explicacion": "El liquidador recibe lo pagado más un 5 %: 2.000 × 1,05 = 2.100 $. Tu deuda baja 2.000 y tu garantía, 2.100."
+}
+</script></div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "El recorrido de una liquidación",
+  "instrucciones": "Ordena lo que ocurre.",
+  "pasos": [
+    "El oráculo publica un precio más bajo para la garantía",
+    "El factor de salud del préstamo baja de 1",
+    "Un liquidador paga parte de la deuda",
+    "El contrato le entrega garantía por ese valor más la bonificación",
+    "El préstamo queda más pequeño y, normalmente, por encima de 1"
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: simula tu liquidación</h2>
+
+<p>Con los datos del ejercicio anterior —2.000 dólares de garantía y el umbral que apuntaste—, supón que pediste 1.200. Calcula a qué valor de la garantía el factor de salud llega a 1. Supón que cae un 5 % más y que un liquidador paga la mitad de la deuda con una bonificación del 5 %. Calcula cuánta garantía pierdes, cuánto vale lo que te queda y el nuevo factor de salud. Después busca en la documentación del protocolo qué oráculo usa para esa moneda y anótalo.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> cuando el factor de salud baja de 1, un liquidador paga parte de tu deuda y se queda con garantía por ese valor más una bonificación, que es tu penalización. Para evitarlo, pide mucho menos del máximo y ten con qué devolver. El precio con el que decide el protocolo lo trae un oráculo: si puede manipularse, llega tarde o toma el de un mercado vacío, se liquidan posiciones sanas o se vacía el protocolo.</div>
+</div>

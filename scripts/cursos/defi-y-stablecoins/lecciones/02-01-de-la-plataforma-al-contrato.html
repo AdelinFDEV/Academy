@@ -1,0 +1,155 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>DeFi son servicios financieros —cambiar, prestar, pedir prestado— que no los presta una empresa, sino un programa publicado en una blockchain. Eso cambia quién guarda tu dinero, quién puede detenerlo y a quién reclamas si algo sale mal. Aquí ves qué es un contrato inteligente, en qué se diferencia de una plataforma con dueño, qué significa en la práctica «descentralizado» y por qué casi ningún protocolo lo es del todo.</p>
+</div>
+
+<h2>Un programa en lugar de una empresa</h2>
+
+<p>Cuando compras una criptomoneda en un <a href="/glosario/exchange">exchange</a>, tratas con una empresa. Tiene oficinas, empleados, una base de datos con tu saldo y un servicio de atención al cliente. Tu dinero está en sus cuentas, y confías en que te lo devolverá.</p>
+
+<p>En <a href="/glosario/defi">DeFi</a>, siglas en inglés de finanzas descentralizadas, tratas con un <a href="/glosario/smart-contract">smart contract</a>: un programa guardado en una blockchain que ejecuta sus instrucciones cuando alguien le envía una operación. No tiene horario, ni empleados, ni decide nada. Si le mandas ether y su código dice que a cambio entrega dólares digitales a cierto precio, lo hace. Siempre, con cualquiera, a cualquier hora.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Plataforma con dueño</p>
+    <p class="prose-vs-sub">También llamada CeFi</p>
+    <ul>
+      <li data-tono="contra">Ella guarda tus fondos</li>
+      <li data-tono="contra">Puede bloquear tu cuenta o quebrar</li>
+      <li data-tono="favor">Hay a quién reclamar</li>
+      <li data-tono="favor">Si olvidas la contraseña, se recupera</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Protocolo</p>
+    <p class="prose-vs-sub">DeFi</p>
+    <ul>
+      <li data-tono="favor">Los fondos están en tu wallet o en el contrato</li>
+      <li data-tono="favor">Nadie te pide permiso ni identificación</li>
+      <li data-tono="contra">No hay atención al cliente ni reclamación</li>
+      <li data-tono="contra">Un error tuyo o del código no se deshace</li>
+    </ul>
+  </div>
+</div>
+
+<p>La diferencia de fondo está en qué confías. En una plataforma confías en una empresa. En un protocolo confías en que el código hace lo que dice, y en que no tiene un fallo que nadie ha visto todavía.</p>
+
+<h2>Lo que hace especial a un contrato</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Propiedad</th><th>Qué significa</th><th>Su otra cara</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Público</td><td>Cualquiera puede leer el código y ver todos los fondos que contiene</td><td>También quien busca un fallo que explotar</td></tr>
+    <tr><td>Automático</td><td>Se ejecuta sin que nadie lo apruebe</td><td>No hay nadie que detenga una operación errónea</td></tr>
+    <tr><td>Abierto</td><td>Lo usa cualquiera con una wallet, sin registro</td><td>Tampoco hay filtros que te protejan de ti mismo</td></tr>
+    <tr><td>Componible</td><td>Un contrato puede usar a otro, como piezas que encajan</td><td>El fallo de una pieza se propaga a las que se apoyan en ella</td></tr>
+  </tbody>
+</table>
+
+<p>La última propiedad es la que da a DeFi su potencia y su fragilidad. Un protocolo de préstamos acepta como garantía el token que entrega un pool de liquidez, que a su vez contiene una stablecoin, respaldada por otra. Cada capa añade utilidad, y cada capa añade un sitio por donde algo puede romperse.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Capa 1</span>
+    <p>Una stablecoin con emisor. Riesgo: el emisor.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Capa 2</span>
+    <p>Se deposita en un pool. Riesgo añadido: el código del pool.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Capa 3</span>
+    <p>El recibo del pool se deposita en un protocolo de préstamos. Riesgo añadido: ese protocolo y sus liquidaciones.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Capa 4</span>
+    <p>Un «agregador» lo gestiona todo por ti. Riesgo añadido: su código y quien lo controla.</p>
+  </div>
+</div>
+
+<p>Un rendimiento que suena atractivo suele estar varias capas arriba. Cada una tiene que funcionar para que recuperes tu dinero.</p>
+
+<h2>Cuánto dinero hay dentro: el TVL</h2>
+
+<p>La medida más usada del tamaño de un protocolo es el valor total depositado, o <a href="/glosario/tvl">TVL</a> por sus siglas en inglés: la suma, en dólares, de todo lo que los usuarios han dejado en sus contratos.</p>
+
+<p>Sirve para hacerse una idea de la escala y para comparar. Tiene tres limitaciones que conviene conocer antes de usarlo.</p>
+
+<ul>
+  <li><strong>Sube y baja con el precio.</strong> Si el ether cae un 30 %, el TVL de los protocolos que lo guardan cae un 30 % aunque nadie haya retirado nada.</li>
+  <li><strong>Puede contarse dos veces.</strong> El mismo dólar depositado en un protocolo, cuyo recibo se deposita en otro, aparece en los dos.</li>
+  <li><strong>Mucho dinero no significa seguro.</strong> Protocolos con miles de millones dentro han sido vaciados por un fallo.</li>
+</ul>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">No damos aquí una cifra del TVL total de DeFi porque cambia cada día y con cada movimiento de precios. La referencia que usa casi todo el sector es el agregador DefiLlama, que lo desglosa por protocolo y por red. Aprender a consultarlo vale más que recordar un número.</div>
+</div>
+
+<h2>«Descentralizado» tiene grados</h2>
+
+<p>La palabra sugiere que nadie manda. En la práctica, casi todos los protocolos tienen a alguien que puede cambiar cosas, y hay que saber quién y cuánto.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Pregunta</th><th>Por qué importa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>¿Se puede modificar el contrato?</td><td>Si es actualizable, quien tenga la llave puede cambiar las reglas, o introducir un error</td></tr>
+    <tr><td>¿Quién tiene esa llave?</td><td>No es lo mismo una persona que varias que deben firmar a la vez</td></tr>
+    <tr><td>¿Hay un plazo de espera para los cambios?</td><td>Un retraso obligatorio da tiempo a retirar los fondos si no te gusta lo que viene</td></tr>
+    <tr><td>¿Puede alguien pausar el protocolo?</td><td>Útil ante un ataque; también significa que alguien puede congelarlo</td></tr>
+    <tr><td>¿Quién vota los cambios?</td><td>Si unos pocos tienen la mayoría de los votos, deciden ellos</td></tr>
+  </tbody>
+</table>
+
+<p>Además, casi nadie usa un contrato directamente. Lo usa a través de una página web, que sí pertenece a una empresa, está alojada en un servidor y puede ser modificada o suplantada. El contrato puede ser impecable y la página, el punto débil.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0</span>
+  <span class="prose-dato-texto">Las personas a las que puedes reclamar si envías fondos a un contrato equivocado o firmas una operación errónea. La ausencia de intermediario es también la ausencia de quien arregle un error.</span>
+</div>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Que un proyecto se describa como descentralizado no dice nada por sí solo. Muchos de los mayores robos se produjeron en protocolos donde una sola clave, o unas pocas, controlaban los fondos. Antes de depositar, busca en la documentación quién puede modificar el contrato y cómo.</div>
+</div>
+
+<h2>Qué se puede hacer en DeFi</h2>
+
+<p>Casi todo se reduce a tres operaciones, que ocupan los dos módulos siguientes.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Cambiar una moneda por otra</strong> en un <a href="/glosario/dex">DEX</a>, un intercambio sin libro de órdenes ni empresa en medio.</li>
+  <li><strong>Aportar tus monedas a un fondo común</strong>, un <a href="/glosario/liquidity-pool">pool de liquidez</a>, y cobrar una parte de las comisiones.</li>
+  <li><strong>Prestar y pedir prestado</strong> contra una garantía, con un interés que fija el propio protocolo.</li>
+</ol>
+
+<p>Lo demás —estrategias automáticas, rendimientos apilados, productos con nombres exóticos— son combinaciones de esas tres. Si entiendes de dónde sale el dinero en cada una, entiendes de dónde sale en cualquier combinación.</p>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Plataforma o protocolo?",
+  "instrucciones": "Lleva cada característica a donde corresponde.",
+  "grupos": [
+    { "id": "cefi", "nombre": "Plataforma con dueño" },
+    { "id": "defi", "nombre": "Protocolo DeFi" }
+  ],
+  "elementos": [
+    { "texto": "Puedes recuperar el acceso si olvidas la contraseña", "grupo": "cefi", "explicacion": "Hay una empresa que gestiona tu cuenta." },
+    { "texto": "No exige registro ni identificación para usarlo", "grupo": "defi", "explicacion": "Basta una wallet. Tampoco hay filtros que te protejan." },
+    { "texto": "La empresa guarda tus fondos en sus cuentas", "grupo": "cefi", "explicacion": "Confías en que te los devolverá." },
+    { "texto": "El código es público y cualquiera puede leerlo", "grupo": "defi", "explicacion": "También quien busca un fallo que explotar." },
+    { "texto": "Hay un servicio de atención al cliente", "grupo": "cefi", "explicacion": "En un protocolo no hay a quién reclamar." },
+    { "texto": "Una operación errónea no se puede deshacer", "grupo": "defi", "explicacion": "Se ejecuta de forma automática e irreversible." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: mira un protocolo por dentro</h2>
+
+<p>Entra en DefiLlama y busca uno de los protocolos más grandes de préstamos o de intercambio. Anota tres cosas: su valor depositado, en qué redes funciona y cómo ha evolucionado ese valor en el último año. Después abre la documentación oficial del protocolo y busca el apartado de gobierno o de seguridad. Intenta contestar: ¿se puede modificar el contrato?, ¿quién puede hacerlo?, ¿hay un plazo de espera? No hace falta entenderlo todo. Fíjate en si la información está clara o hay que rebuscar.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> en DeFi no tratas con una empresa sino con un contrato: un programa público, automático y abierto que nadie detiene. Ganas que nadie pueda bloquear tus fondos y pierdes a quien reclamar. Los contratos se apilan unos sobre otros, y cada capa añade un riesgo. «Descentralizado» tiene grados: pregunta quién puede modificar el contrato, con qué llave y con qué plazo.</div>
+</div>

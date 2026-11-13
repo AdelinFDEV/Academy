@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "ds-m4-01",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "¿De dónde sale el interés que cobra quien deposita en un protocolo de préstamos?",
+    "opciones": [
+      "De la emisión de nuevos tokens",
+      "De las reservas del emisor",
+      "De lo que pagan quienes toman prestado",
+      "De las comisiones de gas"
+    ],
+    "correcta": 2,
+    "explicacion": "Es una de las fuentes de rendimiento con un origen más fácil de identificar."
+  },
+  {
+    "clave": "ds-m4-02",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "¿Por qué un protocolo exige una garantía mayor que el préstamo?",
+    "opciones": [
+      "Porque así cobra más gas",
+      "Porque lo exige el banco central",
+      "Para que nadie pida prestado",
+      "Porque no puede comprobar quién eres ni reclamarte nada"
+    ],
+    "correcta": 3,
+    "explicacion": "Lo único que tiene es lo que le dejas en depósito, y eso cambia de precio."
+  },
+  {
+    "clave": "ds-m4-03",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "¿Cómo se fija el interés en un protocolo de préstamos?",
+    "opciones": [
+      "Lo calcula el contrato según qué parte del fondo está prestada",
+      "Lo fija el emisor de la stablecoin",
+      "Es fijo para siempre",
+      "Lo decide un comité cada mes"
+    ],
+    "correcta": 0,
+    "explicacion": "Con el fondo casi todo prestado, el interés se dispara."
+  },
+  {
+    "clave": "ds-m4-04",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "Garantía de 10.000 $ con un umbral de liquidación del 80 % y deuda de 6.000 $. ¿Factor de salud?",
+    "opciones": [
+      "1,67",
+      "1,33",
+      "0,75",
+      "0,6"
+    ],
+    "correcta": 1,
+    "explicacion": "10.000 × 0,8 = 8.000; 8.000 ÷ 6.000 = 1,33. Es el ejemplo de la ayuda de Aave."
+  },
+  {
+    "clave": "ds-m4-05",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "En ese mismo préstamo, ¿cuánto tiene que caer la garantía para llegar a un factor de 1?",
+    "opciones": [
+      "Un 40 %",
+      "Un 80 %",
+      "Un 25 %",
+      "Un 6 %"
+    ],
+    "correcta": 2,
+    "explicacion": "Se llega a 1 con una garantía de 6.000 ÷ 0,8 = 7.500 $."
+  },
+  {
+    "clave": "ds-m4-06",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "¿Qué puede hacer bajar el factor de salud sin que cambien los precios?",
+    "opciones": [
+      "Revocar una aprobación",
+      "Conectar la wallet",
+      "El paso de un bloque a otro",
+      "El interés acumulado, que hace crecer la deuda"
+    ],
+    "correcta": 3,
+    "explicacion": "Un préstamo ajustado y sin vigilar puede acabar liquidado solo por el interés."
+  },
+  {
+    "clave": "ds-m4-07",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "El fondo de una moneda está prestado al 100 %. ¿Qué le ocurre a quien depositó?",
+    "opciones": [
+      "No puede retirar hasta que alguien devuelva o deposite",
+      "Cobra el doble para siempre",
+      "Pierde su depósito",
+      "Nada: siempre puede retirar"
+    ],
+    "correcta": 0,
+    "explicacion": "Ocurre en momentos de tensión, que es cuando más gente quiere salir."
+  },
+  {
+    "clave": "ds-m4-08",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "¿Quién ejecuta una liquidación en un protocolo?",
+    "opciones": [
+      "El equipo del protocolo, a mano",
+      "Un tercero, el liquidador, a cambio de una bonificación",
+      "Un juez",
+      "El emisor de la stablecoin"
+    ],
+    "correcta": 1,
+    "explicacion": "Paga parte de la deuda y recibe garantía por un valor algo mayor."
+  },
+  {
+    "clave": "ds-m4-09",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "Un liquidador paga 3.000 $ de tu deuda con una bonificación del 5 %. ¿Cuánta garantía se lleva?",
+    "opciones": [
+      "2.850 $",
+      "3.000 $",
+      "3.150 $",
+      "150 $"
+    ],
+    "correcta": 2,
+    "explicacion": "3.000 × 1,05 = 3.150 $. Los 150 de diferencia son tu penalización."
+  },
+  {
+    "clave": "ds-m4-10",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "Según la ayuda de Aave, ¿cuánta deuda puede liquidarse si el factor de salud sigue por encima de 0,95?",
+    "opciones": [
+      "Nada",
+      "Hasta el 5 %",
+      "Siempre el 100 %",
+      "Hasta el 50 %"
+    ],
+    "correcta": 3,
+    "explicacion": "Por debajo de 0,95, o en posiciones pequeñas, hasta el 100 %."
+  },
+  {
+    "clave": "ds-m4-11",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "¿Qué es un oráculo?",
+    "opciones": [
+      "El servicio que escribe en la blockchain el precio de los activos",
+      "Un tipo de wallet",
+      "Una auditoría automática",
+      "Un token de gobierno"
+    ],
+    "correcta": 0,
+    "explicacion": "Una blockchain no puede consultar internet: alguien tiene que traer el precio."
+  },
+  {
+    "clave": "ds-m4-12",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "¿Cómo se manipula un oráculo que toma el precio de un fondo pequeño?",
+    "opciones": [
+      "Votando en el gobierno del emisor",
+      "Moviendo ese fondo con una operación grande durante un instante",
+      "Revocando aprobaciones",
+      "Cambiando la hora de la red"
+    ],
+    "correcta": 1,
+    "explicacion": "El atacante pide prestado contra una garantía inflada y no devuelve."
+  },
+  {
+    "clave": "ds-m4-13",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "¿Qué medida evita mejor llegar a la liquidación?",
+    "opciones": [
+      "No mirar el préstamo",
+      "Usar posiciones en bucle",
+      "Pedir mucho menos del máximo permitido",
+      "Pedir justo el máximo"
+    ],
+    "correcta": 2,
+    "explicacion": "Un factor de salud de 2 o más aguanta una caída de la garantía del 50 %."
+  },
+  {
+    "clave": "ds-m4-14",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "¿Cuál de estas no es una fuente real de rendimiento?",
+    "opciones": [
+      "Los intereses de quienes piden prestado",
+      "Las comisiones de quienes cambian monedas",
+      "Las recompensas por validar la red",
+      "Pagar a los primeros depositantes con el dinero de los que entran después"
+    ],
+    "correcta": 3,
+    "explicacion": "Es la estructura de un esquema Ponzi: solo aguanta mientras crece."
+  },
+  {
+    "clave": "ds-m4-15",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "¿Qué diferencia hay entre APR y APY?",
+    "opciones": [
+      "El APR es interés simple; el APY supone reinvertir y siempre es mayor",
+      "Son lo mismo",
+      "El APY no incluye intereses",
+      "El APR siempre es mayor"
+    ],
+    "correcta": 0,
+    "explicacion": "Un 100 % APR con reinversión diaria equivale a un 171,5 % APY."
+  },
+  {
+    "clave": "ds-m4-16",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "Un 80 % anual pagado en tokens, 1.000 $ durante seis meses, vendiendo a un precio medio un 60 % inferior. ¿Cuánto recibes?",
+    "opciones": [
+      "Unos 240 $",
+      "Unos 160 $",
+      "800 $",
+      "400 $"
+    ],
+    "correcta": 1,
+    "explicacion": "Medio año al 80 % son 400 $ en tokens; con un 60 % de descuento, 160 $."
+  },
+  {
+    "clave": "ds-m4-17",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "La deuda pública a corto plazo rinde un 4 % y un protocolo ofrece un 25 % por una stablecoin. ¿Qué hay que explicar?",
+    "opciones": [
+      "El tipo de cambio",
+      "Nada: es un mercado más eficiente",
+      "Los veintiún puntos de diferencia: o hay mucho riesgo, o no viene de donde dicen",
+      "Solo la comisión del protocolo"
+    ],
+    "correcta": 2,
+    "explicacion": "Lo que supera a la deuda pública es lo que te pagan por los riesgos que asumes."
+  },
+  {
+    "clave": "ds-m4-18",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "Al evaluar un depósito, ¿qué importa más que el rendimiento?",
+    "opciones": [
+      "El nombre del token",
+      "El número de redes",
+      "El color de la página",
+      "La probabilidad de perder el capital"
+    ],
+    "correcta": 3,
+    "explicacion": "Un 8 % anual tarda más de doce años en compensar una pérdida total."
+  }
+]

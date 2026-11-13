@@ -1,0 +1,172 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Entre que pulsas «cambiar» y tu operación entra en un bloque, el precio del fondo puede moverse. A veces por casualidad y a veces porque alguien ha visto tu orden y se ha colocado delante. Aquí ves qué es el deslizamiento, qué significa la tolerancia que te deja ajustar la página, cómo funciona un ataque sándwich con sus números y qué decisiones concretas limitan lo que pierdes al operar en un intercambio descentralizado.</p>
+</div>
+
+<h2>Tu orden no se ejecuta al instante</h2>
+
+<p>En una plataforma con dueño, una orden a mercado se ejecuta en milisegundos. En una blockchain, tu operación pasa primero a una sala de espera pública, donde aguarda a que un validador la incluya en un bloque. En esos segundos pueden entrar otras operaciones en el mismo fondo, y cada una cambia el precio.</p>
+
+<p>El resultado es que el precio al que acabas cambiando puede ser peor que el que viste al pulsar. Esa diferencia es el <a href="/glosario/slippage">slippage</a>, o deslizamiento.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Concepto</th><th>Qué es</th><th>Cuándo se conoce</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Impacto en el precio</td><td>Lo que tu propia orden mueve el fondo</td><td>Antes de enviar: lo calcula la página</td></tr>
+    <tr><td>Deslizamiento</td><td>Lo que cambia el precio por operaciones ajenas mientras esperas</td><td>Después: depende de lo que ocurra</td></tr>
+    <tr><td>Comisión</td><td>El porcentaje que cobra el fondo</td><td>Antes: es fijo</td></tr>
+  </tbody>
+</table>
+
+<p>Los dos primeros se confunden a menudo. El impacto lo provocas tú y se puede prever. El deslizamiento lo provocan los demás.</p>
+
+<h2>La tolerancia: lo máximo que aceptas</h2>
+
+<p>Como el precio final no se puede garantizar, la página te pide que fijes una <strong>tolerancia al deslizamiento</strong>: cuánto peor que lo previsto estás dispuesto a aceptar. Si el precio se mueve más que eso, la operación se cancela.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Tolerancia baja</p>
+    <p class="prose-vs-sub">Por ejemplo, 0,5 %</p>
+    <ul>
+      <li data-tono="favor">Nunca recibes mucho menos de lo esperado</li>
+      <li data-tono="favor">Deja poco margen a quien quiera aprovecharse</li>
+      <li data-tono="contra">La operación falla más a menudo, y el gas se paga igual</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Tolerancia alta</p>
+    <p class="prose-vs-sub">Por ejemplo, 10 %</p>
+    <ul>
+      <li data-tono="favor">La operación entra casi siempre</li>
+      <li data-tono="contra">Aceptas de antemano perder hasta un 10 %</li>
+      <li data-tono="contra">Es una invitación a que alguien se lleve ese margen</li>
+    </ul>
+  </div>
+</div>
+
+<p>El primer inconveniente de la izquierda conviene saberlo: una operación que falla por superar la tolerancia consume gas igualmente. Aun así, es mucho mejor pagar una comisión por una operación fallida que cambiar a un precio un 10 % peor.</p>
+
+<p>Con una orden de 1.000 dólares y una tolerancia del 5 %, estás firmando que aceptas recibir el equivalente a 950. Lo que venga después depende de quién esté mirando.</p>
+
+<h2>Quién está mirando</h2>
+
+<p>La sala de espera de la red es pública. Cualquiera puede ver las operaciones pendientes antes de que se ejecuten, con todo su detalle: qué fondo, qué importe y qué tolerancia. Hay programas dedicados a leerla sin descanso en busca de operaciones de las que sacar partido.</p>
+
+<p>Como los validadores ordenan las operaciones dentro del bloque, y suelen poner primero las que pagan más, quien quiera adelantarse a ti solo tiene que pagar algo más de gas. Al beneficio que se obtiene reordenando operaciones se le llama <strong>MEV</strong>, por sus siglas en inglés.</p>
+
+<h2>El ataque sándwich, con números</h2>
+
+<p>Es la forma más común de aprovecharse de una orden ajena. Usa el mismo fondo de la lección 3.1: 10 ether y 20.000 dólares digitales, sin comisiones para que se vea limpio.</p>
+
+<p>Envías una orden de 2.000 dólares para comprar ether, con una tolerancia alta. Un programa la ve y coloca dos operaciones, una justo antes y otra justo después de la tuya.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">1 · Se adelanta</span>
+    <p>Compra con 2.000 $ antes que tú. Se lleva 0,909 ether y deja el fondo en 9,091 ether y 22.000 $.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">2 · Entras tú</span>
+    <p>Tus 2.000 $ compran ahora 0,758 ether, a un precio ya inflado. El fondo queda en 8,333 ether y 24.000 $.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">3 · Vende detrás de ti</span>
+    <p>Devuelve sus 0,909 ether al fondo, que ahora paga más: recibe 2.360 $.</p>
+  </div>
+</div>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Sin ataque</th><th>Con ataque</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ether que recibes por 2.000 $</td><td>0,909</td><td>0,758</td></tr>
+    <tr><td>Precio medio que pagas</td><td>2.200 $</td><td>2.640 $</td></tr>
+    <tr><td>Lo que pierdes</td><td>—</td><td>0,151 ether, unos 300 $</td></tr>
+    <tr><td>Lo que gana el atacante</td><td>—</td><td>Unos 360 $, menos el gas</td></tr>
+  </tbody>
+</table>
+
+<p>Has recibido un 16,7 % menos de ether. La operación se ejecutó porque tu tolerancia lo permitía. Con una tolerancia del 1 %, el ataque no habría sido posible: tu orden se habría cancelado y el atacante se habría quedado con una compra que no podía revender con beneficio.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Ether recibido por 2.000 $ en el fondo del ejemplo",
+  "subtitulo": "La misma orden, con y sin alguien colocado delante.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Sin ataque", "eth": 0.909 },
+    { "etiqueta": "Con ataque sándwich", "eth": 0.758 }
+  ],
+  "series": [{ "clave": "eth", "nombre": "Ether recibido", "color": "#22d3ee" }],
+  "nota": "Ejemplo inventado, en un fondo pequeño y sin comisiones, para que el efecto se vea. En fondos grandes y con órdenes pequeñas el margen es mucho menor."
+}
+</script></div>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">16,7 %</span>
+  <span class="prose-dato-texto">Lo que pierde la orden del ejemplo por tener la tolerancia abierta en un fondo pequeño. La tolerancia que fijas es el máximo que alguien puede quitarte.</span>
+</div>
+
+<h2>Qué órdenes son un blanco</h2>
+
+<p>Un sándwich solo compensa si la ganancia supera el gas de las dos operaciones del atacante. Eso define el perfil de la víctima.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Factor</th><th>Más expuesta</th><th>Menos expuesta</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Tamaño de la orden frente al fondo</td><td>Grande</td><td>Pequeña</td></tr>
+    <tr><td>Tolerancia</td><td>Alta</td><td>Baja</td></tr>
+    <tr><td>Liquidez del fondo</td><td>Poca</td><td>Mucha</td></tr>
+    <tr><td>Por dónde se envía</td><td>Sala de espera pública</td><td>Canal privado</td></tr>
+  </tbody>
+</table>
+
+<p>La última fila se refiere a una opción cada vez más habitual. Algunas wallets y páginas permiten enviar la operación por un canal que no pasa por la sala de espera pública, de modo que nadie la ve antes de que se ejecute. Suele llamarse protección frente a MEV, y conviene activarla si está disponible.</p>
+
+<h2>Cómo operar perdiendo lo mínimo</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Mira el impacto antes de nada.</strong> Si supera el 1 %, tu orden es grande para ese fondo.</li>
+  <li><strong>Usa una tolerancia baja.</strong> Entre el 0,1 % y el 0,5 % para pares grandes. Súbela solo lo imprescindible, y solo si la operación falla.</li>
+  <li><strong>Parte las órdenes grandes</strong> en varias pequeñas, o búscales un fondo con más liquidez.</li>
+  <li><strong>Activa la protección frente a MEV</strong> si tu wallet o la página la ofrecen.</li>
+  <li><strong>Desconfía de un token que exige una tolerancia del 10 % o más</strong> para poder comprarse. Suele indicar un fondo minúsculo o un token que cobra un porcentaje en cada operación.</li>
+  <li><strong>Usa un agregador con criterio.</strong> Reparten la orden entre varios fondos para reducir el impacto, pero añaden un contrato más al que das una aprobación.</li>
+</ol>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Cuando una página te dice «sube la tolerancia al 15 % para que la operación funcione», no te está dando una solución técnica. Te está pidiendo que aceptes por adelantado perder hasta un 15 %. En los tokens recién creados es, con frecuencia, la primera señal de que no deberías estar comprando.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Nada de esto es ilegal dentro de la red ni un fallo: es cómo funciona un sistema donde las órdenes pendientes son públicas y el orden se subasta. No se puede evitar del todo. Se puede hacer que tu operación no merezca la pena.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Vas a cambiar 3.000 dólares digitales por un token en un fondo pequeño. La página muestra un impacto del 4 % y te sugiere una tolerancia del 12 %. ¿Qué es lo más sensato?",
+  "opciones": [
+    "No hacerlo así: la orden es grande para ese fondo; partirla, buscar más liquidez o no operar",
+    "Aceptar: la página sabe lo que hace",
+    "Subir la tolerancia al 20 % para asegurar que entra",
+    "Enviar la orden varias veces seguidas con la misma tolerancia"
+  ],
+  "correcta": 0,
+  "explicacion": "Un impacto del 4 % ya es caro, y una tolerancia del 12 % autoriza a perder hasta ese porcentaje. Es el perfil exacto de una orden que alguien adelantará."
+}
+</script></div>
+
+<h2>Ejercicio: lee la letra pequeña de una operación</h2>
+
+<p>En la página de un intercambio descentralizado, sin conectar la wallet, simula un cambio y abre los ajustes. Localiza tres cosas: la tolerancia al deslizamiento que viene por defecto, el dato de «mínimo recibido» que aparece en el resumen y si existe alguna opción de protección frente a MEV. Cambia la tolerancia de 0,5 % a 5 % y mira cómo cambia el mínimo recibido. Calcula en dólares la diferencia para una orden de 1.000. Esa cifra es lo que pones encima de la mesa cada vez que subes ese ajuste.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> tu orden espera unos segundos en una sala pública antes de ejecutarse, y el precio puede moverse: es el deslizamiento. La tolerancia que fijas es lo máximo que aceptas perder, y también lo máximo que alguien puede quitarte colocándose delante y detrás de ti. Mira el impacto, usa tolerancias bajas, parte las órdenes grandes y activa la protección frente a MEV. Un token que exige un 10 % de tolerancia es una señal de alarma.</div>
+</div>

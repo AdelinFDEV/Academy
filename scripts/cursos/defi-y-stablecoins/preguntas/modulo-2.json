@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "ds-m2-01",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "¿Con qué tratas cuando usas un protocolo DeFi?",
+    "opciones": [
+      "Con un empleado de atención al cliente",
+      "Con una empresa que guarda tus fondos",
+      "Con un contrato: un programa publicado en una blockchain",
+      "Con un banco regulado"
+    ],
+    "correcta": 2,
+    "explicacion": "Ejecuta sus instrucciones de forma automática, con cualquiera y a cualquier hora."
+  },
+  {
+    "clave": "ds-m2-02",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "¿Qué ganas y qué pierdes al pasar de una plataforma a un protocolo?",
+    "opciones": [
+      "Ganas atención al cliente; pierdes privacidad",
+      "No cambia nada",
+      "Ganas un seguro; pierdes rendimiento",
+      "Ganas que nadie pueda bloquear tus fondos; pierdes a quien reclamar"
+    ],
+    "correcta": 3,
+    "explicacion": "La ausencia de intermediario es también la ausencia de quien arregle un error."
+  },
+  {
+    "clave": "ds-m2-03",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "¿Qué significa que los contratos son «componibles»?",
+    "opciones": [
+      "Que un contrato puede usar a otro, de modo que el fallo de una pieza se propaga",
+      "Que funcionan sin gas",
+      "Que se pueden borrar y volver a crear",
+      "Que solo los usa su creador"
+    ],
+    "correcta": 0,
+    "explicacion": "Da potencia y fragilidad: cada capa añade utilidad y un sitio por donde romperse."
+  },
+  {
+    "clave": "ds-m2-04",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "¿Qué mide el TVL de un protocolo?",
+    "opciones": [
+      "El precio de su token",
+      "El valor total, en dólares, de lo depositado en sus contratos",
+      "El número de usuarios",
+      "El rendimiento anual que ofrece"
+    ],
+    "correcta": 1,
+    "explicacion": "Sirve para comparar tamaños. Sube y baja con los precios y no indica seguridad."
+  },
+  {
+    "clave": "ds-m2-05",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "¿Qué pregunta ayuda a saber lo descentralizado que es un protocolo?",
+    "opciones": [
+      "En qué idioma está su web",
+      "Cuánto rinde",
+      "Quién puede modificar el contrato, con qué clave y con qué plazo",
+      "Cuántos seguidores tiene"
+    ],
+    "correcta": 2,
+    "explicacion": "Casi todos tienen a alguien con capacidad de cambiar cosas."
+  },
+  {
+    "clave": "ds-m2-06",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "Un protocolo con miles de millones depositados, ¿es por eso seguro?",
+    "opciones": [
+      "Sí: el dinero lo garantiza",
+      "Solo si es de préstamos",
+      "Sí, si tiene más de un año",
+      "No: protocolos con mucho dinero dentro han sido vaciados"
+    ],
+    "correcta": 3,
+    "explicacion": "El tamaño indica escala, no ausencia de fallos."
+  },
+  {
+    "clave": "ds-m2-07",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Qué le das a una página al «conectar» tu wallet?",
+    "opciones": [
+      "Tu dirección pública, nada más",
+      "Acceso a todos tus fondos",
+      "Tu clave privada",
+      "Tu frase semilla"
+    ],
+    "correcta": 0,
+    "explicacion": "Lo que da acceso a algo son las firmas que vienen después."
+  },
+  {
+    "clave": "ds-m2-08",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Qué autoriza una aprobación de token?",
+    "opciones": [
+      "La retirada de la moneda nativa",
+      "Que un contrato pueda mover uno de tus tokens, hasta cierta cantidad",
+      "Una única transferencia",
+      "El acceso a tu clave privada"
+    ],
+    "correcta": 1,
+    "explicacion": "Y permanece vigente hasta que la retires."
+  },
+  {
+    "clave": "ds-m2-09",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Por qué es peligrosa una aprobación ilimitada antigua?",
+    "opciones": [
+      "Porque cambia tu dirección",
+      "Porque caduca y bloquea los fondos",
+      "Porque el contrato puede mover todo tu saldo de ese token si falla o era malicioso",
+      "Porque cobra gas cada mes"
+    ],
+    "correcta": 2,
+    "explicacion": "Sigue ahí aunque ya no uses el protocolo, y no exige ninguna firma más."
+  },
+  {
+    "clave": "ds-m2-10",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Qué tiene de traicionera una firma de mensaje?",
+    "opciones": [
+      "Solo sirve para iniciar sesión",
+      "Siempre cuesta mucho gas",
+      "No se puede firmar con una wallet",
+      "No cuesta gas y parece un trámite, pero puede autorizar a gastar tus tokens"
+    ],
+    "correcta": 3,
+    "explicacion": "Una firma gratuita puede equivaler a una aprobación."
+  },
+  {
+    "clave": "ds-m2-11",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Quién puede pedirte legítimamente tu frase semilla?",
+    "opciones": [
+      "Nadie",
+      "La plataforma donde compraste",
+      "El soporte del protocolo",
+      "Un auditor"
+    ],
+    "correcta": 0,
+    "explicacion": "Solo se escribe en tu propia wallet, al instalarla o restaurarla."
+  },
+  {
+    "clave": "ds-m2-12",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Qué costumbre limita más el daño de un error con una firma?",
+    "opciones": [
+      "Conectarse desde enlaces de anuncios",
+      "Separar una wallet de guardar, que no se conecta a nada, de otra de operar",
+      "Aprobar cantidades ilimitadas",
+      "Usar siempre la misma wallet para todo"
+    ],
+    "correcta": 1,
+    "explicacion": "Un error en la de operar no alcanza a los ahorros."
+  },
+  {
+    "clave": "ds-m2-13",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "¿De qué depende la comisión de gas de una operación?",
+    "opciones": [
+      "Del país desde el que operas",
+      "Del precio del dólar",
+      "Del trabajo que exige y del precio de la unidad en ese momento",
+      "Del importe que mueves"
+    ],
+    "correcta": 2,
+    "explicacion": "Cambiar 50 dólares cuesta lo mismo que cambiar 50.000."
+  },
+  {
+    "clave": "ds-m2-14",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "¿En qué se paga el gas?",
+    "opciones": [
+      "En euros",
+      "En cualquier stablecoin",
+      "En el token que mueves",
+      "En la moneda nativa de la red"
+    ],
+    "correcta": 3,
+    "explicacion": "Sin algo de moneda nativa no puedes hacer ninguna operación, ni sacar tus tokens."
+  },
+  {
+    "clave": "ds-m2-15",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "Una comisión de 4 $ sobre una operación de 50 $, ¿qué porcentaje supone?",
+    "opciones": [
+      "Un 8 %",
+      "Un 4 %",
+      "Un 12,5 %",
+      "Un 0,8 %"
+    ],
+    "correcta": 0,
+    "explicacion": "4 ÷ 50 = 8 %. Con importes pequeños, el gas puede comerse el rendimiento."
+  },
+  {
+    "clave": "ds-m2-16",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "¿Qué es un token «puenteado»?",
+    "opciones": [
+      "Un token emitido directamente por su emisor",
+      "Un recibo de un token bloqueado en otra red",
+      "Un token que no paga gas",
+      "Un token sin valor"
+    ],
+    "correcta": 1,
+    "explicacion": "Suma dos riesgos: el del emisor original y el del puente."
+  },
+  {
+    "clave": "ds-m2-17",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "¿Por qué los puentes concentran grandes robos?",
+    "opciones": [
+      "Porque están regulados",
+      "Porque no usan contratos",
+      "Porque un contrato acumula los fondos de todos los usuarios, a la vista de todos",
+      "Porque solo mueven importes pequeños"
+    ],
+    "correcta": 2,
+    "explicacion": "Es una caja enorme controlada por un programa complejo y, a menudo, por pocas claves."
+  },
+  {
+    "clave": "ds-m2-18",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "Vacían el contrato de un puente. ¿Qué pasa con los recibos que emitió en la otra red?",
+    "opciones": [
+      "Siguen valiendo lo mismo",
+      "Se convierten en el token original",
+      "Suben de precio",
+      "Se quedan sin respaldo y pierden su valor"
+    ],
+    "correcta": 3,
+    "explicacion": "Y con ellos, lo depositado en protocolos de esa red usando ese recibo."
+  }
+]

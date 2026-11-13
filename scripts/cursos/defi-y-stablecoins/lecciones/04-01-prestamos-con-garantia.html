@@ -1,0 +1,174 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Un protocolo de préstamos junta a quien quiere cobrar un interés por sus monedas con quien quiere tomarlas prestadas. Como no sabe quién eres ni puede reclamarte nada, solo presta contra una garantía mayor que el préstamo. Aquí ves cómo funciona por los dos lados, para qué sirve pedir prestado menos de lo que depositas, cómo se fija el interés y cómo se calcula el factor de salud, el número que dice lo cerca que estás de perder la garantía.</p>
+</div>
+
+<h2>Los dos lados</h2>
+
+<p>En un protocolo de préstamos no hay un banco que decida. Hay un fondo común por cada moneda, y dos tipos de usuario.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Quien deposita</p>
+    <p class="prose-vs-sub">Presta al fondo</p>
+    <ul>
+      <li data-tono="favor">Cobra un interés, que pagan quienes toman prestado</li>
+      <li data-tono="favor">Puede retirar cuando quiera, si hay fondos disponibles</li>
+      <li data-tono="contra">Depende del código y de que las liquidaciones funcionen</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Quien pide prestado</p>
+    <p class="prose-vs-sub">Toma del fondo</p>
+    <ul>
+      <li data-tono="favor">Obtiene una moneda sin vender la que tiene</li>
+      <li data-tono="contra">Deposita una garantía mayor que el préstamo</li>
+      <li data-tono="contra">Paga un interés variable, y pierde garantía si esta cae de valor</li>
+    </ul>
+  </div>
+</div>
+
+<p>El interés de la izquierda sale íntegramente de la derecha. Es una de las pocas fuentes de rendimiento en DeFi con un origen fácil de identificar: alguien paga por usar tu dinero.</p>
+
+<h2>Por qué hay que depositar más de lo que se pide</h2>
+
+<p>Un banco presta porque puede comprobar tus ingresos y reclamarte ante un juez. Un contrato no puede hacer ninguna de las dos cosas. Lo único que tiene es lo que le dejas en depósito: el <a href="/glosario/colateral">colateral</a>.</p>
+
+<p>Y como el colateral cambia de precio, tiene que valer bastante más que el préstamo. Para pedir 6.000 dólares digitales hay que dejar, por ejemplo, 10.000 dólares en ether.</p>
+
+<p>A primera vista parece absurdo: ¿para qué pedir prestado menos de lo que ya tienes? Hay tres motivos reales.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Motivo</th><th>Qué se hace</th><th>Qué se arriesga</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Obtener liquidez sin vender</td><td>Se deposita ether y se toman dólares para un gasto</td><td>Perder parte del ether si su precio cae</td></tr>
+    <tr><td>Apalancarse</td><td>Con los dólares prestados se compra más ether, que se vuelve a depositar</td><td>Lo mismo, multiplicado</td></tr>
+    <tr><td>Apostar a la baja</td><td>Se toma prestada una moneda, se vende, y se espera recomprarla más barata</td><td>Que suba, y haya que devolverla más cara</td></tr>
+  </tbody>
+</table>
+
+<p>El segundo es el más extendido, y es <a href="/glosario/apalancamiento">apalancamiento</a> con otro nombre. Quien deposita, pide, compra y vuelve a depositar varias veces construye una posición mucho mayor que su dinero, con el mismo problema que cualquier posición apalancada: una caída moderada la liquida.</p>
+
+<h2>Cómo se fija el interés</h2>
+
+<p>No lo decide nadie. Lo calcula el contrato a partir de un solo dato: qué parte del fondo está prestada. Se llama tasa de utilización.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Utilización baja</span>
+    <p>Hay mucho dinero sin prestar. El interés es bajo, para animar a pedir.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Utilización media</span>
+    <p>El interés sube poco a poco.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Utilización muy alta</span>
+    <p>Casi todo está prestado. El interés se dispara, para que alguien devuelva o alguien deposite.</p>
+  </div>
+</div>
+
+<p>Dos consecuencias. El interés cambia de un bloque a otro: el 4 % que ves hoy puede ser un 30 % la semana que viene si mucha gente pide esa moneda a la vez. Y quien deposita cobra menos de lo que paga quien pide, porque el interés se reparte entre todo lo depositado, no solo entre lo prestado, y el protocolo se queda una parte.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Si el fondo está prestado al 100 %, quien depositó no puede retirar hasta que alguien devuelva. Tu dinero está ahí, y no lo puedes sacar. Ocurre en momentos de tensión, que es cuando más gente quiere salir.</div>
+</div>
+
+<h2>El factor de salud</h2>
+
+<p>Cada moneda aceptada como garantía tiene asignado un <strong>umbral de liquidación</strong>: el porcentaje máximo de su valor que puede llegar a suponer la deuda. Con él se calcula el número que resume el estado de un préstamo. La documentación de Aave, uno de los mayores protocolos, lo define así:</p>
+
+<blockquote><strong>Factor de salud = (valor de la garantía × umbral de liquidación) ÷ deuda</strong></blockquote>
+
+<p>Si baja de 1, el préstamo puede ser liquidado. El ejemplo de la propia página: 10.000 dólares en ether, con un umbral del 80 %, y una deuda de 6.000.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Paso</th><th>Cuenta</th><th>Resultado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Garantía ajustada</td><td>10.000 × 80 %</td><td>8.000 $</td></tr>
+    <tr><td>Factor de salud</td><td>8.000 ÷ 6.000</td><td>1,33</td></tr>
+    <tr><td>Valor de la garantía con el que se llega a 1</td><td>6.000 ÷ 80 %</td><td>7.500 $</td></tr>
+    <tr><td>Caída del ether que lo provoca</td><td>De 10.000 a 7.500</td><td>25 %</td></tr>
+  </tbody>
+</table>
+
+<p>La última fila es la que hay que calcular siempre antes de pedir. En el ejemplo, una caída del 25 % en el ether pone el préstamo en zona de liquidación. Es una caída que ocurre con cierta frecuencia.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Caída de la garantía que lleva a la liquidación, según cuánto se pida",
+  "subtitulo": "Garantía de 10.000 $ con un umbral de liquidación del 80 %.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Deuda de 3.000 $", "caida": 62.5 },
+    { "etiqueta": "Deuda de 4.000 $", "caida": 50 },
+    { "etiqueta": "Deuda de 5.000 $", "caida": 37.5 },
+    { "etiqueta": "Deuda de 6.000 $", "caida": 25 },
+    { "etiqueta": "Deuda de 7.000 $", "caida": 12.5 }
+  ],
+  "series": [{ "clave": "caida", "nombre": "Caída que liquida", "color": "#22d3ee" }],
+  "nota": "Ejemplo con los datos de la página de ayuda de Aave. El umbral cambia según la moneda de garantía."
+}
+</script></div>
+
+<p>Hay dos porcentajes que se confunden. El que limita cuánto puedes pedir al principio es algo más bajo que el umbral de liquidación, para dejar un margen. Que el protocolo te deje pedir hasta cierta cantidad no significa que sea prudente pedirla: pedir el máximo permitido te deja a unos pocos puntos de la liquidación desde el primer minuto.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">25 %</span>
+  <span class="prose-dato-texto">Lo que tiene que caer la garantía del ejemplo —10.000 $ en ether, 6.000 $ de deuda— para entrar en zona de liquidación. Con 4.000 $ de deuda, tendría que caer la mitad.</span>
+</div>
+
+<h2>Lo que mueve el factor de salud</h2>
+
+<ul>
+  <li><strong>El precio de la garantía.</strong> Si cae, el factor baja.</li>
+  <li><strong>El precio de lo que debes.</strong> Si has pedido una moneda que sube, tu deuda crece en dólares y el factor baja. Con una stablecoin de deuda, esto casi no ocurre.</li>
+  <li><strong>El interés acumulado.</strong> La deuda aumenta cada día aunque los precios no se muevan.</li>
+  <li><strong>Los parámetros del protocolo.</strong> Su gobierno puede cambiar el umbral de una moneda, y eso afecta a los préstamos ya abiertos.</li>
+</ul>
+
+<p>El tercero pasa desapercibido. Un préstamo con un factor de 1,10 que nadie vigila puede acabar liquidado sin que el mercado se mueva, solo por el interés.</p>
+
+<h2>El riesgo de quien solo deposita</h2>
+
+<p>Depositar sin pedir prestado parece inocuo: no hay liquidación posible. Los riesgos están en otro sitio.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Deuda incobrable.</strong> Si una garantía se desploma más deprisa de lo que se puede liquidar, queda un agujero que soportan los depositantes o las reservas del protocolo.</li>
+  <li><strong>Garantías de mala calidad.</strong> Un protocolo que acepta tokens pequeños como garantía se expone a que alguien manipule su precio para llevarse el fondo.</li>
+  <li><strong>Fallo del código.</strong> El contrato guarda todos los depósitos.</li>
+  <li><strong>Imposibilidad temporal de retirar,</strong> cuando todo está prestado.</li>
+</ol>
+
+<p>Por eso el interés por depositar una stablecoin en un protocolo no es «gratis»: es lo que te pagan por asumir esos cuatro riesgos.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Antes de depositar en un protocolo de préstamos, mira qué monedas acepta como garantía. Cuanto más exótica la lista, más probable es que un día una de ellas cause un agujero.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Depositas 5.000 $ en una moneda con un umbral de liquidación del 80 % y pides prestados 2.500 $. ¿Cuál es tu factor de salud, y cuánto tiene que caer la garantía para llegar a 1?",
+  "opciones": [
+    "1,6; tiene que caer un 37,5 %",
+    "2; tiene que caer un 50 %",
+    "0,5; ya estás en liquidación",
+    "1,6; tiene que caer un 80 %"
+  ],
+  "correcta": 0,
+  "explicacion": "5.000 × 0,8 = 4.000; 4.000 ÷ 2.500 = 1,6. Se llega a 1 cuando la garantía vale 2.500 ÷ 0,8 = 3.125 $: una caída del 37,5 %."
+}
+</script></div>
+
+<h2>Ejercicio: tu margen antes de pedir</h2>
+
+<p>Entra en la página de un protocolo de préstamos grande y, sin conectar la wallet, busca la tabla de mercados. Elige una moneda de garantía y apunta su umbral de liquidación, el interés actual por depositar una stablecoin y el interés por pedirla. Imagina que depositas 2.000 dólares de esa garantía. Calcula el factor de salud y la caída que te liquidaría si pidieras 500, 1.000 y 1.400 dólares. Mira después el gráfico de esa moneda y cuenta cuántas veces en el último año cayó tanto desde un máximo reciente.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> en un protocolo de préstamos, quien deposita cobra el interés que paga quien pide, y quien pide deja una garantía mayor que el préstamo. El factor de salud es la garantía por su umbral de liquidación, dividida entre la deuda: por debajo de 1 hay liquidación. Con 10.000 $ de garantía al 80 % y 6.000 de deuda, basta una caída del 25 %. El interés es variable, y la deuda crece sola.</div>
+</div>

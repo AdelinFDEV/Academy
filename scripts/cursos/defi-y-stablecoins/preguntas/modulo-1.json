@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "ds-m1-01",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "¿Qué pretende una stablecoin?",
+    "opciones": [
+      "Subir de precio de forma constante",
+      "Pagar un interés fijo a quien la tiene",
+      "Mantener su precio igual al de una moneda corriente, casi siempre el dólar",
+      "Sustituir a bitcoin como reserva de valor"
+    ],
+    "correcta": 2,
+    "explicacion": "Es un token diseñado para valer siempre lo mismo. Que lo consiga depende de lo que lo sostiene."
+  },
+  {
+    "clave": "ds-m1-02",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "¿Quién se queda los intereses que generan las reservas de una stablecoin corriente?",
+    "opciones": [
+      "La plataforma donde se compró",
+      "Los validadores de la red",
+      "Quien tiene el token",
+      "El emisor"
+    ],
+    "correcta": 3,
+    "explicacion": "El token no paga nada por sí mismo. El rendimiento de las reservas es el negocio del emisor."
+  },
+  {
+    "clave": "ds-m1-03",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "Te ofrecen un 8 % anual por depositar una stablecoin. ¿Qué indica eso?",
+    "opciones": [
+      "Que el rendimiento sale de otro sitio, y hay que averiguar de cuál",
+      "Que la stablecoin paga ese interés por sí misma",
+      "Que el emisor reparte sus beneficios",
+      "Que el depósito está garantizado"
+    ],
+    "correcta": 0,
+    "explicacion": "Una stablecoin no rinde nada. Si hay un interés, alguien lo paga asumiendo algún riesgo."
+  },
+  {
+    "clave": "ds-m1-04",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "¿Qué tres familias de stablecoins existen, según lo que las sostiene?",
+    "opciones": [
+      "Públicas, privadas y mixtas",
+      "Con reservas, con garantía en criptomonedas y algorítmicas",
+      "De pago, de ahorro y de inversión",
+      "Rápidas, lentas y diferidas"
+    ],
+    "correcta": 1,
+    "explicacion": "Todas prometen valer un dólar. Lo que cambia es el mecanismo que sostiene la promesa."
+  },
+  {
+    "clave": "ds-m1-05",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "Vives en la zona euro y tienes una stablecoin de dólar. El dólar cae un 10 % frente al euro. ¿Qué ocurre?",
+    "opciones": [
+      "El emisor compensa la diferencia",
+      "Tu saldo vale un 10 % más en euros",
+      "Tu saldo vale un 10 % menos en euros",
+      "Nada: la stablecoin es estable"
+    ],
+    "correcta": 2,
+    "explicacion": "Sigue al dólar, así que hereda su tipo de cambio."
+  },
+  {
+    "clave": "ds-m1-06",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Qué mantiene en un dólar el precio de una stablecoin con reservas?",
+    "opciones": [
+      "Una ley que fija su precio",
+      "La intervención de un banco central",
+      "Una orden del emisor a las plataformas",
+      "El arbitraje de operadores que pueden canjearla por un dólar en el emisor"
+    ],
+    "correcta": 3,
+    "explicacion": "Si cae a 0,98, comprarla y canjearla deja dos céntimos sin riesgo. Eso la devuelve a 1,00."
+  },
+  {
+    "clave": "ds-m1-07",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Por qué no basta con que las reservas «valgan» lo emitido?",
+    "opciones": [
+      "Porque además tienen que poder venderse deprisa cuando muchos canjean a la vez",
+      "Porque tienen que estar en bitcoin",
+      "Porque deben superar el doble de lo emitido",
+      "Porque han de estar en una sola entidad"
+    ],
+    "correcta": 0,
+    "explicacion": "Un emisor puede ser solvente sobre el papel y no poder atender los canjes de una mala semana."
+  },
+  {
+    "clave": "ds-m1-08",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Qué diferencia hay entre una atestación y una auditoría completa?",
+    "opciones": [
+      "Son lo mismo con distinto nombre",
+      "La atestación confirma unas cifras a una fecha; la auditoría examina cuentas y procedimientos",
+      "La atestación es más exhaustiva",
+      "La auditoría la hace el propio emisor"
+    ],
+    "correcta": 1,
+    "explicacion": "Muchas veces se lee «auditada» donde solo hay una foto de un día."
+  },
+  {
+    "clave": "ds-m1-09",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Quién puede canjear normalmente una stablecoin directamente con el emisor?",
+    "opciones": [
+      "Nadie: no se pueden canjear",
+      "Solo los bancos centrales",
+      "Clientes verificados, con importes mínimos elevados",
+      "Cualquier titular, desde su wallet"
+    ],
+    "correcta": 2,
+    "explicacion": "Un particular vende en el mercado, al precio que haya. En una crisis, esa diferencia importa."
+  },
+  {
+    "clave": "ds-m1-10",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Qué puede hacer el emisor de una stablecoin con una dirección concreta?",
+    "opciones": [
+      "Nada, si está en una wallet propia",
+      "Duplicar su saldo",
+      "Cambiar su clave privada",
+      "Bloquear los tokens que hay en ella"
+    ],
+    "correcta": 3,
+    "explicacion": "Casi todas incluyen esa función. La autocustodia no te independiza del emisor."
+  },
+  {
+    "clave": "ds-m1-11",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿Qué es la sobrecolateralización?",
+    "opciones": [
+      "Depositar una garantía de mayor valor que lo que se emite",
+      "Guardar las reservas en dos bancos",
+      "Usar el propio token como garantía",
+      "Emitir más tokens que la garantía"
+    ],
+    "correcta": 0,
+    "explicacion": "Como la garantía cambia de precio, tiene que valer bastante más que lo emitido."
+  },
+  {
+    "clave": "ds-m1-12",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "Depositas 1.500 $ en ether y emites 1.000 $ en stablecoin. El ether cae un 20 %. ¿Cuánto vale la garantía respecto a lo emitido?",
+    "opciones": [
+      "Un 80 %",
+      "Un 120 %",
+      "Un 100 %",
+      "Un 150 %"
+    ],
+    "correcta": 1,
+    "explicacion": "1.500 × 0,8 = 1.200 $, que sobre 1.000 emitidos es un 120 %."
+  },
+  {
+    "clave": "ds-m1-13",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿Con qué se respaldaba TerraUSD?",
+    "opciones": [
+      "Con oro",
+      "Con dólares en un banco",
+      "Con LUNA, una moneda del mismo proyecto",
+      "Con deuda pública de Estados Unidos"
+    ],
+    "correcta": 2,
+    "explicacion": "La garantía y lo garantizado se sostenían mutuamente: solo valía mientras hubiera confianza."
+  },
+  {
+    "clave": "ds-m1-14",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿De dónde salía el rendimiento cercano al 20 % que pagaba Anchor?",
+    "opciones": [
+      "De las comisiones de un intercambio",
+      "De los beneficios del emisor",
+      "De los intereses de la deuda pública",
+      "No de su actividad de préstamo: se cubría con una reserva que se agotaba"
+    ],
+    "correcta": 3,
+    "explicacion": "Ese rendimiento atraía la demanda de UST, y nadie lo generaba."
+  },
+  {
+    "clave": "ds-m1-15",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿Qué regla deja el caso de TerraUSD?",
+    "opciones": [
+      "Desconfiar de una moneda estable respaldada por un activo creado por el mismo proyecto",
+      "No usar nunca stablecoins",
+      "Usar solo stablecoins algorítmicas",
+      "Depositar siempre al máximo rendimiento"
+    ],
+    "correcta": 0,
+    "explicacion": "Si lo que la garantiza solo vale mientras se crea en ella, no hay garantía: hay un círculo."
+  },
+  {
+    "clave": "ds-m1-16",
+    "leccion": "cuando-se-pierde-la-paridad",
+    "enunciado": "¿Qué parte de las reservas de USDC estaba en Silicon Valley Bank en marzo de 2023?",
+    "opciones": [
+      "Alrededor del 50 %",
+      "Alrededor del 8 %",
+      "El 100 %",
+      "Menos del 1 %"
+    ],
+    "correcta": 1,
+    "explicacion": "Unos 3.300 millones de dólares, según el comunicado de Circle."
+  },
+  {
+    "clave": "ds-m1-17",
+    "leccion": "cuando-se-pierde-la-paridad",
+    "enunciado": "¿Por qué USDC cayó por debajo de lo que justificaba el peor escenario?",
+    "opciones": [
+      "Porque sus reservas eran falsas",
+      "Porque el emisor dejó de existir",
+      "Porque era fin de semana y no se podía canjear: sin arbitraje, mandó el miedo",
+      "Porque era una stablecoin algorítmica"
+    ],
+    "correcta": 2,
+    "explicacion": "Con el 92 % de las reservas a salvo llegó a cotizar a 0,88."
+  },
+  {
+    "clave": "ds-m1-18",
+    "leccion": "cuando-se-pierde-la-paridad",
+    "enunciado": "¿Qué exige MiCA a quien emite una stablecoin en la Unión Europea?",
+    "opciones": [
+      "Emitirla solo en euros",
+      "Respaldarla con bitcoin",
+      "Pagar un interés mínimo",
+      "Autorización, reservas con reglas y reembolso a los titulares"
+    ],
+    "correcta": 3,
+    "explicacion": "También prohíbe pagar intereses por tenerla, para que no se venda como producto de ahorro."
+  }
+]

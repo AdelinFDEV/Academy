@@ -1,0 +1,193 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>El curso termina convertido en un procedimiento. Diez comprobaciones que hacer antes de depositar en cualquier protocolo, ordenadas de la que más descarta a la que menos; una forma de decidir cuánto; la cuenta completa de un depósito, con todo lo que resta; y una pregunta final que la mayoría contesta demasiado deprisa: si el rendimiento que te ofrecen compensa lo que arriesgas, o si un euro que no rinde nada está mejor donde está.</p>
+</div>
+
+<h2>Diez comprobaciones, en orden</h2>
+
+<p>Están ordenadas para que las primeras eliminen la mayoría de los candidatos con poco esfuerzo. Si una de las cuatro primeras falla, no hace falta seguir.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Comprobación</th><th>Qué buscas</th><th>Lección</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1 · ¿De dónde sale el rendimiento?</td><td>Una respuesta con sujeto: quién paga y por qué</td><td>4.3</td></tr>
+    <tr><td>2 · ¿En qué me pagan?</td><td>La parte base, sin recompensas en tokens del protocolo</td><td>4.3</td></tr>
+    <tr><td>3 · ¿Cuánto tiempo lleva funcionando, y con cuánto dinero?</td><td>Años, no semanas; un valor depositado estable</td><td>5.1</td></tr>
+    <tr><td>4 · ¿Quién puede modificar el contrato?</td><td>Varias firmas y un plazo de espera</td><td>2.1</td></tr>
+    <tr><td>5 · ¿Qué stablecoin o monedas uso, y qué las respalda?</td><td>Las cuatro preguntas del módulo 1</td><td>1.2</td></tr>
+    <tr><td>6 · ¿De qué otras piezas depende?</td><td>Puentes, oráculos, otros protocolos</td><td>2.3 y 4.2</td></tr>
+    <tr><td>7 · ¿Qué garantías acepta, si es de préstamos?</td><td>Monedas con liquidez, no tokens pequeños</td><td>4.1</td></tr>
+    <tr><td>8 · ¿Cuánto puedo perder por divergencia, si es un fondo?</td><td>La tabla de la <a href="/glosario/perdida-impermanente">pérdida impermanente</a></td><td>3.3</td></tr>
+    <tr><td>9 · ¿Cuánto cuesta entrar y salir?</td><td><a href="/glosario/gas">Gas</a>, impacto en el precio, deslizamiento</td><td>2.3 y 3.4</td></tr>
+    <tr><td>10 · ¿Podré salir cuando quiera?</td><td>Plazos de bloqueo, fondos disponibles, liquidez del token</td><td>4.1</td></tr>
+  </tbody>
+</table>
+
+<p>La décima se pasa por alto con facilidad. Algunos depósitos tienen un periodo de espera para retirar; otros entregan un token que hay que vender en un fondo que puede estar vacío justo el día que todos quieren salir. Poder entrar no garantiza poder salir.</p>
+
+<h2>La cuenta completa de un depósito</h2>
+
+<p>El rendimiento anunciado es el punto de partida, no el resultado. Un ejemplo con cifras inventadas: 2.000 dólares en un depósito de stablecoins que anuncia un 12 % APY, durante un año.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Concepto</th><th>Cuenta</th><th>Importe</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Rendimiento anunciado</td><td>2.000 × 12 %</td><td>+240 $</td></tr>
+    <tr><td>Menos la parte en tokens que no llega a valer eso</td><td>La mitad era en recompensas; se venden un 50 % más baratas</td><td>−60 $</td></tr>
+    <tr><td>Menos la diferencia entre APY y lo realmente reinvertido</td><td>No se reinvierte a diario</td><td>−10 $</td></tr>
+    <tr><td>Menos el gas de entrar, cobrar y salir</td><td>Varias operaciones</td><td>−30 $</td></tr>
+    <tr><td><strong>Rendimiento antes de impuestos</strong></td><td></td><td><strong>140 $ (7 %)</strong></td></tr>
+    <tr><td>Menos impuestos, a un tipo del 19 %</td><td>Simplificando: sobre el rendimiento neto</td><td>−27 $</td></tr>
+    <tr><td><strong>Lo que queda</strong></td><td></td><td><strong>113 $ (5,6 %)</strong></td></tr>
+  </tbody>
+</table>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "De lo anunciado a lo que queda",
+  "subtitulo": "Depósito de 2.000 $ durante un año, en un ejemplo inventado. Rendimiento en porcentaje sobre lo depositado.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Anunciado", "rendimiento": 12 },
+    { "etiqueta": "Tras descontar tokens, reinversión y gas", "rendimiento": 7 },
+    { "etiqueta": "Después de impuestos", "rendimiento": 5.6 }
+  ],
+  "series": [{ "clave": "rendimiento", "nombre": "Rendimiento anual", "color": "#22d3ee" }],
+  "nota": "Cifras inventadas para ilustrar el orden de magnitud; el cálculo fiscal real es más complejo, porque los rendimientos se valoran el día en que se cobran. El resultado es en dólares: para quien vive en euros, falta sumar o restar el tipo de cambio."
+}
+</script></div>
+
+<p>Y falta lo más importante, que no aparece en la tabla porque no es un coste sino una probabilidad: la de perder los 2.000 dólares. Ese 5,6 % es lo que cobras por asumirla.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">5,6 %</span>
+  <span class="prose-dato-texto">Lo que queda del 12 % anunciado en el ejemplo, tras descontar lo que no llega, el gas y los impuestos. Y en dólares, no en euros.</span>
+</div>
+
+<h2>Cuánto: la pregunta del tamaño</h2>
+
+<p>Ya viste en la lección 5.1 que el tamaño es la única defensa que funciona contra lo imprevisto. Aquí está en forma de procedimiento.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Separa lo que no se toca.</strong> El <a href="/glosario/fondo-de-emergencia">fondo de emergencia</a> y el dinero con un destino próximo no van a DeFi, con ningún rendimiento.</li>
+  <li><strong>Decide un máximo para todo DeFi.</strong> Una parte de tus ahorros que podrías perder entera sin que cambie tu vida.</li>
+  <li><strong>Fija un tope por protocolo.</strong> Para que el fallo de uno no sea el de todo.</li>
+  <li><strong>Fija un tope más bajo para lo nuevo.</strong> Menos de un año de vida, o piezas que no entiendes del todo.</li>
+  <li><strong>Empieza con una cantidad de prueba.</strong> Haz el recorrido completo, de entrada a salida, antes de mover el importe real.</li>
+</ol>
+
+<p>El quinto paso cuesta unos dólares de gas y evita los errores más tontos: una red equivocada, un token que no se puede retirar como pensabas, una comisión de salida que no habías visto.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Decidir por el rendimiento</p>
+    <p class="prose-vs-sub">«¿Cuánto da?»</p>
+    <ul>
+      <li data-tono="contra">Lleva al protocolo con la cifra más alta</li>
+      <li data-tono="contra">La cifra más alta suele esconder el riesgo mayor</li>
+      <li data-tono="contra">El tamaño se decide por lo que hay disponible</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Decidir por lo que puedes perder</p>
+    <p class="prose-vs-sub">«¿Qué pasa si falla?»</p>
+    <ul>
+      <li data-tono="favor">El tamaño se fija antes de mirar el rendimiento</li>
+      <li data-tono="favor">Un fallo es un contratiempo, no un desastre</li>
+      <li data-tono="favor">El rendimiento es lo último que se compara</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Una vez dentro</h2>
+
+<p>Depositar no es el final. Un depósito en DeFi hay que vigilarlo de una manera que no exige una cuenta bancaria.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cada mes</span>
+    <p>Mira si el rendimiento base ha cambiado, si el valor depositado en el protocolo cae y si ha habido cambios de gobierno.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Ante una alerta</span>
+    <p>Si una stablecoin se desvía, o corre la noticia de un ataque, ten decidido de antemano si sales y cómo.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Cada vez que operes</span>
+    <p>Apunta la operación en tu registro, con su valor en euros.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Al dejar un protocolo</span>
+    <p>Revoca las aprobaciones que le diste.</p>
+  </div>
+</div>
+
+<h2>La pregunta final</h2>
+
+<p>Queda decidir si todo esto merece la pena. No hay una respuesta general, pero sí una forma honesta de plantearlo.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Alternativa</th><th>Qué rinde</th><th>Qué arriesgas</th><th>Qué te exige</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Euros en una cuenta remunerada o un depósito</td><td>El tipo del momento, bajo</td><td>Casi nada, hasta el límite garantizado</td><td>Nada</td></tr>
+    <tr><td>Deuda pública a corto plazo</td><td>El tipo oficial</td><td>Muy poco</td><td>Abrir una cuenta de valores</td></tr>
+    <tr><td>Stablecoin en una plataforma autorizada, sin rendimiento</td><td>Nada</td><td>El emisor, la plataforma y el dólar</td><td>Poco</td></tr>
+    <tr><td>Stablecoin en un protocolo de préstamos grande</td><td>Unos puntos, variables</td><td>Lo anterior más código, oráculo y garantías</td><td>Vigilancia y registro fiscal</td></tr>
+    <tr><td>Fondos con rendimientos altos</td><td>Mucho, sobre el papel</td><td>Todo lo anterior, más pérdida impermanente y tokens que caen</td><td>Mucho tiempo y conocimiento</td></tr>
+  </tbody>
+</table>
+
+<p>Para alguien con ahorros modestos que vive en euros, la diferencia entre la segunda fila y la cuarta pueden ser dos o tres puntos al año, en dólares, a cambio de una lista larga de riesgos y de horas de trabajo. Sobre 2.000 euros, son cuarenta o sesenta al año. Hay quien concluye que compensa, por interés o por aprender. Hay quien concluye que no. Las dos respuestas son defendibles si se han hecho las cuentas.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Lo que no es defendible es entrar sin haberlas hecho, atraído por una cifra. Casi todas las pérdidas grandes de particulares en DeFi tienen ese origen: alguien vio un porcentaje y no preguntó de dónde salía.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Entender DeFi tiene valor aunque no deposites nunca. Sabrás leer una noticia sobre una stablecoin que tiembla, reconocer un rendimiento que no se sostiene y explicar a quien te pregunte por qué un 20 % «seguro» no existe. Decidir no entrar, sabiendo por qué, es un resultado perfectamente válido de este curso.</div>
+</div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "Antes de depositar",
+  "instrucciones": "Ordena las decisiones, de la primera a la última.",
+  "pasos": [
+    "Separar el dinero que no se toca",
+    "Fijar cuánto puede estar en DeFi y el tope por protocolo",
+    "Averiguar de dónde sale el rendimiento y en qué se paga",
+    "Comprobar antigüedad, control del contrato y dependencias",
+    "Calcular los costes de entrar y salir",
+    "Hacer el recorrido completo con una cantidad de prueba",
+    "Depositar el importe decidido y apuntarlo en el registro"
+  ]
+}
+</script></div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Tienes 3.000 € ahorrados, de los cuales 2.500 son tu fondo de emergencia. Un protocolo ofrece un 15 % anual por una stablecoin. ¿Cuánto tiene sentido depositar?",
+  "opciones": [
+    "Como mucho, una parte de los 500 € que no son fondo de emergencia, tras hacer las comprobaciones",
+    "Los 3.000 €: un 15 % es mucho mejor que tenerlos parados",
+    "Los 2.500 € del fondo de emergencia, que es dinero que no usas",
+    "Pedir prestado para depositar más"
+  ],
+  "correcta": 0,
+  "explicacion": "El fondo de emergencia no va a DeFi con ningún rendimiento. Y un 15 % por una stablecoin exige saber antes de dónde sale."
+}
+</script></div>
+
+<h2>Ejercicio final: tu hoja de decisión</h2>
+
+<p>Elige un depósito concreto que estés considerando, o uno cualquiera para practicar. En una página, escribe: tu máximo para DeFi y tu tope por protocolo; las diez comprobaciones, cada una con lo que has encontrado y una nota de «bien», «dudoso» o «mal»; la cuenta completa del rendimiento, con tus cifras; qué harías si la stablecoin se desviara un 10 %; y, al final, tu decisión: depositar una cantidad concreta, o no depositar, con una frase que explique por qué. Guarda la hoja. Si decides entrar, es tu plan. Si decides no hacerlo, es tu explicación.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> antes de depositar, diez comprobaciones: de dónde sale el rendimiento y en qué se paga, antigüedad, control del contrato, qué respalda las monedas, dependencias, garantías, pérdida por divergencia, costes y posibilidad de salir. Decide el tamaño antes de mirar la cifra, y haz la cuenta completa: un 12 % anunciado puede quedarse en menos de un 6 %. No entrar, sabiendo por qué, es una decisión tan válida como cualquier otra.</div>
+</div>

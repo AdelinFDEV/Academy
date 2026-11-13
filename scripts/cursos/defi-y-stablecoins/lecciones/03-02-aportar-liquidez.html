@@ -1,0 +1,155 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Las monedas de un fondo las pone gente corriente, que a cambio cobra las comisiones de quienes operan. Es la forma más conocida de «ganar un rendimiento» en DeFi, y la más malinterpretada. Aquí ves qué depositas exactamente, qué recibes a cambio, cómo se calcula lo que cobra un fondo a partir de lo que se negocia en él y por qué el porcentaje que anuncia la página no es lo que vas a ganar.</p>
+</div>
+
+<h2>Qué significa aportar liquidez</h2>
+
+<p>Un <a href="/glosario/liquidity-pool">pool de liquidez</a> necesita monedas para funcionar. Quien las pone se llama proveedor de liquidez. En el diseño clásico, hay que aportar las dos monedas del par, por el mismo valor.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Depositas las dos monedas</strong> en la proporción que marca el fondo. Para un par de ether y dólares digitales con el ether a 2.000 $: 1 ether y 2.000 $, por ejemplo.</li>
+  <li><strong>Recibes un token de participación,</strong> que acredita qué parte del fondo es tuya.</li>
+  <li><strong>El fondo opera.</strong> Cada persona que cambia una moneda por otra paga una comisión, que se suma al fondo.</li>
+  <li><strong>Al retirar, devuelves el token</strong> y recibes tu parte del fondo tal como esté en ese momento, comisiones incluidas.</li>
+</ol>
+
+<p>Fíjate en el cuarto paso: «tal como esté en ese momento». No recuperas lo que pusiste. Recuperas un porcentaje de lo que haya, y lo que hay ha cambiado. Si pusiste 1 ether y 2.000 dólares, puedes recibir 0,7 ether y 2.830 dólares, o 1,4 ether y 1.410 dólares. Es el origen de la pérdida impermanente, a la que dedicamos la lección siguiente.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Ese token de participación es, a su vez, un token más. Se puede enviar, vender o depositar en otro protocolo para sumar un rendimiento adicional. Es una de las «capas» de las que hablamos en el módulo 2: cada vez que lo depositas en otro sitio añades el riesgo de ese sitio.</div>
+</div>
+
+<h2>De dónde sale lo que cobras</h2>
+
+<p>La cuenta es directa y conviene hacerla siempre antes de entrar.</p>
+
+<blockquote><strong>Comisiones del fondo en un día = volumen negociado ese día × comisión</strong><br><strong>Rendimiento anual aproximado = comisiones de un día × 365 ÷ dinero depositado en el fondo</strong></blockquote>
+
+<p>Un fondo con 10 millones de dólares depositados, por el que pasan 2 millones al día, con una comisión del 0,3 %:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Paso</th><th>Cuenta</th><th>Resultado</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Comisiones diarias</td><td>2.000.000 × 0,3 %</td><td>6.000 $</td></tr>
+    <tr><td>Comisiones anuales, si se mantuviera</td><td>6.000 × 365</td><td>2.190.000 $</td></tr>
+    <tr><td>Rendimiento sobre lo depositado</td><td>2.190.000 ÷ 10.000.000</td><td>21,9 %</td></tr>
+  </tbody>
+</table>
+
+<p>Lo que decide el rendimiento no es el volumen ni el tamaño del fondo, sino la relación entre los dos: cuánto se negocia por cada dólar depositado.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Rendimiento anual por comisiones según lo que se negocia",
+  "subtitulo": "Fondo de 10 millones de dólares y comisión del 0,3 %, si el volumen diario se mantuviera todo el año.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "200.000 $ al día", "rendimiento": 2.2 },
+    { "etiqueta": "500.000 $ al día", "rendimiento": 5.5 },
+    { "etiqueta": "1 millón al día", "rendimiento": 11 },
+    { "etiqueta": "2 millones al día", "rendimiento": 21.9 }
+  ],
+  "series": [{ "clave": "rendimiento", "nombre": "Rendimiento anual", "color": "#22d3ee" }],
+  "nota": "Ejemplo inventado. El volumen de un fondo cambia mucho de un día a otro: una cifra anual sale de suponer que no cambia."
+}
+</script></div>
+
+<h2>Por qué el porcentaje anunciado engaña</h2>
+
+<p>Las páginas muestran un rendimiento anual para cada fondo. Casi siempre sale de tomar las comisiones de las últimas 24 horas, o de la última semana, y multiplicarlas por el año entero. Hay tres problemas.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El volumen no se mantiene</span>
+    <p>Un día de mucha actividad da una cifra anual espectacular que no se repetirá.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El dinero entra detrás del número</span>
+    <p>Un rendimiento alto atrae depósitos. Las mismas comisiones se reparten entre más gente y el porcentaje baja.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">No incluye lo que pierdes</span>
+    <p>El porcentaje cuenta las comisiones, no la pérdida impermanente ni el gas de entrar y salir.</p>
+  </div>
+</div>
+
+<p>El segundo punto se puede ver con el ejemplo anterior. El fondo rendía un 21,9 %. Eso atrae otros 10 millones. Ahora hay 20 millones para las mismas comisiones: el rendimiento es del 11 %. No ha pasado nada malo; simplemente, los rendimientos altos son temporales por definición.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">11 %</span>
+  <span class="prose-dato-texto">En lo que se queda el 21,9 % del ejemplo cuando el dinero depositado se dobla y el volumen no. Un rendimiento que destaca atrae depósitos hasta que deja de destacar.</span>
+</div>
+
+<h2>Rendimiento que no viene de las comisiones</h2>
+
+<p>Muchos fondos anuncian cifras muy superiores a lo que dan sus comisiones. La diferencia suele venir de <strong>recompensas en tokens</strong>: el protocolo reparte su propia moneda entre quienes aportan liquidez, para atraerlos. Se conoce como <a href="/glosario/yield-farming">yield farming</a>.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Comisiones</p>
+    <p class="prose-vs-sub">Las paga quien usa el fondo</p>
+    <ul>
+      <li data-tono="favor">Vienen de una actividad real</li>
+      <li data-tono="favor">Se cobran en las monedas del par</li>
+      <li data-tono="contra">Suelen ser modestas</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Recompensas en tokens</p>
+    <p class="prose-vs-sub">Las emite el protocolo</p>
+    <ul>
+      <li data-tono="favor">Pueden multiplicar la cifra anunciada</li>
+      <li data-tono="contra">Se pagan en un token que todos los que lo reciben quieren vender</li>
+      <li data-tono="contra">Duran lo que dure el programa de incentivos</li>
+    </ul>
+  </div>
+</div>
+
+<p>Un 80 % anual pagado en un token que pierde un 70 % de su valor en esos meses no es un 80 %. La lección 4.3 trata de esto entero. Por ahora, separa siempre las dos cifras: la página suele desglosarlas si se busca.</p>
+
+<h2>Las cuentas antes de entrar</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Dato</th><th>Dónde se ve</th><th>Para qué</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Dinero depositado en el fondo</td><td>Página del fondo o un agregador</td><td>Saber si aguanta tu entrada y tu salida</td></tr>
+    <tr><td>Volumen medio de 30 días, no de 24 horas</td><td>Página de estadísticas</td><td>Calcular un rendimiento realista</td></tr>
+    <tr><td>Comisión del fondo</td><td>En su descripción</td><td>Hacer la cuenta tú mismo</td></tr>
+    <tr><td>Parte del rendimiento que es en tokens</td><td>Desglose del rendimiento</td><td>Descontar lo que no viene de comisiones</td></tr>
+    <tr><td>Coste de entrar y salir en gas</td><td>La wallet, al simular</td><td>Restarlo de lo que esperas ganar</td></tr>
+  </tbody>
+</table>
+
+<p>Y una comprobación de sentido común con el <a href="/glosario/gas">gas</a>. Si entrar y salir te cuesta 20 dólares y depositas 300, necesitas ganar casi un 7 % solo para empatar. Con importes pequeños, aportar liquidez en una red cara no tiene sentido por muy alto que sea el porcentaje.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Aportar liquidez no es prestar dinero ni tenerlo en una cuenta remunerada. Eres el otro lado de todas las operaciones del fondo: vendes lo que sube y compras lo que baja, de forma automática. Las comisiones son lo que cobras por ello, y no siempre compensan.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un fondo tiene 5 millones de dólares depositados, negocia 500.000 dólares al día y cobra un 0,3 %. ¿Qué rendimiento anual por comisiones daría si el volumen se mantuviera?",
+  "opciones": [
+    "Cerca del 11 %",
+    "Cerca del 0,3 %",
+    "Cerca del 30 %",
+    "Cerca del 110 %"
+  ],
+  "correcta": 0,
+  "explicacion": "500.000 × 0,3 % = 1.500 $ al día. Por 365 son 547.500 $, que sobre 5 millones es un 10,95 %."
+}
+</script></div>
+
+<h2>Ejercicio: tu propia cuenta</h2>
+
+<p>En un agregador de datos de DeFi o en la página de un intercambio descentralizado, elige un fondo grande de dos monedas conocidas. Apunta el dinero depositado, el volumen medio diario del último mes y la comisión. Calcula el rendimiento anual por comisiones con la fórmula de esta lección y compáralo con el que anuncia la página. Si no coinciden, averigua por qué: ¿usa el volumen de un solo día?, ¿incluye recompensas en tokens? Escribe las dos cifras, la tuya y la anunciada, una al lado de la otra.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> quien aporta liquidez deposita las dos monedas de un par y cobra las comisiones de quienes operan. El rendimiento es el volumen por la comisión, dividido entre el dinero depositado. La cifra que anuncia la página suele salir de un día bueno, baja cuando entra más dinero y no descuenta lo que se pierde. Separa siempre lo que viene de comisiones de lo que se paga en tokens del propio protocolo.</div>
+</div>

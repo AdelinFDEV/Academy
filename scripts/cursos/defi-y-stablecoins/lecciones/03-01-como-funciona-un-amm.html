@@ -1,0 +1,172 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En un intercambio descentralizado no hay compradores y vendedores esperando con sus órdenes. Hay un fondo con dos monedas y una fórmula que decide el precio. Aquí ves esa fórmula —una simple multiplicación—, las cuentas completas de una compra pequeña y de una grande, por qué el precio empeora a medida que compras y quién se encarga de que el precio del fondo coincida con el del resto del mercado.</p>
+</div>
+
+<h2>Un fondo en lugar de un libro</h2>
+
+<p>En una plataforma tradicional, comprar exige que alguien quiera vender a ese precio. Las ofertas de unos y otros se apuntan en un <a href="/glosario/libro-de-ordenes">libro de órdenes</a>, y alguien tiene que mantenerlo lleno.</p>
+
+<p>Un <a href="/glosario/dex">DEX</a> resuelve el problema de otra manera. Usa un <a href="/glosario/amm">AMM</a>, siglas en inglés de creador de mercado automático: un contrato que guarda un fondo con dos monedas, el <a href="/glosario/liquidity-pool">pool de liquidez</a>, y cambia una por otra a cualquiera que se lo pida, a un precio que calcula él mismo.</p>
+
+<p>No hace falta contraparte. Si quieres ether, le das dólares digitales al fondo y el fondo te da ether. La única pregunta es a cuánto.</p>
+
+<h2>La fórmula: una multiplicación que no cambia</h2>
+
+<p>El diseño clásico, el que popularizó Uniswap, se basa en una regla:</p>
+
+<blockquote><strong>x × y = k</strong><br>La cantidad de una moneda multiplicada por la cantidad de la otra tiene que dar siempre el mismo resultado.</blockquote>
+
+<p>Toma un fondo con 10 ether y 20.000 dólares digitales. El producto es 200.000, y esa cifra no puede cambiar con las operaciones. El precio sale de dividir un montón entre el otro: 20.000 ÷ 10 = 2.000 dólares por ether.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Dato del fondo</th><th>Valor</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ether (x)</td><td>10</td></tr>
+    <tr><td>Dólares digitales (y)</td><td>20.000</td></tr>
+    <tr><td>Producto constante (k)</td><td>200.000</td></tr>
+    <tr><td>Precio que marca</td><td>2.000 $ por ether</td></tr>
+  </tbody>
+</table>
+
+<p>Si alguien saca ether, queda menos ether en el fondo. Para que el producto siga dando 200.000, tiene que quedar más de la otra moneda. Esa diferencia es lo que paga.</p>
+
+<h2>Una compra pequeña</h2>
+
+<p>Quieres comprar 0,1 ether. Tras tu compra quedarán 9,9 en el fondo.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Ether que quedará:</strong> 10 − 0,1 = 9,9.</li>
+  <li><strong>Dólares que debe haber para mantener el producto:</strong> 200.000 ÷ 9,9 = 20.202,02.</li>
+  <li><strong>Lo que tienes que aportar:</strong> 20.202,02 − 20.000 = 202,02 $.</li>
+  <li><strong>Precio medio que has pagado:</strong> 202,02 ÷ 0,1 = 2.020,20 $ por ether.</li>
+</ol>
+
+<p>El fondo marcaba 2.000 y has pagado 2.020: un 1 % más. Esa diferencia se llama <strong>impacto en el precio</strong>. No es una comisión: es consecuencia de la fórmula. Cada trocito de ether que sacas encarece el siguiente.</p>
+
+<h2>Una compra grande</h2>
+
+<p>Ahora compra 1 ether entero, el 10 % de lo que hay.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Cuenta</th><th>Compra de 0,1 ETH</th><th>Compra de 1 ETH</th><th>Compra de 2 ETH</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ether que queda</td><td>9,9</td><td>9</td><td>8</td></tr>
+    <tr><td>Dólares que debe haber</td><td>20.202,02</td><td>22.222,22</td><td>25.000</td></tr>
+    <tr><td>Lo que pagas</td><td>202,02 $</td><td>2.222,22 $</td><td>5.000 $</td></tr>
+    <tr><td>Precio medio por ether</td><td>2.020 $</td><td>2.222 $</td><td>2.500 $</td></tr>
+    <tr><td><strong>Impacto</strong></td><td><strong>1 %</strong></td><td><strong>11,1 %</strong></td><td><strong>25 %</strong></td></tr>
+  </tbody>
+</table>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Impacto en el precio según el tamaño de la compra",
+  "subtitulo": "Fondo de 10 ether y 20.000 dólares digitales. Cuánto más caro pagas de media respecto al precio inicial.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "0,1 ETH (1 % del fondo)", "impacto": 1 },
+    { "etiqueta": "0,5 ETH (5 %)", "impacto": 5.3 },
+    { "etiqueta": "1 ETH (10 %)", "impacto": 11.1 },
+    { "etiqueta": "2 ETH (20 %)", "impacto": 25 }
+  ],
+  "series": [{ "clave": "impacto", "nombre": "Impacto en el precio", "color": "#22d3ee" }],
+  "nota": "Ejemplo inventado, sin comisiones. El impacto crece más deprisa que el tamaño de la orden."
+}
+</script></div>
+
+<p>La regla práctica que sale de aquí: <strong>el impacto depende de lo grande que sea tu orden respecto al fondo</strong>. Una orden que es el 1 % del fondo mueve el precio alrededor de un 1 %. Una que es el 10 %, más de un 11 %. Por eso en los fondos pequeños cualquier compra medianamente seria sale carísima, y por eso el tamaño del fondo —su <a href="/glosario/liquidez">liquidez</a>— es lo primero que hay que mirar.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">11,1 %</span>
+  <span class="prose-dato-texto">Lo que encarece de media una compra equivalente al 10 % del fondo. No va a ninguna parte: es el precio de mover un mercado pequeño.</span>
+</div>
+
+<h2>El precio después de la operación</h2>
+
+<p>Tu compra no solo te ha costado más: ha cambiado el precio del fondo para todos. Tras la compra de 1 ether quedan 9 ether y 22.222,22 dólares. El nuevo precio es 22.222,22 ÷ 9 = 2.469 dólares por ether.</p>
+
+<p>Pero en el resto del mundo el ether sigue valiendo 2.000. El fondo se ha quedado descolocado, y ahí aparece la figura que hace funcionar todo el sistema.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El fondo marca 2.469 $</span>
+    <p>Fuera, el ether se compra a 2.000 $.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Un arbitrajista lo ve</span>
+    <p>Compra ether fuera a 2.000 y lo vende al fondo, que lo paga más caro.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Repite mientras gane</span>
+    <p>Cada venta mete ether en el fondo y baja su precio.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El fondo vuelve a 2.000 $</span>
+    <p>Cuando ya no hay diferencia, deja de haber negocio.</p>
+  </div>
+</div>
+
+<p>El fondo no sabe cuánto vale el ether. No consulta ningún precio. Se limita a aplicar su fórmula, y son los arbitrajistas quienes, buscando su beneficio, lo mantienen alineado con el mercado. Ese beneficio sale de algún sitio, y lo verás en la lección 3.3: lo ponen quienes aportaron las monedas al fondo.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Hay variantes de la fórmula. Los fondos pensados para dos stablecoins usan una curva más plana, que permite cambiar grandes cantidades casi sin impacto mientras las dos valgan lo mismo. Y existen diseños en los que la liquidez se concentra en un rango de precios. La lógica de fondo no cambia: un fondo, una regla y arbitrajistas que lo alinean.</div>
+</div>
+
+<h2>La comisión</h2>
+
+<p>Además del impacto, cada operación paga una comisión, que se queda en el fondo y es la recompensa de quienes han aportado las monedas. En la versión clásica de Uniswap era del 0,3 % de cada operación; otros fondos cobran más o menos según lo arriesgado del par.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Comisión</p>
+    <p class="prose-vs-sub">Un porcentaje fijo</p>
+    <ul>
+      <li data-tono="favor">Igual para una orden pequeña que para una grande</li>
+      <li data-tono="favor">Se conoce de antemano</li>
+      <li data-tono="favor">Va a quienes aportan liquidez</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Impacto en el precio</p>
+    <p class="prose-vs-sub">Depende de tu tamaño</p>
+    <ul>
+      <li data-tono="contra">Crece muy deprisa con la orden</li>
+      <li data-tono="contra">En fondos pequeños puede ser enorme</li>
+      <li data-tono="contra">Acaba en manos de los arbitrajistas</li>
+    </ul>
+  </div>
+</div>
+
+<p>Al operar, la página muestra las dos cosas. La que conviene mirar con más atención es la segunda. Una comisión del 0,3 % es irrelevante si el impacto es del 8 %.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Cualquiera puede crear un fondo para cualquier token, sin permiso. Que una moneda se pueda comprar en un intercambio descentralizado no dice nada de su calidad. Y un fondo con poco dinero permite comprar con facilidad y no vender: al intentar salir, el impacto se lleva buena parte de lo que tenías.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un fondo tiene 100 unidades de un token y 10.000 dólares digitales. Quieres comprar 20 unidades. ¿Cuánto pagas, sin contar comisiones?",
+  "opciones": [
+    "2.500 $",
+    "2.000 $",
+    "2.200 $",
+    "12.500 $"
+  ],
+  "correcta": 0,
+  "explicacion": "k = 100 × 10.000 = 1.000.000. Quedarán 80 unidades, así que debe haber 1.000.000 ÷ 80 = 12.500 $. Aportas 2.500: a 125 $ de media, un 25 % más que los 100 $ iniciales."
+}
+</script></div>
+
+<h2>Ejercicio: calcula antes de pulsar</h2>
+
+<p>Entra en la página de un intercambio descentralizado conocido y, sin conectar la wallet, simula una operación: introduce una cantidad pequeña de una stablecoin y elige un token grande, como ether. Anota el impacto en el precio que muestra. Multiplica la cantidad por diez, por cien y por mil, y anota cómo crece. Repite con un token pequeño y poco conocido. Compara los dos casos y escribe a partir de qué importe el impacto supera el 1 % en cada uno. Ese es el tamaño máximo razonable para operar ese par.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> un creador de mercado automático cambia monedas contra un fondo, con la regla x × y = k. El precio sale de dividir un montón entre el otro, y cada compra lo encarece: una orden del 1 % del fondo mueve el precio un 1 %, y una del 10 %, más de un 11 %. El fondo no conoce el precio real; lo alinean los arbitrajistas. Mira siempre el impacto, no solo la comisión.</div>
+</div>

@@ -1,0 +1,137 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Una stablecoin es una criptomoneda diseñada para valer siempre lo mismo que una moneda corriente, casi siempre el dólar. Es la pieza sobre la que se apoya casi toda la actividad del mercado, y la puerta de entrada a las finanzas descentralizadas. Aquí ves para qué se usa, por qué alguien se molesta en emitirla, qué tres familias existen y por qué «estable» describe un objetivo y no una garantía.</p>
+</div>
+
+<h2>Un dólar que se mueve como una criptomoneda</h2>
+
+<p>Bitcoin y casi todas las criptomonedas cambian de precio cada segundo. Eso las hace incómodas para algo tan sencillo como guardar el resultado de una venta durante unos días o pagar una cantidad fija. La <a href="/glosario/stablecoin">stablecoin</a> nació para resolverlo: un token que se envía por una <a href="/glosario/blockchain">blockchain</a> igual que cualquier otro, pero cuyo precio pretende quedarse clavado en un dólar.</p>
+
+<p>Tiene las ventajas prácticas de una criptomoneda —se envía a cualquier hora, en minutos, sin pasar por un banco— sin su <a href="/glosario/volatilidad">volatilidad</a>. A cambio, introduce una pregunta que bitcoin no tiene: quién o qué garantiza que ese token siga valiendo un dólar mañana.</p>
+
+<p>El mercado es grande. A principios de noviembre de 2026, el conjunto de las stablecoins rondaba los 300.000 millones de dólares, y dos de ellas concentraban más del 80 %.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Reparto aproximado del mercado de stablecoins",
+  "subtitulo": "En porcentaje del total en circulación, noviembre de 2026.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "USDT (Tether)", "cuota": 59 },
+    { "etiqueta": "USDC (Circle)", "cuota": 24 },
+    { "etiqueta": "Todas las demás", "cuota": 17 }
+  ],
+  "series": [{ "clave": "cuota", "nombre": "Cuota de mercado", "color": "#22d3ee" }],
+  "nota": "Cifras redondeadas a partir de CoinMarketCap y otros rastreadores. Cambian a diario: tómalas como orden de magnitud."
+}
+</script></div>
+
+<h2>Para qué se usan</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Uso</th><th>Qué resuelve</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Moneda de cuenta en las plataformas</td><td>Casi todos los pares cotizan contra una stablecoin, no contra euros o dólares de banco</td></tr>
+    <tr><td>Refugio temporal</td><td>Vender una criptomoneda sin salir a la cuenta bancaria</td></tr>
+    <tr><td>Envíos entre plataformas y países</td><td>Mover valor en minutos, también en fin de semana</td></tr>
+    <tr><td>Garantía en los derivados</td><td>El margen de los contratos se deposita en stablecoins</td></tr>
+    <tr><td>Materia prima de DeFi</td><td>Se prestan, se depositan en pools y sirven de garantía</td></tr>
+  </tbody>
+</table>
+
+<p>El último uso es el que ocupa la mayor parte de este curso. Casi cualquier rendimiento que veas anunciado en un protocolo se paga sobre una stablecoin, y por eso lo primero es saber qué tienes cuando tienes una.</p>
+
+<h2>Por qué alguien emite una</h2>
+
+<p>Emitir una stablecoin respaldada por dólares es un negocio excelente, y entenderlo ayuda a leer todo lo demás. El emisor recibe tus dólares, te entrega tokens que no pagan intereses e invierte los dólares en deuda pública a corto plazo, que sí los paga.</p>
+
+<blockquote><strong>Ingreso del emisor ≈ reservas × tipo de interés de la deuda a corto plazo</strong></blockquote>
+
+<p>Con 100.000 millones de dólares en reservas y un tipo del 4 %, son 4.000 millones al año. Esos intereses se los queda el emisor. Tú tienes el token; él, el rendimiento de tu dinero.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">0 %</span>
+  <span class="prose-dato-texto">El interés que paga una stablecoin corriente a quien la tiene. El rendimiento de las reservas es del emisor. Si alguien te ofrece un interés por ella, sale de otro sitio, y hay que saber de cuál.</span>
+</div>
+
+<p>Esa última frase es el hilo de todo el curso. Una stablecoin, por sí misma, no rinde nada. Cuando un protocolo te ofrece un 8 % por depositarla, ese 8 % lo paga alguien, por algún motivo, asumiendo algún riesgo. Averiguar quién, por qué y cuál es lo que separa una decisión informada de una apuesta a ciegas.</p>
+
+<h2>Tres familias</h2>
+
+<p>Todas prometen lo mismo: valer un dólar. Lo que cambia es el mecanismo que sostiene la promesa.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Respaldadas por reservas</span>
+    <p>Una empresa guarda un dólar, o algo equivalente, por cada token emitido. USDT y USDC son de este tipo. Dependen de la solvencia y la honradez del emisor.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Respaldadas por criptomonedas</span>
+    <p>Un programa las emite contra una garantía en otras criptomonedas, de mayor valor que lo emitido. Dependen del precio de esa garantía y del código.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Algorítmicas</span>
+    <p>Intentan mantener el precio con un mecanismo de incentivos, sin reservas suficientes detrás. La mayor de ellas se hundió en 2022.</p>
+  </div>
+</div>
+
+<p>Las dos lecciones siguientes desarrollan cada familia. Por ahora quédate con la idea: no existe «la» stablecoin. Dos tokens que marcan 1,00 en la pantalla pueden tener detrás cosas completamente distintas.</p>
+
+<h2>«Estable» es un objetivo, no una garantía</h2>
+
+<p>El nombre induce a error. Una stablecoin no es estable por naturaleza: lo es mientras funcione lo que la sostiene. Cuando falla, deja de valer un dólar, y a ese fallo se le llama <a href="/glosario/depeg">depeg</a>, pérdida de la paridad.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Un depósito en un banco</p>
+    <p class="prose-vs-sub">En la zona euro</p>
+    <ul>
+      <li data-tono="favor">Cubierto por el fondo de garantía hasta 100.000 €</li>
+      <li data-tono="favor">El banco tiene acceso al banco central</li>
+      <li data-tono="favor">Un supervisor vigila su solvencia</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Una stablecoin</p>
+    <p class="prose-vs-sub">Cualquiera de ellas</p>
+    <ul>
+      <li data-tono="contra">Sin fondo de garantía de depósitos</li>
+      <li data-tono="contra">Su valor depende de las reservas o del mecanismo</li>
+      <li data-tono="contra">La supervisión varía mucho de un emisor a otro</li>
+    </ul>
+  </div>
+</div>
+
+<p>Esto no significa que vayan a fallar. Las dos mayores llevan años funcionando y han superado episodios de mucha tensión. Significa que tener 10.000 dólares en una stablecoin no es lo mismo que tener 10.000 dólares en un banco, aunque en la pantalla los dos saldos se parezcan.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Para quien vive en la zona euro hay un riesgo añadido que no tiene nada que ver con las criptomonedas: casi todas las stablecoins siguen al dólar. Si el dólar pierde un 10 % frente al euro, tu saldo «estable» vale un 10 % menos en la moneda en la que pagas el alquiler.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Existen stablecoins que siguen al euro, pero son una parte muy pequeña del mercado, y la mayoría de los protocolos y de los rendimientos se ofrecen en las que siguen al dólar. Tenlo presente al calcular cualquier rentabilidad: está expresada en dólares.</div>
+</div>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Lo básico de una stablecoin",
+  "afirmaciones": [
+    { "texto": "Una stablecoin pretende mantener su precio igual al de una moneda corriente.", "verdadero": true, "explicacion": "Casi siempre el dólar. Es un objetivo que depende de lo que la sostiene." },
+    { "texto": "Tener una stablecoin corriente da derecho a cobrar los intereses de sus reservas.", "verdadero": false, "explicacion": "Esos intereses se los queda el emisor. El token no paga nada por sí mismo." },
+    { "texto": "Todas las stablecoins están respaldadas por dólares en un banco.", "verdadero": false, "explicacion": "Hay tres familias: con reservas, con garantía en criptomonedas y algorítmicas." },
+    { "texto": "Una stablecoin está cubierta por el fondo de garantía de depósitos.", "verdadero": false, "explicacion": "No es un depósito bancario. Su valor depende de las reservas o del mecanismo." },
+    { "texto": "Si el dólar cae frente al euro, una stablecoin de dólar vale menos en euros.", "verdadero": true, "explicacion": "Sigue al dólar, así que hereda su tipo de cambio." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: qué tienes exactamente</h2>
+
+<p>Si tienes stablecoins, apunta cuáles, cuánto de cada una y dónde están: en una plataforma, en tu wallet o en un protocolo. Si no tienes, hazlo con las dos mayores. Para cada una, busca en una web de datos de mercado tres cosas: quién la emite, a qué moneda sigue y qué volumen mueve al día. Después calcula cuánto habría variado en euros un saldo de 1.000 dólares en el último año, mirando el cambio entre el dólar y el euro. Guarda la lista: la completarás en las próximas lecciones.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> una stablecoin es un token que pretende valer siempre un dólar. Hay tres familias, según lo que la sostiene: reservas, garantía en criptomonedas o un mecanismo. No paga intereses por sí misma —los de las reservas son del emisor— y no tiene la protección de un depósito bancario. Si te ofrecen un rendimiento por ella, sale de otro sitio.</div>
+</div>

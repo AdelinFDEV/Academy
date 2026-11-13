@@ -1,0 +1,166 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En DeFi el dinero se pierde por caminos que no existen en un banco: un fallo en el código, una clave de administrador, un proyecto cuyos creadores retiran los fondos, una firma en una página falsa. Aquí ves las seis formas en que ha ocurrido, lo que dicen los datos de robos más recientes, qué garantiza y qué no una auditoría, y las señales que se pueden comprobar antes de depositar sin saber programar.</p>
+</div>
+
+<h2>Seis formas de perder el dinero</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Riesgo</th><th>Qué ocurre</th><th>Depende de ti</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Fallo del código</td><td>Alguien encuentra un error en el contrato y lo usa para sacar los fondos</td><td>No: solo puedes elegir dónde depositas</td></tr>
+    <tr><td>Clave de administrador</td><td>Quien controla el contrato lo vacía, o le roban la clave</td><td>No</td></tr>
+    <tr><td>Abandono con los fondos</td><td>Los creadores retiran la liquidez y desaparecen</td><td>En parte: hay señales previas</td></tr>
+    <tr><td>Fallo económico</td><td>El diseño aguanta en condiciones normales y se rompe bajo tensión</td><td>No</td></tr>
+    <tr><td>Dependencias</td><td>Falla una pieza en la que el protocolo se apoya: una stablecoin, un puente, un oráculo</td><td>No</td></tr>
+    <tr><td>Robo al usuario</td><td>Firmas algo en una página falsa o entregas tu frase semilla</td><td>Sí, por completo</td></tr>
+  </tbody>
+</table>
+
+<p>Al primer tipo se le llama <a href="/glosario/exploit">exploit</a>. La diferencia con un banco está en la tercera columna: en cinco de los seis casos no hay nada que puedas hacer una vez dentro. La única decisión es anterior: dónde, cuánto y si merece la pena.</p>
+
+<h2>Lo que dicen los datos</h2>
+
+<p>La firma de análisis Chainalysis publica cada año el recuento de fondos robados. Su informe sobre 2025, con datos de enero a principios de diciembre, deja varias cifras útiles.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Fondos robados en criptomonedas en 2025",
+  "subtitulo": "En millones de dólares, de enero a principios de diciembre.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "Total robado", "millones": 3410 },
+    { "etiqueta": "De ello, un solo ataque a una plataforma", "millones": 1500 },
+    { "etiqueta": "De ello, a carteras de particulares", "millones": 713 }
+  ],
+  "series": [{ "clave": "millones", "nombre": "Millones de dólares", "color": "#22d3ee" }],
+  "nota": "Fuente: Chainalysis, diciembre de 2025. El mayor ataque del año fue a la plataforma Bybit, en febrero: alrededor del 44 % del total."
+}
+</script></div>
+
+<p>Tres lecturas. La primera: el mayor robo del año no fue a un protocolo descentralizado, sino a una plataforma con dueño, y él solo supuso casi la mitad del total. La segunda: según el mismo informe, las pérdidas por ataques a protocolos DeFi se mantuvieron contenidas aunque el dinero depositado en ellos se había recuperado, lo que apunta a mejores prácticas de seguridad. La tercera, que es la que más te afecta: 713 millones salieron de carteras de particulares, en unos 158.000 casos.</p>
+
+<p>El año récord sigue siendo 2022, con unos 3.800 millones de dólares robados, la mayor parte a protocolos DeFi y a puentes. La seguridad de los grandes ha mejorado desde entonces. La de los pequeños y nuevos, mucho menos.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">158.000</span>
+  <span class="prose-dato-texto">Casos de carteras personales comprometidas en 2025, según Chainalysis. Es el único de los seis riesgos que depende por completo de quien firma.</span>
+</div>
+
+<h2>Lo que una auditoría garantiza, y lo que no</h2>
+
+<p>Casi todos los protocolos anuncian que han sido auditados. Conviene saber qué significa.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que es</p>
+    <p class="prose-vs-sub">Una revisión del código</p>
+    <ul>
+      <li data-tono="favor">Una empresa externa busca errores durante unas semanas</li>
+      <li data-tono="favor">Publica un informe con lo encontrado</li>
+      <li data-tono="favor">Reduce la probabilidad de fallos evidentes</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que no es</p>
+    <p class="prose-vs-sub">Una garantía</p>
+    <ul>
+      <li data-tono="contra">Solo cubre la versión del código que se revisó</li>
+      <li data-tono="contra">No examina el diseño económico ni las dependencias</li>
+      <li data-tono="contra">Muchos protocolos auditados han sido vaciados después</li>
+    </ul>
+  </div>
+</div>
+
+<p>Tres preguntas afinan el dato. ¿Quién la hizo, y es una firma conocida? ¿De cuándo es, y se ha cambiado el contrato después? ¿Qué encontró, y se corrigió? Un informe con hallazgos graves sin resolver es peor que no tener informe.</p>
+
+<p>Hay una señal que pesa más que cualquier auditoría: el tiempo. Un contrato que lleva años funcionando con mucho dinero dentro ha tenido una recompensa enorme a la vista de cualquier atacante, y sigue en pie. No demuestra que sea seguro, pero es la mejor evidencia disponible. Un protocolo de dos semanas con tres auditorías sigue siendo un protocolo de dos semanas.</p>
+
+<h2>El abandono con los fondos</h2>
+
+<p>En inglés se le llama <em>rug pull</em>, «tirar de la alfombra». Es la estafa más común con tokens nuevos, y sigue casi siempre el mismo guion.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Lanzamiento</span>
+    <p>Un equipo anónimo crea un token y un fondo, y lo promociona con un rendimiento desorbitado.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Entrada de dinero</span>
+    <p>La gente compra el token y aporta liquidez. El precio sube.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">La retirada</span>
+    <p>Los creadores sacan la liquidez que controlan, o venden una cantidad enorme de tokens que se habían reservado.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Lo que queda</span>
+    <p>Un token que no se puede vender, porque ya no hay nada al otro lado del fondo.</p>
+  </div>
+</div>
+
+<p>Existen variantes más técnicas: contratos que permiten comprar y no vender, o que dejan al creador emitir tokens sin límite. Todas comparten algo: una persona conserva un poder que no debería tener.</p>
+
+<h2>Lo que puedes comprobar sin saber programar</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Comprobación</th><th>Dónde</th><th>Señal de alarma</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Antigüedad y dinero depositado a lo largo del tiempo</td><td>Un agregador de datos de DeFi</td><td>Semanas de vida, o un <a href="/glosario/tvl">TVL</a> que cae en picado</td></tr>
+    <tr><td>Quién está detrás</td><td>Web y documentación</td><td>Equipo anónimo sin trayectoria</td></tr>
+    <tr><td>Auditorías</td><td>Documentación; el informe original</td><td>Ninguna, antigua, o con hallazgos sin resolver</td></tr>
+    <tr><td>Quién puede modificar el contrato</td><td>Apartado de gobierno o seguridad</td><td>Una sola clave, sin plazo de espera</td></tr>
+    <tr><td>Reparto del token</td><td>El <a href="/glosario/explorador-de-bloques">explorador de bloques</a></td><td>Unas pocas direcciones con la mayoría</td></tr>
+    <tr><td>De dónde sale el rendimiento</td><td>Documentación y desglose</td><td>No se explica, o es casi todo en tokens</td></tr>
+    <tr><td>Incidentes anteriores</td><td>Buscar el nombre junto a «hack» o «exploit»</td><td>Ataques previos mal resueltos</td></tr>
+  </tbody>
+</table>
+
+<p>Ninguna comprobación, sola, descarta un protocolo ni lo da por bueno. Juntas dibujan un perfil. Y el coste de hacerlas —media hora— es ridículo comparado con lo que protegen.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Si una pérdida ocurre, llegarán enseguida ofertas de «recuperación de fondos» por mensaje privado o en los comentarios. Son una segunda estafa, dirigida a quien ya ha perdido. Nadie puede revertir una operación en una blockchain, y quien pide un pago por adelantado para intentarlo te está robando otra vez.</div>
+</div>
+
+<h2>El tamaño es la defensa que funciona siempre</h2>
+
+<p>Puedes hacer todas las comprobaciones y que el protocolo falle igualmente. Ha pasado con algunos de los más reputados. Por eso la medida que más protege no es técnica.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Decide cuánto de tu ahorro puede estar en DeFi.</strong> Una cifra que, si desapareciera entera, no cambiaría tu vida.</li>
+  <li><strong>Repártela.</strong> Entre protocolos distintos, que no dependan de la misma pieza.</li>
+  <li><strong>Pon un tope por protocolo.</strong> Y uno más bajo para los nuevos.</li>
+  <li><strong>No uses la wallet de guardar.</strong> Opera desde una separada, con lo justo.</li>
+</ol>
+
+<p>Es la misma lógica del <a href="/glosario/tamano-de-posicion">tamaño de posición</a> en cualquier inversión, aplicada a un riesgo que no se puede acotar con una orden de salida. Cuando un contrato falla no hay stop que valga: lo que tenías dentro es lo que pierdes.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Existen seguros para protocolos DeFi, ofrecidos por otros protocolos. Cubren supuestos concretos, tienen un coste que se come parte del rendimiento y pagan según decida su propio gobierno. Pueden tener sentido para importes grandes. No sustituyen a limitar el tamaño.</div>
+</div>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Riesgos, con datos",
+  "afirmaciones": [
+    { "texto": "Un protocolo auditado no puede ser vaciado.", "verdadero": false, "explicacion": "La auditoría cubre una versión del código y no el diseño económico. Muchos protocolos auditados han sido atacados." },
+    { "texto": "En 2025, el mayor robo fue a una plataforma con dueño, no a un protocolo descentralizado.", "verdadero": true, "explicacion": "El ataque a Bybit, unos 1.500 millones de dólares, supuso alrededor del 44 % del total del año." },
+    { "texto": "Que un contrato lleve años funcionando con mucho dinero dentro es una señal a su favor.", "verdadero": true, "explicacion": "No demuestra que sea seguro, pero ha resistido con una gran recompensa a la vista de los atacantes." },
+    { "texto": "Si pierdes fondos, hay empresas que pueden revertir la operación por un pago adelantado.", "verdadero": false, "explicacion": "Nadie puede revertir una operación en una blockchain. Es una segunda estafa." },
+    { "texto": "Limitar cuánto tienes en cada protocolo protege aunque falle una comprobación.", "verdadero": true, "explicacion": "Es la única defensa que funciona también contra lo que no has previsto." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: el perfil de un protocolo</h2>
+
+<p>Elige un protocolo en el que tengas fondos, o uno que te hayan recomendado. Rellena la tabla de siete comprobaciones con lo que encuentres, dedicándole media hora de reloj. Marca cada fila como «bien», «dudoso» o «mal». Después escribe, sin mirar el rendimiento que ofrece, cuánto estarías dispuesto a tener ahí. Solo entonces mira el rendimiento y pregúntate si cambia tu respuesta. Si la cambia mucho, es que la cifra está decidiendo por ti.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> en DeFi se pierde por fallos de código, claves de administrador, proyectos que desaparecen con los fondos, diseños que no aguantan, dependencias que fallan y firmas en páginas falsas. Solo lo último depende de ti. Una auditoría reduce el riesgo y no lo elimina; el tiempo funcionando con dinero dentro dice más. Haz las siete comprobaciones, y limita cuánto tienes en cada protocolo: es lo único que protege de lo imprevisto.</div>
+</div>

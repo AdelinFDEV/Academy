@@ -1,0 +1,164 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Cada operación en una blockchain paga una comisión, el gas, que no depende de cuánto dinero mueves sino de cuánto trabajo da y de cuánta gente quiere usar la red a la vez. Para abaratarlo existen redes más baratas, y para pasar fondos de una a otra, los puentes. Aquí ves cómo se calcula el gas, qué cambia en una red de segunda capa, por qué un mismo token puede ser varias cosas distintas y por qué los puentes concentran algunos de los mayores robos.</p>
+</div>
+
+<h2>Por qué cada operación cuesta dinero</h2>
+
+<p>Una blockchain tiene un espacio limitado en cada bloque. Quien quiere que su operación entre paga una comisión a quienes validan la red. Esa comisión es el <a href="/glosario/gas">gas</a>.</p>
+
+<p>El importe sale de multiplicar dos cosas: cuánto trabajo exige la operación y a cuánto se paga la unidad de trabajo en ese momento.</p>
+
+<blockquote><strong>Comisión = unidades de gas que consume la operación × precio de cada unidad</strong></blockquote>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Operación</th><th>Trabajo que exige</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Enviar la moneda nativa de la red</td><td>Poco</td></tr>
+    <tr><td>Enviar un token</td><td>Algo más</td></tr>
+    <tr><td>Una aprobación</td><td>Parecido a enviar un token</td></tr>
+    <tr><td>Cambiar una moneda por otra en un intercambio</td><td>Varias veces más</td></tr>
+    <tr><td>Depositar en un protocolo con varias capas</td><td>Mucho</td></tr>
+  </tbody>
+</table>
+
+<p>Dos consecuencias prácticas. La primera: la comisión no depende del importe. Cambiar 50 dólares cuesta lo mismo que cambiar 50.000, de modo que las operaciones pequeñas salen caras en proporción. La segunda: el precio de la unidad sube cuando la red está saturada, que es justo en los momentos de pánico o de euforia, cuando más gente quiere operar.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Lo que pesa una comisión de 4 $ según el importe de la operación",
+  "subtitulo": "La comisión es fija; lo que cambia es la proporción.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Sobre 50 $", "peso": 8 },
+    { "etiqueta": "Sobre 200 $", "peso": 2 },
+    { "etiqueta": "Sobre 1.000 $", "peso": 0.4 },
+    { "etiqueta": "Sobre 10.000 $", "peso": 0.04 }
+  ],
+  "series": [{ "clave": "peso", "nombre": "Comisión sobre el importe", "color": "#22d3ee" }],
+  "nota": "Ejemplo con una comisión inventada de 4 $. El coste real varía con la red y con su saturación."
+}
+</script></div>
+
+<p>Y una operación en DeFi rara vez es una sola. Entrar en un pool suele ser una aprobación más un depósito; salir, una retirada, y quizá un cambio. Cuatro comisiones para una ida y vuelta. Con importes pequeños, el gas puede comerse el rendimiento de meses.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">El gas se paga en la moneda nativa de la red, no en el token que mueves. Si tienes stablecoins en una wallet y nada de la moneda de esa red, no puedes hacer ninguna operación, ni siquiera sacarlas. Deja siempre un pequeño saldo de la moneda nativa.</div>
+</div>
+
+<h2>Redes más baratas</h2>
+
+<p>La red de Ethereum es la más usada para DeFi y, en sus momentos de saturación, cara. Para aliviarlo han surgido dos tipos de alternativa.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Redes de segunda capa</p>
+    <p class="prose-vs-sub">Se apoyan en Ethereum</p>
+    <ul>
+      <li data-tono="favor">Agrupan muchas operaciones y las registran juntas en la red principal</li>
+      <li data-tono="favor">Comisiones mucho más bajas</li>
+      <li data-tono="contra">Añaden sus propios programas y, a menudo, un operador con mucho control</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Otras blockchains</p>
+    <p class="prose-vs-sub">Independientes</p>
+    <ul>
+      <li data-tono="favor">Comisiones bajas y rapidez</li>
+      <li data-tono="contra">Su seguridad depende de sus propios validadores</li>
+      <li data-tono="contra">Algunas han sufrido paradas o tienen pocos validadores</li>
+    </ul>
+  </div>
+</div>
+
+<p>Más barato no significa equivalente. Una red con pocos <a href="/glosario/validador">validadores</a>, o con un único operador capaz de detenerla, añade un riesgo que no aparece en la comisión.</p>
+
+<h2>El mismo nombre, tokens distintos</h2>
+
+<p>Aquí está una de las confusiones más caras. Un token «existe» en una red concreta. El USDC de Ethereum y el USDC de otra red son dos tokens distintos, en dos sitios distintos, aunque se llamen igual.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Tipo</th><th>Quién lo respalda</th><th>Riesgo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Nativo</td><td>Lo emite el propio emisor en esa red</td><td>El del emisor</td></tr>
+    <tr><td>Puenteado</td><td>Es un recibo de un token bloqueado en otra red</td><td>El del emisor más el del puente</td></tr>
+  </tbody>
+</table>
+
+<p>Dos errores salen de aquí. Uno es enviar un token a una dirección en la red equivocada: en el mejor caso se recupera con esfuerzo; en el peor, se pierde. El otro es no saber que el «dólar» que tienes en cierta red es en realidad un recibo emitido por un puente, y que vale lo que valga ese puente.</p>
+
+<h2>Los puentes: el punto frágil</h2>
+
+<p>Un <a href="/glosario/bridge">bridge</a>, o puente, sirve para pasar valor de una red a otra. El mecanismo más común es sencillo y revela el problema.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Depositas tus tokens</strong> en un contrato del puente en la red de origen. Quedan bloqueados ahí.</li>
+  <li><strong>El puente emite en la red de destino</strong> la misma cantidad de un token equivalente: un recibo.</li>
+  <li><strong>Usas ese recibo</strong> en la red de destino como si fuera el original.</li>
+  <li><strong>Para volver,</strong> destruyes el recibo y el puente libera los tokens bloqueados.</li>
+</ol>
+
+<p>El contrato del primer paso acumula todos los fondos de todos los usuarios. Es una caja enorme, a la vista de todos, controlada por un programa complejo que opera en dos redes a la vez y, a menudo, por un pequeño grupo de claves. Varios de los mayores robos de la historia de las criptomonedas han sido a puentes.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Si el puente funciona</span>
+    <p>Cada recibo tiene detrás un token bloqueado. Vale lo mismo que el original.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Si vacían el contrato</span>
+    <p>Los recibos siguen circulando en la otra red, pero ya no hay nada detrás.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Lo que pasa con ellos</span>
+    <p>Pierden su valor, y con ellos todo lo que estuviera depositado en protocolos de esa red usando ese recibo.</p>
+  </div>
+</div>
+
+<p>El último punto es el que afecta incluso a quien nunca ha usado un puente. Si tienes un token puenteado en un pool, o como garantía de un préstamo, el fallo del puente te alcanza igual.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">2</span>
+  <span class="prose-dato-texto">Los riesgos que tiene un token puenteado: el del emisor original y el del puente que lo ha traído. El nombre que ves en la wallet es el mismo en los dos casos.</span>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">A menudo hay una alternativa más sencilla que un puente: retirar desde una plataforma directamente a la red que quieres usar. La plataforma hace el cambio de red por ti. Tiene su propio riesgo, el de la plataforma, pero evita depositar en un contrato de puente.</div>
+</div>
+
+<h2>Antes de mover fondos entre redes</h2>
+
+<ul>
+  <li><strong>Confirma la red</strong> en la wallet, en la página y en la dirección de destino. Las tres tienen que coincidir.</li>
+  <li><strong>Envía primero una cantidad pequeña</strong> y comprueba que llega.</li>
+  <li><strong>Averigua si el token de destino es nativo o puenteado.</strong> El explorador de la red y la documentación del emisor lo dicen.</li>
+  <li><strong>Ten moneda nativa en la red de destino</strong> para pagar el gas al llegar.</li>
+  <li><strong>Calcula el coste completo</strong> de ir y volver antes de decidir si el importe lo justifica.</li>
+</ul>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Tienes en una red secundaria un token llamado USDC que resulta ser un recibo emitido por un puente. ¿De qué depende su valor?",
+  "opciones": [
+    "Del emisor de USDC y, además, de que el puente conserve los tokens bloqueados",
+    "Solo del emisor de USDC",
+    "Solo del precio del dólar",
+    "De nada: siempre vale un dólar"
+  ],
+  "correcta": 0,
+  "explicacion": "Un token puenteado suma dos riesgos. Si vacían el contrato del puente, el recibo se queda sin respaldo aunque el emisor original esté perfectamente."
+}
+</script></div>
+
+<h2>Ejercicio: el coste de una ida y vuelta</h2>
+
+<p>Elige una red y un protocolo sencillo, por ejemplo un intercambio. Sin operar, busca en un rastreador de gas cuánto cuesta ahora una aprobación y un cambio en esa red. Suma el coste de entrar —aprobación más operación— y el de salir. Divide el total entre 100, 500 y 5.000 dólares para ver qué porcentaje supone en cada caso. Después averigua si el USDC de esa red es nativo o puenteado. Apunta las dos respuestas: son los dos primeros datos que hay que tener antes de usar cualquier red nueva.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el gas se paga en la moneda nativa de la red, no depende del importe y sube cuando la red se satura; con cantidades pequeñas puede comerse el rendimiento. Las redes baratas añaden sus propios riesgos. Un token con el mismo nombre en otra red puede ser un recibo de un puente, y vale lo que valga ese puente: los puentes guardan todos los fondos en un contrato y han sufrido algunos de los mayores robos.</div>
+</div>

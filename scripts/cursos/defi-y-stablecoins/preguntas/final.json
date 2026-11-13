@@ -1,0 +1,522 @@
+[
+  {
+    "clave": "ds-f-01",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "¿Para qué se usan sobre todo las stablecoins en el mercado?",
+    "opciones": [
+      "Para pagar impuestos",
+      "Para especular con su precio",
+      "Como moneda de cuenta, refugio temporal, medio de envío y materia prima de DeFi",
+      "Para minar bitcoin"
+    ],
+    "correcta": 2,
+    "explicacion": "Casi todos los pares cotizan contra una, y casi todo rendimiento se paga sobre una."
+  },
+  {
+    "clave": "ds-f-02",
+    "leccion": "que-es-una-stablecoin",
+    "enunciado": "¿Está una stablecoin cubierta por el fondo de garantía de depósitos?",
+    "opciones": [
+      "Sí, si es de euro",
+      "Solo en una wallet propia",
+      "Sí, hasta 100.000 €",
+      "No"
+    ],
+    "correcta": 3,
+    "explicacion": "No es un depósito bancario: su valor depende de las reservas o del mecanismo."
+  },
+  {
+    "clave": "ds-f-03",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Qué activo de reserva se vende mejor con prisa?",
+    "opciones": [
+      "Deuda pública a muy corto plazo",
+      "Tokens pequeños",
+      "Préstamos a empresas",
+      "Inmuebles"
+    ],
+    "correcta": 0,
+    "explicacion": "Lo que cuenta es poder convertirlo en dólares cuando muchos canjean a la vez."
+  },
+  {
+    "clave": "ds-f-04",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "Tener una stablecoin con emisor en tu propia wallet, ¿de qué te protege?",
+    "opciones": [
+      "Del emisor",
+      "De la quiebra de la plataforma donde la compraste, no del emisor",
+      "De cualquier riesgo",
+      "Del tipo de cambio"
+    ],
+    "correcta": 1,
+    "explicacion": "El emisor puede seguir bloqueando la dirección."
+  },
+  {
+    "clave": "ds-f-05",
+    "leccion": "stablecoins-respaldadas-por-reservas",
+    "enunciado": "¿Cuál es tu derecho práctico como particular con una stablecoin?",
+    "opciones": [
+      "Canjearla siempre a un dólar en el emisor",
+      "Cobrar los intereses de las reservas",
+      "Venderla al precio de mercado",
+      "Reclamar al fondo de garantía"
+    ],
+    "correcta": 2,
+    "explicacion": "El canje directo suele exigir ser cliente verificado, con importes altos."
+  },
+  {
+    "clave": "ds-f-06",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿Qué gana una stablecoin con garantía en criptomonedas frente a una con emisor?",
+    "opciones": [
+      "Que no usa contratos",
+      "Que paga intereses",
+      "Que no puede perder la paridad",
+      "Que la garantía se puede comprobar en la blockchain en cualquier momento"
+    ],
+    "correcta": 3,
+    "explicacion": "A cambio, depende del precio de la garantía, del código y de quien gobierna el protocolo."
+  },
+  {
+    "clave": "ds-f-07",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿Qué es una «espiral de la muerte»?",
+    "opciones": [
+      "Cuanto más cae la moneda, más token de respaldo se emite, y menos vale ese respaldo",
+      "Una subida sin fin del gas",
+      "Una liquidación parcial",
+      "Un ataque sándwich repetido"
+    ],
+    "correcta": 0,
+    "explicacion": "Es lo que ocurrió con UST y LUNA en mayo de 2022."
+  },
+  {
+    "clave": "ds-f-08",
+    "leccion": "stablecoins-cripto-y-algoritmicas",
+    "enunciado": "¿Cuánto valor desapareció entre UST y LUNA en una semana?",
+    "opciones": [
+      "Unos 4.000 millones",
+      "Más de 40.000 millones de dólares",
+      "Unos 400 millones",
+      "Unos 40 millones"
+    ],
+    "correcta": 1,
+    "explicacion": "Es el mayor colapso de una stablecoin registrado."
+  },
+  {
+    "clave": "ds-f-09",
+    "leccion": "cuando-se-pierde-la-paridad",
+    "enunciado": "¿Cuáles son las tres causas posibles de una pérdida de paridad?",
+    "opciones": [
+      "Inflación, tipos de interés y paro",
+      "Staking, minería y quema",
+      "Falta de liquidez o pánico, agujero en las reservas y fallo del mecanismo",
+      "Gas alto, deslizamiento y comisiones"
+    ],
+    "correcta": 2,
+    "explicacion": "Mientras ocurren se ven igual en la pantalla, y terminan de forma muy distinta."
+  },
+  {
+    "clave": "ds-f-10",
+    "leccion": "cuando-se-pierde-la-paridad",
+    "enunciado": "¿Qué decisión protege tanto de vender en pánico como de aguantar hasta cero?",
+    "opciones": [
+      "Comprar más cuando cae",
+      "No vender nunca",
+      "Vender siempre al primer desvío",
+      "No tener en una sola stablecoin más de lo que estás dispuesto a ver temblar"
+    ],
+    "correcta": 3,
+    "explicacion": "Quien vendió USDC a 0,88 perdió un 12 %; quien aguantó UST, todo."
+  },
+  {
+    "clave": "ds-f-11",
+    "leccion": "cuando-se-pierde-la-paridad",
+    "enunciado": "¿Qué hicieron las grandes plataformas con USDT para sus clientes europeos a principios de 2025?",
+    "opciones": [
+      "Lo retiraron de la negociación al contado antes del 31 de marzo",
+      "Nada",
+      "Empezaron a pagar intereses por él",
+      "Lo convirtieron en euros a la fuerza"
+    ],
+    "correcta": 0,
+    "explicacion": "Tras la orientación del supervisor europeo sobre las stablecoins no conformes con MiCA."
+  },
+  {
+    "clave": "ds-f-12",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "¿Qué significa que un contrato sea «automático»?",
+    "opciones": [
+      "Que se actualiza solo cada noche",
+      "Que se ejecuta sin que nadie lo apruebe, y nadie detiene una operación errónea",
+      "Que no necesita gas",
+      "Que devuelve los fondos enviados por error"
+    ],
+    "correcta": 1,
+    "explicacion": "Es su ventaja y su riesgo a la vez."
+  },
+  {
+    "clave": "ds-f-13",
+    "leccion": "de-la-plataforma-al-contrato",
+    "enunciado": "Usas un protocolo a través de su página web. ¿Qué punto débil añade eso?",
+    "opciones": [
+      "Que el contrato deja de ser público",
+      "Que pagas el doble de gas",
+      "La página pertenece a una empresa y puede ser modificada o suplantada",
+      "Ninguno"
+    ],
+    "correcta": 2,
+    "explicacion": "El contrato puede ser impecable y la página, el problema."
+  },
+  {
+    "clave": "ds-f-14",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "Una página te pide firmar para «reclamar» tokens gratis. La wallet muestra una aprobación ilimitada. ¿Qué es lo más probable?",
+    "opciones": [
+      "Una actualización de seguridad",
+      "Un trámite normal",
+      "Un error de la wallet",
+      "Un intento de robo: el permiso es a favor del atacante"
+    ],
+    "correcta": 3,
+    "explicacion": "Es el guion habitual: cebo, página falsa, aprobación y vaciado."
+  },
+  {
+    "clave": "ds-f-15",
+    "leccion": "wallet-firmas-y-aprobaciones",
+    "enunciado": "¿Qué indica una simulación en la que salen todos tus tokens y no entra nada?",
+    "opciones": [
+      "Que no hay que firmar, prometa lo que prometa la página",
+      "Que el gas es bajo",
+      "Que la red está saturada",
+      "Que la operación es rentable"
+    ],
+    "correcta": 0,
+    "explicacion": "La simulación de la wallet es la última comprobación antes de pulsar."
+  },
+  {
+    "clave": "ds-f-16",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "¿Por qué una operación pequeña sale cara en proporción?",
+    "opciones": [
+      "Porque el precio es distinto",
+      "Porque el gas no depende del importe",
+      "Porque las plataformas cobran más a los pequeños",
+      "Porque tributa más"
+    ],
+    "correcta": 1,
+    "explicacion": "Y entrar y salir de un protocolo suele exigir varias operaciones."
+  },
+  {
+    "clave": "ds-f-17",
+    "leccion": "gas-redes-y-puentes",
+    "enunciado": "¿Qué hay que comprobar antes de enviar un token a otra red?",
+    "opciones": [
+      "Que el gas es cero",
+      "Que es fin de semana",
+      "Que la red coincide en la wallet, en la página y en la dirección de destino",
+      "Que el token es de color verde"
+    ],
+    "correcta": 2,
+    "explicacion": "Enviar a la red equivocada puede suponer perder los fondos."
+  },
+  {
+    "clave": "ds-f-18",
+    "leccion": "como-funciona-un-amm",
+    "enunciado": "Un fondo tiene 100 tokens y 10.000 $. ¿Cuánto cuesta comprar 50 tokens, sin comisiones?",
+    "opciones": [
+      "7.500 $",
+      "20.000 $",
+      "5.000 $",
+      "10.000 $"
+    ],
+    "correcta": 3,
+    "explicacion": "k = 1.000.000. Quedan 50 tokens, así que debe haber 20.000 $: aportas 10.000, el doble del precio inicial."
+  },
+  {
+    "clave": "ds-f-19",
+    "leccion": "como-funciona-un-amm",
+    "enunciado": "Tras una compra grande, el fondo marca un precio muy superior al del mercado. ¿Qué ocurre?",
+    "opciones": [
+      "Un arbitrajista vende al fondo hasta devolverlo al precio de mercado",
+      "El emisor corrige el precio",
+      "El fondo se queda así para siempre",
+      "Se cancela la compra"
+    ],
+    "correcta": 0,
+    "explicacion": "Su beneficio sale de quienes aportaron las monedas al fondo."
+  },
+  {
+    "clave": "ds-f-20",
+    "leccion": "aportar-liquidez",
+    "enunciado": "¿De qué suele salir el rendimiento anual que anuncia la página de un fondo?",
+    "opciones": [
+      "De un contrato que lo garantiza",
+      "De multiplicar por un año las comisiones de un día o una semana recientes",
+      "De la media de los últimos diez años",
+      "Del tipo del banco central"
+    ],
+    "correcta": 1,
+    "explicacion": "Un día de mucha actividad da una cifra que no se repetirá."
+  },
+  {
+    "clave": "ds-f-21",
+    "leccion": "aportar-liquidez",
+    "enunciado": "Entrar y salir de un fondo te cuesta 20 $ de gas y depositas 300 $. ¿Cuánto necesitas ganar para empatar?",
+    "opciones": [
+      "Un 0,7 %",
+      "Un 2 %",
+      "Casi un 7 %",
+      "Un 20 %"
+    ],
+    "correcta": 2,
+    "explicacion": "20 ÷ 300 = 6,7 %. Con importes pequeños, el gas decide."
+  },
+  {
+    "clave": "ds-f-22",
+    "leccion": "la-perdida-impermanente",
+    "enunciado": "Un precio se multiplica por cuatro respecto al otro. ¿Pérdida impermanente?",
+    "opciones": [
+      "Un 5,7 %",
+      "Un 2 %",
+      "Un 75 %",
+      "Un 20 %"
+    ],
+    "correcta": 3,
+    "explicacion": "Crece cada vez más deprisa: 5,7 % al doblar, 13,4 % al triplicar, 20 % al cuadruplicar."
+  },
+  {
+    "clave": "ds-f-23",
+    "leccion": "la-perdida-impermanente",
+    "enunciado": "¿Qué le pasa a un fondo de dos stablecoins si una pierde la paridad?",
+    "opciones": [
+      "Te va cambiando la sana por la que cae",
+      "Se cierra y devuelve los depósitos",
+      "Paga más comisiones",
+      "Nada: es el fondo más seguro"
+    ],
+    "correcta": 0,
+    "explicacion": "Acabas con casi todo en la que tiene el problema."
+  },
+  {
+    "clave": "ds-f-24",
+    "leccion": "la-perdida-impermanente",
+    "enunciado": "¿Cuándo compensa aportar liquidez?",
+    "opciones": [
+      "Nunca",
+      "Cuando las comisiones cobradas superan la pérdida impermanente y el gas",
+      "Siempre que el rendimiento anunciado sea alto",
+      "Siempre que el token suba"
+    ],
+    "correcta": 1,
+    "explicacion": "Es la única comparación que importa, y hay que hacerla frente a guardar las monedas."
+  },
+  {
+    "clave": "ds-f-25",
+    "leccion": "deslizamiento-y-ordenes-adelantadas",
+    "enunciado": "Una orden de 1.000 $ con una tolerancia del 5 %. ¿Qué has aceptado?",
+    "opciones": [
+      "Recibir un 5 % más",
+      "Pagar 50 $ de comisión fija",
+      "Recibir el equivalente a 950 $",
+      "Que la orden tarde cinco minutos"
+    ],
+    "correcta": 2,
+    "explicacion": "Lo que fijas es lo máximo que alguien puede quitarte."
+  },
+  {
+    "clave": "ds-f-26",
+    "leccion": "deslizamiento-y-ordenes-adelantadas",
+    "enunciado": "Un token solo se puede comprar con una tolerancia del 15 %. ¿Qué indica?",
+    "opciones": [
+      "Que es seguro",
+      "Que el gas está barato",
+      "Que es muy demandado",
+      "Un fondo minúsculo o un token que cobra un porcentaje en cada operación: señal de alarma"
+    ],
+    "correcta": 3,
+    "explicacion": "Con frecuencia es la primera señal de que no deberías estar comprando."
+  },
+  {
+    "clave": "ds-f-27",
+    "leccion": "deslizamiento-y-ordenes-adelantadas",
+    "enunciado": "¿Qué hace la protección frente a MEV?",
+    "opciones": [
+      "Envía la operación por un canal que no pasa por la sala de espera pública",
+      "Garantiza el precio exacto",
+      "Elimina las comisiones",
+      "Bloquea el fondo"
+    ],
+    "correcta": 0,
+    "explicacion": "Si nadie ve la orden antes de ejecutarse, nadie puede colocarse delante."
+  },
+  {
+    "clave": "ds-f-28",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "¿Para qué pedir prestado menos de lo que depositas?",
+    "opciones": [
+      "Para no pagar intereses",
+      "Para obtener liquidez sin vender, apalancarse o apostar a la baja",
+      "Para evitar el gas",
+      "No tiene ningún uso"
+    ],
+    "correcta": 1,
+    "explicacion": "El apalancamiento es el uso más extendido, con el riesgo de liquidación que conlleva."
+  },
+  {
+    "clave": "ds-f-29",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "Garantía de 5.000 $ al 80 % y deuda de 3.200 $. ¿Factor de salud?",
+    "opciones": [
+      "1,56",
+      "0,64",
+      "1,25",
+      "0,8"
+    ],
+    "correcta": 2,
+    "explicacion": "5.000 × 0,8 = 4.000; 4.000 ÷ 3.200 = 1,25."
+  },
+  {
+    "clave": "ds-f-30",
+    "leccion": "prestamos-con-garantia",
+    "enunciado": "¿Qué riesgo corre quien solo deposita, sin pedir prestado?",
+    "opciones": [
+      "Ninguno",
+      "Solo el tipo de cambio",
+      "La liquidación de su depósito",
+      "Deuda incobrable, garantías de mala calidad, fallo del código y no poder retirar"
+    ],
+    "correcta": 3,
+    "explicacion": "El interés es lo que te pagan por asumir esos riesgos."
+  },
+  {
+    "clave": "ds-f-31",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "¿Por qué las posiciones en bucle son las primeras en liquidarse?",
+    "opciones": [
+      "Porque deshacerlas exige varias operaciones, con gas, cuando la red está saturada",
+      "Porque están aseguradas",
+      "Porque no usan oráculo",
+      "Porque pagan menos interés"
+    ],
+    "correcta": 0,
+    "explicacion": "Depositar, pedir, comprar y volver a depositar multiplica la posición y el problema."
+  },
+  {
+    "clave": "ds-f-32",
+    "leccion": "liquidaciones-y-oraculos",
+    "enunciado": "Un activo cae en un solo mercado por falta de compradores y el oráculo toma ese precio. ¿Qué ocurre?",
+    "opciones": [
+      "Se cancelan las deudas",
+      "Se liquidan posiciones que estaban bien garantizadas",
+      "Nada: el oráculo lo corrige solo",
+      "Sube el factor de salud"
+    ],
+    "correcta": 1,
+    "explicacion": "El protocolo decide con el número que recibe, sea cierto o no."
+  },
+  {
+    "clave": "ds-f-33",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "¿Qué supone el APY que no se cumple en DeFi?",
+    "opciones": [
+      "Que no hay impuestos",
+      "Que el token sube",
+      "Que reinviertes cada día y que el tipo no cambia en un año",
+      "Que el gas es gratis"
+    ],
+    "correcta": 2,
+    "explicacion": "Es el tipo de hoy multiplicado por un año que no se parecerá a hoy."
+  },
+  {
+    "clave": "ds-f-34",
+    "leccion": "de-donde-sale-el-rendimiento",
+    "enunciado": "¿Qué señal sugiere un rendimiento que se paga a sí mismo?",
+    "opciones": [
+      "Desglosado en base y recompensas",
+      "Variable y modesto",
+      "Inferior a la deuda pública",
+      "Alto, fijo y «garantizado», sin explicar de dónde sale, con extra por traer gente"
+    ],
+    "correcta": 3,
+    "explicacion": "Los rendimientos reales varían. Uno fijo y alto lo está subvencionando alguien."
+  },
+  {
+    "clave": "ds-f-35",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "En 2025, ¿cuánto se robó a carteras de particulares, según Chainalysis?",
+    "opciones": [
+      "Unos 713 millones de dólares, en unos 158.000 casos",
+      "Nada",
+      "Unos 7 millones",
+      "Más de 7.000 millones"
+    ],
+    "correcta": 0,
+    "explicacion": "Es el riesgo que depende de quien firma."
+  },
+  {
+    "clave": "ds-f-36",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "Un protocolo de dos semanas tiene tres auditorías. ¿Cómo hay que tratarlo?",
+    "opciones": [
+      "Como un banco",
+      "Como un protocolo de dos semanas",
+      "Como el más seguro del mercado",
+      "Como si llevara años"
+    ],
+    "correcta": 1,
+    "explicacion": "Las auditorías reducen fallos evidentes; el tiempo con dinero dentro dice más."
+  },
+  {
+    "clave": "ds-f-37",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "Cobras recompensas diarias en un token que después se desploma. ¿Qué consecuencia fiscal tiene?",
+    "opciones": [
+      "Hacienda te compensa",
+      "No tributas, porque has perdido",
+      "Has tributado por el valor del día en que las cobraste, aunque ya no lo tengas",
+      "Tributas solo al vender"
+    ],
+    "correcta": 2,
+    "explicacion": "Los rendimientos se valoran al percibirlos. La pérdida posterior se calcula aparte, al vender."
+  },
+  {
+    "clave": "ds-f-38",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "¿Qué conviene guardar de tu actividad en DeFi?",
+    "opciones": [
+      "Solo las ganancias",
+      "Nada: el protocolo lo certifica",
+      "Solo el saldo final",
+      "Direcciones, depósitos y retiradas, rendimientos con su valor en euros, gas y exportaciones anuales"
+    ],
+    "correcta": 3,
+    "explicacion": "No hay ningún extracto que te lo dé hecho."
+  },
+  {
+    "clave": "ds-f-39",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "¿Qué comprobación se pasa por alto con más facilidad?",
+    "opciones": [
+      "Si podrás salir cuando quieras",
+      "Cuánto rinde",
+      "Cómo se llama el token",
+      "Qué logotipo tiene"
+    ],
+    "correcta": 0,
+    "explicacion": "Plazos de bloqueo, fondos prestados al 100 % o un token sin compradores."
+  },
+  {
+    "clave": "ds-f-40",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "Tras hacer las cuentas, decides no depositar en DeFi. ¿Qué es eso?",
+    "opciones": [
+      "Un error",
+      "Un resultado válido del curso",
+      "Una oportunidad perdida segura",
+      "Falta de conocimientos"
+    ],
+    "correcta": 1,
+    "explicacion": "Lo que no es defendible es entrar sin haberlas hecho."
+  }
+]

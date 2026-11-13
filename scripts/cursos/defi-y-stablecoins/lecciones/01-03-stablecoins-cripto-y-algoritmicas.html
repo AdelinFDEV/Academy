@@ -1,0 +1,158 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Hay stablecoins que intentan prescindir de un emisor con cuenta bancaria. Unas lo hacen exigiendo una garantía en criptomonedas mayor que lo emitido; otras, confiando en un mecanismo de incentivos sin apenas respaldo. Aquí ves cómo funciona cada una, con sus cuentas, y lo que ocurrió en mayo de 2022 con TerraUSD, cuando la mayor stablecoin algorítmica perdió todo su valor en una semana y arrastró más de 40.000 millones de dólares.</p>
+</div>
+
+<h2>Sin banco: la garantía en criptomonedas</h2>
+
+<p>La segunda familia no guarda dólares en ningún sitio. Un programa en una blockchain, un <a href="/glosario/smart-contract">smart contract</a>, emite la stablecoin cuando alguien deposita en él otras criptomonedas como garantía. A esa garantía se la llama <a href="/glosario/colateral">colateral</a>.</p>
+
+<p>El problema es evidente: el colateral cambia de precio. Si depositas 100 dólares en ether y emites 100 dólares en stablecoin, una caída del 10 % deja la moneda sin respaldo. La solución es exigir más garantía de la que se emite. Se llama sobrecolateralización.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Paso</th><th>Ejemplo, con una exigencia del 150 %</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Depositas garantía</td><td>Ether por valor de 1.500 $</td></tr>
+    <tr><td>Emites, como máximo</td><td>1.000 $ en stablecoin</td></tr>
+    <tr><td>El ether cae un 20 %</td><td>Tu garantía vale 1.200 $: un 120 % de lo emitido</td></tr>
+    <tr><td>El programa actúa</td><td>Vende tu garantía para recomprar la stablecoin, y te cobra una penalización</td></tr>
+  </tbody>
+</table>
+
+<p>La cuarta fila es una <a href="/glosario/liquidacion">liquidación</a>, la misma idea que en un préstamo con garantía, que veremos en el módulo 4. Mientras esas ventas forzosas funcionen, cada stablecoin en circulación tiene detrás más de un dólar en garantía.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que gana</p>
+    <p class="prose-vs-sub">Frente a una con emisor</p>
+    <ul>
+      <li data-tono="favor">La garantía se puede comprobar en la blockchain en cualquier momento</li>
+      <li data-tono="favor">No depende de un banco ni de un informe trimestral</li>
+      <li data-tono="favor">Las reglas están en el código</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que arriesga</p>
+    <p class="prose-vs-sub">Y no tiene la otra</p>
+    <ul>
+      <li data-tono="contra">Un desplome muy rápido puede dejar liquidaciones sin cubrir</li>
+      <li data-tono="contra">Un fallo en el código o en el precio que usa</li>
+      <li data-tono="contra">Las decisiones de quienes gobiernan el protocolo</li>
+    </ul>
+  </div>
+</div>
+
+<p>Hay un matiz importante. Las mayores stablecoins de este tipo han ido aceptando como garantía, además de criptomonedas, otras stablecoins con emisor y activos del mundo tradicional. Eso las hace más estables y, a la vez, menos independientes: si su garantía incluye una stablecoin con emisor, heredan los riesgos de ese emisor.</p>
+
+<h2>La idea algorítmica</h2>
+
+<p>La tercera familia quiso ir un paso más allá: mantener la paridad sin inmovilizar tanta garantía, mediante un mecanismo que ajustase la oferta. El caso más conocido fue TerraUSD, o UST, y funcionaba con una segunda moneda del mismo proyecto, LUNA.</p>
+
+<blockquote><strong>1 UST se podía cambiar siempre por 1 dólar de LUNA recién emitida, y al revés.</strong></blockquote>
+
+<ol class="prose-pasos">
+  <li><strong>Si UST bajaba a 0,98,</strong> cualquiera podía comprarlo, cambiarlo por un dólar de LUNA y venderla: dos céntimos de ganancia. Esa compra subía el precio de UST.</li>
+  <li><strong>Si UST subía a 1,02,</strong> se hacía lo contrario: quemar un dólar de LUNA para emitir un UST y venderlo.</li>
+  <li><strong>El arbitraje mantenía la paridad</strong> mientras LUNA tuviera valor y compradores.</li>
+</ol>
+
+<p>Fíjate en la condición del tercer punto. El respaldo de UST no eran dólares ni un activo ajeno: era LUNA, una moneda cuyo valor dependía de la confianza en el propio sistema. La garantía y lo garantizado se sostenían mutuamente.</p>
+
+<h2>Mayo de 2022: la espiral</h2>
+
+<p>La demanda de UST no venía de su uso como dinero. Venía de Anchor, un protocolo del mismo ecosistema que pagaba cerca de un 20 % anual por depositarlo. En torno a tres cuartas partes de todo el UST en circulación estaba allí. Ese rendimiento no salía de la actividad de préstamo del protocolo: se cubría con una reserva que se estaba agotando.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">7 de mayo</span>
+    <p>Grandes ventas de UST en un pool lo desvían ligeramente de la paridad.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">7 a 11 de mayo</span>
+    <p>Los depositantes huyen: Anchor pasa de unos 17.000 millones de dólares a unos 2.600 millones.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Esos mismos días</span>
+    <p>Para salir, se cambia UST por LUNA y se vende. Se emite LUNA sin parar y su precio se hunde.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">13 de mayo</span>
+    <p>LUNA, que valía más de 80 dólares una semana antes, cotiza a una fracción de céntimo. UST, a unos céntimos.</p>
+  </div>
+</div>
+
+<p>El mecanismo que debía sostener la paridad fue el que la destruyó. Cuanto más caía UST, más LUNA había que emitir para canjearlo; cuanta más LUNA se emitía, menos valía; y cuanto menos valía, menos respaldaba a UST. A eso se le llama espiral de la muerte.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Depósitos en Anchor antes y después de la huida",
+  "subtitulo": "En miles de millones de dólares, entre el 7 y el 11 de mayo de 2022.",
+  "formato": "num",
+  "datos": [
+    { "etiqueta": "7 de mayo", "depositos": 17 },
+    { "etiqueta": "11 de mayo", "depositos": 2.6 }
+  ],
+  "series": [{ "clave": "depositos", "nombre": "Miles de millones de dólares", "color": "#22d3ee" }],
+  "nota": "Cifras aproximadas recogidas por la prensa especializada y los análisis posteriores."
+}
+</script></div>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">+40.000 millones $</span>
+  <span class="prose-dato-texto">El valor que desapareció entre UST y LUNA en una semana de mayo de 2022. Es el mayor colapso de una stablecoin registrado.</span>
+</div>
+
+<h2>Lo que se aprende de aquello</h2>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Señal que estaba a la vista</th><th>Pregunta que habría que haberse hecho</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Un 20 % anual por una moneda «estable»</td><td>¿Quién paga ese interés, y con qué?</td></tr>
+    <tr><td>El respaldo era una moneda del mismo proyecto</td><td>¿Qué vale la garantía si falla la confianza?</td></tr>
+    <tr><td>Casi toda la demanda venía de un solo protocolo</td><td>¿Para qué se usa esta moneda, aparte de para cobrar el interés?</td></tr>
+    <tr><td>La reserva que pagaba el rendimiento se agotaba</td><td>¿Cuánto tiempo puede sostenerse esto?</td></tr>
+  </tbody>
+</table>
+
+<p>Ninguna de esas preguntas exigía conocimientos técnicos. Exigía no aceptar un rendimiento sin saber de dónde venía, que es justo el hábito que este curso quiere dejarte.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">La regla que deja el caso es sencilla: desconfía de cualquier moneda estable cuyo respaldo sea un activo creado por el mismo proyecto. Si lo que la garantiza solo vale mientras la gente crea en ella, no hay garantía: hay un círculo.</div>
+</div>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Han aparecido después otros diseños, como los llamados dólares sintéticos, que combinan una criptomoneda con una posición contraria en derivados para que el resultado no dependa del precio. Su estabilidad depende de cosas distintas: de las plataformas donde están esas posiciones y de que mantenerlas no cueste dinero. Las preguntas son las mismas: qué lo respalda y qué tendría que pasar para que fallara.</div>
+</div>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Qué sostiene a cada una?",
+  "instrucciones": "Lleva cada descripción a su familia.",
+  "grupos": [
+    { "id": "reservas", "nombre": "Con reservas" },
+    { "id": "cripto", "nombre": "Con garantía en criptomonedas" },
+    { "id": "algo", "nombre": "Algorítmica" }
+  ],
+  "elementos": [
+    { "texto": "Una empresa guarda deuda pública por cada token emitido", "grupo": "reservas", "explicacion": "Depende de la solvencia y la honradez del emisor." },
+    { "texto": "Hay que depositar 1.500 $ en ether para emitir 1.000 $", "grupo": "cripto", "explicacion": "Sobrecolateralización: la garantía vale más que lo emitido." },
+    { "texto": "Se canjea por una moneda del mismo proyecto recién emitida", "grupo": "algo", "explicacion": "El respaldo solo vale mientras haya confianza en el sistema." },
+    { "texto": "Si la garantía pierde valor, un programa la vende automáticamente", "grupo": "cripto", "explicacion": "Las liquidaciones mantienen el respaldo por encima de lo emitido." },
+    { "texto": "Publica una atestación trimestral de sus activos", "grupo": "reservas", "explicacion": "Es la forma de comprobar lo que no está en la blockchain." },
+    { "texto": "Su estabilidad depende de que siga habiendo compradores de un segundo token", "grupo": "algo", "explicacion": "Es lo que falló en mayo de 2022." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: las cuatro preguntas de Terra</h2>
+
+<p>Busca una stablecoin que no sea ninguna de las dos mayores: puede ser una descentralizada o un dólar sintético. En la documentación del proyecto, encuentra y escribe la respuesta a las cuatro preguntas de la tabla: de dónde sale el rendimiento que ofrece, si lo ofrece; qué la respalda y si ese respaldo es ajeno al proyecto; para qué se usa además de para cobrar un interés; y qué tendría que ocurrir para que perdiera la paridad. Si no encuentras alguna respuesta, anótalo también.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> las stablecoins con garantía en criptomonedas exigen depositar más de lo que se emite y liquidan cuando la garantía pierde valor. Las algorítmicas confían en un mecanismo: TerraUSD se respaldaba con una moneda del mismo proyecto y pagaba un 20 % que nadie generaba, y en mayo de 2022 perdió todo su valor en una semana. Pregunta siempre qué respalda una moneda estable y si ese respaldo sobrevive a una pérdida de confianza.</div>
+</div>

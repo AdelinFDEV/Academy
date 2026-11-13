@@ -1,0 +1,236 @@
+[
+  {
+    "clave": "ds-m5-01",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "De los seis riesgos de DeFi, ¿cuál depende por completo de ti?",
+    "opciones": [
+      "El robo por firmar en una página falsa o entregar la frase semilla",
+      "La clave de administrador",
+      "El fallo del código",
+      "El fallo de un oráculo"
+    ],
+    "correcta": 0,
+    "explicacion": "En los otros cinco, una vez dentro no hay nada que puedas hacer."
+  },
+  {
+    "clave": "ds-m5-02",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "Según Chainalysis, ¿cuánto se robó en criptomonedas en 2025, de enero a principios de diciembre?",
+    "opciones": [
+      "Unos 340 millones",
+      "Más de 3.400 millones de dólares",
+      "Más de 34.000 millones",
+      "Unos 34 millones"
+    ],
+    "correcta": 1,
+    "explicacion": "El ataque a Bybit, unos 1.500 millones, supuso alrededor del 44 %."
+  },
+  {
+    "clave": "ds-m5-03",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "¿Qué garantiza una auditoría de un contrato?",
+    "opciones": [
+      "Que no puede ser vaciado",
+      "Que el rendimiento es real",
+      "Nada con certeza: reduce la probabilidad de fallos en la versión revisada",
+      "Que el equipo es honrado"
+    ],
+    "correcta": 2,
+    "explicacion": "No examina el diseño económico ni las dependencias, y el código puede cambiar después."
+  },
+  {
+    "clave": "ds-m5-04",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "¿Qué señal pesa más que una auditoría?",
+    "opciones": [
+      "Que tenga muchos seguidores",
+      "Que anuncie un rendimiento alto",
+      "Que tenga tres auditorías en dos semanas",
+      "Que el contrato lleve años funcionando con mucho dinero dentro"
+    ],
+    "correcta": 3,
+    "explicacion": "Ha tenido una gran recompensa a la vista de cualquier atacante y sigue en pie."
+  },
+  {
+    "clave": "ds-m5-05",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "¿Qué es un «rug pull»?",
+    "opciones": [
+      "Que los creadores retiran la liquidez o venden su reserva de tokens y desaparecen",
+      "Una subida brusca del gas",
+      "Una liquidación parcial",
+      "Un fallo de un oráculo"
+    ],
+    "correcta": 0,
+    "explicacion": "Deja un token que no se puede vender, porque no hay nada al otro lado del fondo."
+  },
+  {
+    "clave": "ds-m5-06",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "Tras perder fondos, alguien te ofrece recuperarlos por un pago adelantado. ¿Qué es?",
+    "opciones": [
+      "Una opción razonable si cobra poco",
+      "Una segunda estafa: nadie puede revertir una operación en una blockchain",
+      "Un seguro",
+      "Un servicio oficial"
+    ],
+    "correcta": 1,
+    "explicacion": "Se dirige a quien ya ha perdido."
+  },
+  {
+    "clave": "ds-m5-07",
+    "leccion": "lo-que-puede-salir-mal",
+    "enunciado": "¿Cuál es la defensa que funciona también contra lo imprevisto?",
+    "opciones": [
+      "Usar una sola wallet para todo",
+      "Aprobar cantidades ilimitadas",
+      "Limitar cuánto tienes en cada protocolo",
+      "Elegir el protocolo con más rendimiento"
+    ],
+    "correcta": 2,
+    "explicacion": "Cuando un contrato falla no hay stop: lo que tenías dentro es lo que pierdes."
+  },
+  {
+    "clave": "ds-m5-08",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "¿A quién obliga principalmente MiCA?",
+    "opciones": [
+      "Solo a los bancos",
+      "A cualquier contrato en una blockchain",
+      "A los validadores de bitcoin",
+      "A emisores de stablecoins y a proveedores de servicios"
+    ],
+    "correcta": 3,
+    "explicacion": "Sus obligaciones recaen sobre empresas. Lo plenamente descentralizado queda en buena medida fuera."
+  },
+  {
+    "clave": "ds-m5-09",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "¿Cubre el fondo de garantía de depósitos las criptomonedas en una plataforma autorizada?",
+    "opciones": [
+      "No: cubre dinero en cuentas bancarias",
+      "Sí, hasta 100.000 €",
+      "Solo las stablecoins",
+      "Sí, sin límite"
+    ],
+    "correcta": 0,
+    "explicacion": "La autorización reduce riesgos; no convierte un saldo en un depósito."
+  },
+  {
+    "clave": "ds-m5-10",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "Según la DGT, ¿cómo se califican los rendimientos por depositar criptomonedas en un protocolo?",
+    "opciones": [
+      "Ganancias patrimoniales exentas",
+      "Rendimientos del capital mobiliario",
+      "Rendimientos del trabajo",
+      "No tributan"
+    ],
+    "correcta": 1,
+    "explicacion": "Es el criterio de la consulta V0648-24, y van a la base del ahorro."
+  },
+  {
+    "clave": "ds-m5-11",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "¿Cuándo se valoran en euros esos rendimientos?",
+    "opciones": [
+      "Cuando se retiran al banco",
+      "El día en que se venden",
+      "El día en que se perciben",
+      "Al final del año"
+    ],
+    "correcta": 2,
+    "explicacion": "Tributan aunque no hayas vendido nada, por su valor de ese día."
+  },
+  {
+    "clave": "ds-m5-12",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "¿Qué ha dicho la DGT sobre recibir el token de participación de un fondo al depositar?",
+    "opciones": [
+      "Que es un rendimiento del trabajo",
+      "Que está exento",
+      "Que tributa al 50 %",
+      "No se ha pronunciado: no hay criterio publicado"
+    ],
+    "correcta": 3,
+    "explicacion": "Los despachos avisan de que un criterio futuro podría considerarlo una permuta."
+  },
+  {
+    "clave": "ds-m5-13",
+    "leccion": "regulacion-e-impuestos",
+    "enunciado": "¿Por qué DeFi complica la declaración?",
+    "opciones": [
+      "Porque genera decenas de operaciones y ningún protocolo emite certificados fiscales",
+      "Porque no deja ningún rastro",
+      "Porque solo tributa al retirar al banco",
+      "Porque está exento"
+    ],
+    "correcta": 0,
+    "explicacion": "Reconstruir el historial depende de ti; por eso conviene llevar un registro desde el principio."
+  },
+  {
+    "clave": "ds-m5-14",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "¿Cuál es la primera comprobación de la lista antes de depositar?",
+    "opciones": [
+      "Cuánto rinde",
+      "De dónde sale el rendimiento",
+      "Qué color tiene la web",
+      "Cuántas redes admite"
+    ],
+    "correcta": 1,
+    "explicacion": "Si no hay una respuesta con sujeto —quién paga y por qué—, no hace falta seguir."
+  },
+  {
+    "clave": "ds-m5-15",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "Un depósito anuncia un 12 % APY. ¿Qué hay que restarle para saber lo que queda?",
+    "opciones": [
+      "Solo los impuestos",
+      "Solo el gas",
+      "La parte en tokens que no llega a valer eso, la reinversión supuesta, el gas y los impuestos",
+      "Nada: el 12 % es neto"
+    ],
+    "correcta": 2,
+    "explicacion": "En el ejemplo del curso, un 12 % anunciado queda en menos de un 6 %."
+  },
+  {
+    "clave": "ds-m5-16",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "¿En qué orden se decide?",
+    "opciones": [
+      "Primero el rendimiento más alto",
+      "Primero el token del protocolo",
+      "Primero la red más barata",
+      "Primero el tamaño que puedes perder; el rendimiento es lo último que se compara"
+    ],
+    "correcta": 3,
+    "explicacion": "Decidir por la cifra lleva al protocolo con el riesgo mayor."
+  },
+  {
+    "clave": "ds-m5-17",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "¿Para qué sirve hacer el recorrido completo con una cantidad de prueba?",
+    "opciones": [
+      "Para descubrir errores de red, comisiones de salida o bloqueos antes de mover el importe real",
+      "Para ganar más rendimiento",
+      "Para evitar impuestos",
+      "Para aumentar el factor de salud"
+    ],
+    "correcta": 0,
+    "explicacion": "Cuesta unos dólares de gas y evita los errores más tontos."
+  },
+  {
+    "clave": "ds-m5-18",
+    "leccion": "tu-lista-antes-de-depositar",
+    "enunciado": "¿Qué hay que hacer al dejar de usar un protocolo?",
+    "opciones": [
+      "Nada",
+      "Revocar las aprobaciones que le diste",
+      "Enviarle la frase semilla",
+      "Subir la tolerancia al deslizamiento"
+    ],
+    "correcta": 1,
+    "explicacion": "Una aprobación antigua sigue vigente aunque ya no uses el contrato."
+  }
+]

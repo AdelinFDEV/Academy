@@ -1,0 +1,173 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Quien aporta liquidez a un fondo acaba, si el precio se mueve, con menos valor que si se hubiera limitado a guardar las dos monedas. A esa diferencia se le llama pérdida impermanente. Aquí ves de dónde sale, con un ejemplo completo; la fórmula y la tabla que dan su tamaño para cualquier movimiento; por qué el nombre es engañoso; y la única comparación que importa: si las comisiones cobradas la superan o no.</p>
+</div>
+
+<h2>Qué es, en una frase</h2>
+
+<p>La <a href="/glosario/perdida-impermanente">pérdida impermanente</a> es la diferencia entre lo que vale tu parte del fondo y lo que valdrían las mismas monedas si las hubieras dejado quietas en tu wallet.</p>
+
+<p>No es una comisión ni un robo. Es una consecuencia de la fórmula del fondo. Recuerda de la lección 3.1 que, cuando el precio del fondo se queda descolocado, los arbitrajistas lo corrigen comprándole lo barato y vendiéndole lo caro. La ganancia que se llevan sale de quienes pusieron las monedas.</p>
+
+<h2>Un ejemplo completo</h2>
+
+<p>Aportas 1 ether y 2.000 dólares digitales a un fondo, con el ether a 2.000 $. Has puesto 4.000 $ en total. Para que la cuenta sea fácil de seguir, supón que el fondo es solo tuyo. El producto constante es 1 × 2.000 = 2.000.</p>
+
+<p>El ether dobla su precio en el mercado, hasta 4.000 $. Los arbitrajistas compran ether a tu fondo hasta que marca ese mismo precio. ¿Qué queda dentro?</p>
+
+<ol class="prose-pasos">
+  <li><strong>El producto sigue siendo 2.000</strong> y el precio tiene que ser 4.000: dólares ÷ ether = 4.000.</li>
+  <li><strong>Ether que queda:</strong> la raíz cuadrada de 2.000 ÷ 4.000, que es 0,7071.</li>
+  <li><strong>Dólares que quedan:</strong> 0,7071 × 4.000 = 2.828,43.</li>
+  <li><strong>Valor de tu parte:</strong> 0,7071 × 4.000 + 2.828,43 = 5.656,85 $.</li>
+</ol>
+
+<table class="prose-table">
+  <thead>
+    <tr><th></th><th>Guardando las monedas</th><th>En el fondo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Ether</td><td>1</td><td>0,7071</td></tr>
+    <tr><td>Dólares digitales</td><td>2.000</td><td>2.828,43</td></tr>
+    <tr><td>Valor con el ether a 4.000 $</td><td>6.000 $</td><td>5.656,85 $</td></tr>
+    <tr><td><strong>Diferencia</strong></td><td></td><td><strong>−343,15 $ (−5,7 %)</strong></td></tr>
+  </tbody>
+</table>
+
+<p>Has ganado dinero: de 4.000 a 5.657 $. Pero habrías ganado más sin hacer nada: 6.000 $. El fondo ha ido vendiendo tu ether a medida que subía, a precios intermedios, y por eso tienes menos del que más ha subido.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">−5,7 %</span>
+  <span class="prose-dato-texto">La pérdida impermanente cuando una de las dos monedas dobla su precio frente a la otra. Es la misma si, en lugar de doblar, cae a la mitad.</span>
+</div>
+
+<h2>La fórmula y la tabla</h2>
+
+<p>Para un fondo clásico de dos monedas al 50 %, la pérdida depende solo de cuánto ha cambiado el precio de una respecto a la otra. Si ese cambio se llama <em>r</em> —2 si ha doblado, 0,5 si ha caído a la mitad—:</p>
+
+<blockquote><strong>Pérdida impermanente = 2 × √r ÷ (1 + r) − 1</strong></blockquote>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "Pérdida impermanente según cuánto cambie el precio",
+  "subtitulo": "Fondo de dos monedas al 50 %. El resultado es el mismo si el precio sube o baja en esa proporción.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "Cambia un 25 %", "perdida": 0.6 },
+    { "etiqueta": "Cambia un 50 %", "perdida": 2 },
+    { "etiqueta": "Se dobla", "perdida": 5.7 },
+    { "etiqueta": "Se triplica", "perdida": 13.4 },
+    { "etiqueta": "Se multiplica por 4", "perdida": 20 },
+    { "etiqueta": "Se multiplica por 5", "perdida": 25.5 }
+  ],
+  "series": [{ "clave": "perdida", "nombre": "Pérdida frente a guardar las monedas", "color": "#22d3ee" }],
+  "nota": "Sin contar comisiones. Si una de las dos monedas cae a la décima parte, la pérdida es del 42,5 %."
+}
+</script></div>
+
+<p>Tres cosas se leen en esa tabla. Con movimientos pequeños, la pérdida es mínima: un 25 % de cambio cuesta apenas un 0,6 %. Crece cada vez más deprisa. Y es simétrica: da igual que la moneda suba o baje, lo que cuenta es cuánto se separan los dos precios.</p>
+
+<h2>Por qué «impermanente» es un mal nombre</h2>
+
+<p>Se llama así porque, si el precio vuelve exactamente a donde estaba cuando entraste, la diferencia desaparece. Es cierto, y es poco consuelo.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Lo que sugiere el nombre</p>
+    <p class="prose-vs-sub">«Es temporal»</p>
+    <ul>
+      <li data-tono="contra">Que basta con esperar</li>
+      <li data-tono="contra">Que no es una pérdida de verdad</li>
+      <li data-tono="contra">Que no hay que tenerla en cuenta</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Lo que ocurre</p>
+    <p class="prose-vs-sub">Se hace definitiva al retirar</p>
+    <ul>
+      <li data-tono="favor">Solo desaparece si el precio vuelve al punto exacto de entrada</li>
+      <li data-tono="favor">Los precios de las criptomonedas rara vez vuelven</li>
+      <li data-tono="favor">En cuanto sacas el dinero, es una pérdida como cualquier otra</li>
+    </ul>
+  </div>
+</div>
+
+<p>Un nombre más honesto sería «pérdida por divergencia»: lo que cuesta que los dos precios se separen. Algunas documentaciones técnicas ya lo llaman así.</p>
+
+<h2>El caso más duro: una moneda que se hunde</h2>
+
+<p>La pérdida impermanente se suele explicar con monedas que suben. El peor escenario es el contrario. Si aportas a un fondo un token pequeño junto con una stablecoin y el token se desploma, el fondo va comprando ese token con tus dólares durante toda la caída.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Al entrar</span>
+    <p>1.000 $ en un token y 1.000 $ en dólares digitales. Total: 2.000 $.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El token cae un 90 %</span>
+    <p>El fondo ha ido cambiando tus dólares por más token, a precios cada vez más bajos.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Lo que tienes</span>
+    <p>Unos 632 $: mitad en un token hundido, mitad en dólares.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Si lo hubieras guardado</span>
+    <p>100 $ de token y 1.000 $ intactos: 1.100 $.</p>
+  </div>
+</div>
+
+<p>Con un token que va a cero, el fondo te deja al final con todo el token y ningún dólar. Aportar liquidez a un par no te protege de la caída de una de sus monedas: te hace comprarla durante todo el descenso.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Los rendimientos más altos se anuncian en fondos de tokens pequeños y nuevos, que son justo los que más se mueven y los que pueden ir a cero. Un 200 % anual no compensa una pérdida del 70 % del capital en un mes.</div>
+</div>
+
+<h2>La única comparación que importa</h2>
+
+<p>Aportar liquidez tiene sentido cuando lo que cobras supera a lo que pierdes.</p>
+
+<blockquote><strong>Resultado frente a guardar = comisiones cobradas − pérdida impermanente − gas</strong></blockquote>
+
+<p>Vuelve al ejemplo del principio. Para compensar los 343 $ de diferencia, el fondo tendría que haberte pagado, durante el tiempo que estuviste dentro, más del 8,6 % sobre tus 4.000 $ iniciales en comisiones. Si tardó un año en doblar, hace falta un fondo con mucha actividad. Si tardó un mes, es casi imposible.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Tipo de par</th><th>Cuánto divergen sus precios</th><th>Pérdida esperable</th><th>Comisiones habituales</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Dos stablecoins</td><td>Casi nada, salvo que una pierda la paridad</td><td>Mínima</td><td>Bajas</td></tr>
+    <tr><td>Dos monedas grandes que se mueven juntas</td><td>Poco</td><td>Pequeña</td><td>Bajas o medias</td></tr>
+    <tr><td>Una moneda grande y una stablecoin</td><td>Lo que se mueva la moneda</td><td>Notable en un año movido</td><td>Medias</td></tr>
+    <tr><td>Un token pequeño y una stablecoin</td><td>Muchísimo</td><td>Muy alta</td><td>Altas, sobre el papel</td></tr>
+  </tbody>
+</table>
+
+<p>La primera fila tiene una excepción que ya conoces. Un fondo de dos stablecoins parece el más seguro, hasta que una pierde la paridad: entonces el fondo te va cambiando la sana por la que cae, y acabas con casi todo en la que tiene el problema.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Los fondos de liquidez concentrada, en los que eliges un rango de precios, cobran más comisiones por cada dólar mientras el precio está dentro del rango, y sufren más pérdida impermanente cuando sale de él. Multiplican las dos cosas. Exigen vigilar la posición y no son un buen sitio para empezar.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Aportas a un fondo y, mientras estás dentro, una de las dos monedas multiplica su precio por cuatro respecto a la otra. Has cobrado un 12 % en comisiones. Frente a haber guardado las monedas, ¿cómo vas?",
+  "opciones": [
+    "Peor: la pérdida impermanente es del 20 %, mayor que las comisiones",
+    "Mejor: el 12 % en comisiones es ganancia neta",
+    "Igual: se compensan exactamente",
+    "Mejor: la pérdida impermanente no cuenta hasta que el precio vuelva"
+  ],
+  "correcta": 0,
+  "explicacion": "Con un cambio de precio de 4 veces, la pérdida impermanente es del 20 %. Las comisiones no la cubren: habrías tenido más guardando las monedas."
+}
+</script></div>
+
+<h2>Ejercicio: la cuenta de un año</h2>
+
+<p>Elige un par formado por una moneda grande y una stablecoin. Busca el precio de esa moneda hace un año y el de hoy, y calcula <em>r</em> dividiendo el segundo entre el primero. Aplica la fórmula, o busca el valor más cercano en el gráfico, para obtener la pérdida impermanente de ese año. Después estima, con el método de la lección anterior, qué rendimiento por comisiones habría dado un fondo grande de ese par. Resta. El resultado te dice si aportar liquidez a ese par, ese año, habría sido mejor o peor que guardar las monedas.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> la pérdida impermanente es lo que dejas de tener por estar en un fondo en lugar de guardar las monedas. Es del 5,7 % si un precio se dobla o cae a la mitad, del 20 % si se multiplica por cuatro, y solo desaparece si vuelve al punto exacto de entrada. Si una moneda se hunde, el fondo la compra con tus dólares durante toda la caída. Aportar liquidez compensa solo si las comisiones superan esa pérdida y el gas.</div>
+</div>

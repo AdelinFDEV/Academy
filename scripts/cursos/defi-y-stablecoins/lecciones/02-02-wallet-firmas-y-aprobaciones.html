@@ -1,0 +1,159 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>En DeFi no hay usuario ni contraseña. Te identificas conectando tu wallet y autorizas cada operación con una firma. Hay varios tipos de firma, y uno de ellos —la aprobación— da permiso a un contrato para mover tus tokens, a veces sin límite y para siempre. Aquí ves qué autoriza cada una, por qué la mayoría de los robos a particulares empiezan con una firma hecha de buena fe y qué rutina reduce el riesgo.</p>
+</div>
+
+<h2>Conectar no es entregar</h2>
+
+<p>Para usar un protocolo abres su página y pulsas «conectar wallet». Tu <a href="/glosario/wallet">wallet</a> —una aplicación o una extensión del navegador— le enseña a la página tu dirección pública. Nada más. Conectar no da acceso a tus fondos ni a tu <a href="/glosario/clave-privada">clave privada</a>.</p>
+
+<p>Lo que da acceso a algo son las firmas que vienen después. Cada vez que el protocolo necesita que hagas algo, tu wallet abre una ventana pidiendo confirmación. Esa ventana es la única barrera entre tus fondos y lo que la página quiere hacer con ellos.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Ninguna página, soporte ni persona necesita tu frase de recuperación para nada. Si alguien te la pide, es un robo. La <a href="/glosario/seed-phrase">frase semilla</a> solo se escribe en tu propia wallet, al instalarla o restaurarla.</div>
+</div>
+
+<h2>Tres tipos de firma</h2>
+
+<p>No todas las ventanas de confirmación piden lo mismo, y distinguirlas es la habilidad más útil de este módulo.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Tipo</th><th>Qué autoriza</th><th>Cuesta gas</th><th>Riesgo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Transacción</td><td>Una acción concreta: enviar, cambiar, depositar</td><td>Sí</td><td>El de esa operación, una vez</td></tr>
+    <tr><td>Aprobación</td><td>Que un contrato pueda mover uno de tus tokens, hasta cierta cantidad</td><td>Sí</td><td>Permanece hasta que la retires</td></tr>
+    <tr><td>Firma de mensaje</td><td>Un texto o una orden que se usa fuera de la cadena</td><td>No</td><td>Puede equivaler a una aprobación sin que lo parezca</td></tr>
+  </tbody>
+</table>
+
+<p>La tercera fila es la más traicionera. Como no cuesta nada y no aparece como una operación, da sensación de trámite. Pero algunas firmas de mensaje autorizan a un tercero a gastar tus tokens o a ejecutar una venta a un precio que él elige. Una firma gratuita puede salir muy cara.</p>
+
+<h2>La aprobación, con detalle</h2>
+
+<p>Un contrato no puede coger tokens de tu wallet por su cuenta. Antes tienes que darle permiso, y eso es una <a href="/glosario/aprobacion-de-token">aprobación de token</a>. Es el paso previo a casi cualquier operación: antes de cambiar tus dólares digitales en un intercambio, apruebas que su contrato pueda moverlos.</p>
+
+<p>La cuestión es cuánto apruebas. Por comodidad, muchas páginas piden una cantidad ilimitada, para que no tengas que volver a aprobar la próxima vez.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Aprobación por el importe exacto</p>
+    <p class="prose-vs-sub">Solo lo que vas a usar ahora</p>
+    <ul>
+      <li data-tono="favor">Si el contrato falla, solo puede tocar esa cantidad</li>
+      <li data-tono="favor">Se agota al usarse</li>
+      <li data-tono="contra">Hay que aprobar, y pagar gas, cada vez</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Aprobación ilimitada</p>
+    <p class="prose-vs-sub">Todo tu saldo de ese token, para siempre</p>
+    <ul>
+      <li data-tono="favor">Se aprueba una vez y no se repite</li>
+      <li data-tono="contra">El contrato puede mover todo lo que tengas, hoy y en el futuro</li>
+      <li data-tono="contra">Sigue vigente aunque dejes de usar el protocolo</li>
+    </ul>
+  </div>
+</div>
+
+<p>El tercer punto de la derecha es el que cuesta dinero. Una aprobación ilimitada que diste hace dos años a un protocolo que ya no usas sigue ahí. Si ese contrato tiene un fallo que alguien descubre mañana, o si era malicioso desde el principio, puede vaciar ese token de tu wallet sin que tengas que firmar nada más.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">158.000</span>
+  <span class="prose-dato-texto">Los casos de carteras personales comprometidas en 2025, según Chainalysis, con 713 millones de dólares robados. Una parte importante empieza con una firma que la víctima hizo de buena fe.</span>
+</div>
+
+<h2>Cómo te roban con una firma</h2>
+
+<p>El método más extendido no ataca ningún contrato. Te engaña a ti. Es una forma de <a href="/glosario/phishing">phishing</a>.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El cebo</span>
+    <p>Un anuncio en un buscador, un mensaje sobre un reparto gratuito de tokens o un enlace en una red social.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">La página</span>
+    <p>Una copia exacta de un protocolo conocido, con una dirección que se diferencia en una letra.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">La firma</span>
+    <p>Pulsas «reclamar» o «conectar» y la wallet pide confirmar. Es una aprobación ilimitada a favor del ladrón.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">El vaciado</span>
+    <p>Segundos después, un programa mueve todos los tokens aprobados a otra dirección.</p>
+  </div>
+</div>
+
+<p>Todo es técnicamente legítimo: tú firmaste. Por eso no hay forma de deshacerlo. La única defensa está antes de pulsar.</p>
+
+<h2>Leer la ventana antes de firmar</h2>
+
+<ol class="prose-pasos">
+  <li><strong>Comprueba la dirección de la página.</strong> Letra a letra. Llega siempre desde un marcador guardado por ti, nunca desde un anuncio ni un enlace.</li>
+  <li><strong>Lee qué tipo de firma es.</strong> ¿Transacción, aprobación o mensaje? Las wallets actuales lo indican.</li>
+  <li><strong>Si es una aprobación, mira para qué token y cuánto.</strong> Cambia «ilimitado» por el importe que vas a usar; casi todas las wallets lo permiten.</li>
+  <li><strong>Mira a qué contrato se la das.</strong> Debe ser el del protocolo. Si la wallet avisa de que no lo reconoce, para.</li>
+  <li><strong>Si no entiendes lo que pide, no firmes.</strong> No hay ninguna operación legítima que no pueda esperar diez minutos.</li>
+</ol>
+
+<p>Las wallets modernas simulan la operación y muestran lo que saldrá y lo que entrará en tu cuenta. Si la simulación dice que salen todos tus tokens y no entra nada, da igual lo que prometa la página.</p>
+
+<h2>Higiene: revisar y separar</h2>
+
+<p>Dos costumbres reducen el daño posible más que cualquier herramienta.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Costumbre</th><th>Cómo se hace</th><th>Qué consigue</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Revocar aprobaciones</td><td>Con el <a href="/glosario/explorador-de-bloques">explorador de bloques</a> de la red o una herramienta de revocación, se listan los permisos concedidos y se retiran los que no se usan</td><td>Un contrato antiguo deja de poder tocar tus tokens</td></tr>
+    <tr><td>Separar wallets</td><td>Una para guardar, que nunca se conecta a nada; otra para operar, con lo justo</td><td>Un error en la de operar no alcanza a los ahorros</td></tr>
+  </tbody>
+</table>
+
+<p>La segunda es la más eficaz y la menos practicada. Una wallet que solo recibe y envía, guardada en un dispositivo físico, no tiene aprobaciones que le puedan robar. La que usas para probar protocolos debería contener únicamente lo que estás dispuesto a perder en ella.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Revocar una aprobación es una transacción y cuesta gas. Merece la pena hacerlo en tandas, cada cierto tiempo, y siempre después de haber usado un protocolo nuevo o poco conocido.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Vas a cambiar 200 USDC en un intercambio. La wallet pide aprobar una cantidad «ilimitada» de USDC para el contrato. ¿Qué es lo más prudente?",
+  "opciones": [
+    "Editar la cantidad y aprobar solo los 200 USDC que vas a cambiar",
+    "Aceptar: es lo normal y no tiene consecuencias",
+    "Rechazar y enviar tu frase semilla al soporte para que lo hagan ellos",
+    "Aprobar el ilimitado y no volver a pensar en ello"
+  ],
+  "correcta": 0,
+  "explicacion": "Con el importe exacto, un fallo futuro del contrato no puede tocar el resto de tu saldo. La frase semilla no se comparte nunca."
+}
+</script></div>
+
+<div data-bloque="ordenar"><script type="application/json">
+{
+  "titulo": "Antes de firmar",
+  "instrucciones": "Ordena las comprobaciones.",
+  "pasos": [
+    "Llegar a la página desde un marcador propio y revisar la dirección",
+    "Leer qué tipo de firma pide la wallet",
+    "Si es una aprobación, comprobar el token y limitar la cantidad",
+    "Comprobar a qué contrato se concede",
+    "Mirar la simulación: qué sale y qué entra",
+    "Firmar, o cerrar si algo no cuadra"
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: tus aprobaciones</h2>
+
+<p>Si has usado alguna vez un protocolo, busca una herramienta de revocación de aprobaciones para la red que utilices, introduce tu dirección pública —solo la dirección, sin conectar la wallet si no hace falta— y mira la lista. Cuenta cuántas son ilimitadas y cuántas corresponden a protocolos que ya no usas. Revoca esas. Si nunca has usado DeFi, haz lo mismo con una dirección pública cualquiera de un explorador, solo para ver cómo es la lista: te servirá para entender por qué conviene llegar con dos wallets.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> en DeFi autorizas con firmas, y hay tres: la transacción, que hace una cosa; la aprobación, que deja a un contrato mover tus tokens hasta que la retires; y la firma de mensaje, gratuita y a veces igual de peligrosa. Aprueba solo el importe que vas a usar, revoca lo que no uses y separa la wallet de guardar de la de operar. La frase semilla no se da a nadie.</div>
+</div>

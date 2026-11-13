@@ -1,0 +1,87 @@
+{
+  "slug": "defi-y-stablecoins",
+  "titulo": "DeFi y stablecoins",
+  "subtitulo": "Qué respalda un dólar digital, cómo funciona un protocolo por dentro y de dónde sale un rendimiento.",
+  "descripcion": "Un curso para entender las finanzas descentralizadas antes de depositar nada en ellas. Empieza por las stablecoins: qué las respalda, en qué se diferencian unas de otras y por qué algunas han perdido su paridad, con los casos de TerraUSD y de USDC. Sigue con lo que es un protocolo por dentro: qué firmas cuando lo usas, cómo fija el precio un intercambio sin libro de órdenes, qué gana y qué pierde quien aporta liquidez, cómo funciona un préstamo con garantía y cuándo se liquida. Dedica una lección entera a la pregunta que más dinero ahorra —de dónde sale el rendimiento— y un módulo a los riesgos, la regulación europea y los impuestos en España. No recomienda ningún protocolo ni promete rentabilidades: te deja sabiendo qué preguntar antes de mover un euro.",
+  "objetivos": [
+    "Distinguir los tipos de stablecoin por lo que las respalda y por lo que puede hacerles perder la paridad.",
+    "Explicar qué es un protocolo DeFi y qué autorizas cada vez que firmas una operación con tu wallet.",
+    "Calcular el precio y el impacto de una operación en un pool de producto constante.",
+    "Calcular la pérdida impermanente de una posición de liquidez y compararla con las comisiones.",
+    "Calcular el factor de salud de un préstamo con garantía y el precio al que se liquidaría.",
+    "Identificar de dónde sale un rendimiento y reconocer los que no pueden sostenerse."
+  ],
+  "nivel": "intermedio",
+  "portada": null,
+  "color": "#22d3ee",
+  "aviso": "formacion",
+  "logro": "Rendimiento Real",
+  "preguntas_final": 25,
+  "revisado": "2026-11-13",
+  "orden": 7,
+  "published": false,
+  "modulos": [
+    {
+      "orden": 1,
+      "titulo": "Stablecoins",
+      "descripcion": "Qué son, qué las respalda y por qué una moneda diseñada para valer un dólar puede dejar de valerlo.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "que-es-una-stablecoin", "titulo": "Qué es una stablecoin y para qué sirve", "resumen": "Un dólar que se mueve como una criptomoneda. Para qué se usa, quién gana con ella y por qué «estable» es un objetivo, no una garantía.", "minutos": 12, "archivo": "01-01-que-es-una-stablecoin.html" },
+        { "slug": "stablecoins-respaldadas-por-reservas", "titulo": "Las respaldadas por reservas", "resumen": "USDT, USDC y las demás: quién guarda el dinero, en qué lo tiene invertido, quién puede canjearlas y qué significa que el emisor pueda congelar tu saldo.", "minutos": 13, "archivo": "01-02-stablecoins-respaldadas-por-reservas.html" },
+        { "slug": "stablecoins-cripto-y-algoritmicas", "titulo": "Las respaldadas por criptomonedas y las algorítmicas", "resumen": "Dos formas de prescindir de un banco: poner más garantía de la que se emite, o confiar en un mecanismo. Y lo que pasó con TerraUSD.", "minutos": 14, "archivo": "01-03-stablecoins-cripto-y-algoritmicas.html" },
+        { "slug": "cuando-se-pierde-la-paridad", "titulo": "Cuando se pierde la paridad", "resumen": "El fin de semana en que USDC valió 88 céntimos, cómo leer un desvío mientras ocurre y qué ha cambiado en Europa con MiCA.", "minutos": 13, "archivo": "01-04-cuando-se-pierde-la-paridad.html" }
+      ]
+    },
+    {
+      "orden": 2,
+      "titulo": "Qué es DeFi",
+      "descripcion": "Un programa en lugar de una empresa. Qué cambia, qué firmas cuando lo usas y por dónde se mueve tu dinero.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "de-la-plataforma-al-contrato", "titulo": "De la plataforma al contrato", "resumen": "Qué hace un contrato inteligente, en qué se diferencia de una plataforma con dueño y qué significa de verdad «descentralizado».", "minutos": 13, "archivo": "02-01-de-la-plataforma-al-contrato.html" },
+        { "slug": "wallet-firmas-y-aprobaciones", "titulo": "Wallet, firmas y aprobaciones", "resumen": "En DeFi no hay usuario ni contraseña: hay firmas. Qué autoriza cada una y por qué un permiso antiguo puede vaciarte la cuenta.", "minutos": 13, "archivo": "02-02-wallet-firmas-y-aprobaciones.html" },
+        { "slug": "gas-redes-y-puentes", "titulo": "Gas, redes y puentes", "resumen": "Por qué cada operación cuesta dinero, qué son las redes de segunda capa y por qué pasar fondos de una a otra es uno de los puntos más frágiles.", "minutos": 12, "archivo": "02-03-gas-redes-y-puentes.html" }
+      ]
+    },
+    {
+      "orden": 3,
+      "titulo": "Intercambios y pools",
+      "descripcion": "Cómo se fija un precio sin libro de órdenes, qué gana quien pone el dinero y cuánto puede perder.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "como-funciona-un-amm", "titulo": "Cómo funciona un creador de mercado automático", "resumen": "Dos montones de monedas y una multiplicación. La fórmula que fija el precio, con las cuentas de una compra pequeña y una grande.", "minutos": 14, "archivo": "03-01-como-funciona-un-amm.html" },
+        { "slug": "aportar-liquidez", "titulo": "Aportar liquidez: de dónde salen las comisiones", "resumen": "Qué depositas, qué recibes a cambio y cuánto cobra un pool según lo que se negocia en él. La cuenta que hay que hacer antes de entrar.", "minutos": 12, "archivo": "03-02-aportar-liquidez.html" },
+        { "slug": "la-perdida-impermanente", "titulo": "La pérdida impermanente", "resumen": "Lo que dejas de ganar por estar en un pool en lugar de guardar las monedas. La fórmula, la tabla y por qué casi nunca es impermanente.", "minutos": 14, "archivo": "03-03-la-perdida-impermanente.html" },
+        { "slug": "deslizamiento-y-ordenes-adelantadas", "titulo": "Deslizamiento y órdenes que se adelantan", "resumen": "Por qué recibes menos de lo que marcaba la pantalla, qué es un ataque sándwich y qué ajuste de tu operación lo limita.", "minutos": 12, "archivo": "03-04-deslizamiento-y-ordenes-adelantadas.html" }
+      ]
+    },
+    {
+      "orden": 4,
+      "titulo": "Préstamos y rendimientos",
+      "descripcion": "Prestar, pedir prestado y cobrar un interés: cómo funciona, cuándo te liquidan y quién paga lo que ganas.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "prestamos-con-garantia", "titulo": "Préstamos con garantía", "resumen": "Por qué en DeFi hay que depositar más de lo que se pide, para qué sirve entonces un préstamo y cómo se calcula el factor de salud.", "minutos": 13, "archivo": "04-01-prestamos-con-garantia.html" },
+        { "slug": "liquidaciones-y-oraculos", "titulo": "Liquidaciones y oráculos", "resumen": "A qué precio pierdes la garantía, cuánto te cuesta y de dónde saca el protocolo el precio con el que decide.", "minutos": 13, "archivo": "04-02-liquidaciones-y-oraculos.html" },
+        { "slug": "de-donde-sale-el-rendimiento", "titulo": "De dónde sale el rendimiento", "resumen": "La pregunta que más dinero ahorra. Las cuatro fuentes reales, la diferencia entre APR y APY y cómo reconocer un rendimiento que se paga a sí mismo.", "minutos": 14, "archivo": "04-03-de-donde-sale-el-rendimiento.html" }
+      ]
+    },
+    {
+      "orden": 5,
+      "titulo": "Riesgos y decisiones",
+      "descripcion": "Lo que ha fallado otras veces, lo que dice la ley y lo que conviene comprobar antes de depositar.",
+      "nota_minima": 5,
+      "preguntas_examen": 10,
+      "lecciones": [
+        { "slug": "lo-que-puede-salir-mal", "titulo": "Lo que puede salir mal", "resumen": "Fallos de código, claves de administrador, proyectos que desaparecen y carteras vaciadas. Los datos de robos y lo que una auditoría no garantiza.", "minutos": 14, "archivo": "05-01-lo-que-puede-salir-mal.html" },
+        { "slug": "regulacion-e-impuestos", "titulo": "Regulación e impuestos", "resumen": "Qué cubre MiCA y qué deja fuera, y lo que ha dicho Hacienda sobre los rendimientos de DeFi. También lo que todavía no ha dicho.", "minutos": 13, "archivo": "05-02-regulacion-e-impuestos.html" },
+        { "slug": "tu-lista-antes-de-depositar", "titulo": "Tu lista antes de depositar", "resumen": "Diez comprobaciones, el tamaño que tiene sentido y una pregunta final: si el rendimiento compensa lo que arriesgas.", "minutos": 12, "archivo": "05-03-tu-lista-antes-de-depositar.html" }
+      ]
+    }
+  ]
+}

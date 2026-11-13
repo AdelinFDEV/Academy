@@ -1,0 +1,165 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Dos preguntas que casi nadie se hace antes de depositar: qué protección legal tienes y cómo tributa lo que ganes. Aquí ves qué cubre el reglamento europeo MiCA y qué deja fuera, qué ha dicho Hacienda sobre los rendimientos de DeFi en una consulta vinculante, qué no ha dicho todavía y qué tienes que guardar para poder declarar bien. Es una explicación general, no asesoramiento fiscal.</p>
+</div>
+
+<h2>Qué regula MiCA</h2>
+
+<p>El reglamento europeo sobre los mercados de criptoactivos, conocido como MiCA, entró en vigor en junio de 2023 y es plenamente aplicable desde diciembre de 2024. Es la primera norma común para toda la Unión, y se dirige a dos tipos de sujeto.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>A quién obliga</th><th>Qué le exige</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Emisores de stablecoins</td><td>Autorización, reservas, reembolso a los titulares, información</td></tr>
+    <tr><td>Proveedores de servicios: plataformas de compraventa, custodios, asesores</td><td>Autorización, separación de los fondos de los clientes, normas de conducta</td></tr>
+    <tr><td>Emisores de otros criptoactivos que se ofrecen al público</td><td>Publicar un documento informativo con datos mínimos</td></tr>
+  </tbody>
+</table>
+
+<p>Los proveedores que ya operaban antes de la norma han podido seguir haciéndolo durante un periodo transitorio, con fecha límite el 1 de julio de 2026. A día de hoy, una plataforma que ofrezca sus servicios en la Unión Europea debería estar autorizada, y el registro de la autoridad europea de valores se puede consultar.</p>
+
+<h2>Lo que deja fuera</h2>
+
+<p>Todas las obligaciones de la tabla recaen sobre una empresa. Un contrato que funciona solo, sin nadie que lo opere, no tiene a quién exigirle una autorización.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">Plataforma autorizada en la UE</p>
+    <p class="prose-vs-sub">Bajo MiCA</p>
+    <ul>
+      <li data-tono="favor">Un supervisor la vigila</li>
+      <li data-tono="favor">Debe separar tus fondos de los suyos</li>
+      <li data-tono="favor">Tienes a quién reclamar</li>
+      <li data-tono="contra">No hay fondo de garantía como el de los depósitos bancarios</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">Protocolo descentralizado</p>
+    <p class="prose-vs-sub">Fuera, en buena medida</p>
+    <ul>
+      <li data-tono="contra">Sin autorización ni supervisor</li>
+      <li data-tono="contra">Sin separación de fondos: todo está en el contrato</li>
+      <li data-tono="contra">Sin vía de reclamación</li>
+      <li data-tono="contra">Las stablecoins que uses dentro pueden no cumplir la norma</li>
+    </ul>
+  </div>
+</div>
+
+<p>El alcance exacto es más matizado de lo que cabe en una tabla. El reglamento excluye los servicios prestados de forma «plenamente descentralizada, sin intermediario», y deja abierta la discusión sobre qué protocolos lo son de verdad cuando hay una empresa detrás de la página o un grupo que controla las claves. Para ti, la conclusión práctica es sencilla: al pasar de una plataforma autorizada a un protocolo, das por perdidas las protecciones de la columna de la izquierda.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Ni siquiera en una plataforma autorizada existe un fondo que te devuelva las criptomonedas si quiebra. El fondo de garantía de depósitos cubre dinero en cuentas bancarias, no criptoactivos. La autorización reduce riesgos; no convierte un saldo en un depósito.</div>
+</div>
+
+<h2>Impuestos: lo que ha dicho Hacienda</h2>
+
+<p>En España, la Dirección General de Tributos se pronunció sobre varias operaciones de DeFi en la consulta vinculante V0648-24. Según el análisis publicado por el despacho Cuatrecasas en marzo de 2025, estos son los criterios para el IRPF.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Operación</th><th>Cómo se califica</th><th>Dónde tributa</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Rendimientos por depositar criptomonedas en un protocolo</td><td>Rendimientos del capital mobiliario</td><td>Base del ahorro</td></tr>
+    <tr><td>Intereses por prestar criptomonedas</td><td>Rendimientos del capital mobiliario, por cesión de capitales propios</td><td>Base del ahorro</td></tr>
+    <tr><td>Recompensas del <a href="/glosario/staking">staking</a> (consulta V1766-22)</td><td>Rendimientos del capital mobiliario</td><td>Base del ahorro</td></tr>
+    <tr><td>Vender o cambiar una criptomoneda por otra</td><td>Ganancia o pérdida patrimonial</td><td>Base del ahorro</td></tr>
+  </tbody>
+</table>
+
+<p>Dos detalles de esa consulta tienen consecuencias prácticas importantes.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Los rendimientos se valoran en euros el día en que los percibes.</strong> No cuando los vendes. Si un protocolo te paga cada día un poco de un token, cada cobro es un rendimiento por su valor de ese día.</li>
+  <li><strong>Tributan aunque no hayas vendido nada.</strong> Recibir la recompensa ya es el hecho que cuenta. Si después el token se desploma, habrás tributado por un valor que ya no tienes.</li>
+  <li><strong>Lo recibido tiene, como coste, ese valor por el que tributó.</strong> Cuando lo vendas, la ganancia o pérdida se calcula a partir de ahí, con el método <a href="/glosario/fifo">FIFO</a>.</li>
+</ol>
+
+<p>El segundo punto es el que sorprende. Un rendimiento del 80 % anual en un token que acaba valiendo una décima parte puede dejarte con una pérdida real y, a la vez, con rendimientos que declarar por el valor del día en que se cobraron.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">El día que se cobra</span>
+  <span class="prose-dato-texto">El momento en que se valoran en euros los rendimientos de DeFi, según el criterio de la Dirección General de Tributos. No el día en que se venden.</span>
+</div>
+
+<h2>Lo que Hacienda no ha dicho</h2>
+
+<p>Tan importante como lo anterior es saber dónde no hay criterio. Según ese mismo análisis, la consulta <strong>no se pronuncia</strong> sobre si recibir el token que representa tu participación en un fondo, al depositar, es una operación que tributa.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">La duda</span>
+    <p>Al aportar liquidez entregas dos monedas y recibes un token distinto. ¿Es una permuta, como cambiar una criptomoneda por otra?</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Si lo fuera</span>
+    <p>Afloraría la ganancia acumulada en las monedas que depositas, en el momento de depositar.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Lo que hay hoy</span>
+    <p>Ningún criterio publicado. Los despachos avisan de que un pronunciamiento futuro podría ir en ese sentido.</p>
+  </div>
+</div>
+
+<p>Tampoco está resuelto con claridad el tratamiento de la pérdida impermanente, ni el de muchas operaciones encadenadas. Este curso no va a inventarse una respuesta. Si aportas liquidez por importes relevantes, consulta con un asesor fiscal antes, no después.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">El punto de partida general está en la <a href="/guias/fiscalidad-cripto-espana">guía de fiscalidad cripto en España</a>. Además del impuesto sobre la renta, existen obligaciones informativas sobre criptomonedas situadas en el extranjero a partir de ciertos importes. La guía las recoge.</div>
+</div>
+
+<h2>El problema práctico: demasiadas operaciones</h2>
+
+<p>Comprar una moneda y guardarla genera una operación. Usar DeFi genera decenas.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Lo que haces</th><th>Operaciones que deja</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Cambiar una moneda por otra</td><td>Una permuta, con su ganancia o pérdida</td></tr>
+    <tr><td>Aportar liquidez durante tres meses</td><td>Depósito, cobros de comisiones, quizá recompensas diarias, retirada</td></tr>
+    <tr><td>Un depósito con recompensas diarias en tokens</td><td>Un rendimiento al día, cada uno con su valor en euros</td></tr>
+    <tr><td>Mover fondos entre redes</td><td>Traspasos que hay que poder justificar como propios</td></tr>
+  </tbody>
+</table>
+
+<p>No hay ningún extracto anual que te lo dé hecho. Un protocolo no emite certificados fiscales ni informa a nadie. Reconstruirlo depende de ti, y hacerlo dos años después, con una wallet que ha pasado por veinte contratos, es muy difícil.</p>
+
+<h2>Lo que conviene guardar</h2>
+
+<ul>
+  <li><strong>La lista de tus direcciones públicas</strong> y en qué redes las has usado.</li>
+  <li><strong>Un registro de cada depósito y cada retirada:</strong> fecha, protocolo, monedas, cantidades y valor en euros.</li>
+  <li><strong>Los rendimientos cobrados,</strong> con su fecha y su valor en euros ese día.</li>
+  <li><strong>El gas pagado</strong> en cada operación.</li>
+  <li><strong>Las capturas o exportaciones del historial,</strong> hechas cada año. Las páginas de los protocolos cambian o desaparecen.</li>
+</ul>
+
+<p>Existen programas que leen tus direcciones y reconstruyen el historial. Ayudan mucho con las operaciones sencillas y se equivocan con las complejas: suelen necesitar que revises a mano cómo han clasificado cada movimiento.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">Que nadie informe a Hacienda de lo que haces en un protocolo no significa que no deje rastro. Todo queda escrito en una blockchain pública, para siempre, y las entradas y salidas hacia tu banco pasan por plataformas que sí informan. Declarar tarde es más caro que declarar bien.</div>
+</div>
+
+<div data-bloque="verdadero-falso"><script type="application/json">
+{
+  "titulo": "Normas e impuestos",
+  "afirmaciones": [
+    { "texto": "MiCA obliga a los emisores de stablecoins y a los proveedores de servicios, no a un contrato sin nadie detrás.", "verdadero": true, "explicacion": "Sus obligaciones recaen sobre empresas. Lo plenamente descentralizado queda en buena medida fuera." },
+    { "texto": "Una plataforma autorizada bajo MiCA tiene un fondo que devuelve las criptomonedas si quiebra.", "verdadero": false, "explicacion": "El fondo de garantía de depósitos cubre dinero en cuentas bancarias, no criptoactivos." },
+    { "texto": "Según la DGT, los rendimientos de depositar criptomonedas en un protocolo son rendimientos del capital mobiliario.", "verdadero": true, "explicacion": "Es el criterio de la consulta V0648-24, y van a la base del ahorro." },
+    { "texto": "Esos rendimientos solo tributan cuando vendes el token recibido.", "verdadero": false, "explicacion": "Se valoran en euros el día en que se perciben, se venda o no." },
+    { "texto": "Hacienda ha aclarado cómo tributa recibir el token de participación de un fondo.", "verdadero": false, "explicacion": "Sobre ese punto la consulta no se pronuncia. No hay criterio publicado." }
+  ]
+}
+</script></div>
+
+<h2>Ejercicio: tu registro mínimo</h2>
+
+<p>Crea una hoja de cálculo con estas columnas: fecha, red, protocolo, tipo de operación, moneda entregada y cantidad, moneda recibida y cantidad, valor en euros, gas pagado y un enlace a la operación en el explorador. Si ya has usado DeFi, rellena las últimas diez operaciones de tu wallet a partir del explorador de bloques, y cronometra cuánto tardas. Multiplica ese tiempo por el número de operaciones que harías en un año con la estrategia que estés considerando. Es un coste que no aparece en ningún rendimiento.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> MiCA obliga a emisores y a plataformas, no a un contrato sin nadie detrás: en un protocolo no hay supervisor ni reclamación. En España, los rendimientos de depositar o prestar criptomonedas son rendimientos del capital mobiliario, valorados en euros el día que se cobran, se vendan o no. Sobre el token de participación de un fondo no hay criterio. Lleva un registro desde el primer día y consulta a un asesor.</div>
+</div>

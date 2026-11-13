@@ -1,0 +1,190 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Todo rendimiento lo paga alguien. Si no sabes quién, lo más probable es que acabes siendo tú. Esta es la lección central del curso: las fuentes reales de las que puede salir un interés en DeFi, la diferencia entre APR y APY, qué ocurre cuando te pagan en un token que se emite sin límite y las preguntas que permiten distinguir un rendimiento que tiene algo detrás de uno que se sostiene con el dinero de los que llegan después.</p>
+</div>
+
+<h2>La pregunta que lo ordena todo</h2>
+
+<p>Una stablecoin no rinde nada por sí misma. Si un protocolo te ofrece un 9 % anual por depositarla, ese 9 % sale de un sitio concreto. Solo hay unas pocas posibilidades, y conviene conocerlas todas.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Fuente</th><th>Quién paga</th><th>Por qué paga</th><th>Dónde la has visto</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Intereses de préstamos</td><td>Quien toma prestado</td><td>Para apalancarse o disponer de liquidez</td><td>Lección 4.1</td></tr>
+    <tr><td>Comisiones de intercambio</td><td>Quien cambia una moneda por otra</td><td>Por usar el fondo</td><td>Lección 3.2</td></tr>
+    <tr><td>Recompensas de validación</td><td>La propia red, con emisión y comisiones</td><td>Por asegurar la blockchain</td><td><a href="/glosario/staking">Staking</a></td></tr>
+    <tr><td>Rentas de activos tradicionales</td><td>Un Estado o una empresa</td><td>Interés de deuda pública o privada, traída a la cadena</td><td>Reservas de las stablecoins</td></tr>
+    <tr><td>Financiación de derivados</td><td>Quienes van en largo con apalancamiento</td><td>Por mantener su posición</td><td>Dólares sintéticos</td></tr>
+    <tr><td>Emisión de tokens del protocolo</td><td>Nadie: se crean</td><td>Para atraer depósitos</td><td>Lección 3.2</td></tr>
+  </tbody>
+</table>
+
+<p>Las cinco primeras tienen a alguien al otro lado que paga por algo. La sexta no: el protocolo fabrica su propia moneda y la reparte. Y hay una séptima posibilidad que no figura en la tabla porque no es una fuente: pagar a los primeros con el dinero de los que entran después.</p>
+
+<h2>APR y APY: el mismo interés, dos cifras</h2>
+
+<p>Antes de comparar rendimientos hay que saber qué número te están enseñando.</p>
+
+<div class="prose-vs">
+  <div class="prose-vs-lado prose-vs-lado--a">
+    <p class="prose-vs-title">APR</p>
+    <p class="prose-vs-sub">Interés simple anual</p>
+    <ul>
+      <li data-tono="favor">Lo que rinde el capital sin reinvertir</li>
+      <li data-tono="favor">Fácil de calcular: tipo diario por 365</li>
+      <li data-tono="favor">La cifra más baja de las dos</li>
+    </ul>
+  </div>
+  <div class="prose-vs-lado prose-vs-lado--b">
+    <p class="prose-vs-title">APY</p>
+    <p class="prose-vs-sub">Interés compuesto anual</p>
+    <ul>
+      <li data-tono="contra">Supone que reinviertes cada cobro</li>
+      <li data-tono="contra">Supone que el tipo no cambia en todo el año</li>
+      <li data-tono="contra">La cifra que luce más, y la que se anuncia</li>
+    </ul>
+  </div>
+</div>
+
+<p>El <a href="/glosario/apy">APY</a> siempre es mayor que el APR, y la diferencia crece muy deprisa con el tipo.</p>
+
+<div data-bloque="grafico"><script type="application/json">
+{
+  "tipo": "barras",
+  "titulo": "El mismo interés, expresado como APR y como APY",
+  "subtitulo": "Con reinversión diaria durante un año entero.",
+  "formato": "pct",
+  "datos": [
+    { "etiqueta": "APR del 5 %", "apy": 5.1 },
+    { "etiqueta": "APR del 10 %", "apy": 10.5 },
+    { "etiqueta": "APR del 20 %", "apy": 22.1 },
+    { "etiqueta": "APR del 100 %", "apy": 171.5 }
+  ],
+  "series": [{ "clave": "apy", "nombre": "APY equivalente", "color": "#22d3ee" }],
+  "nota": "El APY supone reinvertir todos los días y que el tipo no cambie en un año. En DeFi no se cumple ninguna de las dos cosas."
+}
+</script></div>
+
+<p>Un «171 % APY» y un «100 % APR» son el mismo rendimiento. El primero supone, además, que reinviertes cada día —pagando gas cada vez— y que el tipo se mantiene doce meses, cuando en la práctica cambia de una semana a otra. Trata cualquier cifra anual como lo que es: el tipo de hoy multiplicado por un año que no se parecerá a hoy.</p>
+
+<h2>Cuando te pagan en el token del protocolo</h2>
+
+<p>La sexta fuente merece una cuenta aparte, porque es la que produce las cifras más altas. Un protocolo nuevo quiere depósitos. Emite su propio token y lo reparte entre quienes depositan. Las páginas suman ese reparto al rendimiento, valorado al precio del token ese día.</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mes 1</span>
+    <p>El protocolo anuncia un 80 % anual, casi todo en su token. Entra dinero.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Meses 2 y 3</span>
+    <p>Quienes reciben el token lo venden para convertirlo en algo estable. El precio baja.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mes 4</span>
+    <p>Con el token más barato, el rendimiento anunciado cae. Parte del dinero se va a otro protocolo.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Mes 6</span>
+    <p>El token ha perdido la mayor parte de su valor. Lo cobrado vale una fracción de lo anunciado.</p>
+  </div>
+</div>
+
+<p>Haz la cuenta con 1.000 dólares depositados seis meses. Un 80 % anual son 400 dólares en ese tiempo, pagados en tokens. Si los vas vendiendo a un precio que, de media, es un 60 % inferior al del anuncio, recibes 160 dólares. Si los guardas y el token acaba un 85 % abajo, tienes 60.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">160 $</span>
+  <span class="prose-dato-texto">Lo que queda de los 400 $ «prometidos» en el ejemplo, vendiendo las recompensas a un precio medio un 60 % inferior. Un rendimiento en un token vale lo que valga el token cuando lo vendas.</span>
+</div>
+
+<p>No todos los tokens se hunden, y hay incentivos bien diseñados. Pero la presión es estructural: todos los que reciben el token tienen un motivo para venderlo y casi nadie tiene un motivo para comprarlo. Es una forma de <a href="/glosario/inflacion">inflación</a> del propio token, pagada por quienes lo conservan.</p>
+
+<h2>El rendimiento que se paga a sí mismo</h2>
+
+<p>En la lección 1.3 viste el caso de Anchor: cerca de un 20 % anual por depositar una stablecoin. Los préstamos del protocolo no generaban ese interés. La diferencia se cubría con una reserva que se agotaba, mientras el dinero nuevo seguía entrando atraído por la cifra.</p>
+
+<p>Cuando lo que se paga a los depositantes no sale de una actividad sino de una reserva o de los depósitos de quienes llegan después, el sistema solo aguanta mientras crece. Es la estructura de un <a href="/glosario/esquema-ponzi">esquema Ponzi</a>, haya o no intención de fraude.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Señal</th><th>Qué suele indicar</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Un rendimiento alto, fijo y «garantizado»</td><td>Los rendimientos reales varían; alguien lo está subvencionando</td></tr>
+    <tr><td>No se explica de dónde sale, o se explica con palabras vagas</td><td>«Estrategias de arbitraje», «algoritmos», sin cifras comprobables</td></tr>
+    <tr><td>Se paga más por traer a otros depositantes</td><td>El dinero nuevo es el producto</td></tr>
+    <tr><td>Hay plazos de bloqueo largos y penalización por salir</td><td>Se intenta impedir una retirada masiva</td></tr>
+    <tr><td>Muy superior a todo lo demás del mercado</td><td>O hay un riesgo que no ves, o no hay nada detrás</td></tr>
+  </tbody>
+</table>
+
+<h2>La vara de medir</h2>
+
+<p>Para saber si un rendimiento es alto hace falta una referencia. La más útil es lo que rinde la deuda pública a corto plazo en dólares: es lo que gana un emisor de stablecoins con sus reservas sin asumir apenas riesgo.</p>
+
+<blockquote><strong>Rendimiento ofrecido − tipo de la deuda pública a corto plazo = lo que te pagan por los riesgos que asumes</strong></blockquote>
+
+<p>Si esa deuda rinde un 4 % y un protocolo ofrece un 6 % por una stablecoin, los dos puntos de más son el precio de los riesgos que has visto en este curso: el código, el oráculo, las garantías, el emisor. Si ofrece un 25 %, hay veintiún puntos que explicar. O bien el riesgo es mucho mayor de lo que parece, o bien el rendimiento no viene de donde dicen.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body">En DeFi no existe el rendimiento alto y seguro. Si existiera, el dinero entraría hasta hacerlo desaparecer, como viste con las comisiones de un fondo. Cuando una cifra destaca mucho y lleva tiempo destacando, la explicación casi nunca es que el resto del mercado no se haya dado cuenta.</div>
+</div>
+
+<h2>Las cinco preguntas</h2>
+
+<ol class="prose-pasos">
+  <li><strong>¿Quién paga este rendimiento?</strong> Una respuesta con sujeto: los que piden prestado, los que cambian, la red.</li>
+  <li><strong>¿En qué moneda me pagan?</strong> En la misma que deposito, o en un token del protocolo.</li>
+  <li><strong>¿Qué parte es APR real y qué parte es reinversión supuesta o incentivo temporal?</strong></li>
+  <li><strong>¿Cuánto supera a la deuda pública a corto plazo, y qué riesgos explican la diferencia?</strong></li>
+  <li><strong>¿Qué tendría que pasar para que perdiera el capital, y no solo el interés?</strong></li>
+</ol>
+
+<p>La quinta es la que se olvida. Un 8 % anual tarda más de doce años en compensar una pérdida total. Al evaluar un depósito, el rendimiento es el dato menos importante: lo que decide es la probabilidad de perder lo depositado.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body">Los agregadores de datos de DeFi suelen desglosar el rendimiento de cada fondo en una parte «base», que viene de comisiones o intereses, y otra de «recompensas», que viene de tokens. Acostúmbrate a mirar solo la primera.</div>
+</div>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿De dónde sale?",
+  "instrucciones": "Decide si cada rendimiento tiene a alguien que paga por algo, o no.",
+  "grupos": [
+    { "id": "real", "nombre": "Alguien paga por algo" },
+    { "id": "dudoso", "nombre": "Emisión o dinero nuevo" }
+  ],
+  "elementos": [
+    { "texto": "Interés que pagan quienes toman prestada tu stablecoin", "grupo": "real", "explicacion": "Hay un prestatario que paga por usar el dinero." },
+    { "texto": "Tokens del protocolo repartidos entre los depositantes", "grupo": "dudoso", "explicacion": "Se crean de la nada, y todos los que los reciben quieren venderlos." },
+    { "texto": "Comisiones de quienes cambian monedas en un fondo", "grupo": "real", "explicacion": "Las paga quien usa el fondo." },
+    { "texto": "Un 20 % fijo cubierto con una reserva que se agota", "grupo": "dudoso", "explicacion": "Es el caso de Anchor: no salía de la actividad del protocolo." },
+    { "texto": "Intereses de deuda pública que respalda un token", "grupo": "real", "explicacion": "Los paga un Estado." },
+    { "texto": "Un extra por cada persona que traigas a depositar", "grupo": "dudoso", "explicacion": "El dinero nuevo es el producto." }
+  ]
+}
+</script></div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Un protocolo anuncia un 60 % APY por depositar una stablecoin. El desglose dice: 4 % base y 56 % en recompensas en su propio token. ¿Con qué cifra deberías contar?",
+  "opciones": [
+    "Con el 4 %, y tratar el resto como incierto y temporal",
+    "Con el 60 %: es lo que anuncia",
+    "Con el 56 %: es la parte más grande",
+    "Con el 30 %: la media de las dos"
+  ],
+  "correcta": 0,
+  "explicacion": "El 4 % viene de una actividad real. El 56 % depende del precio de un token que todos los que lo reciben venden, y de un programa de incentivos que terminará."
+}
+</script></div>
+
+<h2>Ejercicio: desmonta un rendimiento</h2>
+
+<p>En un agregador de datos de DeFi, busca tres depósitos de una stablecoin: uno con un rendimiento bajo, uno medio y el más alto que encuentres. Para cada uno contesta las cinco preguntas por escrito, usando el desglose del agregador y la documentación del protocolo. Anota también el tipo actual de la deuda pública estadounidense a corto plazo y calcula la diferencia con cada rendimiento base. Ordena los tres por lo claro que tengas quién paga, no por la cifra.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> un rendimiento sale de intereses de préstamos, comisiones, validación, rentas de activos tradicionales o financiación de derivados; o de emitir tokens; o del dinero de quienes entran después. El APY infla la cifra suponiendo reinversión y un tipo que no cambia. Un rendimiento en tokens vale lo que valga el token al venderlo. Compara con la deuda pública a corto plazo, y pregunta antes qué te haría perder el capital.</div>
+</div>
