@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { AlertTriangle, ArrowDownRight, ArrowUpRight, Minus, NotebookPen, TrendingDown, TrendingUp, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { AlertTriangle, ArrowDownRight, ArrowLeft, ArrowRight, ArrowUpRight, Check, Minus, NotebookPen, TrendingDown, TrendingUp, X } from "lucide-react";
 import { TjCombobox, TjDateTimePicker } from "./TjControls";
 import { dateTime, pctStr, pnlStr, ratioStr, toneOf } from "./tjFormat";
 import { RISK_LIMIT_PCT, type Direction, type Trade, type TradeResult } from "./tjStats";
@@ -94,6 +95,15 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [capturas, setCapturas] = useState<CapturasPendientes>(SIN_CAPTURAS);
+  // En qué paso de la ventana se está (0 = el primero).
+  const [paso, setPaso] = useState(0);
+
+  // Con la ventana abierta, la página de detrás no se desplaza.
+  useEffect(() => {
+    const antes = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = antes; };
+  }, []);
   // La operación tal como está en el servidor. Una nueva pasa a tener una en
   // cuanto se guardan sus datos: si después falla una captura y se reintenta,
   // se edita esa en vez de crear otra igual.
@@ -174,202 +184,262 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
   const fechaOk = !isNaN(new Date(form.date).getTime());
 
   /*
-   * El formulario (rehecho el 13-11-2026). Cuatro pasos numerados a la
-   * izquierda, en el orden en que se piensa una operación, y a la derecha su
-   * resumen, que se va rellenando solo. Debajo, las capturas y el ánimo del día.
+   * Los pasos de la ventana (13-11-2026). `ok` dice si se puede pasar al
+   * siguiente: en los obligatorios, que esté relleno lo que la operación
+   * necesita; los opcionales siempre dejan pasar. `vacio` solo cambia el texto
+   * del botón: «Omitir» si no se ha puesto nada, «Siguiente» si sí.
    */
-  return (
-    <section className="tj-card tj-form tjf" onKeyDown={(e) => e.key === "Escape" && onClose()}>
-      <header className="tjf-cab">
-        <span className="tjf-cab-icono" aria-hidden="true"><NotebookPen size={20} /></span>
-        <div>
-          <h2>{editing ? "Editar operación" : "Nueva operación"}</h2>
-          <p>Un minuto ahora. Dentro de tres meses te dirá qué funciona de verdad.</p>
-        </div>
-        <button type="button" className="tj-icon-btn" onClick={onClose} aria-label="Cerrar formulario">
-          <X size={16} />
-        </button>
-      </header>
+  const riesgoOk = form.risk_amount.trim() !== "" && !isNaN(risk) && risk >= 0;
+  const objetivoOk = form.expected_gain.trim() !== "" && !isNaN(gain) && gain >= 0;
+  const hayCapturas = TIPOS_CAPTURA.some((t) => capturas[t].archivo || (capturaDe(guardada, t) && !capturas[t].quitar));
+  const pasos: { titulo: string; opcional: boolean; ok: boolean; vacio: boolean; falta: string }[] = [
+    { titulo: "La operación", opcional: false, ok: form.pair.trim() !== "" && fechaOk, vacio: false, falta: "Escribe el par para seguir" },
+    { titulo: "El plan", opcional: false, ok: riesgoOk && objetivoOk, vacio: false, falta: "Pon cuánto arriesgas y cuánto quieres ganar" },
+    { titulo: "Cómo acabó", opcional: false, ok: !hasReal || Number.isFinite(real), vacio: false, falta: "" },
+    { titulo: "El porqué", opcional: true, ok: true, vacio: !form.strategy.trim() && !form.notes.trim(), falta: "" },
+    { titulo: "El gráfico", opcional: true, ok: true, vacio: !hayCapturas, falta: "" },
+    { titulo: "Tu cabeza", opcional: true, ok: true, vacio: !dias[fechaDia]?.animo && !dias[fechaDia]?.nota, falta: "" },
+  ];
+  const ULTIMO = pasos.length - 1;
+  // Hasta dónde se puede saltar desde el índice: el primer paso obligatorio sin rellenar.
+  const primeroSinHacer = pasos.findIndex((x) => !x.ok);
+  const tope = primeroSinHacer === -1 ? ULTIMO : primeroSinHacer;
+  const actual = pasos[paso];
 
-      <form onSubmit={submit}>
-        <div className="tjf-cuerpo">
-          <div className="tjf-pasos">
-            {/* ── 1 · La operación ── */}
-            <fieldset className="tjf-paso">
-              <legend><b>1</b> La operación</legend>
-              <div className="tjf-fila">
-                <div className="field">
-                  <label>Par</label>
-                  <TjCombobox value={form.pair} onChange={v => set("pair", v.toUpperCase())} options={pairOptions} placeholder="BTC/USDT" required />
-                </div>
-                <div className="field">
-                  <label>Fecha y hora</label>
-                  <TjDateTimePicker value={form.date} onChange={v => set("date", v)} />
-                </div>
-              </div>
-              <div className="tjf-opciones" role="radiogroup" aria-label="Dirección">
-                {DIRECCIONES.map(({ valor, titulo, ayuda, icono: Icono }) => (
-                  <button
-                    key={valor} type="button" role="radio" aria-checked={form.direction === valor}
-                    className={`tjf-opcion is-${valor}${form.direction === valor ? " is-on" : ""}`}
-                    onClick={() => set("direction", valor)}
-                  >
-                    <span className="tjf-opcion-icono" aria-hidden="true"><Icono size={20} strokeWidth={2.4} /></span>
-                    <span><strong>{titulo}</strong><small>{ayuda}</small></span>
-                  </button>
-                ))}
-              </div>
-            </fieldset>
+  /** Enter o el botón principal: avanza si el paso está completo; en el último, guarda. */
+  function alEnviar(e: React.FormEvent) {
+    if (paso < ULTIMO) {
+      e.preventDefault();
+      if (actual.ok) setPaso(paso + 1);
+      return;
+    }
+    void submit(e);
+  }
 
-            {/* ── 2 · El plan ── */}
-            <fieldset className="tjf-paso">
-              <legend><b>2</b> El plan</legend>
-              <div className="tjf-fila">
-                <div className="field">
-                  <label htmlFor="tj-risk">Cuánto arriesgas</label>
-                  <div className="tjf-dinero is-riesgo">
-                    <span aria-hidden="true">$</span>
-                    <input id="tj-risk" type="number" inputMode="decimal" value={form.risk_amount} onChange={e => set("risk_amount", e.target.value)} step="any" min="0" placeholder="0,00" required />
+  /*
+   * El formulario es una ventana en el centro de la pantalla que se recorre
+   * paso a paso con «Atrás» y «Siguiente» (pedido por el admin el 13-11-2026).
+   * Va en un portal y su envoltorio lleva también la clase `trading-journal`:
+   * así heredan sus colores y estilos los campos, los tonos y las caras del
+   * ánimo, que en el CSS cuelgan de esa clase. No se cierra pulsando fuera:
+   * sería muy fácil perder una operación a medio escribir.
+   */
+  return createPortal(
+    <div className="trading-journal tjf-velo">
+      <section
+        className="tj-card tj-form tjf" role="dialog" aria-modal="true" aria-labelledby="tjf-titulo"
+        onKeyDown={(e) => e.key === "Escape" && onClose()}
+      >
+        <header className="tjf-cab">
+          <span className="tjf-cab-icono" aria-hidden="true"><NotebookPen size={20} /></span>
+          <div>
+            <h2 id="tjf-titulo">{editing ? "Editar operación" : "Nueva operación"}</h2>
+            <p>Paso {paso + 1} de {pasos.length} · {actual.titulo}{actual.opcional ? " · opcional" : ""}</p>
+          </div>
+          <button type="button" className="tj-icon-btn" onClick={onClose} aria-label="Cerrar sin guardar">
+            <X size={16} />
+          </button>
+        </header>
+
+        <ol className="tjf-indice" aria-label="Pasos de la operación">
+          {pasos.map((x, i) => (
+            <li key={x.titulo} className={i === paso ? "is-aqui" : i < paso ? "is-hecho" : undefined}>
+              <button type="button" onClick={() => setPaso(i)} disabled={i > tope} aria-current={i === paso ? "step" : undefined}>
+                <b>{i < paso ? <Check size={13} strokeWidth={3} /> : i + 1}</b>
+                <span>{x.titulo}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+
+        <form onSubmit={alEnviar}>
+          <div className="tjf-cuerpo">
+            <div className="tjf-pasos" key={paso}>
+              {paso === 0 && (
+              <fieldset className="tjf-paso">
+                <legend><b>1</b> La operación</legend>
+                <div className="tjf-fila">
+                  <div className="field">
+                    <label>Par</label>
+                    <TjCombobox value={form.pair} onChange={v => set("pair", v.toUpperCase())} options={pairOptions} placeholder="BTC/USDT" required />
+                  </div>
+                  <div className="field">
+                    <label>Fecha y hora</label>
+                    <TjDateTimePicker value={form.date} onChange={v => set("date", v)} />
                   </div>
                 </div>
-                <div className="field">
-                  <label htmlFor="tj-gain">Cuánto quieres ganar</label>
-                  <div className="tjf-dinero is-objetivo">
-                    <span aria-hidden="true">$</span>
-                    <input id="tj-gain" type="number" inputMode="decimal" value={form.expected_gain} onChange={e => set("expected_gain", e.target.value)} step="any" min="0" placeholder="0,00" required />
+                <div className="tjf-opciones" role="radiogroup" aria-label="Dirección">
+                  {DIRECCIONES.map(({ valor, titulo, ayuda, icono: Icono }) => (
+                    <button
+                      key={valor} type="button" role="radio" aria-checked={form.direction === valor}
+                      className={`tjf-opcion is-${valor}${form.direction === valor ? " is-on" : ""}`}
+                      onClick={() => set("direction", valor)}
+                    >
+                      <span className="tjf-opcion-icono" aria-hidden="true"><Icono size={20} strokeWidth={2.4} /></span>
+                      <span><strong>{titulo}</strong><small>{ayuda}</small></span>
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+              )}
+              {paso === 1 && (
+              <fieldset className="tjf-paso">
+                <legend><b>2</b> El plan</legend>
+                <div className="tjf-fila">
+                  <div className="field">
+                    <label htmlFor="tj-risk">Cuánto arriesgas</label>
+                    <div className="tjf-dinero is-riesgo">
+                      <span aria-hidden="true">$</span>
+                      <input id="tj-risk" type="number" inputMode="decimal" value={form.risk_amount} onChange={e => set("risk_amount", e.target.value)} step="any" min="0" placeholder="0,00" required />
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label htmlFor="tj-gain">Cuánto quieres ganar</label>
+                    <div className="tjf-dinero is-objetivo">
+                      <span aria-hidden="true">$</span>
+                      <input id="tj-gain" type="number" inputMode="decimal" value={form.expected_gain} onChange={e => set("expected_gain", e.target.value)} step="any" min="0" placeholder="0,00" required />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className={`tjf-plan${hayPlan ? "" : " is-vacio"}`} aria-hidden="true">
-                <div className="tjf-plan-barra">
-                  <span className="tjf-plan-riesgo" style={{ width: `${parteRiesgo}%` }} />
-                  <span className="tjf-plan-objetivo" />
+                <div className={`tjf-plan${hayPlan ? "" : " is-vacio"}`} aria-hidden="true">
+                  <div className="tjf-plan-barra">
+                    <span className="tjf-plan-riesgo" style={{ width: `${parteRiesgo}%` }} />
+                    <span className="tjf-plan-objetivo" />
+                  </div>
+                  <div className="tjf-plan-pie">
+                    <span>Riesgo</span>
+                    <strong className={tonoRatio ? `tone-${tonoRatio}` : undefined}>{ratio != null ? `R:R ${ratioStr(ratio)}` : "Rellena los dos para ver tu ratio"}</strong>
+                    <span>Objetivo</span>
+                  </div>
                 </div>
-                <div className="tjf-plan-pie">
-                  <span>Riesgo</span>
-                  <strong className={tonoRatio ? `tone-${tonoRatio}` : undefined}>{ratio != null ? `R:R ${ratioStr(ratio)}` : "Rellena los dos para ver tu ratio"}</strong>
-                  <span>Objetivo</span>
+              </fieldset>
+              )}
+              {paso === 2 && (
+              <fieldset className="tjf-paso">
+                <legend><b>3</b> Cómo acabó</legend>
+                <div className="tjf-opciones is-tres" role="radiogroup" aria-label="Resultado">
+                  {RESULTADOS.map(({ valor, tono, icono: Icono }) => (
+                    <button
+                      key={valor} type="button" role="radio" aria-checked={result === valor}
+                      className={`tjf-opcion is-${tono}${result === valor ? " is-on" : ""}`}
+                      onClick={() => set("result", valor)}
+                      disabled={hasReal}
+                      title={hasReal ? "Se deduce del signo del P&L real" : undefined}
+                    >
+                      <span className="tjf-opcion-icono" aria-hidden="true"><Icono size={18} strokeWidth={2.4} /></span>
+                      <span><strong>{RESULT_LABEL[valor]}</strong></span>
+                    </button>
+                  ))}
                 </div>
-              </div>
-            </fieldset>
-
-            {/* ── 3 · El resultado ── */}
-            <fieldset className="tjf-paso">
-              <legend><b>3</b> Cómo acabó</legend>
-              <div className="tjf-opciones is-tres" role="radiogroup" aria-label="Resultado">
-                {RESULTADOS.map(({ valor, tono, icono: Icono }) => (
-                  <button
-                    key={valor} type="button" role="radio" aria-checked={result === valor}
-                    className={`tjf-opcion is-${tono}${result === valor ? " is-on" : ""}`}
-                    onClick={() => set("result", valor)}
-                    disabled={hasReal}
-                    title={hasReal ? "Se deduce del signo del P&L real" : undefined}
-                  >
-                    <span className="tjf-opcion-icono" aria-hidden="true"><Icono size={18} strokeWidth={2.4} /></span>
-                    <span><strong>{RESULT_LABEL[valor]}</strong></span>
-                  </button>
-                ))}
-              </div>
-              <div className="field">
-                <label htmlFor="tj-real">P&L real <em>opcional</em></label>
-                <div className="tjf-dinero">
-                  <span aria-hidden="true">$</span>
-                  <input
-                    id="tj-real" type="number" inputMode="decimal" value={form.real_pnl} onChange={e => set("real_pnl", e.target.value)}
-                    step="any" placeholder="Solo si cerraste distinto del plan"
+                <div className="field">
+                  <label htmlFor="tj-real">P&L real <em>opcional</em></label>
+                  <div className="tjf-dinero">
+                    <span aria-hidden="true">$</span>
+                    <input
+                      id="tj-real" type="number" inputMode="decimal" value={form.real_pnl} onChange={e => set("real_pnl", e.target.value)}
+                      step="any" placeholder="Solo si cerraste distinto del plan"
+                    />
+                  </div>
+                  <p className="tjf-ayuda">
+                    {hasReal
+                      ? "Con el P&L real, el resultado sale de su signo: en negativo es una pérdida."
+                      : "Si lo dejas vacío, se apunta tu objetivo si ganaste y tu riesgo si perdiste."}
+                  </p>
+                </div>
+              </fieldset>
+              )}
+              {paso === 3 && (
+              <fieldset className="tjf-paso">
+                <legend><b>4</b> El porqué</legend>
+                <div className="field">
+                  <label>Estrategia <em>opcional</em></label>
+                  <TjCombobox value={form.strategy} onChange={v => set("strategy", v)} options={strategyOptions} placeholder="Scalping, swing, breakout..." />
+                </div>
+                <div className="field">
+                  <label htmlFor="tj-notes">
+                    Notas <em>opcional</em> <span className="tj-count">{form.notes.length}/{NOTES_MAX}</span>
+                  </label>
+                  <textarea
+                    id="tj-notes" value={form.notes} onChange={e => set("notes", e.target.value)}
+                    rows={3} maxLength={NOTES_MAX} placeholder="Por qué entraste, qué viste, qué harías distinto..."
                   />
                 </div>
-                <p className="tjf-ayuda">
-                  {hasReal
-                    ? "Con el P&L real, el resultado sale de su signo: en negativo es una pérdida."
-                    : "Si lo dejas vacío, se apunta tu objetivo si ganaste y tu riesgo si perdiste."}
-                </p>
-              </div>
-            </fieldset>
+              </fieldset>
+              )}
+              {paso === 4 && <TjCapturasCampo editing={guardada} pendientes={capturas} onChange={setCapturas} />}
 
-            {/* ── 4 · El porqué ── */}
-            <fieldset className="tjf-paso">
-              <legend><b>4</b> El porqué</legend>
-              <div className="field">
-                <label>Estrategia <em>opcional</em></label>
-                <TjCombobox value={form.strategy} onChange={v => set("strategy", v)} options={strategyOptions} placeholder="Scalping, swing, breakout..." />
-              </div>
-              <div className="field">
-                <label htmlFor="tj-notes">
-                  Notas <em>opcional</em> <span className="tj-count">{form.notes.length}/{NOTES_MAX}</span>
-                </label>
-                <textarea
-                  id="tj-notes" value={form.notes} onChange={e => set("notes", e.target.value)}
-                  rows={3} maxLength={NOTES_MAX} placeholder="Por qué entraste, qué viste, qué harías distinto..."
+              {/* Emociones del día: se guardan aparte, al pulsar el ánimo o al salir de la nota. */}
+              {paso === 5 && (
+                <TjDayJournal
+                  key={fechaDia}
+                  fecha={fechaDia}
+                  dia={dias[fechaDia]}
+                  isToday={fechaDia === fechaKey(new Date())}
+                  onSave={onSaveDia}
                 />
+              )}
+            </div>
+
+            <aside className="tjf-resumen" aria-label="Resumen de la operación" aria-live="polite">
+              <span className="tjf-resumen-rotulo">Lo que se va a guardar</span>
+              <div className="tjf-resumen-par">
+                <strong>{form.pair || "Par"}</strong>
+                <span className={`tj-dir is-${form.direction}`}>
+                  {form.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                  {form.direction === "long" ? "Long" : "Short"}
+                </span>
               </div>
-            </fieldset>
+              <span className="tjf-resumen-fecha">{fechaOk ? dateTime(inputValueToIso(form.date)) : "Sin fecha"}</span>
+
+              <div className={`tjf-pnl${tonoPnl ? ` tone-${tonoPnl}` : ""}`}>
+                <span>P&L que se registra</span>
+                <strong>{pnl == null ? "—" : pnlStr(pnl)}</strong>
+                <small>
+                  {pnl == null ? "Rellena el plan" : !hasReal ? "según el plan" : planned != null && real !== planned ? `real · el plan era ${pnlStr(planned)}` : "real, igual que el plan"}
+                </small>
+              </div>
+
+              <dl className="tjf-datos">
+                <div>
+                  <dt>Resultado</dt>
+                  <dd><span className={`tj-chip tone-${result === "win" ? "win" : result === "loss" ? "loss" : "be"}`}>{RESULT_LABEL[result]}</span></dd>
+                </div>
+                <div>
+                  <dt>Ratio R:R</dt>
+                  <dd className={tonoRatio ? `tone-${tonoRatio}` : undefined}>{ratio != null ? ratioStr(ratio) : "—"}</dd>
+                </div>
+                <div className={riesgoAlto ? "is-alto" : undefined}>
+                  <dt>Riesgo de la cuenta</dt>
+                  <dd>{riskPct != null ? pctStr(riskPct, false, 2) : "—"}</dd>
+                </div>
+              </dl>
+              {riskPct != null && (
+                <div className={`tjf-medidor${riesgoAlto ? " is-alto" : ""}`} aria-hidden="true">
+                  <span style={{ width: `${Math.min((riskPct / (RISK_LIMIT_PCT * 2)) * 100, 100)}%` }} />
+                  <i />
+                </div>
+              )}
+              {riesgoAlto && <p className="tjf-aviso"><AlertTriangle size={13} /> Por encima del {RISK_LIMIT_PCT} % de tu cuenta</p>}
+            </aside>
           </div>
 
-          {/* ── El resumen, que se rellena solo ── */}
-          <aside className="tjf-resumen" aria-label="Resumen de la operación" aria-live="polite">
-            <span className="tjf-resumen-rotulo">Lo que se va a guardar</span>
-            <div className="tjf-resumen-par">
-              <strong>{form.pair || "Par"}</strong>
-              <span className={`tj-dir is-${form.direction}`}>
-                {form.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
-                {form.direction === "long" ? "Long" : "Short"}
-              </span>
-            </div>
-            <span className="tjf-resumen-fecha">{fechaOk ? dateTime(inputValueToIso(form.date)) : "Sin fecha"}</span>
-
-            <div className={`tjf-pnl${tonoPnl ? ` tone-${tonoPnl}` : ""}`}>
-              <span>P&L que se registra</span>
-              <strong>{pnl == null ? "—" : pnlStr(pnl)}</strong>
-              <small>
-                {pnl == null ? "Rellena el plan" : !hasReal ? "según el plan" : planned != null && real !== planned ? `real · el plan era ${pnlStr(planned)}` : "real, igual que el plan"}
-              </small>
-            </div>
-
-            <dl className="tjf-datos">
-              <div>
-                <dt>Resultado</dt>
-                <dd><span className={`tj-chip tone-${result === "win" ? "win" : result === "loss" ? "loss" : "be"}`}>{RESULT_LABEL[result]}</span></dd>
-              </div>
-              <div>
-                <dt>Ratio R:R</dt>
-                <dd className={tonoRatio ? `tone-${tonoRatio}` : undefined}>{ratio != null ? ratioStr(ratio) : "—"}</dd>
-              </div>
-              <div className={riesgoAlto ? "is-alto" : undefined}>
-                <dt>Riesgo de la cuenta</dt>
-                <dd>{riskPct != null ? pctStr(riskPct, false, 2) : "—"}</dd>
-              </div>
-            </dl>
-            {riskPct != null && (
-              <div className={`tjf-medidor${riesgoAlto ? " is-alto" : ""}`} aria-hidden="true">
-                <span style={{ width: `${Math.min((riskPct / (RISK_LIMIT_PCT * 2)) * 100, 100)}%` }} />
-                <i />
-              </div>
-            )}
-            {riesgoAlto && <p className="tjf-aviso"><AlertTriangle size={13} /> Por encima del {RISK_LIMIT_PCT} % de tu cuenta</p>}
-          </aside>
-        </div>
-
-        <TjCapturasCampo editing={guardada} pendientes={capturas} onChange={setCapturas} />
-
-        {/* Emociones del día, en el mismo recuadro: se guardan aparte, al pulsar el ánimo o al salir de la nota. */}
-        <TjDayJournal
-          key={fechaDia}
-          fecha={fechaDia}
-          dia={dias[fechaDia]}
-          isToday={fechaDia === fechaKey(new Date())}
-          onSave={onSaveDia}
-        />
-
-        {error && <p className="auth-error">{error}</p>}
-
-        <div className="tjf-pie">
-          <button type="button" className="tjf-cancelar" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="tjf-guardar" disabled={submitting}>
-            {submitting ? "Guardando..." : guardada ? "Guardar cambios" : "Guardar operación"}
-          </button>
-        </div>
-      </form>
-    </section>
+          <div className="tjf-pie">
+            {error && <p className="auth-error">{error}</p>}
+            <button type="button" className="tjf-cancelar" onClick={() => (paso === 0 ? onClose() : setPaso(paso - 1))}>
+              {paso === 0 ? "Cancelar" : <><ArrowLeft size={16} aria-hidden="true" /> Atrás</>}
+            </button>
+            <span className="tjf-pie-nota" aria-live="polite">
+              {!actual.ok ? actual.falta : pnl != null ? <>Se registra <strong className={`tone-${tonoPnl}`}>{pnlStr(pnl)}</strong></> : ""}
+            </span>
+            <button type="submit" className="tjf-guardar" disabled={submitting || !actual.ok}>
+              {paso < ULTIMO
+                ? <>{actual.opcional && actual.vacio ? "Omitir" : "Siguiente"} <ArrowRight size={16} aria-hidden="true" /></>
+                : submitting ? "Guardando..." : guardada ? "Guardar cambios" : "Guardar operación"}
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>,
+    document.body,
   );
 }

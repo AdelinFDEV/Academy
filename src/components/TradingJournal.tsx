@@ -101,16 +101,11 @@ export default function TradingJournal({
   const [dias, setDias] = useState<DiasMap>(() => toDiasMap(initialDias));
   const [editingCapital, setEditingCapital] = useState(false);
   const view = useSyncExternalStore(subscribeHash, readView, serverView);
-  const formRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   // Marca fija justo encima de las pestañas: ellas son sticky y nunca «salen»
   // de la pantalla, así que su posición no dice dónde empieza el contenido.
   const anclaRef = useRef<HTMLDivElement>(null);
   const vistaPrevia = useRef(view);
-
-  useEffect(() => {
-    if (formOpen) formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [formOpen, editing, newDate]);
 
   // Las operaciones nuevas solo se apuntan desde el Resumen: el resto de vistas
   // no enseñan el botón ni responden al atajo. Editar sí se puede desde Operaciones.
@@ -486,12 +481,7 @@ export default function TradingJournal({
       <AnimatePresence initial={false}>
         {/* Una operación nueva a medias se cierra al salir del Resumen; una edición sigue abierta. */}
         {!sinCapital && formOpen && (editing || canAdd) && (
-          <motion.div
-            ref={formRef}
-            className="tj-scroll-anchor"
-            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key="formulario">
             <TjTradeForm
               key={editing?.id ?? `new-${newDate?.getTime() ?? "ahora"}`}
               editing={editing}

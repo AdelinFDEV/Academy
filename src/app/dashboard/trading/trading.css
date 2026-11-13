@@ -2476,14 +2476,32 @@
    Cuatro pasos numerados a la izquierda y, a la derecha, el resumen que se va
    rellenando solo. Los campos son más altos y redondos que en el resto del
    Diario, y las elecciones (dirección, resultado) son botones, no desplegables. */
-.tjf { padding: 0; }
-.tjf-cab { border-radius: 19px 19px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.9rem; align-items: center; padding: 1.3rem 1.6rem; border-bottom: 1px solid var(--hairline); background: linear-gradient(120deg, color-mix(in srgb, var(--accent-orange) 14%, transparent), transparent 55%); }
+/* La ventana: centrada, con cabecera, índice de pasos, el paso y el pie. */
+.tjf-velo { position: fixed; inset: 0; z-index: 900; display: grid; place-items: center; padding: 1rem; background: rgba(4, 8, 18, 0.82); backdrop-filter: blur(6px); gap: 0; animation: tj-reset-velo 0.18s ease; }
+.tjf { display: flex; flex-direction: column; width: min(100%, 960px); max-height: calc(100dvh - 2rem); padding: 0; animation: tj-reset-entra 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+.tjf-cab { border-radius: 19px 19px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.9rem; align-items: center; padding: 1.15rem 1.5rem; border-bottom: 1px solid var(--hairline); background: linear-gradient(120deg, color-mix(in srgb, var(--accent-orange) 14%, transparent), transparent 55%); }
 .tjf-cab-icono { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-orange), #ff8a3d); box-shadow: 0 10px 22px -10px var(--accent-orange); color: #fff; }
 .tjf-cab h2 { margin: 0; font-size: 1.25rem; font-weight: 800; line-height: 1.2; color: var(--text-primary); }
 .tjf-cab p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--text-muted); }
-.tjf form { display: grid; gap: 1.3rem; padding: 1.5rem 1.6rem 1.6rem; }
-.tjf-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.4rem; align-items: start; }
-.tjf-pasos { display: grid; gap: 1.1rem; min-width: 0; }
+
+/* El índice: seis pasos unidos por una línea. */
+.tjf-indice { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--hairline); list-style: none; }
+.tjf-indice li { position: relative; }
+.tjf-indice li:not(:last-child)::after { content: ""; position: absolute; top: 14px; left: calc(50% + 18px); right: calc(-50% + 18px); height: 2px; border-radius: 2px; background: var(--hairline); }
+.tjf-indice li.is-hecho:not(:last-child)::after { background: var(--tj-win); }
+.tjf-indice button { display: grid; justify-items: center; gap: 0.35rem; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: var(--text-muted); cursor: pointer; }
+.tjf-indice button:disabled { cursor: default; opacity: 0.55; }
+.tjf-indice b { position: relative; z-index: 1; display: grid; place-items: center; width: 28px; height: 28px; border: 1.5px solid var(--hairline); border-radius: 50%; background: var(--tj-panel-solid); font-size: 0.8rem; font-weight: 800; color: var(--text-muted); transition: border-color 0.16s ease, background-color 0.16s ease, color 0.16s ease; }
+.tjf-indice span { font-size: 0.74rem; font-weight: 600; text-align: center; }
+.tjf-indice .is-hecho b { border-color: var(--tj-win); background: var(--tj-win); color: #06101f; }
+.tjf-indice .is-aqui b { border-color: var(--accent-orange); background: var(--accent-orange); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-orange) 22%, transparent); color: #fff; }
+.tjf-indice .is-aqui span { color: var(--text-primary); }
+.tjf-indice button:focus-visible b { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+
+.tjf form { display: flex; flex-direction: column; min-height: 0; flex: 1; padding: 0; gap: 0; }
+.tjf-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 1.3rem; align-items: start; min-height: 0; flex: 1; padding: 1.4rem 1.5rem; overflow-y: auto; }
+.tjf-pasos { display: grid; gap: 1.1rem; min-width: 0; min-height: 300px; align-content: start; animation: tjf-paso 0.22s ease; }
+@keyframes tjf-paso { from { opacity: 0; transform: translateX(14px); } }
 
 .tjf-paso { display: grid; gap: 0.95rem; min-width: 0; margin: 0; padding: 1.1rem 1.2rem 1.25rem; border: 1px solid var(--hairline); border-radius: 16px; background: rgba(3, 9, 22, 0.28); }
 .tjf-paso legend { display: flex; align-items: center; gap: 0.6rem; padding: 0 0.5rem; margin-left: -0.5rem; font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text-primary); }
@@ -2532,7 +2550,7 @@
 .tjf-plan-pie strong { font-size: 0.86rem; font-weight: 700; color: var(--text-secondary); }
 
 /* El resumen de la derecha. */
-.tjf-resumen { position: sticky; top: calc(var(--nav-h) + 1rem); display: grid; gap: 0.35rem; padding: 1.2rem; border: 1px solid var(--tj-accent-line); border-radius: 18px; background: linear-gradient(170deg, color-mix(in srgb, var(--tj-accent) 9%, var(--tj-panel-solid)), var(--tj-panel-solid)); box-shadow: 0 22px 44px -26px rgba(0, 0, 0, 0.9); }
+.tjf-resumen { display: grid; gap: 0.35rem; padding: 1.2rem; border: 1px solid var(--tj-accent-line); border-radius: 18px; background: linear-gradient(170deg, color-mix(in srgb, var(--tj-accent) 9%, var(--tj-panel-solid)), var(--tj-panel-solid)); box-shadow: 0 22px 44px -26px rgba(0, 0, 0, 0.9); }
 .tjf-resumen-rotulo { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tj-accent); }
 .tjf-resumen-par { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
 .tjf-resumen-par strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); overflow-wrap: anywhere; }
@@ -2554,31 +2572,42 @@
 .tjf-aviso { display: flex; align-items: center; gap: 0.35rem; margin: 0.5rem 0 0; font-size: 0.78rem; font-weight: 600; color: var(--tj-loss); }
 
 
-.tjf-pie { display: flex; justify-content: flex-end; align-items: center; gap: 0.7rem; padding-top: 1.2rem; border-top: 1px solid var(--hairline); }
+.tjf-pie { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.7rem 1rem; padding: 1rem 1.5rem; border-top: 1px solid var(--hairline); border-radius: 0 0 19px 19px; background: rgba(3, 9, 22, 0.35); }
+.tjf-pie .auth-error { flex-basis: 100%; margin: 0; }
+.tjf-pie-nota { flex: 1; min-width: 0; font-size: 0.84rem; text-align: right; color: var(--text-muted); }
+.tjf-pie-nota strong { font-family: var(--font-display); font-size: 1rem; }
+.tjf-cancelar, .tjf-guardar { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; }
 .tjf-cancelar, .tjf-guardar { min-height: 48px; padding: 0 1.4rem; border-radius: 13px; font: inherit; font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: transform 0.16s ease, filter 0.16s ease, background-color 0.16s ease; }
 .tjf-cancelar { border: 1px solid var(--hairline); background: transparent; color: var(--text-secondary); }
 .tjf-cancelar:hover { background: rgba(255, 255, 255, 0.06); color: var(--text-primary); }
-.tjf-guardar { min-width: 210px; border: 0; background: linear-gradient(135deg, var(--accent-orange), #ff8a3d); box-shadow: 0 14px 28px -12px var(--accent-orange); color: #fff; }
+.tjf-guardar { min-width: 170px; border: 0; background: linear-gradient(135deg, var(--accent-orange), #ff8a3d); box-shadow: 0 14px 28px -12px var(--accent-orange); color: #fff; }
 .tjf-guardar:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.08); }
-.tjf-guardar:disabled { opacity: 0.65; cursor: progress; }
+.tjf-guardar:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
 .tjf-cancelar:focus-visible, .tjf-guardar:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 3px; }
 
-@media (max-width: 980px) {
+@media (max-width: 860px) {
   .tjf-cuerpo { grid-template-columns: 1fr; }
-  .tjf-resumen { position: static; order: 2; }
+  .tjf-resumen { display: none; }
 }
 @media (max-width: 560px) {
-  .tjf-cab { padding: 1.1rem 1.1rem; }
-  .tjf-cab p { display: none; }
-  .tjf form { padding: 1.1rem 1.1rem 1.2rem; }
+  .tjf-velo { padding: 0; }
+  .tjf { width: 100%; max-height: 100dvh; height: 100dvh; border-radius: 0; }
+  .tjf-cab { padding: 0.95rem 1rem; border-radius: 0; }
+  .tjf-indice { padding: 0.7rem 0.5rem; }
+  .tjf-indice span { display: none; }
+  .tjf-indice .is-aqui span { display: block; position: absolute; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .tjf-indice li { padding-bottom: 1.1rem; }
+  .tjf-cuerpo { padding: 1rem; }
+  .tjf-pie { padding: 0.8rem 1rem; border-radius: 0; }
+  .tjf-pie-nota { display: none; }
   .tjf-paso { padding: 1rem 0.95rem 1.1rem; }
   .tjf-fila, .tjf-opciones { grid-template-columns: 1fr; }
   .tjf-opciones.is-tres { grid-template-columns: 1fr; }
-  .tjf-pie { flex-direction: column-reverse; align-items: stretch; }
-  .tjf-guardar { min-width: 0; }
+  .tjf-guardar { min-width: 0; flex: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .tjf-opcion, .tjf-guardar, .tjf-plan-barra span, .tjf-medidor span { transition: none; }
+  .tjf-opcion, .tjf-guardar, .tjf-plan-barra span, .tjf-medidor span, .tjf-indice b { transition: none; }
+  .tjf-velo, .tjf, .tjf-pasos { animation: none; }
   .tjf-opcion:hover:not(:disabled), .tjf-guardar:hover:not(:disabled) { transform: none; }
 }
 
