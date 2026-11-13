@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, Filter, X, Check, NotebookPen } from "lucide-react";
+import { AlertTriangle, Plus, Filter, X, Check, NotebookPen } from "lucide-react";
 import { TjSegmented, TjSelect } from "@/components/trading/TjControls";
 import { TjEquityCard } from "@/components/trading/TjCharts";
 import TjSummary from "@/components/trading/TjSummary";
@@ -205,6 +206,19 @@ export default function TradingJournal({
       // Sin red, el logro se guardará en la próxima sincronización.
     }
   }
+
+  // Con el aviso de reinicio abierto: Escape lo cierra y la página no se desplaza.
+  useEffect(() => {
+    if (!resetOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape" && !resetting) setResetOpen(false); };
+    const antes = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = antes;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [resetOpen, resetting]);
 
   /**
    * Sin capital inicial el Diario no empieza (pedido por el admin el 13-11-2026):
@@ -426,22 +440,41 @@ export default function TradingJournal({
         </button>}
       </div>
 
-      {resetOpen && (
-        <div className="tj-card tj-alert">
-          <p>
-            Empezarás de cero: se borrarán {trades.length === 1 ? "tu operación" : `tus ${trades.length} operaciones`}, tu capital
-            inicial, {diasApuntados === 1 ? "el día con emociones y notas" : `los ${diasApuntados} días con emociones y notas`} y
-            los hitos del diario que hayas conseguido. Nova también olvidará todo lo que sabía de ti.
-            {" "}<strong>Esta acción no se puede deshacer.</strong>
-          </p>
-          {resetError && <p className="auth-error">{resetError}</p>}
-          <div className="tj-actions">
-            <button type="button" className="tj-btn tone-loss" onClick={handleReset} disabled={resetting}>
-              {resetting ? "Reseteando..." : "Sí, resetear todo"}
-            </button>
-            <button type="button" className="tj-btn" onClick={() => setResetOpen(false)} disabled={resetting}>Cancelar</button>
+      {/* Reiniciar el diario: un aviso en mitad de la pantalla, en rojo, que hay que
+          contestar (pedido por el admin el 13-11-2026). El foco empieza en
+          «Cancelar»: lo que se pulsa sin pensar no puede ser lo que lo borra todo. */}
+      {resetOpen && createPortal(
+        <div className="tj-reset-velo" onClick={() => { if (!resetting) setResetOpen(false); }}>
+          <div
+            className="tj-reset" role="alertdialog" aria-modal="true"
+            aria-labelledby="tj-reset-titulo" aria-describedby="tj-reset-texto"
+            onClick={e => e.stopPropagation()}
+          >
+            <span className="tj-reset-icono" aria-hidden="true"><AlertTriangle size={30} strokeWidth={2.2} /></span>
+            <h2 id="tj-reset-titulo">¿Reiniciar tu diario?</h2>
+            <p className="tj-reset-aviso">Este proceso es irreversible. Se eliminan todos tus datos.</p>
+            <div id="tj-reset-texto">
+              <p>Se borrará para siempre:</p>
+              <ul>
+                <li>{trades.length === 1 ? "Tu operación" : `Tus ${trades.length} operaciones`}</li>
+                <li>Tu capital inicial</li>
+                <li>{diasApuntados === 1 ? "El día con emociones y notas" : `Los ${diasApuntados} días con emociones y notas`}</li>
+                <li>Los hitos del diario que hayas conseguido</li>
+                <li>Todo lo que Nova sabía de ti</li>
+              </ul>
+            </div>
+            {resetError && <p className="auth-error">{resetError}</p>}
+            <div className="tj-reset-acciones">
+              <button type="button" className="tj-reset-cancelar" onClick={() => setResetOpen(false)} disabled={resetting} autoFocus>
+                Cancelar
+              </button>
+              <button type="button" className="tj-reset-borrar" onClick={handleReset} disabled={resetting}>
+                {resetting ? "Borrando…" : "Sí, borrar todo"}
+              </button>
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
 
       <AnimatePresence initial={false}>
