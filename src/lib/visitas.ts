@@ -57,11 +57,11 @@ export function canalDe(host: string | null, utmSource: string | null): string {
   }
   if (!host) return "Directo";
   const h = host.toLowerCase();
+  if (/(^|\.)(chatgpt\.com|openai\.com|perplexity\.ai|claude\.ai|gemini\.google\.com|copilot\.microsoft\.com)$/.test(h)) return "Asistentes IA";
   if (/(^|\.)google\./.test(h)) return "Google";
   if (/(^|\.)(bing\.com|duckduckgo\.com|yahoo\.|ecosia\.org|yandex\.|search\.brave\.com|qwant\.com|startpage\.com)/.test(h)) return "Otros buscadores";
   if (/(^|\.)instagram\.com$/.test(h)) return "Instagram";
   if (/(^|\.)(youtube\.com|youtu\.be)$/.test(h)) return "YouTube";
-  if (/(^|\.)(chatgpt\.com|openai\.com|perplexity\.ai|claude\.ai|gemini\.google\.com|copilot\.microsoft\.com)$/.test(h)) return "Asistentes IA";
   if (/(^|\.)(t\.co|x\.com|twitter\.com)$/.test(h)) return "X";
   if (/(^|\.)(facebook\.com|fb\.com|fb\.me)$/.test(h)) return "Facebook";
   if (/(^|\.)tiktok\.com$/.test(h)) return "TikTok";

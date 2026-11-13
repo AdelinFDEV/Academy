@@ -44,6 +44,9 @@ type Trafico = {
   sistemas: Fila[];
   paginas: Fila[];
   entradas: Fila[];
+  /** Páginas por las que se entra desde Google sin UTM: lo que está posicionado. */
+  google: Fila[];
+  google_tipos: Fila[];
 };
 
 const USO = {
@@ -74,7 +77,7 @@ type Academia = {
 
 const TRAFICO_VACIO: Trafico = {
   vistas: 0, visitas: 0, con_sesion: 0, rebotes: 0, por_hora: [], por_dia: [], canales: [], campanas: [],
-  referentes: [], paises: [], dispositivos: [], sistemas: [], paginas: [], entradas: [],
+  referentes: [], paises: [], dispositivos: [], sistemas: [], paginas: [], entradas: [], google: [], google_tipos: [],
 };
 
 const ACADEMIA_VACIA: Academia = {

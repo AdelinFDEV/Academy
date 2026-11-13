@@ -129,7 +129,18 @@ function Barras({ filas, nombre = (s) => s, vacio = "Sin datos todavía" }: { fi
   );
 }
 
-function TablaPaginas({ filas, cabeceras }: { filas: Fila[]; cabeceras: string[] }) {
+/** Qué es una ruta: guía, término del diccionario, curso… */
+function tipoDeRuta(ruta: string): string {
+  if (ruta === "/") return "Portada";
+  if (ruta === "/guias" || ruta.startsWith("/guias/")) return "Guía";
+  if (ruta === "/glosario" || ruta.startsWith("/glosario/")) return "Diccionario";
+  if (ruta === "/cursos" || ruta.startsWith("/cursos/")) return "Curso";
+  if (ruta === "/foro" || ruta.startsWith("/foro/")) return "Foro";
+  if (ruta.startsWith("/herramientas/") || ruta === "/premium") return "Herramienta";
+  return "Otra";
+}
+
+function TablaPaginas({ filas, cabeceras, conTipo = false }: { filas: Fila[]; cabeceras: string[]; conTipo?: boolean }) {
   if (!filas.length) return <p className="an-vacio">Sin datos todavía</p>;
   const max = Math.max(...filas.map((f) => f.n));
   return (
@@ -143,8 +154,9 @@ function TablaPaginas({ filas, cabeceras }: { filas: Fila[]; cabeceras: string[]
                 <span className="an-ruta-fondo" style={{ width: `${(f.n / max) * 100}%` }} />
                 <span>{f.nombre}</span>
               </td>
+              {conTipo && <td className="an-num"><span className="an-tipo">{tipoDeRuta(f.nombre)}</span></td>}
               <td className="an-num">{num(f.n)}</td>
-              {cabeceras.length > 2 && <td className="an-num">{num(f.visitantes ?? 0)}</td>}
+              {!conTipo && cabeceras.length > 2 && <td className="an-num">{num(f.visitantes ?? 0)}</td>}
             </tr>
           ))}
         </tbody>
@@ -161,6 +173,8 @@ export default async function AnaliticaPage({ searchParams }: { searchParams: Pr
   const mediaDia = { ahora: a.visitas.ahora / dias, antes: a.visitas.antes / dias };
   const sinVisitas = a.visitas.ahora === 0 && a.visitas.antes === 0;
   const totalDisp = t.dispositivos.reduce((s, d) => s + d.n, 0);
+  const totalGoogle = t.google_tipos.reduce((s, f) => s + f.n, 0);
+  const totalEntradas = t.canales.reduce((s, f) => s + f.n, 0);
   const maxHora = Math.max(1, ...a.horas.map((h) => h.n));
   const horaPunta = a.horas.reduce((m, h) => (h.n > m.n ? h : m), a.horas[0]);
 
@@ -278,6 +292,20 @@ export default async function AnaliticaPage({ searchParams }: { searchParams: Pr
             <Barras filas={t.campanas} vacio="Ningún enlace con UTM todavía" />
             <h3 className="an-h3-segundo">Webs que enlazan</h3>
             <Barras filas={t.referentes} vacio="Ninguna todavía" />
+          </Tarjeta>
+        </div>
+      </Bloque>
+
+      {/* ── Google ── */}
+      <Bloque tono="turquesa" icono="search" titulo="Lo que trae Google" ayuda="Visitas que entraron desde el buscador por su cuenta, sin anuncios ni enlaces con UTM: lo que ya está posicionado.">
+        <div className="an-rejilla">
+          <Tarjeta titulo="Páginas que más entran desde Google" ayuda={`${num(totalGoogle)} ${totalGoogle === 1 ? "entrada" : "entradas"} desde Google en este periodo${totalEntradas ? `, el ${pct(totalGoogle, totalEntradas)} de todas` : ""}.`}>
+            {t.google.length ? (
+              <TablaPaginas filas={t.google} cabeceras={["Página", "Tipo", "Entradas"]} conTipo />
+            ) : <p className="an-vacio">Google todavía no ha traído ninguna visita en este periodo</p>}
+          </Tarjeta>
+          <Tarjeta titulo="Por tipo de página" ayuda="Si lo que posiciona son las guías, el diccionario o los cursos.">
+            <Barras filas={t.google_tipos} vacio="Sin entradas desde Google todavía" />
           </Tarjeta>
         </div>
       </Bloque>

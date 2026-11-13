@@ -115,6 +115,28 @@ as $$
     'entradas', coalesce((
       select jsonb_agg(jsonb_build_object('nombre', ruta, 'n', n) order by n desc)
       from (select ruta, count(*) as n from v where entrada group by 1 order by 2 desc limit 10) e
+    ), '[]'::jsonb),
+    -- Lo que trae Google por su cuenta: visitas que entraron desde el buscador
+    -- sin UTM (con UTM es un anuncio o un enlace nuestro, no posicionamiento).
+    'google', coalesce((
+      select jsonb_agg(jsonb_build_object('nombre', ruta, 'n', n) order by n desc)
+      from (select ruta, count(*) as n from v where entrada and canal = 'Google' and utm_source is null group by 1 order by 2 desc limit 25) g
+    ), '[]'::jsonb),
+    -- Lo mismo, agrupado por tipo de página y sin el corte de las 25 primeras.
+    'google_tipos', coalesce((
+      select jsonb_agg(jsonb_build_object('nombre', tipo, 'n', n) order by n desc)
+      from (
+        select case
+                 when ruta = '/' then 'Portada'
+                 when ruta = '/guias' or ruta like '/guias/%' then 'Guías'
+                 when ruta = '/glosario' or ruta like '/glosario/%' then 'Diccionario'
+                 when ruta = '/cursos' or ruta like '/cursos/%' then 'Cursos'
+                 when ruta = '/foro' or ruta like '/foro/%' then 'Foro'
+                 when ruta like '/herramientas/%' or ruta = '/premium' then 'Herramientas y Premium'
+                 else 'Otras'
+               end as tipo, count(*) as n
+        from v where entrada and canal = 'Google' and utm_source is null group by 1
+      ) gt
     ), '[]'::jsonb)
   );
 $$;

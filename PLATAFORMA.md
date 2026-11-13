@@ -98,6 +98,7 @@ Conviven a propósito: la medición propia es la que manda en el panel y se cruz
 - **Ninguna cifra del panel cuenta a los admins**: `analitica_academia` los excluye como usuarios y excluye lo que hacen (lecciones, operaciones, certificados de prueba). Si añades una métrica, que salga de esa función o que una con `profiles` y descarte `role = 'admin'`.
 - **Todo se cuenta en la base de datos.** No traigas filas para contarlas en el servidor: la API corta en 1.000 sin avisar.
 - Tabla con RLS y cero policies: escribe y lee solo el servidor con la clave de servicio. Se escribe con `visita_registrar` y el panel lo calcula con `analitica_trafico` y `analitica_academia` (`src/lib/analitica.ts`). El periodo son días naturales de Rumanía. El cron borra las filas de más de 400 días.
+- **«Lo que trae Google»** son las entradas con `canal = 'Google'` y sin `utm_source`: con UTM es un anuncio o un enlace nuestro, no posicionamiento. No dice con qué búsqueda llegaron (Google no lo pasa): eso solo está en Search Console.
 - SQL: `scripts/create-analitica.sql`, idempotente.
 
 **La regla que no se puede romper: el banner de cookies gobierna qué scripts se cargan.** Hasta el 06-09-2026 el banner era decorativo —guardaba la elección y no la leía nadie— porque no había nada opcional. Ahora `src/lib/consent.ts` es la fuente única del consentimiento, y **cualquier script de terceros que use cookies se engancha ahí**, igual que `GoogleAnalytics.tsx`: nada de `<Script>` sueltos en el layout.

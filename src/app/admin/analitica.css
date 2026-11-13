@@ -140,6 +140,7 @@
 .an-ruta { position: relative; font-family: ui-monospace, Consolas, monospace; font-size: 0.79rem; word-break: break-all; }
 .an-ruta-fondo { position: absolute; left: -0.4rem; top: 5px; bottom: 5px; border-radius: 6px; background: rgb(var(--c-rgb) / 0.14); }
 .an-ruta span:last-child { position: relative; }
+.an-tipo { display: inline-block; padding: 0.15rem 0.5rem; border: 1px solid rgb(var(--c-rgb) / 0.35); border-radius: 99px; background: rgb(var(--c-rgb) / 0.1); font-size: 0.72rem; font-weight: 600; white-space: nowrap; color: var(--c); }
 .an-medidor { display: inline-block; width: 64px; height: 6px; margin-right: 0.6rem; border-radius: 99px; background: rgba(148, 178, 230, 0.1); overflow: hidden; vertical-align: middle; }
 .an-medidor span { display: block; height: 100%; border-radius: 99px; background: var(--c); }
 .an-tabla--usuarios th:nth-child(n+5), .an-tabla--usuarios td:nth-child(n+5) { text-align: right; }
