@@ -45,8 +45,11 @@ export const LEGAL = {
   marca: "AdelinBTC Academy",
   /** Dominio del sitio (sin protocolo). */
   dominio: "adelinacademy.com",
-  /** Email de contacto para asuntos legales, privacidad y ejercicio de derechos. */
-  email: "georgeadelingombosredes@gmail.com",
+  // Sin correo publicado (pedido por el admin el 13-11-2026): el correo
+  // personal del titular NO se publica en ningún sitio de la web, ni en el
+  // JSON-LD. El contacto legal es, de momento, el mensaje directo de Instagram
+  // (`INSTAGRAM_DM_URL`). PROVISIONAL: la Ley 365/2002 pide un correo de
+  // contacto; cuando haya uno del dominio, se añade aquí y se enlaza.
   /** Actividad del sitio. */
   actividad: "Formación y educación en criptomonedas y tecnología blockchain",
   /** Edad mínima para registrarse y usar el servicio. */

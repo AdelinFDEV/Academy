@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LegalShell from "@/components/LegalShell";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export default function AvisoLegalPage() {
           <li><strong>Domicilio a efectos de notificaciones:</strong> {LEGAL.domicilio}</li>
           <li><strong>País de establecimiento:</strong> {LEGAL.pais}</li>
           <li><strong>Marca comercial:</strong> {LEGAL.marca}</li>
-          <li><strong>Correo electrónico de contacto:</strong> {LEGAL.email}</li>
+          <li><strong>Contacto:</strong> <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">mensaje directo en Instagram</a></li>
           <li><strong>Actividad:</strong> {LEGAL.actividad}</li>
         </ul>
       </section>

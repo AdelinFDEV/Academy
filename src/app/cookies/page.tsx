@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LegalShell from "@/components/LegalShell";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
@@ -172,7 +173,7 @@ export default function CookiesPage() {
         <h2>7. Actualizaciones</h2>
         <p>
           Podemos actualizar esta política cuando cambien las tecnologías empleadas o la normativa
-          aplicable. Para cualquier consulta, escríbenos a {LEGAL.email}.
+          aplicable. Para cualquier consulta, escríbenos por <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">mensaje directo en Instagram</a>.
         </p>
       </section>
 

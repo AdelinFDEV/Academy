@@ -2,7 +2,7 @@ import Link from "next/link";
 import MarcoForo from "@/components/foro/MarcoForo";
 import AceptarNormas from "@/components/foro/participar/AceptarNormas";
 import { NORMAS_VERSION } from "@/lib/foro/limites";
-import { LEGAL } from "@/lib/legal";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import "@/app/foro/normas.css";
 
 /**
@@ -28,7 +28,6 @@ const SECCIONES: Seccion[] = [
         <li>Cualquiera puede leer el foro. Para preguntar, responder, valorar y reportar hace falta ser Premium.</li>
         <li>Firmas con tu alias y tu foto de perfil. Tu nombre y tu email no se enseñan nunca.</li>
         <li>Lo que publicas es público: lo puede leer cualquiera y puede aparecer en buscadores.</li>
-        <li>Los mensajes se publican al momento, sin revisión previa. Un filtro automático rechaza lo que incumple estas normas, y la comunidad y la academia retiran lo que se le escapa.</li>
       </ul>
     ),
   },
@@ -70,7 +69,7 @@ const SECCIONES: Seccion[] = [
       <ul>
         <li>Puedes dar «me gusta» a las respuestas y etiquetar las preguntas como Interesante, Gracias o Yo también. No a lo que has escrito tú.</li>
         <li>Quien pregunta puede elegir la respuesta que le ha resuelto la duda. Al elegirla, el hilo queda resuelto y no admite más respuestas. La elección no se puede cambiar.</li>
-        <li>Ayudar da puntos, y los puntos dan un nivel que se ve junto a tu alias. Ponerse de acuerdo para votarse no sirve: los puntos tienen tope y se revisan.</li>
+        <li>Ayudar da puntos, y los puntos dan un nivel que se ve junto a tu alias.</li>
       </ul>
     ),
   },
@@ -91,11 +90,10 @@ const SECCIONES: Seccion[] = [
     titulo: "Moderación",
     cuerpo: (
       <ul>
-        <li>Cualquier Premium puede reportar un mensaje. Con varios reportes, el mensaje se oculta hasta que la academia lo revise.</li>
+        <li>Si ves un mensaje que incumple estas normas, repórtalo.</li>
         <li>La academia puede ocultar, corregir o borrar un mensaje, y te dirá siempre el motivo.</li>
-        <li>Incumplir las normas tiene consecuencias, por este orden: un aviso, una suspensión del foro de 7 días, otra de 30 y la expulsión. Una estafa, publicar la frase semilla de otra persona o hacerse pasar por la academia suponen la expulsión directa.</li>
+        <li>Incumplir las normas puede suponer un aviso, una suspensión del foro o la expulsión.</li>
         <li>Una sanción en el foro no afecta al resto de tu suscripción Premium.</li>
-        <li>Reportar en falso de forma repetida hace perder la posibilidad de reportar.</li>
       </ul>
     ),
   },
@@ -104,8 +102,8 @@ const SECCIONES: Seccion[] = [
     titulo: "Avisar de contenido ilícito",
     cuerpo: (
       <p>
-        Si no eres Premium y ves en el foro algo que creas ilícito, escribe a{" "}
-        <a href={`mailto:${LEGAL.email}`}>{LEGAL.email}</a> indicando la dirección de la página y el motivo. Se
+        Si no eres Premium y ves en el foro algo que creas ilícito, escríbenos por{" "}
+        <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">mensaje directo en Instagram</a> indicando la dirección de la página y el motivo. Se
         revisa igual que un reporte.
       </p>
     ),

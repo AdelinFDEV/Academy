@@ -44,7 +44,6 @@ export function organizationSchema(): JsonLdNode {
       width: 512,
       height: 512,
     },
-    email: LEGAL.email,
     // El canal, no el privado: sameAs declara los PERFILES oficiales de la
     // marca, y un chat de una persona no lo es.
     sameAs: [INSTAGRAM_URL, YOUTUBE_URL],

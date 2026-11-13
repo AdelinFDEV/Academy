@@ -241,5 +241,6 @@ El guardarraíl mide señales, no calidad. Lo que de verdad separa tu ficha de l
 
 ## Menor, y ya identificado
 
+- [ ] **Correo de contacto del dominio para las páginas legales.** Desde el 13-11-2026 el aviso legal, la privacidad, las cookies y las normas del foro remiten al mensaje directo de Instagram, porque el correo personal del admin no se publica en ningún sitio (pedido expreso). Es provisional: la Ley 365/2002 pide un correo de contacto. Cuando exista uno del dominio (p. ej. `contacto@adelinacademy.com`), se añade en `src/lib/legal.ts` y se enlaza en esas páginas.
 - [ ] **Revisar la indexación en Search Console → Páginas.** El 03-10-2026 se pidió a mano la indexación de `/premium`, las guías `hyperliquid`, `render` y `worldcoin`, `/calculadora` y las fichas `pnl` y `staking`: comprobar cuáles han entrado. Mirar también el CTR del título nuevo de `/glosario/atl`.
 - [ ] **Ficha pública de Logros.** Es la única de las cuatro herramientas sin página propia (Diario y Portfolio la tienen; la Predicción de Precio se usa sin cuenta). La plantilla existe (`src/app/herramientas/detalle.css`) y el catálogo solo necesita su `paginaPublica`.

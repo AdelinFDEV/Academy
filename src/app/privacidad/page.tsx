@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LegalShell from "@/components/LegalShell";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function PrivacidadPage() {
           <li><strong>Domicilio:</strong> {LEGAL.domicilio} ({LEGAL.pais})</li>
           <li><strong>Marca:</strong> {LEGAL.marca}</li>
           <li><strong>Sitio web:</strong> {LEGAL.dominio}</li>
-          <li><strong>Correo de contacto y ejercicio de derechos:</strong> {LEGAL.email}</li>
+          <li><strong>Contacto y ejercicio de derechos:</strong> <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">mensaje directo en Instagram</a></li>
         </ul>
         <p>
           No hemos designado un Delegado de Protección de Datos (DPO), al no ser obligatorio conforme
@@ -116,7 +117,7 @@ export default function PrivacidadPage() {
         <p>
           Si en algún momento activas la recepción de boletines o comunicaciones comerciales, lo haremos
           únicamente con tu <strong>consentimiento previo y expreso</strong>. Podrás darte de baja en
-          cualquier momento desde el propio email o escribiéndonos a {LEGAL.email}. Los correos
+          cualquier momento desde el propio email o escribiéndonos por <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">mensaje directo en Instagram</a>. Los correos
           estrictamente necesarios para el servicio (confirmación de cuenta, recuperación de contraseña,
           avisos de facturación) no son comunicaciones comerciales y se envían sobre la base de la
           ejecución del contrato.
@@ -189,7 +190,7 @@ export default function PrivacidadPage() {
         <p>
           Puedes ejercer en cualquier momento tus derechos de <strong>acceso, rectificación, supresión
           («derecho al olvido»), oposición, limitación del tratamiento, portabilidad</strong> y a
-          <strong> retirar el consentimiento</strong> prestado, escribiendo a {LEGAL.email}. La retirada
+          <strong> retirar el consentimiento</strong> prestado, escribiéndonos por <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer">mensaje directo en Instagram</a>. La retirada
           del consentimiento no afecta a la licitud del tratamiento previo.
         </p>
         <p>
