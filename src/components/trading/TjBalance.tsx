@@ -64,6 +64,7 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
 
   return (
     <div className="tjb">
+      <span className="tjb-aros" aria-hidden="true" />
       <div className="tjb-head">
         <span className="tjb-eyebrow">{obligatorio ? "Primer paso" : current != null ? "Balance actual" : "P&L acumulado"}</span>
         {!obligatorio && <div className="tjb-tools">
@@ -109,16 +110,17 @@ export default function TjBalance({ totalPnl, capital, series, editing, onEditin
               </span>
             )}
           </div>
+          {series.length > 1 && <Sparkline values={series.map(p => p.equity)} base={capital ?? 0} />}
           {current != null ? (
-            <span className="tjb-sub">
-              <strong className={`tone-${tone}`}>{pnlStr(totalPnl)}</strong> desde los {moneyStr(capital!)} con los que empezaste
-            </span>
+            <dl className="tjb-pie">
+              <div><dt>Empezaste con</dt><dd>{moneyStr(capital!)}</dd></div>
+              <div><dt>{totalPnl >= 0 ? "Llevas ganado" : "Llevas perdido"}</dt><dd className={`tone-${tone}`}>{pnlStr(totalPnl)}</dd></div>
+            </dl>
           ) : (
             <button type="button" className="tjb-cta" onClick={() => onEditingChange(true)}>
               Define tu capital inicial para ver tu balance y la rentabilidad en %
             </button>
           )}
-          {series.length > 1 && <Sparkline values={series.map(p => p.equity)} base={capital ?? 0} />}
         </>
       )}
     </div>
