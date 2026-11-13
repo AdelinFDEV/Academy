@@ -114,7 +114,7 @@ export const HERRAMIENTAS: Herramienta[] = [
   {
     id: "logros",
     icon: Medal,
-    label: "Logros y XP",
+    label: "Logros",
     tag: "Cuenta gratuita",
     color: "#fbbf24",
     desc: "Insignias y progreso por lo que vas completando en la academia.",
