@@ -44,7 +44,10 @@ export function BloqueForoEnPortada({ hilos }: { hilos: HiloEnListado[] }) {
             <h2 id="fpo-titulo" className="fpo-titulo">Lo último que se ha <em>preguntado</em></h2>
           </div>
           <Link href="/foro" className="fpo-todas">
-            Ver el foro <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
+            Ver el foro
+            <span className="fpo-todas-flecha" aria-hidden="true">
+              <ArrowRight size={16} strokeWidth={2.6} />
+            </span>
           </Link>
         </header>
 

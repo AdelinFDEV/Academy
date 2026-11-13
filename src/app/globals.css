@@ -1935,8 +1935,58 @@ html {
 
 .nav-foro.is-activo .nav-foro-latido::after { animation: none; opacity: 0; }
 
+/* ── El foro en la barra del móvil (NavForoMovil) ─────────────────────────
+   Solo por debajo de 1200 px, que es donde `.blog-nav-center` (y con él el
+   botón de las caras) se esconde. Una pastilla de la altura de la hamburguesa
+   y con sus mismas esquinas, con el punto que late y la palabra. Sin sesión,
+   en los teléfonos más estrechos no cabe junto a «Entrar» y «Registrarse», y
+   se queda en el menú. */
+.nav-foro-movil {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 0.85rem 0 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--accent-orange) 40%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent-orange) 10%, transparent);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-foro-movil:hover,
+.nav-foro-movil:focus-visible {
+  border-color: var(--accent-orange-soft);
+  background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  outline: none;
+}
+
+.nav-foro-movil:focus-visible { outline: 2px solid var(--accent-orange-soft); outline-offset: 2px; }
+
+.nav-foro-movil.is-activo {
+  border-color: var(--accent-orange);
+  background: var(--accent-orange);
+  color: #1a0a02;
+}
+
+.nav-foro-movil.is-activo .nav-foro-latido { background: #1a0a02; }
+.nav-foro-movil.is-activo .nav-foro-latido::after { animation: none; opacity: 0; }
+
+@media (max-width: 1200px) {
+  .nav-foro-movil { display: inline-flex; }
+}
+
+@media (max-width: 420px) {
+  .blog-nav-end:has(.nav-acceso) .nav-foro-movil { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .nav-foro, .nav-foro-cara.avatar-usuario { transition: none; }
+  .nav-foro, .nav-foro-movil, .nav-foro-cara.avatar-usuario { transition: none; }
   .nav-foro-cara.avatar-usuario, .nav-foro-latido::after { animation: none; }
   .nav-foro-latido::after { opacity: 0; }
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cache } from "react";
 import NavPrincipal from "@/components/NavPrincipal";
-import NavForo from "@/components/NavForo";
+import NavForo, { NavForoMovil } from "@/components/NavForo";
 import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavSaludo, { type PlanUsuario } from "@/components/NavSaludo";
 import { foroALaVista } from "@/lib/foro/permisos";
@@ -74,6 +74,10 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
             nombre se abre el menú con «Mi dashboard» y «Mi cuenta».
             «Mi dashboard» fue un botón suelto aquí al lado durante unas horas:
             dos accesos personales pegados competían por el mismo hueco. */}
+        {/* El foro en móvil: solo se ve por debajo de 1200 px, donde se esconde
+            el de escritorio (globals.css, «El foro en la barra del móvil»). */}
+        {foro && <NavForoMovil />}
+
         {user && nombre && <NavSaludo nombre={nombre} plan={perfil.plan} avatar={perfil.avatar} />}
 
         {/* Y para quien todavía no tiene cuenta, lo que sí le sirve: entrar o

@@ -20,9 +20,13 @@ import AvatarUsuario from "@/components/AvatarUsuario";
  */
 const CARAS = ["toro", "ballena", "oso"] as const;
 
-export default function NavForo() {
+function useEnElForo() {
   const pathname = usePathname();
-  const activo = pathname === "/foro" || pathname.startsWith("/foro/");
+  return pathname === "/foro" || pathname.startsWith("/foro/");
+}
+
+export default function NavForo() {
+  const activo = useEnElForo();
 
   return (
     <Link href="/foro" className={`nav-foro${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
@@ -33,6 +37,24 @@ export default function NavForo() {
       </span>
       <span className="nav-foro-texto">Foro</span>
       <span className="nav-foro-latido" aria-hidden="true" />
+    </Link>
+  );
+}
+
+/**
+ * El foro en la barra del móvil (y de cualquier pantalla de menos de 1200 px,
+ * donde el de escritorio se esconde): entre la marca y la foto de perfil.
+ *
+ * Más simple a propósito (pedido por el admin el 13-11-2026): ahí no caben las
+ * caras. Una pastilla de la altura de la hamburguesa con el punto que late y
+ * la palabra. El menú sigue llevando el foro también.
+ */
+export function NavForoMovil() {
+  const activo = useEnElForo();
+  return (
+    <Link href="/foro" className={`nav-foro-movil${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
+      <span className="nav-foro-latido" aria-hidden="true" />
+      Foro
     </Link>
   );
 }
