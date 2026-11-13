@@ -1574,7 +1574,7 @@
 
 /* ── Calendario ── */
 
-.tjc { padding: 1.4rem 1.5rem 1.5rem; }
+.tjk { padding: 1.4rem 1.5rem 1.5rem; }
 
 .tjc-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem 1rem; margin-bottom: 1.1rem; }
 .tjc-head-main { display: flex; align-items: center; gap: 1rem; }
@@ -2026,84 +2026,42 @@
 
 /* ── Panel del día: ánimo y nota ── */
 
-/* Dentro del formulario de operación: entre las cifras y los botones, con filetes arriba y abajo. */
-.tjd {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  gap: 1rem 1.5rem;
-  margin: 0 0 1.1rem;
-  padding: 1.1rem 0;
-  border-top: 1px solid var(--hairline);
-  border-bottom: 1px solid var(--hairline);
-}
+/* Dentro del formulario de operación (rehecho el 13-11-2026): una tarjeta con
+   las cuatro caras sobre una escala de color y, al lado, la nota del día. */
+.tjd { display: grid; gap: 1.1rem; padding: 1.2rem 1.25rem 1.3rem; border: 1px solid var(--hairline); border-radius: 16px; background: radial-gradient(120% 140% at 0% 0%, rgba(138, 184, 255, 0.09), transparent 55%), rgba(3, 9, 22, 0.28); }
+.tjd-cab { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.8rem; align-items: center; }
+.tjd-cab-icono { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: rgba(138, 184, 255, 0.14); border: 1px solid rgba(138, 184, 255, 0.35); color: #8ab8ff; }
+.tjd-titulo { display: block; font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+.tjd-sub { display: block; margin-top: 0.1rem; font-size: 0.82rem; line-height: 1.45; color: var(--text-muted); }
+.tjd-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 1.3rem; align-items: start; }
 
-.tjd-q {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  margin-bottom: 0.65rem;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
+/* Las cuatro caras, sobre una escala que va del verde al rojo. */
+.tjd-escala { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4rem; padding-bottom: 0.9rem; }
+.tjd-escala::after { content: ""; position: absolute; left: 6%; right: 6%; bottom: 0; height: 5px; border-radius: 99px; background: linear-gradient(90deg, var(--mood-4), var(--mood-3), var(--mood-2), var(--mood-1)); opacity: 0.5; }
+.tjd-opcion { display: grid; justify-items: center; gap: 0.4rem; padding: 0.7rem 0.2rem 0.6rem; border: 1.5px solid transparent; border-radius: 16px; background: transparent; font: 600 0.78rem var(--font-family); color: var(--text-muted); cursor: pointer; transition: transform 0.14s ease, background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease; }
+.tjd-cara { width: 46px; height: 46px; fill: none; stroke: #0b1630; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; filter: saturate(0.35) opacity(0.6); transition: filter 0.14s ease, transform 0.14s ease; }
+.tjd-cara-fondo { fill: var(--mood); stroke: none; }
+.tjd-cara-ojo, .tjd-cara-boca { fill: #0b1630; stroke: none; }
+.tjd-opcion:hover { background: color-mix(in srgb, var(--mood) 9%, transparent); color: var(--text-primary); }
+.tjd-opcion:hover .tjd-cara { filter: none; transform: translateY(-2px); }
+.tjd-opcion:active .tjd-cara { transform: scale(0.94); }
+.tjd-opcion.is-on { border-color: var(--mood); background: color-mix(in srgb, var(--mood) 14%, transparent); color: var(--text-primary); }
+.tjd-opcion.is-on .tjd-cara { filter: drop-shadow(0 8px 14px color-mix(in srgb, var(--mood) 55%, transparent)); transform: scale(1.14) translateY(-2px); }
+.tjd-opcion:focus-visible { outline: 2px solid var(--mood); outline-offset: 2px; }
+.tjd-lectura { --mood: var(--text-muted); min-height: 2.9em; margin: 0.8rem 0 0; padding-left: 0.8rem; border-left: 3px solid var(--mood); font-size: 0.86rem; line-height: 1.45; color: var(--text-secondary); }
 
-.tjd-hint { font-family: var(--font-family); font-size: 0.72rem; font-weight: 500; color: var(--text-muted); }
-
-.tjd-moods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
-
-.tjd-mood-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.75rem 0.3rem 0.6rem;
-  border: 1px solid var(--hairline);
-  border-radius: 13px;
-  background: var(--tj-surface);
-  color: var(--text-muted);
-  font: 600 0.72rem var(--font-family);
-  cursor: pointer;
-  transition: transform 0.15s, border-color 0.15s, background 0.15s, color 0.15s;
-}
-
-.tjd-emoji { font-size: 1.75rem; line-height: 1; filter: grayscale(0.55) opacity(0.75); transition: filter 0.15s, transform 0.15s; }
-
-.tjd-mood-btn:hover:not(:disabled) { transform: translateY(-2px); border-color: color-mix(in srgb, var(--mood) 45%, transparent); color: var(--text-primary); }
-.tjd-mood-btn:hover .tjd-emoji { filter: none; transform: scale(1.08); }
-.tjd-mood-btn:focus-visible { outline: 2px solid var(--mood); outline-offset: 2px; }
-.tjd-mood-btn:disabled { cursor: progress; }
-
-.tjd-mood-btn.is-on {
-  border-color: var(--mood);
-  background: linear-gradient(170deg, color-mix(in srgb, var(--mood) 22%, transparent), color-mix(in srgb, var(--mood) 6%, transparent));
-  box-shadow: 0 10px 24px -14px var(--mood);
-  color: var(--text-primary);
-}
-
-.tjd-mood-btn.is-on .tjd-emoji { filter: none; transform: scale(1.12); }
-
-.tjd-note textarea {
-  width: 100%;
-  min-height: 92px;
-  padding: 0.7rem 0.85rem;
-  border: 1px solid var(--hairline);
-  border-radius: 11px;
-  background: rgba(7, 12, 24, 0.4);
-  color: var(--text-primary);
-  font: 0.88rem/1.55 var(--font-family);
-  resize: vertical;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.tjd-note textarea::placeholder { color: var(--text-muted); }
-.tjd-note textarea:focus { outline: none; border-color: var(--tj-accent); box-shadow: 0 0 0 3px var(--tj-accent-soft); }
-
-.tjd-note-foot { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem; }
-.tjd-count { margin-right: auto; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
-.tjd-count.is-near { color: var(--mood-2); }
-.tjd-saved { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.74rem; font-weight: 700; color: var(--tj-win); }
-.tjd-error { font-size: 0.74rem; font-weight: 600; color: var(--tj-loss); }
+.tjd-nota { display: grid; gap: 0.45rem; }
+.tjd-nota label { font-size: 0.84rem; font-weight: 600; color: var(--text-secondary); }
+.tjd-nota textarea { width: 100%; min-height: 118px; padding: 0.8rem 0.95rem; border: 1px solid var(--hairline); border-radius: 12px; background: rgba(3, 9, 22, 0.45); box-shadow: var(--tj-well); color: var(--text-primary); font: 0.95rem/1.55 var(--font-family); resize: vertical; transition: border-color 0.15s, box-shadow 0.15s; }
+.tjd-nota textarea::placeholder { color: var(--text-muted); }
+.tjd-nota textarea:focus { outline: none; border-color: var(--tj-accent); box-shadow: var(--tj-well), 0 0 0 3px var(--tj-accent-soft); }
+.tjd-pie { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; }
+.tjd-cuenta { font-size: 0.74rem; font-weight: 600; color: var(--text-muted); }
+.tjd-cuenta:first-child { margin-right: auto; }
+.tjd-cuenta.is-cerca { color: var(--mood-2); }
+.tjd-guardado { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.76rem; font-weight: 700; color: var(--tj-win); }
+.tjd-error { font-size: 0.76rem; font-weight: 600; color: var(--tj-loss); }
+@media (prefers-reduced-motion: reduce) { .tjd-opcion, .tjd-cara { transition: none; } .tjd-opcion:hover .tjd-cara, .tjd-opcion.is-on .tjd-cara { transform: none; } }
 
 /* ── Emociones ── */
 
@@ -2527,8 +2485,6 @@
 .tjf-medidor i { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.6); }
 .tjf-aviso { display: flex; align-items: center; gap: 0.35rem; margin: 0.5rem 0 0; font-size: 0.78rem; font-weight: 600; color: var(--tj-loss); }
 
-/* Las capturas y el ánimo, dentro de este formulario, con el mismo marco que los pasos. */
-.tjf .tjc { margin-bottom: 0; border-radius: 16px; background: rgba(3, 9, 22, 0.28); }
 
 .tjf-pie { display: flex; justify-content: flex-end; align-items: center; gap: 0.7rem; padding-top: 1.2rem; border-top: 1px solid var(--hairline); }
 .tjf-cancelar, .tjf-guardar { min-height: 48px; padding: 0 1.4rem; border-radius: 13px; font: inherit; font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: transform 0.16s ease, filter 0.16s ease, background-color 0.16s ease; }
@@ -2558,45 +2514,67 @@
   .tjf-opcion:hover:not(:disabled), .tjf-guardar:hover:not(:disabled) { transform: none; }
 }
 
-/* ── Capturas de antes y después de una operación (TjCapturas.tsx) ── */
-.tjc { margin-bottom: 1.1rem; padding: 1rem 1.1rem 1.1rem; border: 1px solid var(--hairline); border-radius: 14px; background: color-mix(in srgb, var(--tj-panel) 70%, transparent); }
-.tjc-rotulo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.9rem; margin-bottom: 0.85rem; }
-.tjc-rotulo .tj-label small { margin-left: 0.4rem; font-size: 0.72rem; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text-muted); }
-.tjc-nota { font-size: 0.8rem; color: var(--text-muted); }
-.tjc-huecos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
-.tjc-hueco { display: grid; gap: 0.5rem; align-content: start; min-width: 0; }
-.tjc-cab { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; }
-.tjc-titulo { font-size: 0.86rem; font-weight: 700; color: var(--text-primary); }
-.tjc-ayuda { font-size: 0.76rem; color: var(--text-muted); }
-.tjc-soltar { display: grid; justify-items: center; align-content: center; gap: 0.3rem; min-height: 150px; padding: 1rem; border: 1.5px dashed color-mix(in srgb, var(--accent-orange) 45%, var(--hairline)); border-radius: 12px; background: color-mix(in srgb, var(--accent-orange) 5%, transparent); font: inherit; color: var(--text-secondary); text-align: center; cursor: pointer; transition: background-color 0.16s ease, border-color 0.16s ease; }
-.tjc-soltar:hover, .tjc-soltar.is-encima { border-color: var(--accent-orange); background: color-mix(in srgb, var(--accent-orange) 12%, transparent); }
-.tjc-soltar svg { color: var(--accent-orange); }
-.tjc-soltar strong { font-size: 0.9rem; color: var(--text-primary); }
-.tjc-soltar span { font-size: 0.76rem; line-height: 1.4; color: var(--text-muted); }
-.tjc-soltar:focus-visible, .tjc-ver:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
-.tjc-imagen { display: grid; gap: 0.5rem; }
-.tjc-ver { display: block; width: 100%; padding: 0; border: 1px solid var(--hairline); border-radius: 12px; background: #050c1a; overflow: hidden; cursor: zoom-in; }
-.tjc-ver img { display: block; width: 100%; height: 150px; object-fit: cover; transition: transform 0.3s ease; }
-.tjc-ver:hover img { transform: scale(1.03); }
-.tjc-acciones { display: flex; align-items: center; gap: 0.5rem; }
+/* ── Capturas de antes y después de una operación (TjCapturas.tsx) ──
+   En el formulario: dos marcos unidos por una flecha, cada uno con un boceto
+   de velas de fondo que cuenta qué captura va ahí. */
+.tjk { display: grid; gap: 1.1rem; padding: 1.2rem 1.25rem 1.3rem; border: 1px solid var(--hairline); border-radius: 16px; background: radial-gradient(120% 140% at 100% 0%, color-mix(in srgb, var(--accent-orange) 9%, transparent), transparent 55%), rgba(3, 9, 22, 0.28); }
+.tjk-cab { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.8rem; align-items: center; }
+.tjk-cab-icono { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: color-mix(in srgb, var(--accent-orange) 15%, transparent); border: 1px solid color-mix(in srgb, var(--accent-orange) 40%, transparent); color: var(--accent-orange); }
+.tjk-titulo { display: block; font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+.tjk-sub { display: block; margin-top: 0.1rem; font-size: 0.82rem; line-height: 1.45; color: var(--text-muted); }
+.tjk-opcional { padding: 0.25rem 0.65rem; border: 1px solid var(--hairline); border-radius: 99px; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+
+.tjk-huecos { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.8rem; align-items: center; }
+.tjk-flecha { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--hairline); background: rgba(255, 255, 255, 0.04); color: var(--text-muted); }
+.tjk-hueco { display: grid; gap: 0.55rem; align-content: start; min-width: 0; }
+.tjk-rotulo { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; }
+.tjk-etiqueta { padding: 0.22rem 0.6rem; border-radius: 8px; background: color-mix(in srgb, var(--accent-orange) 16%, transparent); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-orange-soft); }
+.tjk-hueco.is-despues .tjk-etiqueta { background: color-mix(in srgb, var(--tj-win) 15%, transparent); color: var(--tj-win); }
+.tjk-ayuda { font-size: 0.8rem; color: var(--text-muted); }
+
+.tjk-soltar { position: relative; display: grid; justify-items: center; align-content: center; gap: 0.3rem; min-height: 168px; padding: 1rem; border: 1.5px dashed color-mix(in srgb, var(--accent-orange) 42%, var(--hairline)); border-radius: 14px; background: rgba(3, 9, 22, 0.4); font: inherit; color: var(--text-secondary); text-align: center; cursor: pointer; overflow: hidden; transition: background-color 0.16s ease, border-color 0.16s ease; }
+.tjk-hueco.is-despues .tjk-soltar { border-color: color-mix(in srgb, var(--tj-win) 38%, var(--hairline)); }
+.tjk-boceto { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.22; pointer-events: none; transition: opacity 0.2s ease; }
+.tjk-boceto .es-sube { fill: var(--tj-win); stroke: var(--tj-win); }
+.tjk-boceto .es-baja { fill: var(--tj-loss); stroke: var(--tj-loss); }
+.tjk-boceto .es-marca { stroke: var(--accent-orange); stroke-dasharray: 4 4; fill: none; }
+.tjk-boceto .es-futuro { fill: none; stroke: rgba(255, 255, 255, 0.35); stroke-dasharray: 3 5; }
+.tjk-soltar > :not(.tjk-boceto) { position: relative; }
+.tjk-soltar-icono { display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 0.25rem; border-radius: 14px; background: linear-gradient(135deg, var(--accent-orange), #ff8a3d); box-shadow: 0 10px 20px -10px var(--accent-orange); color: #fff; }
+.tjk-hueco.is-despues .tjk-soltar-icono { background: linear-gradient(135deg, #3fbf85, var(--tj-win)); box-shadow: 0 10px 20px -10px var(--tj-win); color: #06101f; }
+.tjk-soltar strong { font-size: 0.95rem; color: var(--text-primary); }
+.tjk-soltar span { font-size: 0.78rem; line-height: 1.4; color: var(--text-muted); }
+.tjk-soltar kbd { padding: 0.05rem 0.35rem; border: 1px solid var(--hairline); border-radius: 5px; background: rgba(255, 255, 255, 0.07); font: 600 0.72rem var(--font-family); color: var(--text-secondary); }
+.tjk-soltar:hover, .tjk-soltar.is-encima { border-style: solid; background: color-mix(in srgb, var(--accent-orange) 8%, rgba(3, 9, 22, 0.4)); }
+.tjk-hueco.is-despues .tjk-soltar:hover, .tjk-hueco.is-despues .tjk-soltar.is-encima { background: color-mix(in srgb, var(--tj-win) 8%, rgba(3, 9, 22, 0.4)); }
+.tjk-soltar:hover .tjk-boceto, .tjk-soltar.is-encima .tjk-boceto { opacity: 0.38; }
+.tjk-soltar:focus-visible, .tjk-ver:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+.tjk-imagen { display: grid; gap: 0.5rem; }
+.tjk-ver { display: block; width: 100%; padding: 0; border: 1px solid var(--hairline); border-radius: 14px; background: #050c1a; overflow: hidden; cursor: zoom-in; }
+.tjk-ver img { display: block; width: 100%; height: 168px; object-fit: cover; transition: transform 0.3s ease; }
+.tjk-ver:hover img { transform: scale(1.03); }
+.tjk-acciones { display: flex; align-items: center; gap: 0.5rem; }
 
 /* En el detalle de una operación del registro. */
-.tjc-vista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; margin-top: 0.9rem; }
-.tjc-vista figure { margin: 0; display: grid; gap: 0.35rem; }
-.tjc-vista .tjc-ver img { height: 190px; }
-.tjc-vista figcaption { font-size: 0.76rem; font-weight: 600; color: var(--text-muted); }
+.tjk-vista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem; margin-top: 0.9rem; }
+.tjk-vista figure { margin: 0; display: grid; gap: 0.35rem; }
+.tjk-vista .tjk-ver img { height: 190px; }
+.tjk-vista figcaption { font-size: 0.76rem; font-weight: 600; color: var(--text-muted); }
 
 /* La captura a pantalla completa. */
-.tjc-velo { position: fixed; inset: 0; z-index: 1000; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0.8rem; justify-items: center; padding: 1rem; background: rgba(3, 6, 14, 0.94); cursor: zoom-out; animation: tj-reset-velo 0.16s ease; }
-.tjc-velo-cab { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: min(100%, 1400px); font-size: 0.95rem; font-weight: 700; color: #fff; cursor: default; }
-.tjc-velo img { max-width: 100%; max-height: 100%; min-height: 0; border-radius: 10px; object-fit: contain; box-shadow: 0 30px 80px -20px #000; cursor: default; }
+.tjk-velo { position: fixed; inset: 0; z-index: 1000; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 0.8rem; justify-items: center; padding: 1rem; background: rgba(3, 6, 14, 0.94); cursor: zoom-out; animation: tj-reset-velo 0.16s ease; }
+.tjk-velo-cab { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: min(100%, 1400px); font-size: 0.95rem; font-weight: 700; color: #fff; cursor: default; }
+.tjk-velo img { max-width: 100%; max-height: 100%; min-height: 0; border-radius: 10px; object-fit: contain; box-shadow: 0 30px 80px -20px #000; cursor: default; }
 
 @media (max-width: 640px) {
-  .tjc-huecos, .tjc-vista { grid-template-columns: 1fr; }
-  .tjc-soltar { min-height: 120px; }
-  .tjc-ver img { height: 170px; }
+  .tjk-huecos, .tjk-vista { grid-template-columns: 1fr; }
+  .tjk-flecha { justify-self: center; transform: rotate(90deg); }
+  .tjk-cab { grid-template-columns: auto minmax(0, 1fr); }
+  .tjk-opcional { display: none; }
+  .tjk-soltar { min-height: 140px; }
+  .tjk-ver img { height: 170px; }
 }
-@media (prefers-reduced-motion: reduce) { .tjc-ver img, .tjc-soltar { transition: none; } .tjc-ver:hover img { transform: none; } .tjc-velo { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .tjk-ver img, .tjk-soltar, .tjk-boceto { transition: none; } .tjk-ver:hover img { transform: none; } .tjk-velo { animation: none; } }
 
 /* ── Aviso de reinicio: emergente, centrado y en rojo ── */
 .tj-reset-velo { position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 1.2rem; background: rgba(4, 8, 18, 0.82); backdrop-filter: blur(6px); animation: tj-reset-velo 0.18s ease; }
@@ -3357,8 +3335,7 @@
 
 /* Los campos, hundidos en la tarjeta como el resto de lo que se rellena. */
 .trading-journal .field input,
-.trading-journal .field textarea,
-.tjd-note textarea {
+.trading-journal .field textarea {
   background: rgba(3, 9, 22, 0.45);
   box-shadow: var(--tj-well);
 }
@@ -3632,7 +3609,7 @@
   .tja-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 1rem; }
   .tja-counts li { padding: 0.1rem 0.9rem; }
 
-  .tjc { padding: 1rem 0.8rem; }
+  .tjk { padding: 1rem 0.8rem; }
   .tjc-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tjc-band > div:last-child { grid-column: 1 / -1; }
   .tjc-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
@@ -3643,8 +3620,8 @@
 
   .tjc-detail-inner { padding: 0.85rem; }
   .tjc-detail-list li { grid-template-columns: minmax(0, 1fr) auto auto 28px; gap: 0.6rem; }
-  .tjd { grid-template-columns: 1fr; }
-  .tjd-emoji { font-size: 1.45rem; }
+  .tjd-cuerpo { grid-template-columns: 1fr; }
+  .tjd-cara { width: 40px; height: 40px; }
   .tjm2-strip { grid-template-columns: repeat(10, minmax(0, 1fr)); }
   .tjm2-dist li { grid-template-columns: 1.4rem 4.6rem minmax(0, 1fr) 2.6rem; }
   .tjm2-dist-n { display: none; }
