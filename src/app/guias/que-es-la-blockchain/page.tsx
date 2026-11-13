@@ -245,6 +245,9 @@ export default async function QueEsLaBlockchainPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="premium" variante="compacto" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
+
       {/* ── SECTION 3: ESTADO ACTUAL 2026 ── */}
       <section id="estado-actual" className="gbc-section">
         <div className="gbc-gc">
@@ -444,7 +447,7 @@ export default async function QueEsLaBlockchainPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      {/* ── Anuncio final: tras el contenido y antes del quiz ── */}
       <GuiaAnuncio producto="cursos" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
       {/* ── QUIZ ── */}

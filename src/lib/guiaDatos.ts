@@ -8,7 +8,7 @@ import type { EstadoLector } from "@/components/GuiaAnuncio";
  *
  * Nada de esto cambia el contenido: la guía se lee entera sin cuenta. Solo
  * decide tres cosas: la barra de arriba, si el quiz se puede hacer o invita a
- * registrarse, y a quién se le enseña el mini anuncio.
+ * registrarse, y qué versión de los anuncios ve.
  */
 export async function datosDeGuia(slug: string) {
   const supabase = await createClient();

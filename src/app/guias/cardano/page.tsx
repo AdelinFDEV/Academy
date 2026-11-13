@@ -191,6 +191,9 @@ export default async function CardanoPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="cursos" variante="compacto" estado={d.estado} />
+
       {/* ── 4 ── */}
       <section id="staking" className="gbc-section">
         <div className="gbc-gc">
@@ -341,7 +344,7 @@ export default async function CardanoPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio ── */}
+      {/* ── Anuncio final ── */}
       <GuiaAnuncio producto="portfolio" estado={d.estado} />
 
       {/* ── QUIZ ── */}

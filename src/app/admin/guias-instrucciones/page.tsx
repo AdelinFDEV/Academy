@@ -16,7 +16,7 @@ const INDICE = [
   ["flujo", "El flujo, paso a paso"],
   ["anatomia", "Anatomía de una guía"],
   ["escritura", "Cómo se escribe"],
-  ["anuncios", "Mini anuncios internos"],
+  ["anuncios", "Anuncios internos"],
   ["interactivos", "Piezas interactivas"],
   ["cuenta", "Cuenta, quiz y logro"],
   ["tecnica", "Arquitectura técnica"],
@@ -90,7 +90,7 @@ export default function GuiasInstruccionesPage() {
             <div><b>1 · Google</b><span>Alguien busca una duda concreta</span></div>
             <div><b>2 · La guía</b><span>La resuelve entera, gratis y sin cuenta</span></div>
             <div><b>3 · La cuenta</b><span>El quiz y su logro piden registrarse</span></div>
-            <div><b>4 · Premium</b><span>Un mini anuncio le enseña la pieza que le encaja</span></div>
+            <div><b>4 · Premium</b><span>Dos anuncios le enseñan la pieza que le encaja</span></div>
           </div>
           <p>
             El orden no se negocia: <strong>primero se gana la visita, después se le ofrece algo</strong>. Una guía que
@@ -119,7 +119,7 @@ export default function GuiasInstruccionesPage() {
           <ul className="agi-list">
             <li>La consulta principal, si no está clara, y a quién va dirigida (quien empieza o quien ya opera).</li>
             <li>La <strong>foto de portada</strong>: toda guía lleva la suya.</li>
-            <li>Qué pieza de pago encaja mejor con el tema, si hay duda (ver «Mini anuncios internos»).</li>
+            <li>Qué pieza de pago encaja mejor con el tema, si hay duda (ver «Anuncios internos»).</li>
           </ul>
           <p className="agi-note">Ya no se pregunta si la guía es gratis o de pago: desde el 31-10-2026 <strong>todas son gratuitas</strong> y se leen enteras sin cuenta.</p>
         </div>
@@ -128,7 +128,7 @@ export default function GuiasInstruccionesPage() {
       <Seccion id="flujo" n="03" titulo="El flujo, paso a paso">
         <div className="agi-steps">
           <Paso n={1} titulo="Tema, consulta y fuentes">Se cierra la consulta principal, se miran los resultados de Google y se reúnen las fuentes. Sin esto no se escribe.</Paso>
-          <Paso n={2} titulo="Esquema">Las secciones, en el orden en que el lector se hace las preguntas, con la pieza interactiva de cada una y dónde van los mini anuncios. El admin lo ve antes de que se escriba el cuerpo.</Paso>
+          <Paso n={2} titulo="Esquema">Las secciones, en el orden en que el lector se hace las preguntas, con la pieza interactiva de cada una y dónde van los dos anuncios. El admin lo ve antes de que se escriba el cuerpo.</Paso>
           <Paso n={3} titulo="Términos del diccionario">Toda palabra técnica se enlaza al diccionario en su primera aparición. Las que no existan se crean ahora, con una definición buena (<code>PLANTILLA-DICCIONARIO.md</code>). Es una regla intocable y no espera a que nadie la pida.</Paso>
           <Paso n={4} titulo="Construcción">Su <code>page.tsx</code>, su <code>[slug].css</code>, sus piezas interactivas y su quiz, con el contenido completo: nada de esqueletos ni textos de relleno.</Paso>
           <Paso n={5} titulo="Auditoría SEO">Al terminar se pregunta siempre: «¿Empiezo la auditoría SEO de la guía?». Si el admin dice que sí, se ejecuta <code>AUDITORIA-SEO.md</code> entero. Si dice que no, se anota que queda sin auditar.</Paso>
@@ -149,16 +149,18 @@ export default function GuiasInstruccionesPage() {
               <tr><td><strong>Índice</strong></td><td>Enlaces a cada sección (<code>.gbc-index</code>).</td><td>Deja saltar a lo que uno busca, y Google usa esos saltos para llevar al lector al punto exacto.</td></tr>
               <tr><td><strong>Secciones</strong></td><td>Cada una responde a una pregunta. H2 escrito como la pregunta o como su respuesta, nunca un rótulo vacío («Introducción»).</td><td>Google puede posicionar una sección suelta, no solo la página entera.</td></tr>
               <tr><td><strong>Pieza interactiva</strong></td><td>Dentro de la sección que explica, nunca como relleno entre dos.</td><td>Es lo que una guía tiene y un artículo no. Y retiene.</td></tr>
-              <tr><td><strong>Mini anuncio 1</strong></td><td>Opcional, en formato «línea», tras la sección que habla de lo que la pieza resuelve.</td><td>El interés está en su punto más alto justo ahí.</td></tr>
+              <tr><td><strong>Anuncio 1</strong></td><td><strong>Obligatorio.</strong> Formato «compacto», un poco antes de la mitad de la guía y nunca antes de la segunda sección. Con su imagen y su botón.</td><td>Mucha gente no llega al final: si el único anuncio está abajo, la mayoría no lo ve nunca.</td></tr>
               <tr><td><strong>Riesgos</strong></td><td>Una sección propia con lo que puede salir mal.</td><td>Es contenido de dinero: callar los riesgos resta confianza al lector y a Google.</td></tr>
-              <tr><td><strong>Mini anuncio 2</strong></td><td>En formato «tarjeta», después de todo el contenido y antes del quiz.</td><td>Quien ha llegado hasta aquí es quien más probablemente quiere seguir.</td></tr>
+              <tr><td><strong>Anuncio 2</strong></td><td><strong>Obligatorio.</strong> Formato «tarjeta», el grande, después de todo el contenido y antes del quiz. De una pieza distinta a la del primero.</td><td>Quien ha llegado hasta aquí es quien más probablemente quiere seguir.</td></tr>
               <tr><td><strong>Quiz</strong></td><td>Con cuenta. Sin sesión, la invitación a registrarse con el nombre del logro.</td><td>Es el paso de visitante a usuario registrado.</td></tr>
               <tr><td><strong>Cierre fijo</strong></td><td><code>GuiasRelacionadas</code> → interacciones → <code>Footer</code>.</td><td>Las relacionadas son el único enlace que unas guías reciben de otras.</td></tr>
             </tbody>
           </table>
         </div>
         <div className="agi-card agi-card--mono">
-          {`<GuiaAnuncio producto="…" estado={…} />   {/* antes del quiz */}`}<br />
+          {`<GuiaAnuncio producto="…" variante="compacto" estado={…} />   {/* un poco antes de la mitad */}`}<br />
+          {`…`}<br />
+          {`<GuiaAnuncio producto="…" estado={…} />   {/* el grande, antes del quiz */}`}<br />
           {`<section id="quiz" className="gbc-section">…</section>`}<br />
           {`<GuiasRelacionadas slug={SLUG} />`}<br />
           {`<section className="gbc-section gbc-interactions-section">…<GuideInteractions /></section>`}<br />
@@ -184,7 +186,7 @@ export default function GuiasInstruccionesPage() {
         </div>
       </Seccion>
 
-      <Seccion id="anuncios" n="06" titulo="Mini anuncios internos">
+      <Seccion id="anuncios" n="06" titulo="Anuncios internos">
         <div className="agi-card">
           <p>
             Son las llamadas a las piezas de pago dentro de una guía. Se hacen con un solo componente,{" "}
@@ -195,7 +197,7 @@ export default function GuiasInstruccionesPage() {
             {`import GuiaAnuncio from "@/components/GuiaAnuncio";`}<br /><br />
             {`<GuiaAnuncio`}<br />
             {`  producto="diario"            // diario · portfolio · cursos · premium`}<br />
-            {`  variante="tarjeta"           // tarjeta (por defecto) · linea`}<br />
+            {`  variante="compacto"          // compacto (a media guía) · tarjeta (al final, por defecto)`}<br />
             {`  estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"}`}<br />
             {`/>`}
           </div>
@@ -221,10 +223,12 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-card">
             <ul className="agi-list">
               <li><strong>Nunca antes de la respuesta.</strong> El primero va, como pronto, después de la segunda sección. Ni en el hero ni justo debajo.</li>
-              <li><strong>Dos como máximo</strong>, y de piezas distintas: una «línea» a mitad y una «tarjeta» antes del quiz. Con una guía corta, solo la tarjeta.</li>
+              <li><strong>Dos como mínimo, en todas las guías</strong> (pedido por el admin el 13-11-2026): un «compacto» un poco antes de la mitad y una «tarjeta» al final, antes del quiz. Es por quien no lee el artículo entero. De piezas distintas, para no repetir el mismo mensaje.</li>
+              <li><strong>Siempre con imagen y con un botón que se vea.</strong> Nada de franjas de una línea: el anuncio lleva su imagen, un titular y un botón naranja que dice qué pasa al pulsarlo. La imagen la pone el componente; si hay capturas reales de la pieza, mejor que un dibujo.</li>
+              <li><strong>Un tercero solo si la guía es muy larga</strong> (más de diez secciones), y nunca dos seguidos sin al menos dos secciones entre ellos.</li>
               <li><strong>El botón lleva a la ficha pública</strong> de la pieza, no al pago. La guía despierta el interés; la ficha explica y vende.</li>
               <li><strong>El precio, siempre a la vista.</strong> Nunca se esconde que es de pago. El componente lo saca de <code>PREMIUM_PRICE_EUR</code>.</li>
-              <li><strong>A quien ya es Premium no se le vende</strong>: ve un acceso directo a su herramienta, o nada. Lo decide el componente con <code>estado</code>.</li>
+              <li><strong>A quien ya es Premium no se le vende</strong>: ve el mismo anuncio, pero con el botón que le abre su herramienta y «Incluido en tu Premium». El de Premium en sí no se le enseña. Lo decide el componente con <code>estado</code>.</li>
               <li><strong>Ni ventanas emergentes, ni barras que tapen el texto, ni cuentas atrás.</strong> Google penaliza lo que se interpone entre el lector y el contenido.</li>
               <li><strong>No se promete lo que la pieza no hace.</strong> Los textos del componente están comprobados contra el código. Para cambiarlos o añadir una ventaja, primero se abre la herramienta y se comprueba.</li>
               <li><strong>Nunca rentabilidades.</strong> El Portfolio enseña la cartera real, también lo que va en pérdidas; no se anuncia como una forma de ganar.</li>
@@ -339,7 +343,7 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-swatch agi-swatch--orange">
             <span className="agi-swatch-name">Naranja</span>
             <span className="agi-swatch-var">--accent-orange · #ff6b2b</span>
-            <span className="agi-swatch-use">Acción: botones, respuesta elegida, barra de progreso, botón del mini anuncio.</span>
+            <span className="agi-swatch-use">Acción: botones, respuesta elegida, barra de progreso, botón de los anuncios.</span>
           </div>
           <div className="agi-swatch agi-swatch--navy">
             <span className="agi-swatch-name">Navy</span>
@@ -403,7 +407,7 @@ export default function GuiasInstruccionesPage() {
           <Punto>Cada cifra con su <strong>fuente y su fecha</strong>; sección de riesgos escrita</Punto>
           <Punto><strong>Términos técnicos enlazados al diccionario</strong> en su primera aparición; los que faltaban, creados</Punto>
           <Punto>Enlaces a otras guías donde el texto ya las menciona, con destino comprobado</Punto>
-          <Punto><strong>Mini anuncios</strong>: uno o dos, con la pieza que encaja, ninguno antes de la segunda sección</Punto>
+          <Punto><strong>Dos anuncios</strong>: uno compacto antes de la mitad y la tarjeta antes del quiz, de piezas distintas, ninguno antes de la segunda sección</Punto>
           <Punto>Quiz de cinco preguntas, envuelto con <code>GuideQuizCuenta</code> para quien no tiene sesión</Punto>
           <Punto>Logro con nombre y <code>badgeId</code> <code>guide-[tema]</code></Punto>
           <Punto>Su <code>[slug].css</code> propio; nada nuevo en <code>guias.css</code> ni en <code>globals.css</code></Punto>

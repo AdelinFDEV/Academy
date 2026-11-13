@@ -194,6 +194,9 @@ export default async function ChainlinkPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="portfolio" variante="compacto" estado={d.estado} />
+
       {/* ── 4 ── */}
       <section id="servicios" className="gbc-section">
         <div className="gbc-gc">
@@ -352,7 +355,7 @@ export default async function ChainlinkPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio ── */}
+      {/* ── Anuncio final ── */}
       <GuiaAnuncio producto="cursos" estado={d.estado} />
 
       {/* ── QUIZ ── */}

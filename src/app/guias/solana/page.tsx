@@ -240,6 +240,9 @@ export default async function SolanaPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="cursos" variante="compacto" estado={d.estado} />
+
       {/* ── 5 ── */}
       <section id="validadores" className="gbc-section">
         <div className="gbc-gc">
@@ -379,7 +382,7 @@ export default async function SolanaPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio ── */}
+      {/* ── Anuncio final ── */}
       <GuiaAnuncio producto="portfolio" estado={d.estado} />
 
       {/* ── QUIZ ── */}

@@ -280,6 +280,9 @@ export default async function HyperliquidPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="cursos" variante="compacto" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
+
       {/* ── SECCIÓN 3: ESTADO 2026 ── */}
       <section id="estado-actual" className="gbc-section">
         <div className="gbc-gc">
@@ -409,7 +412,7 @@ export default async function HyperliquidPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      {/* ── Anuncio final: tras el contenido y antes del quiz ── */}
       <GuiaAnuncio producto="diario" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
       {/* ── QUIZ ── */}

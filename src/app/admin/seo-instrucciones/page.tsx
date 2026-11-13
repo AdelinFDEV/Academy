@@ -324,7 +324,7 @@ export default function SeoInstruccionesPage() {
           <ul className="agi-list">
             <li><strong>Nada entre el H1 y la respuesta.</strong> Quien llega, recibe un anuncio y vuelve al buscador le está diciendo a Google que la página no servía.</li>
             <li><strong>Sin ventanas emergentes ni capas que tapen el contenido</strong>, sobre todo en el móvil.</li>
-            <li><strong>La oferta va con el tema.</strong> En las guías, con <code>GuiaAnuncio</code> y sus reglas: <Link href="/admin/guias-instrucciones#anuncios">Guías, bloque «Mini anuncios internos»</Link>.</li>
+            <li><strong>La oferta va con el tema.</strong> En las guías, con <code>GuiaAnuncio</code> y sus reglas: <Link href="/admin/guias-instrucciones#anuncios">Guías, bloque «Anuncios internos»</Link>.</li>
             <li><strong>A quien ya tiene cuenta no se le pide que se registre</strong>, y a quien ya es Premium no se le vende.</li>
             <li><strong>Lo que se promete, existe.</strong> Antes de escribir qué hace una herramienta, se abre su código. Prometer una función que no hay es, además, lo que Google llama funcionalidad engañosa.</li>
             <li><strong>El contenido de pago no se enseña a Google y se esconde al visitante.</strong> Lo que ve el robot es lo que ve una persona sin sesión.</li>

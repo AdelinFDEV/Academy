@@ -306,6 +306,9 @@ export default async function WorldcoinPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="cursos" variante="compacto" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
+
       {/* ── SECCIÓN 4: CASOS DE USO ── */}
       <section id="casos-de-uso" className="gbc-section">
         <div className="gbc-gc">
@@ -404,7 +407,7 @@ export default async function WorldcoinPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      {/* ── Anuncio final: tras el contenido y antes del quiz ── */}
       <GuiaAnuncio producto="portfolio" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
       {/* ── QUIZ ── */}

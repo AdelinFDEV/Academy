@@ -261,6 +261,9 @@ export default async function EthereumPage() {
         </div>
       </section>
 
+      {/* ── Anuncio de media guía ── */}
+      <GuiaAnuncio producto="portfolio" variante="compacto" estado={d.estado} />
+
       {/* ── 5 · Capas 2 ── */}
       <section id="capas-2" className="gbc-section">
         <div className="gbc-gc">
@@ -400,7 +403,7 @@ export default async function EthereumPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      {/* ── Anuncio final: tras el contenido y antes del quiz ── */}
       <GuiaAnuncio producto="cursos" estado={d.estado} />
 
       {/* ── QUIZ ── */}

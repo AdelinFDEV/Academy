@@ -27,7 +27,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 
 Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan. El panel de SEO es el «cómo y por qué», para cualquier página; `AUDITORIA-SEO.md` es el protocolo que se ejecuta fase a fase sobre una guía terminada.
 
-**Las guías venden con `GuiaAnuncio`** (`src/components/GuiaAnuncio.tsx`): el mini anuncio de una pieza de pago, nunca antes de la respuesta y dos como máximo por guía. Sus reglas, en el panel de guías.
+**Las guías venden con `GuiaAnuncio`** (`src/components/GuiaAnuncio.tsx`): el anuncio de una pieza de pago, con imagen y botón. **Dos por guía como mínimo** (pedido por el admin el 13-11-2026): uno compacto un poco antes de la mitad y la tarjeta grande al final, antes del quiz, de piezas distintas y nunca antes de la respuesta. Sus reglas, en el panel de guías.
 
 **Desde el 10-10-2026 la web es solo guías.** No hay entradas, noticias, categorías ni comentarios: se retiró todo el sistema, con sus tablas. `/post/…` y `/categoria/…` responden **410** (`src/lib/retiradas.ts`). No lo vuelvas a crear sin que el admin lo pida.
 

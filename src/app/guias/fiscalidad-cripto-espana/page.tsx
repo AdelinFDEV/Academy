@@ -528,6 +528,9 @@ export default async function FiscalidadCriptoEspanaPage() {
           </div>
         </section>
 
+        {/* ── Anuncio de media guía ── */}
+        <GuiaAnuncio producto="cursos" variante="compacto" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
+
         {/* ── SECCIÓN 5: RENTAS ── */}
         <section id="rentas" className="gbc-section">
           <div className="gbc-gc">
@@ -826,7 +829,7 @@ export default async function FiscalidadCriptoEspanaPage() {
         </div>
       </section>
 
-      {/* ── Mini anuncio: tras el contenido y antes del quiz ── */}
+      {/* ── Anuncio final: tras el contenido y antes del quiz ── */}
       <GuiaAnuncio producto="premium" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
       {/* ── QUIZ ── */}
