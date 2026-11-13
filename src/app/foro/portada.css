@@ -24,7 +24,7 @@
   overflow: hidden;
   background:
     radial-gradient(ellipse 55% 240px at 50% 0%, rgba(139, 108, 242, 0.2), transparent 70%),
-    linear-gradient(180deg, #070707 0%, #050505 55%, #030303 100%);
+    linear-gradient(180deg, #13111a 0%, #100f16 55%, #0e0d13 100%);
 }
 
 .fpo::before {

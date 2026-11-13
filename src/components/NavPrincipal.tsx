@@ -8,11 +8,10 @@ import NovaNav from "@/components/trading/NovaNav";
 /**
  * Las tres piezas de pago, en el centro de la barra de escritorio.
  *
- * Rehecha el 13-11-2026, pedido por el admin: la barra anterior (un icono de
- * color por pieza y una burbuja de luz) se veía infantil. Ahora es una cápsula
- * negra que flota en el centro, con enlaces de texto: el activo, en blanco
- * sobre una pastilla gris. Nova sigue junto al Diario. A quien no es Premium,
- * la cápsula le ofrece Premium al final, en un botón blanco.
+ * Rehecha el 13-11-2026, pedido por el admin: la barra anterior (una cápsula
+ * de cristal, un icono de color por pieza y una burbuja de luz) se veía
+ * infantil. Ahora son enlaces de texto, sobrios, con una línea naranja bajo el
+ * que está activo. Un solo color de acento en toda la barra.
  *
  * A dónde lleva cada una lo decide el catálogo según quién mire: la ficha
  * pública a quien no tiene acceso, la herramienta a quien sí.
@@ -51,11 +50,6 @@ export default function NavPrincipal({ logueado, premium, conNova = false }: {
           </li>
         );
       })}
-      {!premium && (
-        <li>
-          <Link href="/premium" className="nav-principal-premium">Premium</Link>
-        </li>
-      )}
     </ul>
   );
 }
