@@ -22,18 +22,13 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
-### 00f. Cinco cursos nuevos, uno a uno (12-11-2026)
+### 00f. Cinco cursos nuevos: lo que queda (13-11-2026)
 
-Pedido por el admin el 12-11-2026, con la orden de **no parar, no esperar su aprobación de cada informe y publicarlos**. Cada curso sigue `CURSOS.md` entero: informe con fuentes en `informes/`, `scripts/cursos/<slug>/` (curso.json, lecciones, bancos de 15 por módulo y 40 del final), términos nuevos del diccionario como ficha detallada, icono del logro, paleta propia, `subir-curso.mjs`, y publicación. Las portadas las genera el admin con los prompts que se le dejan; mientras, cada curso sale con su arte SVG.
+Los cinco cursos pedidos el 12-11-2026 están escritos, subidos y **publicados** desde el 13-11-2026: `coinmarketcap-y-coingecko`, `bitcoin-y-dca`, `futuros-y-apalancamiento`, `analisis-tecnico-sin-humo` y `defi-y-stablecoins`. Sus paletas y motivos están en el registro de `CURSOS.md`. Queda:
 
-Orden y estado (se va tachando aquí según se cierra cada paso; al cerrar el curso entero se borra su línea):
-
-- [ ] **1 · Cómo leer CoinMarketCap y CoinGecko** (`coinmarketcap-y-coingecko`, coral `#ff8a7a`, logro «Ojo Clínico», claves `cm-`). **Escrito entero y subido como borrador el 12-11-2026**: 5 módulos, 18 lecciones, 75 preguntas de módulo y 40 del final, diez términos nuevos en el diccionario, icono del logro y motivo SVG de la portada. Falta: publicarlo (`"published": true` y volver a subir, **después de desplegar el código**, que es donde viven los términos y el icono) y su ilustración.
-- [ ] **2 · Bitcoin y DCA a largo plazo** (`bitcoin-y-dca`, ámbar `#fbbf24`, logro «Paso Firme», claves `bd-`). **Escrito entero y subido como borrador el 13-11-2026**: 5 módulos, 17 lecciones, 75 preguntas de módulo y 40 del final, nueve términos nuevos en el diccionario (`volatilidad`, `etf-de-bitcoin`, `prueba-de-trabajo`, `satoshi`, `reserva-de-valor`, `fondo-de-emergencia`, `rebalanceo`, `precio-medio-de-compra`, `fifo`), icono del logro y motivo SVG. Falta lo mismo que al 1: publicarlo tras desplegar, y su ilustración.
-- [ ] **3 · Futuros y apalancamiento** (`futuros-y-apalancamiento`, rosa `#f472b6`, logro «Margen de Seguridad», claves `fa-`, nivel intermedio). **Escrito entero y subido como borrador el 13-11-2026**: 5 módulos, 17 lecciones, 90 preguntas de módulo (18 por banco) y 40 del final, siete términos nuevos en el diccionario (`funding-rate`, `contrato-perpetuo`, `margen`, `margen-cruzado`, `precio-de-marca`, `interes-abierto`, `cobertura`), icono del logro y motivo SVG. Falta lo mismo que al 1: publicarlo tras desplegar, y su ilustración.
-- [ ] **4 · Análisis técnico sin humo** (`analisis-tecnico-sin-humo`, verde lima `#a3e635`, logro «Gráfico Limpio», claves `at-`, nivel intermedio). **Escrito entero y subido como borrador el 13-11-2026**: 5 módulos, 17 lecciones, 91 preguntas de módulo y 40 del final, ocho términos nuevos en el diccionario (`vela-japonesa`, `tendencia`, `temporalidad`, `ruptura`, `media-movil`, `rsi`, `macd`, `backtesting`), icono del logro y motivo SVG. Falta lo mismo que al 1: publicarlo tras desplegar, y su ilustración.
-- [ ] **5 · DeFi y stablecoins** (`defi-y-stablecoins`, cian `#22d3ee` en lugar de azul para no parecerse al del Portfolio, logro «Rendimiento Real», claves `ds-`, nivel intermedio). **Escrito entero y subido como borrador el 13-11-2026**: 5 módulos, 17 lecciones, 91 preguntas de módulo y 40 del final, ocho términos nuevos en el diccionario (`depeg`, `colateral`, `amm`, `perdida-impermanente`, `tvl`, `apy`, `bridge`, `oraculo`), icono del logro y motivo SVG. Falta lo mismo que al 1: publicarlo tras desplegar, y su ilustración.
-- [ ] **Al final:** auditoría SEO de las cinco fichas (se publican sin ella por orden del admin), ilustraciones de portada cuando el admin las genere, y registro de paletas e ilustraciones en `CURSOS.md`.
+- [ ] **Auditoría SEO de las cinco fichas de curso.** Se publicaron sin ella por orden del admin.
+- [ ] **Ilustraciones de portada.** El admin las genera con los prompts que se le dieron en el chat (objeto y detalle de cada una, en la tabla de ilustraciones de `CURSOS.md`); mientras, cada curso sale con su arte SVG. Al recibirlas: subirlas y quitar el «pendiente de generar» de esa tabla.
+- [ ] **Probar con una sesión real** el aula, un examen y el PDF del certificado de uno de los cursos nuevos: se verificaron con `tsc`, la compilación y maquetas, no con una cuenta.
 
 ### 00e. La portada no tiene `<h1>` (12-11-2026)
 

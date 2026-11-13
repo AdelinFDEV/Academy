@@ -19,7 +19,7 @@
   "preguntas_final": 25,
   "revisado": "2026-11-13",
   "orden": 5,
-  "published": false,
+  "published": true,
   "modulos": [
     {
       "orden": 1,
