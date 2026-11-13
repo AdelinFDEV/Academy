@@ -22,6 +22,7 @@ Todo lo demás vive en archivos que **se leen cuando tocan**. Es deliberado: un 
 | Escribir **código**: CSS, tipos, hooks, guardarraíles | [`CODIGO.md`](./CODIGO.md) |
 | Tocar el **foro** o el **perfil público** (alias, foto, avisos) | [`FORO.md`](./FORO.md) |
 | Saber **qué toca ahora** · y **actualizarlo siempre** al cerrar algo | [`TAREAS.md`](./TAREAS.md) |
+| Apuntar o consultar **cursos y guías que queremos lanzar** en el futuro (ideas aún sin empezar) | [`CURSOS-PENDIENTES.md`](./CURSOS-PENDIENTES.md) · [`GUIAS-PENDIENTES.md`](./GUIAS-PENDIENTES.md) |
 
 La primera fila es **la fuente de verdad** de las guías: lo que diga el panel manda, y este archivo no lo repite a propósito — repetirlo es cómo se desincronizan.
 
