@@ -9558,14 +9558,28 @@ select {
   100% { stroke-dashoffset: -1; }
 }
 
+/* Foro: los tres puntos saltan uno tras otro, como alguien escribiendo. */
+.ia-punto {
+  animation: ia-punto 1.8s ease-in-out infinite;
+}
+
+.ia-punto:nth-of-type(2) { animation-delay: 0.18s; }
+.ia-punto:nth-of-type(3) { animation-delay: 0.36s; }
+
+@keyframes ia-punto {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30% { transform: translateY(-1.6px); opacity: 1; }
+}
+
 /* Con el ratón encima, todo al doble de velocidad. */
+.nav-foro:hover .ia-punto { animation-duration: 0.9s; }
 .nav-principal-enlace:hover .ia-birrete,
 .nav-principal-enlace:hover .ia-borla { animation-duration: 1.6s; }
 .nav-principal-enlace:hover .ia-barra { animation-duration: 1.3s; }
 .nav-principal-enlace:hover .ia-linea { animation-duration: 1.8s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ia-birrete, .ia-borla, .ia-barra { animation: none; }
+  .ia-birrete, .ia-borla, .ia-barra, .ia-punto { animation: none; }
   .ia-linea { animation: none; stroke-dashoffset: 0; }
 }
 

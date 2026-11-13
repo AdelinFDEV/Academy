@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessagesSquare } from "lucide-react";
+import { IconoForo } from "@/components/IconosAnimados";
 
 /**
  * El foro en la barra de escritorio, al lado de la cápsula de las tres piezas
@@ -23,7 +23,7 @@ export default function NavForo() {
   return (
     <Link href="/foro" className={`nav-foro${activo ? " is-activo" : ""}`} aria-current={activo ? "page" : undefined}>
       <span className="nav-foro-icono" aria-hidden="true">
-        <MessagesSquare size={17} strokeWidth={2.2} />
+        <IconoForo size={17} />
       </span>
       Foro
     </Link>

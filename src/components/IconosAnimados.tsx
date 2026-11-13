@@ -53,6 +53,18 @@ export function IconoDiario({ size = 16 }: { size?: number }) {
   );
 }
 
+/** Foro: un bocadillo con tres puntos que saltan, como alguien escribiendo. Va en la barra (NavForo). */
+export function IconoForo({ size = 16 }: { size?: number }) {
+  return (
+    <svg className="ia ia--foro" width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.6 3.8c-.5.4-1.2 0-1.2-.6V16A1.6 1.6 0 0 1 4 14.4z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <circle className="ia-punto" cx="8.4" cy="9.6" r="1.25" fill="currentColor" />
+      <circle className="ia-punto" cx="12" cy="9.6" r="1.25" fill="currentColor" />
+      <circle className="ia-punto" cx="15.6" cy="9.6" r="1.25" fill="currentColor" />
+    </svg>
+  );
+}
+
 /* ── Los del slider de la portada (animados en home.css) ─────────────────── */
 
 /** En vivo: un punto con una onda que se expande. */
