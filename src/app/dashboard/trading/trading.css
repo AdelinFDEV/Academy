@@ -1811,14 +1811,16 @@
 .tjc-band { gap: 0.6rem; overflow: visible; border: 0; border-radius: 0; background: none; }
 .tjc-band > div { position: relative; padding: 0.8rem 0.95rem 0.85rem; border: 1px solid var(--hairline); border-radius: 14px; transition: transform 0.15s ease, border-color 0.15s ease; }
 .tjc-band > div:hover { transform: translateY(-2px); border-color: rgba(240, 244, 255, 0.2); }
-.tjc-band-ico { position: absolute; top: 0.6rem; right: 0.6rem; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: rgba(240, 244, 255, 0.06); color: var(--text-muted); }
+.tjc-band-ico { display: grid; place-items: center; flex-shrink: 0; width: 24px; height: 24px; border-radius: 8px; background: rgba(240, 244, 255, 0.06); color: var(--text-muted); }
 .tjc-band .tjc-band-main .tjc-band-ico { background: color-mix(in srgb, var(--tone) 18%, transparent); color: var(--tone); }
-.tjc-band dt { padding-right: 2rem; }
+.tjc-band dt { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.15rem; }
 .tjc-band-barra { display: block; height: 4px; margin-top: 0.35rem; border-radius: 99px; background: rgba(240, 244, 255, 0.09); overflow: hidden; }
 .tjc-band-barra b { display: block; height: 100%; border-radius: 99px; background: var(--tj-win); }
 .tjc-band .tjc-band-mejor { border-color: rgba(230, 180, 85, 0.55); background: linear-gradient(150deg, rgba(230, 180, 85, 0.2), var(--tj-panel-solid) 70%); }
 .tjc-band .tjc-band-mejor .tjc-band-ico { background: linear-gradient(180deg, #ffe08a, #e6b455 60%, #c98a1c); color: #3a2500; box-shadow: 0 6px 14px -6px rgba(230, 180, 85, 0.9); }
-.tjc-band .tjc-band-mejor dd { color: var(--premium-gold); }
+.tjc-band .tjc-band-mejor dt { color: var(--premium-gold); }
+.tjc-band .tjc-band-mejor dd:not(.tjc-band-sub) { white-space: normal; overflow: visible; line-height: 1.2; }
+.tjc-band .tjc-band-mejor dd { color: #ffe9b0; }
 .tjc-band dd.tjc-band-sub { font-family: var(--font-family); font-size: 0.76rem; font-weight: 700; color: var(--tj-win); }
 .tjc-band-mood .tjd-cara { width: 22px; height: 22px; filter: none; flex-shrink: 0; }
 
@@ -1902,6 +1904,42 @@
 .tjy-mini i.has-data { background: color-mix(in srgb, var(--tone) calc(var(--intensity) * 100%), transparent); }
 
 .tjy-meta { overflow: hidden; font-size: 0.68rem; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
+
+/* ── Vista Año: el repaso del 13-11-2026 ──
+   Una barra por mes para ver el año de un vistazo, y el mejor mes destacado
+   en dorado, en las barras y en su tarjeta. */
+.tjy-barras { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; margin: 0 0 1.4rem; padding: 1.4rem 1rem 0.8rem; border: 1px solid var(--hairline); border-radius: 14px; background: linear-gradient(180deg, rgba(240, 244, 255, 0.03), transparent); }
+.tjy-barra { display: grid; grid-template-rows: 76px 44px auto; justify-items: center; gap: 0; padding: 0; border: 0; background: none; font: inherit; color: var(--text-muted); cursor: pointer; }
+.tjy-barra-arriba, .tjy-barra-abajo { position: relative; display: flex; justify-content: center; width: 100%; }
+.tjy-barra-arriba { align-items: flex-end; border-bottom: 1px solid rgba(240, 244, 255, 0.16); }
+.tjy-barra-abajo { align-items: flex-start; }
+.tjy-barra i { display: block; width: min(70%, 34px); border-radius: 6px 6px 0 0; background: linear-gradient(180deg, var(--tone), color-mix(in srgb, var(--tone) 45%, transparent)); transition: filter 0.15s ease; }
+.tjy-barra-abajo i { border-radius: 0 0 6px 6px; background: linear-gradient(0deg, var(--tone), color-mix(in srgb, var(--tone) 45%, transparent)); }
+.tjy-barra-mes { margin-top: 0.4rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em; text-transform: capitalize; }
+.tjy-barra:hover i { filter: brightness(1.25); }
+.tjy-barra:hover .tjy-barra-mes { color: var(--text-primary); }
+.tjy-barra:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 3px; border-radius: 6px; }
+.tjy-barra.is-mejor i { background: linear-gradient(180deg, #fff0b8, #e6b455 55%, #c98a1c); box-shadow: 0 0 18px -2px rgba(230, 180, 85, 0.7); }
+.tjy-barra.is-mejor .tjy-barra-mes { color: var(--premium-gold); }
+.tjy-barra-corona { position: absolute; top: -16px; left: 50%; display: grid; place-items: center; width: 22px; height: 17px; margin-left: -11px; border-radius: 7px 7px 5px 5px; background: linear-gradient(180deg, #fff0b8, #e6b455 55%, #c98a1c); color: #3a2500; box-shadow: 0 5px 10px -4px rgba(230, 180, 85, 0.9); }
+
+/* Las tarjetas de los meses. */
+.tjy-month { position: relative; }
+.tjy-month.is-mejor { border-color: var(--premium-gold); background: linear-gradient(165deg, rgba(230, 180, 85, 0.22), rgba(230, 180, 85, 0.04) 65%), rgba(240, 244, 255, 0.02); box-shadow: 0 0 0 1px rgba(230, 180, 85, 0.5), 0 18px 36px -20px rgba(230, 180, 85, 0.9); }
+.tjy-month.is-mejor .tjy-head strong { color: #ffe08a; text-shadow: 0 0 16px rgba(230, 180, 85, 0.5); }
+.tjy-mejor, .tjy-ahora { position: absolute; top: -11px; right: 12px; display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 99px; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.04em; }
+.tjy-mejor { background: linear-gradient(180deg, #fff0b8, #e6b455 55%, #c98a1c); box-shadow: 0 6px 14px -6px rgba(230, 180, 85, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.7); color: #3a2500; }
+.tjy-ahora { border: 1px solid rgba(240, 244, 255, 0.35); background: var(--tj-panel-solid); color: var(--text-secondary); }
+.tjy-acierto { display: block; height: 4px; border-radius: 99px; background: color-mix(in srgb, var(--tj-loss) 50%, transparent); overflow: hidden; }
+.tjy-acierto b { display: block; height: 100%; background: var(--tj-win); }
+.tjy-grid { row-gap: 1.1rem; }
+
+@media (max-width: 640px) {
+  .tjy-barras { gap: 3px; padding: 1.3rem 0.5rem 0.6rem; }
+  .tjy-barra { grid-template-rows: 56px 32px auto; }
+  .tjy-barra-mes { font-size: 0.58rem; letter-spacing: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .tjy-barra i { transition: none; } }
 
 
 .tjc-pnl {

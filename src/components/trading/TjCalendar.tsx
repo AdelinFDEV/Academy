@@ -247,8 +247,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
       <>
         <dl className="tjc-band">
           <div className={`tjc-band-main tone-${toneOf(valueOf(sum))}`}>
-            <span className="tjc-band-ico" aria-hidden="true">{valueOf(sum) < 0 ? <TrendingDown size={16} /> : <TrendingUp size={16} />}</span>
-            <dt>Resultado del mes</dt>
+            <dt><span className="tjc-band-ico" aria-hidden="true">{valueOf(sum) < 0 ? <TrendingDown size={16} /> : <TrendingUp size={16} />}</span>Resultado del mes</dt>
             <dd>{sum.count ? fmt(sum) : "—"}</dd>
             {prev.count > 0 && (
               <dd className={`tjc-band-diff tone-${toneOf(valueOf(diff))}`}>
@@ -258,23 +257,19 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
             )}
           </div>
           <div>
-            <span className="tjc-band-ico" aria-hidden="true"><Activity size={15} /></span>
-            <dt>Operaciones</dt><dd>{sum.count}</dd>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><Activity size={15} /></span>Operaciones</dt><dd>{sum.count}</dd>
           </div>
           <div>
-            <span className="tjc-band-ico" aria-hidden="true"><Target size={15} /></span>
-            <dt>Acierto</dt><dd>{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><Target size={15} /></span>Acierto</dt><dd>{sum.count ? `${Math.round((sum.wins / sum.count) * 100)} %` : "—"}</dd>
             {sum.count > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>}
           </div>
           <div>
-            <span className="tjc-band-ico" aria-hidden="true"><CalendarCheck size={15} /></span>
-            <dt>Días en verde</dt><dd>{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><CalendarCheck size={15} /></span>Días en verde</dt><dd>{sum.days ? `${sum.green}/${sum.days}` : "—"}</dd>
             {sum.days > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.green / sum.days) * 100}%` }} /></i>}
           </div>
           <div className={best ? "tjc-band-mejor" : undefined}>
-            <span className="tjc-band-ico" aria-hidden="true"><Crown size={15} /></span>
-            <dt>Mejor día</dt>
-            <dd>{best ? `${best.day} de ${MONTHS[month]}` : "—"}</dd>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><Crown size={15} /></span>Mejor día</dt>
+            <dd>{best ? `${best.day} de ${MONTHS[month].slice(0, 3)}.` : "—"}</dd>
             {best && <dd className="tjc-band-sub">{fmt(best.info)}</dd>}
           </div>
           <div className={`tjc-band-mood${moodAvg ? ` mood-${moodAvg.value}` : ""}`}>
@@ -492,6 +487,10 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
     const traded = months.filter(x => x.sum.count);
     const greenMonths = traded.filter(x => x.sum.pnl > 0).length;
     const best = traded.reduce<(typeof months)[number] | null>((b, x) => (valueOf(x.sum) > (b ? valueOf(b.sum) : 0) ? x : b), null);
+    // El peor mes solo se señala si de verdad acabó en negativo.
+    const worst = traded.reduce<(typeof months)[number] | null>((b, x) => (valueOf(x.sum) < (b ? valueOf(b.sum) : 0) ? x : b), null);
+    const maxMes = Math.max(...months.map(x => Math.abs(valueOf(x.sum))), 1e-9);
+    const mediaMes = traded.length ? { pnl: total.pnl / traded.length, r: total.r / traded.length } : null;
     const maxAbs = Math.max(...months.flatMap(x => x.infos.map(i => (i ? Math.abs(valueOf(i)) : 0))), 1e-9);
     // Ánimo del año: la media de los días del año con ánimo apuntado (la franja del mes tiene el suyo).
     const yearMoods = Object.values(dias)
@@ -503,21 +502,60 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
       <>
         <dl className="tjc-band">
           <div className={`tjc-band-main tone-${toneOf(valueOf(total))}`}>
-            <dt>Resultado de {year}</dt>
+            <dt><span className="tjc-band-ico" aria-hidden="true">{valueOf(total) < 0 ? <TrendingDown size={16} /> : <TrendingUp size={16} />}</span>Resultado de {year}</dt>
             <dd>{total.count ? fmt(total) : "—"}</dd>
+            {mediaMes && <dd className="tjc-band-diff">{fmt(mediaMes)} de media por mes operado</dd>}
           </div>
-          <div><dt>Operaciones</dt><dd>{total.count}</dd></div>
-          <div><dt>Acierto</dt><dd>{total.count ? `${Math.round((total.wins / total.count) * 100)} %` : "—"}</dd></div>
-          <div><dt>Meses en verde</dt><dd>{traded.length ? `${greenMonths}/${traded.length}` : "—"}</dd></div>
-          <div className={best ? "tone-win" : undefined}>
-            <dt>Mejor mes</dt>
-            <dd className="cap">{best ? `${MONTHS[best.m].slice(0, 3)} · ${fmt(best.sum)}` : "—"}</dd>
+          <div>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><Activity size={15} /></span>Operaciones</dt>
+            <dd>{total.count}</dd>
           </div>
-          <div className="tjc-band-mood">
+          <div>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><Target size={15} /></span>Acierto</dt>
+            <dd>{total.count ? `${Math.round((total.wins / total.count) * 100)} %` : "—"}</dd>
+            {total.count > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(total.wins / total.count) * 100}%` }} /></i>}
+          </div>
+          <div>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><CalendarCheck size={15} /></span>Meses en verde</dt>
+            <dd>{traded.length ? `${greenMonths}/${traded.length}` : "—"}</dd>
+            {traded.length > 0 && <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(greenMonths / traded.length) * 100}%` }} /></i>}
+          </div>
+          <div className={best ? "tjc-band-mejor" : undefined}>
+            <dt><span className="tjc-band-ico" aria-hidden="true"><Crown size={15} /></span>Mejor mes</dt>
+            <dd className="cap">{best ? MONTHS[best.m] : "—"}</dd>
+            {best && <dd className="tjc-band-sub">{fmt(best.sum)}</dd>}
+          </div>
+          <div className={`tjc-band-mood${yearMood ? ` mood-${yearMood.value}` : ""}`}>
             <dt>Ánimo del año</dt>
-            <dd>{yearMood ? <><span aria-hidden="true">{yearMood.emoji}</span> {yearMood.label}</> : "—"}</dd>
+            <dd>{yearMood ? <><Cara valor={yearMood.value} /> {yearMood.label}</> : "—"}</dd>
           </div>
         </dl>
+
+        {/* El año de un vistazo: una barra por mes, hacia arriba si acabó en verde. */}
+        <div className="tjy-barras" role="group" aria-label={`Resultado de cada mes de ${year}`}>
+          {months.map(({ m, sum }) => {
+            const v = valueOf(sum);
+            const alto = sum.count ? Math.max((Math.abs(v) / maxMes) * 100, 6) : 0;
+            const esMejor = best?.m === m;
+            return (
+              <button
+                key={m}
+                type="button"
+                className={`tjy-barra${sum.count ? ` tone-${toneOf(v)}` : " is-quiet"}${esMejor ? " is-mejor" : ""}${worst?.m === m ? " is-peor" : ""}`}
+                onClick={() => openMonth(m)}
+                title={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}`}
+                aria-label={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}${esMejor ? ", el mejor mes del año" : ""}. Abrir el mes`}
+              >
+                <span className="tjy-barra-arriba">
+                  {esMejor && <span className="tjy-barra-corona" aria-hidden="true"><Crown size={12} strokeWidth={2.4} /></span>}
+                  {v > 0 && <i style={{ height: `${alto}%` }} />}
+                </span>
+                <span className="tjy-barra-abajo">{v < 0 && <i style={{ height: `${alto}%` }} />}</span>
+                <span className="tjy-barra-mes cap">{MONTHS[m].slice(0, 3)}</span>
+              </button>
+            );
+          })}
+        </div>
 
         <div className="tjc-viewport">
           <AnimatePresence mode="wait" initial={false}>
@@ -531,14 +569,17 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
             >
               {months.map(({ m, cells, infos, sum }) => {
                 const isNow = year === now.getFullYear() && m === now.getMonth();
+                const esMejor = best?.m === m;
                 return (
                   <button
                     key={m}
                     type="button"
-                    className={`tjy-month${sum.count ? ` tone-${toneOf(valueOf(sum))}` : " is-quiet"}${isNow ? " is-now" : ""}`}
+                    className={`tjy-month${sum.count ? ` tone-${toneOf(valueOf(sum))}` : " is-quiet"}${isNow ? " is-now" : ""}${esMejor ? " is-mejor" : ""}`}
                     onClick={() => openMonth(m)}
-                    aria-label={`${MONTHS[m]} de ${year}: ${sum.count ? `${fmt(sum)} en ${sum.count} operaciones` : "sin operaciones"}. Abrir el mes`}
+                    aria-label={`${MONTHS[m]} de ${year}: ${sum.count ? `${fmt(sum)} en ${sum.count} operaciones` : "sin operaciones"}${esMejor ? ". El mejor mes del año" : ""}. Abrir el mes`}
                   >
+                    {esMejor && <span className="tjy-mejor" aria-hidden="true"><Crown size={12} strokeWidth={2.4} /> Mejor mes</span>}
+                    {isNow && !esMejor && <span className="tjy-ahora" aria-hidden="true">En curso</span>}
                     <span className="tjy-head">
                       <span className="tjy-name cap">{MONTHS[m]}</span>
                       <strong>{sum.count ? fmt(sum) : "—"}</strong>
@@ -556,8 +597,9 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                         );
                       })}
                     </span>
+                    {sum.count > 0 && <i className="tjy-acierto" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>}
                     <span className="tjy-meta">
-                      {sum.count ? `${sum.count} op. · ${Math.round((sum.wins / sum.count) * 100)} % · ${sum.green}/${sum.days} días en verde` : "Sin operaciones"}
+                      {sum.count ? `${sum.count} op. · ${Math.round((sum.wins / sum.count) * 100)} % de acierto · ${sum.green}/${sum.days} días en verde` : "Sin operaciones"}
                     </span>
                   </button>
                 );
