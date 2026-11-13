@@ -143,9 +143,16 @@ const SWIPE = 60;
 const FLY_SPEED = 18;
 const FLY_EASE = [0.45, 0, 0.55, 1] as const;
 const ACTIVITY_MS = 10 * 60 * 1000;
-/** Tamaño de la cabeza en pantalla, y lo que asoman los objetos a su derecha. */
+/** Tamaño al que está dibujada la cabeza, y lo que asoman los objetos a su derecha. */
 const HEAD = 112;
 const PROP_W = 50;
+/**
+ * A qué escala vive Nova en su habitación (pedido por el admin el 13-11-2026:
+ * a tamaño completo era demasiado grande). El CSS la pinta a HEAD × REPOSO
+ * (`.tjbot-habitat .nh`), y su copia voladora sale y vuelve a esa misma escala
+ * para que no dé un salto. Si cambias este número, cambia el CSS con él.
+ */
+const REPOSO = 0.75;
 const ACTIVITIES: NovaActivity[] = ["trade", "study", "ball", "sleep", "music"];
 /** Cuánto dura el bocadillo con el que Nova anuncia lo nuevo. */
 const ANUNCIO_MS = 7000;
@@ -176,7 +183,7 @@ function vueloEscritorio(st: Escena, dir: number): TargetAndTransition {
   return {
     x: [st.from.x, st.from.x, midX, st.to.x],
     y: [st.from.y, st.from.y + 12, apex, st.to.y],
-    scale: [1, 0.86, (1 + s) / 2 * 1.05, s * 1.1, s * 0.96, s],
+    scale: [REPOSO, REPOSO * 0.86, (REPOSO + s) / 2 * 1.05, s * 1.1, s * 0.96, s],
     rotate: [0, -dir * 7, dir * 16, -dir * 6, dir * 2, 0],
     transition: {
       x: { duration: 1.05, times: [0, 0.14, 0.56, 1], ease: ["easeOut", "easeOut", "easeInOut"] },
@@ -195,7 +202,7 @@ function vueltaEscritorio(st: Escena, p: Pt, dir: number): TargetAndTransition {
   return {
     x: [st.to.x, st.to.x, midX, p.x],
     y: [st.to.y, st.to.y - 14, apex, p.y],
-    scale: [s, s * 1.06, s * 0.7, 1.08, 0.96, 1],
+    scale: [s, s * 1.06, s * 0.7, REPOSO * 1.08, REPOSO * 0.96, REPOSO],
     rotate: [0, dir * 4, -dir * 14, dir * 5, -dir * 2, 0],
     transition: {
       delay: 0.1,
@@ -220,7 +227,7 @@ function vueloMovil(st: Escena): TargetAndTransition {
   return {
     x: [st.from.x, st.from.x, st.to.x, st.to.x],
     y: [st.from.y, st.from.y + 10, st.to.y - 6, st.to.y],
-    scale: [1, 0.86, s * 1.14, s * 0.96, s],
+    scale: [REPOSO, REPOSO * 0.86, s * 1.14, s * 0.96, s],
     rotate: [0, -4, 3, 0],
     transition: {
       x: { duration: 0.62, times: [0, 0.16, 0.78, 1], ease: ["easeOut", EASE_DASH, "easeOut"] },
@@ -236,7 +243,7 @@ function vueltaMovil(st: Escena, p: Pt): TargetAndTransition {
   return {
     x: [st.to.x, st.to.x, p.x],
     y: [st.to.y, st.to.y - 8, p.y],
-    scale: [s, s * 1.06, 1.04, 1],
+    scale: [s, s * 1.06, REPOSO * 1.04, REPOSO],
     rotate: [0, 3, 0],
     transition: {
       delay: 0.1,
@@ -333,7 +340,7 @@ export default function TjBot({ report, onAction }: {
   // Los valores del vuelo al centro: los anima el flyer y los sigue la estela.
   const fx = useMotionValue(0);
   const fy = useMotionValue(0);
-  const fscale = useMotionValue(1);
+  const fscale = useMotionValue(REPOSO);
   const [activity, setActivity] = useState<NovaActivity>("none");
   // Posición en su espacio, ángulo de giro (0 de frente, 90 perfil, 180 de espaldas)
   // y una inclinación leve según la velocidad al volar.
@@ -422,8 +429,8 @@ export default function TjBot({ report, onAction }: {
     const fly = () => {
       const habitat = habitatRef.current;
       if (pausedRef.current || !habitat) return;
-      const maxX = Math.max(0, habitat.clientWidth - HEAD - PROP_W);
-      const maxY = Math.max(0, habitat.clientHeight - HEAD);
+      const maxX = Math.max(0, habitat.clientWidth - (HEAD + PROP_W) * REPOSO);
+      const maxY = Math.max(0, habitat.clientHeight - HEAD * REPOSO);
       const tx = Math.random() * maxX;
       const ty = Math.random() * maxY;
       const dx = tx - x.get();
@@ -461,7 +468,7 @@ export default function TjBot({ report, onAction }: {
     const habitat = habitatRef.current;
     if (!habitat) return;
     const ro = new ResizeObserver(() => {
-      const maxX = Math.max(0, habitat.clientWidth - HEAD - PROP_W);
+      const maxX = Math.max(0, habitat.clientWidth - (HEAD + PROP_W) * REPOSO);
       if (x.get() > maxX) x.set(maxX);
     });
     ro.observe(habitat);
@@ -597,7 +604,7 @@ export default function TjBot({ report, onAction }: {
     setHome(null);
     fx.set(r.left);
     fy.set(r.top);
-    fscale.set(1);
+    fscale.set(REPOSO);
     setStage({
       from: { x: r.left, y: r.top },
       to: { x: vw / 2 - (HEAD * scale) / 2, y: movil ? 10 : Math.max(12, window.innerHeight * 0.03) },
@@ -758,7 +765,7 @@ export default function TjBot({ report, onAction }: {
                 className="tjbot-flyer"
                 custom={home ?? stage.from}
                 style={{ x: fx, y: fy, scale: fscale }}
-                initial={{ x: stage.from.x, y: stage.from.y, scale: 1, rotate: 0 }}
+                initial={{ x: stage.from.x, y: stage.from.y, scale: REPOSO, rotate: 0 }}
                 animate={stage.movil ? vueloMovil(stage) : vueloEscritorio(stage, flightDir)}
                 exit="back"
                 variants={{

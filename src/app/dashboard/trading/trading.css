@@ -821,6 +821,11 @@
 .tjbot-trigger:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 4px; }
 
 .tjbot-avatar-wrap { position: relative; display: grid; transform-origin: 50% 50%; }
+/* Nova en su habitación va al 75 % (REPOSO en TjBot.tsx): 112 px × 0,75. */
+.tjbot-habitat .nh { width: 84px; height: 84px; }
+.tjbot-habitat .tjbot-shadow { width: 46px; margin-left: -23px; bottom: -9px; }
+.tjbot-habitat .tjbot-ping { top: 9px; right: 0; }
+.tjbot-habitat .tjbot-anuncio { left: 42px; }
 
 /* Sombra lejana en el «suelo»: Nova vuela, así que es tenue y respira con él. */
 .tjbot-shadow {
