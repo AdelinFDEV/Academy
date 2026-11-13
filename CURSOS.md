@@ -111,8 +111,9 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 | Bitcoin y DCA a largo plazo | `bitcoin-y-dca` | `#fbbf24` | Ámbar | Escrito el 13-11-2026 |
 | Futuros y apalancamiento | `futuros-y-apalancamiento` | `#f472b6` | Rosa | Escrito el 13-11-2026 |
 | Análisis técnico sin humo | `analisis-tecnico-sin-humo` | `#a3e635` | Verde lima | Escrito el 13-11-2026 |
+| DeFi y stablecoins | `defi-y-stablecoins` | `#22d3ee` | Cian | Escrito el 13-11-2026 |
 
-Ideas libres para los siguientes: azul cobalto `#6f9bff`. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
+Ideas libres para los siguientes: naranja teja `#fb923c` (ojo con el del Diario, `#ff9a4d`), verde esmeralda `#34d399`, índigo `#818cf8` (ojo con el violeta de seguridad). El azul cobalto `#6f9bff` se descartó para DeFi por parecerse al del Portfolio. Comprueba que el que elijas no choque con los colores de las herramientas (Diario `#ff9a4d`, Portfolio `#4f9dff`).
 
 ### La tarjeta del curso en `/cursos` — el mismo formato para todos
 
@@ -155,6 +156,7 @@ El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no 
 | Bitcoin y DCA a largo plazo | Una escalera de peldaños de cristal, iguales, que sube hacia la derecha, con una moneda lisa de metal satinado, sin símbolo, apoyada en el peldaño más alto | Una rejilla tenue de calendario detrás | `#fbbf24` (pendiente de generar) |
 | Futuros y apalancamiento | Una balanza de precisión de cristal y metal satinado, muy desequilibrada, con una pesa pequeña en un plato y una grande en el otro | Una línea de precio tenue que cae en escalones por detrás | `#f472b6` (pendiente de generar) |
 | Análisis técnico sin humo | Una única vela japonesa de cristal translúcido, alta, con su mecha de metal satinado, de la que se desprende una voluta fina de humo que se deshace | Una rejilla tenue de gráfico detrás | `#a3e635` (pendiente de generar) |
+| DeFi y stablecoins | Dos cilindros de cristal comunicados por un tubo fino, con un líquido luminoso al mismo nivel en los dos, sobre una base de metal satinado | Una red tenue de nodos conectados detrás | `#22d3ee` (pendiente de generar) |
 
 Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
 

@@ -22,7 +22,7 @@ const PORTADA_IMAGEN: Record<string, string> = {
   "seguridad-cripto": "/cursos/seguridad-cripto/portada.webp",
 };
 
-type Motivo = "pulso" | "escudo" | "datos" | "peldanos" | "balanza" | "velas" | "generico";
+type Motivo = "pulso" | "escudo" | "datos" | "peldanos" | "balanza" | "velas" | "vasos" | "generico";
 const MOTIVO: Record<string, Motivo> = {
   "psicologia-del-trading": "pulso",
   "seguridad-cripto": "escudo",
@@ -30,6 +30,7 @@ const MOTIVO: Record<string, Motivo> = {
   "bitcoin-y-dca": "peldanos",
   "futuros-y-apalancamiento": "balanza",
   "analisis-tecnico-sin-humo": "velas",
+  "defi-y-stablecoins": "vasos",
 };
 
 /** Un número estable a partir del slug, para variar el arte genérico. */
@@ -178,6 +179,28 @@ function ArteVelas() {
   );
 }
 
+/** Dos depósitos comunicados por un tubo, al mismo nivel, sobre una red de nodos. */
+function ArteVasos() {
+  const nodos: [number, number][] = [[196, 28], [232, 104], [262, 20], [300, 124], [344, 16], [378, 96], [392, 44]];
+  return (
+    <>
+      {nodos.map(([x, y], i) => {
+        const [x2, y2] = nodos[(i + 2) % nodos.length];
+        return <line key={i} x1={x} y1={y} x2={x2} y2={y2} stroke="currentColor" strokeWidth="1" opacity="0.1" />;
+      })}
+      {nodos.map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="2.5" fill="currentColor" opacity="0.28" />
+      ))}
+      <rect x="252" y="34" width="38" height="78" rx="6" fill="none" stroke="currentColor" strokeWidth="2.2" opacity="0.9" />
+      <rect x="322" y="34" width="38" height="78" rx="6" fill="none" stroke="currentColor" strokeWidth="2.2" opacity="0.9" />
+      <rect x="255" y="70" width="32" height="39" rx="3" fill="currentColor" opacity="0.28" />
+      <rect x="325" y="70" width="32" height="39" rx="3" fill="currentColor" opacity="0.28" />
+      <path d="M290 100 H322" stroke="currentColor" strokeWidth="5" opacity="0.55" />
+      <path d="M252 70 H290 M322 70 H360" stroke="currentColor" strokeWidth="1.4" opacity="0.7" />
+    </>
+  );
+}
+
 function ArteGenerico({ slug }: { slug: string }) {
   const s = semilla(slug);
   const cx = 260 + (s % 80);
@@ -220,6 +243,7 @@ export default function PortadaCurso({ slug, titulo }: { slug: string; titulo: s
       {motivo === "peldanos" && <ArtePeldanos />}
       {motivo === "balanza" && <ArteBalanza />}
       {motivo === "velas" && <ArteVelas />}
+      {motivo === "vasos" && <ArteVasos />}
       {motivo === "generico" && <ArteGenerico slug={slug} />}
     </svg>
   );
