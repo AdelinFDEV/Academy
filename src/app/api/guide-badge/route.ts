@@ -1,10 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { GUIDES } from "@/lib/guides";
+import { TODAS_LAS_GUIAS } from "@/lib/guides";
 
 // Derived from GUIDES so every new guide's badge is valid automatically —
 // no need to remember to whitelist it here.
-const VALID_GUIDE_BADGES = new Set(GUIDES.map((g) => g.badgeId));
+const VALID_GUIDE_BADGES = new Set(TODAS_LAS_GUIAS.map((g) => g.badgeId));
 
 export async function POST(req: Request) {
   const supabase = await createClient();

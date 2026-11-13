@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
 import SiteNav from "@/components/SiteNav";
 import { ArrowRight, Zap, BookOpen, Trophy, BarChart2, Star } from "lucide-react";
-import { GUIDES, GUIDES_NEWEST_FIRST } from "@/lib/guides";
+import { GUIDES } from "@/lib/guides";
+import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 import JsonLd from "@/components/JsonLd";
 import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
@@ -46,6 +47,8 @@ function enlaceGuia(slug: string) {
 }
 
 export default async function GuiasPage() {
+  // Las publicadas en el código y las que el admin ha publicado desde el panel.
+  const recientes = await guiasVisiblesRecientes();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -62,7 +65,7 @@ export default async function GuiasPage() {
       <JsonLd
         data={itemListSchema(
           "Guías interactivas de AdelinBTC Academy",
-          GUIDES_NEWEST_FIRST.map((g) => ({ name: g.title, path: `/guias/${g.slug}` }))
+          recientes.map((g) => ({ name: g.title, path: `/guias/${g.slug}` }))
         )}
       />
       <div className="bg-ambient" />
@@ -134,7 +137,7 @@ export default async function GuiasPage() {
         <div className="guias-bloque guias-section">
           <h2 className="guias-section-title">Disponibles ahora</h2>
           <div className="guias-grid">
-            {GUIDES_NEWEST_FIRST.map((g) => (
+            {recientes.map((g) => (
               <Link key={g.slug} href={`/guias/${g.slug}`} className="guias-card">
                 <div className="guias-card-glow" aria-hidden="true" />
                 <GuiaPortada guia={g} className="guias-card-portada" />

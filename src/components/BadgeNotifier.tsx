@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
-import { BADGE_DEFS, GUIDE_BADGE_DEFS } from "@/lib/logros";
+import { BADGE_DEFS, GUIDE_BADGE_DEFS_TODAS } from "@/lib/logros";
 
 /**
  * Lo que el aviso necesita para pintarse. Un logro de `logros.tsx` ya lo cumple;
@@ -25,7 +25,7 @@ export interface UnlockEventDetail {
   notices?: UnlockNotice[];
 }
 
-const ALL_BADGE_DEFS: UnlockNotice[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS];
+const ALL_BADGE_DEFS: UnlockNotice[] = [...BADGE_DEFS, ...GUIDE_BADGE_DEFS_TODAS];
 
 function Popup({ badge, onClose }: { badge: UnlockNotice; onClose: () => void }) {
   const link = badge.link ?? { href: "/logros", label: "Ver Logros" };

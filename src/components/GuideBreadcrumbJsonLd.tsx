@@ -1,27 +1,47 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema, guideSchema } from "@/lib/schema";
-import { GUIDES } from "@/lib/guides";
+import { getGuide } from "@/lib/guides";
+import { borradorSinPublicar } from "@/lib/guiasVisibles";
+import { sesionActual } from "@/lib/cursos";
 
 /**
- * El JSON-LD de una guía: el `Article` y las migas de
- * pan Inicio › Guías › la guía.
+ * El JSON-LD de una guía: el `Article` y las migas de pan Inicio › Guías › la
+ * guía. Y, desde el 13-11-2026, **la puerta de los borradores**.
  *
  * Conserva el nombre de cuando solo emitía las migas porque es el que buscan
  * `scripts/check-code.mjs` y las instrucciones de `/admin/guias-instrucciones`.
  *
  * Existe como componente y no copiado en cada guía porque todo sale de
- * `GUIDES` (`src/lib/guides.ts`), que ya es la fuente de verdad del listado y
- * del sitemap. Así el título del dato estructurado no puede desincronizarse
- * del que se ve en `/guias`.
+ * `src/lib/guides.ts`, que ya es la fuente de verdad del listado y del
+ * sitemap. Así el título del dato estructurado no puede desincronizarse del
+ * que se ve en `/guias`.
  *
- * Si el slug no está en `GUIDES` no emite nada. No es un descuido: una guía que
- * falta en ese array **ya está rota** para el SEO — no aparece en el sitemap ni
- * en el listado, así que Google no la ve. Inventarle aquí unas migas no lo
- * arreglaría; lo que hay que hacer es darla de alta en `GUIDES`.
+ * ── La puerta ──────────────────────────────────────────────────────────────
+ * Toda guía lleva este componente (lo exige `npm run check`), así que es el
+ * único sitio por el que pasan todas. Si la guía es un borrador que el admin
+ * aún no ha publicado desde /admin/acciones:
+ *   · a cualquiera que no sea admin, 404: la página no existe todavía;
+ *   · al admin, un aviso arriba de que está viendo un borrador, y sin JSON-LD.
+ *
+ * Si el slug no está ni en `GUIDES` ni en `BORRADORES` no emite nada: una guía
+ * sin dar de alta ya está rota para el SEO, y unas migas no lo arreglan.
  */
-export default function GuideBreadcrumbJsonLd({ slug }: { slug: string }) {
-  const guia = GUIDES.find((g) => g.slug === slug);
+export default async function GuideBreadcrumbJsonLd({ slug }: { slug: string }) {
+  const guia = getGuide(slug);
   if (!guia) return null;
+
+  if (await borradorSinPublicar(slug)) {
+    const sesion = await sesionActual();
+    if (!sesion?.esAdmin) notFound();
+    return (
+      <p className="gbc-borrador" role="status">
+        <strong>Borrador.</strong> Solo tú ves esta guía. Para publicarla, ve a{" "}
+        <Link href="/admin/acciones">Acciones</Link>.
+      </p>
+    );
+  }
 
   return (
     <JsonLd

@@ -4,7 +4,7 @@ import {
   ListChecks, ShieldCheck, NotebookPen, Hourglass, CalendarCheck, TrendingUp, RefreshCw, Crown, GraduationCap, type LucideIcon,
   CalendarRange, Anchor, Crosshair, Footprints, Scale, Wind, Sun, Sigma, Mountain, CalendarDays,
 } from "lucide-react";
-import { GUIDES } from "@/lib/guides";
+import { GUIDES, TODAS_LAS_GUIAS, type GuideMeta } from "@/lib/guides";
 import { MILESTONES, milestoneBadgeId } from "@/components/trading/tjStats";
 
 /**
@@ -299,7 +299,7 @@ export function iconoCurso(slug: string, size: number): React.ReactNode {
 
 // Derivado de GUIDES (fuente única de verdad) — cada guía nueva con su
 // `badge`/`badgeId` aparece aquí automáticamente, sin tocar este archivo.
-export const GUIDE_BADGE_DEFS: BadgeDef[] = GUIDES.map((g) => {
+function logroDeGuia(g: GuideMeta): BadgeDef {
   const iconFor = GUIDE_BADGE_ICON_BY_SLUG[g.slug] ?? ((size: number) => <Trophy size={size} aria-hidden="true" />);
   return {
     id: g.badgeId,
@@ -311,7 +311,17 @@ export const GUIDE_BADGE_DEFS: BadgeDef[] = GUIDES.map((g) => {
     guideSlug: g.slug,
     guideTitle: g.title,
   };
-});
+}
+
+export const GUIDE_BADGE_DEFS: BadgeDef[] = GUIDES.map(logroDeGuia);
+
+/**
+ * Con los logros de las guías que aún esperan en `BORRADORES`. Solo para
+ * reconocer un logro recién ganado (el aviso de desbloqueo): una guía que el
+ * admin ha publicado desde el panel ya da su logro antes de ascender a `GUIDES`.
+ * La vitrina usa `GUIDE_BADGE_DEFS`, para no anunciar guías sin publicar.
+ */
+export const GUIDE_BADGE_DEFS_TODAS: BadgeDef[] = TODAS_LAS_GUIAS.map(logroDeGuia);
 
 // Los hitos del Diario de Trading. Salen de MILESTONES (tjStats.ts), la misma
 // definición que usa el diario: un hito nuevo allí aparece aquí solo.

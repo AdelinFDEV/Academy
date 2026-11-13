@@ -26,8 +26,11 @@
  *   3. Avisa (sin borrar) de lo que está en la base de datos y ya no en los
  *      archivos. Las preguntas retiradas SÍ se borran: no tienen progreso.
  *
- * `published` se sube tal como está en curso.json. **Publicar es decisión del
- * admin**: no lo pongas a `true` sin su «sí».
+ * Este script **no publica ni despublica** (desde el 13-11-2026): no toca la
+ * columna `published`. Un curso nuevo nace como borrador y lo publica el admin
+ * desde /admin/acciones; volver a subir uno ya publicado lo deja publicado.
+ * `"published": true` en curso.json solo sirve para decir «está terminado»:
+ * con él, lo que falte por escribir es un error y no un aviso.
  */
 import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -202,7 +205,6 @@ const { data: filaCurso, error: eCurso } = await db
       preguntas_final: curso.preguntas_final ?? 20,
       revisado: curso.revisado ?? null,
       orden: curso.orden ?? 0,
-      published: curso.published === true,
     },
     { onConflict: "slug" },
   )
@@ -286,4 +288,4 @@ for (const m of modsDb ?? []) {
   }
 }
 
-console.log(`\x1b[32m✓\x1b[0m Subido. ${curso.published ? "Publicado." : "Sigue como BORRADOR: solo lo ve el admin."}`);
+console.log(`\x1b[32m✓\x1b[0m Subido. Publicar o retirar el curso se hace en /admin/acciones: este script no cambia su estado.`);

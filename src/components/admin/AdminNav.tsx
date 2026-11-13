@@ -8,6 +8,7 @@ import Icon from "@/components/Icon";
 /** Cada sección, su color: el mismo que lleva su página por dentro (`--sec`). */
 const links = [
   { href: "/admin", label: "Analítica", nota: "Tráfico, usuarios y Premium", icon: "bar-chart" as const, color: "naranja" },
+  { href: "/admin/acciones", label: "Acciones", nota: "Borradores por publicar", icon: "check-circle" as const, color: "rosa" },
   { href: "/admin/foro", label: "Foro", nota: "Moderación y reportes", icon: "chat" as const, color: "violeta" },
   { href: "/admin/guias-instrucciones", label: "Guías", nota: "Cómo se hace una guía", icon: "book" as const, color: "turquesa" },
   { href: "/admin/seo-instrucciones", label: "SEO", nota: "Cómo aparecer en Google", icon: "search" as const, color: "azul" },

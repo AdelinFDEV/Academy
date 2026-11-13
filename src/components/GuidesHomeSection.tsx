@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, BookOpen, Clock, Trophy } from "lucide-react";
-import { GUIDES_NEWEST_FIRST, type GuideMeta } from "@/lib/guides";
+import type { GuideMeta } from "@/lib/guides";
+import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 import GuiaPortada from "@/components/GuiaPortada";
 import GuideSearch from "@/components/GuideSearch";
 
@@ -44,8 +45,8 @@ function Dificultad({ g }: { g: GuideMeta }) {
  * Todo sale de src/lib/guides.ts: al añadir una guía allí, la nueva pasa a
  * ser la grande y empuja a las demás.
  */
-export default function GuidesHomeSection() {
-  const [nueva, ...resto] = GUIDES_NEWEST_FIRST;
+export default async function GuidesHomeSection() {
+  const [nueva, ...resto] = await guiasVisiblesRecientes();
   const siguientes = resto.slice(0, 4);
   if (!nueva) return null;
 

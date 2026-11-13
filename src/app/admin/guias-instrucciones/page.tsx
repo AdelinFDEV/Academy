@@ -132,9 +132,10 @@ export default function GuiasInstruccionesPage() {
           <Paso n={3} titulo="Términos del diccionario">Toda palabra técnica se enlaza al diccionario en su primera aparición. Las que no existan se crean ahora, con una definición buena (<code>PLANTILLA-DICCIONARIO.md</code>). Es una regla intocable y no espera a que nadie la pida.</Paso>
           <Paso n={4} titulo="Construcción">Su <code>page.tsx</code>, su <code>[slug].css</code>, sus piezas interactivas y su quiz, con el contenido completo: nada de esqueletos ni textos de relleno.</Paso>
           <Paso n={5} titulo="Auditoría SEO">Al terminar se pregunta siempre: «¿Empiezo la auditoría SEO de la guía?». Si el admin dice que sí, se ejecuta <code>AUDITORIA-SEO.md</code> entero. Si dice que no, se anota que queda sin auditar.</Paso>
-          <Paso n={6} titulo="Aprobación">El admin la revisa y da el «sí» explícito. Sin él no se publica nada.</Paso>
-          <Paso n={7} titulo="Publicación">Se añade al final de <code>GUIDES</code> y se despliega. Darla de alta y desplegar <strong>la publica</strong>: no hay paso intermedio para echarse atrás.</Paso>
-          <Paso n={8} titulo="Seguimiento">A las dos y a las seis semanas se mira en Analítica y en Search Console cómo va (bloque 13).</Paso>
+          <Paso n={6} titulo="Alta como borrador">Se da de alta en <code>BORRADORES</code> (<code>src/lib/guides.ts</code>), con su consulta y la fecha de su auditoría, y se despliega. <strong>Nunca directamente en <code>GUIDES</code></strong>. Desplegada así, solo la ve el admin: no sale en listados ni en el sitemap, y su URL da 404 a los demás.</Paso>
+          <Paso n={7} titulo="Publicación, por el admin">El admin la revisa en <Link href="/admin/acciones">Acciones</Link> y pulsa «Publicar». Desde ese momento es pública e indexable, sin desplegar nada. Publicar es siempre un gesto suyo.</Paso>
+          <Paso n={8} titulo="Ascenso">En la siguiente sesión, la guía ya publicada se mueve de <code>BORRADORES</code> al final de <code>GUIDES</code>. Con eso entra también en el buscador de guías y en la vitrina de Logros.</Paso>
+          <Paso n={9} titulo="Seguimiento">A las dos y a las seis semanas se mira en Analítica y en Search Console cómo va (bloque 13).</Paso>
         </div>
       </Seccion>
 
@@ -311,7 +312,7 @@ export default function GuiasInstruccionesPage() {
           <div className="agi-code-row"><span className="agi-code-path">src/app/guias/[slug]/Guide…Quiz.tsx</span><span>Su quiz y sus piezas propias.</span></div>
           <div className="agi-code-row"><span className="agi-code-path">src/app/guias/guias.css</span><span>Solo lo que comparten todas (<code>gbc-</code>, <code>gan-</code>).</span></div>
           <div className="agi-code-row"><span className="agi-code-path">public/guias/[slug].webp</span><span>La portada: WebP, 1.600 px de ancho, calidad 82.</span></div>
-          <div className="agi-code-row"><span className="agi-code-path">src/lib/guides.ts</span><span>El alta en <code>GUIDES</code>. Siempre <strong>al final</strong>: la portada enseña las últimas.</span></div>
+          <div className="agi-code-row"><span className="agi-code-path">src/lib/guides.ts</span><span>El alta: primero en <code>BORRADORES</code>; tras publicarla el admin, al final de <code>GUIDES</code>.</span></div>
         </div>
         <div className="agi-card agi-card--mono">
           <div className="agi-table-def">
@@ -386,7 +387,7 @@ export default function GuiasInstruccionesPage() {
           <ul className="agi-list">
             <li><strong>1 · Canónica</strong> en su <code>metadata</code>, en ruta relativa. Jamás en un <code>layout.tsx</code>: la heredarían todas las rutas hijas.</li>
             <li><strong>2 · <code>GuideBreadcrumbJsonLd</code></strong>: emite el <code>Article</code> y las migas. El nombre lo saca de <code>GUIDES</code>, que es el que se ve en <code>/guias</code>: el dato estructurado tiene que coincidir con lo visible.</li>
-            <li><strong>3 · El alta en <code>GUIDES</code></strong>: el sitemap recorre ese array, no la carpeta. Sin su entrada, la guía es invisible para Google.</li>
+            <li><strong>3 · El alta en <code>guides.ts</code></strong> (<code>BORRADORES</code>, y después <code>GUIDES</code>): el sitemap sale de ahí, no de la carpeta. Sin su entrada, la guía es invisible para Google.</li>
             <li><strong>4 · Título y descripción</strong>: el layout añade « | AdelinBTC» (12 caracteres), así que al título le quedan 48 antes de que Google lo corte en una pantalla normal. La consulta, delante.</li>
           </ul>
         </div>
@@ -413,7 +414,7 @@ export default function GuiasInstruccionesPage() {
           <Punto>Probada sin sesión (se lee entera, el quiz pide cuenta) y con sesión (el quiz guarda)</Punto>
           <Punto><code>npm run check &amp;&amp; npx tsc --noEmit</code> en verde</Punto>
           <Punto><strong>Auditoría SEO ofrecida</strong>, y hecha o anotada como pendiente</Punto>
-          <Punto><strong>«Sí» explícito del admin</strong> antes de dar de alta en <code>GUIDES</code></Punto>
+          <Punto>Dada de alta en <code>BORRADORES</code>, con <code>lista</code>, <code>consulta</code> y <code>auditada</code>. <strong>La publica el admin</strong> desde Acciones</Punto>
         </div>
       </Seccion>
 
@@ -433,7 +434,7 @@ export default function GuiasInstruccionesPage() {
             <li><strong>Título, descripción, dificultad, minutos, temas</strong>: su objeto en <code>GUIDES</code>.</li>
             <li><strong>Contenido o piezas</strong>: su <code>page.tsx</code> y sus componentes. Reescribir media guía es publicar otra página en la misma URL: se vuelve a ofrecer la auditoría SEO.</li>
             <li><strong>Portada</strong>: el archivo en <code>public/guias/</code> y el campo <code>portada</code>.</li>
-            <li><strong>Retirar una guía</strong>: se quita de <code>GUIDES</code> y se borra su carpeta entera. Si Google ya la conocía, su URL se da de alta en <code>src/lib/retiradas.ts</code> para que responda 410.</li>
+            <li><strong>Retirar una guía</strong>: si aún está en <code>BORRADORES</code>, «Volver a borrador» en Acciones. Si ya está en <code>GUIDES</code>, se quita de <code>GUIDES</code> y se borra su carpeta entera. Si Google ya la conocía, su URL se da de alta en <code>src/lib/retiradas.ts</code> para que responda 410.</li>
           </ul>
           <p className="agi-note">No hay panel para editar guías: se gestionan en el código. Las cifras de uso (me gusta, guardados, compartidos y notas del quiz) están en Supabase, por <code>guide_slug</code>.</p>
         </div>

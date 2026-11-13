@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { GUIDES_NEWEST_FIRST, type GuideMeta } from "@/lib/guides";
+import type { GuideMeta } from "@/lib/guides";
+import { guiasVisiblesRecientes } from "@/lib/guiasVisibles";
 
 const CUANTAS = 3;
 
@@ -18,11 +19,13 @@ const CUANTAS = 3;
  * Sin `<h2>` a propósito: no es una sección de la guía, y contarlo como una
  * sería inflar la estructura que mide la auditoría SEO.
  */
-export default function GuiasRelacionadas({ slug }: { slug: string }) {
-  const actual = GUIDES_NEWEST_FIRST.find((g) => g.slug === slug);
+export default async function GuiasRelacionadas({ slug }: { slug: string }) {
+  // Solo las públicas: un borrador sin publicar ni enlaza ni recibe enlaces.
+  const recientes = await guiasVisiblesRecientes();
+  const actual = recientes.find((g) => g.slug === slug);
   if (!actual) return null;
 
-  const resto = GUIDES_NEWEST_FIRST.filter((g) => g.slug !== slug);
+  const resto = recientes.filter((g) => g.slug !== slug);
   const comparte = (g: GuideMeta) => g.tags.some((t) => actual.tags.includes(t));
   const elegidas = [...resto.filter(comparte), ...resto.filter((g) => !comparte(g))].slice(0, CUANTAS);
   if (elegidas.length === 0) return null;

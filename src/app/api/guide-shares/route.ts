@@ -1,8 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
-import { GUIDES } from "@/lib/guides";
+import { TODAS_LAS_GUIAS } from "@/lib/guides";
 
-const VALID_GUIDES = new Set(GUIDES.map((g) => g.slug));
+const VALID_GUIDES = new Set(TODAS_LAS_GUIAS.map((g) => g.slug));
 
 export async function POST(request: Request) {
   const supabase = await createClient();

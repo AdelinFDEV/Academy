@@ -148,6 +148,40 @@ export const GUIDES: GuideMeta[] = [
  */
 export const GUIDES_NEWEST_FIRST: GuideMeta[] = [...GUIDES].reverse();
 
+/**
+ * Una guía terminada que espera en /admin/acciones a que el admin la publique.
+ *
+ * Tiene su carpeta, su CSS y su quiz como cualquier otra, y está desplegada,
+ * pero nadie la ve salvo el admin: no sale en listados, ni en el sitemap, y su
+ * URL responde 404 a los demás. El admin la publica con un botón, que apunta
+ * su slug en la tabla `guias_publicadas`; desde ese momento es pública sin
+ * desplegar nada (`src/lib/guiasVisibles.ts`).
+ */
+export interface GuiaBorrador extends GuideMeta {
+  /** Día en que quedó lista («AAAA-MM-DD»). */
+  lista: string;
+  /** La consulta de Google a la que responde. */
+  consulta: string;
+  /** Día de su auditoría SEO («AAAA-MM-DD»), o null si el admin dijo que no. */
+  auditada: string | null;
+}
+
+/**
+ * Las guías construidas y sin publicar. **Una guía nueva se da de alta AQUÍ,
+ * nunca directamente en `GUIDES`**: así desplegar no la publica, y publicar es
+ * siempre un gesto del admin.
+ *
+ * Cuando el admin ya la ha publicado, en la siguiente sesión se «asciende»: su
+ * objeto se mueve al final de `GUIDES` (sin `lista`, `consulta` ni `auditada`)
+ * y se borra de aquí. Hasta entonces ya es pública, indexable y con su quiz;
+ * lo que le falta son el buscador de guías y la vitrina de Logros, que leen
+ * `GUIDES` desde el navegador.
+ */
+export const BORRADORES: GuiaBorrador[] = [];
+
+/** Publicadas y borradores: para validar un slug o un logro, exista como exista. */
+export const TODAS_LAS_GUIAS: GuideMeta[] = [...GUIDES, ...BORRADORES];
+
 export function getGuide(slug: string): GuideMeta | undefined {
-  return GUIDES.find((g) => g.slug === slug);
+  return [...GUIDES, ...BORRADORES].find((g) => g.slug === slug);
 }

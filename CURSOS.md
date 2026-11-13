@@ -31,7 +31,7 @@ Lo que hay en este archivo:
 | **No se promete lo que el curso no hace.** Ni ganancias, ni «dominar», ni resultados garantizados | Normativa de consumo y YMYL. La promesa honesta vende mejor a largo plazo |
 | **SIEMPRE: toda palabra técnica, o que merezca explicarse, se define en el diccionario y se enlaza** en su primera aparición en cada lección, en las preguntas no (ahí no hay enlaces). Si no existe, se crea **en el momento, sin esperar a que lo pida nadie**, con una definición buena, y antes de publicar. Ante la duda, se crea. En el aula, el enlace abre **un popup con la definición** sin salir de la lección (punto 11) | Pedido expreso del admin (08-11-2026) y regla intocable de AGENTS.md. Así se hizo en el primer curso: 12 términos nuevos. `subir-curso.mjs` avisa si una lección no enlaza ninguno |
 | **Nada de emojis** en lecciones, bloques ni textos del curso. Los callouts van **sin** el icono-emoji | Dirección de diseño de la academia |
-| **Nunca se publica sin el «sí» explícito del admin.** `"published": true` en `curso.json` lo hace visible al subir | No hay paso intermedio para echarse atrás |
+| **Publicar es un gesto del admin, desde `/admin/acciones`.** El curso se sube como borrador y él pulsa «Publicar». `subir-curso.mjs` no cambia el estado de publicación | Así subir nunca publica por accidente, y un curso publicado no se despublica al volver a subirlo |
 | **El curso es contenido (filas), no código.** Si hace falta código nuevo (un bloque, un aviso), se pregunta antes y se reutiliza lo que ya hay | La web no crece con cada curso (decisión del admin, 06-10-2026) |
 | **Al quitar algo, se borra todo su código** | Regla general de la web |
 
@@ -407,7 +407,7 @@ node --env-file=.env.local scripts/subir-curso.mjs <slug>            # comprueba
 **Publicar** (solo con el «sí» del admin):
 
 1. **Ofrece la auditoría SEO** de la ficha (AGENTS.md, punto 2) y hazla si dice que sí: `npm run check:seo -- cursos/<slug> "<palabra clave>"`.
-2. `"published": true` en `curso.json` y vuelve a subir.
+2. Pon `"published": true` en `curso.json` (significa «terminado»: lo que falte pasa a ser un error) y vuelve a subir. **Eso no lo publica.** El admin lo ve en `/admin/acciones`, en «Listo para publicar», y pulsa el botón. El panel no deja publicar un curso con lecciones sin escribir.
 3. **Si el curso usa código nuevo** (un bloque, un aviso), despliega primero el código y publica después: la web en producción tiene que conocerlo antes de que el curso exista en la base de datos.
 4. Comprueba en producción la ficha, `/cursos` y que el aula pide sesión.
 5. Comprueba la tarjeta en `/cursos`: con su ilustración, su color y los totales de la cabecera sumando el curso nuevo.
