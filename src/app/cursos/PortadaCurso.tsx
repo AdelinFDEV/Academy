@@ -20,6 +20,11 @@ import Image from "next/image";
 const PORTADA_IMAGEN: Record<string, string> = {
   "psicologia-del-trading": "/cursos/psicologia-del-trading/portada.webp",
   "seguridad-cripto": "/cursos/seguridad-cripto/portada.webp",
+  "coinmarketcap-y-coingecko": "/cursos/coinmarketcap-y-coingecko/portada.webp",
+  "bitcoin-y-dca": "/cursos/bitcoin-y-dca/portada.webp",
+  "futuros-y-apalancamiento": "/cursos/futuros-y-apalancamiento/portada.webp",
+  "analisis-tecnico-sin-humo": "/cursos/analisis-tecnico-sin-humo/portada.webp",
+  "defi-y-stablecoins": "/cursos/defi-y-stablecoins/portada.webp",
 };
 
 type Motivo = "pulso" | "escudo" | "datos" | "peldanos" | "balanza" | "velas" | "vasos" | "generico";

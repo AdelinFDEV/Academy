@@ -152,11 +152,11 @@ El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no 
 |---|---|---|---|
 | Psicología del trading | Un cerebro de cristal translúcido | Una línea de pulso que lo atraviesa y anillos finos como órbitas | `#5ec8c4` |
 | Seguridad cripto | Un escudo geométrico de cristal con una cerradura de metal | Una malla hexagonal tenue detrás | `#a78bfa` |
-| Cómo leer CoinMarketCap y CoinGecko | Una lupa de cristal y metal satinado sobre unas barras de datos de cristal | Una rejilla tenue de tabla de datos detrás | `#ff8a7a` (pendiente de generar) |
-| Bitcoin y DCA a largo plazo | Una escalera de peldaños de cristal, iguales, que sube hacia la derecha, con una moneda lisa de metal satinado, sin símbolo, apoyada en el peldaño más alto | Una rejilla tenue de calendario detrás | `#fbbf24` (pendiente de generar) |
-| Futuros y apalancamiento | Una balanza de precisión de cristal y metal satinado, muy desequilibrada, con una pesa pequeña en un plato y una grande en el otro | Una línea de precio tenue que cae en escalones por detrás | `#f472b6` (pendiente de generar) |
-| Análisis técnico sin humo | Una única vela japonesa de cristal translúcido, alta, con su mecha de metal satinado, de la que se desprende una voluta fina de humo que se deshace | Una rejilla tenue de gráfico detrás | `#a3e635` (pendiente de generar) |
-| DeFi y stablecoins | Dos cilindros de cristal comunicados por un tubo fino, con un líquido luminoso al mismo nivel en los dos, sobre una base de metal satinado | Una red tenue de nodos conectados detrás | `#22d3ee` (pendiente de generar) |
+| Cómo leer CoinMarketCap y CoinGecko | Una lupa de cristal y metal satinado sobre unas barras de datos de cristal | Una rejilla tenue de tabla de datos detrás | `#ff8a7a` |
+| Bitcoin y DCA a largo plazo | Una escalera de peldaños de cristal, iguales, que sube hacia la derecha, con una moneda lisa de metal satinado, sin símbolo, apoyada en el peldaño más alto | Una rejilla tenue de calendario detrás | `#fbbf24` |
+| Futuros y apalancamiento | Una balanza de precisión de cristal y metal satinado, muy desequilibrada, con una pesa pequeña en un plato y una grande en el otro | Una línea de precio tenue que cae en escalones por detrás | `#f472b6` |
+| Análisis técnico sin humo | Una única vela japonesa de cristal translúcido, alta, con su mecha de metal satinado, de la que se desprende una voluta fina de humo que se deshace | Una rejilla tenue de gráfico detrás | `#a3e635` |
+| DeFi y stablecoins | Dos cilindros de cristal comunicados por un tubo fino, con un líquido luminoso al mismo nivel en los dos, sobre una base de metal satinado | Una red tenue de nodos conectados detrás | `#22d3ee` |
 
 Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
 

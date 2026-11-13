@@ -24,10 +24,9 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ### 00f. Cinco cursos nuevos: lo que queda (13-11-2026)
 
-Los cinco cursos pedidos el 12-11-2026 están escritos, subidos y **publicados** desde el 13-11-2026: `coinmarketcap-y-coingecko`, `bitcoin-y-dca`, `futuros-y-apalancamiento`, `analisis-tecnico-sin-humo` y `defi-y-stablecoins`. Sus paletas y motivos están en el registro de `CURSOS.md`. Queda:
+Los cinco cursos pedidos el 12-11-2026 están escritos, subidos y **publicados** desde el 13-11-2026: `coinmarketcap-y-coingecko`, `bitcoin-y-dca`, `futuros-y-apalancamiento`, `analisis-tecnico-sin-humo` y `defi-y-stablecoins`. Sus paletas, motivos e ilustraciones están en el registro de `CURSOS.md`. Queda:
 
 - [ ] **Auditoría SEO de las cinco fichas de curso.** Se publicaron sin ella por orden del admin.
-- [ ] **Ilustraciones de portada.** El admin las genera con los prompts que se le dieron en el chat (objeto y detalle de cada una, en la tabla de ilustraciones de `CURSOS.md`); mientras, cada curso sale con su arte SVG. Al recibirlas: subirlas y quitar el «pendiente de generar» de esa tabla.
 - [ ] **Probar con una sesión real** el aula, un examen y el PDF del certificado de uno de los cursos nuevos: se verificaron con `tsc`, la compilación y maquetas, no con una cuenta.
 
 ### 00e. La portada no tiene `<h1>` (12-11-2026)
