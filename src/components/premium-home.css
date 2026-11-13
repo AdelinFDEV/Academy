@@ -106,7 +106,7 @@
 
 .pf-titulo span {
   display: block;
-  background: linear-gradient(100deg, #f6d58e 0%, #e6b455 45%, #ff9a4d 100%);
+  background: linear-gradient(100deg, #f7931a 0%, #d58cf5 55%, #a78bfa 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -139,7 +139,7 @@
   border-radius: 24px;
   background:
     radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--c) 13%, transparent), transparent 55%),
-    linear-gradient(180deg, rgba(21, 19, 29, 0.85), rgba(12, 11, 17, 0.92));
+    linear-gradient(180deg, rgba(9, 9, 9, 0.85), rgba(0, 0, 0, 0.92));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.06),
     0 20px 50px -30px rgba(0, 0, 0, 0.8);
@@ -189,7 +189,7 @@ a.pf-celda:focus-visible {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.35),
     0 8px 22px -6px color-mix(in srgb, var(--c) 70%, transparent);
-  color: #0d0c12;
+  color: #000000;
 }
 
 .pf-kicker {
@@ -250,7 +250,7 @@ a.pf-celda:hover .pf-ir {
   padding: 1rem 1.1rem 1.1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-  background: rgba(8, 8, 12, 0.7);
+  background: rgba(0, 0, 0, 0.7);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
@@ -636,7 +636,7 @@ a.pf-celda:hover .pf-ir {
   border-radius: 28px;
   background:
     radial-gradient(90% 120% at 0% 0%, rgba(230, 180, 85, 0.16), transparent 55%),
-    linear-gradient(180deg, rgba(21, 20, 29, 0.95), rgba(12, 11, 17, 0.97));
+    linear-gradient(180deg, rgba(9, 9, 9, 0.95), rgba(0, 0, 0, 0.97));
   box-shadow: 0 40px 80px -40px rgba(230, 180, 85, 0.35);
 }
 
@@ -844,7 +844,7 @@ a.pf-celda:hover .pf-ir {
   border-radius: 18px;
   background:
     radial-gradient(220px 120px at 0% 0%, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%),
-    linear-gradient(180deg, rgba(23, 21, 32, 0.9), rgba(14, 13, 20, 0.92));
+    linear-gradient(180deg, rgba(11, 11, 11, 0.9), rgba(3, 3, 3, 0.92));
   color: inherit;
   text-decoration: none;
   transition: transform 0.25s ease, border-color 0.25s ease;
@@ -869,7 +869,7 @@ a.pf-celda:hover .pf-ir {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 28px;
-  background: linear-gradient(150deg, #1c1730 0%, #14111f 45%, #0d0c13 100%);
+  background: linear-gradient(150deg, #1c1730 0%, #090909 45%, #020202 100%);
   box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   scroll-margin-top: 6rem;
 }
@@ -1023,7 +1023,7 @@ a.pf-celda:hover .pf-ir {
   --q: #ff8a4c;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 18px;
-  background: rgba(12, 11, 17, 0.55);
+  background: rgba(0, 0, 0, 0.55);
   transition: border-color 0.3s ease, background 0.3s ease;
 }
 .pf-pregunta:nth-child(4n + 2) { --q: #5aa8ff; }
@@ -1034,7 +1034,7 @@ a.pf-celda:hover .pf-ir {
 
 .pf-pregunta[open]:not([data-acordeon="cerrando"]) {
   border-color: color-mix(in srgb, var(--q) 55%, transparent);
-  background: linear-gradient(180deg, color-mix(in srgb, var(--q) 13%, transparent), rgba(12, 11, 17, 0.7));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--q) 13%, transparent), rgba(0, 0, 0, 0.7));
 }
 
 .pf-pregunta summary {
@@ -1063,7 +1063,7 @@ a.pf-celda:hover .pf-ir {
   font-variant-numeric: tabular-nums;
   transition: background 0.3s ease, color 0.3s ease;
 }
-.pf-pregunta[open]:not([data-acordeon="cerrando"]) .pf-pregunta-num { background: var(--q); color: #0e0d14; }
+.pf-pregunta[open]:not([data-acordeon="cerrando"]) .pf-pregunta-num { background: var(--q); color: #030303; }
 
 .pf-pregunta-q { flex: 1; font-size: 1rem; font-weight: 700; color: #fff; }
 

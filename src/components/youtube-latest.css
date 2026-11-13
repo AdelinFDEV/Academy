@@ -11,7 +11,7 @@
      índigo del foro que tiene encima. */
   background:
     radial-gradient(ellipse 55% 240px at 50% 0%, rgba(255, 61, 61, 0.16), transparent 70%),
-    linear-gradient(180deg, #0c0a14 0%, #0b0a12 60%, #0a090d 100%);
+    linear-gradient(180deg, #000000 0%, #000000 60%, #000000 100%);
 }
 
 /* El separador: la misma rendija de luz que el foro, en rojo. */
@@ -129,12 +129,12 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 22px;
-  background: #0f0e15;
+  background: #040404;
   box-shadow: 0 34px 70px -40px rgba(255, 61, 61, 0.55);
   text-decoration: none;
 }
 .ytl-principal:hover .ytl-imagen, .ytl-tarjeta:hover .ytl-imagen { transform: scale(1.05); }
-.ytl-principal-velo { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 9, 13, 0) 35%, rgba(10, 9, 13, 0.92) 100%); }
+.ytl-principal-velo { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.92) 100%); }
 
 .ytl-play {
   position: absolute;
@@ -185,12 +185,12 @@
   padding: 0.7rem;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 20px;
-  background: linear-gradient(160deg, rgba(29, 27, 40, 0.9), rgba(15, 14, 21, 0.92));
+  background: linear-gradient(160deg, rgba(17, 17, 17, 0.9), rgba(4, 4, 4, 0.92));
   text-decoration: none;
   transition: border-color 0.25s ease, transform 0.25s ease;
 }
 .ytl-tarjeta:hover { border-color: rgba(255, 61, 61, 0.5); transform: translateY(-3px); }
-.ytl-tarjeta-imagen { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 13px; background: #0f0e15; }
+.ytl-tarjeta-imagen { position: relative; display: block; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 13px; background: #040404; }
 .ytl-tarjeta-texto { display: grid; gap: 0.4rem; min-width: 0; padding-right: 0.5rem; }
 .ytl-tarjeta-titulo {
   display: -webkit-box;
