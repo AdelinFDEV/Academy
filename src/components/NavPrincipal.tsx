@@ -67,7 +67,7 @@ export default function NavPrincipal({ logueado, premium, conNova = false }: {
               />
             )}
             <span className="nav-principal-icono" aria-hidden="true">
-              <e.Icono size={16} />
+              <e.Icono size={14} />
             </span>
             <span className="nav-principal-texto">{e.label}</span>
           </Link>

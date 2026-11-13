@@ -1826,13 +1826,9 @@ html {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   margin: 0;
-  /* 13-11-2026: los iconos iban casi pegados al borde de la burbuja (6 px
-     arriba y abajo). Ahora cada enlace mide 48 px con un icono de 30, así
-     que quedan 9 px por cada lado, y la cápsula pierde relleno para que el
-     conjunto apenas crezca (de 56 a 58 px, dentro de una barra de 68). */
-  padding: 4px;
+  padding: 6px 8px;
   list-style: none;
   border: 1px solid rgba(240, 244, 255, 0.08);
   border-radius: 999px;
@@ -1857,10 +1853,10 @@ html {
 .nav-foro {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  height: 58px;
+  gap: 0.6rem;
+  height: 42px;
   margin-left: 0.35rem;
-  padding: 0 1.15rem 0 12px;
+  padding: 0 1.05rem 0 9px;
   border: 1px solid rgba(240, 244, 255, 0.09);
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
@@ -1883,15 +1879,16 @@ html {
 }
 
 .nav-foro-cara.avatar-usuario {
-  width: 32px;
-  height: 32px;
+  /* Como los iconos de al lado: 24 px, con aire arriba y abajo. */
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   box-shadow: 0 0 0 2px #0b1730;
   animation: nav-foro-turno 3.6s ease-in-out infinite;
   transition: margin 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.nav-foro-cara + .nav-foro-cara { margin-left: -10px; }
+.nav-foro-cara + .nav-foro-cara { margin-left: -8px; }
 .nav-foro-cara:nth-child(2) { animation-delay: 0.4s; }
 .nav-foro-cara:nth-child(3) { animation-delay: 0.8s; }
 
@@ -2067,11 +2064,9 @@ html {
   isolation: isolate;
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  height: 48px;
-  /* 9 px a la izquierda: los mismos que arriba y abajo, así el icono queda
-     centrado dentro de la curva de la burbuja. */
-  padding: 0 1.3rem 0 9px;
+  gap: 0.55rem;
+  height: 42px;
+  padding: 0 1.2rem 0 9px;
   border-radius: 999px;
   font-size: 0.88rem;
   font-weight: 700;
@@ -2107,8 +2102,10 @@ html {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  /* 13-11-2026: de 30 a 24 px (y el dibujo de 16 a 14) para que respire
+     dentro de su burbuja de 42: ahora quedan 9 px arriba y abajo, no 6. */
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--c) 30%, transparent), color-mix(in srgb, var(--c) 10%, transparent) 70%);
