@@ -25,9 +25,17 @@ import "./nova.css";
  * la usa (TjBot, NovaNav, NovaVuelo…), siempre con un muelle.
  *
  * Ocho caras: calm, happy, joy (ratón encima), celebrate, worried, sleepy,
- * focused (trading y estudio) y music. Cinco actividades con sus accesorios y
- * objetos: dormir (gorro), pelota, trading (tableta), estudiar (gafas y libro)
- * y música (auriculares). Y nueve gestos al azar cuando está tranquila.
+ * focused (trading y estudio) y music. Ocho actividades con sus accesorios y
+ * objetos: dormir (gorro), pelota, trading (tableta), estudiar (gafas y libro),
+ * música (auriculares) y, desde el 13-11-2026, café (una taza que humea),
+ * malabares (tres monedas) y meditar (levita dentro de dos aros de luz). Y
+ * nueve gestos al azar cuando está tranquila.
+ *
+ * Retoque del 13-11-2026: el anillo de luz de la cápsula que queda DETRÁS al
+ * girar ya no se pinta encima del casco (se veían los dos puntos a la vez); la
+ * cápsula que queda delante sí se dibuja sobre él, que es lo que da el perfil.
+ * Y tres detalles de acabado: un filo de luz en el visor del color de lo que
+ * siente, colorete cuando está contenta y una costura en la frente.
  *
  * Todo lo que flota alrededor (corazones, destellos, notas, zetas) es SVG
  * propio, nunca emoji: se ve igual en cualquier sistema.
@@ -36,7 +44,7 @@ import "./nova.css";
  * `.nh` (la miden desde fuera NovaNav, TjBot y las fichas) y `.nh-hearts`.
  */
 
-export type NovaActivity = "none" | "sleep" | "ball" | "trade" | "study" | "music";
+export type NovaActivity = "none" | "sleep" | "ball" | "trade" | "study" | "music" | "coffee" | "coins" | "zen";
 export type NovaFace = BotExpression | "joy" | "sleepy" | "focused" | "music";
 
 /*
@@ -309,6 +317,8 @@ export default function NovaHead({
   const gBall = id("b");
   const gThrust = id("t");
   const gEye = id("e");
+  const gEar = id("ea");
+  const gCoin = id("co");
   const fGlow = id("w");
   const cShell = id("cs");
   const cScreen = id("cc");
@@ -324,6 +334,18 @@ export default function NovaHead({
   const earR = useTransform(theta, t => 60 + 47 * Math.cos(rad(t)));
   const earRx = useTransform(theta, t => 5 + 4.5 * Math.abs(Math.sin(rad(t))));
   const ringRx = useTransform(theta, t => 2.4 + 2.4 * Math.abs(Math.sin(rad(t))));
+  /*
+   * Qué cápsula se ve. La cabeza es una esfera: con theta > 0 la cápsula
+   * izquierda viene hacia quien mira (profundidad = sin θ) y la derecha se va
+   * por detrás (−sin θ). La de detrás solo se ve mientras asoma por el borde
+   * del casco; en cuanto se mete tras él, su anillo se apaga. La de delante,
+   * a partir de cierto giro, se dibuja ENCIMA del casco.
+   */
+  const asoma = (t: number) => clamp01((47 * Math.abs(Math.cos(rad(t))) - 40) / 5);
+  const ringOpL = useTransform(theta, t => 0.8 * (Math.sin(rad(t)) >= -0.02 ? 1 : asoma(t)));
+  const ringOpR = useTransform(theta, t => 0.8 * (Math.sin(rad(t)) <= 0.02 ? 1 : asoma(t)));
+  const capOpL = useTransform(theta, t => clamp01((Math.sin(rad(t)) - 0.3) * 3));
+  const capOpR = useTransform(theta, t => clamp01((-Math.sin(rad(t)) - 0.3) * 3));
   // El reflejo del cristal se corre al contrario que la cara: la luz viene de fuera.
   const glassX = useTransform(theta, t => -Math.sin(rad(t)) * 14);
   // Los auriculares siguen a las cápsulas; la diadema se estrecha al girar.
@@ -431,6 +453,17 @@ export default function NovaHead({
             <stop offset="55%" stopColor="#6ab8ff" stopOpacity="0.35" />
             <stop offset="100%" stopColor="#6ab8ff" stopOpacity="0" />
           </radialGradient>
+          {/* Cápsulas laterales: dorado más hondo que el casco, con su volumen. */}
+          <linearGradient id={gEar} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#e6b25a" />
+            <stop offset="55%" stopColor="#c48a32" />
+            <stop offset="100%" stopColor="#8f5f1d" />
+          </linearGradient>
+          <radialGradient id={gCoin} cx="0.35" cy="0.3" r="0.85">
+            <stop offset="0%" stopColor="#fff3c9" />
+            <stop offset="55%" stopColor="#f2b93f" />
+            <stop offset="100%" stopColor="#b97a16" />
+          </radialGradient>
           <radialGradient id={gEye} cx="0.45" cy="0.35" r="0.75">
             <stop offset="0%" stopColor="#ffffff" />
             <stop offset="55%" stopColor="#d9f7ff" />
@@ -451,6 +484,14 @@ export default function NovaHead({
           <ellipse className="nh-thrust" cx="60" cy="110" rx="17" ry="9" fill={`url(#${gThrust})`} />
           <ellipse className="nh-thrust-ring" cx="60" cy="107.5" rx="11" ry="3" fill="none" stroke="#bfe6ff" strokeWidth="0.9" />
 
+          {/* Meditando: dos aros de luz que la rodean, por detrás de la cabeza. */}
+          {activity === "zen" && (
+            <g className="nh-zen" fill="none" stroke={glow}>
+              <ellipse cx="60" cy="66" rx="64" ry="15" strokeWidth="1.8" opacity="0.6" />
+              <ellipse cx="60" cy="66" rx="74" ry="20" strokeWidth="1.1" opacity="0.28" />
+            </g>
+          )}
+
           <g className="nh-head">
             {/* Antena: tallo con su luz, halo que respira, un pulso que se expande y la esfera. */}
             <line x1="60" y1="24" x2="60" y2="13" stroke={GOLD.mid} strokeWidth="3.4" strokeLinecap="round" />
@@ -462,8 +503,8 @@ export default function NovaHead({
             <circle cx="58.2" cy="7.1" r="1.7" fill="#fff" opacity="0.8" />
 
             {/* Cápsulas laterales: detrás del casco de frente, en el centro de perfil. */}
-            <motion.ellipse cx={earL} cy={64} rx={earRx} ry={13} fill="#c48a32" />
-            <motion.ellipse cx={earR} cy={64} rx={earRx} ry={13} fill="#c48a32" />
+            <motion.ellipse cx={earL} cy={64} rx={earRx} ry={13} fill={`url(#${gEar})`} />
+            <motion.ellipse cx={earR} cy={64} rx={earRx} ry={13} fill={`url(#${gEar})`} />
 
             {/* ── El casco ── */}
             <rect x="14" y="22" width="92" height="84" rx="38" fill={`url(#${gShell})`} />
@@ -484,6 +525,8 @@ export default function NovaHead({
                 <rect x="31" y="99.3" width="10" height="2.4" rx="1.2" />
                 <rect x="79" y="99.3" width="10" height="2.4" rx="1.2" />
               </g>
+              <path d="M40 30.5 Q60 26.8 80 30.5" stroke={GOLD.shade} strokeWidth="1" strokeLinecap="round" opacity="0.28" fill="none" />
+              <path d="M40 31.4 Q60 27.7 80 31.4" stroke="#fff" strokeWidth="0.7" strokeLinecap="round" opacity="0.3" fill="none" />
               <rect x="52" y="99.3" width="16" height="2.4" rx="1.2" fill="#3a2608" opacity="0.5" />
               <rect className="nh-led" x="52" y="99.3" width="16" height="2.4" rx="1.2" fill={glow} />
             </motion.g>
@@ -516,6 +559,11 @@ export default function NovaHead({
               <rect x="23" y="36" width="74" height="58" rx="26" fill={`url(#${gScreen})`} />
               <g clipPath={`url(#${cScreen})`}>
                 <rect x="23" y="36" width="74" height="58" fill={`url(#${gVig})`} />
+                {/* Colorete: solo cuando está contenta (lo enciende nova.css). */}
+                <g className="nh-blush" fill="#ff8fb8">
+                  <ellipse cx="33" cy="73.5" rx="5.6" ry="3.1" />
+                  <ellipse cx="87" cy="73.5" rx="5.6" ry="3.1" />
+                </g>
                 <Face face={face} talking={talking} eye={gEye} glow={fGlow} uid={uid} />
                 {/* Gafas al estudiar. */}
                 {activity === "study" && (
@@ -537,12 +585,16 @@ export default function NovaHead({
                 </motion.g>
               </g>
               <rect x="23" y="36" width="74" height="58" rx="26" fill={`url(#${gGlass})`} pointerEvents="none" />
+              {/* Filo de luz por dentro del visor, del color de lo que siente. */}
+              <rect className="nh-aura" x="23.9" y="36.9" width="72.2" height="56.2" rx="25.2" fill="none" stroke={glow} strokeWidth="1.5" />
               <path d="M34 40.5 Q60 35.5 86 40.5" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" opacity="0.16" fill="none" />
             </motion.g>
 
             {/* Anillo de luz en cada cápsula, del color de la antena. */}
-            <motion.ellipse className="nh-ring" cx={earL} cy={64} rx={ringRx} ry={5} fill={glow} opacity={0.8} />
-            <motion.ellipse className="nh-ring" cx={earR} cy={64} rx={ringRx} ry={5} fill={glow} opacity={0.8} />
+            <motion.ellipse cx={earL} cy={64} rx={earRx} ry={13} fill={`url(#${gEar})`} stroke={GOLD.shade} strokeWidth="0.8" style={{ opacity: capOpL }} />
+            <motion.ellipse cx={earR} cy={64} rx={earRx} ry={13} fill={`url(#${gEar})`} stroke={GOLD.shade} strokeWidth="0.8" style={{ opacity: capOpR }} />
+            <motion.ellipse className="nh-ring" cx={earL} cy={64} rx={ringRx} ry={5} fill={glow} style={{ opacity: ringOpL }} />
+            <motion.ellipse className="nh-ring" cx={earR} cy={64} rx={ringRx} ry={5} fill={glow} style={{ opacity: ringOpR }} />
 
             {/* ── Accesorios ── */}
             {activity === "sleep" && (
@@ -592,6 +644,32 @@ export default function NovaHead({
               </g>
               <path className="nh-page" d="M126 50 Q136 45 146 47 V74 Q136 72 126 76 Z" fill="#fbfcff" />
               <rect x="125.3" y="49" width="1.4" height="27" fill={GOLD.deep} />
+            </g>
+          )}
+          {activity === "coffee" && (
+            <g className="nh-prop nh-mug">
+              <g className="nh-steam" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" fill="none">
+                <path d="M116 42 q-3 -4 0 -8 q3 -4 0 -8" />
+                <path d="M124 42 q-3 -4 0 -8 q3 -4 0 -8" />
+              </g>
+              <path d="M132 53 q10 0 10 7.5 q0 7.5 -10 7.5" stroke="#eef2ff" strokeWidth="3.6" fill="none" />
+              <rect x="108" y="47" width="25" height="26" rx="6" fill="#eef2ff" />
+              <rect x="108" y="47" width="25" height="7" rx="3.5" fill="#6b4226" />
+              <rect x="110" y="48.2" width="14" height="1.6" rx="0.8" fill="#fff" opacity="0.35" />
+              <text x="120.5" y="68" textAnchor="middle" fontSize="10" fontWeight="800" fill={GOLD.deep}>₿</text>
+            </g>
+          )}
+          {activity === "coins" && (
+            <g className="nh-coins">
+              {[0, 1, 2].map(i => (
+                <g key={i} className="nh-coin">
+                  <g>
+                    <circle cx="60" cy="-6" r="7" fill={`url(#${gCoin})`} stroke={GOLD.shade} strokeWidth="0.9" />
+                    <circle cx="60" cy="-6" r="5" fill="none" stroke="#fff" strokeWidth="0.6" opacity="0.5" />
+                    <text x="60" y="-2.6" textAnchor="middle" fontSize="8.5" fontWeight="800" fill="#7a4d08">₿</text>
+                  </g>
+                </g>
+              ))}
             </g>
           )}
           {activity === "ball" && (

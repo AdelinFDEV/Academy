@@ -191,13 +191,14 @@ const PROP_W = 50;
  * para que no dé un salto. Si cambias este número, cambia el CSS con él.
  */
 const REPOSO = 0.75;
-const ACTIVITIES: NovaActivity[] = ["trade", "study", "ball", "sleep", "music"];
+const ACTIVITIES: NovaActivity[] = ["trade", "study", "ball", "sleep", "music", "coffee", "coins", "zen"];
 /** Cuánto dura el bocadillo con el que Nova anuncia lo nuevo. */
 const ANUNCIO_MS = 7000;
 
 /** Otra actividad distinta de la anterior; la pelota solo si hay sitio por encima. */
 function pickActivity(last: NovaActivity, top: number): NovaActivity {
-  const options = ACTIVITIES.filter(a => a !== last && (a !== "ball" || top >= 40));
+  // La pelota y las monedas suben por encima de la cabeza: necesitan sitio arriba.
+  const options = ACTIVITIES.filter(a => a !== last && ((a !== "ball" && a !== "coins") || top >= 40));
   return options[Math.floor(Math.random() * options.length)] ?? "trade";
 }
 
@@ -734,7 +735,8 @@ export default function TjBot({ report, onAction }: {
     : activity === "sleep" ? "sleepy"
     : activity === "trade" || activity === "study" ? "focused"
     : activity === "music" ? "music"
-    : activity === "ball" ? "happy"
+    : activity === "ball" || activity === "coffee" || activity === "coins" ? "happy"
+    : activity === "zen" ? "sleepy"
     : report.expression;
 
   return (

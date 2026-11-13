@@ -35,6 +35,7 @@
 .nh.act-sleep .nh-float { animation: nh-doze 5.2s ease-in-out infinite; }
 .nh.act-music .nh-float { animation: nh-groove 0.9s ease-in-out infinite; }
 .nh.act-ball .nh-float { animation: nh-header 1.5s ease-in-out infinite; }
+.nh.act-zen .nh-float { animation: nh-zen 6.5s ease-in-out infinite; }
 
 /* La estela: tenue en reposo, viva al volar, casi apagada dormida. El anillo la acompaña. */
 .nh-thrust { transform-box: fill-box; transform-origin: 50% 0; opacity: 0.45; animation: nh-thrust 1.3s ease-in-out infinite; transition: opacity 0.4s; }
@@ -81,6 +82,8 @@
 .nh.act-trade .nh-head,
 .nh.act-study .nh-head { transform: rotate(5deg); }
 .nh.act-ball .nh-head { transform: translateY(1px); }
+.nh.act-coffee .nh-head { transform: rotate(6deg); }
+.nh.act-coins .nh-head { transform: translateY(2px); }
 .nh.is-worried .nh-head { animation: nh-tremble 2.8s ease-in-out infinite; }
 
 /* Ojos: mirar, parpadear. Concentrada, la mirada se va al objeto. */
@@ -89,7 +92,8 @@
 .nh-pupil { transform: translate(calc(var(--look-x) * 1.3), calc(var(--look-y) * 1.3)); transition: transform 0.18s ease-out; }
 .nh-look-prop { transform: none; }
 .nh-look-prop .nh-pupil { transform: translate(3.4px, 2.6px); }
-.nh.act-ball .nh-pupil { transform: translate(0, -3.6px); }
+.nh.act-ball .nh-pupil, .nh.act-coins .nh-pupil { transform: translate(0, -3.6px); }
+.nh.act-coffee .nh-pupil { transform: translate(3.4px, 0.6px); }
 /* Microsacadas: la pupila da saltitos mínimos cada pocos segundos, como una mirada de verdad. */
 .nh-pupil-s { animation: nh-saccade 7s steps(1, end) infinite; }
 /* Parpadeo: uno simple y, más tarde, uno doble, como una persona. */
@@ -213,6 +217,34 @@
 @keyframes nh-price { 0% { stroke-dashoffset: 60; } 60%, 100% { stroke-dashoffset: 0; } }
 @keyframes nh-page { 0%, 60%, 100% { transform: scaleX(1); } 75% { transform: scaleX(-1); } 88% { transform: scaleX(-1); opacity: 0; } 89% { transform: scaleX(1); opacity: 0; } 97% { opacity: 1; } }
 @keyframes nh-ball { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-34px) rotate(200deg); } }
+
+/* ── Acabado del 13-11-2026: filo de luz del visor y colorete ── */
+.nh-aura { opacity: 0.38; transition: stroke 0.5s; animation: nh-aura 3.6s ease-in-out infinite; }
+.nh.act-sleep .nh-aura { animation: none; opacity: 0.1; }
+.nh-blush { opacity: 0; transition: opacity 0.5s; }
+.nh.is-happy .nh-blush, .nh.is-joy .nh-blush, .nh.is-celebrate .nh-blush, .nh.is-music .nh-blush { opacity: 0.32; }
+@keyframes nh-aura { 0%, 100% { opacity: 0.28; } 50% { opacity: 0.5; } }
+
+/* ── Actividades nuevas: café, malabares con monedas y meditar ── */
+.nh-steam path { stroke-dasharray: 26; opacity: 0; animation: nh-steam 2.4s ease-out infinite; }
+.nh-steam path:nth-child(2) { animation-delay: 1.2s; }
+@keyframes nh-steam { 0% { stroke-dashoffset: 26; opacity: 0; transform: translateY(4px); } 30% { opacity: 0.6; } 100% { stroke-dashoffset: 0; opacity: 0; transform: translateY(-6px); } }
+
+/* Tres monedas en arco: el grupo de fuera las lleva de lado a lado y el de dentro las sube. */
+.nh-coins { animation: nh-prop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.nh-coin { animation: nh-coin-x 1.8s ease-in-out infinite alternate; }
+.nh-coin > g { animation: nh-coin-y 0.9s cubic-bezier(0.33, 0, 0.67, 1) infinite alternate; }
+.nh-coin:nth-child(2), .nh-coin:nth-child(2) > g { animation-delay: -0.6s; }
+.nh-coin:nth-child(3), .nh-coin:nth-child(3) > g { animation-delay: -1.2s; }
+@keyframes nh-coin-x { from { transform: translateX(-30px); } to { transform: translateX(30px); } }
+@keyframes nh-coin-y { from { transform: translateY(10px); } to { transform: translateY(-24px); } }
+
+/* Meditando: levita despacio y sus aros respiran. */
+.nh-zen ellipse { transform-box: fill-box; transform-origin: center; animation: nh-zen-aro 4.4s ease-in-out infinite; }
+.nh-zen ellipse:nth-child(2) { animation-delay: 1.1s; }
+.nh.act-zen .nh-thrust { opacity: 0.85; }
+@keyframes nh-zen { 0%, 100% { transform: translateY(2px); } 50% { transform: translateY(-9px); } }
+@keyframes nh-zen-aro { 0%, 100% { transform: scale(0.94); opacity: 0.25; } 50% { transform: scale(1.04); opacity: 0.7; } }
 @keyframes nh-float-up { 0% { opacity: 0; transform: translate(0, 0) scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(18px, -40px) scale(1.15); } }
 @keyframes nh-heart { 0% { opacity: 0; transform: translate(0, 0) scale(0.5); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--hx), -52px) scale(1.2); } }
 @keyframes nh-twinkle { 0%, 100% { opacity: 0; transform: scale(0.6) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(25deg); } }
@@ -395,6 +427,13 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #1a1204;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nh-aura, .nh-coin, .nh-coin > g, .nh-zen ellipse, .nh.act-zen .nh-float { animation: none; }
+  .nh-steam path { animation: none; opacity: 0.5; stroke-dashoffset: 0; }
+  .nh-coin:nth-child(1) { transform: translateX(-22px); }
+  .nh-coin:nth-child(3) { transform: translateX(22px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
