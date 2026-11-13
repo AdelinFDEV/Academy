@@ -116,6 +116,10 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   const [direction, setDirection] = useState(1);
   // Día abierto: solo los días con operaciones tienen panel (sus operaciones, para verlas o editarlas).
   const [selected, setSelected] = useState<number | null>(null);
+  // Vista Año: el mes cuyo resumen está abierto en una ventana, y su pestaña.
+  const [mesAbierto, setMesAbierto] = useState<number | null>(null);
+  const [pestana, setPestana] = useState<"resumen" | "dias" | "pares">("resumen");
+  const abrirResumen = (m: number) => { setPestana("resumen"); setMesAbierto(m); };
 
   const dayMap = useMemo(() => buildDayMap(trades), [trades]);
   const today = dayKey(now);
@@ -128,6 +132,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   function shift(delta: number) {
     setDirection(delta);
     setSelected(null);
+    setMesAbierto(null);
     if (mode === "year") {
       setYear(y => y + delta);
       return;
@@ -145,6 +150,7 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   }
 
   function openMonth(m: number) {
+    setMesAbierto(null);
     setDirection(0);
     setMonth(m);
     setMode("month");
@@ -154,9 +160,9 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
-      if (e.key === "Escape") setSelected(null);
-      // Con la ventana de un día abierta, las flechas no cambian de mes por detrás.
-      else if (selected != null) return;
+      if (e.key === "Escape") { setSelected(null); setMesAbierto(null); }
+      // Con una ventana abierta, las flechas no cambian de mes por detrás.
+      else if (selected != null || mesAbierto != null) return;
       else if (e.key === "ArrowLeft") shift(-1);
       else if (e.key === "ArrowRight") shift(1);
     }
@@ -164,13 +170,14 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   });
 
-  // Con la ventana de un día abierta, la página de detrás no se desplaza.
+  // Con una ventana abierta (un día o el resumen de un mes), la página de detrás no se desplaza.
+  const hayVentana = selected != null || mesAbierto != null;
   useEffect(() => {
-    if (selected == null) return;
+    if (!hayVentana) return;
     const antes = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = antes; };
-  }, [selected]);
+  }, [hayVentana]);
 
   const isCurrent = mode === "year" ? year === now.getFullYear() : year === now.getFullYear() && month === now.getMonth();
 
@@ -542,9 +549,9 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                 key={m}
                 type="button"
                 className={`tjy-barra${sum.count ? ` tone-${toneOf(v)}` : " is-quiet"}${esMejor ? " is-mejor" : ""}${worst?.m === m ? " is-peor" : ""}`}
-                onClick={() => openMonth(m)}
+                onClick={() => abrirResumen(m)}
                 title={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}`}
-                aria-label={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}${esMejor ? ", el mejor mes del año" : ""}. Abrir el mes`}
+                aria-label={`${MONTHS[m]}: ${sum.count ? fmt(sum) : "sin operaciones"}${esMejor ? ", el mejor mes del año" : ""}. Ver su resumen`}
               >
                 <span className="tjy-barra-arriba">
                   {esMejor && <span className="tjy-barra-corona" aria-hidden="true"><Crown size={12} strokeWidth={2.4} /></span>}
@@ -575,8 +582,8 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
                     key={m}
                     type="button"
                     className={`tjy-month${sum.count ? ` tone-${toneOf(valueOf(sum))}` : " is-quiet"}${isNow ? " is-now" : ""}${esMejor ? " is-mejor" : ""}`}
-                    onClick={() => openMonth(m)}
-                    aria-label={`${MONTHS[m]} de ${year}: ${sum.count ? `${fmt(sum)} en ${sum.count} operaciones` : "sin operaciones"}${esMejor ? ". El mejor mes del año" : ""}. Abrir el mes`}
+                    onClick={() => abrirResumen(m)}
+                    aria-label={`${MONTHS[m]} de ${year}: ${sum.count ? `${fmt(sum)} en ${sum.count} operaciones` : "sin operaciones"}${esMejor ? ". El mejor mes del año" : ""}. Ver su resumen`}
                   >
                     {esMejor && <span className="tjy-mejor" aria-hidden="true"><Crown size={12} strokeWidth={2.4} /> Mejor mes</span>}
                     {isNow && !esMejor && <span className="tjy-ahora" aria-hidden="true">En curso</span>}
@@ -607,7 +614,167 @@ export default function TjCalendar({ trades, onEdit, onAdd, dias }: Props) {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {mesAbierto != null && renderMonthSummary(mesAbierto, best?.m === mesAbierto)}
       </>
+    );
+  }
+
+  /**
+   * El resumen de un mes, en una ventana (13-11-2026): se abre al pulsar un
+   * mes en la vista Año. Tres pestañas para no amontonar: las cifras del mes,
+   * sus días uno a uno y el desglose por par y por estrategia. Desde aquí se
+   * puede saltar al mes en el calendario.
+   */
+  function renderMonthSummary(m: number, esMejor: boolean) {
+    const dias = monthCells(year, m)
+      .filter((d): d is number => d != null)
+      .map(d => ({ day: d, info: infoOf(year, m, d) }))
+      .filter((d): d is { day: number; info: DayInfo } => !!d.info);
+    const sum = sumInfos(dias.map(d => d.info));
+    const ops = dias.flatMap(d => d.info.trades);
+    const mejor = dias.reduce<(typeof dias)[number] | null>((b, d) => (valueOf(d.info) > (b ? valueOf(b.info) : 0) ? d : b), null);
+    const peor = dias.reduce<(typeof dias)[number] | null>((b, d) => (valueOf(d.info) < (b ? valueOf(b.info) : 0) ? d : b), null);
+    const media = sum.count ? { pnl: sum.pnl / sum.count, r: sum.r / sum.count } : null;
+    const animos = dias.map(d => diaOf(year, m, d.day)?.animo).filter((a): a is NonNullable<typeof a> => a != null);
+    const animo = animos.length ? animoInfo(animoDeMedia(animos.reduce((x, a) => x + a, 0) / animos.length)) : null;
+
+    // Agrupa las operaciones del mes por una clave (el par, la estrategia).
+    const agrupar = (clave: (t: Trade) => string) => {
+      const grupos = new Map<string, { nombre: string; count: number; wins: number; pnl: number; r: number }>();
+      for (const t of ops) {
+        const k = clave(t);
+        const g = grupos.get(k) ?? { nombre: k, count: 0, wins: 0, pnl: 0, r: 0 };
+        g.count++;
+        if (t.result === "win") g.wins++;
+        g.pnl += t.pnl;
+        g.r += rOf(t) ?? 0;
+        grupos.set(k, g);
+      }
+      return [...grupos.values()].sort((a, b) => valueOf(b) - valueOf(a));
+    };
+    const porPar = agrupar(t => t.pair);
+    const porEstrategia = agrupar(t => t.strategy ?? "Sin estrategia");
+
+    const tabla = (titulo: string, filas: ReturnType<typeof agrupar>) => (
+      <div className="tjm-tabla">
+        <h4>{titulo}</h4>
+        <ul>
+          {filas.map(g => (
+            <li key={g.nombre}>
+              <span className="tjm-tabla-nombre">{g.nombre}</span>
+              <span className="tjm-tabla-meta">{g.count} op. · {Math.round((g.wins / g.count) * 100)} %</span>
+              <strong className={`tone-${toneOf(valueOf(g))}`}>{fmt(g)}</strong>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+
+    const PESTANAS = [["resumen", "Resumen"], ["dias", `Días (${dias.length})`], ["pares", "Pares y estrategias"]] as const;
+
+    return createPortal(
+      <div className="tjc-dia-velo" onClick={() => setMesAbierto(null)}>
+        <div
+          className={`tjc-dia tjm${esMejor ? " is-mejor" : ""}`}
+          role="dialog" aria-modal="true" aria-label={`Resumen de ${MONTHS[m]} de ${year}`}
+          onClick={e => e.stopPropagation()}
+        >
+          <header className="tjm-cab">
+            <div>
+              <span className="tjm-rotulo">Resumen del mes</span>
+              <h3><span className="cap">{MONTHS[m]}</span> <small>{year}</small></h3>
+            </div>
+            {esMejor && <span className="tjc-dia-mejor"><span className="tjc-leyenda-corona" aria-hidden="true"><Crown size={11} strokeWidth={2.4} /></span> Tu mejor mes de {year}</span>}
+            <button type="button" className="tj-icon-btn" onClick={() => setMesAbierto(null)} aria-label="Cerrar el resumen" title="Cerrar (Esc)" autoFocus>
+              <X size={15} />
+            </button>
+          </header>
+
+          {sum.count === 0 ? (
+            <p className="tjm-vacio">No apuntaste ninguna operación en {MONTHS[m]}.</p>
+          ) : (
+            <>
+              <div className="tjm-pestanas" role="tablist" aria-label="Apartados del resumen">
+                {PESTANAS.map(([id, texto]) => (
+                  <button key={id} type="button" role="tab" aria-selected={pestana === id} className={pestana === id ? "is-on" : undefined} onClick={() => setPestana(id)}>
+                    {texto}
+                  </button>
+                ))}
+              </div>
+
+              {pestana === "resumen" && (
+                <div className="tjm-panel" role="tabpanel">
+                  <div className={`tjm-resultado tone-${toneOf(valueOf(sum))}`}>
+                    <span>Resultado de {MONTHS[m]}</span>
+                    <strong>{fmt(sum)}</strong>
+                    {media && <small>{fmt(media)} de media por operación</small>}
+                  </div>
+                  <dl className="tjm-datos">
+                    <div><dt>Operaciones</dt><dd>{sum.count}</dd></div>
+                    <div>
+                      <dt>Acierto</dt><dd>{Math.round((sum.wins / sum.count) * 100)} %</dd>
+                      <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.wins / sum.count) * 100}%` }} /></i>
+                    </div>
+                    <div>
+                      <dt>Días en verde</dt><dd>{sum.green}/{sum.days}</dd>
+                      <i className="tjc-band-barra" aria-hidden="true"><b style={{ width: `${(sum.green / sum.days) * 100}%` }} /></i>
+                    </div>
+                    <div><dt>{unit === "r" ? "En dólares" : "En R"}</dt><dd className={`tone-${toneOf(unit === "r" ? sum.pnl : sum.r)}`}>{unit === "r" ? pnlStr(sum.pnl) : rStr(sum.r)}</dd></div>
+                    <div className={mejor ? "is-oro" : undefined}>
+                      <dt>Mejor día</dt>
+                      <dd>{mejor ? `${mejor.day} de ${MONTHS[m].slice(0, 3)}.` : "—"}</dd>
+                      {mejor && <small className="tone-win">{fmt(mejor.info)}</small>}
+                    </div>
+                    <div>
+                      <dt>Peor día</dt>
+                      <dd>{peor ? `${peor.day} de ${MONTHS[m].slice(0, 3)}.` : "Ninguno en rojo"}</dd>
+                      {peor && <small className="tone-loss">{fmt(peor.info)}</small>}
+                    </div>
+                    <div><dt>Par más operado</dt><dd>{[...porPar].sort((a, b) => b.count - a.count)[0]?.nombre ?? "—"}</dd></div>
+                    <div className={animo ? `tjc-band-mood mood-${animo.value}` : undefined}>
+                      <dt>Ánimo del mes</dt>
+                      <dd>{animo ? <><Cara valor={animo.value} /> {animo.label}</> : "Sin apuntar"}</dd>
+                    </div>
+                  </dl>
+                </div>
+              )}
+
+              {pestana === "dias" && (
+                <ul className="tjm-panel tjm-dias" role="tabpanel">
+                  {dias.map(({ day, info }) => {
+                    const fecha = new Date(year, m, day);
+                    const an = diaOf(year, m, day)?.animo;
+                    return (
+                      <li key={day} className={`tone-${toneOf(valueOf(info))}${mejor?.day === day ? " is-mejor" : ""}`}>
+                        <span className="tjm-dia-fecha"><b>{day}</b> {WEEKDAY_NAMES[(fecha.getDay() + 6) % 7]}</span>
+                        <DayDots trades={info.trades} />
+                        <span className="tjm-tabla-meta">{info.trades.length} op.</span>
+                        {an ? <span className={`tjc-mood mood-${an}`} title={animoInfo(an).label}><Cara valor={an} /></span> : <span />}
+                        <strong>{fmt(info)}</strong>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              {pestana === "pares" && (
+                <div className="tjm-panel tjm-dos" role="tabpanel">
+                  {tabla("Por par", porPar)}
+                  {tabla("Por estrategia", porEstrategia)}
+                </div>
+              )}
+            </>
+          )}
+
+          <footer className="tjm-pie">
+            <button type="button" className="tjc-detail-add" onClick={() => openMonth(m)}>
+              Ver {MONTHS[m]} en el calendario <ArrowUpRight size={14} />
+            </button>
+          </footer>
+        </div>
+      </div>,
+      document.body,
     );
   }
 }

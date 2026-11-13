@@ -1913,12 +1913,76 @@
 .tjc-dia-velo .tone-win { --tone: var(--tj-win); color: var(--tone); }
 .tjc-dia-velo .tone-loss { --tone: var(--tj-loss); color: var(--tone); }
 .tjc-dia-velo .tone-be { --tone: var(--tj-be); color: var(--tone); }
+/* Los colores del ánimo: en el Diario cuelgan de .trading-journal, y aquí no llega. */
+.tjc-dia-velo .mood-4 { --mood: #6ee7b7; }
+.tjc-dia-velo .mood-3 { --mood: #8ab8ff; }
+.tjc-dia-velo .mood-2 { --mood: #f5b860; }
+.tjc-dia-velo .mood-1 { --mood: #ff7a7a; }
 .tjc-dia { width: min(100%, 720px); max-height: calc(100dvh - 2.4rem); overflow-y: auto; padding: 1.4rem 1.5rem 1.5rem; border: 1px solid var(--tj-accent-line); border-radius: 20px; background: radial-gradient(120% 80% at 0% 0%, rgba(230, 180, 85, 0.13), transparent 60%), var(--tj-panel-solid); box-shadow: 0 34px 90px -24px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(0, 0, 0, 0.4); color: var(--text-primary); animation: tj-reset-entra 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
 .tjc-dia.is-mejor { border-color: var(--premium-gold); box-shadow: 0 34px 90px -24px rgba(0, 0, 0, 0.95), 0 0 40px -10px rgba(230, 180, 85, 0.55); }
 .tjc-dia-mejor { display: inline-flex; align-items: center; gap: 0.45rem; margin: 0 0 0.9rem; padding: 0.3rem 0.75rem 0.3rem 0.4rem; border: 1px solid rgba(230, 180, 85, 0.5); border-radius: 99px; background: rgba(230, 180, 85, 0.13); font-size: 0.78rem; font-weight: 700; color: var(--premium-gold); }
 @media (prefers-reduced-motion: reduce) { .tjc-dia-velo, .tjc-dia { animation: none; } }
 
 .tjc-detail-inner { margin: 0; }
+
+/* ── El resumen de un mes, en ventana (se abre desde la vista Año) ── */
+.tjm { display: flex; flex-direction: column; gap: 1rem; width: min(100%, 760px); }
+.tjm-cab { display: flex; align-items: center; gap: 0.9rem; }
+.tjm-cab > div { margin-right: auto; min-width: 0; }
+.tjm-cab .tjc-dia-mejor { margin: 0; }
+.tjm-rotulo { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tj-accent); }
+.tjm-cab h3 { margin: 0.1rem 0 0; font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); }
+.tjm-cab h3 small { font-size: 1rem; font-weight: 500; color: var(--text-muted); }
+.tjm .cap { text-transform: capitalize; }
+.tjm-vacio { margin: 0; padding: 1.6rem 1rem; border: 1px dashed var(--hairline); border-radius: 14px; text-align: center; font-size: 0.92rem; color: var(--text-muted); }
+
+.tjm-pestanas { display: flex; gap: 4px; padding: 4px; border: 1px solid var(--hairline); border-radius: 13px; background: rgba(3, 9, 22, 0.4); }
+.tjm-pestanas button { flex: 1; min-height: 40px; padding: 0 0.7rem; border: 0; border-radius: 10px; background: none; font: 600 0.86rem var(--font-family); color: var(--text-muted); cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease; }
+.tjm-pestanas button:hover { color: var(--text-primary); }
+.tjm-pestanas button.is-on { background: var(--accent-orange); color: #fff; }
+.tjm-pestanas button:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 2px; }
+.tjm-panel { min-height: 300px; margin: 0; animation: tjf-paso 0.2s ease; }
+
+.tjm-resultado { display: grid; gap: 0.15rem; margin-bottom: 0.8rem; padding: 1rem 1.15rem; border: 1px solid color-mix(in srgb, var(--tone) 38%, transparent); border-radius: 16px; background: linear-gradient(135deg, color-mix(in srgb, var(--tone) 16%, transparent), transparent 70%); }
+.tjm-resultado span { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+.tjm-resultado strong { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--tone); }
+.tjm-resultado small { font-size: 0.8rem; color: var(--text-secondary); }
+.tjm-datos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.6rem; margin: 0; }
+.tjm-datos > div { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; padding: 0.75rem 0.85rem; border: 1px solid var(--hairline); border-radius: 13px; background: rgba(240, 244, 255, 0.03); }
+.tjm-datos dt { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.tjm-datos dd { display: flex; align-items: center; gap: 0.35rem; margin: 0; font-family: var(--font-display); font-size: 1.02rem; font-weight: 700; color: var(--tone, var(--text-primary)); }
+.tjm-datos small { font-size: 0.76rem; font-weight: 700; }
+.tjm-datos .is-oro { border-color: rgba(230, 180, 85, 0.55); background: linear-gradient(150deg, rgba(230, 180, 85, 0.18), transparent 70%); }
+.tjm-datos .is-oro dt { color: var(--premium-gold); }
+
+.tjm-dias { display: grid; gap: 5px; align-content: start; padding: 0; list-style: none; max-height: 46vh; overflow-y: auto; }
+.tjm-dias li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 3.4rem 22px 6.5rem; align-items: center; gap: 0.7rem; padding: 0.6rem 0.8rem; border-left: 3px solid var(--tone); border-radius: 4px 10px 10px 4px; background: rgba(240, 244, 255, 0.04); font-size: 0.86rem; }
+.tjm-dias li.is-mejor { border-left-color: var(--premium-gold); background: linear-gradient(90deg, rgba(230, 180, 85, 0.16), rgba(240, 244, 255, 0.04) 60%); }
+.tjm-dia-fecha { color: var(--text-secondary); text-transform: capitalize; }
+.tjm-dia-fecha b { display: inline-block; min-width: 1.6rem; font-family: var(--font-display); font-size: 1rem; color: var(--text-primary); }
+.tjm-dias strong { text-align: right; font-family: var(--font-display); color: var(--tone); }
+.tjm-dias .tjc-mood { color: inherit; }
+
+.tjm-dos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.tjm-tabla h4 { margin: 0 0 0.5rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+.tjm-tabla ul { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.tjm-tabla li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 0.7rem; padding: 0.55rem 0.75rem; border-radius: 10px; background: rgba(240, 244, 255, 0.04); font-size: 0.86rem; }
+.tjm-tabla-nombre { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 700; color: var(--text-primary); }
+.tjm-tabla-meta { font-size: 0.74rem; font-weight: 600; white-space: nowrap; color: var(--text-muted); }
+.tjm-tabla strong { min-width: 5rem; text-align: right; font-family: var(--font-display); }
+.tjm-pie { display: flex; justify-content: flex-end; padding-top: 0.2rem; }
+.tjm-pie .tjc-detail-add { margin: 0; }
+
+@media (max-width: 640px) {
+  .tjm-datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tjm-dos { grid-template-columns: 1fr; }
+  .tjm-dias li { grid-template-columns: minmax(0, 1fr) 22px auto; }
+  .tjm-dias .tjc-dots, .tjm-dias .tjm-tabla-meta { display: none; }
+  .tjm-cab .tjc-dia-mejor { display: none; }
+  .tjm-pestanas button { font-size: 0.78rem; padding: 0 0.3rem; }
+  .tjm-panel { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .tjm-panel { animation: none; } .tjm-pestanas button { transition: none; } }
 
 .tjc-detail-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
 .tjc-detail-head > div:first-child { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; margin-right: auto; }
