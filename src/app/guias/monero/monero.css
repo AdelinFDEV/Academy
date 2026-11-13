@@ -1,0 +1,54 @@
+/* Guía «Qué es Monero». Prefijo: xmr-. Lo común está en ../guias.css. */
+
+/* ── Comparador: qué ve un observador ── */
+.xmr-obs { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.xmr-obs-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.xmr-obs-redes { display: inline-grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; background: #060f1f; }
+.xmr-obs-redes button { min-width: 130px; padding: 11px 20px; border: 0; border-radius: 9px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease; }
+.xmr-obs-redes button.is-activa { background: var(--accent-orange); color: #fff; }
+.xmr-obs-redes button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.xmr-obs-filas { list-style: none; display: grid; gap: 8px; margin: 18px 0 0; padding: 0; }
+.xmr-obs-filas li { display: grid; grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px; align-items: center; padding: 13px 16px; border: 1px solid rgba(74,222,128,0.28); border-radius: 12px; background: rgba(74,222,128,0.06); transition: background-color 0.2s ease, border-color 0.2s ease; }
+.xmr-obs-icono { display: grid; place-items: center; color: #4ade80; }
+.xmr-obs-dato { font-size: 15px; color: #fff; }
+.xmr-obs-valor { font-family: ui-monospace, Consolas, monospace; font-size: 14px; color: #dce8f8; text-align: right; overflow-wrap: anywhere; }
+.xmr-obs-filas li.is-tapado { border-color: rgba(255,255,255,0.09); background: rgba(255,255,255,0.025); }
+.xmr-obs-filas li.is-tapado .xmr-obs-icono { color: #7f93b0; }
+.xmr-obs-filas li.is-tapado .xmr-obs-dato { color: #b0c4d8; }
+.xmr-obs-filas li.is-tapado .xmr-obs-valor { font-family: inherit; font-style: italic; color: #9db2d3; }
+.xmr-obs-resumen { min-height: 3em; margin: 16px 0 0; font-size: 15px; line-height: 1.6; color: #f2f6ff; }
+
+/* ── Las tres técnicas ── */
+.xmr-tecnicas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.xmr-tecnicas > div { display: grid; gap: 8px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-orange); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
+.xmr-tecnica-oculta { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-orange-soft); }
+.xmr-tecnicas strong { font-size: 18px; color: #fff; }
+.xmr-tecnicas p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+
+/* ── Afirmaciones con veredicto ── */
+.xmr-afirmaciones { display: grid; gap: 12px; margin-top: 26px; }
+.xmr-afirmacion { padding: 20px 22px; border: 1px solid rgba(255,255,255,0.09); border-left-width: 4px; border-radius: 6px 14px 14px 6px; background: rgba(15,32,64,0.45); }
+.xmr-afirmacion-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; margin-bottom: 8px; }
+.xmr-afirmacion-frase { margin: 0; font-size: 18px; font-weight: 700; color: #fff; }
+.xmr-afirmacion > p { margin: 0; font-size: 15.5px; line-height: 1.65; color: #dce8f8; }
+.xmr-veredicto { padding: 5px 12px; border-radius: 99px; font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.xmr-afirmacion--cierto { border-left-color: #4ade80; }
+.xmr-afirmacion--cierto .xmr-veredicto { background: rgba(74,222,128,0.15); color: #4ade80; }
+.xmr-afirmacion--falso { border-left-color: #f87171; }
+.xmr-afirmacion--falso .xmr-veredicto { background: rgba(248,113,113,0.15); color: #fca5a5; }
+.xmr-afirmacion--a-medias { border-left-color: var(--gold); }
+.xmr-afirmacion--a-medias .xmr-veredicto { background: var(--gold-soft); color: var(--gold); }
+
+@media (max-width: 760px) {
+  .xmr-obs { padding: 18px 16px; }
+  .xmr-obs-redes { display: grid; }
+  .xmr-obs-redes button { min-width: 0; }
+  .xmr-obs-filas li { grid-template-columns: 24px minmax(0, 1fr); }
+  .xmr-obs-valor { grid-column: 2; text-align: left; }
+  .xmr-tecnicas { grid-template-columns: 1fr; }
+  .xmr-afirmacion-frase { font-size: 16.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xmr-obs-redes button, .xmr-obs-filas li { transition: none; }
+}

@@ -22,16 +22,18 @@ Y lo que obliga a lo anterior: **este archivo se mantiene al día siempre**. Si 
 
 ## Funcionalidades pedidas
 
-### 00g. Guías de Ethereum, Solana, Cardano y Chainlink: lo que queda (13-11-2026)
+### 00g. Ocho guías de criptomonedas en borrador: lo que queda (13-11-2026)
 
-Están escritas, auditadas y en `BORRADORES` (`src/lib/guides.ts`). En producción dan 404 a quien no es admin hasta que se publiquen.
+Ethereum, Solana, Cardano, Chainlink, BNB, TRON, Monero y Stellar están escritas, auditadas y en `BORRADORES` (`src/lib/guides.ts`). En producción dan 404 a quien no es admin hasta que se publiquen.
 
 - [ ] **Portadas** (las pasa el admin): a WebP de 1.600 px y calidad 82 en `public/guias/<slug>.webp`, y el campo `portada` de cada una en `BORRADORES`.
-- [ ] **Publicarlas desde `/admin/acciones`** (lo hace el admin), una cada dos o tres días y en este orden: Ethereum, Solana, Cardano, Chainlink. La de Solana enlaza a `/guias/ethereum`: si se publica antes, ese enlace da 404.
+- [ ] **Publicarlas desde `/admin/acciones`** (lo hace el admin), una cada dos o tres días. **El orden importa por los enlaces entre ellas**: Ethereum la primera (la enlazan Solana, BNB y TRON) y TRON antes que Stellar (Stellar la enlaza). Orden propuesto: Ethereum, Solana, BNB, TRON, Cardano, Monero, Stellar, Chainlink.
 - [ ] **Después de publicar cada una**: ascenderla de `BORRADORES` a `GUIDES`, darle al menos dos enlaces entrantes desde guías o fichas ya publicadas (Fase 10) y repetir `npm run check:seo -- guias/<slug> "<moneda>"`. Hoy fallan solo esas dos comprobaciones, enlaces entrantes y sitemap, que un borrador no puede cumplir.
-- [ ] **Fichas del diccionario que estas guías explican en el texto pero no enlazan**, porque aún no existen: capa 2, hard fork, slashing, oráculo, mediana, cliente validador y delegación. Solo se creó `prueba-de-participacion`. Cada una va como ficha ampliada (Parte B de la plantilla) y después se enlaza en su primera aparición en las cuatro guías.
+- [ ] **Fichas del diccionario que estas guías explican en el texto pero no enlazan**, porque aún no existen: capa 2, hard fork, slashing, mediana, delegación, moneda de privacidad, fungibilidad, línea de confianza, memo y MiCA. Solo se crearon `prueba-de-participacion` y `quema-de-tokens`. Cada una va como ficha ampliada (Parte B de la plantilla) y después se enlaza en su primera aparición.
 - [ ] **Una experiencia propia del admin en cada guía** (Fase 8): hoy ninguna la tiene.
-- [ ] **Revisar las cifras que caducan** antes de publicar: rendimiento del staking de ETH, SOL y ADA, inflación de SOL y el cupo del staking de LINK. Están fechadas en el texto como de 2026.
+- [ ] **Revisar las cifras que caducan** antes de publicar cada una. Las que más: en **BNB**, todo lo de Binance y la licencia MiCA (cambia por semanas; el texto refleja lo publicado hasta el 13-11-2026, con el cierre de cuentas en España anunciado para el 31-12-2026) y la última quema (`QUEDAN` en `GuideBnbQuema.tsx`); en **TRON**, el precio de la energía y el USDT en circulación; en **Monero**, el estado de FCMP++ y de la norma europea; en **Stellar**, la reserva base y los XLM en circulación; y los rendimientos de staking de ETH, SOL, ADA y LINK.
+- [ ] **Binance ya no opera en España** (sin licencia MiCA desde el 01-07-2026). Repasar dónde la web la nombra como una opción para comprar: sale en las guías de fiscalidad y de Hyperliquid y en `src/lib/glosario.ts`. No se ha tocado nada de eso.
+- [ ] **El aviso «imágenes sin lazy ni priority» (3)** que da `check:seo` en todas las guías y fichas: viene de la plantilla común, no del contenido. Sin investigar.
 
 ### 00f. Cinco cursos nuevos: lo que queda (13-11-2026)
 

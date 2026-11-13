@@ -1,0 +1,55 @@
+/* Guía «Qué es TRON». Prefijo: tron-. Lo común está en ../guias.css. */
+
+/* ── Tres cifras del USDT en la red ── */
+.tron-cifras { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.tron-cifras > div { display: grid; gap: 8px; align-content: start; padding: 20px; border-left: 3px solid var(--accent-orange); border-radius: 4px 14px 14px 4px; background: rgba(15,32,64,0.5); }
+.tron-cifras strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.tron-cifras span { font-size: 14px; line-height: 1.55; color: #dce8f8; }
+
+/* ── El recibo de un envío ── */
+.tron-recibo { max-width: 620px; margin: 26px 0 0; padding: 26px 28px 22px; border: 1px dashed rgba(255,255,255,0.28); border-radius: 6px; background: #0a1628; font-variant-numeric: tabular-nums; }
+.tron-recibo-titulo { margin: 0 0 16px; padding-bottom: 14px; border-bottom: 1px dashed rgba(255,255,255,0.22); font-family: ui-monospace, Consolas, monospace; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.tron-recibo dl { margin: 0; display: grid; gap: 11px; }
+.tron-recibo dl > div { display: flex; justify-content: space-between; gap: 18px; align-items: baseline; }
+.tron-recibo dt { font-size: 15px; color: #dce8f8; }
+.tron-recibo dd { margin: 0; font-family: ui-monospace, Consolas, monospace; font-size: 15px; color: #fff; white-space: nowrap; }
+.tron-recibo .es-total { margin-top: 6px; padding-top: 14px; border-top: 1px dashed rgba(255,255,255,0.22); }
+.tron-recibo .es-total dt { font-weight: 700; color: #fff; }
+.tron-recibo .es-total dd { font-size: 19px; font-weight: 700; color: var(--accent-orange-soft); }
+.tron-recibo-nota { margin: 16px 0 0; font-size: 13.5px; line-height: 1.6; color: #9db2d3; }
+
+/* ── Calculadora de un envío ── */
+.tron-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.tron-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.tron-calc-campos { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 20px; align-items: end; }
+.tron-calc-campos label { display: grid; gap: 9px; }
+.tron-calc-campos label > span { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #dce8f8; }
+.tron-calc-campos label strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+.tron-calc-campos input:not([type="range"]) { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.tron-calc-campos input[type="range"] { width: 100%; height: 44px; accent-color: var(--accent-orange); }
+.tron-calc-casilla { display: flex; align-items: center; gap: 10px; margin-top: 16px; font-size: 14.5px; color: #dce8f8; cursor: pointer; }
+.tron-calc-casilla input { width: 20px; height: 20px; accent-color: var(--accent-orange); flex-shrink: 0; }
+.tron-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
+.tron-calc-resultados { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; margin-top: 20px; }
+.tron-calc-resultados > div { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.tron-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
+.tron-calc-resultados span { font-size: 13px; color: #b0c4d8; }
+.tron-calc-resultados strong { font-size: 22px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.tron-calc-resultados .es-principal strong { font-size: 30px; color: var(--gold); }
+.tron-calc-resultados small { font-size: 12.5px; color: #9db2d3; }
+.tron-calc-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+/* ── Los cuatro errores, numerados ── */
+.tron-errores { list-style: none; counter-reset: tron-error; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 26px 0 0; padding: 0; }
+.tron-errores li { counter-increment: tron-error; position: relative; padding: 22px 22px 22px 66px; border: 1px solid rgba(248,113,113,0.3); border-radius: 16px; background: rgba(248,113,113,0.06); }
+.tron-errores li::before { content: counter(tron-error); position: absolute; left: 20px; top: 20px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; background: rgba(248,113,113,0.2); font-size: 16px; font-weight: 800; color: #fca5a5; }
+.tron-errores strong { display: block; font-size: 17px; color: #fff; }
+.tron-errores p { margin: 6px 0 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+.tron-errores a { color: var(--gold); }
+
+@media (max-width: 760px) {
+  .tron-cifras, .tron-calc-campos, .tron-calc-resultados, .tron-errores { grid-template-columns: 1fr; }
+  .tron-calc { padding: 18px 16px; }
+  .tron-recibo { padding: 20px 18px 18px; }
+  .tron-recibo dl > div { flex-direction: column; gap: 2px; }
+}

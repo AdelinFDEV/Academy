@@ -41,15 +41,11 @@ Una guía por moneda, poco a poco, como las de Worldcoin, Render, Hyperliquid y 
 curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50"   | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>JSON.parse(d).forEach(c=>console.log(c.market_cap_rank,c.symbol.toUpperCase(),c.name)))"
 ```
 
-**Quedan 19.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
+**Quedan 15.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
 
 | # | Moneda | Grupo | Nota |
 |---|---|---|---|
-| 4 | BNB (BNB) | Token de exchange · plataforma | La única de un exchange que tendrá guía (decisión del admin, 13-11-2026): es de Binance, pero también mueve su propia red (BNB Chain) |
-| 8 | TRON (TRX) | Plataforma de contratos | Muy usada para mover USDT |
-| 11 | Zcash (ZEC) | Privacidad | Dentro por decisión del admin. Explicar su situación en la UE, con fuente y fecha |
-| 13 | Monero (XMR) | Privacidad | Dentro por decisión del admin. Igual que Zcash: explicar con fuente por qué muchos exchanges europeos la han retirado |
-| 19 | Stellar (XLM) | Pagos | Pariente de XRP: enlazar con su guía |
+| 11 | Zcash (ZEC) | Privacidad | Dentro por decisión del admin. Explicar su situación en la UE, con fuente y fecha. La guía de Monero ya lo hace (Reglamento (UE) 2024/1624, art. 79): que la de Zcash no la repita, y que cuente lo que la distingue, que su privacidad es opcional |
 | 21 | NEAR Protocol (NEAR) | Plataforma de contratos | |
 | 23 | Bitcoin Cash (BCH) | Pagos | Nació de una división de Bitcoin |
 | 24 | Litecoin (LTC) | Pagos | |
@@ -73,7 +69,7 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 - **Memes**: Dogecoin, Shiba Inu, Pepe y MemeCore (una red hecha para memes, que CoinGecko clasifica como meme).
 - **Activos tradicionales tokenizados**, que no son una criptomoneda propia sino un activo de fuera envuelto en un token: Figure HELOC (préstamos hipotecarios), Tether Gold y PAX Gold (oro), Ondo USDY y Circle USYC (deuda del Tesoro de EE. UU.) y Spiko Amundi (un fondo monetario en euros). Si interesan, darían para **una sola guía** sobre la tokenización de activos.
 
-**Hechas el 13-11-2026, a la espera de que el admin las publique desde `/admin/acciones`:** Ethereum, Solana, Cardano y Chainlink (están en `BORRADORES`, `src/lib/guides.ts`). **Siguiente tanda de cuatro:** se eligen de la parte alta de la tabla, mezclando grupos para que no salgan cuatro plataformas de contratos seguidas. El volumen de búsqueda real de cada una se mira en la Fase 0 de la auditoría SEO antes de elegir.
+**Hechas el 13-11-2026, a la espera de que el admin las publique desde `/admin/acciones`:** Ethereum, Solana, Cardano, Chainlink, BNB, TRON, Monero y Stellar (están en `BORRADORES`, `src/lib/guides.ts`). **Siguiente tanda de cuatro:** se eligen de la parte alta de la tabla, mezclando grupos para que no salgan cuatro plataformas de contratos seguidas. El volumen de búsqueda real de cada una se mira en la Fase 0 de la auditoría SEO antes de elegir.
 
 ---
 
