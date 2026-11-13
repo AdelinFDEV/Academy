@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   ArrowRight, ArrowUpRight, Award, BookOpenText, CalendarRange, Check, ChevronDown, Crown, LineChart, Lock,
-  Medal, ShieldCheck, Smile, Sparkles, Target, Zap,
+  Medal, MessageCircleQuestion, ShieldCheck, Smile, Sparkles, Target, Zap,
 } from "lucide-react";
 import { detalleDe, herramienta } from "@/lib/herramientas";
 import type { CursoResumen } from "@/lib/cursos";
@@ -85,7 +85,33 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
         <span className="pf-luz pf-luz--azul" />
       </div>
 
-      <div className="pf-inner">
+      <div className={`pf-inner${isPremium ? " pf-inner--premium" : ""}`}>
+        {/* A quien ya es Premium no se le vende lo que ya tiene (13-11-2026):
+            en vez del escaparate y la oferta, tres accesos a sus herramientas. */}
+        {isPremium ? (
+          <nav className="pf-accesos" aria-label="Tus herramientas">
+            <p className="pf-accesos-titulo"><Crown size={15} aria-hidden="true" /> Tu Premium</p>
+            <Link href={destino(diario)} className="pf-acceso" style={{ "--c": diario.color } as React.CSSProperties}>
+              <span className="pf-icono" aria-hidden="true"><IconoDiario size={22} /></span>
+              <span><strong>Diario de Trading</strong><small>Apunta tu próxima operación</small></span>
+              <ArrowUpRight className="pf-ir" size={18} aria-hidden="true" />
+            </Link>
+            <Link href={destino(cartera)} className="pf-acceso" style={{ "--c": cartera.color } as React.CSSProperties}>
+              <span className="pf-icono" aria-hidden="true"><IconoPortfolio size={22} /></span>
+              <span>
+                <strong>Portfolio Adelin</strong>
+                <small>{portfolio ? `${pct(portfolio.rentabilidadPct)} · ${portfolio.posiciones} posiciones` : "La cartera, en vivo"}</small>
+              </span>
+              <ArrowUpRight className="pf-ir" size={18} aria-hidden="true" />
+            </Link>
+            <Link href={destino(aula)} className="pf-acceso" style={{ "--c": aula.color } as React.CSSProperties}>
+              <span className="pf-icono" aria-hidden="true"><IconoCursos size={22} /></span>
+              <span><strong>Cursos</strong><small>{cursos.length > 0 ? `${cursos.length} cursos · ${lecciones} lecciones` : "Con examen y certificado"}</small></span>
+              <ArrowUpRight className="pf-ir" size={18} aria-hidden="true" />
+            </Link>
+          </nav>
+        ) : (
+        <>
         <header className="pf-cabecera">
           <span className="pf-sello"><Crown size={13} aria-hidden="true" /> AdelinBTC Premium</span>
           <h2 id="pf-titulo" className="pf-titulo">
@@ -237,7 +263,6 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
         </div>
 
         {/* ── 2 · La oferta ──────────────────────────────────────────────── */}
-        {!isPremium && (
           <div className="pf-oferta">
             <span className="pf-oferta-borde" aria-hidden="true" />
             <div className="pf-oferta-precio">
@@ -268,28 +293,39 @@ export default function PremiumHome({ portfolio, cursos, isPremium }: Props) {
               </ul>
             </div>
           </div>
+        </>
         )}
 
-        {/* ── 3 · Preguntas frecuentes y contacto ───────────────────────── */}
+        {/* ── 3 · Preguntas frecuentes y contacto ─────────────────────────
+            Rediseñado el 13-11-2026: un panel propio, con el contacto en una
+            tarjeta con los colores de Instagram y cada pregunta con su color. */}
         <div className="pf-faq" id="preguntas">
+          <span className="pf-faq-luz pf-faq-luz--rosa" aria-hidden="true" />
+          <span className="pf-faq-luz pf-faq-luz--oro" aria-hidden="true" />
+
           <div className="pf-faq-lado">
-            <span className="pf-kicker pf-kicker--oro">Dudas</span>
-            <h3 className="pf-faq-titulo">Lo que más me preguntan</h3>
+            <span className="pf-faq-sello"><MessageCircleQuestion size={13} aria-hidden="true" /> Dudas</span>
+            <h3 className="pf-faq-titulo">Lo que más me <em>preguntan</em></h3>
             <p className="pf-faq-texto">
               Si la tuya no está, escríbeme. Te contesto yo, de tú a tú.
             </p>
 
             <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" className="pf-contacto">
-              <span className="pf-contacto-avatar" aria-hidden="true">
-                {/* eslint-disable-next-line @next/next/no-img-element -- estático, 256 px, ya optimizado */}
-                <img src={AVATAR_ADMIN.src ?? ""} alt="" width={46} height={46} className="pf-contacto-foto" />
-                <span className="pf-contacto-online" />
+              <span className="pf-contacto-cab">
+                <span className="pf-contacto-avatar" aria-hidden="true">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- estático, 256 px, ya optimizado */}
+                  <img src={AVATAR_ADMIN.src ?? ""} alt="" width={60} height={60} className="pf-contacto-foto" />
+                  <span className="pf-contacto-online" />
+                </span>
+                <span className="pf-contacto-texto">
+                  <strong>AdelinBTC</strong>
+                  <small>@adelinbtc · en Instagram</small>
+                </span>
               </span>
-              <span className="pf-contacto-texto">
-                <strong>Escríbeme por Instagram</strong>
-                <small>@adelinbtc · mensaje directo</small>
+              <span className="pf-contacto-boton">
+                <InstagramIcon size={17} /> Escríbeme por Instagram
+                <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" />
               </span>
-              <span className="pf-contacto-ig" aria-hidden="true"><InstagramIcon size={17} /></span>
             </a>
 
             {!isPremium && (

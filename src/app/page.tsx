@@ -123,22 +123,12 @@ export default async function HomePage() {
       <ForoEnPortada conSesion={!!user} />
 
 
-      {/* ── Cuerpo ──
-          Hasta el 07-09-2026 esto eran dos columnas, con un lateral de 300 px
-          que llevaba Herramientas, Educación y Categorías. Retirado a mano por
-          el admin: el feed se queda con todo el ancho. Las herramientas siguen
-          accesibles desde el menú y el dashboard. */}
-      <div className="home-layout" id="feed">
-
-        {/* El último vídeo de YouTube. Iba dentro del feed de entradas, que se
-            retiró el 10-10-2026 con todo el sistema de entradas. */}
-        <div className="home-feed">
-          <Suspense key="yt-latest" fallback={null}>
-            <YouTubeLatestSection />
-          </Suspense>
-        </div>
-
-      </div>
+      {/* ── Los últimos vídeos del canal ──
+          Va a youtube.com (lento y fuera de nuestro control), así que se
+          resuelve en su propio <Suspense>, sin frenar la página. */}
+      <Suspense key="yt-latest" fallback={null}>
+        <YouTubeLatestSection />
+      </Suspense>
 
       {/* ── Cierre: Premium, lo gratuito y las preguntas frecuentes. Para
           todos: a quien ya es Premium no se le enseña la oferta, pero sí las

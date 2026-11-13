@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import AdminNav from "@/components/admin/AdminNav";
+import { AVATAR_ADMIN } from "@/lib/perfilPublico";
 import "./admin.css";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -23,7 +24,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="admin-sidebar">
         <div className="admin-sidebar-top">
           <Link href="/admin" className="admin-brand" aria-label="Panel de administración">
-            <span className="admin-brand-marca" aria-hidden="true">A</span>
+            {/* eslint-disable-next-line @next/next/no-img-element -- estático, 256 px, ya optimizado */}
+            <img src={AVATAR_ADMIN.src ?? ""} alt="" width={42} height={42} className="admin-brand-marca" />
             <span className="admin-brand-texto">
               <b>adelin<span>btc</span></b>
               <small>Panel de control</small>

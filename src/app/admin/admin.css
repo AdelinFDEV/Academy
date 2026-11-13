@@ -64,17 +64,16 @@
   color: var(--ad-texto);
 }
 
+/* La foto del admin, con un aro naranja. */
 .admin-brand-marca {
-  display: grid;
-  place-items: center;
+  display: block;
   width: 36px;
   height: 36px;
-  border-radius: 11px;
-  background: linear-gradient(140deg, #ff8a4c, #ff5a1f);
-  box-shadow: 0 8px 20px -8px rgba(255, 107, 43, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  font-weight: 800;
-  font-size: 1.05rem;
-  color: #fff;
+  border: 2px solid var(--c-naranja);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #0c1c3a;
+  box-shadow: 0 8px 20px -8px rgba(255, 107, 43, 0.8);
 }
 
 .admin-brand-texto { display: none; line-height: 1.15; }
@@ -293,7 +292,7 @@
   }
 
   .admin-brand { padding: 0 0.35rem 1.2rem; border-bottom: 1px solid var(--ad-borde); }
-  .admin-brand-marca { width: 42px; height: 42px; border-radius: 13px; font-size: 1.2rem; }
+  .admin-brand-marca { width: 44px; height: 44px; }
   .admin-brand-texto { display: block; }
 
   .admin-nav-titulo {

@@ -8,6 +8,8 @@ import LogoutButton from "./LogoutButton";
 import AvatarUsuario from "./AvatarUsuario";
 import GuideSearch from "./GuideSearch";
 import { destinoPorRuta, herramienta } from "@/lib/herramientas";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
+import { InstagramIcon } from "./SocialLinks";
 
 interface Props {
   user: boolean;
@@ -170,6 +172,15 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   </Link>
                 </div>
               )}
+
+              <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mm-instagram">
+                <span className="mm-instagram-icono" aria-hidden="true"><InstagramIcon size={19} /></span>
+                <span className="mm-instagram-texto">
+                  <strong>Escríbeme por Instagram</strong>
+                  <small>@adelinbtc · te contesto yo</small>
+                </span>
+                <ArrowUpRight size={16} strokeWidth={2.4} aria-hidden="true" />
+              </a>
 
               {!isPremium && (
                 <Link href="/premium" onClick={close} className="mm-premium">

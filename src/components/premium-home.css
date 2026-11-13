@@ -200,10 +200,6 @@ a.pf-celda:focus-visible {
   color: color-mix(in srgb, var(--c, #e6b455) 80%, #fff);
 }
 
-.pf-kicker--oro {
-  --c: #e6b455;
-}
-
 .pf-ir {
   margin-left: auto;
   flex: none;
@@ -817,124 +813,190 @@ a.pf-celda:hover .pf-ir {
   color: #e6b455;
 }
 
-/* ── 3 · Preguntas frecuentes ─────────────────────────────────────────────── */
+/* ── Para quien ya es Premium: tres accesos, sin escaparate ─────────────── */
+
+.pf-inner--premium .pf-faq { margin-top: 2.6rem; }
+
+.pf-accesos {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.pf-accesos-titulo {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.2rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f6d58e;
+}
+
+.pf-acceso {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border-radius: 18px;
+  background:
+    radial-gradient(220px 120px at 0% 0%, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%),
+    linear-gradient(180deg, rgba(24, 30, 52, 0.9), rgba(13, 18, 34, 0.92));
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.pf-acceso > span:nth-child(2) { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.pf-acceso strong { font-size: 0.98rem; color: #fff; }
+.pf-acceso small { font-size: 0.8rem; color: rgba(226, 232, 240, 0.6); font-variant-numeric: tabular-nums; }
+.pf-acceso:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--c) 60%, transparent); }
+.pf-acceso:focus-visible { outline: 2px solid var(--c); outline-offset: 3px; }
+
+/* ── 3 · Preguntas frecuentes y contacto ──────────────────────────────────
+   Un panel propio, más claro que el fondo, con dos luces: rosa de Instagram
+   a la izquierda (el contacto) y oro a la derecha (las preguntas). */
 
 .pf-faq {
+  position: relative;
+  isolation: isolate;
   display: grid;
   gap: 2rem;
   margin-top: 4.5rem;
+  padding: 1.6rem 1.3rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background: linear-gradient(150deg, #1c1b45 0%, #131a3a 45%, #0d1530 100%);
+  box-shadow: 0 40px 80px -50px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   scroll-margin-top: 6rem;
 }
+
+.pf-faq-luz { position: absolute; z-index: -1; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.pf-faq-luz--rosa { top: -110px; left: -90px; width: 420px; height: 340px; background: rgba(221, 42, 123, 0.3); }
+.pf-faq-luz--oro { right: -120px; bottom: -140px; width: 460px; height: 360px; background: rgba(230, 180, 85, 0.16); }
 
 .pf-faq-lado {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.8rem;
+  gap: 0.85rem;
+}
+
+.pf-faq-sello {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 5px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffd1e6;
 }
 
 .pf-faq-titulo {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.08;
   letter-spacing: -0.035em;
   color: #fff;
 }
+.pf-faq-titulo em {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, #f9a03f 0%, #ee4a8b 55%, #b267e6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 .pf-faq-texto {
-  max-width: 360px;
+  max-width: 380px;
   margin: 0;
-  font-size: 0.97rem;
+  font-size: 1rem;
   line-height: 1.6;
-  color: rgba(226, 232, 240, 0.62);
+  color: rgba(226, 232, 240, 0.75);
 }
 
+/* El contacto: una tarjeta con el borde en el degradado de Instagram. */
 .pf-contacto {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
+  display: grid;
+  gap: 1rem;
   width: 100%;
-  max-width: 380px;
-  margin-top: 0.6rem;
-  padding: 0.85rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 18px;
-  background: linear-gradient(180deg, rgba(24, 30, 52, 0.9), rgba(13, 18, 34, 0.9));
+  max-width: 400px;
+  margin-top: 0.7rem;
+  padding: 1.15rem;
+  border: 1.5px solid transparent;
+  border-radius: 22px;
+  background:
+    linear-gradient(160deg, #1d1838, #120f28) padding-box,
+    linear-gradient(135deg, #f58529, #dd2a7b 50%, #8134af) border-box;
+  box-shadow: 0 26px 50px -28px rgba(221, 42, 123, 0.75);
   color: inherit;
   text-decoration: none;
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
+.pf-contacto:hover { transform: translateY(-3px); box-shadow: 0 30px 56px -26px rgba(221, 42, 123, 0.95); }
+.pf-contacto:focus-visible { outline: 2px solid #ee4a8b; outline-offset: 3px; }
 
-.pf-contacto:hover {
-  transform: translateY(-2px);
-  border-color: rgba(221, 42, 123, 0.45);
-  box-shadow: 0 18px 40px -20px rgba(221, 42, 123, 0.55);
-}
-
-.pf-contacto:focus-visible {
-  outline: 2px solid #dd2a7b;
-  outline-offset: 3px;
-}
+.pf-contacto-cab { display: flex; align-items: center; gap: 0.9rem; }
 
 .pf-contacto-avatar {
   position: relative;
   display: grid;
   place-items: center;
   flex: none;
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #ff9a00, #ff6b2b);
+  width: 60px;
+  height: 60px;
+  padding: 3px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #f58529, #dd2a7b 50%, #8134af);
 }
 
-/* La foto del admin (antes una «A»). Recortada a la forma del marco; el punto
-   verde de «en línea» va por encima, fuera del recorte. */
+/* La foto del admin, en redondo y con el anillo de las historias de Instagram. */
 .pf-contacto-foto {
   width: 100%;
   height: 100%;
-  border-radius: inherit;
+  border: 2.5px solid #17122f;
+  border-radius: 50%;
   object-fit: cover;
 }
 
 .pf-contacto-online {
   position: absolute;
-  right: -3px;
-  bottom: -3px;
-  width: 13px;
-  height: 13px;
-  border: 2.5px solid #0f1528;
+  right: 1px;
+  bottom: 1px;
+  width: 14px;
+  height: 14px;
+  border: 2.5px solid #17122f;
   border-radius: 50%;
   background: #34d399;
 }
 
-.pf-contacto-texto {
+.pf-contacto-texto { display: flex; flex-direction: column; min-width: 0; }
+.pf-contacto-texto strong { font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: #fff; }
+.pf-contacto-texto small { font-size: 0.84rem; color: rgba(226, 232, 240, 0.65); }
+
+.pf-contacto-boton {
   display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.pf-contacto-texto strong {
-  font-size: 0.95rem;
-  color: #fff;
-}
-
-.pf-contacto-texto small {
-  font-size: 0.8rem;
-  color: rgba(226, 232, 240, 0.5);
-}
-
-/* El degradado de Instagram, solo en su icono: donde se reconoce. */
-.pf-contacto-ig {
-  display: grid;
-  place-items: center;
-  flex: none;
-  width: 38px;
-  height: 38px;
-  margin-left: auto;
-  border-radius: 12px;
-  background: linear-gradient(45deg, #f58529, #dd2a7b 50%, #8134af);
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  height: 46px;
+  border-radius: 13px;
+  background: linear-gradient(90deg, #f58529, #dd2a7b 55%, #8134af);
+  font-size: 0.93rem;
+  font-weight: 800;
   color: #fff;
 }
 
@@ -948,11 +1010,7 @@ a.pf-celda:hover .pf-ir {
   color: #f6d58e;
   text-decoration: none;
 }
-
-.pf-faq-mas:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
+.pf-faq-mas:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .pf-faq-lista {
   display: flex;
@@ -960,52 +1018,54 @@ a.pf-celda:hover .pf-ir {
   gap: 0.6rem;
 }
 
+/* Cada pregunta, su color: cuatro tonos que se repiten. */
 .pf-pregunta {
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  --q: #ff8a4c;
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 18px;
-  background: rgba(15, 21, 40, 0.6);
+  background: rgba(9, 14, 32, 0.55);
   transition: border-color 0.3s ease, background 0.3s ease;
 }
+.pf-pregunta:nth-child(4n + 2) { --q: #5aa8ff; }
+.pf-pregunta:nth-child(4n + 3) { --q: #b48cff; }
+.pf-pregunta:nth-child(4n + 4) { --q: #4ade80; }
+
+.pf-pregunta:hover { border-color: color-mix(in srgb, var(--q) 35%, transparent); }
 
 .pf-pregunta[open]:not([data-acordeon="cerrando"]) {
-  border-color: rgba(230, 180, 85, 0.3);
-  background: linear-gradient(180deg, rgba(230, 180, 85, 0.06), rgba(15, 21, 40, 0.75));
+  border-color: color-mix(in srgb, var(--q) 55%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--q) 13%, transparent), rgba(9, 14, 32, 0.7));
 }
 
 .pf-pregunta summary {
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  padding: 1.05rem 1.15rem;
+  padding: 0.95rem 1.1rem;
   cursor: pointer;
   list-style: none;
 }
-
-.pf-pregunta summary::-webkit-details-marker {
-  display: none;
-}
-
-.pf-pregunta summary:focus-visible {
-  outline: 2px solid #e6b455;
-  outline-offset: -2px;
-  border-radius: 18px;
-}
+.pf-pregunta summary::-webkit-details-marker { display: none; }
+.pf-pregunta summary:focus-visible { outline: 2px solid var(--q); outline-offset: -2px; border-radius: 18px; }
 
 .pf-pregunta-num {
+  display: grid;
+  place-items: center;
   flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--q) 18%, transparent);
   font-family: var(--font-display);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 800;
-  color: rgba(230, 180, 85, 0.55);
+  color: var(--q);
   font-variant-numeric: tabular-nums;
+  transition: background 0.3s ease, color 0.3s ease;
 }
+.pf-pregunta[open]:not([data-acordeon="cerrando"]) .pf-pregunta-num { background: var(--q); color: #0b1024; }
 
-.pf-pregunta-q {
-  flex: 1;
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #fff;
-}
+.pf-pregunta-q { flex: 1; font-size: 1rem; font-weight: 700; color: #fff; }
 
 .pf-pregunta-icono {
   display: grid;
@@ -1014,23 +1074,22 @@ a.pf-celda:hover .pf-ir {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   color: rgba(226, 232, 240, 0.7);
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, color 0.3s ease;
 }
-
 .pf-pregunta[open]:not([data-acordeon="cerrando"]) .pf-pregunta-icono {
   transform: rotate(180deg);
-  background: rgba(230, 180, 85, 0.16);
-  color: #f6d58e;
+  background: color-mix(in srgb, var(--q) 22%, transparent);
+  color: var(--q);
 }
 
 .pf-pregunta p {
   margin: 0;
-  padding: 0 1.15rem 1.15rem 3.05rem;
-  font-size: 0.93rem;
+  padding: 0 1.15rem 1.15rem 3.95rem;
+  font-size: 0.94rem;
   line-height: 1.65;
-  color: rgba(226, 232, 240, 0.68);
+  color: rgba(226, 232, 240, 0.78);
   animation: pf-respuesta 0.35s ease both;
 }
 
@@ -1041,6 +1100,10 @@ a.pf-celda:hover .pf-ir {
 /* ── Tableta (≥ 700 px) ───────────────────────────────────────────────────── */
 
 @media (min-width: 700px) {
+  .pf-accesos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .pf-bento {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1129,8 +1192,9 @@ a.pf-celda:hover .pf-ir {
 
   .pf-faq {
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: 4rem;
+    gap: 3.2rem;
     margin-top: 6rem;
+    padding: 3rem;
   }
 
   .pf-faq-lado {
@@ -1181,6 +1245,8 @@ a.pf-celda:hover .pf-ir {
   .pf-celda,
   .pf-cta,
   .pf-contacto,
+  .pf-acceso,
+  .pf-pregunta-num,
   .pf-ir,
   .pf-gratis-flecha,
   .pf-pregunta-icono {
@@ -1189,6 +1255,7 @@ a.pf-celda:hover .pf-ir {
 
   a.pf-celda:hover,
   .pf-cta:hover,
+  .pf-acceso:hover,
   .pf-contacto:hover {
     transform: none;
   }

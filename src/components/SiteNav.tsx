@@ -6,6 +6,8 @@ import BlogMobileMenu from "@/components/BlogMobileMenu";
 import NavSaludo, { type PlanUsuario } from "@/components/NavSaludo";
 import { foroALaVista } from "@/lib/foro/permisos";
 import { createClient } from "@/lib/supabase/server";
+import { INSTAGRAM_DM_URL } from "@/lib/contacto";
+import { InstagramIcon } from "@/components/SocialLinks";
 
 interface Props {
   user: boolean;
@@ -70,6 +72,13 @@ export default async function SiteNav({ user, isPremium, userName, isAdmin }: Pr
         {foro && <NavForo />}
       </div>
       <div className="blog-nav-end">
+        {/* Contacto directo: un mensaje por Instagram (13-11-2026). Solo el
+            icono, con su degradado: se reconoce sin texto y no le quita sitio
+            a lo demás. En móvil vive dentro del menú. */}
+        <a href={INSTAGRAM_DM_URL} target="_blank" rel="noopener noreferrer" className="nav-instagram" aria-label="Escríbeme por Instagram" title="Escríbeme por Instagram">
+          <InstagramIcon size={18} />
+        </a>
+
         {/* Identidad y accesos personales, en un solo sitio. Pulsando el
             nombre se abre el menú con «Mi dashboard» y «Mi cuenta».
             «Mi dashboard» fue un botón suelto aquí al lado durante unas horas:
