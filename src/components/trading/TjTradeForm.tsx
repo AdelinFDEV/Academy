@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, X } from "lucide-react";
-import { TjSelect, TjCombobox, TjDateTimePicker, TjSegmented } from "./TjControls";
-import { pctStr, pnlStr, ratioStr, toneOf } from "./tjFormat";
+import { AlertTriangle, ArrowDownRight, ArrowUpRight, Minus, NotebookPen, TrendingDown, TrendingUp, X } from "lucide-react";
+import { TjCombobox, TjDateTimePicker } from "./TjControls";
+import { dateTime, pctStr, pnlStr, ratioStr, toneOf } from "./tjFormat";
 import { RISK_LIMIT_PCT, type Direction, type Trade, type TradeResult } from "./tjStats";
 import TjDayJournal from "./TjDayJournal";
 import { fechaKey, type DiaDiario, type DiasMap } from "./tjDias";
@@ -24,6 +24,15 @@ interface FormState {
 }
 
 const RESULT_LABEL: Record<TradeResult, string> = { win: "Ganada", loss: "Perdida", breakeven: "Breakeven" };
+const RESULTADOS: { valor: TradeResult; tono: "win" | "loss" | "be"; icono: typeof TrendingUp }[] = [
+  { valor: "win", tono: "win", icono: TrendingUp },
+  { valor: "loss", tono: "loss", icono: TrendingDown },
+  { valor: "breakeven", tono: "be", icono: Minus },
+];
+const DIRECCIONES: { valor: Direction; titulo: string; ayuda: string; icono: typeof ArrowUpRight }[] = [
+  { valor: "long", titulo: "Long", ayuda: "Compras: ganas si sube", icono: ArrowUpRight },
+  { valor: "short", titulo: "Short", ayuda: "Vendes: ganas si baja", icono: ArrowDownRight },
+];
 
 /**
  * Instante real -> texto para el selector de fecha, que trabaja en hora de
@@ -156,97 +165,190 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
     }
   }
 
+  // Para el dibujo del plan: qué parte de la barra es riesgo y cuál objetivo.
+  const hayPlan = hasRisk && !isNaN(gain) && gain > 0;
+  const parteRiesgo = hayPlan ? (risk / (risk + gain)) * 100 : 50;
+  const tonoRatio = ratio == null ? "" : ratio >= 2 ? "win" : ratio >= 1 ? "be" : "loss";
+  const riesgoAlto = riskPct != null && riskPct > RISK_LIMIT_PCT;
+  const tonoPnl = pnl == null ? "" : toneOf(pnl);
+  const fechaOk = !isNaN(new Date(form.date).getTime());
+
+  /*
+   * El formulario (rehecho el 13-11-2026). Cuatro pasos numerados a la
+   * izquierda, en el orden en que se piensa una operación, y a la derecha su
+   * resumen, que se va rellenando solo. Debajo, las capturas y el ánimo del día.
+   */
   return (
-    <section className="tj-card tj-form" onKeyDown={(e) => e.key === "Escape" && onClose()}>
-      <div className="tj-card-head">
-        <span className="tj-label">{editing ? "Editar operación" : "Nueva operación"}</span>
+    <section className="tj-card tj-form tjf" onKeyDown={(e) => e.key === "Escape" && onClose()}>
+      <header className="tjf-cab">
+        <span className="tjf-cab-icono" aria-hidden="true"><NotebookPen size={20} /></span>
+        <div>
+          <h2>{editing ? "Editar operación" : "Nueva operación"}</h2>
+          <p>Un minuto ahora. Dentro de tres meses te dirá qué funciona de verdad.</p>
+        </div>
         <button type="button" className="tj-icon-btn" onClick={onClose} aria-label="Cerrar formulario">
-          <X size={15} />
+          <X size={16} />
         </button>
-      </div>
+      </header>
 
       <form onSubmit={submit}>
-        <div className="tj-form-grid">
-          <div className="field">
-            <label>Fecha y hora</label>
-            <TjDateTimePicker value={form.date} onChange={v => set("date", v)} />
-          </div>
-          <div className="field">
-            <label>Par</label>
-            <TjCombobox value={form.pair} onChange={v => set("pair", v.toUpperCase())} options={pairOptions} placeholder="BTC/USDT" required />
-          </div>
-          <div className="field">
-            <label>Dirección</label>
-            <TjSegmented
-              label="Dirección" value={form.direction} onChange={v => set("direction", v)}
-              options={[{ value: "long", label: "Long" }, { value: "short", label: "Short" }]}
-            />
-          </div>
-          <div className="field">
-            <label>Resultado</label>
-            {hasReal ? (
-              <div className="tj-select-btn is-derived" title="Se deduce del signo del P&L real">
-                {RESULT_LABEL[result]} · según el P&L real
+        <div className="tjf-cuerpo">
+          <div className="tjf-pasos">
+            {/* ── 1 · La operación ── */}
+            <fieldset className="tjf-paso">
+              <legend><b>1</b> La operación</legend>
+              <div className="tjf-fila">
+                <div className="field">
+                  <label>Par</label>
+                  <TjCombobox value={form.pair} onChange={v => set("pair", v.toUpperCase())} options={pairOptions} placeholder="BTC/USDT" required />
+                </div>
+                <div className="field">
+                  <label>Fecha y hora</label>
+                  <TjDateTimePicker value={form.date} onChange={v => set("date", v)} />
+                </div>
               </div>
-            ) : (
-              <TjSelect
-                value={form.result}
-                onChange={v => set("result", v as TradeResult)}
-                options={(Object.keys(RESULT_LABEL) as TradeResult[]).map(r => ({ value: r, label: RESULT_LABEL[r] }))}
-              />
-            )}
-          </div>
-          <div className="field">
-            <label htmlFor="tj-risk">Riesgo asumido ($)</label>
-            <input id="tj-risk" type="number" value={form.risk_amount} onChange={e => set("risk_amount", e.target.value)} step="any" min="0" placeholder="0,00" required />
-          </div>
-          <div className="field">
-            <label htmlFor="tj-gain">Ganancia objetivo ($)</label>
-            <input id="tj-gain" type="number" value={form.expected_gain} onChange={e => set("expected_gain", e.target.value)} step="any" min="0" placeholder="0,00" required />
-          </div>
-          <div className="field">
-            <label htmlFor="tj-real">P&L real ($, opcional)</label>
-            <input
-              id="tj-real" type="number" value={form.real_pnl} onChange={e => set("real_pnl", e.target.value)}
-              step="any" placeholder="Si cerraste distinto del plan"
-            />
-          </div>
-          <div className="field">
-            <label>Estrategia (opcional)</label>
-            <TjCombobox value={form.strategy} onChange={v => set("strategy", v)} options={strategyOptions} placeholder="Scalping, swing, breakout..." />
-          </div>
-          <div className="field field-full">
-            <label htmlFor="tj-notes">
-              Notas (opcional) <span className="tj-count">{form.notes.length}/{NOTES_MAX}</span>
-            </label>
-            <textarea
-              id="tj-notes" value={form.notes} onChange={e => set("notes", e.target.value)}
-              rows={2} maxLength={NOTES_MAX} placeholder="Por qué entré, qué aprendí, qué mejorar..."
-            />
-          </div>
-        </div>
+              <div className="tjf-opciones" role="radiogroup" aria-label="Dirección">
+                {DIRECCIONES.map(({ valor, titulo, ayuda, icono: Icono }) => (
+                  <button
+                    key={valor} type="button" role="radio" aria-checked={form.direction === valor}
+                    className={`tjf-opcion is-${valor}${form.direction === valor ? " is-on" : ""}`}
+                    onClick={() => set("direction", valor)}
+                  >
+                    <span className="tjf-opcion-icono" aria-hidden="true"><Icono size={20} strokeWidth={2.4} /></span>
+                    <span><strong>{titulo}</strong><small>{ayuda}</small></span>
+                  </button>
+                ))}
+              </div>
+            </fieldset>
 
-        <dl className="tj-strip">
-          <div className={`tj-metric${pnl == null ? "" : ` tone-${toneOf(pnl)}`}`}>
-            <dt>P&L que se registra</dt>
-            <dd>{pnl == null ? "—" : pnlStr(pnl)}</dd>
-            <dd className="tj-metric-sub">
-              {!hasReal ? "según el plan" : planned != null && real !== planned ? `real · el plan era ${pnlStr(planned)}` : "real, igual que el plan"}
-            </dd>
+            {/* ── 2 · El plan ── */}
+            <fieldset className="tjf-paso">
+              <legend><b>2</b> El plan</legend>
+              <div className="tjf-fila">
+                <div className="field">
+                  <label htmlFor="tj-risk">Cuánto arriesgas</label>
+                  <div className="tjf-dinero is-riesgo">
+                    <span aria-hidden="true">$</span>
+                    <input id="tj-risk" type="number" inputMode="decimal" value={form.risk_amount} onChange={e => set("risk_amount", e.target.value)} step="any" min="0" placeholder="0,00" required />
+                  </div>
+                </div>
+                <div className="field">
+                  <label htmlFor="tj-gain">Cuánto quieres ganar</label>
+                  <div className="tjf-dinero is-objetivo">
+                    <span aria-hidden="true">$</span>
+                    <input id="tj-gain" type="number" inputMode="decimal" value={form.expected_gain} onChange={e => set("expected_gain", e.target.value)} step="any" min="0" placeholder="0,00" required />
+                  </div>
+                </div>
+              </div>
+              <div className={`tjf-plan${hayPlan ? "" : " is-vacio"}`} aria-hidden="true">
+                <div className="tjf-plan-barra">
+                  <span className="tjf-plan-riesgo" style={{ width: `${parteRiesgo}%` }} />
+                  <span className="tjf-plan-objetivo" />
+                </div>
+                <div className="tjf-plan-pie">
+                  <span>Riesgo</span>
+                  <strong className={tonoRatio ? `tone-${tonoRatio}` : undefined}>{ratio != null ? `R:R ${ratioStr(ratio)}` : "Rellena los dos para ver tu ratio"}</strong>
+                  <span>Objetivo</span>
+                </div>
+              </div>
+            </fieldset>
+
+            {/* ── 3 · El resultado ── */}
+            <fieldset className="tjf-paso">
+              <legend><b>3</b> Cómo acabó</legend>
+              <div className="tjf-opciones is-tres" role="radiogroup" aria-label="Resultado">
+                {RESULTADOS.map(({ valor, tono, icono: Icono }) => (
+                  <button
+                    key={valor} type="button" role="radio" aria-checked={result === valor}
+                    className={`tjf-opcion is-${tono}${result === valor ? " is-on" : ""}`}
+                    onClick={() => set("result", valor)}
+                    disabled={hasReal}
+                    title={hasReal ? "Se deduce del signo del P&L real" : undefined}
+                  >
+                    <span className="tjf-opcion-icono" aria-hidden="true"><Icono size={18} strokeWidth={2.4} /></span>
+                    <span><strong>{RESULT_LABEL[valor]}</strong></span>
+                  </button>
+                ))}
+              </div>
+              <div className="field">
+                <label htmlFor="tj-real">P&L real <em>opcional</em></label>
+                <div className="tjf-dinero">
+                  <span aria-hidden="true">$</span>
+                  <input
+                    id="tj-real" type="number" inputMode="decimal" value={form.real_pnl} onChange={e => set("real_pnl", e.target.value)}
+                    step="any" placeholder="Solo si cerraste distinto del plan"
+                  />
+                </div>
+                <p className="tjf-ayuda">
+                  {hasReal
+                    ? "Con el P&L real, el resultado sale de su signo: en negativo es una pérdida."
+                    : "Si lo dejas vacío, se apunta tu objetivo si ganaste y tu riesgo si perdiste."}
+                </p>
+              </div>
+            </fieldset>
+
+            {/* ── 4 · El porqué ── */}
+            <fieldset className="tjf-paso">
+              <legend><b>4</b> El porqué</legend>
+              <div className="field">
+                <label>Estrategia <em>opcional</em></label>
+                <TjCombobox value={form.strategy} onChange={v => set("strategy", v)} options={strategyOptions} placeholder="Scalping, swing, breakout..." />
+              </div>
+              <div className="field">
+                <label htmlFor="tj-notes">
+                  Notas <em>opcional</em> <span className="tj-count">{form.notes.length}/{NOTES_MAX}</span>
+                </label>
+                <textarea
+                  id="tj-notes" value={form.notes} onChange={e => set("notes", e.target.value)}
+                  rows={3} maxLength={NOTES_MAX} placeholder="Por qué entraste, qué viste, qué harías distinto..."
+                />
+              </div>
+            </fieldset>
           </div>
-          <div className={`tj-metric${riskPct != null && riskPct > RISK_LIMIT_PCT ? " tone-loss" : ""}`}>
-            <dt>Riesgo de la cuenta</dt>
-            <dd>{riskPct != null ? pctStr(riskPct, false, 2) : "—"}</dd>
-            {riskPct != null && riskPct > RISK_LIMIT_PCT && (
-              <dd className="tj-metric-sub"><AlertTriangle size={12} /> Por encima del {RISK_LIMIT_PCT} %</dd>
+
+          {/* ── El resumen, que se rellena solo ── */}
+          <aside className="tjf-resumen" aria-label="Resumen de la operación" aria-live="polite">
+            <span className="tjf-resumen-rotulo">Lo que se va a guardar</span>
+            <div className="tjf-resumen-par">
+              <strong>{form.pair || "Par"}</strong>
+              <span className={`tj-dir is-${form.direction}`}>
+                {form.direction === "long" ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                {form.direction === "long" ? "Long" : "Short"}
+              </span>
+            </div>
+            <span className="tjf-resumen-fecha">{fechaOk ? dateTime(inputValueToIso(form.date)) : "Sin fecha"}</span>
+
+            <div className={`tjf-pnl${tonoPnl ? ` tone-${tonoPnl}` : ""}`}>
+              <span>P&L que se registra</span>
+              <strong>{pnl == null ? "—" : pnlStr(pnl)}</strong>
+              <small>
+                {pnl == null ? "Rellena el plan" : !hasReal ? "según el plan" : planned != null && real !== planned ? `real · el plan era ${pnlStr(planned)}` : "real, igual que el plan"}
+              </small>
+            </div>
+
+            <dl className="tjf-datos">
+              <div>
+                <dt>Resultado</dt>
+                <dd><span className={`tj-chip tone-${result === "win" ? "win" : result === "loss" ? "loss" : "be"}`}>{RESULT_LABEL[result]}</span></dd>
+              </div>
+              <div>
+                <dt>Ratio R:R</dt>
+                <dd className={tonoRatio ? `tone-${tonoRatio}` : undefined}>{ratio != null ? ratioStr(ratio) : "—"}</dd>
+              </div>
+              <div className={riesgoAlto ? "is-alto" : undefined}>
+                <dt>Riesgo de la cuenta</dt>
+                <dd>{riskPct != null ? pctStr(riskPct, false, 2) : "—"}</dd>
+              </div>
+            </dl>
+            {riskPct != null && (
+              <div className={`tjf-medidor${riesgoAlto ? " is-alto" : ""}`} aria-hidden="true">
+                <span style={{ width: `${Math.min((riskPct / (RISK_LIMIT_PCT * 2)) * 100, 100)}%` }} />
+                <i />
+              </div>
             )}
-            {equity == null && <dd className="tj-metric-sub">Define tu capital para calcularlo</dd>}
-          </div>
-          <div className={`tj-metric${ratio == null ? "" : ` tone-${ratio >= 2 ? "win" : ratio >= 1 ? "be" : "loss"}`}`}>
-            <dt>Ratio R:R planeado</dt>
-            <dd>{ratio != null ? ratioStr(ratio) : "—"}</dd>
-          </div>
-        </dl>
+            {riesgoAlto && <p className="tjf-aviso"><AlertTriangle size={13} /> Por encima del {RISK_LIMIT_PCT} % de tu cuenta</p>}
+          </aside>
+        </div>
 
         <TjCapturasCampo editing={guardada} pendientes={capturas} onChange={setCapturas} />
 
@@ -261,9 +363,9 @@ export default function TjTradeForm({ editing, initialDate, pairOptions, strateg
 
         {error && <p className="auth-error">{error}</p>}
 
-        <div className="tj-actions is-end">
-          <button type="button" className="tj-btn" onClick={onClose}>Cancelar</button>
-          <button type="submit" className="tj-btn is-primary" disabled={submitting}>
+        <div className="tjf-pie">
+          <button type="button" className="tjf-cancelar" onClick={onClose}>Cancelar</button>
+          <button type="submit" className="tjf-guardar" disabled={submitting}>
             {submitting ? "Guardando..." : guardada ? "Guardar cambios" : "Guardar operación"}
           </button>
         </div>

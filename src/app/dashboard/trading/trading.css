@@ -377,22 +377,6 @@
   .tj-info:hover .tj-info-pop { opacity: 1; visibility: visible; transform: none; }
 }
 
-.tj-strip {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 0.75rem;
-  margin: 0 0 1.1rem;
-}
-
-.tj-strip .tj-metric {
-  padding: 0.75rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--tone, #f0f4ff) 16%, transparent);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--tone, #f0f4ff) 5%, transparent);
-}
-
-/* :not() para no agrandar también la línea de contexto: tiene la misma especificidad. */
-.tj-strip .tj-metric dd:not(.tj-metric-sub) { font-size: 1.1rem; }
 
 .tj-tip {
   --tone: initial;
@@ -2462,6 +2446,118 @@
 .tjm-all { align-self: flex-start; }
 
 
+/* ── Formulario de la operación (TjTradeForm.tsx), rehecho el 13-11-2026 ──
+   Cuatro pasos numerados a la izquierda y, a la derecha, el resumen que se va
+   rellenando solo. Los campos son más altos y redondos que en el resto del
+   Diario, y las elecciones (dirección, resultado) son botones, no desplegables. */
+.tjf { padding: 0; }
+.tjf-cab { border-radius: 19px 19px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.9rem; align-items: center; padding: 1.3rem 1.6rem; border-bottom: 1px solid var(--hairline); background: linear-gradient(120deg, color-mix(in srgb, var(--accent-orange) 14%, transparent), transparent 55%); }
+.tjf-cab-icono { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, var(--accent-orange), #ff8a3d); box-shadow: 0 10px 22px -10px var(--accent-orange); color: #fff; }
+.tjf-cab h2 { margin: 0; font-size: 1.25rem; font-weight: 800; line-height: 1.2; color: var(--text-primary); }
+.tjf-cab p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--text-muted); }
+.tjf form { display: grid; gap: 1.3rem; padding: 1.5rem 1.6rem 1.6rem; }
+.tjf-cuerpo { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 1.4rem; align-items: start; }
+.tjf-pasos { display: grid; gap: 1.1rem; min-width: 0; }
+
+.tjf-paso { display: grid; gap: 0.95rem; min-width: 0; margin: 0; padding: 1.1rem 1.2rem 1.25rem; border: 1px solid var(--hairline); border-radius: 16px; background: rgba(3, 9, 22, 0.28); }
+.tjf-paso legend { display: flex; align-items: center; gap: 0.6rem; padding: 0 0.5rem; margin-left: -0.5rem; font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+.tjf-paso legend b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 9px; background: var(--tj-accent-soft); border: 1px solid var(--tj-accent-line); font-size: 0.82rem; font-weight: 800; color: var(--tj-accent); }
+.tjf-fila { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+
+/* Los campos de este formulario. */
+.tjf .field { gap: 0.45rem; min-width: 0; }
+.tjf .field label { font-size: 0.84rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--text-secondary); }
+.tjf .field label em { margin-left: 0.3rem; font-style: normal; font-size: 0.74rem; font-weight: 500; color: var(--text-muted); }
+.tjf .field input, .tjf .field textarea, .tjf .tj-select-btn { min-height: 48px; border-radius: 12px; font-size: 0.98rem; }
+.tjf .field textarea { min-height: 0; padding-top: 0.75rem; resize: none; line-height: 1.5; }
+.tjf-ayuda { margin: 0; font-size: 0.78rem; line-height: 1.5; color: var(--text-muted); }
+
+.tjf-dinero { position: relative; }
+.tjf-dinero > span { position: absolute; left: 0.95rem; top: 50%; transform: translateY(-50%); font-size: 1rem; font-weight: 700; color: var(--text-muted); pointer-events: none; }
+.tjf .tjf-dinero input { width: 100%; padding-left: 2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tjf-dinero.is-riesgo > span { color: var(--tj-loss); }
+.tjf-dinero.is-objetivo > span { color: var(--tj-win); }
+
+/* Elegir con botones: dirección y resultado. */
+.tjf-opciones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+.tjf-opciones.is-tres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tjf-opcion { --op: var(--tj-accent); display: flex; align-items: center; gap: 0.75rem; min-height: 60px; padding: 0.7rem 0.9rem; border: 1.5px solid var(--hairline); border-radius: 14px; background: rgba(255, 255, 255, 0.03); font: inherit; color: var(--text-secondary); text-align: left; cursor: pointer; transition: border-color 0.16s ease, background-color 0.16s ease, transform 0.16s ease; }
+.tjf-opcion.is-long, .tjf-opcion.is-win { --op: var(--tj-win); }
+.tjf-opcion.is-short, .tjf-opcion.is-loss { --op: var(--tj-loss); }
+.tjf-opcion.is-be { --op: var(--tj-be); }
+.tjf-opcion-icono { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border-radius: 11px; background: color-mix(in srgb, var(--op) 14%, transparent); color: var(--op); }
+.tjf-opcion strong { display: block; font-size: 0.98rem; font-weight: 700; color: var(--text-primary); }
+.tjf-opcion small { display: block; margin-top: 0.1rem; font-size: 0.76rem; color: var(--text-muted); }
+.tjf-opcion:hover:not(:disabled) { border-color: color-mix(in srgb, var(--op) 55%, transparent); transform: translateY(-1px); }
+.tjf-opcion.is-on { border-color: var(--op); background: color-mix(in srgb, var(--op) 13%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--op) 16%, transparent); }
+.tjf-opcion.is-on .tjf-opcion-icono { background: var(--op); color: #06101f; }
+.tjf-opcion:disabled { cursor: default; }
+.tjf-opcion:disabled:not(.is-on) { opacity: 0.4; }
+.tjf-opcion:focus-visible { outline: 2px solid var(--op); outline-offset: 2px; }
+
+/* El plan dibujado: cuánto es riesgo y cuánto objetivo. */
+.tjf-plan { display: grid; gap: 0.45rem; }
+.tjf-plan-barra { display: flex; gap: 3px; height: 12px; }
+.tjf-plan-barra span { height: 100%; border-radius: 99px; transition: width 0.25s ease; }
+.tjf-plan-riesgo { background: var(--tj-loss); }
+.tjf-plan-objetivo { flex: 1; background: var(--tj-win); }
+.tjf-plan.is-vacio .tjf-plan-barra span { background: rgba(255, 255, 255, 0.09); }
+.tjf-plan-pie { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem; font-size: 0.76rem; color: var(--text-muted); }
+.tjf-plan-pie strong { font-size: 0.86rem; font-weight: 700; color: var(--text-secondary); }
+
+/* El resumen de la derecha. */
+.tjf-resumen { position: sticky; top: calc(var(--nav-h) + 1rem); display: grid; gap: 0.35rem; padding: 1.2rem; border: 1px solid var(--tj-accent-line); border-radius: 18px; background: linear-gradient(170deg, color-mix(in srgb, var(--tj-accent) 9%, var(--tj-panel-solid)), var(--tj-panel-solid)); box-shadow: 0 22px 44px -26px rgba(0, 0, 0, 0.9); }
+.tjf-resumen-rotulo { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tj-accent); }
+.tjf-resumen-par { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+.tjf-resumen-par strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--text-primary); overflow-wrap: anywhere; }
+.tjf-resumen-fecha { font-size: 0.8rem; color: var(--text-muted); }
+.tjf-pnl { --tone: var(--text-muted); display: grid; gap: 0.15rem; margin-top: 0.9rem; padding: 0.95rem 1rem; border: 1px solid color-mix(in srgb, var(--tone) 35%, transparent); border-radius: 14px; background: color-mix(in srgb, var(--tone) 9%, transparent); }
+.tjf-pnl span { font-size: 0.76rem; color: var(--text-muted); }
+.tjf-pnl strong { font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; line-height: 1.1; color: var(--tone); font-variant-numeric: tabular-nums; }
+.tjf-pnl small { font-size: 0.76rem; color: var(--text-muted); }
+.tjf-datos { display: grid; gap: 0; margin: 0.6rem 0 0; }
+.tjf-datos > div { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.6rem 0; border-bottom: 1px solid var(--hairline); }
+.tjf-datos > div:last-child { border-bottom: 0; }
+.tjf-datos dt { font-size: 0.82rem; color: var(--text-muted); }
+.tjf-datos dd { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.tjf-datos .is-alto dd { color: var(--tj-loss); }
+.tjf-medidor { position: relative; height: 8px; border-radius: 99px; background: rgba(255, 255, 255, 0.08); }
+.tjf-medidor span { display: block; height: 100%; border-radius: 99px; background: var(--tj-win); transition: width 0.25s ease; }
+.tjf-medidor.is-alto span { background: var(--tj-loss); }
+.tjf-medidor i { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.6); }
+.tjf-aviso { display: flex; align-items: center; gap: 0.35rem; margin: 0.5rem 0 0; font-size: 0.78rem; font-weight: 600; color: var(--tj-loss); }
+
+/* Las capturas y el ánimo, dentro de este formulario, con el mismo marco que los pasos. */
+.tjf .tjc { margin-bottom: 0; border-radius: 16px; background: rgba(3, 9, 22, 0.28); }
+
+.tjf-pie { display: flex; justify-content: flex-end; align-items: center; gap: 0.7rem; padding-top: 1.2rem; border-top: 1px solid var(--hairline); }
+.tjf-cancelar, .tjf-guardar { min-height: 48px; padding: 0 1.4rem; border-radius: 13px; font: inherit; font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: transform 0.16s ease, filter 0.16s ease, background-color 0.16s ease; }
+.tjf-cancelar { border: 1px solid var(--hairline); background: transparent; color: var(--text-secondary); }
+.tjf-cancelar:hover { background: rgba(255, 255, 255, 0.06); color: var(--text-primary); }
+.tjf-guardar { min-width: 210px; border: 0; background: linear-gradient(135deg, var(--accent-orange), #ff8a3d); box-shadow: 0 14px 28px -12px var(--accent-orange); color: #fff; }
+.tjf-guardar:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.08); }
+.tjf-guardar:disabled { opacity: 0.65; cursor: progress; }
+.tjf-cancelar:focus-visible, .tjf-guardar:focus-visible { outline: 2px solid var(--tj-accent); outline-offset: 3px; }
+
+@media (max-width: 980px) {
+  .tjf-cuerpo { grid-template-columns: 1fr; }
+  .tjf-resumen { position: static; order: 2; }
+}
+@media (max-width: 560px) {
+  .tjf-cab { padding: 1.1rem 1.1rem; }
+  .tjf-cab p { display: none; }
+  .tjf form { padding: 1.1rem 1.1rem 1.2rem; }
+  .tjf-paso { padding: 1rem 0.95rem 1.1rem; }
+  .tjf-fila, .tjf-opciones { grid-template-columns: 1fr; }
+  .tjf-opciones.is-tres { grid-template-columns: 1fr; }
+  .tjf-pie { flex-direction: column-reverse; align-items: stretch; }
+  .tjf-guardar { min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tjf-opcion, .tjf-guardar, .tjf-plan-barra span, .tjf-medidor span { transition: none; }
+  .tjf-opcion:hover:not(:disabled), .tjf-guardar:hover:not(:disabled) { transform: none; }
+}
+
 /* ── Capturas de antes y después de una operación (TjCapturas.tsx) ── */
 .tjc { margin-bottom: 1.1rem; padding: 1rem 1.1rem 1.1rem; border: 1px solid var(--hairline); border-radius: 14px; background: color-mix(in srgb, var(--tj-panel) 70%, transparent); }
 .tjc-rotulo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.9rem; margin-bottom: 0.85rem; }
@@ -3272,11 +3368,7 @@
   border-color: var(--tj-accent);
   box-shadow: var(--tj-well), 0 0 0 3px var(--tj-accent-soft);
 }
-.tj-form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; margin-bottom: 1.1rem; }
-.tj-form-grid textarea { resize: none; }
 .tj-form label .tj-count { float: right; letter-spacing: 0; text-transform: none; }
-.field .tj-seg { display: flex; }
-.field .tj-seg button { flex: 1; padding: 0.5rem; font-size: 0.88rem; }
 
 /* ── Operaciones ──
  * Prefijo tjo-. Arriba el balance de lo que se ve; la barra de herramientas
@@ -3448,7 +3540,6 @@
 }
 
 @media (max-width: 900px) {
-  .tj-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tjn-head { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tjn-kpi:first-child { border-radius: 17px 0 0 0; }
   .tjn-kpi:nth-child(2) { border-radius: 0 17px 0 0; }
@@ -3509,7 +3600,6 @@
   .tjn-hist-axis { gap: 4px; }
   .tj-div-track { display: none; }
   .tj-div strong { min-width: 0; }
-  .tj-form-grid { grid-template-columns: 1fr; }
   .tjh-summary { flex-direction: column; text-align: center; }
   .tjh-summary-stats { grid-template-columns: 1fr; text-align: left; }
   .tjh-legend { grid-template-columns: 1fr; justify-items: center; padding: 1.4rem 1.1rem; text-align: center; }
