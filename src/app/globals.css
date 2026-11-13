@@ -1826,9 +1826,11 @@ html {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   margin: 0;
-  padding: 6px 8px;
+  /* 13-11-2026: más ceñida (antes 6 px por 8 px y botones de 42 px). Ahora
+     la cápsula mide 48 px de alto, a la par que el botón del foro. */
+  padding: 4px;
   list-style: none;
   border: 1px solid rgba(240, 244, 255, 0.08);
   border-radius: 999px;
@@ -2064,9 +2066,9 @@ html {
   isolation: isolate;
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  height: 42px;
-  padding: 0 1.2rem 0 9px;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 1rem 0 7px;
   border-radius: 999px;
   font-size: 0.88rem;
   font-weight: 700;
@@ -2103,7 +2105,7 @@ html {
   align-items: center;
   justify-content: center;
   /* 13-11-2026: de 30 a 24 px (y el dibujo de 16 a 14) para que respire
-     dentro de su burbuja de 42: ahora quedan 9 px arriba y abajo, no 6. */
+     dentro de su burbuja, que mide 38: quedan 7 px arriba y abajo. */
   width: 24px;
   height: 24px;
   border-radius: 50%;
