@@ -41,11 +41,12 @@ Una guía por moneda, poco a poco, como las de Worldcoin, Render, Hyperliquid y 
 curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50"   | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>JSON.parse(d).forEach(c=>console.log(c.market_cap_rank,c.symbol.toUpperCase(),c.name)))"
 ```
 
-**Quedan 22.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
+**Quedan 23.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
 
 | # | Moneda | Grupo | Nota |
 |---|---|---|---|
 | 2 | Ethereum (ETH) | Plataforma de contratos | La segunda del mercado y la base de casi todo DeFi |
+| 4 | BNB (BNB) | Token de exchange · plataforma | La única de un exchange que tendrá guía (decisión del admin, 13-11-2026): es de Binance, pero también mueve su propia red (BNB Chain) |
 | 7 | Solana (SOL) | Plataforma de contratos | |
 | 8 | TRON (TRX) | Plataforma de contratos | Muy usada para mover USDT |
 | 11 | Zcash (ZEC) | Privacidad | Dentro por decisión del admin. Explicar su situación en la UE, con fuente y fecha |
@@ -72,7 +73,7 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 
 - **Ya explicadas en la web**: Bitcoin (curso *Bitcoin y DCA*), XRP y Hyperliquid (tienen guía).
 - **Estables**: USDT, USDC, USDS, USDe, DAI, USD1, RLUSD, PYUSD, USDG y USDF. Se explican en el curso *DeFi y stablecoins*, no una a una.
-- **Tokens de exchange** (decidido por el admin el 13-11-2026): BNB, LEO Token, WhiteBIT Coin, Cronos y OKB. Son la moneda de la casa de un exchange; se explican, si hace falta, dentro de lo que cuenta de cada exchange, no como guía propia.
+- **Tokens de exchange** (decidido por el admin el 13-11-2026): LEO Token, WhiteBIT Coin, Cronos y OKB. BNB es la única excepción y está en la lista. Son la moneda de la casa de un exchange; se explican, si hace falta, dentro de lo que cuenta de cada exchange, no como guía propia.
 - **Memes**: Dogecoin, Shiba Inu, Pepe y MemeCore (una red hecha para memes, que CoinGecko clasifica como meme).
 - **Activos tradicionales tokenizados**, que no son una criptomoneda propia sino un activo de fuera envuelto en un token: Figure HELOC (préstamos hipotecarios), Tether Gold y PAX Gold (oro), Ondo USDY y Circle USYC (deuda del Tesoro de EE. UU.) y Spiko Amundi (un fondo monetario en euros). Si interesan, darían para **una sola guía** sobre la tokenización de activos.
 
