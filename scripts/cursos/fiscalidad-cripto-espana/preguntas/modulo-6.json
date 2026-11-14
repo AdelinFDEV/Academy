@@ -1,0 +1,199 @@
+[
+  {
+    "clave": "fc-m6-01",
+    "leccion": "obligacion-de-declarar-y-calendario",
+    "enunciado": "Con las reglas del ejercicio 2025, ¿por qué una ganancia por vender criptomonedas no cabe en el límite de 1.600 € que libra de declarar?",
+    "opciones": [
+      "Porque ese límite solo se aplica a los autónomos",
+      "Porque el límite se eliminó en 2025",
+      "Porque las criptomonedas tributan siempre en la base general, que no tiene límites",
+      "Porque ese límite solo cubre rentas con retención"
+    ],
+    "correcta": 3,
+    "explicacion": "El Manual práctico de Renta 2025 fija 1.600 € conjuntos para rendimientos del capital mobiliario y ganancias patrimoniales sometidos a retención o ingreso a cuenta. La venta o permuta de criptomonedas no lleva retención."
+  },
+  {
+    "clave": "fc-m6-02",
+    "leccion": "obligacion-de-declarar-y-calendario",
+    "enunciado": "Con las reglas del ejercicio 2025: Lucía cobra 18.000 € de un solo pagador y ha ganado 50 € vendiendo ether. ¿Tiene que presentar la Renta?",
+    "opciones": [
+      "Sí: sus rentas suman más de 1.000 €",
+      "Solo si retira los 50 € a su cuenta bancaria",
+      "No, porque su nómina de un solo pagador no llega a 22.000 €",
+      "No, porque la ganancia no llega a 1.600 €"
+    ],
+    "correcta": 0,
+    "explicacion": "La ganancia sin retención la saca de la primera regla, incluido el límite de 22.000 €. Solo queda la correctora, cuyo tope de 1.000 € cuenta todas las rentas sumadas: 18.000 + 50 = 18.050 €."
+  },
+  {
+    "clave": "fc-m6-03",
+    "leccion": "obligacion-de-declarar-y-calendario",
+    "enunciado": "Según el Manual práctico de Renta 2025, ¿a partir de qué importe de pérdidas patrimoniales hay obligación de declarar aunque no haya ganancias?",
+    "opciones": [
+      "1.000 €",
+      "500 €",
+      "Las pérdidas nunca obligan a declarar",
+      "1.600 €"
+    ],
+    "correcta": 1,
+    "explicacion": "La regla correctora exige pérdidas patrimoniales inferiores a 500 €. Con 500 € o más hay obligación, y además declararlas es lo que permite compensarlas después."
+  },
+  {
+    "clave": "fc-m6-04",
+    "leccion": "obligacion-de-declarar-y-calendario",
+    "enunciado": "Tu declaración sale a pagar 1.980 € y eliges fraccionar el pago. ¿Cuánto ingresas al presentarla y cuánto en noviembre?",
+    "opciones": [
+      "990 € y 990 €",
+      "1.188 € y 792 €",
+      "1.386 € y 594 €",
+      "792 € y 1.188 €"
+    ],
+    "correcta": 1,
+    "fijo": true,
+    "explicacion": "El fraccionamiento es del 60 % al presentar y el 40 % en noviembre, sin intereses: 1.980 × 0,60 = 1.188 € y 1.980 × 0,40 = 792 €. En la campaña de Renta 2025, el segundo plazo vencía el 5 de noviembre de 2026 (Orden HAC/277/2026)."
+  },
+  {
+    "clave": "fc-m6-05",
+    "leccion": "obligacion-de-declarar-y-calendario",
+    "enunciado": "¿Qué se sabe en noviembre de 2026 sobre las fechas de la campaña de Renta 2026, que se presentará en 2027?",
+    "opciones": [
+      "Que el plazo empieza el 1 de enero, como el del modelo 721",
+      "Que las decide cada comunidad autónoma",
+      "Que serán del 8 de abril al 30 de junio, porque la ley las fija para siempre",
+      "Que todavía no están publicadas"
+    ],
+    "correcta": 3,
+    "explicacion": "Las fechas del 8 de abril al 30 de junio de 2026 son las de la campaña de Renta 2025 (Orden HAC/277/2026). Las de la campaña siguiente no se conocen hasta que se publica su orden."
+  },
+  {
+    "clave": "fc-m6-06",
+    "leccion": "renta-web-monedas-virtuales",
+    "enunciado": "¿Qué incluye la Agencia Tributaria sobre criptomonedas en tus datos fiscales?",
+    "opciones": [
+      "Avisos de que le consta que has operado",
+      "Nada: no recibe ninguna información",
+      "Todas tus ventas del año, ya calculadas con el método FIFO",
+      "El valor de adquisición de cada moneda"
+    ],
+    "correcta": 0,
+    "explicacion": "Los datos fiscales incluyen avisos sobre monedas virtuales. El cálculo y los importes los introduce el contribuyente: confirmar el borrador sin tocarlo deja la declaración incompleta."
+  },
+  {
+    "clave": "fc-m6-07",
+    "leccion": "renta-web-monedas-virtuales",
+    "enunciado": "Compraste 2 SOL por 300 € más 3 € de comisión. Los vendes por 500 € y pagas 5 € de comisión. ¿Qué valores llevas al apartado de monedas virtuales?",
+    "opciones": [
+      "Transmisión 500 € y adquisición 308 €: ganancia de 192 €",
+      "Transmisión 495 € y adquisición 303 €: ganancia de 192 €",
+      "Transmisión 500 € y adquisición 300 €, y 8 € en la casilla de gastos",
+      "Transmisión 505 € y adquisición 297 €: ganancia de 208 €"
+    ],
+    "correcta": 1,
+    "explicacion": "El apartado no tiene casilla de gastos. La comisión de venta reduce el valor de transmisión (500 − 5 = 495 €) y la de compra aumenta el de adquisición (300 + 3 = 303 €). Ganancia: 192 €."
+  },
+  {
+    "clave": "fc-m6-08",
+    "leccion": "renta-web-monedas-virtuales",
+    "enunciado": "En el modelo de Renta 2025, ¿qué recogen las casillas 1813 y 1814?",
+    "opciones": [
+      "La fecha de compra y la fecha de venta de cada moneda",
+      "Los gastos de adquisición y los de transmisión",
+      "Las sumas de pérdidas y de ganancias del apartado",
+      "Las recompensas de staking y los airdrops"
+    ],
+    "correcta": 2,
+    "explicacion": "La 1813 suma las pérdidas del apartado y la 1814, las ganancias (modelo 100 aprobado por la Orden HAC/277/2026). El bloque no tiene casilla de fecha ni de gastos."
+  },
+  {
+    "clave": "fc-m6-09",
+    "leccion": "renta-web-monedas-virtuales",
+    "enunciado": "En el año has ganado 900 € vendiendo bitcoin y has cobrado 150 € en recompensas de staking. ¿Qué va al apartado de monedas virtuales?",
+    "opciones": [
+      "Los 1.050 €, porque las dos rentas vienen de criptomonedas",
+      "Solo los 150 € de staking",
+      "Nada: las dos rentas van a la base general",
+      "Solo los 900 €; el staking va en otro apartado"
+    ],
+    "correcta": 3,
+    "explicacion": "El apartado de monedas virtuales es solo para transmisiones y permutas. El staking es un rendimiento del capital mobiliario y se declara en su propio apartado, también en la base del ahorro."
+  },
+  {
+    "clave": "fc-m6-10",
+    "leccion": "documentacion-y-herramientas",
+    "enunciado": "Compraste bitcoin en 2019, lo vendes en 2026 y declaras la venta en la campaña de 2027. ¿Hasta cuándo conviene conservar el justificante de la compra?",
+    "opciones": [
+      "Hasta 2023",
+      "Hasta 2027",
+      "Hasta 2030",
+      "Hasta 2031"
+    ],
+    "correcta": 3,
+    "fijo": true,
+    "explicacion": "La prescripción es de cuatro años desde el fin del plazo para declarar (artículos 66 y 67.1 de la Ley General Tributaria), y el artículo 70.3 mantiene la obligación de justificar datos de años prescritos mientras no prescriba la deuda afectada. La venta se declara en 2027: hasta 2031."
+  },
+  {
+    "clave": "fc-m6-11",
+    "leccion": "documentacion-y-herramientas",
+    "enunciado": "¿Quién tiene que probar el valor de adquisición que se resta en la declaración?",
+    "opciones": [
+      "El exchange donde se compró",
+      "El contribuyente",
+      "La Agencia Tributaria",
+      "Nadie: se presume el que conste en el modelo 173"
+    ],
+    "correcta": 1,
+    "explicacion": "El artículo 105.1 de la Ley General Tributaria establece que quien hace valer su derecho debe probar los hechos que lo sostienen. El coste de tus monedas lo acreditas tú."
+  },
+  {
+    "clave": "fc-m6-12",
+    "leccion": "documentacion-y-herramientas",
+    "enunciado": "Operas con bitcoin en tres exchanges. ¿Cómo preparas el cálculo de tus ganancias?",
+    "opciones": [
+      "Con el informe fiscal de cada exchange por separado, sumando los tres resultados",
+      "Solo con el exchange donde hiciste la última venta",
+      "Con un historial único por moneda, ordenado por fecha",
+      "Con el precio medio de todas las compras del año"
+    ],
+    "correcta": 2,
+    "explicacion": "El FIFO se aplica por moneda y sin distinguir entre plataformas, como recoge la ayuda de Renta Web 2025. Tres informes separados dan un resultado distinto del correcto."
+  },
+  {
+    "clave": "fc-m6-13",
+    "leccion": "modelo-721-y-patrimonio",
+    "enunciado": "A 31 de diciembre tienes 30.000 € en bitcoin en un exchange extranjero, 22.000 € en una stablecoin en otro custodio extranjero y 40.000 € en ether en tu cold wallet. ¿Tienes que presentar el modelo 721?",
+    "opciones": [
+      "No, porque la mayor parte está en autocustodia",
+      "No: ninguno de los custodios llega por sí solo a 50.000 €",
+      "Sí, y hay que informar de los 92.000 €",
+      "Sí: los custodios extranjeros suman 52.000 €"
+    ],
+    "correcta": 3,
+    "explicacion": "El umbral de 50.000 € es conjunto para todas las monedas custodiadas por entidades no residentes: 30.000 + 22.000 = 52.000 €. La cold wallet no cuenta ni se informa (preguntas frecuentes del modelo 721, AEAT)."
+  },
+  {
+    "clave": "fc-m6-14",
+    "leccion": "modelo-721-y-patrimonio",
+    "enunciado": "Presentaste el modelo 721 con un saldo de 60.000 €. Un año después, sin haber dejado de tener ninguna moneda, el saldo es de 75.000 €. ¿Tienes que presentarlo otra vez?",
+    "opciones": [
+      "No: ha subido 15.000 €, menos de 20.000 €",
+      "No: solo se presenta una vez en la vida",
+      "Sí: cualquier subida obliga a presentarlo",
+      "Sí: se presenta cada año mientras se superen 50.000 €"
+    ],
+    "correcta": 0,
+    "explicacion": "Tras la primera declaración solo se vuelve a presentar si el saldo conjunto sube más de 20.000 € respecto del último declarado. Con 85.000 € (+25.000 €) sí habría que presentarlo."
+  },
+  {
+    "clave": "fc-m6-15",
+    "leccion": "modelo-721-y-patrimonio",
+    "enunciado": "¿Cuándo es obligatorio presentar la declaración del Impuesto sobre el Patrimonio?",
+    "opciones": [
+      "Solo si se han vendido bienes durante el año",
+      "Si sale cuota a ingresar o los bienes superan 2.000.000 €",
+      "Siempre que el patrimonio neto supere el mínimo exento de 700.000 €",
+      "Solo si se tienen más de 50.000 € en criptomonedas"
+    ],
+    "correcta": 1,
+    "explicacion": "Según la Orden HAC/277/2026, hay obligación si la cuota resulta a ingresar o si el valor de bienes y derechos supera 2.000.000 € aunque la cuota sea cero. Los 700.000 € son el mínimo exento general, no el umbral de la obligación."
+  }
+]

@@ -1,0 +1,528 @@
+[
+  {
+    "clave": "fc-f-01",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "El cónyuge no separado y los hijos menores de Álvaro viven en España, pero él pasa casi todo el año trabajando fuera. Según el artículo 9 de la Ley del IRPF, ¿qué efecto tiene ese dato sobre su residencia fiscal?",
+    "opciones": [
+      "Solo cuenta si además tiene la nacionalidad española",
+      "Ninguno: lo único que cuenta son los días de permanencia en el país",
+      "Se presume que reside en España, salvo prueba en contrario",
+      "Lo convierte en residente sin que pueda probar lo contrario"
+    ],
+    "correcta": 2,
+    "explicacion": "Es el tercer criterio del artículo 9: si el cónyuge no separado y los hijos menores que dependen de él residen en España, se presume la residencia. Es una presunción que se puede destruir con prueba en contrario. La nacionalidad no decide nada."
+  },
+  {
+    "clave": "fc-f-02",
+    "leccion": "que-grava-el-irpf",
+    "enunciado": "Marcos vive en Sevilla y guarda 3 ETH en un exchange con sede en otro país. En 2026 su ether sube un 150 %. El 29 de diciembre cambia 1 ETH por SOL dentro del exchange y no retira ni un euro al banco. ¿Qué lleva a su Renta de 2026?",
+    "opciones": [
+      "Nada: no ha convertido nada a euros ni ha retirado dinero a su banco",
+      "Nada en España: esas ganancias tributan en el país del exchange",
+      "La revalorización de los 3 ETH, porque los tenía a 31 de diciembre",
+      "El resultado de permutar 1 ETH; la subida del resto no se declara"
+    ],
+    "correcta": 3,
+    "explicacion": "Un residente en España tributa por su renta mundial. La permuta es una alteración patrimonial y se imputa al año en que se hace, 2026, aunque no haya euros. Los 2 ETH que no ha tocado solo tienen una plusvalía latente, que no tributa en el IRPF."
+  },
+  {
+    "clave": "fc-f-03",
+    "leccion": "base-general-y-base-del-ahorro",
+    "enunciado": "Elena cierra el año con 48.000 € de ganancia por vender bitcoin y 7.000 € de dividendos de acciones. No tiene nada más en la base del ahorro. ¿Qué cuota le sale con la escala vigente desde 2025?",
+    "opciones": [
+      "10.450 €",
+      "11.530 €",
+      "11.550 €",
+      "12.650 €"
+    ],
+    "correcta": 1,
+    "fijo": true,
+    "explicacion": "Ganancias y dividendos van a la misma caja: 55.000 €. Los primeros 6.000 € al 19 % (1.140 €), los 44.000 € siguientes al 21 % (9.240 €) y los 5.000 € que pasan de 50.000 € al 23 % (1.150 €). Total: 11.530 €. Los tramos son marginales."
+  },
+  {
+    "clave": "fc-f-04",
+    "leccion": "lo-que-hacienda-ya-sabe",
+    "enunciado": "En noviembre de 2026, ¿en qué situación está la orden ministerial que preveía los modelos 042 y 175 y las nuevas versiones del 172 y del 721?",
+    "opciones": [
+      "Se retiró definitivamente porque la directiva DAC8 fue derogada",
+      "Sigue en proyecto y no se ha aprobado",
+      "Está en vigor desde el 1 de enero de 2026, a la vez que la directiva DAC8",
+      "Se aprobó en octubre de 2026 y el modelo 175 ya sustituye al 173"
+    ],
+    "correcta": 1,
+    "explicacion": "La orden salió a información pública en marzo de 2026 y sigue siendo un proyecto: se apoya en una ley y en un real decreto que no existen, porque el proyecto de ley caducó al disolverse las Cortes. Los modelos vigentes son el 172, el 173 y el 721 de 2023."
+  },
+  {
+    "clave": "fc-f-05",
+    "leccion": "lo-que-hacienda-ya-sabe",
+    "enunciado": "¿Qué aporta el reglamento europeo MiCA al control fiscal de las criptomonedas?",
+    "opciones": [
+      "Crea un impuesto europeo sobre las ganancias obtenidas con criptoactivos",
+      "Fija el método FIFO como regla de cálculo común para toda la Unión",
+      "No es fiscal, pero obliga a las plataformas a identificar a sus clientes",
+      "Obliga a cada cliente a presentar el modelo 172 con sus saldos"
+    ],
+    "correcta": 2,
+    "explicacion": "MiCA (Reglamento UE 2023/1114) se aplica por completo desde el 30 de diciembre de 2024. No regula impuestos, pero las plataformas autorizadas deben identificar a sus clientes con un proceso de KYC: una cuenta en un exchange regulado es una cuenta a tu nombre."
+  },
+  {
+    "clave": "fc-f-06",
+    "leccion": "cuando-hay-que-tributar",
+    "enunciado": "¿Qué ha dicho la Dirección General de Tributos sobre los pagos con una tarjeta cripto que vende tus monedas en cada compra?",
+    "opciones": [
+      "Que cada pago es una venta, en la consulta V0648-24",
+      "Que solo tributa el saldo que quede en la tarjeta a 31 de diciembre",
+      "Que los pagos inferiores a 1.000 € al año no tributan",
+      "Nada: lo coherente es tratar cada pago como una venta"
+    ],
+    "correcta": 3,
+    "explicacion": "La DGT no se ha pronunciado sobre las tarjetas cripto. Si la tarjeta vende tus monedas en cada pago, lo coherente con el resto de criterios es calcular cada pago como una transmisión, pero es una deducción, no un criterio publicado."
+  },
+  {
+    "clave": "fc-f-07",
+    "leccion": "valor-de-adquisicion-y-transmision",
+    "enunciado": "Raquel entrega 0,05 BTC que le costaron 2.400 €, comisiones incluidas. En ese momento valen 4.100 €, y recibe a cambio 1,3 ETH que valen 4.120 €. La plataforma le cobra aparte 8 € de comisión. ¿Qué ganancia declara y con qué coste quedan los ETH?",
+    "opciones": [
+      "Ganancia de 1.712 €; los ETH quedan con un coste de 4.120 €",
+      "Ganancia de 1.720 €; los ETH quedan con un coste de 2.400 €",
+      "Ganancia de 1.692 €; los ETH quedan con un coste de 4.100 €",
+      "Ninguna ganancia hasta que venda los ETH por euros"
+    ],
+    "correcta": 0,
+    "explicacion": "En una permuta se toma el mayor de los dos valores de mercado: 4.120 € (artículo 37.1.h de la Ley del IRPF). La comisión de la operación resta del valor de transmisión: 4.120 − 8 = 4.112 €. Ganancia: 4.112 − 2.400 = 1.712 €. Lo recibido queda con el valor tomado en la permuta, 4.120 €."
+  },
+  {
+    "clave": "fc-f-08",
+    "leccion": "valor-de-adquisicion-y-transmision",
+    "enunciado": "No existe una cotización oficial de las criptomonedas. Según el criterio de la DGT desde la consulta V0999-18, ¿qué valor de mercado se usa para valorar una operación?",
+    "opciones": [
+      "El precio medio del mes en el que se hace la operación",
+      "El que acordarían partes independientes, probado por cualquier medio válido",
+      "El precio de cierre diario que publica el Banco de España para cada criptomoneda",
+      "El del exchange con más volumen, tomado a las doce de la noche"
+    ],
+    "correcta": 1,
+    "explicacion": "La DGT no impone un exchange ni una hora: el valor de mercado es el que pactarían partes independientes en ese momento, y probarlo es una cuestión de hecho. Por eso conviene usar el precio de la propia operación y la misma fuente todo el año."
+  },
+  {
+    "clave": "fc-f-09",
+    "leccion": "el-metodo-fifo",
+    "enunciado": "Jorge compró 2 ETH en 2022 en el exchange A por 2.000 € más 4 € de comisión, y 3 ETH en 2024 en el exchange B por 6.000 € más 12 € de comisión. Hoy vende 3 ETH desde el exchange B por 7.500 € y paga 15 € de comisión. ¿Qué ganancia sale con el criterio de Hacienda?",
+    "opciones": [
+      "1.473 €",
+      "2.675,40 €",
+      "3.477 €",
+      "3.500 €"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "Valor de transmisión: 7.500 − 15 = 7.485 €. Con FIFO global salen los 2 ETH de 2022 (2.004 €) y 1 ETH del lote de 2024, un tercio de 6.012 € (2.004 €). Coste: 4.008 €. Ganancia: 3.477 €. Los 1.473 € saldrían de un FIFO «por exchange» y los 2.675,40 €, del precio medio: ninguno de los dos vale."
+  },
+  {
+    "clave": "fc-f-10",
+    "leccion": "el-metodo-fifo",
+    "enunciado": "¿Qué dijo la Dirección General de Tributos en la consulta V0525-25, de marzo de 2025, sobre las criptomonedas y el FIFO?",
+    "opciones": [
+      "Que son valores homogéneos, igual que las acciones cotizadas",
+      "Que, tras la sentencia del País Vasco, puede usarse el precio medio",
+      "Que el FIFO debe calcularse por separado en cada plataforma",
+      "Que son bienes homogéneos, aunque no valores, y el FIFO se mantiene"
+    ],
+    "correcta": 3,
+    "explicacion": "La V0525-25 precisa que las criptomonedas no son «valores homogéneos» en sentido reglamentario, pero sí bienes homogéneos por ser fungibles, así que el FIFO sigue aplicándose. La V1550-25 añadió después que se aplica sin distinguir por plataforma."
+  },
+  {
+    "clave": "fc-f-11",
+    "leccion": "caso-practico-un-ano-de-operaciones",
+    "enunciado": "Leire tiene un único lote de 0,40 BTC que le costó 12.040 €. Lo traspasa a su cold wallet y la red le cobra 0,0005 BTC de comisión, con el bitcoin a 60.000 €. Con la lectura prudente que aplica el caso práctico del módulo 2, ¿qué apunta por ese movimiento?",
+    "opciones": [
+      "Una ganancia de 14,95 € por la comisión pagada en bitcoin",
+      "Una pérdida de 15,05 €, que es lo que le costó la comisión",
+      "Una ganancia de 11.960 €, como si hubiera vendido los 0,40 BTC",
+      "Una ganancia de 30 €, que es el valor de la comisión pagada"
+    ],
+    "correcta": 0,
+    "explicacion": "Mover monedas a una wallet propia no tributa. La comisión pagada en bitcoin no tiene criterio publicado; la lectura prudente del curso la trata como una transmisión de 0,0005 BTC: valen 30 € y, por FIFO, costaron 0,0005 × 30.100 = 15,05 €. Ganancia: 14,95 €. Además, el lote baja a 0,3995 BTC."
+  },
+  {
+    "clave": "fc-f-12",
+    "leccion": "caso-practico-un-ano-de-operaciones",
+    "enunciado": "En 2025 Dani hizo tres operaciones: pasó bitcoin a USDC con 9.400 € de ganancia, permutó ether por SOL con 1.150 € de pérdida y vendió SOL por euros con 2.750 € de ganancia. No tiene nada más en la base del ahorro. ¿Qué cuota paga?",
+    "opciones": [
+      "2.190 €",
+      "2.310 €",
+      "2.431,50 €",
+      "2.551,50 €"
+    ],
+    "correcta": 0,
+    "fijo": true,
+    "explicacion": "Las tres operaciones son transmisiones y se suman y restan entre sí: 9.400 − 1.150 + 2.750 = 11.000 €. Los primeros 6.000 € al 19 % (1.140 €) y los 5.000 € restantes al 21 % (1.050 €): 2.190 €. Sin declarar la pérdida habría pagado 2.431,50 €."
+  },
+  {
+    "clave": "fc-f-13",
+    "leccion": "staking-y-lending",
+    "enunciado": "Nuria cobra en 2026 recompensas de staking valoradas en 2.400 € el día de cada cobro. Para sacar parte de sus monedas antes de tiempo paga una penalización de 100 €, y la plataforma le cobra además 60 € de gastos de custodia. Según los criterios de la DGT, ¿qué rendimiento declara?",
+    "opciones": [
+      "2.240 €: resta la penalización y la custodia",
+      "2.400 €: no puede restar ninguno de los dos gastos",
+      "2.300 €: resta la penalización, pero no la custodia",
+      "2.340 €: resta la custodia, pero no la penalización"
+    ],
+    "correcta": 2,
+    "explicacion": "La penalización por desbloquear antes de tiempo reduce el rendimiento íntegro (V0648-24): 2.400 − 100 = 2.300 €. Los gastos de administración y depósito no se deducen, porque la ley los reserva a los valores negociables (V1766-22, V0648-24 y V1551-25)."
+  },
+  {
+    "clave": "fc-f-14",
+    "leccion": "staking-y-lending",
+    "enunciado": "¿Qué criterio publicado hay sobre las cuentas «earn» de un exchange?",
+    "opciones": [
+      "La consulta V0648-24 las trata como una actividad económica",
+      "La consulta V0612-26 las declara exentas hasta que se retira el saldo",
+      "La consulta V2005-22 las califica como ganancia patrimonial de la base general",
+      "Ninguno propio; lo prudente es tratarlas como el staking en un exchange"
+    ],
+    "correcta": 3,
+    "explicacion": "No tienen consulta propia: la V2005-22 recibió una pregunta sobre plataformas de ingresos pasivos y no se pronunció por falta de información. La lectura prudente es declararlas como rendimiento del capital mobiliario, valorado el día de cada abono."
+  },
+  {
+    "clave": "fc-f-15",
+    "leccion": "airdrops-y-recompensas",
+    "enunciado": "Sergio tiene una nómina y en 2026 recibe un airdrop valorado en 4.000 €. Ese año pierde 4.000 € vendiendo altcoins y cobra 800 € de staking. No tiene más rentas del ahorro. ¿Cómo queda su declaración?",
+    "opciones": [
+      "Airdrop a la base general; la pérdida resta 200 € del staking y deja 3.800 € pendientes",
+      "La pérdida de 4.000 € anula el airdrop de 4.000 € y solo tributan los 800 € del staking",
+      "Airdrop y staking van a la base del ahorro y, restada la pérdida, tributa por 800 €",
+      "Airdrop a la base general; la pérdida anula todo el staking y deja 3.200 € pendientes"
+    ],
+    "correcta": 0,
+    "explicacion": "El airdrop es una ganancia que no deriva de una transmisión: base general, sin que la pérdida de las ventas pueda cruzar de caja (V0648-24). En la base del ahorro, la pérdida solo resta del staking hasta el 25 % de su saldo: 25 % de 800 = 200 €. Tributa por 600 € de staking y arrastra 3.800 €."
+  },
+  {
+    "clave": "fc-f-16",
+    "leccion": "airdrops-y-recompensas",
+    "enunciado": "¿De qué trata en realidad la consulta V1948-21, que a menudo se cita como «la de los airdrops»?",
+    "opciones": [
+      "Del cashback que devuelven las tarjetas cripto",
+      "De las recompensas tipo «aprende y gana» de un exchange",
+      "De las monedas que se reciben tras un hard fork",
+      "De las comisiones que se cobran por traer referidos a una plataforma"
+    ],
+    "correcta": 1,
+    "explicacion": "La V1948-21 trata de los tokens que un exchange entrega por ver vídeos, hacer tutoriales o compartir enlaces: ganancia del artículo 37.1.l), en la base general. El airdrop está en la V0648-24. Hard forks, cashback y referidos no tienen criterio publicado."
+  },
+  {
+    "clave": "fc-f-17",
+    "leccion": "mineria-y-actividad-economica",
+    "enunciado": "Una app reparte monedas por ver un anuncio al día y lo anuncia como «minería». Según la consulta V5017-26, ¿cómo se trata lo que recibe el usuario?",
+    "opciones": [
+      "Como rendimiento de una actividad económica, con alta en el IAE",
+      "Como rendimiento del capital mobiliario, igual que el staking",
+      "Como ganancia en la base general, si puede fijarse su valor",
+      "Como renta exenta, porque esas monedas no cotizan"
+    ],
+    "correcta": 2,
+    "explicacion": "Para la DGT no es una actividad económica: es la ganancia patrimonial del artículo 37.1.l), en la base general, y solo en la medida en que pueda determinarse el valor de mercado en euros de esas monedas. Fijar ese valor es una cuestión de prueba."
+  },
+  {
+    "clave": "fc-f-18",
+    "leccion": "donaciones-y-herencias",
+    "enunciado": "Carmen compró 2 ETH por 1.800 € y se los regala a su hijo cuando valen 5.000 €. Él los declara por 5.000 € en el Impuesto sobre Sucesiones y Donaciones y, meses después, los vende por 4.600 €. ¿Qué resultado tiene cada uno en su IRPF?",
+    "opciones": [
+      "Carmen, nada; su hijo, una pérdida de 400 €",
+      "Carmen, nada; su hijo, una ganancia de 2.800 €",
+      "Carmen, una ganancia de 3.200 €; su hijo, una ganancia de 2.800 €",
+      "Carmen, una ganancia de 3.200 €; su hijo, una pérdida de 400 €"
+    ],
+    "correcta": 3,
+    "explicacion": "Donar es transmitir (artículo 34.1.a de la Ley del IRPF): Carmen tiene 5.000 − 1.800 = 3.200 € de ganancia en la base del ahorro. Su hijo estrena valor de adquisición, el del Impuesto sobre Sucesiones y Donaciones (artículo 36): 4.600 − 5.000 = −400 €."
+  },
+  {
+    "clave": "fc-f-19",
+    "leccion": "donaciones-y-herencias",
+    "enunciado": "En una herencia, ¿qué comunidad autónoma es la competente para el Impuesto sobre Sucesiones y Donaciones, según la Ley 22/2009?",
+    "opciones": [
+      "La de la residencia habitual del fallecido",
+      "La que elija el heredero entre la suya y la del fallecido",
+      "La de la residencia habitual del heredero",
+      "La del domicilio social del exchange que custodia las monedas"
+    ],
+    "correcta": 0,
+    "explicacion": "En las herencias manda la residencia habitual del fallecido (artículo 32.2.a de la Ley 22/2009). En las donaciones de bienes que no son inmuebles es al revés: la comunidad donde reside quien recibe."
+  },
+  {
+    "clave": "fc-f-20",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "Aitor aporta a una pool de liquidez 1 ETH que le costó 1.200 € y que hoy vale 2.000 €. Recibe a cambio el token que representa su parte de la pool. ¿Cómo hay que entender ese paso?",
+    "opciones": [
+      "Es un rendimiento del capital mobiliario de 2.000 €, según la V0648-24",
+      "Sin criterio de la DGT; lo prudente es una permuta con 800 € de ganancia",
+      "La consulta V0648-24 lo califica expresamente de permuta, con 800 € de ganancia",
+      "La consulta V0612-26 dice que no tributa, por ser un simple depósito"
+    ],
+    "correcta": 1,
+    "explicacion": "La V0648-24 dice que la obtención y el reembolso de esos tokens exceden de la consulta, y nadie ha dicho que el razonamiento de la V0612-26 alcance a las pools. La lectura prudente del curso es contar con una permuta: 2.000 − 1.200 = 800 €, y tratar igual la salida."
+  },
+  {
+    "clave": "fc-f-21",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "Un protocolo te reparte tokens de gobernanza como recompensa por aportar liquidez. ¿Cómo tributan?",
+    "opciones": [
+      "No tributan hasta que se venden, según la consulta V2513-25",
+      "Como rendimiento del capital mobiliario, según la consulta V0612-26",
+      "No hay consulta: puede leerse como rendimiento o como airdrop",
+      "Como un airdrop en la base general, según la consulta V0648-24"
+    ],
+    "correcta": 2,
+    "explicacion": "Ninguna consulta los menciona. Pueden verse como un rendimiento más de la pool, en la base del ahorro, o como un airdrop, en la base general. Lo prudente es elegir una lectura, aplicarla siempre igual y dejarla por escrito."
+  },
+  {
+    "clave": "fc-f-22",
+    "leccion": "nft-comprar-vender-y-crear",
+    "enunciado": "Un artista paga a la plataforma el coste de acuñación para crear los NFT que vende. Según la consulta V2388-24, ¿puede restarlo de sus ingresos?",
+    "opciones": [
+      "No: los gastos pagados en criptomonedas nunca son deducibles",
+      "Sí, pero como pérdida patrimonial en la base del ahorro",
+      "Solo la mitad, por tratarse de un gasto mixto",
+      "Sí, si guarda correlación con los ingresos de su actividad"
+    ],
+    "correcta": 3,
+    "explicacion": "El artista tributa por actividad económica y puede restar gastos. La V2388-24 admite el coste de acuñación si guarda correlación con los ingresos, es decir, si se paga para obtenerlos."
+  },
+  {
+    "clave": "fc-f-23",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "Una plataforma española con la que opera Íñigo entra en concurso en 2026 con 9.000 € suyos dentro. Ese mismo año gana 9.000 € vendiendo bitcoin y no tiene nada más en la base del ahorro. ¿Qué le sale por 2026?",
+    "opciones": [
+      "Paga 1.770 € por el bitcoin; lo de la plataforma aún no es una pérdida",
+      "Paga 1.770 € por el bitcoin y declara ya 9.000 € de pérdida en la base general",
+      "Paga 1.710 € por el bitcoin y resta los 9.000 € perdidos de su sueldo",
+      "No paga nada: la pérdida de la plataforma anula la ganancia del bitcoin"
+    ],
+    "correcta": 0,
+    "explicacion": "Con un deudor identificado tiene un crédito: no hay pérdida hasta que se cumpla una circunstancia del artículo 14.2.k, como una quita en el convenio o el fin del concurso sin cobrar. Y cuando llegue irá a la base general. La ganancia tributa entera: 1.140 € + 21 % de 3.000 € = 1.770 €."
+  },
+  {
+    "clave": "fc-f-24",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "Declaraste en su día la pérdida de un crédito incobrable contra una plataforma y, años después, recuperas una parte. ¿Cómo se trata lo que cobras?",
+    "opciones": [
+      "Como rendimiento del capital mobiliario del año del concurso",
+      "Como una ganancia patrimonial del año en que lo cobras",
+      "No tributa: es la devolución de tu propio dinero",
+      "Rectificando la declaración del año en que declaraste la pérdida"
+    ],
+    "correcta": 1,
+    "explicacion": "Si después de computar la pérdida recuperas algo, lo cobrado es una ganancia patrimonial del año en que lo cobras. No se reabre el ejercicio en el que se declaró la pérdida."
+  },
+  {
+    "clave": "fc-f-25",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "Bea cierra 2026 con un saldo de −9.000 € por ventas de criptomonedas y 2.000 € de staking. En 2027 obtiene 3.000 € de ganancias por ventas y 4.000 € de staking, sin pérdidas nuevas. No tiene nada más en la base del ahorro. ¿Cuánta pérdida le queda pendiente al acabar 2027?",
+    "opciones": [
+      "1.500 €",
+      "3.500 €",
+      "4.500 €",
+      "5.500 €"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "En 2026 cruza el 25 % de 2.000 = 500 € y arrastra 8.500 €. En 2027 la pendiente va primero contra las ganancias de su clase (3.000 €) y quedan 5.500 €; después se cruza con el staking hasta el 25 % de 4.000 = 1.000 €. Pendiente: 4.500 € (artículo 49 de la Ley del IRPF)."
+  },
+  {
+    "clave": "fc-f-26",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "El tope del 25 % para cruzar pérdidas patrimoniales con rendimientos del capital mobiliario, ¿cómo funciona cuando hay pérdidas del año y pérdidas pendientes de años anteriores?",
+    "opciones": [
+      "Las antiguas pasan a la base general cuando no caben",
+      "Hay un 25 % para las del año y otro 25 % para las antiguas",
+      "Las antiguas no tienen tope; las del propio año, sí",
+      "Es conjunto: las antiguas solo usan el hueco que quede"
+    ],
+    "correcta": 3,
+    "explicacion": "El artículo 49 fija un tope conjunto: si ese año ya has cruzado pérdidas del propio ejercicio, las pendientes solo aprovechan el margen que quede hasta el 25 %. Y nunca cruzan a la base general."
+  },
+  {
+    "clave": "fc-f-27",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "Pilar vive en Zaragoza. El 3 de octubre de 2026 vende ether con 2.400 € de pérdida y el 20 de octubre compra bitcoin con ese dinero. No vuelve a comprar ether. ¿Qué pasa con la pérdida?",
+    "opciones": [
+      "Cuenta en 2026: comprar bitcoin no es recomprar lo vendido",
+      "Queda aplazada, porque recompró criptomonedas antes de un año",
+      "Queda aplazada, porque recompró antes de que pasaran dos meses",
+      "Se pierde: no se computa si se reinvierte en criptomonedas"
+    ],
+    "correcta": 0,
+    "explicacion": "La letra e) del artículo 33.5, que es la lectura prudente para las criptomonedas, habla de volver a adquirir el mismo elemento. Vender ether y comprar bitcoin no lo es, así que la pérdida se computa en 2026 con cualquiera de las lecturas. La regla de dos meses es para valores cotizados."
+  },
+  {
+    "clave": "fc-f-28",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "Mientras Hacienda no aclare qué regla de recompra se aplica en territorio común, ¿qué opción hace que una pérdida cuente con cualquiera de las lecturas?",
+    "opciones": [
+      "Esperar dos meses y un día antes de recomprar la misma moneda",
+      "Dejar pasar un año antes de recomprar la misma moneda",
+      "Recomprar la moneda en un exchange distinto del de la venta",
+      "Recomprar la moneda pasando antes por una stablecoin"
+    ],
+    "correcta": 1,
+    "explicacion": "Sin criterio publicado, la única certeza es el plazo más largo: pasado un año, ni la letra e) del artículo 33.5 ni ninguna otra lectura aplazan la pérdida. Recomprar antes es elegir entre aplazarla, que es lo prudente, o defender una posición discutida."
+  },
+  {
+    "clave": "fc-f-29",
+    "leccion": "planificar-antes-del-31-de-diciembre",
+    "enunciado": "Rubén arrastra 5.000 € de pérdidas de 2022. En 2026 no ha vendido nada y tiene bitcoin con 8.000 € de plusvalía latente. No tiene nada más en la base del ahorro. Si lo vende todo antes del 31 de diciembre de 2026, ¿qué ocurre?",
+    "opciones": [
+      "Tributa por 6.000 €: solo puede restar el 25 % de la ganancia",
+      "No paga nada: una pérdida pendiente anula toda la ganancia del año",
+      "Tributa por 3.000 €: paga 570 € y usa la pérdida antes de que caduque",
+      "Tributa por 8.000 €: las pérdidas de 2022 caducaron en la Renta de 2025"
+    ],
+    "correcta": 2,
+    "explicacion": "Las pérdidas de 2022 se usan por última vez en la Renta de 2026. La ganancia de 8.000 € se compensa con los 5.000 € pendientes, sin tope por ser de la misma clase: 3.000 € al 19 %, 570 €. Si no vende, esa pérdida caduca."
+  },
+  {
+    "clave": "fc-f-30",
+    "leccion": "obligacion-de-declarar-y-calendario",
+    "enunciado": "Con las reglas del ejercicio 2025: Alba es estudiante y no tiene nómina ni otras rentas. En el año ganó 400 € en una permuta y perdió 650 € en la venta de otra moneda. ¿Tiene que presentar la Renta?",
+    "opciones": [
+      "Sí: cualquier operación con criptomonedas obliga a declarar",
+      "No: el resultado neto del año es negativo",
+      "No: sus rentas no llegan a 1.000 €",
+      "Sí: sus pérdidas patrimoniales llegan a 500 €"
+    ],
+    "correcta": 3,
+    "explicacion": "La regla correctora del Manual práctico de Renta 2025 exige dos cosas: rentas de hasta 1.000 € y pérdidas patrimoniales inferiores a 500 €. Alba cumple la primera, pero sus pérdidas son de 650 €. Además, declararlas es lo que le permitirá compensarlas después."
+  },
+  {
+    "clave": "fc-f-31",
+    "leccion": "modelo-721-y-patrimonio",
+    "enunciado": "¿Alcanza a las criptomonedas el «impuesto de salida» del artículo 95 bis de la Ley del IRPF cuando alguien deja de residir en España?",
+    "opciones": [
+      "No: solo cubre acciones y participaciones en entidades",
+      "Sí, desde que la directiva DAC8 se aplica en la Unión",
+      "Sí, cuando su valor conjunto supera los 4.000.000 €",
+      "No, porque una consulta de la DGT las excluye expresamente"
+    ],
+    "correcta": 0,
+    "explicacion": "El artículo 95 bis grava la plusvalía latente de acciones o participaciones en entidades, con sus umbrales. Las criptomonedas no lo son, así que no las alcanza. Es la lectura directa del texto: no hay consulta que lo diga expresamente para criptomonedas."
+  },
+  {
+    "clave": "fc-f-32",
+    "leccion": "renta-web-monedas-virtuales",
+    "enunciado": "¿Ha dicho la Agencia Tributaria si las operaciones de una misma moneda pueden sumarse en un solo bloque del apartado de monedas virtuales?",
+    "opciones": [
+      "Sí: obliga a declarar un único bloque por moneda y por año",
+      "No expresamente; lo firme es que se calcula por operación",
+      "Sí: obliga a introducir cada operación con su fecha exacta",
+      "Sí: permite agrupar únicamente las operaciones con pérdida"
+    ],
+    "correcta": 1,
+    "explicacion": "No se ha localizado ninguna frase oficial que lo resuelva, y el apartado ni siquiera tiene casilla de fecha. Lo que sí dice la Agencia Tributaria es que la ganancia o pérdida se calcula por operación, con FIFO. Lo prudente es hacer y guardar ese cálculo detallado."
+  },
+  {
+    "clave": "fc-f-33",
+    "leccion": "renta-web-monedas-virtuales",
+    "enunciado": "En 2025 Olga vendió ether por euros con 2.100 € de ganancia, pasó bitcoin a USDC con 300 € de pérdida, recibió un airdrop valorado en 500 € y cobró 240 € de staking. ¿Qué importes acaban en las casillas 1814 y 1813 de su declaración?",
+    "opciones": [
+      "1.800 € en la 1814 y nada en la 1813",
+      "2.340 € en la 1814 y 300 € en la 1813",
+      "2.100 € en la 1814 y 300 € en la 1813",
+      "2.840 € en la 1814 y 300 € en la 1813"
+    ],
+    "correcta": 2,
+    "explicacion": "El apartado de monedas virtuales es solo para ventas y permutas: la 1814 suma las ganancias y la 1813, las pérdidas, sin restarlas a mano. El airdrop va a las ganancias que no derivan de una transmisión, en la base general, y el staking, a los rendimientos del capital mobiliario."
+  },
+  {
+    "clave": "fc-f-34",
+    "leccion": "documentacion-y-herramientas",
+    "enunciado": "Según el artículo 108.4 de la Ley General Tributaria, ¿qué valor tienen los datos que tu exchange comunica a Hacienda en sus modelos informativos?",
+    "opciones": [
+      "Son una prueba definitiva, que no admite ninguna discusión posterior",
+      "Solo valen si coinciden con tu extracto bancario",
+      "No tienen ningún valor mientras tú no los confirmes",
+      "Se presumen ciertos, pero puedes alegar que son inexactos"
+    ],
+    "correcta": 3,
+    "explicacion": "Los datos comunicados por terceros se presumen ciertos, pero si el contribuyente alega su inexactitud la Administración debe contrastarlos. Para alegarlo con éxito hace falta un historial propio y ordenado."
+  },
+  {
+    "clave": "fc-f-35",
+    "leccion": "modelo-721-y-patrimonio",
+    "enunciado": "Laura presentó el modelo 721 con un saldo de 70.000 €. A 31 de diciembre del año siguiente tiene 93.000 € en custodios extranjeros y, además, ha comprado 30.000 € en bitcoin que guarda en su cold wallet. ¿Tiene que presentarlo de nuevo?",
+    "opciones": [
+      "Sí: el saldo en custodios extranjeros ha subido 23.000 €",
+      "Sí, e informa también de los 30.000 € que tiene en la cold wallet",
+      "No: el modelo solo se presenta la primera vez",
+      "No: la subida no llega a 50.000 €"
+    ],
+    "correcta": 0,
+    "explicacion": "Tras la primera presentación, se repite si el saldo conjunto sube más de 20.000 € respecto del último declarado: 93.000 − 70.000 = 23.000 €. Las monedas en autocustodia no cuentan ni se informan en el 721."
+  },
+  {
+    "clave": "fc-f-36",
+    "leccion": "declaracion-complementaria-y-recargos",
+    "enunciado": "Gema no declaró una permuta en su Renta 2024, cuyo plazo acabó el 30 de junio de 2025. La cuota que dejó de ingresar es de 1.800 €. El 20 de febrero de 2026, con 7 meses completos de retraso y sin requerimiento previo, lo corrige y lo paga todo en plazo. ¿Qué presenta y qué recargo paga?",
+    "opciones": [
+      "Una autoliquidación rectificativa; 270 € de recargo más intereses de demora",
+      "Una autoliquidación rectificativa; 144 € de recargo, que bajan a 108 €",
+      "Una autoliquidación complementaria; 126 € de recargo, que bajan a 94,50 €",
+      "Una solicitud de rectificación; sin recargo, porque se adelanta a Hacienda"
+    ],
+    "correcta": 1,
+    "explicacion": "Desde la Renta 2024 la vía es la autoliquidación rectificativa. El recargo es un 1 % más un 1 % por cada mes completo: 8 % de 1.800 € = 144 € (artículo 27.2 de la LGT). Al ingresar la cuota al presentar y el recargo en su plazo, baja un 25 %: 108 €. Sin sanción ni intereses."
+  },
+  {
+    "clave": "fc-f-37",
+    "leccion": "declaracion-complementaria-y-recargos",
+    "enunciado": "Descubres en 2026 una ganancia que olvidaste declarar en 2023 y la incluyes en tu Renta 2025 para no rehacer la antigua. ¿Qué consecuencia tiene?",
+    "opciones": [
+      "Es válido si se indica el año de origen en un anexo",
+      "Queda regularizada con el recargo mínimo del 1 %",
+      "No regulariza nada y es una infracción leve",
+      "Queda regularizada sin recargo, porque se declara en plazo"
+    ],
+    "correcta": 2,
+    "explicacion": "El artículo 27.4 de la LGT exige que la declaración tardía identifique el período que corrige y contenga solo datos de ese período. Meter la renta en otro ejercicio no regulariza, y el artículo 191.6 lo trata como una infracción leve. Lo correcto para 2023 es una complementaria de ese año."
+  },
+  {
+    "clave": "fc-f-38",
+    "leccion": "requerimientos-de-hacienda",
+    "enunciado": "Te notifican un requerimiento de información el jueves 5 de noviembre de 2026, con diez días para contestar. Si no hay festivos por medio, ¿cuál es el último día del plazo?",
+    "opciones": [
+      "El domingo 15 de noviembre",
+      "El lunes 16 de noviembre",
+      "El jueves 19 de noviembre",
+      "El viernes 20 de noviembre"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "Son días hábiles, sin sábados ni domingos, y empiezan a contar el día siguiente a la notificación. El día uno es el viernes 6; la semana del 9 al 13 suma hasta el día seis, y el día diez es el jueves 19. Si no llegas, puedes pedir cinco días más antes de los tres días previos al vencimiento."
+  },
+  {
+    "clave": "fc-f-39",
+    "leccion": "sanciones-y-prescripcion",
+    "enunciado": "Arrastras en tu declaración unas pérdidas pendientes que en realidad no existen, aunque ese año no dejas de pagar nada. ¿Qué prevé el artículo 195 de la Ley General Tributaria?",
+    "opciones": [
+      "Una sanción del 15 % de las pérdidas indebidas",
+      "Solo la pérdida del derecho a compensarlas",
+      "Ninguna sanción mientras esas pérdidas no se compensen",
+      "Una sanción del 50 % de las pérdidas declaradas"
+    ],
+    "correcta": 0,
+    "explicacion": "Declarar pérdidas que no existen se sanciona aunque ese año no se deje de ingresar nada: un 15 % de las pérdidas acreditadas indebidamente. Importa a quien arrastra saldos negativos de años anteriores."
+  },
+  {
+    "clave": "fc-f-40",
+    "leccion": "sanciones-y-prescripcion",
+    "enunciado": "Una inspección descubre una ganancia sin declarar. La cuota no ingresada es de 5.000 € y hay ocultación, así que la infracción es grave. Si la sanción se impone en su mínimo y el contribuyente da su conformidad, paga en plazo y no recurre, ¿cuánto paga de sanción?",
+    "opciones": [
+      "1.050 €",
+      "1.500 €",
+      "1.750 €",
+      "2.500 €"
+    ],
+    "correcta": 0,
+    "fijo": true,
+    "explicacion": "Grave: del 50 % al 100 %; en su mínimo, 2.500 €. Menos un 30 % por conformidad: 1.750 €. Menos un 40 % sobre lo que queda por pagar en plazo sin recurrir: 1.050 €, el 42 % de la inicial (artículos 191 y 188 de la LGT). Aparte van la cuota y los intereses de demora."
+  }
+]

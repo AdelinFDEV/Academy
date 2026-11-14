@@ -1,0 +1,202 @@
+[
+  {
+    "clave": "fc-m2-01",
+    "leccion": "cuando-hay-que-tributar",
+    "enunciado": "Compraste 1 BTC por 20.000 €. Con el bitcoin a 90.000 € lo cambias por USDT dentro del exchange y no retiras nada al banco. ¿Qué ha pasado fiscalmente?",
+    "opciones": [
+      "Has realizado una ganancia de 90.000 €, porque es lo que vale lo que recibes",
+      "Nada: la ganancia se realizará cuando conviertas los USDT a euros y los retires",
+      "Has realizado una ganancia de 70.000 €, que tributa en el año del cambio",
+      "Nada todavía: una stablecoin equivale a tener euros, así que no hay transmisión"
+    ],
+    "correcta": 2,
+    "explicacion": "Una stablecoin es otra criptomoneda, no moneda de curso legal. Pasar a ella es una permuta (artículo 37.1.h de la Ley del IRPF): la ganancia, 90.000 − 20.000 = 70.000 €, queda realizada ese día."
+  },
+  {
+    "clave": "fc-m2-02",
+    "leccion": "cuando-hay-que-tributar",
+    "enunciado": "¿En qué se apoya la afirmación de que mover criptomonedas entre dos wallets tuyas no tributa?",
+    "opciones": [
+      "En que los traspasos de menos de 6.000 € están exentos",
+      "En una consulta de la DGT dedicada específicamente a los traspasos entre wallets propias",
+      "En que las operaciones hechas fuera de un exchange no se declaran",
+      "En el artículo 33.1 de la Ley del IRPF: no cambia la composición del patrimonio"
+    ],
+    "correcta": 3,
+    "explicacion": "Es una consecuencia directa del artículo 33.1: sin alteración en la composición del patrimonio no hay ganancia ni pérdida. No hay una consulta de la DGT que trate el traspaso de forma específica."
+  },
+  {
+    "clave": "fc-m2-03",
+    "leccion": "cuando-hay-que-tributar",
+    "enunciado": "Pagas el gas de una operación con una pequeña cantidad de ether. ¿Cómo trata el curso esa entrega de ether?",
+    "opciones": [
+      "Como una transmisión con su resultado: lectura prudente, sin consulta que lo diga",
+      "Como una transmisión, porque así lo ordena expresamente la consulta V0648-24",
+      "Como un rendimiento del capital mobiliario negativo",
+      "Como un gasto sin ningún efecto fiscal, porque la DGT lo ha declarado no sujeto"
+    ],
+    "correcta": 0,
+    "explicacion": "Entregar cripto a cambio de un servicio encaja en el artículo 33.1, pero es una deducción: no hay consulta que lo diga expresamente. La V0648-24 habla de otra cosa: de cuándo el gas se suma al valor de adquisición o se resta del de transmisión."
+  },
+  {
+    "clave": "fc-m2-04",
+    "leccion": "cuando-hay-que-tributar",
+    "enunciado": "Vendes una criptomoneda por euros y pierdes 800 €. ¿Qué haces con esa operación?",
+    "opciones": [
+      "La declaro solo si la pérdida supera los 1.000 €",
+      "La declaro: resta de mis ganancias y puede aprovecharse después",
+      "La resto directamente de mi sueldo en la base general",
+      "No la declaro: solo se declaran las operaciones que terminan con ganancia"
+    ],
+    "correcta": 1,
+    "explicacion": "Toda transmisión obliga a calcular y declarar su resultado, también si es una pérdida. Además interesa: compensa ganancias del año y el exceso puede usarse en los cuatro años siguientes."
+  },
+  {
+    "clave": "fc-m2-05",
+    "leccion": "valor-de-adquisicion-y-transmision",
+    "enunciado": "Compras 2 ETH por 5.000 € y pagas 10 € de comisión. Más adelante los vendes por 7.000 € y te descuentan 14 € de comisión. ¿Qué ganancia patrimonial sale?",
+    "opciones": [
+      "1.976 €",
+      "1.990 €",
+      "2.000 €",
+      "2.024 €"
+    ],
+    "correcta": 0,
+    "fijo": true,
+    "explicacion": "Valor de adquisición: 5.000 + 10 = 5.010 €. Valor de transmisión: 7.000 − 14 = 6.986 €. Ganancia: 6.986 − 5.010 = 1.976 €. Las comisiones del exchange suman al coste y restan del ingreso (artículo 35 de la Ley del IRPF y consulta V1604-18)."
+  },
+  {
+    "clave": "fc-m2-06",
+    "leccion": "valor-de-adquisicion-y-transmision",
+    "enunciado": "Entregas en una permuta bitcoin que te costó 3.000 € y que en ese momento vale 5.000 €. Lo que recibes vale 4.950 €. Sin contar comisiones, ¿cuál es tu ganancia?",
+    "opciones": [
+      "1.950 €",
+      "1.975 €",
+      "2.000 €",
+      "4.950 €"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "El artículo 37.1.h manda tomar el mayor de los dos valores de mercado: 5.000 €. Ganancia: 5.000 − 3.000 = 2.000 €. Y lo recibido queda con un valor de adquisición de 5.000 €."
+  },
+  {
+    "clave": "fc-m2-07",
+    "leccion": "valor-de-adquisicion-y-transmision",
+    "enunciado": "Según la consulta V0648-24 de la DGT, ¿cuándo se puede computar el gas en el valor de adquisición o en el de transmisión?",
+    "opciones": [
+      "Cuando nace de una compraventa o permuta y se relaciona directamente con ella",
+      "Nunca: el gas no es una comisión de un exchange",
+      "Siempre, sea cual sea la operación que lo origine",
+      "Solo cuando se paga al cruzar un bridge entre dos redes, que es el caso que la consulta analiza"
+    ],
+    "correcta": 0,
+    "explicacion": "La V0648-24 admite comisiones de trading, gas y comisiones de retirada solo si se originan por una compraventa o permuta y guardan relación directa con ella. Sobre los bridges no se pronunció."
+  },
+  {
+    "clave": "fc-m2-08",
+    "leccion": "valor-de-adquisicion-y-transmision",
+    "enunciado": "Vendes criptomonedas con ganancia el 30 de diciembre de 2025 y retiras los euros a tu banco el 4 de enero de 2026. ¿A qué ejercicio corresponde la ganancia?",
+    "opciones": [
+      "A 2026, el año en que el dinero llega al banco",
+      "A 2025, el año en que entregas las monedas",
+      "Se reparte a medias entre 2025 y 2026",
+      "Al que tú elijas, porque la operación está a caballo entre dos años"
+    ],
+    "correcta": 1,
+    "explicacion": "El artículo 14.1.c imputa la ganancia al período en que se produce la alteración patrimonial, que ocurre con la entrega de las monedas (consultas V0808-18 y V2412-22), con independencia de cuándo se cobre."
+  },
+  {
+    "clave": "fc-m2-09",
+    "leccion": "el-metodo-fifo",
+    "enunciado": "¿De dónde sale la obligación de aplicar el FIFO a las criptomonedas en territorio común?",
+    "opciones": [
+      "Del reglamento europeo MiCA, que fija el método de cálculo",
+      "De una sentencia del Tribunal Supremo que lo impuso en 2025",
+      "Del criterio de la DGT, por analogía con la regla de los valores",
+      "De un artículo de la Ley del IRPF que menciona expresamente los criptoactivos"
+    ],
+    "correcta": 2,
+    "explicacion": "El artículo 37.2 establece el FIFO para valores homogéneos y la ley no menciona las criptomonedas. La DGT lo extendió por analogía desde la consulta V1604-18 y lo ha reiterado hasta la V1550-25. Es criterio administrativo, no texto de la ley."
+  },
+  {
+    "clave": "fc-m2-10",
+    "leccion": "el-metodo-fifo",
+    "enunciado": "En 2023 compraste 1 BTC por 30.000 € en el exchange A. En 2024 compraste 1 BTC por 60.000 € en el exchange B. Hoy vendes 1 BTC por 70.000 € desde el exchange B. Sin comisiones, ¿qué ganancia sale con el criterio de Hacienda?",
+    "opciones": [
+      "10.000 €",
+      "25.000 €",
+      "40.000 €",
+      "70.000 €"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "El FIFO se aplica por moneda y sin distinguir plataformas (consultas V1604-18 y V1550-25): sale primero el bitcoin de 2023, aunque esté en otro exchange. 70.000 − 30.000 = 40.000 €."
+  },
+  {
+    "clave": "fc-m2-11",
+    "leccion": "el-metodo-fifo",
+    "enunciado": "¿Qué resolvió la sentencia 37/2025 del Tribunal Superior de Justicia del País Vasco?",
+    "opciones": [
+      "Anuló una liquidación foral hecha con FIFO global, sin fijar otro método",
+      "Declaró que el precio medio es el método correcto en toda España",
+      "Confirmó que el FIFO debe calcularse siempre juntando todas las plataformas",
+      "Obligó a la Agencia Tributaria a dejar de aplicar el FIFO"
+    ],
+    "correcta": 0,
+    "explicacion": "El tribunal entendió que extender a las criptomonedas la regla de los valores homogéneos carecía de cobertura en la norma foral, y anuló la liquidación. No validó otro método y, al interpretar una norma foral, no vincula a la Agencia Tributaria ni a la DGT."
+  },
+  {
+    "clave": "fc-m2-12",
+    "leccion": "el-metodo-fifo",
+    "enunciado": "¿Qué cambió en Bizkaia y en Gipuzkoa con efectos desde el 1 de enero de 2025?",
+    "opciones": [
+      "Dejaron de aplicar el FIFO y pasaron al precio medio",
+      "Sus normas forales recogen el FIFO y una regla de recompra de dos meses",
+      "Adoptaron íntegramente la Ley del IRPF del territorio común",
+      "Las ganancias con criptomonedas quedaron exentas durante dos ejercicios"
+    ],
+    "correcta": 1,
+    "explicacion": "La Norma Foral 6/2025 de Bizkaia y la Norma Foral 2/2025 de Gipuzkoa escriben el FIFO para criptoactivos fungibles del mismo tipo y no computan la pérdida si se compran activos del mismo tipo en los dos meses anteriores o posteriores."
+  },
+  {
+    "clave": "fc-m2-13",
+    "leccion": "caso-practico-un-ano-de-operaciones",
+    "enunciado": "Tu lote más antiguo es de 0,20 BTC y te costó 4.812 € con la comisión incluida. Vendes 0,15 BTC a 80.000 € la unidad y pagas 24 € de comisión. ¿Qué ganancia sale?",
+    "opciones": [
+      "7.164 €",
+      "8.367 €",
+      "8.391 €",
+      "8.400 €"
+    ],
+    "correcta": 1,
+    "fijo": true,
+    "explicacion": "Valor de transmisión: 0,15 × 80.000 − 24 = 11.976 €. Coste por FIFO: 4.812 / 0,20 = 24.060 € por BTC, y 0,15 × 24.060 = 3.609 €. Ganancia: 11.976 − 3.609 = 8.367 €. Del lote solo se consume la parte vendida."
+  },
+  {
+    "clave": "fc-m2-14",
+    "leccion": "caso-practico-un-ano-de-operaciones",
+    "enunciado": "Recibiste 11.600 USDC en una permuta, con un valor de adquisición de 10.000 €. Meses después cambias 5.800 USDC por ether. Ese día valen 4.988 € y pagas 4,99 € de comisión. ¿Qué resultado declaras?",
+    "opciones": [
+      "Una ganancia de 4.988 €",
+      "Ninguno: las stablecoins no generan ganancias ni pérdidas",
+      "Una pérdida de 5.012 €",
+      "Una pérdida de 16,99 €"
+    ],
+    "correcta": 3,
+    "explicacion": "Los 5.800 USDC costaron la mitad de 10.000 €: 5.000 €. Valor de transmisión: 4.988 − 4,99 = 4.983,01 €. Resultado: 4.983,01 − 5.000 = −16,99 €. Cambiar una stablecoin por otra cripto es una permuta más, con su resultado."
+  },
+  {
+    "clave": "fc-m2-15",
+    "leccion": "caso-practico-un-ano-de-operaciones",
+    "enunciado": "El saldo de tus ganancias y pérdidas por criptomonedas del año es de 20.000 € y no tienes nada más en la base del ahorro. ¿Qué cuota sale con la escala del territorio común?",
+    "opciones": [
+      "3.800 €",
+      "4.080 €",
+      "4.200 €",
+      "4.600 €"
+    ],
+    "correcta": 1,
+    "fijo": true,
+    "explicacion": "Los primeros 6.000 € tributan al 19 % (1.140 €) y los 14.000 € restantes al 21 % (2.940 €). Total: 4.080 €. Los tramos son marginales: no se aplica el 21 % a todo."
+  }
+]

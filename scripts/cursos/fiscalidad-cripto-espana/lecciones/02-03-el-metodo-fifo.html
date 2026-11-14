@@ -1,0 +1,144 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Si compraste la misma moneda varias veces, Hacienda entiende que vendes primero las unidades que compraste primero. Es el método FIFO. Se aplica moneda por moneda y juntando todas tus plataformas. No está escrito en la ley para las criptomonedas: es el criterio de la Dirección General de Tributos, y conviene saber de dónde sale.</p>
+</div>
+
+<h2>El problema: ¿cuál de tus compras estás vendiendo?</h2>
+
+<p>En la lección anterior calculaste una ganancia con una sola compra y una sola venta. La realidad es otra: compras un poco cada mes, a precios distintos, y un día vendes una parte. Tus unidades son idénticas entre sí, así que no hay forma de saber «cuáles» han salido. Hace falta una regla.</p>
+
+<p>La regla es el <a href="/glosario/fifo">FIFO</a>, siglas de <em>first in, first out</em>: lo primero que entró es lo primero que sale. Cada compra forma un lote, con su fecha, su cantidad y su <a href="/glosario/valor-de-adquisicion">valor de adquisición</a>. Cada venta o <a href="/glosario/permuta">permuta</a> consume lotes por orden de antigüedad, hasta cubrir la cantidad que entregas.</p>
+
+<p>Un ejemplo que usaremos toda la lección. Pablo tiene tres compras de <a href="/glosario/bitcoin">bitcoin</a>, con una comisión del 0,2 % en cada una:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Lote</th><th>Dónde</th><th>Cantidad</th><th>Precio</th><th>Comisión</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Junio de 2022</td><td>Exchange A</td><td>0,5 BTC</td><td>20.000 €</td><td>20 €</td></tr>
+    <tr><td>Octubre de 2023</td><td>Exchange B</td><td>0,3 BTC</td><td>40.000 €</td><td>24 €</td></tr>
+    <tr><td>Enero de 2025</td><td>Exchange B</td><td>0,3 BTC</td><td>90.000 €</td><td>54 €</td></tr>
+  </tbody>
+</table>
+
+<p>En 2025 vende 0,6 BTC a 80.000 € desde el <a href="/glosario/exchange">exchange</a> B, con 96 € de comisión. Su valor de transmisión es de 47.904 €. Con FIFO salen los 0,5 BTC de 2022 enteros y 0,1 BTC del lote de 2023. El coste es de 10.020 € más 4.008 €: 14.028 €. La ganancia es de 33.876 €.</p>
+
+<p>Fíjate en el segundo lote: solo se consume un tercio, así que solo cuenta un tercio de su comisión, 8 €. Los lotes se parten sin problema. La DGT define las criptomonedas como bienes que se cuentan por unidades o por fracciones de unidad.</p>
+
+<div data-bloque="fifo"><script type="application/json">
+{
+  "titulo": "Las compras de Pablo: qué lotes salen al vender",
+  "activo": "BTC",
+  "compras": [
+    { "fecha": "Jun 2022", "cantidad": 0.5, "precio": 20000, "comision": 20 },
+    { "fecha": "Oct 2023", "cantidad": 0.3, "precio": 40000, "comision": 24 },
+    { "fecha": "Ene 2025", "cantidad": 0.3, "precio": 90000, "comision": 54 }
+  ],
+  "venta": { "cantidad": 0.6, "precio": 80000, "comision": 96 }
+}
+</script></div>
+
+<h2>Por moneda, y juntando todas tus plataformas</h2>
+
+<p>Dos reglas que casi nadie aplica bien a la primera:</p>
+
+<ul>
+  <li><strong>Una cola por cada criptomoneda.</strong> La consulta V0975-22 de la DGT dice que el cálculo es independiente para cada tipo de moneda. Tus bitcoin tienen su cola y tus ether, la suya.</li>
+  <li><strong>Una sola cola para todas tus plataformas.</strong> La consulta V1604-18 dice que comprar y vender en distintas casas de cambio no altera la homogeneidad de las monedas. La V1550-25, de septiembre de 2025, lo repite: FIFO sin distinguir por plataforma.</li>
+</ul>
+
+<p>Pablo vendió desde el exchange B, donde solo tenía los lotes caros. Si calculase el FIFO «por exchange», mirando solo el historial de esa plataforma, le saldría una ganancia de 8.826 €. Con el FIFO global, que es el que pide Hacienda, salen 33.876 €. La misma venta, casi cuatro veces más ganancia.</p>
+
+<div class="prose-chart">
+  <div class="prose-chart-title">La ganancia de la misma venta de Pablo, según el método</div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">FIFO global</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:100%"></div></div>
+    <span class="prose-chart-value">33.876 €</span>
+  </div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">Precio medio</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:62%"></div></div>
+    <span class="prose-chart-value">21.123 €</span>
+  </div>
+  <div class="prose-chart-row">
+    <span class="prose-chart-label">FIFO por exchange</span>
+    <div class="prose-chart-track"><div class="prose-chart-fill" style="width:26%"></div></div>
+    <span class="prose-chart-value">8.826 €</span>
+  </div>
+</div>
+
+<p>Tampoco vale el <a href="/glosario/precio-medio-de-compra">precio medio de compra</a> que muestran las aplicaciones: sirve para saber cómo vas, no para declarar. Y ninguna consulta habla expresamente de las wallets de <a href="/glosario/autocustodia">autocustodia</a>. La lógica es la misma: las monedas que guardas tú entran en la misma cola que las del exchange.</p>
+
+<div class="prose-callout prose-callout--warning">
+  <div class="prose-callout-body"><strong>El informe fiscal de tu exchange no es tu declaración.</strong> Cada plataforma solo conoce lo que pasó dentro de ella. Si has comprado en dos sitios, o has traído monedas de fuera, su cálculo no puede ser un FIFO global. En el módulo 6 verás cómo consolidar varias plataformas.</div>
+</div>
+
+<h2>De dónde sale la regla: un criterio, no un artículo</h2>
+
+<p>Aquí conviene ser precisos. El artículo 37.2 de la Ley del <a href="/glosario/irpf">IRPF</a> establece el FIFO para los <strong>valores homogéneos</strong>, como las acciones. La ley no menciona las criptomonedas. Quien extendió la regla fue la DGT, por analogía, en sus consultas:</p>
+
+<div class="prose-hitos">
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Junio de 2018</span>
+    <p>Consulta V1604-18: las unidades de bitcoin son bienes homogéneos. Como la ley no fija otra regla, se entienden vendidas las adquiridas en primer lugar.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">2022 a 2024</span>
+    <p>Lo reiteran las consultas V0975-22, V2005-22, V2520-22 y V0648-24.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Enero de 2025</span>
+    <p>El Tribunal Superior de Justicia del País Vasco anula una liquidación foral calculada con FIFO global.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Marzo de 2025</span>
+    <p>Consulta V0525-25: las criptomonedas no son «valores homogéneos» en sentido reglamentario, pero sí bienes homogéneos por ser fungibles. El FIFO se mantiene.</p>
+  </div>
+  <div class="prose-hito">
+    <span class="prose-hito-fecha">Septiembre de 2025</span>
+    <p>Consulta V1550-25: FIFO sin distinguir por plataforma.</p>
+  </div>
+</div>
+
+<p>La Agencia Tributaria aplica ese criterio. La ayuda de Renta Web de 2025 pide FIFO aunque las operaciones se hagan en distintas casas de cambio. Por eso es el método que enseña este curso y el que debes usar. Pero es un criterio administrativo, no un texto con rango de ley. Esa diferencia explica lo que pasó en el País Vasco.</p>
+
+<h2>Qué resolvió el TSJ del País Vasco</h2>
+
+<p>La sentencia 37/2025, de 9 de enero de 2025, del Tribunal Superior de Justicia del País Vasco trata un caso del IRPF de 2017. La Inspección de una hacienda foral había recalculado las ganancias de unos contribuyentes con FIFO global, juntando wallets y exchanges. Ellos habían aplicado el FIFO por exchange.</p>
+
+<p>El tribunal les dio la razón y anuló la liquidación. Su argumento: las criptomonedas no encajan en el concepto de valores homogéneos de la norma foral, y extenderles esa regla exige una ley. Conviene leerla con cuatro límites:</p>
+
+<ul>
+  <li><strong>No fija un método alternativo.</strong> No valida el precio medio ni ningún otro: remite a la regla general de valor de transmisión menos valor de adquisición.</li>
+  <li><strong>Interpreta una norma foral.</strong> No vincula a la Agencia Tributaria ni a la DGT, que reiteró el FIFO después, en las consultas de marzo y septiembre de 2025.</li>
+  <li><strong>No nos consta su firmeza.</strong> Cabía recurso de casación, y al revisar este curso no hemos podido confirmar cómo terminó.</li>
+  <li><strong>Mira hacia atrás.</strong> Bizkaia (Norma Foral 6/2025) y Gipuzkoa (Norma Foral 2/2025, según las bases jurídicas consultadas) ya han escrito el FIFO para criptoactivos en su norma, con efectos desde el 1 de enero de 2025.</li>
+</ul>
+
+<p>En territorio común, el resumen honesto es este: el FIFO global es el criterio administrativo vigente, parte de la doctrina lo discute y no hay jurisprudencia del Tribunal Supremo. Apartarse de él es abrir un pleito, no una opción de la declaración. Esa decisión solo se toma con un asesor fiscal.</p>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body"><strong>Si tributas en Bizkaia o en Gipuzkoa</strong>, las mismas normas forales añaden otra regla desde 2025. No se computa la pérdida de un criptoactivo si compras otros del mismo tipo en los dos meses anteriores o posteriores a la venta. En territorio común no hay una regla expresa equivalente: lo verás en el módulo 5.</div>
+</div>
+
+<div data-bloque="pregunta"><script type="application/json">
+{
+  "enunciado": "Sara compró 1 ether a 1.500 € en un exchange y, un año después, 1 ether a 3.000 € en otro. Hoy vende 1,5 ether a 2.800 € la unidad desde el segundo exchange. Sin contar comisiones, ¿qué ganancia sale con el criterio de Hacienda?",
+  "opciones": [
+    "0 €, porque en ese exchange compró más caro de lo que vende",
+    "825 €, usando el precio medio de 2.250 €",
+    "1.200 €, con FIFO global: sale el ether de 1.500 € y medio del de 3.000 €",
+    "2.700 €, porque todo lo vendido se resta al precio más antiguo"
+  ],
+  "correcta": 2,
+  "explicacion": "El FIFO se cuenta por moneda y sin distinguir plataformas (consultas V1604-18 y V1550-25). Cobra 1,5 × 2.800 = 4.200 €. El coste es 1.500 € del primer ether más 1.500 € de la mitad del segundo: 3.000 €. Ganancia: 1.200 €."
+}
+</script></div>
+
+<p>Ya tienes las tres piezas: cuándo se tributa, cómo se valora cada operación y qué lote sale. En la lección siguiente las juntamos en un año entero de operaciones.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> salen primero las monedas que compraste primero, con una cola por cada criptomoneda y todas tus plataformas juntas. Es criterio de la DGT por analogía con el artículo 37.2, no texto de la ley, pero es el que aplica Hacienda en territorio común.</div>
+</div>

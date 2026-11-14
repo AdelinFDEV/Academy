@@ -16,10 +16,10 @@
   "color": "#e6b455",
   "aviso": "fiscal",
   "logro": "Contribuyente Blindado",
-  "preguntas_final": 20,
-  "revisado": "2026-10-06",
-  "orden": 1,
-  "published": false,
+  "preguntas_final": 25,
+  "revisado": "2026-11-14",
+  "orden": 8,
+  "published": true,
   "modulos": [
     {
       "orden": 1,
@@ -42,7 +42,7 @@
       "lecciones": [
         { "slug": "cuando-hay-que-tributar", "titulo": "Cuándo hay que tributar (y cuándo no)", "resumen": "Comprar, mantener, mover entre wallets, vender, permutar, pagar con cripto o pasarse a stablecoins: operación por operación.", "minutos": 14, "archivo": "02-01-cuando-hay-que-tributar.html" },
         { "slug": "valor-de-adquisicion-y-transmision", "titulo": "Valor de adquisición y de transmisión", "resumen": "Los dos números de toda ganancia, cómo se valora una permuta sin euros de por medio y qué comisiones cuentan.", "minutos": 14, "archivo": "02-02-valor-de-adquisicion-y-transmision.html" },
-        { "slug": "el-metodo-fifo", "titulo": "El método FIFO, paso a paso", "resumen": "Por qué se venden primero las monedas que compraste primero, por qué se cuenta por moneda y no por exchange, y qué dijo el TSJ del País Vasco.", "minutos": 16, "archivo": "02-03-el-metodo-fifo.html" },
+        { "slug": "el-metodo-fifo", "titulo": "El método FIFO, paso a paso", "resumen": "Por qué se venden primero las monedas que compraste primero, por qué se cuenta por moneda y no por exchange, y qué resolvió el TSJ del País Vasco.", "minutos": 16, "archivo": "02-03-el-metodo-fifo.html" },
         { "slug": "caso-practico-un-ano-de-operaciones", "titulo": "Caso práctico: un año de operaciones", "resumen": "Doce meses de compras, ventas y permutas de una inversora, calculados de principio a fin hasta el número que va a la Renta.", "minutos": 18, "archivo": "02-04-caso-practico-un-ano-de-operaciones.html" }
       ]
     },
@@ -66,7 +66,7 @@
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [
-        { "slug": "defi-pools-y-tokens-envueltos", "titulo": "DeFi: pools de liquidez, préstamos y tokens envueltos", "resumen": "Lo que dijo la Dirección General de Tributos en 2024 y lo que sigue sin decir.", "minutos": 15, "archivo": "04-01-defi-pools-y-tokens-envueltos.html" },
+        { "slug": "defi-pools-y-tokens-envueltos", "titulo": "DeFi: pools de liquidez, préstamos y tokens envueltos", "resumen": "Lo que ha dicho la Dirección General de Tributos entre 2024 y 2026 y lo que sigue sin decir.", "minutos": 15, "archivo": "04-01-defi-pools-y-tokens-envueltos.html" },
         { "slug": "nft-comprar-vender-y-crear", "titulo": "NFT: comprar, vender y crear", "resumen": "Coleccionista, revendedor y artista no tributan igual por el mismo NFT.", "minutos": 12, "archivo": "04-02-nft-comprar-vender-y-crear.html" },
         { "slug": "robos-estafas-y-exchanges-quebrados", "titulo": "Robos, estafas y exchanges quebrados", "resumen": "Cuándo una pérdida que no elegiste cuenta para Hacienda, en qué base va y qué pruebas necesitas.", "minutos": 14, "archivo": "04-03-robos-estafas-y-exchanges-quebrados.html" }
       ]
@@ -79,7 +79,7 @@
       "preguntas_examen": 10,
       "lecciones": [
         { "slug": "como-se-compensan-las-perdidas", "titulo": "Cómo se compensan las pérdidas", "resumen": "El orden exacto, el tope del 25 % y los cuatro años para aprovecharlas.", "minutos": 14, "archivo": "05-01-como-se-compensan-las-perdidas.html" },
-        { "slug": "la-regla-de-la-recompra", "titulo": "La regla de la recompra: un año, no dos meses", "resumen": "Vender con pérdida y volver a comprar: cuándo la pérdida se aplaza y cuándo puedes usarla.", "minutos": 12, "archivo": "05-02-la-regla-de-la-recompra.html" },
+        { "slug": "la-regla-de-la-recompra", "titulo": "La regla de la recompra en criptomonedas", "resumen": "Vender con pérdida y volver a comprar: qué dice la ley, qué no ha aclarado Hacienda y cuál es la lectura prudente.", "minutos": 12, "archivo": "05-02-la-regla-de-la-recompra.html" },
         { "slug": "planificar-antes-del-31-de-diciembre", "titulo": "Planificar antes del 31 de diciembre", "resumen": "La revisión de fin de año que separa a quien decide su factura de quien se la encuentra en abril.", "minutos": 14, "archivo": "05-03-planificar-antes-del-31-de-diciembre.html" }
       ]
     },

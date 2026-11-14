@@ -281,6 +281,18 @@ function RendimientoRealBadgeIcon({ size = 24 }: { size?: number }) {
   );
 }
 
+function ContribuyenteBadgeIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* Una declaración con su visto bueno: presentada y en regla */}
+      <path d="M6.5 3h8l4 4v12.5a1.5 1.5 0 0 1-1.5 1.5h-10.5a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 6.5 3Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M14.5 3v4h4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M8.5 10.5h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M8.75 15.25l2.25 2.25 4.25-4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 // Icono propio por curso. Sin entrada, el birrete genérico.
 const CURSO_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode> = {
   "psicologia-del-trading": (size) => <PsicologiaBadgeIcon size={size} />,
@@ -290,6 +302,7 @@ const CURSO_BADGE_ICON_BY_SLUG: Record<string, (size: number) => React.ReactNode
   "futuros-y-apalancamiento": (size) => <MargenBadgeIcon size={size} />,
   "analisis-tecnico-sin-humo": (size) => <GraficoLimpioBadgeIcon size={size} />,
   "defi-y-stablecoins": (size) => <RendimientoRealBadgeIcon size={size} />,
+  "fiscalidad-cripto-espana": (size) => <ContribuyenteBadgeIcon size={size} />,
 };
 
 export function iconoCurso(slug: string, size: number): React.ReactNode {

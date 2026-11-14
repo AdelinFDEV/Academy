@@ -1,0 +1,148 @@
+<div class="prose-resumen">
+  <span class="prose-resumen-title">En esta lección</span>
+  <p>Hay obligaciones que no nacen de ganar dinero, sino de tenerlo. El modelo 721 informa de las criptomonedas que te custodia una entidad extranjera cuando superan 50.000 €. El Impuesto sobre el Patrimonio y el de grandes fortunas gravan lo que posees a 31 de diciembre, aunque no hayas vendido nada. Aquí ves los umbrales de cada uno y qué pasa si te marchas de España.</p>
+</div>
+
+<h2>Modelo 721: quién lo presenta</h2>
+
+<p>El <a href="/glosario/modelo-721">modelo 721</a> lo creó la Orden HFP/886/2023. Es una declaración informativa: no se paga nada con ella. Según las preguntas frecuentes de la Agencia Tributaria, tus monedas entran en él si se cumplen dos requisitos a la vez.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Las custodia un tercero.</strong> Una entidad guarda las <a href="/glosario/clave-privada">claves privadas</a> por tu cuenta.</li>
+  <li><strong>Ese custodio no es residente en España</strong> ni tiene aquí un establecimiento permanente.</li>
+</ol>
+
+<p>Del primer requisito sale la exclusión más importante. Las monedas en <a href="/glosario/autocustodia">autocustodia</a>, cuyas claves controlas tú, no cuentan ni se informan. La Agencia Tributaria lo dice sin distinguir entre una <a href="/glosario/hot-wallet">hot wallet</a> y una <a href="/glosario/cold-wallet">cold wallet</a>.</p>
+
+<p>El segundo requisito es más difícil de comprobar. Un <a href="/glosario/exchange">exchange</a> está «en el extranjero» si no está obligado a presentar el modelo 172 de la lección 1.3. La Agencia Tributaria no publica una lista por marcas: remite al registro de entidades del Banco de España. Lo que cuenta es la entidad jurídica con la que firmaste el contrato, no el nombre comercial.</p>
+
+<div class="prose-dato">
+  <span class="prose-dato-cifra">50.000 €</span>
+  <span class="prose-dato-texto">El umbral del modelo 721: valor conjunto, a 31 de diciembre, de todas las monedas custodiadas por entidades extranjeras. Si lo superas, informas de todas, no solo del exceso (preguntas frecuentes del modelo 721, AEAT).</span>
+</div>
+
+<p>Están obligados los titulares, pero también los autorizados, los beneficiarios y quienes tengan poder de disposición. Se declara cada moneda por separado, con sus unidades, su valor en euros a 31 de diciembre y los datos del custodio. Los euros que tengas en la plataforma no van aquí. El plazo va del 1 de enero al 31 de marzo del año siguiente.</p>
+
+<div data-bloque="clasificar"><script type="application/json">
+{
+  "titulo": "¿Cuenta para el umbral del 721?",
+  "instrucciones": "Decide si cada saldo a 31 de diciembre suma para los 50.000 €.",
+  "grupos": [
+    { "id": "si", "nombre": "Suma para el 721" },
+    { "id": "no", "nombre": "No suma" }
+  ],
+  "elementos": [
+    { "texto": "30.000 € en bitcoin en un exchange cuya entidad no reside en España ni tiene aquí establecimiento permanente", "grupo": "si", "explicacion": "Custodia por un tercero no residente: cumple los dos requisitos." },
+    { "texto": "40.000 € en ether en tu cold wallet", "grupo": "no", "explicacion": "Las claves las controlas tú: no hay custodia por un tercero. La AEAT excluye la autocustodia expresamente." },
+    { "texto": "25.000 € en bitcoin en una plataforma residente en España, que presenta el modelo 172", "grupo": "no", "explicacion": "El custodio es residente: sus saldos ya llegan a Hacienda por el 172." },
+    { "texto": "8.000 € en euros sin invertir en el exchange extranjero", "grupo": "no", "explicacion": "El dinero de curso legal no se informa en el 721." },
+    { "texto": "22.000 € en una stablecoin en un segundo custodio extranjero", "grupo": "si", "explicacion": "El umbral es conjunto: se suman todas las monedas de todos los custodios extranjeros. Con los 30.000 € del primero, 52.000 €." }
+  ]
+}
+</script></div>
+
+<h2>Los años siguientes y las sanciones</h2>
+
+<p>Presentado una vez, no se repite cada año. Solo vuelves a presentarlo si el saldo conjunto sube <strong>más de 20.000 €</strong> respecto del último que declaraste.</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Último saldo declarado</th><th>Saldo a 31 de diciembre siguiente</th><th>Variación</th><th>¿Se presenta?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>60.000 €</td><td>75.000 €</td><td>+15.000 €</td><td>No</td></tr>
+    <tr><td>60.000 €</td><td>85.000 €</td><td>+25.000 €</td><td>Sí</td></tr>
+  </tbody>
+</table>
+
+<p>Hay un matiz que se olvida. Según las mismas preguntas frecuentes, siempre hay que informar de las monedas cuya titularidad se extinguió antes del 31 de diciembre. Dejar de tener una moneda que habías declarado no te libra de comunicarlo.</p>
+
+<p>¿Y si no se presenta? El 721 no tiene sanciones propias. La Ley 5/2022 reescribió la norma del modelo 720 tras una sentencia del Tribunal de Justicia de la Unión Europea, y el texto actual no contiene un régimen específico. Lo que queda es el general de la Ley General Tributaria:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Conducta</th><th>Sanción</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>No presentar (artículo 198.1)</td><td>20 € por dato, con un mínimo de 300 € y un máximo de 20.000 €</td></tr>
+    <tr><td>Presentar fuera de plazo sin requerimiento (artículo 198.2)</td><td>La mitad: 10 € por dato, mínimo de 150 € y máximo de 10.000 €</td></tr>
+    <tr><td>Presentar con datos incompletos, inexactos o falsos (artículo 199)</td><td>Multa fija de 150 €, o 200 € por cada dato no monetario</td></tr>
+  </tbody>
+</table>
+
+<div class="prose-callout prose-callout--info">
+  <div class="prose-callout-body"><strong>Es una inferencia.</strong> Que al 721 se le aplican los artículos 198 y 199 se deduce de lo que ocurrió con el 720. La Agencia Tributaria no lo afirma expresamente para el 721, ni consta qué apartado usa en la práctica. La <a href="/glosario/sancion-tributaria">sanción tributaria</a> en general la verás en el módulo 7.</div>
+</div>
+
+<p>La orden que adaptaría el 721 a <a href="/glosario/dac8">DAC8</a> sigue en proyecto, como viste en el módulo 1. Hoy el modelo vigente es el de 2023.</p>
+
+<h2>Impuesto sobre el Patrimonio</h2>
+
+<p>El <a href="/glosario/irpf">IRPF</a> ignora la <a href="/glosario/plusvalia-latente">plusvalía latente</a>. El <a href="/glosario/impuesto-sobre-el-patrimonio">Impuesto sobre el Patrimonio</a>, no: grava lo que tienes a 31 de diciembre. Las criptomonedas se valoran por su valor de mercado en euros ese día, estén donde estén. Aquí la autocustodia sí cuenta. La base es el artículo 24 de la Ley 19/1991, según el Manual de Patrimonio 2025.</p>
+
+<p>La declaración, el modelo 714, es obligatoria en dos casos, según la Orden HAC/277/2026:</p>
+
+<ul>
+  <li>si te sale <strong>cuota a ingresar</strong>; o</li>
+  <li>si el valor de tus bienes y derechos supera <strong>2.000.000 €</strong>, aunque la cuota sea cero. Para este límite se cuentan todos los bienes, exentos o no, y no se restan las deudas.</li>
+</ul>
+
+<p>Que salga cuota depende sobre todo del mínimo exento. El general es de 700.000 €, pero varias comunidades tienen el suyo. Estas son las cifras del Manual de Patrimonio 2025:</p>
+
+<table class="prose-table">
+  <thead>
+    <tr><th>Comunidad</th><th>Mínimo exento en 2025</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>General (y La Rioja)</td><td>700.000 €</td></tr>
+    <tr><td>Illes Balears</td><td>3.000.000 €</td></tr>
+    <tr><td>Comunitat Valenciana</td><td>1.000.000 €</td></tr>
+    <tr><td>Cataluña y Extremadura</td><td>500.000 €</td></tr>
+  </tbody>
+</table>
+
+<p>Andalucía, Galicia, Madrid, Cantabria, La Rioja y Murcia bonifican la cuota. Pero mientras exista el impuesto de grandes fortunas, no es una bonificación total sin condiciones: se calcula por diferencia con ese impuesto. Quien no llega a él sigue sin pagar. Quien llega paga a su comunidad lo que habría pagado al Estado. El cuadro autonómico de 2026 no está verificado: compruébalo antes de la campaña.</p>
+
+<h2>Grandes fortunas y cambio de residencia</h2>
+
+<p>El Impuesto Temporal de Solidaridad de las Grandes Fortunas lo creó la Ley 38/2022 y sigue prorrogado. Grava el patrimonio neto superior a 3.000.000 €, con un mínimo exento de 700.000 €. Se declara en julio con el modelo 718. De su cuota se resta lo pagado por Patrimonio.</p>
+
+<div data-bloque="tramos"><script type="application/json">
+{
+  "titulo": "Escala del impuesto de grandes fortunas",
+  "etiqueta": "Base liquidable: patrimonio neto menos 700.000 € (€)",
+  "tramos": [
+    { "hasta": 3000000, "tipo": 0 },
+    { "hasta": 5347998.03, "tipo": 1.7 },
+    { "hasta": 10695996.06, "tipo": 2.1 },
+    { "hasta": null, "tipo": 3.5 }
+  ],
+  "valorInicial": 4000000,
+  "max": 15000000,
+  "paso": 100000,
+  "nota": "Escala del artículo 3 de la Ley 38/2022. Es la cuota antes de restar lo pagado por el Impuesto sobre el Patrimonio y de aplicar el límite conjunto con el IRPF."
+}
+</script></div>
+
+<p>Con un patrimonio neto de 4.700.000 €, la base liquidable es de 4.000.000 €. Los primeros 3.000.000 € tributan al 0 % y el millón restante, al 1,7 %: 17.000 €.</p>
+
+<p>Queda una pregunta frecuente: ¿hay un «impuesto de salida» si dejas de tener <a href="/glosario/residencia-fiscal">residencia fiscal</a> en España? El artículo 95 bis de la Ley del IRPF grava la plusvalía latente de quien se marcha, pero solo la de acciones o participaciones en entidades. Exige además un valor conjunto superior a 4.000.000 €, o una participación de más del 25 % que valga más de 1.000.000 €. Las criptomonedas no son acciones ni participaciones: ese régimen no las alcanza. Es la lectura directa del artículo; no hay una consulta que lo diga expresamente para criptomonedas. Cómo tributa después quien ya no reside aquí queda fuera de este curso.</p>
+
+<h2>Ejercicio: tu foto a 31 de diciembre</h2>
+
+<p>Abre una hoja de cálculo y haz tu inventario con los saldos del último 31 de diciembre.</p>
+
+<ol class="prose-pasos">
+  <li><strong>Una fila por moneda y por sitio</strong> donde la tienes: cada exchange y cada wallet.</li>
+  <li><strong>Añade dos columnas:</strong> quién guarda las claves (tú o un tercero) y la entidad jurídica que figura en tu contrato, con su país.</li>
+  <li><strong>Valora cada fila en euros</strong> al cierre del 31 de diciembre y anota la fuente del precio.</li>
+  <li><strong>Suma solo las filas con custodio extranjero.</strong> Si pasan de 50.000 €, hay modelo 721. Si ya lo presentaste, compara con el último saldo declarado y aplica la regla de los 20.000 €.</li>
+  <li><strong>Suma todas las filas</strong> y añade el resto de tu patrimonio. Compara el total con el mínimo exento de tu comunidad y con los 2.000.000 €.</li>
+  <li><strong>Guarda la hoja</strong> con una captura de cada saldo. Es la documentación de la lección anterior.</li>
+</ol>
+
+<p>Con esto cierras el módulo. El módulo 7 trata de lo que pasa cuando algo de esto falla.</p>
+
+<div class="prose-callout prose-callout--tip">
+  <div class="prose-callout-body"><strong>Quédate con esto:</strong> el 721 se presenta de enero a marzo si un custodio extranjero te guarda más de 50.000 € en criptomonedas; la autocustodia queda fuera, y solo se repite si el saldo sube más de 20.000 €. Patrimonio grava el valor a 31 de diciembre, también lo que tienes en tu wallet, y obliga si sale cuota o superas 2.000.000 € brutos. El impuesto de salida no alcanza a las criptomonedas.</div>
+</div>

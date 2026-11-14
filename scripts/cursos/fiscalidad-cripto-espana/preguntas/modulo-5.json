@@ -1,0 +1,198 @@
+[
+  {
+    "clave": "fc-m5-01",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "Tienes una pérdida por vender una criptomoneda. Según el artículo 49 de la Ley del IRPF, ¿de qué se resta en primer lugar?",
+    "opciones": [
+      "De las ganancias por ventas y permutas del mismo año",
+      "De las recompensas de staking del mismo año",
+      "De las ganancias de los cuatro años anteriores",
+      "Del sueldo, hasta el 25 %"
+    ],
+    "correcta": 0,
+    "explicacion": "Primero se compensan entre sí las ganancias y pérdidas derivadas de transmisiones. Solo el saldo negativo que quede se cruza con los rendimientos del capital mobiliario, con el tope del 25 %."
+  },
+  {
+    "clave": "fc-m5-02",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "Carla cierra el año con un saldo de −10.000 € por ventas de criptomonedas y 6.000 € entre staking e intereses. No tiene nada más en la base del ahorro. ¿Por cuánto tributa en la base del ahorro ese año?",
+    "opciones": [
+      "6.000 €",
+      "4.500 €",
+      "3.500 €",
+      "0 €"
+    ],
+    "correcta": 1,
+    "explicacion": "El saldo negativo se cruza con los rendimientos hasta el 25 % de su saldo positivo: 25 % de 6.000 = 1.500 €. Tributa por 6.000 − 1.500 = 4.500 € y le quedan 8.500 € pendientes (artículo 49 de la Ley del IRPF)."
+  },
+  {
+    "clave": "fc-m5-03",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "Una pérdida patrimonial generada en 2026 que no ha podido compensarse, ¿hasta la declaración de qué ejercicio puede usarse?",
+    "opciones": [
+      "2027",
+      "2028",
+      "2030",
+      "2031"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "El saldo negativo se compensa en los cuatro años siguientes: 2027, 2028, 2029 y 2030. Lo que no se haya usado al acabar 2030 se pierde."
+  },
+  {
+    "clave": "fc-m5-04",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "Hugo arrastra 4.000 € de pérdidas pendientes de un año anterior. Este año tiene 2.500 € de ganancias por ventas y 2.000 € de staking, y ninguna pérdida nueva. ¿Cuánta pérdida le queda pendiente al acabar el año?",
+    "opciones": [
+      "2.000 €",
+      "1.500 €",
+      "0 €",
+      "1.000 €"
+    ],
+    "correcta": 3,
+    "explicacion": "La pendiente va primero contra las ganancias de su misma clase: 2.500 €. Quedan 1.500 €, que se cruzan con el staking hasta el 25 % de 2.000 = 500 €. Pendiente: 4.000 − 2.500 − 500 = 1.000 €."
+  },
+  {
+    "clave": "fc-m5-05",
+    "leccion": "como-se-compensan-las-perdidas",
+    "enunciado": "Tienes pérdidas pendientes y este año has obtenido ganancias pequeñas. Prefieres guardar las pérdidas para el año que viene, en el que esperas ganar mucho más. ¿Puedes?",
+    "opciones": [
+      "No: la compensación se hace cada año en la cuantía máxima posible",
+      "Sí, pero solo la mitad de las pérdidas",
+      "Sí, si las pérdidas tienen menos de dos años",
+      "Sí, siempre que lo indiques en la declaración"
+    ],
+    "correcta": 0,
+    "explicacion": "El artículo 49.2 de la Ley del IRPF obliga a compensar en la cuantía máxima que permita cada ejercicio. No se puede elegir el año ni rescatar las pérdidas fuera del plazo de cuatro años."
+  },
+  {
+    "clave": "fc-m5-06",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "¿Por qué la regla de recompra de dos meses de las acciones cotizadas no se aplica a las criptomonedas en territorio común?",
+    "opciones": [
+      "Porque las criptomonedas no generan pérdidas patrimoniales",
+      "Porque esa regla es para «valores», y las criptomonedas no lo son",
+      "Porque solo se aplica a ventas superiores a 6.000 €",
+      "Porque una orden ministerial las excluyó en 2022"
+    ],
+    "correcta": 1,
+    "explicacion": "Las letras f) y g) del artículo 33.5 exigen valores o participaciones. La consulta V0525-25 de la Dirección General de Tributos dice que las criptomonedas no son valores homogéneos, aunque sí bienes homogéneos."
+  },
+  {
+    "clave": "fc-m5-07",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "¿Qué ha dicho la Dirección General de Tributos sobre qué regla de recompra se aplica a las criptomonedas?",
+    "opciones": [
+      "Que se aplica la de dos meses",
+      "Que las criptomonedas quedan exentas de la regla",
+      "No se conoce ninguna consulta que lo resuelva",
+      "Que se aplica la de un año"
+    ],
+    "correcta": 2,
+    "explicacion": "No se ha localizado ninguna consulta que aplique la regla de la recompra a criptomonedas, y el Manual de Renta 2025 tampoco lo trata. Que se aplique la letra e), de un año, es la lectura prudente y mayoritaria, pero discutida."
+  },
+  {
+    "clave": "fc-m5-08",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "Nora, residente en Valencia, vende ADA con 1.500 € de pérdida el 10 de febrero de 2026 y recompra la misma cantidad el 15 de septiembre de 2026. Según la lectura prudente, ¿qué pasa con esa pérdida?",
+    "opciones": [
+      "Se pierde definitivamente",
+      "Cuenta en 2026, porque pasaron más de dos meses",
+      "Cuenta en 2026, pero solo el 25 %",
+      "Queda aplazada hasta que venda el ADA recomprado"
+    ],
+    "correcta": 3,
+    "explicacion": "La lectura prudente aplica la letra e) del artículo 33.5: si se vuelve a adquirir el elemento dentro del año siguiente a la venta, la pérdida no se integra hasta la transmisión posterior. Se aplaza, no se pierde."
+  },
+  {
+    "clave": "fc-m5-09",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "Óscar compra más ETH en octubre y en noviembre vende con pérdida unas unidades antiguas. Después no vuelve a comprar ETH. ¿Activa esa compra de octubre la letra e) del artículo 33.5?",
+    "opciones": [
+      "No: la letra e) solo mira las adquisiciones posteriores a la venta",
+      "Sí: cuenta cualquier compra en el año anterior",
+      "Sí: cuenta cualquier compra en los dos meses anteriores",
+      "Sí, pero solo por la mitad de la pérdida"
+    ],
+    "correcta": 0,
+    "explicacion": "La letra e) habla de volver a adquirir dentro del año siguiente a la transmisión. Las compras anteriores solo cuentan en las reglas de valores, las letras f) y g), que no alcanzan a las criptomonedas."
+  },
+  {
+    "clave": "fc-m5-10",
+    "leccion": "la-regla-de-la-recompra",
+    "enunciado": "¿Qué diferencia hay en Bizkaia respecto al territorio común en la recompra de criptoactivos?",
+    "opciones": [
+      "Prohíbe compensar pérdidas de criptoactivos",
+      "Tiene una regla expresa de dos meses anteriores o posteriores desde 2025",
+      "Aplica un plazo expreso de un año",
+      "No tiene ninguna regla de recompra"
+    ],
+    "correcta": 1,
+    "explicacion": "La Norma Foral 6/2025 de Bizkaia introdujo, con efectos desde el 1 de enero de 2025, una regla expresa: la pérdida no se computa si se adquieren criptoactivos del mismo tipo en los dos meses anteriores o posteriores. En territorio común no hay regla expresa."
+  },
+  {
+    "clave": "fc-m5-11",
+    "leccion": "planificar-antes-del-31-de-diciembre",
+    "enunciado": "Irene tiene una posición con 20.000 € de ganancia y nada más en la base del ahorro. Compara venderla entera en diciembre con vender la mitad en diciembre y la mitad en enero. ¿Cuánta cuota de menos paga repartiéndola, con la escala 19 % hasta 6.000 € y 21 % hasta 50.000 €?",
+    "opciones": [
+      "400 €",
+      "Nada: paga lo mismo",
+      "120 €",
+      "840 €"
+    ],
+    "correcta": 2,
+    "explicacion": "En un año: 6.000 al 19 % (1.140) más 14.000 al 21 % (2.940) = 4.080 €. En dos años de 10.000: 1.140 + 840 = 1.980 € cada uno, 3.960 € en total. La diferencia es de 120 €: los 6.000 € que pasan del 21 % al 19 %."
+  },
+  {
+    "clave": "fc-m5-12",
+    "leccion": "planificar-antes-del-31-de-diciembre",
+    "enunciado": "Tomás lleva 10.000 € de ganancias realizadas este año y nada más en la base del ahorro. Antes del 31 de diciembre vende una moneda con 3.000 € de pérdida y no la recompra. ¿Cuánta cuota de menos paga?",
+    "opciones": [
+      "750 €",
+      "570 €",
+      "3.000 €",
+      "630 €"
+    ],
+    "correcta": 3,
+    "explicacion": "Sin la venta: 6.000 al 19 % (1.140) más 4.000 al 21 % (840) = 1.980 €. Con la venta, el saldo es de 7.000: 1.140 + 210 = 1.350 €. Diferencia: 630 €, porque los 3.000 € de pérdida restan de euros que tributaban al 21 %."
+  },
+  {
+    "clave": "fc-m5-13",
+    "leccion": "planificar-antes-del-31-de-diciembre",
+    "enunciado": "Tienes pérdidas pendientes generadas en 2022. ¿Cuál es la última declaración en la que puedes compensarlas?",
+    "opciones": [
+      "La del ejercicio 2026",
+      "La del ejercicio 2025",
+      "No caducan",
+      "La del ejercicio 2027"
+    ],
+    "correcta": 0,
+    "explicacion": "Las pérdidas se compensan en los cuatro años siguientes: las de 2022, en 2023, 2024, 2025 y 2026. Por eso conviene revisar antes del 31 de diciembre de 2026 si hay ganancias contra las que usarlas."
+  },
+  {
+    "clave": "fc-m5-14",
+    "leccion": "planificar-antes-del-31-de-diciembre",
+    "enunciado": "Vendes una criptomoneda el 30 de diciembre de 2026 y el exchange te ingresa los euros en el banco el 4 de enero de 2027. ¿A qué ejercicio corresponde la ganancia o la pérdida?",
+    "opciones": [
+      "A 2027, el año en que cobraste",
+      "A 2026, el año en que entregaste las monedas",
+      "Al que elijas en la declaración",
+      "Se reparte a medias entre los dos"
+    ],
+    "correcta": 1,
+    "explicacion": "El artículo 14.1.c) de la Ley del IRPF imputa las ganancias y pérdidas al período en que tiene lugar la alteración patrimonial, es decir, cuando se entregan las monedas, con independencia de cuándo se cobre."
+  },
+  {
+    "clave": "fc-m5-15",
+    "leccion": "planificar-antes-del-31-de-diciembre",
+    "enunciado": "¿Qué permite a Hacienda el artículo 15 de la Ley General Tributaria, el conflicto en la aplicación de la norma?",
+    "opciones": [
+      "Prohibir la compensación de pérdidas de criptomonedas",
+      "Aplicar la regla de dos meses a las criptomonedas",
+      "Corregir actos notoriamente artificiosos cuyo único efecto relevante es el ahorro fiscal",
+      "Anular cualquier venta hecha en diciembre"
+    ],
+    "correcta": 2,
+    "explicacion": "El artículo 15 alcanza a los actos notoriamente artificiosos o impropios sin efectos relevantes distintos del ahorro fiscal, y exige un informe previo de una comisión consultiva. Una venta real, a precio de mercado, no entra ahí."
+  }
+]

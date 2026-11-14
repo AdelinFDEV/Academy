@@ -1,0 +1,197 @@
+[
+  {
+    "clave": "fc-m3-01",
+    "leccion": "staking-y-lending",
+    "enunciado": "¿Cómo califica la Dirección General de Tributos las recompensas de staking en el IRPF?",
+    "opciones": [
+      "Rendimiento del capital mobiliario, en la base del ahorro",
+      "Rendimiento de actividad económica, en la base general",
+      "Ganancia patrimonial por transmisión, en la base del ahorro",
+      "Ganancia patrimonial que no deriva de una transmisión, en la base general"
+    ],
+    "correcta": 0,
+    "explicacion": "Las seis consultas sobre staking (de la V1766-22 a la V5017-26) las tratan como rendimientos del capital mobiliario por ceder a terceros capitales propios, cobrados en especie (artículo 25.2 de la Ley del IRPF). Van a la base del ahorro."
+  },
+  {
+    "clave": "fc-m3-02",
+    "leccion": "staking-y-lending",
+    "enunciado": "Ana cobra en el año recompensas de staking valoradas en 1.500 € el día de cada cobro. En diciembre vende esas monedas por 800 €. No tiene nada más en la base del ahorro. ¿Qué parte de su pérdida de 700 € puede restar este año de su rendimiento?",
+    "opciones": [
+      "175 €",
+      "375 €",
+      "700 €",
+      "Nada"
+    ],
+    "correcta": 1,
+    "explicacion": "El saldo negativo de ganancias y pérdidas solo se compensa con rendimientos del capital mobiliario hasta el 25 % de su saldo positivo (artículo 49.1 de la Ley del IRPF): 25 % de 1.500 € = 375 €. Los 325 € restantes se guardan para los cuatro años siguientes."
+  },
+  {
+    "clave": "fc-m3-03",
+    "leccion": "staking-y-lending",
+    "enunciado": "Compraste 2 ETH por 3.000 € en total. Los cambias por rETH, un token de staking líquido, un día en que esos 2 ETH valen 4.800 €. ¿Qué ocurre fiscalmente ese día?",
+    "opciones": [
+      "Una ganancia de 1.800 € en la base general",
+      "Nada: sigues teniendo ETH con otro nombre",
+      "Una permuta con 1.800 € de ganancia en la base del ahorro",
+      "Un rendimiento del capital mobiliario de 4.800 €"
+    ],
+    "correcta": 2,
+    "explicacion": "La consulta V0612-26 considera que ETH y rETH son criptoactivos de distinto tipo, y que el cambio de entrada y el de vuelta son permutas. Ganancia: 4.800 − 3.000 = 1.800 €, en la base del ahorro. Los rETH quedan con un valor de adquisición de 4.800 €."
+  },
+  {
+    "clave": "fc-m3-04",
+    "leccion": "staking-y-lending",
+    "enunciado": "Según la consulta V0612-26, ¿en qué momento se imputa una recompensa de staking nativo?",
+    "opciones": [
+      "El 31 de diciembre, por el saldo acumulado",
+      "Cuando vendes la recompensa por euros",
+      "En cuanto el contrato inteligente la calcula, aunque no puedas reclamarla",
+      "Cuando queda disponible en una wallet de la que puedes disponer"
+    ],
+    "correcta": 3,
+    "explicacion": "La V0612-26 aplica la regla de la exigibilidad (artículo 14.1.a de la Ley del IRPF). Mientras la recompensa es una magnitud interna del contrato de la que no se puede disponer, no es exigible; se entiende obtenida cuando se acredita en un monedero disponible para el contribuyente."
+  },
+  {
+    "clave": "fc-m3-05",
+    "leccion": "staking-y-lending",
+    "enunciado": "Raúl valida en una red con sus propias monedas bloqueadas: el protocolo lo elige al azar y la validación es automática. ¿Cómo trató la DGT un caso así en la consulta V1766-22?",
+    "opciones": [
+      "Como rendimiento del capital mobiliario, igual que para quien delega",
+      "Como renta exenta mientras no retire las monedas",
+      "Como ganancia patrimonial en la base general",
+      "Como actividad económica, por ser validador"
+    ],
+    "correcta": 0,
+    "explicacion": "En la V1766-22 el consultante era validador y la DGT descartó la actividad económica: mantenía bloqueadas sus monedas y validaba automáticamente con recursos mínimos. La V2388-24 lo confirma. La DGT recuerda que cada caso se valora por separado."
+  },
+  {
+    "clave": "fc-m3-06",
+    "leccion": "airdrops-y-recompensas",
+    "enunciado": "¿Por qué un airdrop va a la base general y no a la del ahorro?",
+    "opciones": [
+      "Porque las criptomonedas gratuitas tienen una escala propia",
+      "Porque es una ganancia patrimonial que no deriva de una transmisión",
+      "Porque es un rendimiento del capital mobiliario en especie",
+      "Porque Hacienda lo considera siempre una actividad económica"
+    ],
+    "correcta": 1,
+    "explicacion": "La consulta V0648-24 lo encaja en el artículo 37.1.l) de la Ley del IRPF: incorporación de bienes que no deriva de una transmisión. La base del ahorro solo recoge las ganancias que nacen de una transmisión, así que esta va a la base general."
+  },
+  {
+    "clave": "fc-m3-07",
+    "leccion": "airdrops-y-recompensas",
+    "enunciado": "Sara recibe un airdrop de 1.000 tokens que cotizan a 3 € el día de la entrega. Su tipo marginal en la base general es del 37 %. ¿Cuánto le cuesta el airdrop en impuestos?",
+    "opciones": [
+      "3.000 €",
+      "570 €",
+      "1.110 €",
+      "Nada hasta que venda los tokens"
+    ],
+    "correcta": 2,
+    "explicacion": "El airdrop se valora a precio de mercado el día en que se recibe: 1.000 × 3 € = 3.000 € de ganancia en la base general (V0648-24). Al 37 % son 1.110 €. Los 570 € serían el 19 % de la base del ahorro, que no es su caja."
+  },
+  {
+    "clave": "fc-m3-08",
+    "leccion": "airdrops-y-recompensas",
+    "enunciado": "Sara tributó por su airdrop con un valor de 3.000 €. Meses después vende todos los tokens por 1.200 €. ¿Qué resultado tiene esa venta?",
+    "opciones": [
+      "Una pérdida de 1.800 € que rebaja lo que tributó por el airdrop",
+      "Una ganancia de 1.200 €, porque los tokens le salieron gratis",
+      "Ninguno: ya tributó al recibirlos",
+      "Una pérdida de 1.800 € en la base del ahorro"
+    ],
+    "correcta": 3,
+    "explicacion": "El valor de adquisición de los tokens es el que se integró en la base general (V5017-26): 3.000 €. Al vender por 1.200 € hay una pérdida de 1.800 €, que nace de una transmisión y va a la base del ahorro. No reduce lo ya pagado en la base general."
+  },
+  {
+    "clave": "fc-m3-09",
+    "leccion": "airdrops-y-recompensas",
+    "enunciado": "¿Sobre cuál de estas rentas NO hay consulta publicada de la Dirección General de Tributos?",
+    "opciones": [
+      "Las monedas recibidas tras un hard fork",
+      "Las monedas de una app por ver un anuncio diario",
+      "Las recompensas de «aprende y gana» de un exchange",
+      "Los airdrops"
+    ],
+    "correcta": 0,
+    "explicacion": "Los hard forks no tienen criterio publicado: el texto de la V0648-24 no habla de ellos. Los airdrops están en la V0648-24, las recompensas promocionales en la V1948-21 y las monedas de apps en la V5017-26."
+  },
+  {
+    "clave": "fc-m3-10",
+    "leccion": "mineria-y-actividad-economica",
+    "enunciado": "¿Qué ha dicho la Dirección General de Tributos sobre la calificación en el IRPF de las monedas que obtiene un minero?",
+    "opciones": [
+      "Que son rendimiento de actividad económica, en la consulta V3625-16",
+      "No se ha localizado ninguna consulta; tratarlo como actividad económica es una deducción",
+      "Que están exentas mientras no se vendan",
+      "Que son rendimiento del capital mobiliario, como el staking"
+    ],
+    "correcta": 1,
+    "explicacion": "Las consultas sobre minería tratan del IVA y del IAE. La calificación como actividad económica en el IRPF (artículo 27.1) se deduce de ellas y de la definición legal, pero no hay criterio publicado que lo diga."
+  },
+  {
+    "clave": "fc-m3-11",
+    "leccion": "mineria-y-actividad-economica",
+    "enunciado": "Según las consultas V3625-16, V1748-18 y V1274-20, ¿cómo trata el IVA la minería de criptomonedas?",
+    "opciones": [
+      "No está sujeta, pero el IVA de los equipos sí se deduce",
+      "Está sujeta al tipo general",
+      "No está sujeta, y el IVA soportado no se puede deducir",
+      "Está sujeta y exenta, con derecho a deducir el IVA soportado"
+    ],
+    "correcta": 2,
+    "explicacion": "La DGT considera que no hay relación directa entre el servicio del minero y la contraprestación que recibe, así que la minería no está sujeta al IVA. Por eso mismo, el IVA pagado por equipos o electricidad no es deducible."
+  },
+  {
+    "clave": "fc-m3-12",
+    "leccion": "mineria-y-actividad-economica",
+    "enunciado": "Inés hace 800 operaciones al año con su propio dinero y gana 12.000 € netos entre ventas y permutas. No presta servicios a nadie. Según lo publicado, ¿cómo declara ese resultado?",
+    "opciones": [
+      "Como actividad económica, por superar el umbral de operaciones",
+      "Como ganancia en la base general, por ser habitual",
+      "Como rendimiento del capital mobiliario",
+      "Como ganancias patrimoniales en la base del ahorro"
+    ],
+    "correcta": 3,
+    "explicacion": "La DGT ha repetido que comprar y vender para uno mismo no es actividad económica en el IAE (V2012-21, V2843-21, V0213-23, V1543-25), y ninguna consulta fija un umbral de volumen o frecuencia en el IRPF. Sus 12.000 € son ganancias patrimoniales por transmisión: base del ahorro."
+  },
+  {
+    "clave": "fc-m3-13",
+    "leccion": "donaciones-y-herencias",
+    "enunciado": "Julián compró 1 BTC por 10.000 € y se lo regala a su hija cuando vale 60.000 €. ¿Qué declara Julián en su IRPF?",
+    "opciones": [
+      "Una ganancia de 50.000 € en la base del ahorro",
+      "Una ganancia de 60.000 € en la base general",
+      "Nada, porque no ha cobrado ningún precio",
+      "Nada: en una donación solo tributa quien recibe"
+    ],
+    "correcta": 0,
+    "explicacion": "La donación es una transmisión lucrativa (artículo 34.1.a de la Ley del IRPF). El valor de transmisión es el del Impuesto sobre Sucesiones y Donaciones, sin exceder del de mercado (artículo 36): 60.000 − 10.000 = 50.000 € en la base del ahorro. Su hija paga aparte el impuesto de donaciones."
+  },
+  {
+    "clave": "fc-m3-14",
+    "leccion": "donaciones-y-herencias",
+    "enunciado": "Marta compró ETH por 40.000 € y los regala a su hermano cuando valen 25.000 €. ¿Qué puede hacer Marta con esos 15.000 € de pérdida?",
+    "opciones": [
+      "Compensarla con sus ganancias de la base del ahorro",
+      "Nada: no se computa",
+      "Compensarla solo hasta el 25 % de sus rendimientos",
+      "Trasladarla a su hermano, que la aprovechará al vender"
+    ],
+    "correcta": 1,
+    "explicacion": "El artículo 33.5.c) de la Ley del IRPF excluye las pérdidas debidas a transmisiones lucrativas entre vivos o a liberalidades. La pérdida no se computa, y su hermano adquiere por el valor del día de la donación, no por los 40.000 €."
+  },
+  {
+    "clave": "fc-m3-15",
+    "leccion": "donaciones-y-herencias",
+    "enunciado": "Nora hereda un bitcoin que su padre compró por 5.000 €. Lo declara en el Impuesto sobre Sucesiones y Donaciones por su valor de mercado, 30.000 €, y más tarde lo vende por 34.000 €. ¿Qué ganancia declara Nora en su IRPF?",
+    "opciones": [
+      "25.000 €",
+      "34.000 €",
+      "4.000 €",
+      "29.000 €"
+    ],
+    "correcta": 2,
+    "explicacion": "El valor de adquisición del heredero es el que resulta del Impuesto sobre Sucesiones y Donaciones, sin exceder del de mercado (artículo 36 de la Ley del IRPF): 30.000 €. Ganancia: 34.000 − 30.000 = 4.000 €. Los 25.000 € que acumuló su padre no tributan en el IRPF (artículo 33.3.b)."
+  }
+]

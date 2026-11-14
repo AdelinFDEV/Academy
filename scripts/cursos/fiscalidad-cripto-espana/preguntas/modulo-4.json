@@ -1,0 +1,199 @@
+[
+  {
+    "clave": "fc-m4-01",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "Según la consulta V0648-24, ¿cómo tributan en el IRPF las comisiones que cobras por aportar liquidez a una pool?",
+    "opciones": [
+      "Como ganancia patrimonial en la base general, igual que un airdrop",
+      "Como rendimiento de actividad económica, con gastos deducibles",
+      "Como rendimientos del capital mobiliario, en la base del ahorro",
+      "No tributan hasta que retiras la liquidez de la pool"
+    ],
+    "correcta": 2,
+    "explicacion": "La V0648-24 califica los rendimientos de las pools de liquidez como rendimientos del capital mobiliario del artículo 25.2 de la Ley del IRPF: base del ahorro, valorados en euros el día de la percepción."
+  },
+  {
+    "clave": "fc-m4-02",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "Elena compró 4 ETH por 6.000 € en total. Los cambia por un token de staking líquido cuando el ETH vale 2.500 €. Según la V0612-26, ¿qué resultado tiene esa operación?",
+    "opciones": [
+      "Un rendimiento del capital mobiliario de 10.000 €",
+      "Una ganancia patrimonial de 10.000 €",
+      "Ninguno, porque no ha vendido por euros",
+      "Una ganancia patrimonial de 4.000 €"
+    ],
+    "correcta": 3,
+    "explicacion": "El cambio es una permuta. Recibe un token que vale 4 × 2.500 = 10.000 € y entrega ETH que le costó 6.000 €: ganancia de 4.000 € en la base del ahorro. El token queda con un valor de adquisición de 10.000 €."
+  },
+  {
+    "clave": "fc-m4-03",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "Un proyecto se reestructura y cambia tu token antiguo, que te costó 500 €, por uno nuevo que vale 1.300 € el día del cambio. Según la V2513-25, ¿qué ocurre?",
+    "opciones": [
+      "Es una permuta y aflora una ganancia de 800 €",
+      "No ocurre nada: conservas el coste de 500 € en el token nuevo",
+      "Recibes un airdrop de 1.300 € en la base general",
+      "Es un rendimiento del capital mobiliario de 800 €"
+    ],
+    "correcta": 0,
+    "explicacion": "La V2513-25 trata el cambio de un token por otro en una reestructuración del proyecto como una permuta: 1.300 − 500 = 800 € de ganancia patrimonial, aunque tú no hayas pedido la migración."
+  },
+  {
+    "clave": "fc-m4-04",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "¿Qué dice la DGT sobre recibir el token que representa tu participación en una pool de liquidez?",
+    "opciones": [
+      "Que es un rendimiento del capital mobiliario",
+      "Que excede de la consulta: no hay criterio",
+      "Que es siempre una permuta, como el staking líquido",
+      "Que nunca tributa, porque es un simple depósito"
+    ],
+    "correcta": 1,
+    "explicacion": "La V0648-24 no se pronuncia sobre la obtención y el reembolso de esos tokens. Tratarlo como permuta, por analogía con la V0612-26, es una lectura prudente y no un criterio de Hacienda."
+  },
+  {
+    "clave": "fc-m4-05",
+    "leccion": "defi-pools-y-tokens-envueltos",
+    "enunciado": "Pides prestado en un protocolo dejando criptomonedas en garantía. Tu colateral genera un rendimiento y tú pagas intereses por el préstamo. ¿Qué dice la V0648-24?",
+    "opciones": [
+      "Solo tributa la diferencia entre lo que cobras y lo que pagas",
+      "Los intereses pagados son una pérdida patrimonial en la base del ahorro",
+      "El rendimiento del colateral tributa como capital mobiliario y los intereses pagados no se deducen de él",
+      "Nada tributa mientras no devuelvas el préstamo"
+    ],
+    "correcta": 2,
+    "explicacion": "La V0648-24 califica el rendimiento del colateral como rendimiento del capital mobiliario y niega la deducción de las comisiones e intereses pagados por tomar prestado."
+  },
+  {
+    "clave": "fc-m4-06",
+    "leccion": "nft-comprar-vender-y-crear",
+    "enunciado": "Según la consulta V0486-22, ¿qué es la venta de un NFT a efectos del IVA?",
+    "opciones": [
+      "Una entrega de bienes, como vender un cuadro",
+      "Una operación que nunca está sujeta al IVA",
+      "Una operación financiera exenta",
+      "Un servicio prestado por vía electrónica"
+    ],
+    "correcta": 3,
+    "explicacion": "Para la DGT se transmite el certificado digital, no el archivo, y la venta es un servicio prestado por vía electrónica. Si se localiza en territorio español y vende un empresario o profesional, tributa al 21 %."
+  },
+  {
+    "clave": "fc-m4-07",
+    "leccion": "nft-comprar-vender-y-crear",
+    "enunciado": "Una artista crea NFT y los vende de forma habitual. ¿Cómo tributan sus ingresos en el IRPF, según la V0138-25?",
+    "opciones": [
+      "Como rendimientos de actividad económica, en la base general",
+      "Como ganancias patrimoniales, en la base del ahorro",
+      "Como ganancias patrimoniales no derivadas de transmisión",
+      "Como rendimientos del capital mobiliario"
+    ],
+    "correcta": 0,
+    "explicacion": "La V0138-25 trata los ingresos por vender NFT en el ejercicio de una actividad como rendimientos de actividades económicas: van a la base general, con la escala progresiva."
+  },
+  {
+    "clave": "fc-m4-08",
+    "leccion": "nft-comprar-vender-y-crear",
+    "enunciado": "Hugo compró 2 ETH por 3.000 € en total. Paga un NFT con esos 2 ETH el día en que el ETH vale 2.200 €. ¿Qué tiene que calcular por esa compra?",
+    "opciones": [
+      "Una pérdida de 3.000 € por el ETH gastado",
+      "Una ganancia de 1.400 € por el ETH entregado",
+      "Una ganancia de 4.400 € por el NFT recibido",
+      "Nada hasta que venda el NFT"
+    ],
+    "correcta": 1,
+    "explicacion": "Pagar con ETH es una permuta del ETH. Lo entregado vale 2 × 2.200 = 4.400 € y costó 3.000 €: ganancia de 1.400 € en la base del ahorro."
+  },
+  {
+    "clave": "fc-m4-09",
+    "leccion": "nft-comprar-vender-y-crear",
+    "enunciado": "Siguiendo con Hugo: su NFT quedó con un valor de adquisición de 4.400 €. Un año después lo vende por 1 ETH, que ese día vale 2.900 €. ¿Cuál es el resultado de la venta?",
+    "opciones": [
+      "Una ganancia de 2.900 €",
+      "Una pérdida de 1.500 € en la base general",
+      "Una pérdida de 1.500 € en la base del ahorro",
+      "Una pérdida de 100 €, comparando con los 3.000 € que le costó el ETH"
+    ],
+    "correcta": 2,
+    "explicacion": "2.900 − 4.400 = −1.500 €. Como coleccionista que transmite un elemento de su patrimonio, es una pérdida patrimonial de la base del ahorro, por la regla general de la ley. El ETH recibido entra con un valor de adquisición de 2.900 €."
+  },
+  {
+    "clave": "fc-m4-10",
+    "leccion": "nft-comprar-vender-y-crear",
+    "enunciado": "¿Cuál de estas cuestiones sobre NFT sí tiene una consulta de la DGT que la respalde?",
+    "opciones": [
+      "El IRPF del coleccionista que revende una pieza",
+      "El número de reventas a partir del cual hay actividad económica",
+      "Las regalías que cobra el creador en cada reventa",
+      "El IVA de la venta de un NFT"
+    ],
+    "correcta": 3,
+    "explicacion": "El IVA tiene criterio desde la V0486-22, reiterado después. El IRPF del coleccionista se rige por la regla general sin consulta específica, y ni las regalías ni el umbral de habitualidad tienen pronunciamiento."
+  },
+  {
+    "clave": "fc-m4-11",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "Un phishing vacía tu wallet y no se conoce la identidad del autor. Según la DGT (V1169-25, entre otras), ¿cuándo hay pérdida patrimonial?",
+    "opciones": [
+      "En el momento en que se produce, si puedes justificarla",
+      "Cuando haya sentencia firme contra el autor",
+      "Nunca: un robo no es una pérdida patrimonial",
+      "Un año después de presentar la denuncia"
+    ],
+    "correcta": 0,
+    "explicacion": "Si el autor es desconocido no existe un derecho de crédito contra nadie, y la pérdida nace cuando se produce. Hay que poder probarla: el artículo 33.5.a de la Ley del IRPF excluye las pérdidas no justificadas."
+  },
+  {
+    "clave": "fc-m4-12",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "Una empresa identificada te estafa a través de su plataforma. Presentas denuncia y pasa un año sin novedades. Según la V1579-22, ¿puedes declarar ya la pérdida?",
+    "opciones": [
+      "No: las estafas nunca generan una pérdida",
+      "No: la denuncia no abre el plazo de un año",
+      "Sí: ha pasado el año que exige el artículo 14.2.k",
+      "Sí, pero en la base del ahorro"
+    ],
+    "correcta": 1,
+    "explicacion": "Con deudor identificado tienes un crédito. El año del artículo 14.2.k cuenta desde el inicio de un procedimiento judicial que tenga por objeto ejecutar ese crédito, y la V1579-22 aclara que la denuncia no lo es."
+  },
+  {
+    "clave": "fc-m4-13",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "A Nuria le roban criptomonedas (autor desconocido) y justifica una pérdida de 5.000 €. Ese año gana 5.000 € vendiendo bitcoin y no tiene nada más en la base del ahorro. ¿Cuánto paga por la ganancia del bitcoin?",
+    "opciones": [
+      "0 €",
+      "475 €",
+      "950 €",
+      "1.050 €"
+    ],
+    "correcta": 2,
+    "fijo": true,
+    "explicacion": "La pérdida del robo va a la base general y no compensa la ganancia de la venta, que está en la base del ahorro. Los 5.000 € tributan al 19 %: 950 €."
+  },
+  {
+    "clave": "fc-m4-14",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "Una pérdida justificada de 12.000 € por un robo de autor desconocido llega a una base general con un airdrop de 2.000 € y un saldo positivo de rendimientos de 24.000 €. ¿Cuánto queda pendiente para los cuatro años siguientes?",
+    "opciones": [
+      "0 €",
+      "4.000 €",
+      "6.000 €",
+      "10.000 €"
+    ],
+    "correcta": 1,
+    "fijo": true,
+    "explicacion": "Primero compensa el airdrop: 12.000 − 2.000 = 10.000 €. Después, rendimientos hasta el 25 % de 24.000 €, que son 6.000 €. Quedan 10.000 − 6.000 = 4.000 € para los cuatro años siguientes (artículo 48 de la Ley del IRPF)."
+  },
+  {
+    "clave": "fc-m4-15",
+    "leccion": "robos-estafas-y-exchanges-quebrados",
+    "enunciado": "Pierdes la frase semilla de tu wallet y ya no puedes acceder a tus monedas. ¿Qué ha dicho la DGT sobre esa pérdida?",
+    "opciones": [
+      "Nada: no hay criterio publicado",
+      "Que se convierte en pérdida al cabo de un año",
+      "Que es una pérdida en la base del ahorro, como una venta a cero",
+      "Que es una pérdida inmediata en la base general, como un robo"
+    ],
+    "correcta": 0,
+    "explicacion": "No existe consulta sobre la pérdida de claves ni sobre los envíos a una dirección errónea. Extender el criterio del robo de autor desconocido es una analogía, y la prueba es el principal obstáculo."
+  }
+]

@@ -106,7 +106,7 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 |---|---|---|---|---|
 | Psicología del trading | `psicologia-del-trading` | `#5ec8c4` | Verde azulado (turquesa) | Publicado 08-11-2026 |
 | Seguridad cripto | `seguridad-cripto` | `#a78bfa` | Violeta | Publicado 08-11-2026 |
-| Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Borrador |
+| Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Escrito el 15-11-2026 |
 | Cómo leer CoinMarketCap y CoinGecko | `coinmarketcap-y-coingecko` | `#ff8a7a` | Coral | Escrito el 12-11-2026 |
 | Bitcoin y DCA a largo plazo | `bitcoin-y-dca` | `#fbbf24` | Ámbar | Escrito el 13-11-2026 |
 | Futuros y apalancamiento | `futuros-y-apalancamiento` | `#f472b6` | Rosa | Escrito el 13-11-2026 |
@@ -157,6 +157,7 @@ El campo `portada` de `curso.json` es otra cosa (se guarda en Supabase y hoy no 
 | Futuros y apalancamiento | Una balanza de precisión de cristal y metal satinado, muy desequilibrada, con una pesa pequeña en un plato y una grande en el otro | Una línea de precio tenue que cae en escalones por detrás | `#f472b6` |
 | Análisis técnico sin humo | Una única vela japonesa de cristal translúcido, alta, con su mecha de metal satinado, de la que se desprende una voluta fina de humo que se deshace | Una rejilla tenue de gráfico detrás | `#a3e635` |
 | DeFi y stablecoins | Dos cilindros de cristal comunicados por un tubo fino, con un líquido luminoso al mismo nivel en los dos, sobre una base de metal satinado | Una red tenue de nodos conectados detrás | `#22d3ee` |
+| Fiscalidad cripto en España | Un archivador de sobremesa de cristal con tres carpetas de metal satinado, ordenadas, y un sello redondo de metal apoyado delante | Una rejilla tenue de casillas de formulario detrás | `#e6b455` |
 
 Que el objeto de un curso nuevo **no se parezca** a los de esta tabla, igual que la paleta.
 
