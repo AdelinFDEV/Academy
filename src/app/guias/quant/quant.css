@@ -1,0 +1,40 @@
+/* Guía «Qué es Quant (QNT)». Prefijo: qnt-. Lo común está en ../guias.css. */
+
+/* ── Tabla de acuerdos: el estado de cada uno ── */
+.qnt-acuerdos td:first-child { white-space: nowrap; }
+.qnt-estado { display: inline-block; padding: 4px 11px; border-radius: 99px; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+.qnt-estado--hecho { background: rgba(74,222,128,0.15); color: #4ade80; }
+.qnt-estado--piloto { background: var(--gold-soft); color: var(--gold); }
+.qnt-estado--anuncio { background: rgba(255,255,255,0.08); color: #dce8f8; }
+
+/* ── Simulador de licencias ── */
+.qnt-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.qnt-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.qnt-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.qnt-calc-campo { display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.qnt-calc-campo--ancho { grid-column: 1 / -1; }
+.qnt-calc-campo span { font-size: 15px; font-weight: 700; color: #fff; }
+.qnt-calc-campo span strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+.qnt-calc-campo small { font-size: 12.5px; line-height: 1.45; color: #9db2d3; }
+.qnt-calc-campo input:not([type="range"]) { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.qnt-calc-campo input[type="range"] { width: 100%; accent-color: var(--accent-orange); cursor: pointer; }
+.qnt-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.qnt-calc-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.qnt-calc-resultados > div { display: grid; gap: 4px; align-content: start; padding: 18px 20px; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.qnt-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
+.qnt-calc-resultados span { font-size: 13px; color: #b0c4d8; }
+.qnt-calc-resultados strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.qnt-calc-resultados .es-principal strong { color: var(--gold); }
+.qnt-calc-resultados small { font-size: 12.5px; color: #b0c4d8; }
+.qnt-calc-nota { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: #9db2d3; }
+
+@media (max-width: 820px) {
+  .qnt-calc { padding: 18px 16px; }
+  .qnt-calc-campos, .qnt-calc-resultados { grid-template-columns: 1fr; }
+  .qnt-calc-campo--ancho { grid-column: auto; }
+  .qnt-acuerdos td:first-child { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qnt-calc * { transition: none; }
+}

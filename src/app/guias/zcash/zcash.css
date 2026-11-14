@@ -1,0 +1,54 @@
+/* Guía «Qué es Zcash». Prefijo: zec-. Lo común está en ../guias.css. */
+
+/* ── Comparador: los cuatro tipos de operación ── */
+.zec-tx { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.zec-tx-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.zec-tx-tipos { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 5px; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; background: #060f1f; }
+.zec-tx-tipos button { display: grid; gap: 2px; padding: 10px 8px; border: 0; border-radius: 10px; background: transparent; font: inherit; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease; }
+.zec-tx-tipos button strong { font-size: 15px; font-weight: 700; }
+.zec-tx-tipos button span { font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; opacity: 0.85; }
+.zec-tx-tipos button.is-activo { background: var(--accent-orange); color: #fff; }
+.zec-tx-tipos button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.zec-tx-filas { list-style: none; display: grid; gap: 8px; margin: 18px 0 0; padding: 0; }
+.zec-tx-filas li { display: grid; grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px; align-items: center; padding: 13px 16px; border: 1px solid rgba(248,113,113,0.3); border-radius: 12px; background: rgba(248,113,113,0.06); transition: background-color 0.2s ease, border-color 0.2s ease; }
+.zec-tx-icono { display: grid; place-items: center; color: #fca5a5; }
+.zec-tx-dato { font-size: 15px; color: #fff; }
+.zec-tx-valor { font-family: ui-monospace, Consolas, monospace; font-size: 14px; color: #dce8f8; text-align: right; overflow-wrap: anywhere; }
+.zec-tx-filas li.is-oculto { border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.06); }
+.zec-tx-filas li.is-oculto .zec-tx-icono { color: #4ade80; }
+.zec-tx-filas li.is-oculto .zec-tx-valor { font-family: inherit; font-style: italic; color: #b9f5cf; }
+.zec-tx-resumen { min-height: 3.2em; margin: 16px 0 0; font-size: 15px; line-height: 1.6; color: #f2f6ff; }
+.zec-tx-resumen strong { color: var(--gold); }
+
+/* ── Barra: cuánto está blindado ── */
+.zec-barra { display: flex; height: 54px; margin-top: 22px; border: 1px solid var(--gold-border); border-radius: 14px; overflow: hidden; background: rgba(255,255,255,0.04); }
+.zec-barra > div { display: flex; align-items: center; padding: 0 14px; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.zec-barra-blindado { flex-shrink: 0; background: linear-gradient(90deg, #c9952f, var(--gold)); color: #060f1f; }
+.zec-barra-transparente { flex: 1; justify-content: flex-end; color: #dce8f8; }
+
+/* ── El reparto del bloque, por etapas ── */
+.zec-reparto { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 22px 0 0; padding: 0; }
+.zec-reparto li { display: grid; gap: 8px; align-content: start; padding: 20px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--gold); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
+.zec-reparto li > span { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gold); }
+.zec-reparto strong { font-size: 17px; line-height: 1.3; color: #fff; }
+.zec-reparto p { margin: 0; font-size: 14.5px; line-height: 1.6; color: #dce8f8; }
+
+@media (max-width: 820px) {
+  .zec-reparto { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .zec-tx { padding: 18px 16px; }
+  .zec-tx-tipos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .zec-tx-filas li { grid-template-columns: 24px minmax(0, 1fr); }
+  .zec-tx-valor { grid-column: 2; text-align: left; }
+  .zec-barra { flex-direction: column; height: auto; }
+  .zec-barra > div { width: 100% !important; padding: 12px 14px; }
+  .zec-barra-transparente { justify-content: flex-start; }
+}
+@media (max-width: 520px) {
+  .zec-reparto { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .zec-tx-tipos button, .zec-tx-filas li { transition: none; }
+}

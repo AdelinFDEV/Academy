@@ -12,17 +12,14 @@ Hay un motivo extra para que esta auditoría sea más severa que la de una web n
 
 ## CÓMO SE DISPARA — esto es lo primero, y no depende de que nadie lo recuerde
 
-**Al terminar de montar una guía nueva, Claude pregunta, siempre, con estas palabras o equivalentes:**
-
-> ¿Empiezo la auditoría SEO de la guía?
+**Desde el 14-11-2026, al terminar de montar una guía nueva Claude ejecuta esta auditoría entera, sin preguntar.** Lo pidió el admin: el borrador tiene que quedar listo para publicar, con SEO y todo, a falta solo de la portada.
 
 Reglas del disparador:
 
-1. Se pregunta **siempre**, aunque la guía parezca corta, urgente o evidente. Una guía corta compite en Google exactamente igual que una de 3.000 palabras.
-2. Se pregunta **después** de tener el contenido montado y **antes** de pedir la aprobación para publicar. El orden importa: auditar después de publicar es corregir en caliente, delante de los lectores y de Google.
-3. **En cuanto el admin diga que sí, se ejecuta esto entero**, de la Fase 0 a la Fase 17, en orden, sin saltarse fases y sin resumirlas.
-4. Si dice que no, se anota en el mensaje de cierre que la entrada **queda sin auditar**, para que conste.
-5. No se pregunta dos veces por lo mismo. Pero si el admin pide cambios grandes después de una auditoría en verde, se vuelve a preguntar: el texto ya no es el que se auditó.
+1. Se hace **siempre**, aunque la guía parezca corta, urgente o evidente. Una guía corta compite en Google exactamente igual que una de 3.000 palabras.
+2. Se hace **después** de tener el contenido montado y **antes** de darla de alta en `BORRADORES`. El orden importa: auditar después de publicar es corregir en caliente, delante de los lectores y de Google.
+3. Se ejecuta **entera**, de la Fase 0 a la Fase 17, en orden, sin saltarse fases y sin resumirlas.
+4. Si el admin pide cambios grandes después de una auditoría en verde, se vuelve a auditar: el texto ya no es el que se auditó.
 
 **Esto aplica también a una entrada o guía existente que se reescriba a fondo**, no solo a las nuevas. Cambiar la mitad del cuerpo es publicar otra página en la misma URL.
 

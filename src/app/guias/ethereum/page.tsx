@@ -214,7 +214,7 @@ export default async function EthereumPage() {
             <p>
               Fíjate en lo que dice la tabla: la misma operación cuesta <strong>treinta veces más</strong> con la
               red llena que con la red vacía. Por eso en Ethereum importa cuándo operas, y por eso existen las
-              capas 2 que verás más abajo.
+              <Termino slug="capa-2">capas 2</Termino> que verás más abajo.
             </p>
             <p>
               Un detalle más. Desde agosto de 2021, una parte de cada comisión no la cobra nadie: se destruye.
@@ -246,7 +246,7 @@ export default async function EthereumPage() {
             </p>
             <p>
               Montar un validador propio pide 32 ETH y un ordenador encendido siempre. Para el resto existe el
-              <Termino slug="staking"> staking</Termino> delegado: dejas tu ETH a un servicio que lo junta con el
+              <Termino slug="staking"> staking</Termino> <Termino slug="delegacion">delegado</Termino>: dejas tu ETH a un servicio que lo junta con el
               de otros y reparte lo que gana, quedándose una comisión.
             </p>
           </div>
@@ -394,7 +394,7 @@ export default async function EthereumPage() {
             <ul>
               <li><strong>El precio.</strong> ETH ha caído más de un 70 % desde máximos en más de una ocasión. Esa <Termino slug="volatilidad">volatilidad</Termino> no es un accidente: es lo normal en este activo.</li>
               <li><strong>La competencia.</strong> Redes más rápidas y baratas le disputan las aplicaciones, y sus propias capas 2 se quedan con comisiones que antes cobraba Ethereum.</li>
-              <li><strong>La complejidad.</strong> Entre capas 2, puentes y permisos, es fácil equivocarse. Los tres errores de arriba salen de ahí.</li>
+              <li><strong>La complejidad.</strong> Entre capas 2, <Termino slug="bridge">puentes</Termino> y permisos, es fácil equivocarse. Los tres errores de arriba salen de ahí.</li>
               <li><strong>La concentración del staking.</strong> Una parte grande del ETH en staking pasa por unos pocos servicios. Si uno falla, afecta a muchos a la vez.</li>
               <li><strong>Los fallos de código.</strong> Ethereum como red no ha sido vulnerada, pero las aplicaciones que corren encima sí, y con frecuencia.</li>
             </ul>

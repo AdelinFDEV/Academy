@@ -149,7 +149,7 @@ export default async function StellarPage() {
           <div className="gbc-box gbc-box--red" style={{ marginTop: 26 }}>
             <div className="gbc-box-title">El error que más dinero cuesta</div>
             <div className="gbc-box-body">
-              <p>Enviar XLM a un exchange sin el memo. La operación sale bien, es definitiva, y el exchange no
+              <p>Enviar XLM a un <Termino slug="exchange">exchange</Termino> sin el <Termino slug="memo">memo</Termino>. La operación sale bien, es definitiva, y el exchange no
               sabe de quién es. Recuperarlo depende de su servicio de soporte, que puede tardar semanas, cobrar
               por ello o negarse. Copia siempre los dos datos: dirección y memo.</p>
             </div>
@@ -201,11 +201,11 @@ export default async function StellarPage() {
           <h2 className="gbc-title">Cómo funciona Stellar: sin minería y sin staking</h2>
           <div className="gbc-body">
             <p>
-              En Stellar no hay mineros que gasten electricidad, como en la
+              En Stellar no hay <Termino slug="minero">mineros</Termino> que gasten electricidad, como en la
               <Termino slug="prueba-de-trabajo"> prueba de trabajo</Termino>. Tampoco hay monedas bloqueadas
               como fianza, como en la
               <Termino slug="prueba-de-participacion"> prueba de participación</Termino>. Usa un sistema
-              propio, el Protocolo de Consenso de Stellar, que funciona con confianza declarada.
+              propio, el <Termino slug="mecanismo-de-consenso">Protocolo de Consenso de Stellar</Termino>, que funciona con confianza declarada.
             </p>
             <p>
               Cada <Termino slug="validador">validador</Termino> publica una lista de otros validadores de los
@@ -249,7 +249,7 @@ export default async function StellarPage() {
                 <tr><td><strong>Monedas que existen</strong></td><td>50.000 millones, tras destruir más de la mitad en 2019</td><td>100.000 millones creados al inicio</td></tr>
                 <tr><td><strong>Reserva para abrir cuenta</strong></td><td>1 XLM</td><td>1 XRP</td></tr>
                 <tr><td><strong>Rendimiento por tenerla</strong></td><td>Ninguno</td><td>Ninguno</td></tr>
-                <tr><td><strong>Tamaño</strong></td><td>Varias veces más pequeña por capitalización</td><td>Entre las cinco mayores criptomonedas</td></tr>
+                <tr><td><strong>Tamaño</strong></td><td>Varias veces más pequeña por <Termino slug="market-cap">capitalización</Termino></td><td>Entre las cinco mayores criptomonedas</td></tr>
               </tbody>
             </table>
           </div>
@@ -276,7 +276,7 @@ export default async function StellarPage() {
           </div>
           <ol className="xlm-oferta">
             <li><span>2014</span><div><strong>100.000 millones</strong><p>Se crean todos de una vez. Además, la red crea un 1 % nuevo cada año.</p></div></li>
-            <li><span>Octubre de 2019</span><div><strong>Se elimina la inflación</strong><p>Los validadores votan quitarla: casi nadie la reclamaba y no cumplía su función.</p></div></li>
+            <li><span>Octubre de 2019</span><div><strong>Se elimina la <Termino slug="inflacion">inflación</Termino></strong><p>Los validadores votan quitarla: casi nadie la reclamaba y no cumplía su función.</p></div></li>
             <li><span>Noviembre de 2019</span><div><strong>Se destruyen 55.000 millones</strong><p>La fundación <Termino slug="quema-de-tokens">quema</Termino> más de la mitad de lo que existía. Quedan unos 50.000 millones, y no se crearán más.</p></div></li>
             <li><span>Mediados de 2026</span><div><strong>34.000 millones en circulación</strong><p>El resto, unos 16.000 millones, sigue en manos de la fundación, que los va repartiendo.</p></div></li>
           </ol>

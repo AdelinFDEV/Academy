@@ -1,0 +1,51 @@
+/* Guía «Qué es Aave». Prefijo: aave-. Lo común está en ../guias.css. */
+
+/* ── Calculadora del precio de liquidación ── */
+.aave-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.aave-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.aave-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.aave-calc-campos label { display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.aave-calc-campos label > span { font-size: 14.5px; font-weight: 700; color: #fff; }
+.aave-calc-campos label > span strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+.aave-calc-campos input:not([type="range"]) { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.aave-calc-rango { grid-column: 1 / -1; }
+.aave-calc-rango input { width: 100%; accent-color: var(--accent-orange); }
+.aave-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.aave-calc-resultados { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.aave-calc-resultados > div { display: grid; gap: 4px; align-content: start; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; background: rgba(255,255,255,0.03); transition: border-color 0.2s ease, background-color 0.2s ease; }
+.aave-calc-resultados span { font-size: 13px; line-height: 1.4; color: #b0c4d8; }
+.aave-calc-resultados strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.aave-calc-resultados small { font-size: 12.5px; line-height: 1.45; color: #b0c4d8; }
+.aave-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
+.aave-calc-resultados .es-principal strong { color: var(--gold); }
+.aave-calc-resultados .es-verde { border-color: rgba(74,222,128,0.4); background: rgba(74,222,128,0.07); }
+.aave-calc-resultados .es-verde strong { color: #4ade80; }
+.aave-calc-resultados .es-ambar { border-color: var(--gold-border); background: var(--gold-soft); }
+.aave-calc-resultados .es-rojo { border-color: rgba(248,113,113,0.5); background: rgba(248,113,113,0.1); }
+.aave-calc-resultados .es-rojo strong { color: #fca5a5; }
+.aave-calc-lectura { min-height: 3em; margin: 16px 0 0; font-size: 15px; line-height: 1.6; color: #f2f6ff; }
+.aave-calc-nota { margin: 10px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+/* ── La curva del tipo de interés ── */
+.aave-curva { list-style: none; display: grid; gap: 10px; margin: 26px 0 0; padding: 0; }
+.aave-curva li { display: grid; grid-template-columns: 120px minmax(0, 1fr) 84px; gap: 14px; align-items: center; }
+.aave-curva-u { font-size: 14px; font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+.aave-curva-barra { height: 14px; border-radius: 99px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.aave-curva-barra span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--gold), var(--accent-orange)); }
+.aave-curva-tipo { font-size: 14px; font-weight: 700; color: var(--gold); text-align: right; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 860px) {
+  .aave-calc-resultados { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .aave-calc { padding: 18px 16px; }
+  .aave-calc-campos, .aave-calc-resultados { grid-template-columns: 1fr; }
+  .aave-curva li { grid-template-columns: 96px minmax(0, 1fr) 64px; gap: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aave-calc-resultados > div { transition: none; }
+}
+
+/* ── Subtítulos dentro de una sección ── */
+.aave-subtitulo { margin: 30px 0 12px; max-width: 800px; font-size: 21px; font-weight: 700; line-height: 1.3; color: #fff; }

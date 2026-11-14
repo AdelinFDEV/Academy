@@ -252,11 +252,11 @@ export default async function SolanaPage() {
             <p>
               Solana funciona con <Termino slug="prueba-de-participacion">prueba de participación</Termino>: los
               bloques los proponen y comprueban los <Termino slug="validador">validadores</Termino>, que dejan
-              SOL bloqueado como fianza. Quien tiene SOL puede delegarlo en uno y repartirse lo que gana.
+              SOL bloqueado como fianza. Quien tiene SOL puede <Termino slug="delegacion">delegarlo</Termino> en uno y repartirse lo que gana.
             </p>
             <p>
               La pega es lo que cuesta ser validador. La documentación de Solana pide un servidor con 256 GB de
-              memoria o más y una conexión muy rápida: un equipo profesional, no el ordenador de casa. Un nodo
+              memoria o más y una conexión muy rápida: un equipo profesional, no el ordenador de casa. Un <Termino slug="nodo">nodo</Termino>
               de Bitcoin, en cambio, funciona en un miniordenador doméstico.
             </p>
             <p>
@@ -295,7 +295,7 @@ export default async function SolanaPage() {
           <div className="gbc-body" style={{ marginTop: 22 }}>
             <p>
               Esa cuenta es la que casi nunca se enseña. La mayor parte de lo que «rinde» el staking es SOL
-              recién creado, que diluye a todo el mundo. Quien hace staking mantiene su parte del pastel y gana
+              recién creado, que <Termino slug="dilucion">diluye</Termino> a todo el mundo. Quien hace staking mantiene su parte del pastel y gana
               un poco; quien no lo hace, la va perdiendo. Y todo ello en SOL, cuyo precio se mueve mucho más que
               ese 1,6 %.
             </p>
@@ -323,11 +323,11 @@ export default async function SolanaPage() {
             <table className="gbc-tabla">
               <thead><tr><th></th><th>Solana</th><th>Ethereum</th></tr></thead>
               <tbody>
-                <tr><td><strong>Una operación sencilla</strong></td><td>Menos de un céntimo</td><td>De céntimos a varios euros, según la hora; céntimos en sus capas 2</td></tr>
+                <tr><td><strong>Una operación sencilla</strong></td><td>Menos de un céntimo</td><td>De céntimos a varios euros, según la hora; céntimos en sus <Termino slug="capa-2">capas 2</Termino></td></tr>
                 <tr><td><strong>Un bloque nuevo</strong></td><td>Cada 0,4 segundos</td><td>Cada 12 segundos</td></tr>
                 <tr><td><strong>Paradas completas</strong></td><td>Seis, la última de la lista en 2024</td><td>Ninguna</td></tr>
                 <tr><td><strong>Montar un validador</strong></td><td>Servidor profesional</td><td>Un ordenador normal y 32 ETH</td></tr>
-                <tr><td><strong>Dónde está el dinero</strong></td><td>Menos que en Ethereum</td><td>La mayor parte de las finanzas descentralizadas</td></tr>
+                <tr><td><strong>Dónde está el dinero</strong></td><td>Menos que en Ethereum</td><td>La mayor parte de las <Termino slug="defi">finanzas descentralizadas</Termino></td></tr>
               </tbody>
             </table>
           </div>

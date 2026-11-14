@@ -1,0 +1,56 @@
+/* Guía «Qué es NEAR Protocol». Prefijo: near-. Lo común está en ../guias.css. */
+
+/* ── Dos formas de escribir la misma cuenta ── */
+.near-cuentas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.near-cuenta { display: grid; gap: 10px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; background: rgba(15,32,64,0.5); }
+.near-cuenta.es-nombre { border-color: var(--gold-border); background: linear-gradient(135deg, #0f2040, #0a1628); }
+.near-cuenta-tipo { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-orange-soft); }
+.near-cuenta code { display: block; padding: 10px 12px; border-radius: 10px; background: #060f1f; font-family: ui-monospace, Consolas, monospace; font-size: 14px; line-height: 1.5; color: var(--gold); overflow-wrap: anywhere; }
+.near-cuenta p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+
+/* ── Calculadora del almacenamiento ── */
+.near-alm { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.near-alm-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.near-alm-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.near-alm-campo { display: grid; gap: 8px; align-content: start; padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.near-alm-etiqueta { font-size: 15px; font-weight: 700; color: #fff; }
+.near-alm-ayuda { font-size: 12.5px; line-height: 1.45; color: #9db2d3; }
+.near-alm-campo input { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.near-alm-contador { display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; }
+.near-alm-contador button { width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.18); border-radius: 12px; background: #060f1f; font: inherit; font-size: 22px; font-weight: 700; line-height: 1; color: #fff; cursor: pointer; }
+.near-alm-contador button:hover:not(:disabled) { border-color: var(--accent-orange); color: var(--accent-orange-soft); }
+.near-alm-contador button:disabled { opacity: 0.35; cursor: default; }
+.near-alm-contador output { text-align: center; font-size: 20px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
+.near-alm-presets { display: flex; flex-wrap: wrap; gap: 6px; }
+.near-alm-presets button { padding: 7px 11px; border: 1px solid rgba(255,255,255,0.16); border-radius: 99px; background: transparent; font: inherit; font-size: 12.5px; font-weight: 600; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
+.near-alm-presets button.is-activo { border-color: var(--accent-orange); background: var(--accent-orange); color: #fff; }
+.near-alm button:focus-visible, .near-alm input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+.near-alm-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.near-alm-resultados > div { display: grid; gap: 4px; padding: 18px 20px; border: 1px solid rgba(74,222,128,0.35); border-radius: 14px; background: rgba(74,222,128,0.06); }
+.near-alm-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
+.near-alm-resultados span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #b0c4d8; }
+.near-alm-resultados strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.near-alm-resultados .es-principal strong { color: var(--gold); }
+.near-alm-resultados small { font-size: 12.5px; line-height: 1.45; color: #b0c4d8; }
+.near-alm-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+/* ── Mil NEAR durante un año ── */
+.near-caminos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.near-camino { display: grid; gap: 6px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid #7f93b0; border-radius: 6px 16px 16px 6px; background: rgba(15,32,64,0.5); }
+.near-camino.es-bien { border-left-color: #4ade80; }
+.near-camino.es-mal { border-left-color: #f87171; }
+.near-camino-nombre { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #b0c4d8; }
+.near-camino strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.near-camino-peso { font-size: 15px; font-weight: 700; }
+.near-camino.es-bien .near-camino-peso { color: #4ade80; }
+.near-camino.es-mal .near-camino-peso { color: #fca5a5; }
+.near-camino p { margin: 4px 0 0; font-size: 14.5px; line-height: 1.6; color: #dce8f8; }
+
+@media (max-width: 820px) {
+  .near-cuentas, .near-alm-campos, .near-alm-resultados, .near-caminos { grid-template-columns: 1fr; }
+  .near-alm { padding: 18px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .near-alm-presets button { transition: none; }
+}

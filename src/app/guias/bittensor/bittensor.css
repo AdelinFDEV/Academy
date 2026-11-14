@@ -1,0 +1,59 @@
+/* Guía «Qué es Bittensor». Prefijo: tao-. Lo común está en ../guias.css. */
+
+/* ── Los tres papeles de una subred ── */
+.tao-papeles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 22px; }
+.tao-papeles > div { display: grid; gap: 8px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--gold); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
+.tao-papeles strong { font-size: 18px; color: #fff; }
+.tao-papeles p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+.tao-papel-cobra { margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--gold); }
+
+/* ── Calculadora del reparto ── */
+.tao-reparto { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.tao-reparto-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.tao-epocas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; background: #060f1f; }
+.tao-epocas button { display: grid; gap: 2px; padding: 10px 12px; border: 0; border-radius: 9px; background: transparent; font: inherit; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease; }
+.tao-epocas button span { font-size: 14.5px; font-weight: 700; }
+.tao-epocas button small { font-size: 12px; opacity: 0.85; }
+.tao-epocas button.is-activa { background: var(--accent-orange); color: #fff; }
+.tao-reparto button:focus-visible, .tao-reparto input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.tao-reparto-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.tao-campo { display: grid; gap: 10px; align-content: start; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.tao-campo span { font-size: 14px; line-height: 1.45; color: #dce8f8; }
+.tao-campo strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+.tao-campo input[type="range"] { width: 100%; accent-color: var(--accent-orange); }
+.tao-campo input:not([type]) { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+
+.tao-reparto-total { display: grid; gap: 4px; margin-top: 18px; padding: 18px 20px; border: 1px solid var(--gold-border); border-radius: 14px; background: var(--gold-soft); }
+.tao-reparto-total span { font-size: 13px; color: #b0c4d8; }
+.tao-reparto-total strong { font-size: 28px; font-weight: 800; color: var(--gold); font-variant-numeric: tabular-nums; }
+.tao-reparto-total small { font-size: 13px; color: #dce8f8; }
+
+.tao-reparto-partes { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 12px 0 0; padding: 0; }
+.tao-parte { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid var(--gold); border-radius: 6px 14px 14px 6px; background: rgba(255,255,255,0.03); }
+.tao-parte--mineros { border-left-color: var(--accent-orange); }
+.tao-parte--validadores { border-left-color: #4ade80; }
+.tao-parte span { font-size: 13px; color: #b0c4d8; }
+.tao-parte strong { font-size: 22px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.tao-parte small { font-size: 12.5px; color: #b0c4d8; font-variant-numeric: tabular-nums; }
+.tao-reparto-nota { margin: 16px 0 0; font-size: 14px; line-height: 1.65; color: #dce8f8; }
+.tao-reparto-nota strong { color: var(--gold); }
+
+/* ── Emisión frente a ingresos ── */
+.tao-balanza { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.tao-balanza > div { display: grid; gap: 6px; align-content: start; padding: 22px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.tao-balanza span { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+.tao-balanza strong { font-size: 32px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.tao-balanza p { margin: 0; font-size: 14px; line-height: 1.6; color: #b0c4d8; }
+.tao-balanza .tao-balanza-otro { border-color: rgba(255,107,43,0.45); }
+.tao-balanza .tao-balanza-otro span { color: var(--accent-orange-soft); }
+
+@media (max-width: 820px) {
+  .tao-papeles, .tao-reparto-campos, .tao-reparto-partes, .tao-balanza { grid-template-columns: 1fr; }
+  .tao-reparto { padding: 18px 16px; }
+  .tao-epocas { grid-template-columns: 1fr; }
+  .tao-balanza strong { font-size: 27px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tao-epocas button { transition: none; }
+}

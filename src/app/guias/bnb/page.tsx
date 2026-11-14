@@ -278,7 +278,7 @@ export default async function BnbPage() {
           <div className="gbc-body">
             <p>
               Desde el 1 de julio de 2026, ninguna empresa puede ofrecer servicios de criptomonedas en la Unión
-              Europea sin la licencia que exige la norma MiCA. Binance la pidió en Grecia en enero y retiró la
+              Europea sin la licencia que exige la norma <Termino slug="mica">MiCA</Termino>. Binance la pidió en Grecia en enero y retiró la
               solicitud el 24 de junio, cuando ya se daba por hecho que se la iban a denegar.
             </p>
             <p>
@@ -369,7 +369,7 @@ export default async function BnbPage() {
               <li><strong>Depende de una empresa.</strong> Ninguna otra moneda de este tamaño está tan ligada a una compañía. Lo que le pase a Binance con un regulador se nota en el precio de BNB.</li>
               <li><strong>La regulación ya ha golpeado.</strong> La salida de la Unión Europea no es una hipótesis: ha ocurrido. Nada impide que se repita en otros mercados.</li>
               <li><strong>La red está concentrada.</strong> Pocos validadores, cercanos al entorno de Binance. Eficaz, y un único punto de presión.</li>
-              <li><strong>Su puente ya falló.</strong> El robo de 2022 creó monedas de la nada. Se contuvo, pero demostró que podía pasar.</li>
+              <li><strong>Su <Termino slug="bridge">puente</Termino> ya falló.</strong> El robo de 2022 creó monedas de la nada. Se contuvo, pero demostró que podía pasar.</li>
               <li><strong>El precio.</strong> Como cualquier criptomoneda, su <Termino slug="volatilidad">volatilidad</Termino> es alta: ha llegado a caer más de un 60 % desde un máximo.</li>
             </ul>
             <p>

@@ -1,0 +1,72 @@
+/* Guía «Qué es Avalanche». Prefijo: avax-. Lo común está en ../guias.css. */
+
+/* ── Las tres cadenas ── */
+.avax-cadenas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.avax-cadena { position: relative; display: grid; gap: 8px; align-content: start; padding: 24px 22px 20px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); overflow: hidden; }
+.avax-cadena-letra { position: absolute; right: 14px; top: -12px; font-size: 92px; font-weight: 800; line-height: 1; color: rgba(230,180,85,0.12); pointer-events: none; }
+.avax-cadena strong { position: relative; font-size: 19px; color: #fff; }
+.avax-cadena-para { position: relative; font-size: 11.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.avax-cadena p { position: relative; margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+.avax-cadena-dir { position: relative; margin-top: 4px; font-size: 13px; color: #b0c4d8; }
+.avax-cadena-dir code { padding: 2px 7px; border-radius: 6px; background: #060f1f; font-family: ui-monospace, Consolas, monospace; font-size: 13px; color: var(--accent-orange-soft); }
+
+/* ── Las tres cifras del consenso ── */
+.avax-rondas { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 26px 0 0; padding: 0; }
+.avax-rondas li { display: grid; gap: 6px; align-content: start; padding: 20px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-orange); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
+.avax-rondas strong { font-size: 40px; font-weight: 800; line-height: 1; color: var(--gold); font-variant-numeric: tabular-nums; }
+.avax-rondas span { font-size: 14.5px; line-height: 1.55; color: #dce8f8; }
+
+/* ── L1 más activas ── */
+.avax-sub { margin-top: 30px; }
+.avax-l1s { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.avax-l1s > div { display: grid; gap: 6px; align-content: start; padding: 18px 20px; border: 1px solid rgba(255,255,255,0.1); border-left: 3px solid var(--gold); border-radius: 6px 14px 14px 6px; background: rgba(15,32,64,0.45); }
+.avax-l1s strong { font-size: 17px; color: #fff; }
+.avax-l1s span { font-size: 14px; line-height: 1.5; color: #b0c4d8; }
+.avax-l1s b { font-size: 15px; color: var(--gold); }
+
+/* ── Lo que se crea frente a lo que se quema ── */
+.avax-balanza { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
+.avax-balanza > div { display: grid; gap: 4px; padding: 20px 22px; border-radius: 16px; }
+.avax-balanza .es-crea { border: 1px solid var(--gold-border); background: var(--gold-soft); }
+.avax-balanza .es-quema { border: 1px solid rgba(255,107,43,0.4); background: rgba(255,107,43,0.08); }
+.avax-balanza span { font-size: 13px; color: #b0c4d8; }
+.avax-balanza strong { font-size: 28px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.avax-balanza .es-crea strong { color: var(--gold); }
+.avax-balanza small { font-size: 12.5px; color: #b0c4d8; }
+
+/* ── Calculadora del staking ── */
+.avax-calc { margin-top: 26px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.avax-calc-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.avax-calc-modos { display: inline-grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 4px; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; background: #060f1f; }
+.avax-calc-modos button { padding: 11px 18px; border: 0; border-radius: 9px; background: transparent; font: inherit; font-size: 14.5px; font-weight: 700; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease; }
+.avax-calc-modos button.is-activo { background: var(--accent-orange); color: #fff; }
+.avax-calc-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.avax-campo { display: grid; gap: 8px; align-content: start; padding: 14px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.avax-campo > span { font-size: 15px; font-weight: 700; color: #fff; }
+.avax-campo small { font-size: 12.5px; line-height: 1.45; color: #9db2d3; }
+.avax-campo input:not([type="range"]), .avax-campo select { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.avax-campo input[type="range"] { width: 100%; accent-color: var(--accent-orange); }
+.avax-campo--nota { border-style: dashed; }
+.avax-calc button:focus-visible, .avax-calc input:focus-visible, .avax-calc select:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+.avax-calc-resultados { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.avax-calc-resultados > div { display: grid; gap: 4px; align-content: start; padding: 18px 20px; border: 1px solid rgba(74,222,128,0.35); border-radius: 14px; background: rgba(74,222,128,0.06); }
+.avax-calc-resultados .es-principal { border-color: var(--gold-border); background: var(--gold-soft); }
+.avax-calc-resultados .es-cero { border-color: rgba(248,113,113,0.45); background: rgba(248,113,113,0.08); }
+.avax-calc-resultados span { font-size: 13px; color: #b0c4d8; }
+.avax-calc-resultados strong { font-size: 26px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.avax-calc-resultados .es-principal strong { color: var(--gold); }
+.avax-calc-resultados .es-cero strong { color: #fca5a5; }
+.avax-calc-resultados small { font-size: 12.5px; line-height: 1.45; color: #b0c4d8; }
+.avax-calc-aviso { margin: 18px 0 0; padding: 14px 16px; border: 1px solid rgba(248,113,113,0.45); border-radius: 12px; background: rgba(248,113,113,0.08); font-size: 15px; color: #fca5a5; }
+.avax-calc-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+@media (max-width: 820px) {
+  .avax-cadenas, .avax-rondas, .avax-l1s, .avax-balanza, .avax-calc-campos, .avax-calc-resultados { grid-template-columns: 1fr; }
+  .avax-calc { padding: 18px 16px; }
+  .avax-calc-modos { display: grid; width: 100%; }
+  .avax-calc-modos button { padding: 11px 10px; }
+  .avax-rondas strong { font-size: 34px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .avax-calc-modos button { transition: none; }
+}

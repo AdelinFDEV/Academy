@@ -1,0 +1,59 @@
+/* Guía «Qué es Litecoin». Prefijo: ltc-. Lo común está en ../guias.css. */
+
+/* ── Calculadora de un pago ── */
+.ltc-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.ltc-calc-titulo { margin: 0 0 18px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.ltc-calc-campos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 220px); gap: 20px; align-items: end; }
+.ltc-calc-campos label { display: grid; gap: 9px; }
+.ltc-calc-campos label > span { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: #dce8f8; }
+.ltc-calc-campos label strong { color: var(--gold); font-variant-numeric: tabular-nums; }
+.ltc-calc-campos input:not([type="range"]) { width: 100%; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.ltc-calc-campos input[type="range"] { width: 100%; height: 44px; accent-color: var(--accent-orange); }
+.ltc-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 3px; }
+
+.ltc-calc-redes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+.ltc-calc-red { display: grid; gap: 12px; align-content: start; padding: 18px; border: 1px solid rgba(255,255,255,0.09); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.ltc-calc-red--ltc { border-color: var(--gold-border); background: var(--gold-soft); }
+.ltc-calc-red-nombre { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; }
+.ltc-calc-red--ltc .ltc-calc-red-nombre { color: var(--gold); }
+.ltc-calc-dato { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; color: #9db2d3; }
+.ltc-calc-dato > svg { margin-top: 2px; }
+.ltc-calc-dato > div { display: grid; gap: 3px; }
+.ltc-calc-dato span { font-size: 13px; color: #b0c4d8; }
+.ltc-calc-dato strong { font-size: 24px; font-weight: 800; color: #fff; font-variant-numeric: tabular-nums; }
+.ltc-calc-dato small { font-size: 12.5px; line-height: 1.5; color: #9db2d3; }
+.ltc-calc-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+/* ── Minería fusionada: a quién le sirve ── */
+.ltc-fusion { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.ltc-fusion > div { display: grid; gap: 8px; align-content: start; padding: 20px; border-left: 3px solid var(--accent-orange); border-radius: 4px 14px 14px 4px; background: rgba(15,32,64,0.5); }
+.ltc-fusion-et { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent-orange-soft); }
+.ltc-fusion p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+
+/* ── Hitos del banco de pruebas ── */
+.ltc-hitos { list-style: none; display: grid; gap: 0; margin: 26px 0 0; padding: 0; }
+.ltc-hitos li { position: relative; display: grid; gap: 6px; padding: 0 0 26px 30px; border-left: 2px solid var(--gold-border); }
+.ltc-hitos li:last-child { padding-bottom: 0; border-left-color: transparent; }
+.ltc-hitos li::before { content: ""; position: absolute; left: -7px; top: 3px; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 4px rgba(230,180,85,0.18); }
+.ltc-hitos-fecha { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.ltc-hitos strong { font-size: 18px; color: #fff; }
+.ltc-hitos p { margin: 0; font-size: 15.5px; line-height: 1.7; color: #dce8f8; }
+.ltc-hitos a, .ltc-hechos a { color: var(--gold); text-decoration: underline; text-decoration-color: rgba(230,180,85,0.45); text-underline-offset: 3px; }
+.ltc-hitos a:hover, .ltc-hechos a:hover { text-decoration-color: var(--gold); }
+
+/* ── Tres hechos de hoy ── */
+.ltc-hechos { display: grid; gap: 12px; margin-top: 26px; }
+.ltc-hechos > div { padding: 20px 22px; border: 1px solid rgba(255,255,255,0.09); border-left: 4px solid var(--gold); border-radius: 6px 14px 14px 6px; background: rgba(15,32,64,0.45); }
+.ltc-hechos strong { display: block; margin-bottom: 8px; font-size: 17.5px; color: #fff; }
+.ltc-hechos p { margin: 0; font-size: 15.5px; line-height: 1.65; color: #dce8f8; }
+
+@media (max-width: 760px) {
+  .ltc-calc { padding: 18px 16px; }
+  .ltc-calc-campos, .ltc-calc-redes, .ltc-fusion { grid-template-columns: 1fr; }
+  .ltc-calc-dato strong { font-size: 21px; }
+  .ltc-hitos li { padding-left: 24px; }
+  .ltc-hechos > div { padding: 18px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ltc-calc * { transition: none; }
+}

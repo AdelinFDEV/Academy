@@ -41,25 +41,9 @@ Una guía por moneda, poco a poco, como las de Worldcoin, Render, Hyperliquid y 
 curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50"   | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>JSON.parse(d).forEach(c=>console.log(c.market_cap_rank,c.symbol.toUpperCase(),c.name)))"
 ```
 
-**Quedan 15.** Puesto en el ranking de ese día, y el grupo al que pertenece, para poder agruparlas o enlazarlas entre sí:
+**No queda ninguna.** Las 15 que quedaban se escribieron y auditaron el 14-11-2026 y están en `BORRADORES` (`src/lib/guides.ts`), a la espera de su portada y de que el admin las publique: Zcash, NEAR, Bitcoin Cash, Litecoin, Avalanche, Uniswap, Canton, Sui, Toncoin (ahora Gram), Hedera, Rain, Bittensor, Quant, Ethena y Aave. Lo que les falta está en `TAREAS.md`.
 
-| # | Moneda | Grupo | Nota |
-|---|---|---|---|
-| 11 | Zcash (ZEC) | Privacidad | Dentro por decisión del admin. Explicar su situación en la UE, con fuente y fecha. La guía de Monero ya lo hace (Reglamento (UE) 2024/1624, art. 79): que la de Zcash no la repita, y que cuente lo que la distingue, que su privacidad es opcional |
-| 21 | NEAR Protocol (NEAR) | Plataforma de contratos | |
-| 23 | Bitcoin Cash (BCH) | Pagos | Nació de una división de Bitcoin |
-| 24 | Litecoin (LTC) | Pagos | |
-| 25 | Avalanche (AVAX) | Plataforma de contratos | |
-| 26 | Uniswap (UNI) | DeFi (intercambio) | Enlazar con el curso *DeFi y stablecoins* |
-| 27 | Canton (CC) | Plataforma para instituciones | Poco explicada en español: buen hueco |
-| 28 | Sui (SUI) | Plataforma de contratos | |
-| 29 | Gram, antes Toncoin (GRAM) | Plataforma de contratos | La red de Telegram. CoinGecko la lista ya como «Gram»: comprobar el cambio de nombre y de símbolo |
-| 32 | Hedera (HBAR) | Plataforma de contratos | |
-| 34 | Rain (RAIN) | DeFi (opciones y mercados de predicción) | Reciente y con subida rápida en el ranking: comprobar que sigue arriba antes de dedicarle una guía |
-| 38 | Bittensor (TAO) | Inteligencia artificial | |
-| 41 | Quant (QNT) | Infraestructura (interoperabilidad) | |
-| 46 | Ethena (ENA) | DeFi | El token del protocolo; su dólar sintético (USDe) es una de las estables excluidas |
-| 50 | Aave (AAVE) | DeFi (préstamos) | Enlazar con el curso *DeFi y stablecoins* |
+Si se quiere seguir con esta serie, se vuelve a mirar el ranking con el comando de arriba y se apuntan aquí las que hayan entrado en el top 50 (por ejemplo, el 14-11-2026 asomaban Aster, Ondo, World Liberty Financial, Pump.fun, Internet Computer y Polkadot, entre los puestos 50 y 60).
 
 **Fuera de la lista, y por qué:**
 
@@ -69,7 +53,7 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 - **Memes**: Dogecoin, Shiba Inu, Pepe y MemeCore (una red hecha para memes, que CoinGecko clasifica como meme).
 - **Activos tradicionales tokenizados**, que no son una criptomoneda propia sino un activo de fuera envuelto en un token: Figure HELOC (préstamos hipotecarios), Tether Gold y PAX Gold (oro), Ondo USDY y Circle USYC (deuda del Tesoro de EE. UU.) y Spiko Amundi (un fondo monetario en euros). Si interesan, darían para **una sola guía** sobre la tokenización de activos.
 
-**Hechas el 13-11-2026, a la espera de que el admin las publique desde `/admin/acciones`:** Ethereum, Solana, Cardano, Chainlink, BNB, TRON, Monero y Stellar (están en `BORRADORES`, `src/lib/guides.ts`). **Siguiente tanda de cuatro:** se eligen de la parte alta de la tabla, mezclando grupos para que no salgan cuatro plataformas de contratos seguidas. El volumen de búsqueda real de cada una se mira en la Fase 0 de la auditoría SEO antes de elegir.
+**Hechas el 13-11-2026, también en `BORRADORES`:** Ethereum, Solana, Cardano, Chainlink, BNB, TRON, Monero y Stellar.
 
 ---
 

@@ -162,7 +162,7 @@ export default async function MoneroPage() {
               puede desactivar, así que todas las operaciones se parecen entre sí.
             </p>
             <p>
-              De ahí sale una propiedad que tiene nombre: fungibilidad. Significa que una moneda vale
+              De ahí sale una propiedad que tiene nombre: <Termino slug="fungibilidad">fungibilidad</Termino>. Significa que una moneda vale
               exactamente lo mismo que otra, porque ninguna arrastra historial. Un billete de 20 euros es
               fungible. Un bitcoin que pasó por una dirección marcada puede ser rechazado por un exchange. Un
               monero, no: nadie sabe por dónde pasó.
@@ -197,7 +197,7 @@ export default async function MoneroPage() {
               para la red principal.
             </p>
             <p>
-              Hay además una puerta que se abre desde dentro. Cada cartera tiene una clave de visualización:
+              Hay además una puerta que se abre desde dentro. Cada cartera tiene una <Termino slug="clave-de-visualizacion">clave de visualización</Termino>:
               si se la das a alguien, puede ver lo que has recibido, pero no gastarlo. Sirve para que un
               asesor, un auditor o una administración comprueben tus cuentas. La privacidad de Monero es
               tuya, y tú decides a quién se la levantas.
@@ -247,9 +247,9 @@ export default async function MoneroPage() {
             <table className="gbc-tabla">
               <thead><tr><th>Cuándo</th><th>Qué pasó</th><th>Qué supone para ti</th></tr></thead>
               <tbody>
-                <tr><td><strong>Febrero de 2024</strong></td><td>Binance retira Monero en todo el mundo</td><td>Se va el mercado con más volumen</td></tr>
+                <tr><td><strong>Febrero de 2024</strong></td><td>Binance retira Monero en todo el mundo</td><td>Se va el mercado con más <Termino slug="volumen">volumen</Termino></td></tr>
                 <tr><td><strong>Octubre de 2024</strong></td><td>Kraken deja de ofrecerla en el Espacio Económico Europeo</td><td>Se va el principal exchange regulado que la vendía en euros</td></tr>
-                <tr><td><strong>10 de julio de 2027</strong></td><td>Empieza a aplicarse el reglamento europeo contra el blanqueo</td><td>Ningún exchange ni custodio de la UE podrá operar con monedas de anonimato reforzado</td></tr>
+                <tr><td><strong>10 de julio de 2027</strong></td><td>Empieza a aplicarse el reglamento europeo contra el blanqueo</td><td>Ningún exchange ni custodio de la UE podrá operar con <Termino slug="moneda-de-privacidad">monedas de anonimato reforzado</Termino></td></tr>
               </tbody>
             </table>
           </div>
@@ -281,7 +281,7 @@ export default async function MoneroPage() {
           <div className="gbc-body">
             <p>
               Monero usa <Termino slug="prueba-de-trabajo">prueba de trabajo</Termino>, como Bitcoin: los
-              mineros compiten con cálculo y quien acierta añade el bloque. Sale uno cada dos minutos. Las
+              <Termino slug="minero">mineros</Termino> compiten con cálculo y quien acierta añade el bloque. Sale uno cada dos minutos. Las
               diferencias están en dos decisiones de diseño.
             </p>
           </div>
@@ -289,7 +289,7 @@ export default async function MoneroPage() {
             <table className="gbc-tabla">
               <thead><tr><th></th><th>Bitcoin</th><th>Monero</th></tr></thead>
               <tbody>
-                <tr><td><strong>Con qué se mina</strong></td><td>Máquinas especializadas, en naves industriales</td><td>Procesadores corrientes: el algoritmo RandomX, desde 2019</td></tr>
+                <tr><td><strong>Con qué se mina</strong></td><td><Termino slug="asic">Máquinas especializadas</Termino>, en naves industriales</td><td>Procesadores corrientes: el <Termino slug="algoritmo-de-minado">algoritmo</Termino> RandomX, desde 2019</td></tr>
                 <tr><td><strong>Cuántas monedas habrá</strong></td><td>21 millones como máximo</td><td>Sin tope: 0,6 XMR por bloque para siempre, desde junio de 2022</td></tr>
                 <tr><td><strong>Cuántas hay</strong></td><td>Cerca de 20 millones</td><td>Unos 18,5 millones</td></tr>
                 <tr><td><strong>Inflación anual</strong></td><td>Por debajo del 1 %, y bajando hasta cero</td><td>Por debajo del 1 %, y bajando poco a poco sin llegar a cero</td></tr>

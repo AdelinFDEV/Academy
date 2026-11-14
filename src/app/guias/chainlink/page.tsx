@@ -185,7 +185,7 @@ export default async function ChainlinkPage() {
             <p>
               El paso 3 es el que lo sostiene todo. Se usa el valor del medio, la mediana, y no la media, por una
               razón concreta: un solo mentiroso puede arrastrar una media, pero no puede mover el valor del
-              centro. Compruébalo tú. Haz mentir a los nodos, de uno en uno, y mira cuántos hacen falta para
+              centro. Compruébalo tú. Haz mentir a los <Termino slug="nodo">nodos</Termino>, de uno en uno, y mira cuántos hacen falta para
               falsear el precio:
             </p>
           </div>
@@ -215,7 +215,7 @@ export default async function ChainlinkPage() {
                 <tr><td><strong>Precios</strong></td><td>A cuánto cotiza un activo</td><td>Préstamos, <Termino slug="stablecoin">stablecoins</Termino>, derivados</td></tr>
                 <tr><td><strong>Mensajes entre redes (CCIP)</strong></td><td>Mover monedas y datos de una blockchain a otra</td><td>Bancos y emisores de activos; es un <Termino slug="bridge">puente</Termino> entre redes</td></tr>
                 <tr><td><strong>Prueba de reservas</strong></td><td>Comprobar que lo que respalda a una moneda existe de verdad</td><td>Stablecoins y oro o bitcoin «envueltos»</td></tr>
-                <tr><td><strong>Azar verificable</strong></td><td>Un número aleatorio que nadie puede amañar</td><td>Juegos, sorteos y repartos de NFT</td></tr>
+                <tr><td><strong>Azar verificable</strong></td><td>Un número aleatorio que nadie puede amañar</td><td>Juegos, sorteos y repartos de <Termino slug="nft">NFT</Termino></td></tr>
                 <tr><td><strong>Automatización</strong></td><td>Ejecutar un contrato a una hora o cuando pasa algo</td><td>Cualquier aplicación que no quiera depender de una persona</td></tr>
               </tbody>
             </table>

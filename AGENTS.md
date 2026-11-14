@@ -41,20 +41,16 @@ Las dos primeras filas son **la fuente de verdad** de las guías y del SEO: lo q
 
 ---
 
-## 2 · 🔴 LA AUDITORÍA SEO SE OFRECE SIEMPRE
+## 2 · 🔴 LA AUDITORÍA SEO SE HACE SIEMPRE, SIN PREGUNTAR
 
-**No hay que recordárselo a nadie. Es parte de montar una guía, igual que las preguntas del principio.**
+**Desde el 14-11-2026 no se pregunta: se ejecuta.** Lo pidió el admin: una guía en `BORRADORES` tiene que quedar **lista para publicar, con SEO y todo, a falta solo de la portada**.
 
-Al terminar de montar el contenido, **antes** de pedir la aprobación para publicar, se pregunta con estas palabras o equivalentes:
+Antes de escribir una guía se leen enteros `/admin/guias-instrucciones`, `/admin/seo-instrucciones` y [`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md), y se trabaja al pie de la letra. Al terminar de montar el contenido se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa guía. Son 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba del todo, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales y conversión— y **cada fase se corrige antes de pasar a la siguiente**. El informe de la Fase 17 se entrega al admin, y el campo `auditada` del borrador lleva la fecha.
 
-> ¿Empiezo la auditoría SEO de la guía?
+Cuatro reglas:
 
-En cuanto el admin diga que sí, se ejecuta **[`AUDITORIA-SEO.md`](./AUDITORIA-SEO.md) entero**, línea por línea, de la Fase 0 a la Fase 17, sobre esa guía. Son 18 fases —intención de búsqueda, hueco frente a los rivales, snippet, respuesta arriba del todo, encabezados, palabra clave con suelo y techo, legibilidad, E-E-A-T, enlazado saliente y entrante, datos estructurados, imágenes, rastreo, apoyos visuales y conversión— y **cada fase se corrige antes de pasar a la siguiente**.
-
-Cuatro reglas del disparador:
-
-1. **Se pregunta siempre**, aunque la guía sea corta o urgente. Una guía corta compite en Google igual que una de 3.000 palabras.
-2. Si el admin dice que no, **se anota en el cierre que queda sin auditar**, para que conste.
+1. **Se hace siempre**, aunque la guía sea corta o urgente. Una guía corta compite en Google igual que una de 3.000 palabras.
+2. Lo que solo se puede hacer tras publicar (la Fase 16 contra la página pública y los enlaces entrantes de la Fase 10) **se deja preparado** y se aplica al publicar.
 3. Aplica también a **contenido existente que se reescriba a fondo**: cambiar la mitad del cuerpo es publicar otra página en la misma URL.
 4. Los scripts van **al final** de la auditoría, no al principio. Confirman lo que ya has arreglado; **no lo descubren por ti**.
 

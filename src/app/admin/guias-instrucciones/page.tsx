@@ -131,7 +131,7 @@ export default function GuiasInstruccionesPage() {
           <Paso n={2} titulo="Esquema">Las secciones, en el orden en que el lector se hace las preguntas, con la pieza interactiva de cada una y dónde van los dos anuncios. El admin lo ve antes de que se escriba el cuerpo.</Paso>
           <Paso n={3} titulo="Términos del diccionario">Toda palabra técnica se enlaza al diccionario en su primera aparición. Las que no existan se crean ahora, con una definición buena (<code>PLANTILLA-DICCIONARIO.md</code>). Es una regla intocable y no espera a que nadie la pida.</Paso>
           <Paso n={4} titulo="Construcción">Su <code>page.tsx</code>, su <code>[slug].css</code>, sus piezas interactivas y su quiz, con el contenido completo: nada de esqueletos ni textos de relleno.</Paso>
-          <Paso n={5} titulo="Auditoría SEO">Al terminar se pregunta siempre: «¿Empiezo la auditoría SEO de la guía?». Si el admin dice que sí, se ejecuta <code>AUDITORIA-SEO.md</code> entero. Si dice que no, se anota que queda sin auditar.</Paso>
+          <Paso n={5} titulo="Auditoría SEO">Al terminar se ejecuta siempre <code>AUDITORIA-SEO.md</code> entero, sin preguntar (pedido por el admin el 14-11-2026). El borrador queda listo para publicar, con SEO y todo, a falta solo de la portada.</Paso>
           <Paso n={6} titulo="Alta como borrador">Se da de alta en <code>BORRADORES</code> (<code>src/lib/guides.ts</code>), con su consulta y la fecha de su auditoría, y se despliega. <strong>Nunca directamente en <code>GUIDES</code></strong>. Desplegada así, solo la ve el admin: no sale en listados ni en el sitemap, y su URL da 404 a los demás.</Paso>
           <Paso n={7} titulo="Publicación, por el admin">El admin la revisa en <Link href="/admin/acciones">Acciones</Link> y pulsa «Publicar». Desde ese momento es pública e indexable, sin desplegar nada. Publicar es siempre un gesto suyo.</Paso>
           <Paso n={8} titulo="Ascenso">En la siguiente sesión, la guía ya publicada se mueve de <code>BORRADORES</code> al final de <code>GUIDES</code>. Con eso entra también en el buscador de guías y en la vitrina de Logros.</Paso>
@@ -417,7 +417,7 @@ export default function GuiasInstruccionesPage() {
           <Punto>Lo esencial está en el HTML del servidor, no solo dentro de una pieza interactiva</Punto>
           <Punto>Probada sin sesión (se lee entera, el quiz pide cuenta) y con sesión (el quiz guarda)</Punto>
           <Punto><code>npm run check &amp;&amp; npx tsc --noEmit</code> en verde</Punto>
-          <Punto><strong>Auditoría SEO ofrecida</strong>, y hecha o anotada como pendiente</Punto>
+          <Punto><strong>Auditoría SEO hecha</strong> entera (Fases 0 a 17), con su informe</Punto>
           <Punto>Dada de alta en <code>BORRADORES</code>, con <code>lista</code>, <code>consulta</code> y <code>auditada</code>. <strong>La publica el admin</strong> desde Acciones</Punto>
         </div>
       </Seccion>

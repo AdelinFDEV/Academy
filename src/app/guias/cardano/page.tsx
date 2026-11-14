@@ -208,9 +208,9 @@ export default async function CardanoPage() {
             </p>
             <p>Lo que lo distingue de casi todas las demás redes son tres cosas:</p>
             <ul>
-              <li><strong>Tu ADA no sale de tu cartera.</strong> Delegas el derecho a validar, no las monedas. El pool no puede tocarlas.</li>
+              <li><strong>Tu ADA no sale de tu <Termino slug="wallet">cartera</Termino>.</strong> <Termino slug="delegacion">Delegas</Termino> el derecho a validar, no las monedas. El pool no puede tocarlas.</li>
               <li><strong>No hay bloqueo.</strong> Puedes gastar o vender en cualquier momento, sin plazo de espera.</li>
-              <li><strong>No hay castigo.</strong> Si tu pool funciona mal, dejas de cobrar esos días, pero no pierdes monedas. En otras redes, un fallo del validador puede costarte parte de lo delegado.</li>
+              <li><strong>No hay castigo.</strong> Si tu pool funciona mal, dejas de cobrar esos días, pero no pierdes monedas. En otras redes, un fallo del <Termino slug="validador">validador</Termino> puede costarte parte de lo delegado.</li>
             </ul>
             <p>
               A cambio, rinde poco: <strong>entre un 2 % y un 3 % al año</strong> a finales de 2026, según las
@@ -270,7 +270,7 @@ export default async function CardanoPage() {
           <div className="gbc-body">
             <p>
               Durante años, los cambios en Cardano los decidían sus tres entidades fundadoras. Eso terminó entre
-              septiembre de 2024 y enero de 2025, con dos actualizaciones que entregaron el gobierno a la
+              septiembre de 2024 y enero de 2025, con dos actualizaciones que entregaron el <Termino slug="gobernanza">gobierno</Termino> a la
               comunidad.
             </p>
             <p>Desde entonces, cualquier cambio importante necesita el visto bueno de tres grupos:</p>
@@ -296,7 +296,7 @@ export default async function CardanoPage() {
           <div className="gbc-body">
             <p>
               ADA tiene un máximo fijado en el protocolo: <strong>45.000 millones</strong>. La mayor parte ya
-              está en circulación. Lo que falta está guardado en una reserva, y de ahí sale lo que se paga por
+              está <Termino slug="oferta-circulante">en circulación</Termino>. Lo que falta está guardado en una reserva, y de ahí sale lo que se paga por
               el staking.
             </p>
             <p>

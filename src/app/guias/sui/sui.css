@@ -1,0 +1,66 @@
+/* Guía «Qué es Sui». Prefijo: sui-. Lo común está en ../guias.css. */
+
+/* ── Las tres clases de objetos ── */
+.sui-objetos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.sui-objeto { display: grid; gap: 8px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--gold); border-radius: 4px 4px 16px 16px; background: rgba(15,32,64,0.5); }
+.sui-objeto-tipo { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); }
+.sui-objeto strong { font-size: 17px; line-height: 1.4; color: #fff; }
+.sui-objeto p { margin: 0; font-size: 15px; line-height: 1.65; color: #dce8f8; }
+
+/* ── Vía rápida frente a consenso ── */
+.sui-vias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.sui-via { display: grid; gap: 6px; align-content: start; padding: 22px; border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid #7f93b0; border-radius: 6px 16px 16px 6px; background: rgba(15,32,64,0.5); }
+.sui-via.es-rapida { border-left-color: #4ade80; }
+.sui-via-nombre { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #b0c4d8; }
+.sui-via.es-rapida .sui-via-nombre { color: #4ade80; }
+.sui-via strong { font-size: 17px; color: #fff; }
+.sui-via p { margin: 2px 0 0; font-size: 15px; line-height: 1.6; color: #dce8f8; }
+
+/* ── Calculadora de comisiones ── */
+.sui-calc { margin-top: 24px; padding: 24px; border: 1px solid var(--gold-border); border-radius: 18px; background: linear-gradient(135deg, #0f2040, #0a1628); }
+.sui-calc-titulo { margin: 0 0 16px; font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); }
+.sui-calc-ejemplos { display: flex; flex-wrap: wrap; gap: 8px; }
+.sui-calc-ejemplos button { padding: 9px 14px; border: 1px solid rgba(255,255,255,0.16); border-radius: 99px; background: transparent; font: inherit; font-size: 14px; font-weight: 600; color: #b0c4d8; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
+.sui-calc-ejemplos button.is-activo { border-color: var(--accent-orange); background: var(--accent-orange); color: #fff; }
+
+.sui-calc-campos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.sui-calc-campo { display: grid; gap: 8px; align-content: start; padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(255,255,255,0.03); }
+.sui-calc-etiqueta { font-size: 15px; font-weight: 700; color: #fff; }
+.sui-calc-ayuda { font-size: 12.5px; line-height: 1.45; color: #9db2d3; }
+.sui-calc-campo input { width: 100%; padding: 10px 14px; border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; background: #060f1f; font: inherit; font-size: 17px; font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+.sui-calc button:focus-visible, .sui-calc input:focus-visible { outline: 2px solid var(--accent-orange); outline-offset: 2px; }
+
+/* El resultado, como un ticket: una línea por concepto */
+.sui-calc-ticket { display: grid; margin-top: 18px; border: 1px dashed rgba(230,180,85,0.45); border-radius: 14px; background: #060f1f; overflow: hidden; }
+.sui-calc-linea { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.sui-calc-linea span { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; color: #fff; }
+.sui-calc-linea small { font-size: 13px; color: #9db2d3; font-variant-numeric: tabular-nums; }
+.sui-calc-linea strong { font-family: ui-monospace, Consolas, monospace; font-size: 15px; color: #dce8f8; text-align: right; font-variant-numeric: tabular-nums; }
+.sui-calc-linea.es-devolucion strong { color: #4ade80; }
+.sui-calc-linea.es-total { border-bottom: 0; background: var(--gold-soft); }
+.sui-calc-linea.es-total span, .sui-calc-linea.es-total strong { color: var(--gold); }
+.sui-calc-linea.es-total strong { font-size: 18px; }
+.sui-calc-linea.es-total small { font-size: 14px; color: #fff; }
+.sui-calc-nota { margin: 14px 0 0; font-size: 13px; line-height: 1.6; color: #9db2d3; }
+
+/* ── Tabla de circulación: la fila de hoy ── */
+.gbc-tabla tr.sui-fila-hoy td { background: var(--gold-soft); }
+
+/* ── Staking frente a desbloqueos ── */
+.sui-cuenta { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.sui-cuenta > div { display: grid; gap: 4px; padding: 20px 22px; border: 1px solid rgba(74,222,128,0.35); border-radius: 14px; background: rgba(74,222,128,0.06); }
+.sui-cuenta > div.es-contra { border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.06); }
+.sui-cuenta span { font-size: 13px; color: #b0c4d8; }
+.sui-cuenta strong { font-size: 30px; font-weight: 800; color: #4ade80; font-variant-numeric: tabular-nums; }
+.sui-cuenta .es-contra strong { color: #fca5a5; }
+.sui-cuenta small { font-size: 13px; line-height: 1.45; color: #b0c4d8; }
+
+@media (max-width: 820px) {
+  .sui-objetos, .sui-vias, .sui-calc-campos, .sui-cuenta { grid-template-columns: 1fr; }
+  .sui-calc { padding: 18px 16px; }
+  .sui-calc-linea { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 14px; }
+  .sui-calc-linea small { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sui-calc-ejemplos button { transition: none; }
+}

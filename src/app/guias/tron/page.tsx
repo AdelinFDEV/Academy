@@ -257,7 +257,7 @@ export default async function TronPage() {
           <h2 className="gbc-title">Quién controla TRON: 27 superrepresentantes y un fundador</h2>
           <div className="gbc-body">
             <p>
-              En TRON no hay mineros. Los bloques los producen, por turnos, 27 participantes llamados
+              En TRON no hay <Termino slug="minero">mineros</Termino>. Los bloques los producen, por turnos, 27 participantes llamados
               superrepresentantes. Se eligen con los votos de quienes tienen TRX bloqueados, y la lista se
               revisa cada seis horas. Es una variante de la
               <Termino slug="prueba-de-participacion"> prueba de participación</Termino>.
@@ -310,7 +310,7 @@ export default async function TronPage() {
               congelado puedes ser tú.
             </p>
             <p>
-              <strong>La segunda: en la Unión Europea ya no se vende en los exchanges.</strong> La norma MiCA
+              <strong>La segunda: en la Unión Europea ya no se vende en los <Termino slug="exchange">exchanges</Termino>.</strong> La norma <Termino slug="mica">MiCA</Termino>
               exige una licencia europea a quien emite una stablecoin, y Tether no la ha pedido. Por eso los
               exchanges autorizados en la UE retiraron el USDT de su oferta para clientes europeos a comienzos
               de 2025. Tenerlo en tu <Termino slug="wallet">cartera</Termino> no está prohibido; lo difícil es
