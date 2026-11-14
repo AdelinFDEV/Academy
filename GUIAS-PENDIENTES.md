@@ -43,7 +43,55 @@ curl -s "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=ma
 
 **No queda ninguna.** Las 15 que quedaban se escribieron y auditaron el 14-11-2026 y están en `BORRADORES` (`src/lib/guides.ts`), a la espera de su portada y de que el admin las publique: Zcash, NEAR, Bitcoin Cash, Litecoin, Avalanche, Uniswap, Canton, Sui, Toncoin (ahora Gram), Hedera, Rain, Bittensor, Quant, Ethena y Aave. Lo que les falta está en `TAREAS.md`.
 
-Si se quiere seguir con esta serie, se vuelve a mirar el ranking con el comando de arriba y se apuntan aquí las que hayan entrado en el top 50 (por ejemplo, el 14-11-2026 asomaban Aster, Ondo, World Liberty Financial, Pump.fun, Internet Computer y Polkadot, entre los puestos 50 y 60).
+### Segunda tanda: del puesto 50 al 100 (CoinGecko, 15-11-2026)
+
+Mismo criterio que la primera: fuera estables, tokens de exchange, memes y activos tradicionales tokenizados. Para ver el tramo, el comando de arriba con `per_page=100`. **El puesto es el de ese día** y cambia: antes de empezar una, se vuelve a mirar, y si la moneda ha caído mucho o el proyecto ha cambiado, se decide con el admin si sigue mereciendo guía.
+
+Quedan **30 por explicar**, en el orden del ranking (dos de ellas, por verificar):
+
+| Puesto | Proyecto | Símbolo | Qué es, en una línea | Nota |
+|---|---|---|---|---|
+| 54 | World Liberty Financial | WLFI | Token de gobierno del proyecto DeFi de la familia Trump, emisor de la estable USD1 | Tema político: datos y fuentes con cuidado; sin opinión |
+| 55 | Ondo | ONDO | Protocolo que lleva bonos del Tesoro y acciones a la cadena; ONDO es su token de gobierno | Enlaza con la idea de guía sobre tokenización |
+| 57 | Pump.fun | PUMP | Plataforma para lanzar memecoins; PUMP es el token de la plataforma, no un meme | Entra por decisión del admin (15-11-2026): se explica la plataforma y su riesgo, no se anuncia ningún meme |
+| 59 | Aster | ASTER | Exchange descentralizado de futuros perpetuos en BNB Chain | Rival de Hyperliquid: enlazar su guía |
+| 60 | Morpho | MORPHO | Protocolo de préstamos que optimiza y crea mercados de crédito sobre otros | Enlaza con Aave |
+| 61 | Mantle | MNT | Capa 2 de Ethereum, muy ligada a Bybit | No es token de exchange, pero contar el vínculo |
+| 62 | Sky (antes Maker) | SKY | Gobierno del emisor de DAI y USDS; sustituyó a MKR | La migración MKR → SKY es la pregunta típica |
+| 63 | Polkadot | DOT | Red de cadenas conectadas (parachains) con seguridad compartida | |
+| 64 | Internet Computer | ICP | Cadena que aloja webs y aplicaciones enteras en la red | |
+| 65 | JUST | JST | Plataforma DeFi del ecosistema TRON (préstamos y estables) | Enlaza con TRON |
+| 68 | Bitway | BTW | Token de gobierno de una plataforma de rendimiento, pagos y financiación sobre bitcoin | **Por verificar**: proyecto reciente y con poca información pública |
+| 71 | Ethereum Classic | ETC | La cadena original de Ethereum que no aceptó el hard fork de 2016 | Ficha `hard-fork` |
+| 72 | Arbitrum | ARB | La capa 2 de Ethereum más usada (rollup optimista) | Fichas `rollup`, `capa-2` |
+| 74 | Venice | VVV | IA generativa privada: modelos abiertos sin guardar conversaciones; VVV da acceso a la API | |
+| 75 | Polygon | POL | Red de Ethereum (antes MATIC) que se reconvirtió en ecosistema de cadenas | La migración MATIC → POL |
+| 77 | Jupiter | JUP | Agregador de intercambios y perpetuos de Solana | Enlaza con Solana |
+| 78 | Midnight | NIGHT | Cadena de privacidad del ecosistema Cardano, con pruebas de conocimiento cero | Enlaza con Cardano, Zcash y Monero |
+| 80 | Kaspa | KAS | Prueba de trabajo con bloques en paralelo (GHOSTDAG) | |
+| 81 | Pi Network | PI | La «minería desde el móvil»; red abierta en 2025 | Muy buscada en España; explicar las dudas sin sensacionalismo |
+| 82 | Lighter | LIT | Exchange descentralizado de perpetuos con pruebas de conocimiento cero | Rival de Hyperliquid y Aster |
+| 84 | Algorand | ALGO | Prueba de participación pura, con finalidad inmediata | |
+| 86 | Cosmos Hub | ATOM | El «internet de cadenas»: el protocolo IBC y su centro | |
+| 87 | Injective | INJ | Cadena hecha para finanzas y derivados, sobre Cosmos | |
+| 89 | Beldex | BDX | Moneda de privacidad derivada de Monero, con mensajería y VPN propias | Enlaza con Monero; la misma norma europea le afecta |
+| 91 | Pearl | PEARL | Prueba de trabajo útil: la minería sale del cálculo de IA en GPU | Muy reciente: comprobar que el proyecto funciona |
+| 92 | LayerZero | ZRO | Protocolo de mensajería entre cadenas | Fichas `bridge`, `interoperabilidad` |
+| 93 | XDC Network | XDC | Cadena empresarial para comercio internacional y financiación de exportaciones | |
+| 95 | PancakeSwap | CAKE | El mayor exchange descentralizado de BNB Chain | Enlaza con BNB y Uniswap |
+| 97 | Filecoin | FIL | Almacenamiento descentralizado pagado en FIL | |
+| 99 | Pieverse | PIEVERSE | Proyecto de IA en BNB Chain; CoinGecko no publica descripción | **Por verificar**: si no hay un producto que explicar, se descarta |
+
+**Fuera de este tramo, y por qué** (el mismo criterio de abajo):
+
+- **Ya tienen guía o borrador:** Aave (51), Ethena (52), Worldcoin (70) y Render (79).
+- **Estables:** USDD, BFUSD, USDGO, Open USD, GHO, Usual USD, EURC, TrueUSD y YLDS.
+- **Tokens de exchange:** HTX DAO, Bitget Token, KuCoin y Gate.
+- **Plataforma centralizada:** NEXO, la moneda de la casa de un servicio de préstamos y compraventa. Fuera por el mismo motivo que los exchanges (decidido por el admin el 15-11-2026).
+- **Memes:** Pepe.
+- **Activos tradicionales tokenizados:** Invesco USTB y Janus Henderson JAAA (fondos de deuda). Irían en la guía única sobre tokenización.
+
+Asomaban justo detrás del 100, por si el ranking se mueve: Stacks, Ether.fi, Dash, Pyth Network, Flare y Aptos.
 
 **Fuera de la lista, y por qué:**
 
