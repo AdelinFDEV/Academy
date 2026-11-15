@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { coingeckoIdExiste, errorIdDesconocido, sugerirCoingeckoId } from "@/lib/coingecko";
+import { registrarMovimiento } from "@/lib/portfolio-movimientos";
 import { NextResponse } from "next/server";
 
 async function getAuthenticatedUser() {
@@ -116,6 +117,15 @@ export async function POST(req: Request) {
       .single();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    await registrarMovimiento(supabase, {
+      tipo: "ampliacion",
+      coin_symbol: existente.coin_symbol,
+      coin_name: existente.coin_name,
+      coingecko_id: cgId,
+      precio: bp,
+      cantidad: qty,
+      nota: notes?.trim() || null,
+    });
     return NextResponse.json(data);
   }
 
@@ -134,5 +144,14 @@ export async function POST(req: Request) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  await registrarMovimiento(supabase, {
+    tipo: "apertura",
+    coin_symbol: data.coin_symbol,
+    coin_name: data.coin_name,
+    coingecko_id: cgId,
+    precio: bp,
+    cantidad: qty,
+    nota: notes?.trim() || null,
+  });
   return NextResponse.json(data);
 }

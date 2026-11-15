@@ -13,7 +13,7 @@ La regla que las gobierna a todas: **si vas a cambiar algo de aquí, primero ent
 | Vas a tocar… | Lee |
 |---|---|
 | Por qué no hay entradas, `/post/` y `/categoria/` en 410, lo de pago de los cursos | [Solo guías](#desde-el-10-10-2026-la-web-es-solo-guías) |
-| `portfolio_positions`, `dca_compras`, `/api/portfolio`, `/api/dca` | [Portfolio Adelin](#portfolio-adelin-solo-el-admin-escribe-y-hay-dos-barreras) |
+| `portfolio_positions`, `portfolio_movimientos`, `dca_compras`, `/api/portfolio`, `/api/dca` | [Portfolio Adelin](#portfolio-adelin-solo-el-admin-escribe-y-hay-dos-barreras) |
 | Aviso legal, privacidad, cookies, `src/lib/legal.ts` | [El marco legal es rumano](#el-marco-legal-es-rumano--no-vuelvas-a-escribir-normativa-española) |
 | Cualquier script de terceros, el banner de cookies, GA4 | [Analítica y consentimiento](#analítica-dos-capas-y-el-banner-manda-sobre-una-de-ellas) |
 | El dominio, el DNS, una redirección | [El sitio vive SIN www](#el-sitio-vive-sin-www--no-lo-inviertas-nunca) |
@@ -42,7 +42,7 @@ Auditado el 07-09-2026 con un usuario premium real, no leyendo el código: se cr
 | Puerta | Qué la cierra |
 |---|---|
 | **La API** (`/api/portfolio`, `/api/portfolio/[id]`, `/api/dca`) | Toda escritura llama a `getAdminUser()` / `isAdmin`, que lee el **rol en la base de datos** a partir de la sesión. No se puede falsificar desde el cliente: lo que llega en la petición nunca decide el rol |
-| **La base de datos** | `portfolio_positions` y `dca_compras` **no tienen ninguna policy de escritura**. Insertar da `42501`; actualizar y borrar afectan a **0 filas** porque RLS ni siquiera deja ver la fila que se quiere tocar |
+| **La base de datos** | `portfolio_positions`, `portfolio_movimientos` y `dca_compras` **no tienen ninguna policy de escritura**. Insertar da `42501`; actualizar y borrar afectan a **0 filas** porque RLS ni siquiera deja ver la fila que se quiere tocar |
 
 Esa segunda barrera es la que importa de verdad: **la clave anónima va en el navegador de cualquiera**, así que un premium puede hablar con Supabase desde la consola sin pasar por la API. Comprobado también que no puede ascenderse a admin (`profiles` está blindada desde la auditoría de julio).
 

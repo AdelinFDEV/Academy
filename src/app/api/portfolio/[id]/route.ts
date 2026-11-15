@@ -1,7 +1,32 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { coingeckoIdExiste, errorIdDesconocido, sugerirCoingeckoId } from "@/lib/coingecko";
+import { cgFetch, coingeckoIdExiste, errorIdDesconocido, sugerirCoingeckoId } from "@/lib/coingecko";
+import { registrarMovimiento } from "@/lib/portfolio-movimientos";
 import { NextResponse } from "next/server";
+
+interface FilaPosicion {
+  coin_symbol: string;
+  coin_name: string;
+  coingecko_id: string | null;
+  buy_price: number;
+  quantity: number;
+}
+
+/** Precio de mercado en dólares, o null si CoinGecko no responde. */
+async function precioMercado(id: string | null): Promise<number | null> {
+  if (!id) return null;
+  try {
+    const res = await cgFetch(`/simple/price?ids=${encodeURIComponent(id)}&vs_currencies=usd`, {
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const json = (await res.json()) as Record<string, { usd?: number }>;
+    const usd = json[id]?.usd;
+    return typeof usd === "number" ? usd : null;
+  } catch {
+    return null;
+  }
+}
 
 async function getAdminUser() {
   const supabase = await createClient();
@@ -46,6 +71,15 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   if (notes !== undefined) updates.notes = notes?.trim() || null;
 
   const supabase = createAdminClient();
+
+  // La fila de antes, para saber si la edición es un MOVIMIENTO (cambia la
+  // cantidad) o solo una corrección (precio, fecha, notas), que no se apunta.
+  const { data: antes } = await supabase
+    .from("portfolio_positions")
+    .select("coin_symbol, coin_name, coingecko_id, buy_price, quantity")
+    .eq("id", id)
+    .maybeSingle<FilaPosicion>();
+
   const { data, error } = await supabase
     .from("portfolio_positions")
     .update(updates)
@@ -54,6 +88,43 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  if (antes && typeof updates.quantity === "number" && Number.isFinite(updates.quantity)) {
+    const qAntes = Number(antes.quantity);
+    const qDespues = updates.quantity;
+    const diferencia = qDespues - qAntes;
+    // Tolerancia relativa: la cantidad sale de dividir dinero entre precio en
+    // el formulario, y reeditar sin tocar nada puede mover el último decimal.
+    if (Math.abs(diferencia) > Math.max(qAntes, qDespues) * 1e-6) {
+      const fila = data as FilaPosicion;
+      if (diferencia > 0) {
+        // Precio de lo añadido: lo invertido de más entre los tokens de más.
+        const invertidoAntes = Number(antes.buy_price) * qAntes;
+        const invertidoDespues = Number(fila.buy_price) * qDespues;
+        const precio = (invertidoDespues - invertidoAntes) / diferencia;
+        await registrarMovimiento(supabase, {
+          tipo: "ampliacion",
+          coin_symbol: fila.coin_symbol,
+          coin_name: fila.coin_name,
+          coingecko_id: fila.coingecko_id,
+          precio: precio > 0 ? precio : null,
+          cantidad: diferencia,
+          nota: null,
+        });
+      } else {
+        await registrarMovimiento(supabase, {
+          tipo: "reduccion",
+          coin_symbol: fila.coin_symbol,
+          coin_name: fila.coin_name,
+          coingecko_id: fila.coingecko_id,
+          precio: await precioMercado(fila.coingecko_id),
+          cantidad: -diferencia,
+          nota: null,
+        });
+      }
+    }
+  }
+
   return NextResponse.json(data);
 }
 
@@ -63,11 +134,31 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
 
   const { id } = await params;
   const supabase = createAdminClient();
+  const { data: antes } = await supabase
+    .from("portfolio_positions")
+    .select("coin_symbol, coin_name, coingecko_id, buy_price, quantity")
+    .eq("id", id)
+    .maybeSingle<FilaPosicion>();
+
   const { error } = await supabase
     .from("portfolio_positions")
     .delete()
     .eq("id", id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Borrar la posición es cerrarla: se apunta como venta al precio de mercado.
+  if (antes) {
+    await registrarMovimiento(supabase, {
+      tipo: "cierre",
+      coin_symbol: antes.coin_symbol,
+      coin_name: antes.coin_name,
+      coingecko_id: antes.coingecko_id,
+      precio: await precioMercado(antes.coingecko_id),
+      cantidad: Number(antes.quantity),
+      nota: null,
+    });
+  }
+
   return NextResponse.json({ ok: true });
 }

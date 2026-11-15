@@ -1650,3 +1650,174 @@
   .pv-destacada:hover,
   .pv-dca-dato:hover { transform: none; }
 }
+
+/* ══ Últimos movimientos (15-11-2026) ══════════════════════════════════════
+   Arriba de la cartera spot de altcoins: los tres últimos movimientos como
+   mensajes, con fecha. Los apunta la API sola (`portfolio-movimientos.ts`).
+   La letra del mensaje es monoespaciada a propósito: que se lea como un
+   aviso de mesa, distinto del resto de la página. */
+
+.pv-movs {
+  --pv-mensaje: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-bottom: 1.4rem;
+  padding: 1.3rem 1.3rem 1.4rem;
+  border: 1px solid rgba(79, 157, 255, 0.18);
+  border-radius: 20px;
+  background:
+    radial-gradient(60% 120% at 100% 0%, rgba(79, 157, 255, 0.12) 0%, transparent 60%),
+    linear-gradient(165deg, #0d1528 0%, #080d1a 100%);
+}
+
+.pv-movs-cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.pv-movs-titulo {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--pv-texto);
+}
+
+.pv-movs-auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+  font-size: 0.72rem;
+  color: var(--pv-suave);
+}
+
+.pv-movs-vacio {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--pv-linea);
+  border-radius: 14px;
+  font-family: var(--pv-mensaje);
+  font-size: 0.82rem;
+  color: var(--pv-suave);
+}
+
+.pv-movs-lista {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pv-mov {
+  --pv-mov-color: var(--pv-sube);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  animation: pv-mov-entra 0.45s ease-out both;
+}
+.pv-mov:nth-child(2) { animation-delay: 0.08s; }
+.pv-mov:nth-child(3) { animation-delay: 0.16s; }
+.pv-mov.es-venta { --pv-mov-color: var(--pv-baja); }
+
+@keyframes pv-mov-entra {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.pv-mov-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #071226;
+  background: linear-gradient(145deg, #a8c9ff 0%, var(--pv-azul) 100%);
+}
+
+.pv-mov-burbuja {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem 0.95rem 0.55rem;
+  border: 1px solid var(--pv-linea);
+  border-left: 3px solid var(--pv-mov-color);
+  border-radius: 4px 14px 14px 14px;
+  background: rgba(240, 244, 255, 0.035);
+}
+
+.pv-mov-meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.78rem;
+}
+.pv-mov-meta strong {
+  font-weight: 600;
+  color: var(--pv-texto);
+}
+
+.pv-mov-tipo {
+  padding: 0.08rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pv-mov-color);
+  background: color-mix(in srgb, var(--pv-mov-color) 14%, transparent);
+}
+
+.pv-mov-texto {
+  margin: 0;
+  font-family: var(--pv-mensaje);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--pv-texto);
+  overflow-wrap: anywhere;
+}
+
+.pv-mov-nota {
+  margin: 0.35rem 0 0;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--pv-linea);
+  font-family: var(--pv-mensaje);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--pv-suave);
+  white-space: pre-line;
+}
+
+.pv-mov-fecha {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  margin-top: 0.35rem;
+  font-family: var(--pv-mensaje);
+  font-size: 0.68rem;
+  color: var(--pv-tenue);
+}
+.pv-mov-fecha svg { color: var(--pv-azul); }
+
+@media (max-width: 640px) {
+  .pv-movs { padding: 1.1rem 1rem 1.2rem; }
+  .pv-movs-cabecera { align-items: flex-start; flex-direction: column; gap: 0.5rem; }
+  .pv-mov-avatar { width: 28px; height: 28px; font-size: 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pv-mov { animation: none; }
+}

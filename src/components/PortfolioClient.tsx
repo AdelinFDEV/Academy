@@ -5,6 +5,7 @@ import {
   TrendingUp, TrendingDown, Plus, Trash2, RefreshCw, Pencil, Check, X, Wallet, Crown,
   ChevronDown, Scale,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import CifraAnimada from "@/components/CifraAnimada";
 import { formatoES } from "@/lib/formato";
 
@@ -105,6 +106,7 @@ const EMPTY_FORM = {
  * la decide el servidor) no han cambiado.
  */
 export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
+  const router = useRouter();
   const [positions, setPositions] = useState<Position[]>(initialPositions);
   const [prices, setPrices] = useState<Record<string, PriceEntry>>({});
   // Sin posiciones no hay nada que cargar: así el efecto no tiene que
@@ -276,6 +278,9 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
       setPositions(siguientes);
       cancelForm();
       fetchPrices(siguientes);
+      // Vuelve a leer la página en el servidor para que «Últimos movimientos»
+      // enseñe el que se acaba de apuntar.
+      router.refresh();
     } catch {
       setFormError("Error de red. Inténtalo de nuevo.");
     } finally {
@@ -286,7 +291,10 @@ export default function PortfolioClient({ initialPositions, isAdmin }: Props) {
   async function deletePosition(id: string) {
     if (!confirm("¿Eliminar esta posición?")) return;
     const res = await fetch(`/api/portfolio/${id}`, { method: "DELETE" });
-    if (res.ok) setPositions((prev) => prev.filter((p) => p.id !== id));
+    if (res.ok) {
+      setPositions((prev) => prev.filter((p) => p.id !== id));
+      router.refresh();
+    }
   }
 
   const cargando = <span className="pv-cargando" aria-label="Cargando" />;

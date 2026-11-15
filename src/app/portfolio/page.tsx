@@ -6,6 +6,8 @@ import SiteNav from "@/components/SiteNav";
 import PortfolioClient from "@/components/PortfolioClient";
 import DcaClient from "@/components/DcaClient";
 import PortfoliosTabs from "@/components/PortfoliosTabs";
+import UltimosMovimientos from "@/components/UltimosMovimientos";
+import type { Movimiento } from "@/lib/portfolio-movimientos";
 import { precioBitcoin, type CompraDCA } from "@/lib/dca";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import { IconoPortfolio } from "@/components/IconosAnimados";
@@ -46,10 +48,17 @@ export default async function PortfolioPage() {
 
   // Las dos carteras y el precio de BTC, en paralelo: son consultas
   // independientes y encadenarlas solo suma espera.
-  const [{ data: positions }, { data: compras }, precioBtc] = await Promise.all([
+  const [{ data: positions }, { data: compras }, precioBtc, { data: movimientos }] = await Promise.all([
     supabase.from("portfolio_positions").select("*").order("buy_date", { ascending: true }),
     supabase.from("dca_compras").select("*").order("fecha", { ascending: true }),
     precioBitcoin(),
+    // Los tres últimos movimientos del spot de altcoins (nunca del DCA). Si la
+    // tabla aún no existe, `data` llega null y el bloque sale vacío.
+    supabase
+      .from("portfolio_movimientos")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(3),
   ]);
 
   return (
@@ -72,7 +81,12 @@ export default async function PortfolioPage() {
         </header>
 
         <PortfoliosTabs
-          spot={<PortfolioClient initialPositions={positions ?? []} isAdmin={isAdmin} />}
+          spot={
+            <>
+              <UltimosMovimientos movimientos={(movimientos ?? []) as Movimiento[]} />
+              <PortfolioClient initialPositions={positions ?? []} isAdmin={isAdmin} />
+            </>
+          }
           dca={
             <DcaClient
               compras={(compras ?? []) as CompraDCA[]}
