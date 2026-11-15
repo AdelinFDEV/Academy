@@ -25,6 +25,7 @@ const PORTADA_IMAGEN: Record<string, string> = {
   "futuros-y-apalancamiento": "/cursos/futuros-y-apalancamiento/portada.webp",
   "analisis-tecnico-sin-humo": "/cursos/analisis-tecnico-sin-humo/portada.webp",
   "defi-y-stablecoins": "/cursos/defi-y-stablecoins/portada.webp",
+  "fiscalidad-cripto-espana": "/cursos/fiscalidad-cripto-espana/portada.webp",
 };
 
 type Motivo = "pulso" | "escudo" | "datos" | "peldanos" | "balanza" | "velas" | "vasos" | "generico";
