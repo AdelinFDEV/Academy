@@ -1,8 +1,8 @@
 {
   "slug": "fiscalidad-cripto-espana",
   "titulo": "Fiscalidad cripto en España",
-  "subtitulo": "De la primera compra a la declaración, sin sustos con Hacienda.",
-  "descripcion": "Un curso completo para declarar tus criptomonedas en España con criterio: qué tributa y qué no, cómo calcular cada ganancia con FIFO, dónde va el staking, los airdrops o el DeFi, cómo aprovechar las pérdidas, cómo rellenar la Renta casilla a casilla y qué hacer si Hacienda te escribe. Con casos reales, calculadoras y minijuegos en cada módulo.",
+  "subtitulo": "El curso para declarar tus criptomonedas sin sustos con Hacienda, de la primera compra a la Renta.",
+  "descripcion": "Un curso completo de fiscalidad de criptomonedas para declarar en España con criterio. Aprenderás qué tributa y qué no, cómo calcular cada ganancia con FIFO y dónde va el staking, los airdrops o el DeFi. También cómo aprovechar las pérdidas, cómo rellenar la Renta casilla a casilla y qué hacer si Hacienda te escribe. Con casos reales, calculadoras y minijuegos en cada módulo.",
   "objetivos": [
     "Distinguir qué operaciones tributan y cuáles no, también las permutas entre criptomonedas y el paso a stablecoins.",
     "Calcular la ganancia o pérdida de cualquier venta con el método FIFO, incluidas las comisiones.",
@@ -17,14 +17,14 @@
   "aviso": "fiscal",
   "logro": "Contribuyente Blindado",
   "preguntas_final": 25,
-  "revisado": "2026-11-14",
+  "revisado": "2026-11-15",
   "orden": 8,
   "published": true,
   "modulos": [
     {
       "orden": 1,
       "titulo": "Las reglas del juego",
-      "descripcion": "Quién tributa en España, las dos bases del IRPF y todo lo que Hacienda ya sabe de tus criptomonedas antes de que declares.",
+      "descripcion": "Las bases de la fiscalidad de las criptomonedas: quién tributa en España, las dos bases del IRPF y todo lo que Hacienda ya sabe de ti antes de que declares.",
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [
@@ -49,7 +49,7 @@
     {
       "orden": 3,
       "titulo": "Rentas que no son ventas",
-      "descripcion": "Staking, lending, airdrops, minería, donaciones y herencias: cada renta tiene su base, su valoración y su momento.",
+      "descripcion": "Staking, lending, airdrops, minería, donaciones y herencias: en la fiscalidad de las criptomonedas, cada renta tiene su base, su valoración y su momento.",
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [
@@ -62,7 +62,7 @@
     {
       "orden": 4,
       "titulo": "Los casos difíciles",
-      "descripcion": "DeFi, NFT, robos, estafas y exchanges quebrados: donde hay criterio de Hacienda y donde todavía no.",
+      "descripcion": "DeFi, NFT, robos, estafas y exchanges quebrados: donde la fiscalidad cripto ya tiene criterio de Hacienda y donde todavía no.",
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [
@@ -74,7 +74,7 @@
     {
       "orden": 5,
       "titulo": "Pérdidas y planificación",
-      "descripcion": "Las pérdidas también cuentan: cómo compensarlas, la regla de la recompra que casi todos aplican mal y qué revisar antes del 31 de diciembre.",
+      "descripcion": "Las pérdidas también cuentan en tu fiscalidad: cómo compensarlas, la regla de la recompra que casi todos aplican mal y qué revisar antes del 31 de diciembre.",
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [
@@ -86,7 +86,7 @@
     {
       "orden": 6,
       "titulo": "Declarar, paso a paso",
-      "descripcion": "Quién está obligado, cómo se rellena Renta Web, qué documentación guardar y cuándo tocan el modelo 721 y el Impuesto sobre el Patrimonio.",
+      "descripcion": "El módulo del curso que acaba en tu declaración: quién está obligado, cómo se rellena Renta Web, qué documentación guardar y cuándo tocan el modelo 721 y el Impuesto sobre el Patrimonio.",
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [
@@ -99,7 +99,7 @@
     {
       "orden": 7,
       "titulo": "Cuando algo sale mal",
-      "descripcion": "Errores, declaraciones fuera de plazo, cartas de Hacienda e inspecciones: cómo se arregla cada cosa y cuánto cuesta.",
+      "descripcion": "Errores, declaraciones fuera de plazo, cartas de Hacienda e inspecciones: el último módulo del curso explica cómo se arregla cada cosa y cuánto cuesta.",
       "nota_minima": 5,
       "preguntas_examen": 10,
       "lecciones": [

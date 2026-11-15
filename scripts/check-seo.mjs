@@ -38,16 +38,17 @@ const BASE = process.env.SEO_BASE || "http://localhost:3000";
  */
 let ruta = (process.argv[2] ?? "").trim();
 // Por si aun así llega manglada.
-const manglada = ruta.match(/^[A-Za-z]:[\\/].*?[\\/]((?:post|guias|glosario|herramientas)[\\/].+)$/);
+const manglada = ruta.match(/^[A-Za-z]:[\\/].*?[\\/]((?:post|guias|glosario|herramientas|cursos)[\\/].+)$/);
 if (manglada) ruta = "/" + manglada[1].replace(/\\/g, "/");
 if (ruta && !ruta.startsWith("/")) ruta = "/" + ruta;
 
-if (!ruta || !/^\/(post|guias|glosario|herramientas)\/[a-z0-9-]+$/.test(ruta)) {
+if (!ruta || !/^\/(post|guias|glosario|herramientas|cursos)\/[a-z0-9-]+$/.test(ruta)) {
   console.log(`
 Uso:  npm run check:seo -- guias/mi-slug
       npm run check:seo -- guias/xrp
       npm run check:seo -- glosario/exchange
       npm run check:seo -- herramientas/diario
+      npm run check:seo -- cursos/mi-curso
 
   Sin la barra inicial: Git Bash la convierte en una ruta de Windows.
 `);
@@ -62,6 +63,10 @@ const PERFILES = {
   // Las fichas públicas de las herramientas (10-11-2026): son páginas de venta,
   // pero compiten en Google igual que una guía, así que se miden como ella.
   herramientas: { min: 800, max: 6000, h2: 4, enlaces: 2, visuales: 1, nombre: "ficha de herramienta" },
+  // Las fichas de los cursos (15-11-2026), por lo mismo: venden y compiten como
+  // una guía. Antes caían en el perfil de las entradas (máx. 1.800 palabras),
+  // que no se pensó para un temario de 24 lecciones.
+  cursos: { min: 800, max: 6000, h2: 3, enlaces: 2, visuales: 1, nombre: "ficha de curso" },
 };
 const tipo = ruta.split("/")[1];
 const P = PERFILES[tipo] ?? PERFILES.post;

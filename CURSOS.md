@@ -106,7 +106,7 @@ No hay que tocar CSS para cambiar de paleta: basta con el `color`.
 |---|---|---|---|---|
 | Psicología del trading | `psicologia-del-trading` | `#5ec8c4` | Verde azulado (turquesa) | Publicado 08-11-2026 |
 | Seguridad cripto | `seguridad-cripto` | `#a78bfa` | Violeta | Publicado 08-11-2026 |
-| Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Escrito el 15-11-2026 |
+| Fiscalidad cripto en España | `fiscalidad-cripto-espana` | `#e6b455` | Dorado | Publicado 15-11-2026 |
 | Cómo leer CoinMarketCap y CoinGecko | `coinmarketcap-y-coingecko` | `#ff8a7a` | Coral | Escrito el 12-11-2026 |
 | Bitcoin y DCA a largo plazo | `bitcoin-y-dca` | `#fbbf24` | Ámbar | Escrito el 13-11-2026 |
 | Futuros y apalancamiento | `futuros-y-apalancamiento` | `#f472b6` | Rosa | Escrito el 13-11-2026 |
@@ -407,7 +407,7 @@ node --env-file=.env.local scripts/subir-curso.mjs <slug>            # comprueba
 
 **Publicar** (solo con el «sí» del admin):
 
-1. **Ofrece la auditoría SEO** de la ficha (AGENTS.md, punto 2) y hazla si dice que sí: `npm run check:seo -- cursos/<slug> "<palabra clave>"`.
+1. **Ofrece la auditoría SEO** de la ficha (AGENTS.md, punto 2) y hazla si dice que sí: `npm run check:seo -- cursos/<slug> "<palabra clave>"`. El title y la description de Google salen del nombre y el subtítulo del curso; si la consulta que se quiere ganar no cabe en ellos, van aparte en `CURSO_SEO` (`src/lib/cursos-seo.ts`), sin tocar el nombre que sale en el certificado.
 2. Pon `"published": true` en `curso.json` (significa «terminado»: lo que falte pasa a ser un error) y vuelve a subir. **Eso no lo publica.** El admin lo ve en `/admin/acciones`, en «Listo para publicar», y pulsa el botón. El panel no deja publicar un curso con lecciones sin escribir.
 3. **Si el curso usa código nuevo** (un bloque, un aviso), despliega primero el código y publica después: la web en producción tiene que conocerlo antes de que el curso exista en la base de datos.
 4. Comprueba en producción la ficha, `/cursos` y que el aula pide sesión.

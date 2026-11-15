@@ -5,6 +5,7 @@ import { breadcrumbSchema, ORG_ID } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
 import { cursoPorSlug, datosAlumno, sesionActual } from "@/lib/cursos";
 import { estadoCurso } from "@/lib/cursos-progreso";
+import { CURSO_SEO } from "@/lib/cursos-seo";
 import FichaCurso from "./FichaCurso";
 import "../../herramientas/detalle.css";
 import "../cursos.css";
@@ -24,8 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const sesion = await sesionActual();
   const c = await cursoPorSlug(slug, sesion?.esAdmin ?? false);
   if (!c) return { title: "Curso no encontrado" };
-  const titulo = c.curso.titulo.length > 48 ? `${c.curso.titulo.slice(0, 47)}…` : c.curso.titulo;
-  const descripcion = (c.curso.subtitulo ?? c.curso.descripcion ?? "").slice(0, 160);
+  const seo = CURSO_SEO[slug];
+  const nombre = seo?.title ?? c.curso.titulo;
+  const titulo = nombre.length > 48 ? `${nombre.slice(0, 47)}…` : nombre;
+  const descripcion = (seo?.description ?? c.curso.subtitulo ?? c.curso.descripcion ?? "").slice(0, 160);
   return {
     title: titulo,
     description: descripcion,
