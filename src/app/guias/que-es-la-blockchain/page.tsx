@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
@@ -299,7 +300,7 @@ export default async function QueEsLaBlockchainPage() {
           <div className="gbc-box gbc-box--gold" style={{ marginTop: 28 }}>
             <div className="gbc-box-title">El caso Ethereum: el ordenador mundial</div>
             <div className="gbc-box-body">
-              <p>Ethereum es la segunda blockchain por capitalización y la primera en actividad de desarrolladores. Su propuesta es ser un ordenador global descentralizado donde cualquiera puede desplegar código que se ejecuta exactamente como está programado, sin downtime, sin censura, sin intermediarios. En 2026 procesa más de 1.2 millones de transacciones diarias y tiene más de 4,000 aplicaciones desplegadas.</p>
+              <p><Link href="/guias/ethereum">Ethereum</Link> es la segunda blockchain por capitalización y la primera en actividad de desarrolladores. Su propuesta es ser un ordenador global descentralizado donde cualquiera puede desplegar código que se ejecuta exactamente como está programado, sin downtime, sin censura, sin intermediarios. En 2026 procesa más de 1.2 millones de transacciones diarias y tiene más de 4,000 aplicaciones desplegadas.</p>
             </div>
           </div>
         </div>

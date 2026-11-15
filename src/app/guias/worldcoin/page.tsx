@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
@@ -281,7 +282,7 @@ export default async function WorldcoinPage() {
               ahora también en tiendas, quioscos y puntos de venta en más de 160 países.
             </p>
             <p>
-              World Chain, la Layer 2 de Ethereum del proyecto, prioriza el tráfico de usuarios verificados
+              World Chain, la Layer 2 de <Link href="/guias/ethereum">Ethereum</Link> del proyecto, prioriza el tráfico de usuarios verificados
               con World ID frente al de bots — una propuesta directa contra el problema del spam y el MEV
               (extracción de valor por bots) que afecta a otras redes.
             </p>

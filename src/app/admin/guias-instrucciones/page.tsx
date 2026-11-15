@@ -134,7 +134,7 @@ export default function GuiasInstruccionesPage() {
           <Paso n={5} titulo="Auditoría SEO">Al terminar se ejecuta siempre <code>AUDITORIA-SEO.md</code> entero, sin preguntar (pedido por el admin el 14-11-2026). El borrador queda listo para publicar, con SEO y todo, a falta solo de la portada.</Paso>
           <Paso n={6} titulo="Alta como borrador">Se da de alta en <code>BORRADORES</code> (<code>src/lib/guides.ts</code>), con su consulta y la fecha de su auditoría, y se despliega. <strong>Nunca directamente en <code>GUIDES</code></strong>. Desplegada así, solo la ve el admin: no sale en listados ni en el sitemap, y su URL da 404 a los demás.</Paso>
           <Paso n={7} titulo="Publicación, por el admin">El admin la revisa en <Link href="/admin/acciones">Acciones</Link> y pulsa «Publicar». Desde ese momento es pública e indexable, sin desplegar nada. Publicar es siempre un gesto suyo.</Paso>
-          <Paso n={8} titulo="Ascenso">En la siguiente sesión, la guía ya publicada se mueve de <code>BORRADORES</code> al final de <code>GUIDES</code>. Con eso entra también en el buscador de guías y en la vitrina de Logros.</Paso>
+          <Paso n={8} titulo="Ascenso">En la siguiente sesión, la guía ya publicada se mueve de <code>BORRADORES</code> al final de <code>GUIDES</code>. Con eso entra en la vitrina de Logros. El buscador de guías ya la enseña desde que se publica (<code>/api/guias/publicadas</code>).</Paso>
           <Paso n={9} titulo="Seguimiento">A las dos y a las seis semanas se mira en Analítica y en Search Console cómo va (bloque 13).</Paso>
         </div>
       </Seccion>

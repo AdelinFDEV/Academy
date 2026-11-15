@@ -135,6 +135,21 @@ export const GUIDES: GuideMeta[] = [
     tags: ["EXPLICACIONES"],
     portada: "/guias/como-hacer-un-diario-de-trading.webp",
   },
+  {
+    slug: "ethereum",
+    title: "Qué es Ethereum y cómo funciona",
+    shortTitle: "Ethereum",
+    description: "Ethereum sin jerga: qué son los contratos inteligentes, cuánto cuesta el gas con una calculadora, cómo funciona el staking, por qué existen las capas 2 y los tres errores que más dinero cuestan.",
+    difficulty: "básico",
+    sections: 9,
+    badge: "Ordenador Mundial",
+    badgeId: "guide-ethereum",
+    readTime: "14 min",
+    color: "#e6b455",
+    topics: ["Contratos inteligentes", "El gas, con números", "Staking y capas 2", "Errores caros"],
+    tags: ["CRIPTOMONEDAS"],
+    portada: "/guias/ethereum.webp",
+  },
 ];
 
 /**
@@ -174,28 +189,10 @@ export interface GuiaBorrador extends GuideMeta {
  * Cuando el admin ya la ha publicado, en la siguiente sesión se «asciende»: su
  * objeto se mueve al final de `GUIDES` (sin `lista`, `consulta` ni `auditada`)
  * y se borra de aquí. Hasta entonces ya es pública, indexable y con su quiz;
- * lo que le falta son el buscador de guías y la vitrina de Logros, que leen
- * `GUIDES` desde el navegador.
+ * lo que le falta es la vitrina de Logros, que lee `GUIDES` desde el
+ * navegador. El buscador ya la enseña: pide las publicadas a `/api/guias/publicadas`.
  */
 export const BORRADORES: GuiaBorrador[] = [
-  {
-    slug: "ethereum",
-    title: "Qué es Ethereum y cómo funciona",
-    shortTitle: "Ethereum",
-    description: "Ethereum sin jerga: qué son los contratos inteligentes, cuánto cuesta el gas con una calculadora, cómo funciona el staking, por qué existen las capas 2 y los tres errores que más dinero cuestan.",
-    difficulty: "básico",
-    sections: 9,
-    badge: "Ordenador Mundial",
-    badgeId: "guide-ethereum",
-    readTime: "14 min",
-    color: "#e6b455",
-    topics: ["Contratos inteligentes", "El gas, con números", "Staking y capas 2", "Errores caros"],
-    tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/ethereum.webp",
-    lista: "2026-11-13",
-    consulta: "qué es ethereum",
-    auditada: "2026-11-13",
-  },
   {
     slug: "solana",
     title: "Qué es Solana y qué ha pagado por ser tan rápida",

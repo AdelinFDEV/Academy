@@ -5,8 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { GUIDES_NEWEST_FIRST } from "@/lib/guides";
+import type { GuiaBuscador } from "@/app/api/guias/publicadas/route";
 
-const CRYPTO_GUIDES = GUIDES_NEWEST_FIRST.filter((g) => g.tags.includes("CRIPTOMONEDAS"));
+const esCripto = (g: { tags: string[] }) => g.tags.includes("CRIPTOMONEDAS");
+const CRYPTO_GUIDES: GuiaBuscador[] = GUIDES_NEWEST_FIRST.filter(esCripto);
 
 /** Una vuelta completa al borde, en milisegundos. Lenta y siempre igual. */
 const VUELTA_MS = 18000;
@@ -149,6 +151,25 @@ export default function GuideSearch() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
 
+  // Las guías publicadas desde /admin/acciones que aún están en BORRADORES:
+  // `GUIDES` no las tiene hasta ascenderlas, y el buscador debe enseñarlas
+  // desde que se publican. Se piden una vez, la primera vez que se abre.
+  const [publicadas, setPublicadas] = useState<GuiaBuscador[]>([]);
+  const pedidas = useRef(false);
+  function cargarPublicadas() {
+    if (pedidas.current) return;
+    pedidas.current = true;
+    fetch("/api/guias/publicadas")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((lista: GuiaBuscador[]) => {
+        const nuevas = lista.filter((g) => esCripto(g) && !CRYPTO_GUIDES.some((c) => c.slug === g.slug));
+        if (nuevas.length) setPublicadas(nuevas);
+      })
+      // Sin red, el buscador sigue con las de GUIDES.
+      .catch(() => {});
+  }
+  const guias = publicadas.length ? [...publicadas, ...CRYPTO_GUIDES] : CRYPTO_GUIDES;
+
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) {
@@ -165,7 +186,7 @@ export default function GuideSearch() {
   // título largo empiece por otra cosa. No busca en la descripción, para que
   // los resultados sean siempre predecibles.
   const results = hasQuery
-    ? CRYPTO_GUIDES.filter((g) => plano(g.title).includes(q) || plano(g.shortTitle).includes(q))
+    ? guias.filter((g) => plano(g.title).includes(q) || plano(g.shortTitle).includes(q))
     : [];
 
   function ir(slug: string) {
@@ -185,8 +206,8 @@ export default function GuideSearch() {
           placeholder="Busca una criptomoneda: XRP, Render, Worldcoin…"
           aria-label="Buscar una criptomoneda en las guías"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
+          onChange={(e) => { setQuery(e.target.value); setOpen(true); cargarPublicadas(); }}
+          onFocus={() => { setOpen(true); cargarPublicadas(); }}
           onKeyDown={(e) => {
             // Intro abre el primer resultado; Escape cierra la lista.
             if (e.key === "Enter" && results[0]) ir(results[0].slug);
@@ -211,7 +232,7 @@ export default function GuideSearch() {
             <>
               <p className="guide-search-sugerencias-titulo">Criptomonedas explicadas</p>
               <div className="guide-search-sugerencias">
-                {CRYPTO_GUIDES.map((g) => (
+                {guias.map((g) => (
                   <Link
                     key={g.slug}
                     href={`/guias/${g.slug}`}

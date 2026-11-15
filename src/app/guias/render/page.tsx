@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import GuiaAnuncio from "@/components/GuiaAnuncio";
 import { createClient } from "@/lib/supabase/server";
 import Footer from "@/components/Footer";
@@ -282,7 +283,7 @@ export default async function RenderPage() {
           <div className="gbc-body">
             <p>
               Render no ha dejado de moverse. Nació con un ICO en 2017 impulsado por OTOY y lanzó su
-              mainnet sobre Ethereum en 2020, con el token bajo el ticker <strong>RNDR</strong>. Pero las
+              mainnet sobre <Link href="/guias/ethereum">Ethereum</Link> en 2020, con el token bajo el ticker <strong>RNDR</strong>. Pero las
               comisiones altas y la congestión de Ethereum lastraban una red que necesita liquidar muchos
               micropagos entre artistas y nodos.
             </p>
