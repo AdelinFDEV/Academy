@@ -245,11 +245,17 @@ function LegendCard({ m, trades, now }: { m: Milestone; trades: Trade[]; now: Da
   return (
     <motion.section className={`tjh-legend${done ? " is-done" : ""}`} variants={cardVariants}>
       <span className="tjh-legend-aurora" aria-hidden="true" />
+      <span className="tjh-legend-floor" aria-hidden="true" />
       <span className="tjh-legend-glow" aria-hidden="true" />
-      <span className="tjh-legend-stars" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /></span>
+      <span className="tjh-legend-stars" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /></span>
+      <span className="tjh-legend-beam" aria-hidden="true" />
 
       <div className="tjh-legend-crown" aria-hidden="true">
+        <span className="tjh-legend-halo" />
         <span className="tjh-rays" />
+        <span className="tjh-rays is-b" />
+        <span className="tjh-orbit is-a"><i /></span>
+        <span className="tjh-orbit is-b"><i /><i /></span>
         <svg className="tjh-legend-ring" viewBox="0 0 160 160">
           <circle cx="80" cy="80" r={R} className="tjh-legend-ring-track" />
           {win.months.map((x, i) => (
@@ -293,7 +299,16 @@ function LegendCard({ m, trades, now }: { m: Milestone; trades: Trade[]; now: Da
       <div className="tjh-legend-months">
         <div className="tjh-legend-count">
           <strong>{done ? VIVIR_MONTHS : win.run}</strong>
-          <span>de {VIVIR_MONTHS} meses</span>
+          <span><b>/ {VIVIR_MONTHS}</b> meses válidos seguidos</span>
+        </div>
+        {/* El camino hasta el año: se llena con los meses válidos seguidos. */}
+        <div className="tjh-legend-run" aria-hidden="true">
+          <motion.i
+            initial={{ width: 0 }}
+            animate={{ width: `${((done ? VIVIR_MONTHS : win.run) / VIVIR_MONTHS) * 100}%` }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+          />
+          {Array.from({ length: VIVIR_MONTHS - 1 }, (_, i) => <b key={i} style={{ left: `${((i + 1) / VIVIR_MONTHS) * 100}%` }} />)}
         </div>
         <ol>
           {win.months.map((x, i) => (

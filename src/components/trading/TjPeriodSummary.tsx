@@ -112,6 +112,15 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
       <div className="tj-chart tjn-period-chart">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            {/* Barras con luz: claras arriba y apagándose hacia la base (v3, 15-11-2026). */}
+            <defs>
+              {(["win", "loss", "be"] as const).map(k => (
+                <linearGradient key={k} id={`tjn-barra-${k}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={TJ_COLORS[k]} stopOpacity={1} />
+                  <stop offset="100%" stopColor={TJ_COLORS[k]} stopOpacity={0.35} />
+                </linearGradient>
+              ))}
+            </defs>
             <CartesianGrid stroke={TJ_COLORS.grid} vertical={false} />
             <XAxis
               dataKey="label" axisLine={false} tickLine={false} interval={0}
@@ -122,7 +131,7 @@ export default function TjPeriodSummary({ trades, ctx }: { trades: Trade[]; ctx:
             <Tooltip content={<PeriodTooltip />} cursor={{ fill: "rgba(240,244,255,0.04)" }} />
             <ReferenceLine y={0} stroke="rgba(240,244,255,0.2)" />
             <Bar dataKey="pnl" radius={[5, 5, 5, 5]} maxBarSize={42} animationDuration={600}>
-              {chart.map(r => <Cell key={r.key} fill={TJ_COLORS[toneOf(r.pnl)]} />)}
+              {chart.map(r => <Cell key={r.key} fill={`url(#tjn-barra-${toneOf(r.pnl)})`} />)}
             </Bar>
           </BarChart>
         </ResponsiveContainer>

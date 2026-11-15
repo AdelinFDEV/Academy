@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Flame } from "lucide-react";
+import { Divide, Flame, Scale, Sigma, TrendingDown, type LucideIcon } from "lucide-react";
 import { TjInfo } from "./TjControls";
 import { factorStr, pctStr, pnlStr, rStr, toneOf, type Tone } from "./tjFormat";
 import type { Stats } from "./tjStats";
@@ -24,6 +24,7 @@ function WinRing({ stats }: { stats: Stats }) {
   let offset = 0;
   return (
     <div className="tja-ring">
+      <span className="tja-ring-well" aria-hidden="true" />
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle cx="60" cy="60" r={R} className="tja-ring-track" />
         {parts.map((p, i) => {
@@ -59,9 +60,10 @@ function WinRing({ stats }: { stats: Stats }) {
 export default function TjSummary({ stats, drawdown }: Props) {
   const pf = stats.profitFactor;
   // Textos cortos a propósito: caben en una línea en la columna de la tarjeta.
-  const metrics: { label: string; hint: string; value: string; sub: string; tone: Tone }[] = [
+  const metrics: { label: string; icon: LucideIcon; hint: string; value: string; sub: string; tone: Tone }[] = [
     {
       label: "Profit factor",
+      icon: Scale,
       hint: "Lo que ganan tus operaciones buenas dividido entre lo que pierden las malas. Por encima de 1,5 es un sistema sólido.",
       // Sin pérdidas el factor es infinito: se dice con palabras, no con «∞».
       value: pf === Infinity ? "Sin pérdidas" : factorStr(pf),
@@ -70,6 +72,7 @@ export default function TjSummary({ stats, drawdown }: Props) {
     },
     {
       label: "Esperanza",
+      icon: Sigma,
       hint: "Lo que deja de media cada operación, medido en R (unidades de riesgo). Es la cifra que dice si tu método tiene ventaja.",
       value: stats.expectancyR != null ? rStr(stats.expectancyR) : "—",
       sub: `${pnlStr(stats.avgPnl)} de media`,
@@ -77,6 +80,7 @@ export default function TjSummary({ stats, drawdown }: Props) {
     },
     {
       label: "Drawdown máx.",
+      icon: TrendingDown,
       hint: "La mayor caída desde un máximo de capital hasta el mínimo siguiente. Mide cuánto dolor aguanta tu cuenta.",
       value: drawdown.abs === 0 ? "0 %" : drawdown.pct != null ? pctStr(drawdown.pct) : pnlStr(drawdown.abs),
       sub: drawdown.abs === 0 ? "Sin caídas por ahora" : drawdown.pct != null ? pnlStr(drawdown.abs) : "Desde el máximo",
@@ -84,6 +88,7 @@ export default function TjSummary({ stats, drawdown }: Props) {
     },
     {
       label: "Ganancia / pérdida",
+      icon: Divide,
       hint: "Cuántas veces cabe tu pérdida media en tu ganancia media. Con un ratio alto puedes acertar menos de la mitad y ganar.",
       value: stats.payoff != null ? `${stats.payoff.toFixed(2).replace(".", ",")}×` : "—",
       sub: stats.payoff != null
@@ -135,8 +140,11 @@ export default function TjSummary({ stats, drawdown }: Props) {
         </header>
         <dl className="tja-metrics">
           {metrics.map(m => (
-            <div key={m.label} className={`tj-metric tone-${m.tone}`}>
-              <dt>{m.label} <TjInfo label={m.label}>{m.hint}</TjInfo></dt>
+            <div key={m.label} className={`tj-metric tja-tile tone-${m.tone}`}>
+              <dt>
+                <span className="tja-tile-ic" aria-hidden="true"><m.icon size={13} strokeWidth={2.2} /></span>
+                {m.label} <TjInfo label={m.label}>{m.hint}</TjInfo>
+              </dt>
               <dd>{m.value}</dd>
               <dd className="tj-metric-sub">{m.sub}</dd>
             </div>

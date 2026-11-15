@@ -603,6 +603,15 @@ export default function TjBot({ report, onAction }: {
    * abajo) menos lo que ocupan la cabecera y el pie, y el alto natural del
    * contenido. Solo si haría falta bajar del 72 % se deja desplazar, como
    * último recurso en pantallas diminutas.
+   *
+   * SIN BUCLE (15-11-2026). Antes se medía el alto con el ancho que hubiera
+   * puesto en ese momento: al reducir, el ancho compensado recolocaba el texto,
+   * el alto cambiaba, el ResizeObserver volvía a medir y salía otra escala, que
+   * devolvía el texto a como estaba… y así sin fin. Con el bocadillo abierto el
+   * texto cambiaba de escala y de líneas en cada fotograma: vibraba. Ahora cada
+   * medida prueba los anchos ella misma (sin esperar a React) y la escala sale
+   * solo del hueco y del contenido, nunca de la escala anterior: medir dos
+   * veces lo mismo da lo mismo y el observador se calla.
    */
   useLayoutEffect(() => {
     if (!open) return;
@@ -613,6 +622,11 @@ export default function TjBot({ report, onAction }: {
     if (!dialog || !panel || !body || !inner) return;
     const MIN = 0.72;
     let frame = 0;
+    /** Alto natural del contenido con el ancho que le tocaría a la escala `s`. */
+    const altoCon = (s: number) => {
+      inner.style.width = s < 1 ? `${100 / s}%` : "";
+      return inner.offsetHeight;
+    };
     const medir = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
@@ -620,13 +634,22 @@ export default function TjBot({ report, onAction }: {
         const pad = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
         const resto = panel.offsetHeight - body.offsetHeight;
         const hueco = dialog.clientHeight - resto - pad;
-        const natural = inner.offsetHeight;
-        if (hueco <= 0 || natural <= 0) return;
-        setFit(prev => {
-          const s = Math.min(1, hueco / natural);
-          const next = s >= MIN ? { s, h: s < 1 ? natural * s : null, scroll: false } : { s: MIN, h: hueco, scroll: true };
-          return Math.abs(next.s - prev.s) < 0.005 && next.scroll === prev.scroll && Math.abs((next.h ?? 0) - (prev.h ?? 0)) < 1 ? prev : next;
-        });
+        if (hueco <= 0) return;
+        const anchoPuesto = inner.style.width;
+        let s = 1;
+        let natural = altoCon(1);
+        // Al ensanchar, el texto ocupa menos líneas: casi siempre cabe a la
+        // primera. Unas pocas vueltas como mucho, y siempre hacia abajo.
+        for (let i = 0; i < 5 && natural > 0 && natural * s > hueco + 0.5 && s > MIN; i++) {
+          s = Math.max(MIN, Math.floor((hueco / natural) * 1000) / 1000);
+          natural = altoCon(s);
+        }
+        inner.style.width = anchoPuesto;
+        if (natural <= 0) return;
+        const next = natural * s <= hueco + 0.5
+          ? { s, h: s < 1 ? Math.round(natural * s) : null, scroll: false }
+          : { s: MIN, h: Math.round(hueco), scroll: true };
+        setFit(prev => (next.s === prev.s && next.scroll === prev.scroll && next.h === prev.h ? prev : next));
       });
     };
     medir();

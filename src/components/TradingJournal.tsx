@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, Plus, Filter, X, Check, NotebookPen } from "lucide-react";
@@ -55,11 +55,6 @@ const VIEWS: { value: View; label: string }[] = [
  * "atrás" en el navegador vuelve a la anterior. Leerla con useSyncExternalStore
  * evita el desajuste de hidratación: en el servidor siempre es "resumen".
  */
-function subscribeHash(onChange: () => void) {
-  window.addEventListener("hashchange", onChange);
-  return () => window.removeEventListener("hashchange", onChange);
-}
-
 function readView(): View {
   const hash = window.location.hash.slice(1);
   return VIEWS.some(v => v.value === hash) ? (hash as View) : "resumen";
@@ -100,12 +95,68 @@ export default function TradingJournal({
   const [logros, setLogros] = useState(initialLogros);
   const [dias, setDias] = useState<DiasMap>(() => toDiasMap(initialDias));
   const [editingCapital, setEditingCapital] = useState(false);
-  const view = useSyncExternalStore(subscribeHash, readView, serverView);
-  const tabsRef = useRef<HTMLDivElement>(null);
-  // Marca fija justo encima de las pestañas: ellas son sticky y nunca «salen»
-  // de la pantalla, así que su posición no dice dónde empieza el contenido.
+  /*
+   * EL SUELO DE LA VISTA (15-11-2026): por qué la web saltaba arriba al cambiar
+   * de pestaña, «como si recargara». Medido en el navegador, con la pila:
+   *
+   *   React cambia de vista quitando la vieja y poniendo la nueva en el mismo
+   *   commit. Pero al desmontarse la vieja, framer-motion (las pastillas con
+   *   `layoutId` de los selectores) MIDE la página en ese mismo instante
+   *   (ProjectionNode.unmount → willUpdate → getBoundingClientRect), cuando la
+   *   vista vieja ya no está y la nueva aún no. Esa medida obliga al navegador
+   *   a calcular la página sin vista: se queda corta, el scroll ya no cabe y
+   *   Chrome lo recorta hacia arriba (y su anclaje de scroll lo remataba
+   *   mandándolo a 0; por eso el anclaje está apagado en trading.css).
+   *   Ningún código nuestro movía el scroll.
+   *
+   * Arreglo: la vista va dentro de un contenedor que NO se desmonta
+   * (.tj-suelo). Justo antes de cambiar se le clava el alto que tiene; la
+   * página no encoge ni un píxel durante el cambio y el scroll no se mueve.
+   * Después se suelta (ver el useLayoutEffect de abajo).
+   */
+  const sueloRef = useRef<HTMLDivElement>(null);
   const anclaRef = useRef<HTMLDivElement>(null);
-  const vistaPrevia = useRef(view);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const subscribeHash = useCallback((onChange: () => void) => {
+    const alCambiar = () => {
+      const suelo = sueloRef.current;
+      if (suelo) suelo.style.minHeight = `${suelo.offsetHeight}px`;
+      onChange();
+    };
+    window.addEventListener("hashchange", alCambiar);
+    return () => window.removeEventListener("hashchange", alCambiar);
+  }, []);
+  const view = useSyncExternalStore(subscribeHash, readView, serverView);
+
+  /*
+   * Con la vista nueva ya puesta, se suelta el suelo. Dos casos:
+   *  · La vista nueva llega hasta donde estaba mirando el usuario: se suelta y
+   *    ya está. El scroll no se ha movido en ningún momento.
+   *  · Es más corta que eso (venía de muy abajo en una vista larga): ese punto
+   *    ya no existe. En vez de dejar que el navegador recorte a su manera, se
+   *    enseña la vista desde su principio, con la barra de pestañas en su
+   *    sitio. "instant": `auto` heredaría el smooth de globals.css.
+   */
+  useLayoutEffect(() => {
+    const suelo = sueloRef.current;
+    if (!suelo || !suelo.style.minHeight) return;
+    const vista = suelo.firstElementChild as HTMLElement | null;
+    const doc = document.documentElement;
+    const top = suelo.getBoundingClientRect().top;
+    // Lo que hay por debajo del suelo (márgenes, pie) también sostiene la página.
+    const debajo = doc.scrollHeight - (top + window.scrollY + suelo.offsetHeight);
+    const haceFalta = window.innerHeight - top - debajo;
+    if (vista && vista.offsetHeight < haceFalta) {
+      const ancla = anclaRef.current;
+      const tabs = tabsRef.current;
+      if (ancla && tabs) {
+        const fija = parseFloat(getComputedStyle(tabs).top) || 0;
+        const y = ancla.getBoundingClientRect().top;
+        if (y < fija) window.scrollBy({ top: y - fija, behavior: "instant" });
+      }
+    }
+    suelo.style.minHeight = "";
+  }, [view]);
 
   // Las operaciones nuevas solo se apuntan desde el Resumen: el resto de vistas
   // no enseñan el botón ni responden al atajo. Editar sí se puede desde Operaciones.
@@ -129,28 +180,24 @@ export default function TradingJournal({
   function goTo(v: View) {
     // Salir del Resumen descarta una operación nueva a medias (las ediciones siguen).
     if (v !== "resumen" && formOpen && !editing) setFormOpen(false);
+    if (readView() === v) return;
+    /*
+     * CAMBIAR DE PESTAÑA NO MUEVE LA PÁGINA (15-11-2026, pedido por el admin).
+     * Solo cambia lo de debajo de la barra; el scroll no se toca.
+     *
+     *  · El salto de verdad venía de framer-motion midiendo a mitad del
+     *    cambio: ver «EL SUELO DE LA VISTA», arriba.
+     *  · NUNCA `history.pushState`/`replaceState` aquí. Next los intercepta y
+     *    los convierte en una navegación de su router; su manejador de scroll
+     *    (layout-router) sube la página al principio si el arriba del contenido
+     *    no está en pantalla: parecía que la web se recargaba.
+     *  · `location.hash` es una navegación de ancla del propio navegador: Next
+     *    no se entera (el popstate llega sin estado y lo ignora), y como ningún
+     *    elemento tiene ese id, el navegador tampoco desplaza nada. «Atrás»
+     *    vuelve a la vista anterior (hashchange).
+     */
     window.location.hash = v;
   }
-
-  // Al cambiar de vista, si la barra ya iba fija encima del contenido, se sube
-  // hasta dejarla justo en su sitio, con la vista nueva empezando debajo.
-  //
-  // Va en useLayoutEffect y con "instant" a propósito (12-11-2026): se corrige
-  // ANTES de pintar, así que la barra —que es sticky— no se mueve ni un píxel y
-  // solo cambia lo de debajo. Con useEffect se veía un fotograma en la posición
-  // vieja, y "auto" hereda el `scroll-behavior: smooth` de globals.css, que lo
-  // animaba a destiempo: ese era el «salto de ancla» al cambiar de pestaña.
-  // El min-height de .tj-vista garantiza que siempre haya sitio para subir.
-  useLayoutEffect(() => {
-    if (vistaPrevia.current === view) return;
-    vistaPrevia.current = view;
-    const ancla = anclaRef.current;
-    const tabs = tabsRef.current;
-    if (!ancla || !tabs) return;
-    const fija = parseFloat(getComputedStyle(tabs).top) || 0;
-    const top = ancla.getBoundingClientRect().top;
-    if (top < fija) window.scrollBy({ top: top - fija, behavior: "instant" });
-  }, [view]);
 
   // Cuenta completa: lo que no cambia al filtrar.
   const ctx = useMemo(() => accountContext(trades, capital), [trades, capital]);
@@ -503,9 +550,11 @@ export default function TradingJournal({
           se encogía y el navegador recolocaba el scroll; al llegar la nueva,
           volvía a crecer. Ahora la nueva sustituye a la vieja en el mismo
           fotograma y solo aparece con un fundido. */}
+      <div ref={sueloRef} className="tj-suelo">
       <motion.div
         key={sinCapital ? "sin-capital" : trades.length === 0 ? "vacio" : view}
         className="tj-vista"
+        data-vista={sinCapital || trades.length === 0 ? undefined : view}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
@@ -597,6 +646,7 @@ export default function TradingJournal({
         </>
       )}
       </motion.div>
+      </div>
     </div>
   );
 }

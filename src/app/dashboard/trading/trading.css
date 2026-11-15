@@ -35,12 +35,24 @@
    *   3. FLOTANTE — la barra de vistas fija y los menús (--tj-float): cristal
    *      y la sombra más larga.
    */
-  --tj-panel: rgba(22, 41, 76, 0.9);
-  --tj-panel-solid: #0a1630;
+  --tj-panel: rgba(13, 22, 44, 0.9);
+  --tj-panel-solid: #060c1c;
+  /*
+   * SISTEMA v3 (15-11-2026, pedido por el admin: «muy plano, parece una web
+   * barata; quiero que cada sección destaque por sí sola»).
+   *   --sec    el color propio de cada sección. Lo fija cada tarjeta (o la
+   *            vista entera) y lo leen el canto, la aurora, el filo de luz,
+   *            el icono y la marca del título. Oro por defecto.
+   *   --tj-noise  grano fino encima de las superficies: quita el aspecto de
+   *            degradado digital plano y da textura de material.
+   */
+  --sec: #e6b455;
+  --tj-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .045 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --tj-glass: linear-gradient(165deg, #121f3e 0%, #0b142c 52%, #070d1f 100%);
   --tj-surface: rgba(240, 244, 255, 0.04);
   --tj-surface-2: rgba(240, 244, 255, 0.08);
   --tj-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 42%);
-  --tj-well: inset 0 2px 8px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 255, 255, 0.035);
+  --tj-well: inset 0 2px 10px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.045), inset 0 -1px 0 rgba(255, 255, 255, 0.03);
   --tj-float: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 18px 40px -14px rgba(0, 0, 0, 0.9), 0 4px 12px -4px rgba(0, 0, 0, 0.6);
   --card-border: 1px solid rgba(240, 244, 255, 0.09);
   /* El canto iluminado de las tarjetas: luz arriba, oro abajo. */
@@ -72,6 +84,17 @@
    la página al cambiar de pestaña. Si encogía, el navegador recolocaba el
    scroll y la barra de pestañas daba un salto. Con esto siempre cabe la vista
    empezando justo debajo de la barra fija. */
+/* El suelo de la vista: no se desmonta al cambiar de pestaña y TradingJournal
+   le clava el alto durante el cambio, para que la página no encoja ni un
+   instante (si encoge, el navegador sube el scroll). */
+.tj-suelo { min-width: 0; }
+
+/* Sin anclaje de scroll en la página del Diario. Chrome «ancla» el scroll a un
+   elemento visible y lo corrige cuando cambia el alto de lo de encima; aquí la
+   vista se sustituye entera y esa corrección movía la página cientos de
+   píxeles al cambiar de pestaña (medido: 1500 → 1298, 600 → 1826). Va en el
+   <html> porque es quien hace el scroll. */
+html:has(.trading-journal) { overflow-anchor: none; }
 .tj-vista { display: flex; flex-direction: column; gap: 1.75rem; min-height: calc(100svh - var(--nav-h)); }
 .tj-vista > * { animation: tj-rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
 .tj-vista > :nth-child(2) { animation-delay: 40ms; }
@@ -94,24 +117,71 @@
 /* ── Primitivas ── */
 
 /*
- * Tarjeta (rediseño 10-11-2026). El borde no es un color: es un DEGRADADO de
- * luz, claro arriba y dorado abajo, pintado en la capa del borde (border-box)
- * bajo las capas del relleno (padding-box). Así el canto parece iluminado
- * desde arriba, como el cristal del resto de la web.
+ * Tarjeta v3 (15-11-2026). Cristal oscuro con material:
+ *   · canto en DEGRADADO del color de la sección (--sec), fuerte en la esquina
+ *     de arriba a la izquierda y apagándose, como luz que entra de lado;
+ *   · una aurora de su color en la esquina contraria y un eco al pie;
+ *   · grano fino (--tj-noise) y un brillo arriba;
+ *   · un filo de luz en el canto superior (::after) — la firma de la sección;
+ *   · sombra en capas, con un halo de su color debajo: flota.
+ * Cada sección elige su --sec (ver «Identidad por sección», justo debajo).
  */
 .tj-card {
+  position: relative;
   min-width: 0;
-  padding: 1.5rem 1.65rem;
+  padding: 1.6rem 1.75rem;
   border: 1px solid transparent;
-  border-radius: 20px;
+  border-radius: 24px;
   background:
-    var(--tj-sheen) padding-box,
-    radial-gradient(120% 90% at 0% 0%, rgba(230, 180, 85, 0.07), transparent 55%) padding-box,
-    radial-gradient(110% 90% at 100% 100%, rgba(96, 140, 230, 0.08), transparent 60%) padding-box,
-    linear-gradient(var(--tj-panel), var(--tj-panel)) padding-box,
-    var(--tj-edge) border-box;
-  box-shadow: var(--card-shadow);
+    var(--tj-noise) padding-box,
+    radial-gradient(60% 75% at 100% 0%, color-mix(in srgb, var(--sec) 15%, transparent), transparent 70%) padding-box,
+    radial-gradient(50% 60% at 0% 100%, color-mix(in srgb, var(--sec) 6%, transparent), transparent 70%) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 35%) padding-box,
+    var(--tj-glass) padding-box,
+    linear-gradient(135deg, color-mix(in srgb, var(--sec) 62%, transparent), rgba(255, 255, 255, 0.08) 26%, rgba(255, 255, 255, 0.025) 60%, color-mix(in srgb, var(--sec) 24%, transparent)) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    0 22px 44px -26px rgba(0, 0, 0, 0.95),
+    0 46px 90px -62px color-mix(in srgb, var(--sec) 60%, transparent);
 }
+
+/* El filo de luz del canto de arriba, del color de la sección. */
+.tj-card::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 28px;
+  width: min(200px, 38%);
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(90deg, transparent, var(--sec) 35%, color-mix(in srgb, var(--sec) 40%, #fff) 50%, var(--sec) 65%, transparent);
+  box-shadow: 0 0 18px 1px color-mix(in srgb, var(--sec) 65%, transparent);
+  pointer-events: none;
+}
+
+/*
+ * Identidad por sección: cada bloque, su color. No es decoración suelta: el
+ * color le dice al ojo «esto es otra cosa» antes de leer el título.
+ *   Resumen: calendario oro · cuenta esmeralda · curva azul · últimas
+ *   operaciones violeta · próximo hito naranja.
+ *   Vistas: Emociones rosa y orquídea, alternas · Análisis índigo, con cada
+ *   bloque en su tono · Operaciones turquesa · Hitos oro.
+ */
+.tjc { --sec: #e6b455; }
+.tja { --sec: #34d399; }
+.tje { --sec: #60a5fa; }
+.tjt { --sec: #a78bfa; }
+.tj-card.tjm { --sec: #fb923c; }
+.tj-vista[data-vista="emociones"] { --sec: #f472b6; }
+.tj-vista[data-vista="emociones"] > .tj-card:nth-of-type(even) { --sec: #c084fc; }
+.tj-vista[data-vista="analisis"] { --sec: #818cf8; }
+.tjn-period { --sec: #38bdf8; }
+.tjn-duel { --sec: #818cf8; }
+.tjn-hist { --sec: #22d3ee; }
+.tjn-risk { --sec: #fb7185; }
+.tj-vista[data-vista="operaciones"] { --sec: #2dd4bf; }
+.tj-vista[data-vista="hitos"] { --sec: #fbbf24; }
 
 .tj-card-head {
   display: flex;
@@ -139,11 +209,12 @@
 .tj-label svg {
   box-sizing: content-box;
   flex-shrink: 0;
-  padding: 7px;
-  border: 1px solid var(--tj-accent-line);
-  border-radius: 10px;
-  background: var(--tj-accent-soft);
-  color: var(--tj-accent);
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--sec) 45%, transparent);
+  border-radius: 12px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--sec) 28%, transparent), color-mix(in srgb, var(--sec) 6%, transparent));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 18px -8px color-mix(in srgb, var(--sec) 80%, transparent);
+  color: color-mix(in srgb, var(--sec) 70%, #fff);
 }
 
 .tj-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
@@ -252,11 +323,23 @@
   inset: 0;
   z-index: 0;
   border-radius: 7px;
-  background: linear-gradient(180deg, rgba(230, 180, 85, 0.28), rgba(230, 180, 85, 0.1));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sec) 32%, transparent), color-mix(in srgb, var(--sec) 10%, transparent));
   box-shadow:
-    inset 0 0 0 1px var(--tj-accent-line),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 4px 10px -5px rgba(0, 0, 0, 0.7);
+    inset 0 0 0 1px color-mix(in srgb, var(--sec) 42%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 4px 12px -5px color-mix(in srgb, var(--sec) 55%, rgba(0, 0, 0, 0.7));
+}
+.tj-seg button.active { color: color-mix(in srgb, var(--sec) 45%, #fff); }
+
+/* La barra de vistas del diario (su caja de cristal es .tj-tabs): la píldora
+   en oro encendido. Es la navegación principal: tiene que parecerlo. */
+.tj-tabs > .tj-seg { gap: 4px; }
+.tj-tabs > .tj-seg button { border-radius: 11px; letter-spacing: 0.01em; }
+.tj-tabs > .tj-seg button.active { color: #1a1204; }
+.tj-tabs > .tj-seg .tj-seg-pill {
+  border-radius: 11px;
+  background: linear-gradient(180deg, #ffe4a3 0%, #e6b455 55%, #c98f35 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -2px 0 rgba(120, 78, 0, 0.3), 0 8px 22px -8px rgba(230, 180, 85, 0.85), 0 0 0 1px rgba(255, 228, 163, 0.35);
 }
 
 .tj-bar {
@@ -302,9 +385,11 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   color: var(--tone, var(--text-primary));
+  text-shadow: 0 0 22px color-mix(in srgb, var(--tone, transparent) 35%, transparent);
 }
 
 .tj-metric dd.tj-metric-sub {
+  text-shadow: none;
   display: flex;
   align-items: center;
   gap: 0.3rem;
@@ -673,11 +758,14 @@
 /* Los cuatro periodos: fichas sueltas con tres datos y ninguna gráfica
    (13-11-2026). El color del borde izquierdo dice si el periodo va en verde. */
 .tjw-periods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; margin: 0; }
-.tjw-period { position: relative; display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; padding: 0.95rem 1.1rem 1rem 1.25rem; border: 1px solid color-mix(in srgb, var(--tone) 26%, var(--hairline)); border-radius: 16px; background: linear-gradient(135deg, color-mix(in srgb, var(--tone) 11%, transparent), transparent 60%), var(--tj-panel-solid); overflow: hidden; transition: transform 0.18s ease, border-color 0.18s ease; }
-.tjw-period::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px; border-radius: 0 4px 4px 0; background: var(--tone); box-shadow: 0 0 14px var(--tone); }
-.tjw-period:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--tone) 55%, transparent); }
-.tjw-period.is-quiet { border-color: var(--hairline); background: var(--tj-panel-solid); }
-.tjw-period.is-quiet::before { background: var(--hairline); box-shadow: none; }
+/* v3: cada periodo, una losa de cristal con la luz de su tono en la esquina y
+   un filo encendido arriba (antes, una barra a la izquierda: aspecto de tabla). */
+.tjw-period { position: relative; display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; padding: 1.05rem 1.2rem 1.05rem; border: 1px solid transparent; border-radius: 18px; background: var(--tj-noise) padding-box, radial-gradient(100% 110% at 100% 0%, color-mix(in srgb, var(--tone) 22%, transparent), transparent 62%) padding-box, linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 45%) padding-box, linear-gradient(165deg, #0d1834, #060c1c) padding-box, linear-gradient(150deg, color-mix(in srgb, var(--tone) 60%, transparent), rgba(255, 255, 255, 0.06) 45%, rgba(255, 255, 255, 0.02)) border-box; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 32px -22px rgba(0, 0, 0, 0.95), 0 26px 50px -40px color-mix(in srgb, var(--tone) 75%, transparent); overflow: hidden; transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); }
+.tjw-period::before { content: ""; position: absolute; top: 0; left: 1.2rem; width: 46px; height: 2px; border-radius: 0 0 2px 2px; background: var(--tone); box-shadow: 0 0 14px 1px var(--tone); }
+.tjw-period:hover { transform: translateY(-3px); }
+.tjw-period.is-quiet { background: var(--tj-noise) padding-box, linear-gradient(165deg, #0d1834, #060c1c) padding-box, linear-gradient(150deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)) border-box; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 16px 32px -22px rgba(0, 0, 0, 0.95); }
+.tjw-period.is-quiet::before { background: rgba(240, 244, 255, 0.2); box-shadow: none; }
+.tjw-pnl { text-shadow: 0 0 24px color-mix(in srgb, var(--tone) 40%, transparent); }
 .tjw-period dt { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; min-height: 22px; }
 .tjw-period dd { margin: 0; }
 .tjw-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); }
@@ -1339,6 +1427,12 @@
   .tjh-legend-aurora::after,
   .tjh-legend-stars i,
   .tjh-legend-medal,
+  .tjh-legend-medal::after,
+  .tjh-legend-beam,
+  .tjh-legend-floor,
+  .tjh-legend-halo,
+  .tjh-orbit,
+  .tjh-legend-text h3,
   .tjh-legend-sparks i { animation: none !important; }
 }
 
@@ -1436,34 +1530,40 @@
   gap: 0.6rem 1rem;
   margin-bottom: 1.15rem;
   padding-bottom: 0.9rem;
-  background: linear-gradient(90deg, rgba(230, 180, 85, 0.45), rgba(240, 244, 255, 0.08) 45%, transparent) bottom / 100% 1px no-repeat;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--sec) 55%, transparent), rgba(240, 244, 255, 0.07) 40%, transparent 85%) bottom / 100% 1px no-repeat;
 }
 
 /* El título lleva su marca dorada a la izquierda: la firma de cada tarjeta. */
 .tjr-head h3 {
   position: relative;
-  margin: 0 0 0.15rem;
-  padding-left: 0.85rem;
+  margin: 0 0 0.2rem;
+  padding-left: 1.15rem;
   font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text-primary);
+  font-size: 1.22rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, #fff 30%, color-mix(in srgb, var(--sec) 55%, #fff));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
+/* La marca: una gema del color de la sección, con su halo. */
 .tjr-head h3::before {
   content: "";
   position: absolute;
-  top: 0.18em;
-  bottom: 0.18em;
+  top: 50%;
   left: 0;
-  width: 3px;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
   border-radius: 2px;
-  background: linear-gradient(180deg, var(--tj-accent-2), var(--tj-accent));
-  box-shadow: 0 0 8px rgba(230, 180, 85, 0.55);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sec) 45%, #fff), var(--sec));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sec) 18%, transparent), 0 0 14px color-mix(in srgb, var(--sec) 85%, transparent);
+  transform: rotate(45deg);
 }
 
-.tjr-head > div > .tj-count { display: block; padding-left: 0.85rem; }
+.tjr-head > div > .tj-count { display: block; padding-left: 1.15rem; }
 
 .tjr-head > .tj-count { align-self: center; }
 
@@ -2277,18 +2377,21 @@
  * El balance no está aquí: vive en la cabecera del diario (TjBalance, .tjb).
  */
 
+/*
+ * Relieve (15-11-2026). Antes .tja pisaba el fondo en capas de .tj-card con uno
+ * plano y perdía el brillo y el canto iluminado: se veía como una lámina. Ahora
+ * conserva las capas de .tj-card y suma luces propias (oro arriba a la
+ * izquierda, verde tenue tras el anillo). Dentro, todo va HUNDIDO (--tj-well):
+ * el anillo en su pozo, los recuentos en fichas y cada métrica en su losa.
+ */
 .tja {
   display: grid;
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.4fr);
   padding: 1.6rem 0;
-  background:
-    radial-gradient(130% 80% at 0% 0%, rgba(230, 180, 85, 0.12), transparent 55%),
-    var(--tj-panel);
-  border-color: rgba(230, 180, 85, 0.2);
 }
 
 .tja-zone { display: flex; flex-direction: column; gap: 1rem; min-width: 0; padding: 0 2rem; }
-.tja-zone + .tja-zone { border-left: 1px solid var(--hairline); }
+.tja-zone + .tja-zone { border-left: 1px solid transparent; border-image: linear-gradient(180deg, transparent, rgba(240, 244, 255, 0.12) 20%, rgba(240, 244, 255, 0.12) 80%, transparent) 1; }
 
 .tja-zone-head { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; min-height: 34px; }
 
@@ -2308,10 +2411,24 @@
 /* Zona 2: anillo centrado y, debajo, los tres recuentos en fila. */
 .tja-ops { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem; }
 
-.tja-ring { position: relative; flex-shrink: 0; width: 112px; height: 112px; }
-.tja-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.tja-ring-track { fill: none; stroke: var(--tj-surface-2); stroke-width: 8; }
-.tja-ring-arc { fill: none; stroke: var(--tone); stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--tone) 55%, transparent)); }
+.tja-ring { position: relative; flex-shrink: 0; width: 132px; height: 132px; }
+.tja-ring svg { position: relative; width: 100%; height: 100%; transform: rotate(-90deg); }
+
+/* El pozo del anillo: un disco hundido con un halo verde detrás. */
+.tja-ring-well {
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.05), transparent 60%), var(--tj-panel-solid);
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 0 9px rgba(4, 10, 24, 0.35),
+    0 0 46px -6px rgba(95, 211, 154, 0.28);
+}
+
+.tja-ring-track { fill: none; stroke: rgba(4, 10, 24, 0.6); stroke-width: 9; }
+.tja-ring-arc { fill: none; stroke: var(--tone); stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 0 7px color-mix(in srgb, var(--tone) 60%, transparent)); }
 
 .tja-ring-value {
   position: absolute;
@@ -2324,18 +2441,44 @@
   line-height: 1;
 }
 
-.tja-ring-value strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); }
+.tja-ring-value strong { font-family: var(--font-display); font-size: 1.85rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text-primary); text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); }
 
 /* El % más pequeño y separado: «100 %» no choca con el trazo. */
 .tja-ring-value strong span { margin-left: 0.1em; font-size: 0.6em; font-weight: 600; color: var(--text-secondary); }
 .tja-ring-value small { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.04em; color: var(--text-muted); }
 
 /* Cada recuento con aire a los lados: el filete no toca el punto de color. */
-.tja-counts { display: grid; grid-template-columns: repeat(3, auto); justify-content: center; margin: 0.35rem 0 0; padding: 0; list-style: none; }
+/* Los recuentos, en tres fichas hundidas con un filo del color de su tono. */
+.tja-counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; width: 100%; max-width: 330px; margin: 0.2rem 0 0; padding: 0; list-style: none; }
 
-.tja-counts li { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; min-width: 0; padding: 0.1rem 1.4rem; }
-.tja-counts li + li { border-left: 1px solid var(--hairline); }
-.tja-counts strong { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; line-height: 1.1; color: var(--text-primary); }
+.tja-counts li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.7rem 0.4rem 0.6rem;
+  overflow: hidden;
+  border-radius: 14px;
+  background: radial-gradient(90% 70% at 50% 0%, color-mix(in srgb, var(--tone) 14%, transparent), transparent 70%), var(--tj-panel-solid);
+  box-shadow: var(--tj-well);
+}
+
+.tja-counts li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 22%;
+  right: 22%;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--tone);
+  box-shadow: 0 0 10px var(--tone);
+  opacity: 0.85;
+}
+
+.tja-counts strong { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; line-height: 1.1; color: var(--text-primary); }
 
 .tja-counts span {
   display: inline-flex;
@@ -2372,9 +2515,64 @@
   margin: 0;
 }
 
-.tja-metrics .tj-metric { gap: 0.35rem; padding-left: 0.85rem; border-left: 2px solid color-mix(in srgb, var(--tone, var(--text-muted)) 55%, transparent); }
-.tja-metrics .tj-metric dt { font-size: 0.62rem; letter-spacing: 0.09em; }
-.tja-metrics .tj-metric dd:not(.tj-metric-sub) { font-size: 1.35rem; font-weight: 700; line-height: 1.1; }
+/* Cada métrica, su losa: hundida, con el brillo de su tono en la esquina y un
+   filo de color arriba. El tono manda: verde bien, rojo mal, gris neutro. */
+.tja-metrics { gap: 0.8rem; }
+
+.tja-metrics .tj-metric.tja-tile {
+  gap: 0.4rem;
+  padding: 0.95rem 1.05rem 0.9rem;
+  border-radius: 16px;
+  background:
+    radial-gradient(85% 120% at 100% 0%, color-mix(in srgb, var(--tone, var(--text-muted)) 15%, transparent), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 50%),
+    var(--tj-panel-solid);
+  box-shadow: var(--tj-well);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tja-tile::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.05rem;
+  width: 34px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--tone, var(--text-muted));
+  box-shadow: 0 0 12px var(--tone, transparent);
+}
+
+.tja-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--tj-well), 0 12px 24px -16px color-mix(in srgb, var(--tone, #000) 60%, transparent);
+}
+
+.tja-tile-ic {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 0.2rem;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--tone, var(--text-muted)) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone, var(--text-muted)) 28%, transparent);
+  color: var(--tone, var(--text-muted));
+}
+
+.tja-metrics .tj-metric dt { font-size: 0.62rem; letter-spacing: 0.09em; color: var(--text-secondary); }
+.tja-metrics .tj-metric dd:not(.tj-metric-sub) {
+  margin-top: 0.1rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--tone, transparent) 35%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tja-metrics .tj-metric.tja-tile { transition: none; }
+  .tja-tile:hover { transform: none; }
+}
 .tja-metrics .tj-metric dd.tj-metric-sub { overflow: hidden; font-size: 0.76rem; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; color: var(--text-muted); }
 
 /* ── Curva de capital ── */
@@ -2473,8 +2671,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
-  border-color: var(--tj-accent-line);
-  background: linear-gradient(160deg, rgba(230, 180, 85, 0.1), transparent 55%), var(--tj-panel);
 }
 
 .tjm .tjr-head { margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
@@ -2759,9 +2955,9 @@
   overflow-x: auto;
   padding: 5px;
   border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 15px;
-  background: rgba(10, 20, 40, 0.78);
-  box-shadow: var(--tj-float);
+  border-radius: 16px;
+  background: var(--tj-noise), linear-gradient(180deg, rgba(18, 30, 60, 0.85), rgba(7, 13, 31, 0.88));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), var(--tj-float);
   backdrop-filter: blur(16px) saturate(140%);
 }
 
@@ -2798,29 +2994,38 @@
  */
 
 /* Cuatro cifras clave, en una franja continua. */
+/* v3: cuatro losas sueltas, cada una con la luz de su tono (verde si va bien,
+   rojo si va mal, el de la sección si es neutra). Antes era una franja con
+   filetes: cuatro cifras distintas parecían una sola fila de tabla. */
 .tjn-head {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
+  gap: 0.85rem;
   margin: 0;
-  border: 1px solid var(--hairline);
-  border-radius: 18px;
-  background: var(--hairline);
-  box-shadow: var(--card-shadow);
 }
 
 .tjn-kpi {
+  --k: var(--tone, var(--sec));
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   min-width: 0;
-  padding: 1.2rem 1.35rem 1.15rem;
+  padding: 1.25rem 1.35rem 1.2rem;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 20px;
   background:
-    var(--tj-sheen),
-    linear-gradient(180deg, color-mix(in srgb, var(--tone, transparent) 10%, transparent), transparent 70%),
-    var(--tj-panel);
+    var(--tj-noise) padding-box,
+    radial-gradient(90% 90% at 100% 0%, color-mix(in srgb, var(--k) 20%, transparent), transparent 65%) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%) padding-box,
+    var(--tj-glass) padding-box,
+    linear-gradient(150deg, color-mix(in srgb, var(--k) 55%, transparent), rgba(255, 255, 255, 0.06) 40%, rgba(255, 255, 255, 0.02)) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 36px -24px rgba(0, 0, 0, 0.95), 0 30px 60px -44px color-mix(in srgb, var(--k) 70%, transparent);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
 }
+.tjn-kpi:hover { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 44px -24px rgba(0, 0, 0, 0.95), 0 30px 60px -36px color-mix(in srgb, var(--k) 80%, transparent); }
+@media (prefers-reduced-motion: reduce) { .tjn-kpi { transition: none; } .tjn-kpi:hover { transform: none; } }
 
 .tjn-kpi::before {
   content: "";
@@ -2830,12 +3035,10 @@
   right: 1.35rem;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--tone, var(--tj-accent)), transparent);
-  opacity: 0.85;
+  background: linear-gradient(90deg, var(--k), transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--k) 70%, transparent);
+  opacity: 0.9;
 }
-
-.tjn-kpi:first-child { border-radius: 17px 0 0 17px; }
-.tjn-kpi:last-child { border-radius: 0 17px 17px 0; }
 .tjn-kpi dd { margin: 0; }
 
 .tjn-kpi dt {
@@ -3262,35 +3465,74 @@
 .tjh-locked p { margin: 0; font-size: 0.82rem; color: var(--text-secondary); }
 
 /* ── Súper hito ──
- * Un escenario, no una tarjeta: fondo negro azulado con dos auroras doradas
- * que se mueven, partículas que suben, la corona en el centro de un anillo de
- * doce tramos (uno por mes, con su estado) y rayos que giran detrás. Sin
- * conseguir, la corona es de piedra y los rayos apenas se ven; conseguido, oro
- * y luz. El texto va en grande: tiene que dar ganas solo con verlo.
+ * Rehecho el 15-11-2026 («todavía más espectacular»). Un escenario, no una
+ * tarjeta:
+ *   · el fondo es una cámara negra y oro con dos auroras que respiran y un
+ *     SUELO en perspectiva (rejilla dorada que se pierde al fondo);
+ *   · una LUZ recorre el canto sin parar (conic-gradient que gira con
+ *     @property, recortado al borde con una máscara);
+ *   · la corona en un medallón de oro pulido, dentro del anillo de doce
+ *     meses, con un halo, dos capas de rayos girando en sentidos contrarios y
+ *     dos ÓRBITAS con gemas;
+ *   · el título en pan de oro con un brillo que lo cruza;
+ *   · a la derecha, la cifra enorme, el CAMINO de doce tramos que se llena y
+ *     las casillas de los meses.
+ * Sin conseguir, la corona es de bronce dormido y todo va a media luz;
+ * conseguido, oro y luz a tope. Con «reducir movimiento», todo quieto.
  */
+
+@property --tjh-ang {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
 
 .tjh-legend {
   position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(0, 0.9fr);
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 0.95fr);
   align-items: center;
-  gap: 1.5rem 2.2rem;
-  padding: 2rem 2.2rem;
+  gap: 1.5rem 2.6rem;
+  padding: 2.6rem 2.6rem 2.4rem;
   overflow: hidden;
+  isolation: isolate;
   border: 1px solid transparent;
-  border-radius: 26px;
+  border-radius: 30px;
   background:
-    radial-gradient(70% 120% at 0% 50%, rgba(255, 215, 106, 0.14), transparent 60%) padding-box,
-    radial-gradient(50% 90% at 100% 100%, rgba(201, 162, 255, 0.12), transparent 60%) padding-box,
-    linear-gradient(160deg, #0f1d3f 0%, #080f24 60%, #05091a 100%) padding-box,
-    linear-gradient(180deg, rgba(255, 215, 106, 0.55), rgba(255, 215, 106, 0.1) 50%, rgba(255, 215, 106, 0.4)) border-box;
-  box-shadow: 0 40px 90px -40px rgba(255, 215, 106, 0.5), 0 0 0 1px rgba(255, 215, 106, 0.08), var(--card-shadow);
+    var(--tj-noise) padding-box,
+    radial-gradient(60% 90% at 14% 50%, rgba(255, 199, 84, 0.2), transparent 62%) padding-box,
+    radial-gradient(45% 80% at 100% 0%, rgba(255, 140, 66, 0.12), transparent 60%) padding-box,
+    radial-gradient(60% 70% at 70% 120%, rgba(201, 162, 255, 0.12), transparent 60%) padding-box,
+    linear-gradient(160deg, #141a33 0%, #0a0f22 45%, #05070f 100%) padding-box,
+    linear-gradient(180deg, rgba(255, 215, 106, 0.6), rgba(255, 215, 106, 0.08) 45%, rgba(255, 170, 70, 0.45)) border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.18),
+    0 0 0 1px rgba(255, 215, 106, 0.06),
+    0 50px 110px -50px rgba(255, 199, 84, 0.65),
+    0 30px 60px -30px rgba(0, 0, 0, 0.95);
 }
 
-.tjh-legend:not(.is-done) { box-shadow: 0 30px 70px -40px rgba(255, 215, 106, 0.3), var(--card-shadow); }
-.tjh-legend > :not(.tjh-legend-aurora):not(.tjh-legend-glow):not(.tjh-legend-stars) { position: relative; z-index: 2; }
+.tjh-legend:not(.is-done) { box-shadow: inset 0 1px 0 rgba(255, 240, 200, 0.12), 0 40px 90px -50px rgba(255, 199, 84, 0.45), 0 30px 60px -30px rgba(0, 0, 0, 0.95); }
+.tjh-legend > :not(.tjh-legend-aurora):not(.tjh-legend-glow):not(.tjh-legend-stars):not(.tjh-legend-floor):not(.tjh-legend-beam) { position: relative; z-index: 3; }
 
-/* Las auroras: dos manchas doradas, desenfocadas, que se mueven despacio. */
+/* La luz que recorre el canto: un cometa dorado dando la vuelta. */
+.tjh-legend-beam {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--tjh-ang), transparent 0 62%, rgba(255, 215, 106, 0.2) 72%, #ffd76a 82%, #fffbe8 85%, #ffb347 88%, transparent 94%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: tjh-beam 7s linear infinite;
+  pointer-events: none;
+}
+.tjh-legend:not(.is-done) .tjh-legend-beam { opacity: 0.7; animation-duration: 10s; }
+@keyframes tjh-beam { to { --tjh-ang: 360deg; } }
+
+/* Las auroras: manchas de oro y ámbar, desenfocadas, que respiran. */
 .tjh-legend-aurora { position: absolute; inset: -30%; z-index: 0; pointer-events: none; }
 .tjh-legend-aurora::before,
 .tjh-legend-aurora::after {
@@ -3299,161 +3541,295 @@
   width: 46%;
   height: 70%;
   border-radius: 50%;
-  filter: blur(46px);
-  opacity: 0.55;
+  filter: blur(50px);
+  opacity: 0.6;
 }
-.tjh-legend-aurora::before { top: 10%; left: 8%; background: radial-gradient(circle, rgba(255, 215, 106, 0.45), transparent 65%); animation: tjh-aurora 14s ease-in-out infinite; }
-.tjh-legend-aurora::after { right: 4%; bottom: 0; background: radial-gradient(circle, rgba(255, 154, 77, 0.3), transparent 65%); animation: tjh-aurora 18s ease-in-out -7s infinite reverse; }
+.tjh-legend-aurora::before { top: 12%; left: 6%; background: radial-gradient(circle, rgba(255, 215, 106, 0.5), transparent 65%); animation: tjh-aurora 14s ease-in-out infinite; }
+.tjh-legend-aurora::after { right: 2%; bottom: 4%; background: radial-gradient(circle, rgba(255, 140, 66, 0.32), transparent 65%); animation: tjh-aurora 18s ease-in-out -7s infinite reverse; }
 @keyframes tjh-aurora { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(8%, -6%) scale(1.15); } }
 
-/* El destello que cruza la tarjeta. */
-.tjh-legend-glow { position: absolute; inset: 0; z-index: 1; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.06) 50%, transparent 65%); animation: tjh-sheen 7s ease-in-out infinite; pointer-events: none; }
+/* El suelo del escenario: una rejilla dorada en perspectiva que se pierde. */
+.tjh-legend-floor {
+  position: absolute;
+  right: -20%;
+  bottom: -2px;
+  left: -20%;
+  z-index: 1;
+  height: 62%;
+  background:
+    linear-gradient(rgba(255, 215, 106, 0.22) 1px, transparent 1px) 0 0 / 100% 30px,
+    linear-gradient(90deg, rgba(255, 215, 106, 0.16) 1px, transparent 1px) 50% 0 / 52px 100%;
+  transform: perspective(420px) rotateX(64deg);
+  transform-origin: 50% 100%;
+  -webkit-mask: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.5) 35%, transparent 80%);
+  mask: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.5) 35%, transparent 80%);
+  opacity: 0.55;
+  animation: tjh-floor 5s linear infinite;
+  pointer-events: none;
+}
+.tjh-legend:not(.is-done) .tjh-legend-floor { opacity: 0.35; }
+@keyframes tjh-floor { to { background-position: 0 30px, 50% 0; } }
+
+/* El destello que cruza el escenario. */
+.tjh-legend-glow { position: absolute; inset: 0; z-index: 2; background: linear-gradient(110deg, transparent 35%, rgba(255, 240, 200, 0.07) 50%, transparent 65%); animation: tjh-sheen 7s ease-in-out infinite; pointer-events: none; }
 @keyframes tjh-sheen { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
 
-/* Partículas doradas que suben y se apagan. */
-.tjh-legend-stars { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.tjh-legend-stars i { position: absolute; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #ffd76a; box-shadow: 0 0 8px #ffd76a; opacity: 0; animation: tjh-star 7s linear infinite; }
-.tjh-legend-stars i:nth-child(1) { left: 6%; animation-delay: 0s; }
-.tjh-legend-stars i:nth-child(2) { left: 18%; animation-delay: 2.4s; width: 3px; height: 3px; }
-.tjh-legend-stars i:nth-child(3) { left: 31%; animation-delay: 1.1s; }
-.tjh-legend-stars i:nth-child(4) { left: 47%; animation-delay: 4.2s; width: 3px; height: 3px; }
-.tjh-legend-stars i:nth-child(5) { left: 58%; animation-delay: 3s; }
-.tjh-legend-stars i:nth-child(6) { left: 72%; animation-delay: 5.5s; width: 5px; height: 5px; }
-.tjh-legend-stars i:nth-child(7) { left: 84%; animation-delay: 1.8s; }
-.tjh-legend-stars i:nth-child(8) { left: 94%; animation-delay: 6.2s; width: 3px; height: 3px; }
-@keyframes tjh-star { 0% { transform: translateY(10px); opacity: 0; } 15% { opacity: 0.9; } 100% { transform: translateY(-160px); opacity: 0; } }
+/* Polvo de oro que sube y se apaga. */
+.tjh-legend-stars { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.tjh-legend-stars i { position: absolute; bottom: 0; width: 4px; height: 4px; border-radius: 50%; background: #ffe7a3; box-shadow: 0 0 10px 1px #ffd76a; opacity: 0; animation: tjh-star 7s linear infinite; }
+.tjh-legend-stars i:nth-child(1) { left: 5%; animation-delay: 0s; }
+.tjh-legend-stars i:nth-child(2) { left: 13%; animation-delay: 2.4s; width: 3px; height: 3px; }
+.tjh-legend-stars i:nth-child(3) { left: 22%; animation-delay: 1.1s; }
+.tjh-legend-stars i:nth-child(4) { left: 31%; animation-delay: 4.2s; width: 2px; height: 2px; }
+.tjh-legend-stars i:nth-child(5) { left: 40%; animation-delay: 3s; }
+.tjh-legend-stars i:nth-child(6) { left: 49%; animation-delay: 5.5s; width: 5px; height: 5px; }
+.tjh-legend-stars i:nth-child(7) { left: 58%; animation-delay: 1.8s; }
+.tjh-legend-stars i:nth-child(8) { left: 66%; animation-delay: 6.2s; width: 3px; height: 3px; }
+.tjh-legend-stars i:nth-child(9) { left: 74%; animation-delay: 0.7s; width: 2px; height: 2px; }
+.tjh-legend-stars i:nth-child(10) { left: 82%; animation-delay: 3.7s; }
+.tjh-legend-stars i:nth-child(11) { left: 89%; animation-delay: 5s; width: 3px; height: 3px; }
+.tjh-legend-stars i:nth-child(12) { left: 96%; animation-delay: 2s; }
+@keyframes tjh-star { 0% { transform: translateY(10px) scale(0.6); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-220px) scale(1); opacity: 0; } }
 
-/* La corona, dentro del anillo de doce meses, con rayos detrás. */
-.tjh-legend-crown { position: relative; display: grid; place-items: center; width: 176px; height: 176px; }
+/* La corona: halo, rayos, órbitas y el anillo de doce meses. */
+.tjh-legend-crown { position: relative; display: grid; place-items: center; width: 200px; height: 200px; margin: 0.5rem; }
+
+.tjh-legend-halo {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 106, 0.38) 0%, rgba(255, 170, 70, 0.12) 35%, transparent 62%);
+  animation: tjh-halo 4s ease-in-out infinite;
+}
+.tjh-legend:not(.is-done) .tjh-legend-halo { opacity: 0.55; }
+@keyframes tjh-halo { 0%, 100% { transform: scale(0.94); opacity: 0.8; } 50% { transform: scale(1.06); opacity: 1; } }
 
 .tjh-rays {
   position: absolute;
-  inset: -8%;
+  inset: -22%;
   border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, rgba(255, 215, 106, 0.3) 0deg 7deg, transparent 7deg 20deg);
-  -webkit-mask: radial-gradient(circle, #000 25%, transparent 70%);
-  mask: radial-gradient(circle, #000 25%, transparent 70%);
-  animation: tjh-aura 22s linear infinite;
-  opacity: 0.22;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 215, 106, 0.32) 0deg 5deg, transparent 5deg 18deg);
+  -webkit-mask: radial-gradient(circle, #000 22%, transparent 68%);
+  mask: radial-gradient(circle, #000 22%, transparent 68%);
+  animation: tjh-aura 26s linear infinite;
+  opacity: 0.45;
 }
+.tjh-rays.is-b { inset: -12%; background: repeating-conic-gradient(from 9deg, rgba(255, 240, 200, 0.25) 0deg 2deg, transparent 2deg 24deg); animation-duration: 40s; animation-direction: reverse; opacity: 0.5; }
+.tjh-legend.is-done .tjh-rays { opacity: 1; animation-duration: 14s; }
+.tjh-legend.is-done .tjh-rays.is-b { animation-duration: 22s; }
 
-.tjh-legend.is-done .tjh-rays { opacity: 1; animation-duration: 12s; }
+/* Dos órbitas con gemas: una cerca y rápida, otra lejos y lenta, al revés. */
+.tjh-orbit { position: absolute; border: 1px dashed rgba(255, 215, 106, 0.28); border-radius: 50%; animation: tjh-aura 14s linear infinite; }
+.tjh-orbit.is-a { inset: -10px; }
+.tjh-orbit.is-b { inset: -30px; border-style: dotted; border-color: rgba(255, 215, 106, 0.18); animation-duration: 24s; animation-direction: reverse; }
+.tjh-orbit i { position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 2px; background: linear-gradient(135deg, #fffbe8, #ffd76a 50%, #e08a1e); box-shadow: 0 0 12px 2px rgba(255, 215, 106, 0.85); transform: rotate(45deg); }
+.tjh-orbit.is-b i { width: 6px; height: 6px; margin-left: -3px; top: -3px; background: #ffe7a3; border-radius: 50%; }
+.tjh-orbit.is-b i + i { top: auto; bottom: -3px; background: #ffb38a; box-shadow: 0 0 12px 2px rgba(255, 140, 66, 0.8); }
 
 /* El anillo: doce tramos, uno por mes, del color de su estado. */
-.tjh-legend-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
-.tjh-legend-ring-track { fill: none; stroke: rgba(255, 255, 255, 0.05); stroke-width: 10; }
-.tjh-legend-seg { fill: none; stroke-width: 10; stroke: rgba(240, 244, 255, 0.07); }
-.tjh-legend-seg.is-ok { stroke: #6ee7b7; filter: drop-shadow(0 0 6px rgba(110, 231, 183, 0.8)); }
-.tjh-legend-seg.is-red { stroke: #ff8f8f; }
-.tjh-legend-seg.is-few { stroke: rgba(240, 180, 85, 0.45); stroke-dasharray: 3 3; }
+.tjh-legend-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.6)); }
+.tjh-legend-ring-track { fill: none; stroke: rgba(4, 7, 16, 0.75); stroke-width: 13; }
+.tjh-legend-seg { fill: none; stroke-width: 9; stroke-linecap: round; stroke: rgba(240, 244, 255, 0.08); }
+.tjh-legend-seg.is-ok { stroke: #6ee7b7; filter: drop-shadow(0 0 6px rgba(110, 231, 183, 0.9)); }
+.tjh-legend-seg.is-red { stroke: #ff8f8f; filter: drop-shadow(0 0 4px rgba(255, 92, 92, 0.6)); }
+.tjh-legend-seg.is-few { stroke: rgba(240, 180, 85, 0.5); stroke-dasharray: 3 3; }
+.tjh-legend.is-done .tjh-legend-seg { stroke: #ffd76a; filter: drop-shadow(0 0 6px rgba(255, 215, 106, 0.95)); }
 
+/* El medallón: oro pulido, con un brillo que gira por su superficie. */
 .tjh-legend-medal {
   position: relative;
   display: grid;
   place-items: center;
-  width: 104px;
-  height: 104px;
+  width: 112px;
+  height: 112px;
+  overflow: hidden;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fff1c2, #ffd76a 40%, #c8902f 85%);
-  box-shadow: 0 0 0 5px rgba(255, 215, 106, 0.22), 0 0 50px -4px rgba(255, 215, 106, 0.9), inset 0 -8px 14px rgba(120, 70, 10, 0.4), inset 0 3px 0 rgba(255, 255, 255, 0.5);
-  color: #6b4310;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.85), transparent 28%),
+    conic-gradient(from 200deg, #fff1c2, #ffd76a, #c8902f, #ffe9a8, #b77a22, #ffd76a, #fff1c2);
+  box-shadow:
+    0 0 0 4px #4a3110,
+    0 0 0 6px rgba(255, 215, 106, 0.55),
+    0 0 60px 0 rgba(255, 215, 106, 0.85),
+    inset 0 -10px 16px rgba(110, 60, 5, 0.5),
+    inset 0 4px 0 rgba(255, 255, 255, 0.55);
+  color: #5a370a;
   animation: tjh-medal-pulse 3s ease-in-out infinite;
 }
+.tjh-legend-medal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 35%, rgba(255, 255, 255, 0.55) 48%, transparent 60%);
+  transform: translateX(-120%);
+  animation: tjh-medal-shine 4.5s ease-in-out infinite;
+}
+.tjh-legend-medal svg { position: relative; z-index: 1; filter: drop-shadow(0 1px 0 rgba(255, 245, 210, 0.7)) drop-shadow(0 -1px 0 rgba(90, 55, 10, 0.4)); }
 
-@keyframes tjh-medal-pulse { 0%, 100% { box-shadow: 0 0 0 5px rgba(255, 215, 106, 0.22), 0 0 50px -4px rgba(255, 215, 106, 0.9), inset 0 -8px 14px rgba(120, 70, 10, 0.4), inset 0 3px 0 rgba(255, 255, 255, 0.5); } 50% { box-shadow: 0 0 0 9px rgba(255, 215, 106, 0.1), 0 0 70px 2px rgba(255, 215, 106, 1), inset 0 -8px 14px rgba(120, 70, 10, 0.4), inset 0 3px 0 rgba(255, 255, 255, 0.5); } }
+@keyframes tjh-medal-pulse { 0%, 100% { box-shadow: 0 0 0 4px #4a3110, 0 0 0 6px rgba(255, 215, 106, 0.55), 0 0 50px -4px rgba(255, 215, 106, 0.8), inset 0 -10px 16px rgba(110, 60, 5, 0.5), inset 0 4px 0 rgba(255, 255, 255, 0.55); } 50% { box-shadow: 0 0 0 4px #4a3110, 0 0 0 8px rgba(255, 215, 106, 0.35), 0 0 80px 6px rgba(255, 215, 106, 1), inset 0 -10px 16px rgba(110, 60, 5, 0.5), inset 0 4px 0 rgba(255, 255, 255, 0.55); } }
+@keyframes tjh-medal-shine { 0%, 55% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
 
-/* Sin conseguir: una corona de piedra, a la espera. */
+/* Sin conseguir: bronce dormido con el canto de oro — se ve lo que será. */
 .tjh-legend:not(.is-done) .tjh-legend-medal {
-  background: radial-gradient(circle at 35% 30%, #44527a, #1a2440 85%);
-  box-shadow: 0 0 0 5px rgba(255, 215, 106, 0.1), 0 0 30px -8px rgba(255, 215, 106, 0.35), inset 0 -8px 14px rgba(0, 0, 0, 0.45), inset 0 3px 0 rgba(255, 255, 255, 0.08);
-  color: #9fb0d4;
+  background:
+    radial-gradient(circle at 34% 26%, rgba(255, 230, 180, 0.22), transparent 30%),
+    conic-gradient(from 200deg, #4b3a26, #2a2134, #1a1a2c, #3b2d22, #241c2c, #4b3a26);
+  box-shadow:
+    0 0 0 4px #1d1526,
+    0 0 0 6px rgba(255, 215, 106, 0.35),
+    0 0 36px -6px rgba(255, 215, 106, 0.5),
+    inset 0 -10px 16px rgba(0, 0, 0, 0.5),
+    inset 0 3px 0 rgba(255, 230, 180, 0.15);
+  color: #d8b678;
   animation: none;
 }
+.tjh-legend:not(.is-done) .tjh-legend-medal::after { animation-duration: 7s; opacity: 0.45; }
 .tjh-legend:not(.is-done) .tjh-ic-vivir { animation-duration: 5s; }
 
 .tjh-legend-sparks { position: absolute; inset: 0; pointer-events: none; }
-.tjh-legend-sparks i { position: absolute; font-style: normal; color: #ffd76a; animation: tjh-spark 1.8s ease-in-out infinite; }
+.tjh-legend-sparks i { position: absolute; font-style: normal; color: #ffd76a; text-shadow: 0 0 10px #ffd76a; animation: tjh-spark 1.8s ease-in-out infinite; }
 .tjh-legend-sparks i:nth-child(1) { top: 6px; left: 18px; }
 .tjh-legend-sparks i:nth-child(2) { top: 14px; right: 10px; animation-delay: 0.45s; font-size: 0.75rem; }
 .tjh-legend-sparks i:nth-child(3) { bottom: 14px; left: 8px; animation-delay: 0.9s; font-size: 0.7rem; }
 .tjh-legend-sparks i:nth-child(4) { bottom: 6px; right: 22px; animation-delay: 1.35s; }
 @keyframes tjh-spark { 0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1.2) rotate(30deg); } }
 
-/* El texto: título grande en oro, el lema y las reglas como píldoras. */
-.tjh-kicker.is-legend { display: inline-flex; align-items: center; gap: 0.45rem; color: #ffd76a; }
-.tjh-kicker.is-legend::before { content: ""; width: 18px; height: 1px; background: #ffd76a; }
+/* El texto: una placa con el antetítulo, el título en pan de oro y las reglas. */
+.tjh-kicker.is-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.32rem 0.8rem 0.32rem 0.6rem;
+  border: 1px solid rgba(255, 215, 106, 0.4);
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 215, 106, 0.18), rgba(255, 215, 106, 0.04));
+  box-shadow: inset 0 1px 0 rgba(255, 240, 200, 0.2), 0 0 24px -8px rgba(255, 215, 106, 0.7);
+  letter-spacing: 0.16em;
+  color: #ffe08a;
+}
+.tjh-kicker.is-legend::before { content: ""; width: 7px; height: 7px; border-radius: 1px; background: #ffd76a; box-shadow: 0 0 10px #ffd76a; transform: rotate(45deg); }
 
+/* El padding de abajo (compensado en el margen) es a propósito: el oro es un
+   fondo recortado al texto (background-clip: text) y solo pinta DENTRO de la
+   caja. Con el interlineado justo, las colas de la g, la p o la j salían por
+   debajo y se veían cortadas. */
 .tjh-legend-text h3 {
-  margin: 0.45rem 0 0.5rem;
+  margin: 0.75rem 0 0.42rem;
+  padding-bottom: 0.18em;
   font-family: var(--font-display);
-  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  background: linear-gradient(100deg, #fff8e6 0%, #ffd76a 45%, #f0a94a 100%);
+  font-size: clamp(1.9rem, 3.4vw, 2.85rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.035em;
+  background: linear-gradient(100deg, #fff8e6 0%, #ffd76a 28%, #fff4d1 42%, #f0a94a 60%, #ffd76a 80%, #fff8e6 100%);
+  background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  filter: drop-shadow(0 4px 24px rgba(255, 199, 84, 0.35));
+  animation: tjh-oro 6s ease-in-out infinite;
 }
+@keyframes tjh-oro { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
 
-.tjh-legend-lema { margin: 0 0 0.9rem; font-size: 0.92rem; line-height: 1.6; color: var(--text-secondary); text-wrap: pretty; }
+.tjh-legend-lema { max-width: 52ch; margin: 0 0 1.1rem; font-size: 0.95rem; line-height: 1.65; color: rgba(240, 244, 255, 0.78); text-wrap: pretty; }
 
-.tjh-rules { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.tjh-rules { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
 .tjh-rules li {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.7rem 0.3rem 0.55rem;
-  border: 1px solid rgba(240, 244, 255, 0.1);
-  border-radius: 999px;
-  background: rgba(240, 244, 255, 0.04);
-  font-size: 0.76rem;
+  gap: 0.45rem;
+  padding: 0.4rem 0.8rem 0.4rem 0.6rem;
+  border: 1px solid rgba(240, 244, 255, 0.12);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(240, 244, 255, 0.06), rgba(240, 244, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-muted);
 }
 .tjh-rules li svg { flex-shrink: 0; }
-.tjh-rules li.is-ok { border-color: rgba(110, 231, 183, 0.4); background: rgba(110, 231, 183, 0.1); color: var(--tj-win); }
+.tjh-rules li.is-ok { border-color: rgba(110, 231, 183, 0.45); background: linear-gradient(180deg, rgba(110, 231, 183, 0.18), rgba(110, 231, 183, 0.05)); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 18px -8px rgba(110, 231, 183, 0.8); color: #8af0c8; }
 
-/* El siguiente paso, concreto: cuántos meses faltan y qué hace falta para que este cuente. */
+/* El siguiente paso, en una placa de cristal con canto de oro. */
 .tjh-legend-next {
-  margin: 0.9rem 0 0;
-  padding: 0.65rem 0.85rem;
-  border-left: 2px solid #ffd76a;
-  border-radius: 0 10px 10px 0;
-  background: rgba(255, 215, 106, 0.07);
-  font-size: 0.82rem;
-  line-height: 1.5;
+  position: relative;
+  margin: 1.1rem 0 0;
+  padding: 0.8rem 1rem 0.8rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background:
+    linear-gradient(100deg, rgba(255, 215, 106, 0.12), rgba(255, 215, 106, 0.02) 70%) padding-box,
+    linear-gradient(rgba(8, 11, 24, 0.7), rgba(8, 11, 24, 0.7)) padding-box,
+    linear-gradient(100deg, rgba(255, 215, 106, 0.6), rgba(255, 215, 106, 0.08) 60%) border-box;
+  font-size: 0.84rem;
+  line-height: 1.55;
   color: #fff3cf;
   text-wrap: pretty;
 }
-.tjh-legend-next.is-done { border-left-color: var(--tj-win); background: rgba(110, 231, 183, 0.08); color: var(--text-primary); }
+.tjh-legend-next::before { content: ""; position: absolute; top: 12px; bottom: 12px; left: -1px; width: 3px; border-radius: 0 3px 3px 0; background: #ffd76a; box-shadow: 0 0 12px #ffd76a; }
+.tjh-legend-next.is-done { background: linear-gradient(100deg, rgba(110, 231, 183, 0.14), transparent 70%) padding-box, linear-gradient(rgba(8, 11, 24, 0.7), rgba(8, 11, 24, 0.7)) padding-box, linear-gradient(100deg, rgba(110, 231, 183, 0.6), rgba(110, 231, 183, 0.08) 60%) border-box; color: var(--text-primary); }
+.tjh-legend-next.is-done::before { background: var(--tj-win); box-shadow: 0 0 12px var(--tj-win); }
 
-/* La cuenta de meses y los doce últimos como casillas. */
-.tjh-legend-months { display: flex; flex-direction: column; gap: 0.8rem; }
-.tjh-legend-count { display: flex; align-items: baseline; gap: 0.5rem; }
-.tjh-legend-count strong { font-family: var(--font-display); font-size: 3rem; font-weight: 700; line-height: 1; letter-spacing: -0.04em; color: #ffd76a; text-shadow: 0 0 30px rgba(255, 215, 106, 0.55); }
-.tjh-legend-count span { font-size: 0.86rem; font-weight: 600; color: var(--text-muted); }
+/* La cuenta: la cifra enorme, el camino de doce tramos y las casillas. */
+.tjh-legend-months {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.3rem 1.3rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: 22px;
+  background:
+    var(--tj-noise) padding-box,
+    radial-gradient(90% 70% at 20% 0%, rgba(255, 215, 106, 0.14), transparent 60%) padding-box,
+    linear-gradient(170deg, rgba(14, 18, 38, 0.92), rgba(5, 7, 16, 0.94)) padding-box,
+    linear-gradient(160deg, rgba(255, 215, 106, 0.5), rgba(255, 255, 255, 0.06) 45%, rgba(255, 215, 106, 0.2)) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 200, 0.1), 0 24px 50px -30px rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(6px);
+}
+.tjh-legend-count { display: flex; align-items: baseline; gap: 0.6rem; }
+.tjh-legend-count strong {
+  font-family: var(--font-display);
+  font-size: 4.4rem;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+  background: linear-gradient(180deg, #fffbe8 0%, #ffd76a 45%, #c8902f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 22px rgba(255, 215, 106, 0.55));
+}
+.tjh-legend-count span { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.78rem; font-weight: 600; line-height: 1.3; color: var(--text-muted); }
+.tjh-legend-count span b { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; color: rgba(255, 231, 163, 0.75); }
 
-.tjh-legend-months ol { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin: 0; padding: 0; list-style: none; }
-.tjh-legend-months li { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+/* El camino: doce tramos marcados, que se llenan de oro hasta el mes de hoy. */
+.tjh-legend-run { position: relative; height: 10px; overflow: hidden; border-radius: 999px; background: rgba(4, 7, 16, 0.85); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 215, 106, 0.12); }
+.tjh-legend-run i { position: absolute; top: 0; bottom: 0; left: 0; border-radius: inherit; background: linear-gradient(90deg, #c8902f, #ffd76a 70%, #fffbe8); box-shadow: 0 0 14px rgba(255, 215, 106, 0.9); }
+.tjh-legend-run b { position: absolute; top: 2px; bottom: 2px; width: 1px; background: rgba(255, 255, 255, 0.12); }
+
+.tjh-legend-months ol { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; margin: 0; padding: 0; list-style: none; }
+.tjh-legend-months li { display: flex; flex-direction: column; align-items: center; gap: 0.32rem; }
 
 .tjh-legend-months li i {
   width: 100%;
-  height: 26px;
-  border-radius: 7px;
-  background: rgba(240, 244, 255, 0.05);
-  box-shadow: inset 0 0 0 1px rgba(240, 244, 255, 0.06);
+  height: 30px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, rgba(240, 244, 255, 0.05), rgba(240, 244, 255, 0.02));
+  box-shadow: inset 0 0 0 1px rgba(240, 244, 255, 0.07), inset 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-.tjh-legend-months li.is-ok i { background: linear-gradient(180deg, #8af0c8, #2fae7c); box-shadow: 0 0 14px -2px rgba(110, 231, 183, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
-.tjh-legend-months li.is-red i { background: linear-gradient(180deg, #ff9d9d, #d9474f); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25); }
-.tjh-legend-months li.is-few i { background: repeating-linear-gradient(45deg, rgba(240, 180, 85, 0.35) 0 4px, transparent 4px 8px); box-shadow: inset 0 0 0 1px rgba(240, 180, 85, 0.35); }
-.tjh-legend-months li span { font-size: 0.62rem; font-weight: 700; text-transform: capitalize; color: var(--text-muted); }
+.tjh-legend-months li.is-ok i { background: linear-gradient(180deg, #9ef5d2, #2fae7c); box-shadow: 0 0 16px -2px rgba(110, 231, 183, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -3px 0 rgba(0, 80, 50, 0.3); }
+.tjh-legend-months li.is-red i { background: linear-gradient(180deg, #ffa3a3, #d9474f); box-shadow: 0 0 12px -4px rgba(255, 92, 92, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+.tjh-legend-months li.is-few i { background: repeating-linear-gradient(45deg, rgba(240, 180, 85, 0.35) 0 4px, transparent 4px 8px); box-shadow: inset 0 0 0 1px rgba(240, 180, 85, 0.4); }
+.tjh-legend.is-done .tjh-legend-months li i { background: linear-gradient(180deg, #fff1c2, #e6a93a); box-shadow: 0 0 16px -2px rgba(255, 215, 106, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.55); }
+.tjh-legend-months li span { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.03em; text-transform: capitalize; color: var(--text-muted); }
+.tjh-legend-months li.is-ok span { color: #8af0c8; }
 
-.tjh-legend-legend { display: flex; gap: 0.8rem; margin: 0; font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
+.tjh-legend-legend { display: flex; gap: 0.9rem; margin: 0; font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
 .tjh-legend-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
 .tjh-legend-legend span::before { content: ""; width: 9px; height: 9px; border-radius: 3px; }
-.tjh-legend-legend .is-ok::before { background: #6ee7b7; }
+.tjh-legend-legend .is-ok::before { background: #6ee7b7; box-shadow: 0 0 6px rgba(110, 231, 183, 0.8); }
 .tjh-legend-legend .is-red::before { background: #ff8f8f; }
 .tjh-legend-legend .is-few::before { background: repeating-linear-gradient(45deg, rgba(240, 180, 85, 0.6) 0 2px, transparent 2px 4px); }
 
@@ -3638,6 +4014,117 @@
 
 .tj-more { display: flex; margin: 1rem auto 0; }
 
+/* ── Sistema v3: losas de datos y fondo (15-11-2026) ──
+ * Toda cifra suelta vive en su propia losa de cristal: canto encendido con la
+ * luz de su tono (o de su sección, si es neutra), aurora en la esquina y un
+ * filamento arriba. Antes eran franjas unidas por filetes de 1 px — cinco
+ * datos distintos se leían como una fila de tabla. Va aquí, al final, para
+ * pisar las franjas de cada sección sin tocarlas una a una.
+ */
+.tjn-band,
+.tjo-band,
+.tjh-summary-stats { gap: 0.7rem; overflow: visible; border: 0; border-radius: 0; background: none; box-shadow: none; }
+
+.tjc-band > div:not(.tjc-band-mejor),
+.tjn-band > .tj-metric,
+.tjo-band > div,
+.tjh-summary-stats > div,
+.tje-stats > div {
+  --k: var(--tone, var(--sec));
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background:
+    var(--tj-noise) padding-box,
+    radial-gradient(110% 120% at 100% 0%, color-mix(in srgb, var(--k) var(--glow, 14%), transparent), transparent 62%) padding-box,
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 45%) padding-box,
+    linear-gradient(165deg, #0c1631, #060b1b) padding-box,
+    linear-gradient(150deg, color-mix(in srgb, var(--k) 45%, transparent), rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.015)) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 14px 28px -20px rgba(0, 0, 0, 0.95);
+}
+
+/* La cifra principal de cada franja brilla más. */
+.tjc-band > .tjc-band-main,
+.tjo-band > .tjo-band-main { --glow: 26%; }
+
+.tjc-band > div:not(.tjc-band-mejor)::before,
+.tjn-band > .tj-metric::before,
+.tjo-band > div::before,
+.tjh-summary-stats > div::before,
+.tje-stats > div::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 14px;
+  width: 28px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--k);
+  box-shadow: 0 0 10px var(--k);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.tje-stats dd,
+.tjo-band dd { text-shadow: 0 0 20px color-mix(in srgb, var(--tone, transparent) 35%, transparent); }
+
+/* Tablas: cabecera con el filete de la sección y filas que se encienden. */
+.tj-table th { border-bottom: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--sec) 45%, transparent), rgba(240, 244, 255, 0.08) 40%, transparent) bottom / 100% 1px no-repeat; color: color-mix(in srgb, var(--sec) 35%, var(--text-muted)); }
+.tj-table tbody tr { transition: background 0.15s; }
+.tj-table tbody tr:hover td { background: color-mix(in srgb, var(--sec) 7%, transparent); }
+.tj-table tbody tr:hover td:first-child { box-shadow: inset 2px 0 0 var(--sec); }
+
+/* Cada operación: una losa de cristal con la luz de su resultado entrando por
+   la izquierda y un filo encendido (antes, un borde grueso de color). */
+.tjo-row {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background:
+    radial-gradient(55% 160% at 0% 50%, color-mix(in srgb, var(--row) 13%, transparent), transparent 62%) padding-box,
+    linear-gradient(165deg, #0c1631, #070d1f) padding-box,
+    linear-gradient(100deg, color-mix(in srgb, var(--row) 48%, transparent), rgba(255, 255, 255, 0.05) 30%, rgba(255, 255, 255, 0.02)) border-box;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.tjo-row::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--row);
+  box-shadow: 0 0 12px var(--row);
+  pointer-events: none;
+}
+.tjo-row:hover,
+.tjo-row.is-open {
+  border-color: transparent;
+  background:
+    radial-gradient(60% 160% at 0% 50%, color-mix(in srgb, var(--row) 22%, transparent), transparent 65%) padding-box,
+    linear-gradient(165deg, #101c3b, #08102a) padding-box,
+    linear-gradient(100deg, color-mix(in srgb, var(--row) 70%, transparent), rgba(255, 255, 255, 0.08) 35%, rgba(255, 255, 255, 0.03)) border-box;
+}
+
+/*
+ * El fondo de la página del Diario: tres auroras quietas (oro arriba a la
+ * izquierda, índigo a la derecha, turquesa abajo) detrás de todo. El cristal
+ * de las tarjetas necesita algo detrás para parecer cristal. `fixed` y dentro
+ * del contexto de .trading-journal (z-index 2): queda bajo las tarjetas.
+ */
+.trading-journal::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(38% 34% at 12% 8%, rgba(230, 180, 85, 0.11), transparent 70%),
+    radial-gradient(34% 42% at 92% 32%, rgba(99, 102, 241, 0.12), transparent 70%),
+    radial-gradient(40% 36% at 45% 100%, rgba(45, 212, 191, 0.08), transparent 70%);
+  pointer-events: none;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 1100px) {
@@ -3709,6 +4196,9 @@
   .tjh-summary-stats { grid-template-columns: 1fr; text-align: left; }
   .tjh-legend { grid-template-columns: 1fr; justify-items: center; padding: 1.4rem 1.1rem; text-align: center; }
   .tjh-legend-months { width: 100%; align-items: center; }
+  .tjh-legend-run,
+  .tjh-legend-months ol { align-self: stretch; }
+  .tjh-legend-count strong { font-size: 3.6rem; }
   .tjh-rules { justify-content: center; }
   .tjh-legend-next { text-align: left; }
   .tjh-grid { grid-template-columns: 1fr; }
@@ -3733,9 +4223,10 @@
 
   .tja { display: flex; flex-direction: column; gap: 1.3rem; padding: 1.2rem 0; }
   .tja-zone { padding: 0 1.1rem; }
-  .tja-zone + .tja-zone { margin: 0 1.1rem; padding: 1.3rem 0 0; border-left: 0; border-top: 1px solid var(--hairline); }
-  .tja-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 1rem; }
-  .tja-counts li { padding: 0.1rem 0.9rem; }
+  .tja-zone + .tja-zone { margin: 0 1.1rem; padding: 1.3rem 0 0; border-left: 0; border-top: 1px solid var(--hairline); border-image: none; }
+  .tja-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; }
+  .tja-metrics .tj-metric.tja-tile { padding: 0.8rem 0.8rem 0.75rem; }
+  .tja-metrics .tj-metric dd:not(.tj-metric-sub) { font-size: 1.35rem; }
 
   .tjc { padding: 1rem 0.8rem; }
   .tjc-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
