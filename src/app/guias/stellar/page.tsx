@@ -170,7 +170,7 @@ export default async function StellarPage() {
             </p>
             <p>
               La unidad se llama reserva base y vale 0,5 XLM. Una cuenta necesita dos, es decir, 1 XLM. Cada
-              línea de confianza, cada orden de compraventa abierta y cada firmante añadido cuesta una más.
+              <Termino slug="linea-de-confianza">línea de confianza</Termino>, cada orden de compraventa abierta y cada firmante añadido cuesta una más.
               Calcula lo que retendría la tuya:
             </p>
           </div>

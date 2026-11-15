@@ -47,7 +47,6 @@ Solana, Cardano, Chainlink, BNB, TRON, Monero y Stellar están escritas, auditad
 
 - [ ] **Publicarlas desde `/admin/acciones`** (lo hace el admin), una cada dos o tres días. **El orden importa por los enlaces entre ellas**: Ethereum la primera (la enlazan Solana, BNB y TRON) y TRON antes que Stellar (Stellar la enlaza). Orden propuesto (Ethereum ya está): Solana, BNB, TRON, Cardano, Monero, Stellar, Chainlink.
 - [ ] **Después de publicar cada una**: ascenderla de `BORRADORES` a `GUIDES`, darle al menos dos enlaces entrantes desde guías o fichas ya publicadas (Fase 10) y repetir `npm run check:seo -- guias/<slug> "<moneda>"`. Hoy fallan solo esas dos comprobaciones, enlaces entrantes y sitemap, que un borrador no puede cumplir.
-- [ ] **Dos fichas del diccionario que estas guías explican pero no enlazan**: `mediana` (Chainlink) y `linea-de-confianza` (Stellar). El resto se creó el 14-11-2026 y ya está enlazado en su primera aparición (capa 2, delegación, moneda de privacidad, fungibilidad, memo, MiCA y otras). Hard fork y slashing tienen ficha, pero estas guías no usan la palabra.
 - [ ] **Una experiencia propia del admin en cada guía** (Fase 8): hoy ninguna la tiene.
 - [ ] **Revisar las cifras que caducan** antes de publicar cada una. Las que más: en **BNB**, todo lo de Binance y la licencia MiCA (cambia por semanas; el texto refleja lo publicado hasta el 13-11-2026, con el cierre de cuentas en España anunciado para el 31-12-2026) y la última quema (`QUEDAN` en `GuideBnbQuema.tsx`); en **TRON**, el precio de la energía y el USDT en circulación; en **Monero**, el estado de FCMP++ y de la norma europea; en **Stellar**, la reserva base y los XLM en circulación; y los rendimientos de staking de ETH, SOL, ADA y LINK.
 - [ ] **Binance ya no opera en España** (sin licencia MiCA desde el 01-07-2026). Repasar dónde la web la nombra como una opción para comprar: sale en las guías de fiscalidad y de Hyperliquid y en `src/lib/glosario.ts`. No se ha tocado nada de eso.
@@ -59,12 +58,6 @@ Los cinco cursos pedidos el 12-11-2026 están escritos, subidos y **publicados**
 
 - [ ] **Auditoría SEO de las cinco fichas de curso.** Se publicaron sin ella por orden del admin.
 - [ ] **Probar con una sesión real** el aula, un examen y el PDF del certificado de uno de los cursos nuevos: se verificaron con `tsc`, la compilación y maquetas, no con una cuenta.
-
-### 00e. La portada no tiene `<h1>` (12-11-2026)
-
-Visto al rehacer el certificado: el único `<h1>` de la portada era el de la **muestra del certificado** del slider («Tu nombre aquí»), porque el componente pintaba el nombre como `<h1>`. Ya no lo hace (`CURSOS.md` §9), así que la portada se queda sin ninguno. Comprobar: `curl -s https://adelinacademy.com/ | grep -c "<h1"`.
-
-- [ ] **Darle a la portada su `<h1>`** en `HeroSlider.tsx` o `src/app/page.tsx`, con la consulta que se quiere ganar, y uno solo.
 
 ### 00c. SEO del Diario de Trading: lo que falta (10-11-2026)
 

@@ -80,6 +80,14 @@ export default async function HomePage() {
         <div className="hero-aurora" aria-hidden="true" />
 
         <div className="hero-content">
+          {/* El único <h1> de la portada. Las diapositivas del slider llevan
+              <h2> (uno por pieza, y cambian), así que el tema de la página lo
+              fija esta línea, con la consulta del `title`: «formación en
+              criptomonedas». Visible a propósito: un h1 escondido es lo que
+              Google trata como texto oculto. */}
+          <h1 className="hero-h1">
+            AdelinBTC Academy · Formación en criptomonedas en español
+          </h1>
           <HeroSlider isPremium={isPremium} portfolio={resumenPortfolio} />
 
           {!user && (

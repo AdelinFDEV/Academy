@@ -111,6 +111,27 @@
   align-items: center;
 }
 
+/* El h1 de la portada: una línea discreta encima del slider, no un titular.
+   Los titulares grandes son los h2 de cada diapositiva. */
+.hero-h1 {
+  margin: 0 0 1.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@media (max-width: 640px) {
+  .hero-h1 {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 1.1rem;
+  }
+}
+
 @media (min-width: 900px) {
   .hero {
     min-height: max(700px, calc(100vh - var(--nav-h, 68px)));

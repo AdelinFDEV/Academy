@@ -183,7 +183,7 @@ export default async function ChainlinkPage() {
 
           <div className="gbc-body" style={{ marginTop: 28 }}>
             <p>
-              El paso 3 es el que lo sostiene todo. Se usa el valor del medio, la mediana, y no la media, por una
+              El paso 3 es el que lo sostiene todo. Se usa el valor del medio, la <Termino slug="mediana">mediana</Termino>, y no la media, por una
               razón concreta: un solo mentiroso puede arrastrar una media, pero no puede mover el valor del
               centro. Compruébalo tú. Haz mentir a los <Termino slug="nodo">nodos</Termino>, de uno en uno, y mira cuántos hacen falta para
               falsear el precio:
