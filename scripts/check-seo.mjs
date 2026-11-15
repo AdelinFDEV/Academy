@@ -422,7 +422,10 @@ for (const u of urls) {
   const r = await fetch(BASE + u).catch(() => null);
   if (!r?.ok) continue;
   const h = await r.text();
-  const cuerpoOtro = h.slice(h.indexOf("<main"), h.indexOf("<footer") > 0 ? h.indexOf("<footer") : undefined);
+  // Las guías no tienen <main>: sin él, indexOf da -1 y slice(-1, …) devolvía
+  // una cadena vacía, así que un enlace desde una guía NUNCA contaba (15-11-2026).
+  const ini = h.indexOf("<main") >= 0 ? h.indexOf("<main") : h.indexOf("<body");
+  const cuerpoOtro = h.slice(Math.max(ini, 0), h.indexOf("<footer") > 0 ? h.indexOf("<footer") : undefined);
   if (new RegExp(`href="${ruta}"`).test(cuerpoOtro)) { entrantes++; quien.push(u); }
 }
 // En un borrador, cero entrantes es lo normal y no es un fallo todavía: nadie
