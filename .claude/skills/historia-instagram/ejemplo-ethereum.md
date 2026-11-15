@@ -1,5 +1,7 @@
 # Modelo aprobado: historia de la guía de Ethereum (15-11-2026)
 
+> **Solo para el estilo.** Su reparto del espacio (zonas en píxeles, botón al fondo de la banda) está superado: no dejaba sitio para poner el enlace a mano. La estructura que se copia es la de [`ejemplo-tao.md`](./ejemplo-tao.md).
+
 El admin aprobó esta versión tras una primera que vio «sosa». Lo que la mejoró y no debe perderse:
 
 - Titular **condensado** y con relieve, como las portadas. La primera salió con una letra ancha y plana, y perdía fuerza.
