@@ -202,7 +202,8 @@ export default function BlogMobileMenu({ user, isPremium = false, userName, isAd
                   </span>
                   <span className="mm-premium-titulo">Diario, Portfolio Adelin y Cursos en una suscripción</span>
                   <span className="mm-premium-pie">
-                    <span className="mm-premium-precio">49,99 €<small>/mes</small></span>
+                    {/* A mano: este componente es de cliente y no puede importar `@/lib/stripe`. Si cambia el precio, aquí también. */}
+                    <span className="mm-premium-precio">19,99 €<small>/mes</small></span>
                     <span className="mm-premium-ir">
                       Ver qué incluye <ArrowRight size={15} strokeWidth={2.4} aria-hidden="true" />
                     </span>

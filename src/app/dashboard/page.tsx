@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import Link from "next/link";
 import DashboardSavedTerms from "@/components/DashboardSavedTerms";
 import {
@@ -259,7 +260,7 @@ export default async function DashboardPage() {
             </ul>
           </div>
           <div className="dh-premium-compra">
-            <p className="dh-premium-precio">49,99 €<small>/mes</small></p>
+            <p className="dh-premium-precio">{PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")} €<small>/mes</small></p>
             <Link href="/premium" className="dh-premium-cta">
               Hazte Premium <ArrowRight size={16} strokeWidth={2.4} aria-hidden="true" />
             </Link>

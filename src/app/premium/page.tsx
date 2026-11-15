@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/premium" },
   title: "Hazte Premium",
   description:
-    "Diario de Trading con Nova, la cartera real de AdelinBTC en directo y cursos con certificado, por 49,99 €/mes. Sin permanencia.",
+    `Diario de Trading con Nova, la cartera real de AdelinBTC en directo y cursos con certificado, por ${PREMIUM_PRICE_EUR.toFixed(2).replace(".", ",")} €/mes. Sin permanencia.`,
 };
 
 /**

@@ -9,12 +9,16 @@ import Stripe from "stripe";
  * el producto — hay que crear un enlace nuevo y cambiarlo aquí. Este valor por
  * defecto tiene que apuntar SIEMPRE al precio vigente: si se queda con uno
  * viejo, el día que falte la variable de entorno la web cobra de menos sin dar
- * ningún error. El enlace anterior, de la tarifa de lanzamiento de 19,99 €,
- * era 00w3cvgC86CGbKReVTaZi02.
+ * ningún error.
+ *
+ * Historial: 19,99 € de lanzamiento (00w3cvgC86CGbKReVTaZi02), 49,99 € desde
+ * septiembre de 2026 (28E7sL4Tqe583el00ZaZi03) y de nuevo 19,99 € desde el
+ * 15-11-2026, con este enlace. Si cambia, cambia también el precio a mano en
+ * `BlogMobileMenu.tsx`, que es de cliente y no puede importar este archivo.
  */
 export const PAYMENT_LINK =
   process.env.STRIPE_PAYMENT_LINK ??
-  "https://buy.stripe.com/28E7sL4Tqe583el00ZaZi03";
+  "https://buy.stripe.com/6oU00j5Xu5yC2ah9BzaZi04";
 
 /**
  * Precio mensual del Premium, en euros. Es el ÚNICO sitio donde se escribe el
@@ -25,9 +29,9 @@ export const PAYMENT_LINK =
  * día que haya suscriptores de dos épocas, las cifras del panel y el importe de
  * /cuenta pasan a ser aproximados y habrá que leer el real de Stripe.
  */
-export const PREMIUM_PRICE_EUR = 49.99;
+export const PREMIUM_PRICE_EUR = 19.99;
 
-/** 49.99 → "49,99€". Formato español: coma decimal y el símbolo detrás. */
+/** 19.99 → "19,99€". Formato español: coma decimal y el símbolo detrás. */
 export function precioEur(n: number): string {
   return `${n.toFixed(2).replace(".", ",")}€`;
 }
