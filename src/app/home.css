@@ -2731,3 +2731,454 @@
     justify-content: center;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   LO OTRO GRATUITO — diccionario y calculadora, bajo las guías
+   (RecursosGratisHome.tsx). Rehecho el 16-11-2026: cada lado
+   enseña su producto. El diccionario es un fichero de papel con
+   serif (Fraunces); la calculadora, un aparato con pantalla.
+   ═══════════════════════════════════════════════════════════ */
+
+.rg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 3.4rem 1.25rem 3.8rem;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.05);
+  background: linear-gradient(180deg, #070d1a 0%, #0b1528 55%, #070d1a 100%);
+}
+
+.rg-fondo { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.rg-luz { position: absolute; border-radius: 50%; filter: blur(80px); }
+.rg-luz--oro { width: 520px; height: 520px; left: -160px; top: 10%; background: rgba(230, 180, 85, 0.13); }
+.rg-luz--cian { width: 460px; height: 460px; right: -140px; bottom: -80px; background: rgba(34, 211, 238, 0.11); }
+
+.rg-inner { position: relative; max-width: 1240px; margin: 0 auto; }
+
+@media (min-width: 960px) {
+  .rg { padding: 4.4rem 2.4rem 4.8rem; }
+}
+
+/* ── Cabecera ── */
+
+.rg-cabecera { max-width: 46rem; margin-bottom: 2.2rem; }
+
+.rg-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--premium-gold);
+}
+
+.rg-eyebrow-punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--premium-gold);
+  box-shadow: 0 0 10px var(--premium-gold);
+}
+
+.rg-titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+
+.rg-titulo em {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, #f7dc9c 0%, var(--premium-gold) 45%, #67e8f9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Rejilla: el diccionario manda, la calculadora acompaña ── */
+
+.rg-rejilla { display: grid; grid-template-columns: 1fr; gap: 1.2rem; }
+@media (min-width: 1040px) { .rg-rejilla { grid-template-columns: 7fr 5fr; gap: 1.4rem; } }
+
+.rg-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.6rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--premium-gold);
+}
+.rg-kicker--cian { color: #67e8f9; }
+
+.rg-texto { margin: 0 0 1.3rem; font-size: 0.95rem; line-height: 1.65; color: rgba(226, 232, 246, 0.66); }
+
+.rg-boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-size: 0.93rem;
+  font-weight: 700;
+  color: #070d1a;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease;
+}
+.rg-boton svg { transition: transform 0.2s ease; }
+.rg-boton:hover { transform: translateY(-2px); filter: brightness(1.06); }
+.rg-boton:hover svg { transform: translateX(3px); }
+.rg-boton--oro { background: linear-gradient(135deg, #f7dc9c, var(--premium-gold)); box-shadow: 0 10px 30px -12px rgba(230, 180, 85, 0.7); }
+.rg-boton--cian { background: linear-gradient(135deg, #a5f3fc, #22d3ee); box-shadow: 0 10px 30px -12px rgba(34, 211, 238, 0.7); }
+
+/* ══ El diccionario ══ */
+
+.rg-dic {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 2rem 1.5rem;
+  border: 1px solid rgba(230, 180, 85, 0.18);
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    radial-gradient(80% 70% at 100% 30%, rgba(230, 180, 85, 0.12) 0%, transparent 65%),
+    linear-gradient(150deg, rgba(240, 244, 255, 0.04), rgba(9, 13, 24, 0.75) 60%);
+}
+@media (min-width: 720px) { .rg-dic { grid-template-columns: 0.95fr 1.05fr; align-items: center; padding: 2.4rem 2.2rem; } }
+
+/* La marca A–Z, gigante y casi invisible, detrás de todo. */
+.rg-dic-marca {
+  position: absolute;
+  left: -0.05em;
+  bottom: -0.32em;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(8rem, 18vw, 15rem);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(230, 180, 85, 0.14);
+  pointer-events: none;
+  user-select: none;
+}
+
+.rg-dic-texto { position: relative; }
+
+.rg-dic-titulo {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+.rg-dic-cifra {
+  display: block;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: clamp(3.2rem, 6vw, 4.6rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #fbe7b5, var(--premium-gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── El fichero ── */
+
+.rg-fichero { position: relative; min-height: 360px; padding: 1.4rem 2.2rem 1.2rem 0.4rem; }
+
+.rg-ficha {
+  position: absolute;
+  inset: 1.4rem 2.2rem 1.2rem 0.4rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1.3rem 1.4rem 1.3rem 1.9rem;
+  border-radius: 6px 18px 18px 6px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 27px, rgba(120, 90, 40, 0.09) 27px 28px),
+    linear-gradient(160deg, #fbf6ea 0%, #f1e7d2 100%);
+  color: #1d1609;
+  box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.85), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* El margen rojo de las fichas de papel de siempre. */
+.rg-ficha::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 14px;
+  width: 1px;
+  background: rgba(200, 70, 60, 0.35);
+}
+
+.rg-ficha--detras { opacity: 0.9; }
+.rg-ficha--1 { transform: rotate(-7deg) translate(-10px, 10px); filter: brightness(0.82); }
+.rg-ficha--2 { transform: rotate(5deg) translate(14px, -4px); filter: brightness(0.9); }
+.rg-ficha--frente { position: relative; inset: auto; min-height: 330px; transform: rotate(-1deg); }
+
+/* Al pasar el ratón, el fichero se abre en abanico. */
+.rg-dic:hover .rg-ficha--1 { transform: rotate(-12deg) translate(-26px, 18px); }
+.rg-dic:hover .rg-ficha--2 { transform: rotate(9deg) translate(30px, -12px); }
+.rg-dic:hover .rg-ficha--frente { transform: rotate(0deg) translateY(-4px); }
+
+.rg-ficha--detras .rg-ficha-palabra { margin-top: 0.4rem; }
+
+.rg-ficha-cab { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+
+.rg-ficha-cat {
+  align-self: flex-start;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a5a10;
+  background: rgba(230, 180, 85, 0.25);
+}
+
+.rg-ficha-num { font-size: 0.72rem; font-weight: 600; color: rgba(29, 22, 9, 0.45); }
+
+.rg-ficha-palabra {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #1d1609;
+  text-decoration: none;
+}
+
+.rg-ficha-palabra--grande {
+  margin-top: 0.9rem;
+  font-size: clamp(2.4rem, 4.6vw, 3.3rem);
+  line-height: 1;
+}
+.rg-ficha-palabra--grande:hover { color: #8a5a10; }
+
+.rg-ficha-origen {
+  margin-top: 0.35rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: rgba(29, 22, 9, 0.55);
+}
+
+.rg-ficha-def {
+  margin: 0.9rem 0 1rem;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(29, 22, 9, 0.86);
+}
+
+.rg-ficha-ver { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.75rem; margin-bottom: 1rem; font-size: 0.84rem; }
+.rg-ficha-ver-tit { font-weight: 700; color: rgba(29, 22, 9, 0.5); }
+.rg-ficha-ver a {
+  color: #1d1609;
+  text-decoration: underline;
+  text-decoration-color: rgba(138, 90, 16, 0.45);
+  text-underline-offset: 3px;
+}
+.rg-ficha-ver a:hover { color: #8a5a10; }
+
+.rg-ficha-leer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #8a5a10;
+  text-decoration: none;
+}
+.rg-ficha-leer:hover { text-decoration: underline; }
+
+/* El abecedario del canto del fichero: encendidas las letras con términos. */
+.rg-abc {
+  position: absolute;
+  top: 1.2rem;
+  bottom: 1rem;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  line-height: 1;
+}
+.rg-abc i { font-style: normal; color: rgba(240, 244, 255, 0.16); }
+.rg-abc i.is-on { color: rgba(230, 180, 85, 0.8); }
+
+@media (max-width: 719px) {
+  .rg-fichero { min-height: 0; }
+  .rg-ficha--1 { transform: rotate(-4deg) translate(-4px, 8px); }
+  .rg-ficha--2 { transform: rotate(3deg) translate(6px, -2px); }
+}
+
+/* ══ La calculadora ══ */
+
+.rg-calc {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1.5rem 1.6rem;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 28px;
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(34, 211, 238, 0.12) 0%, transparent 65%),
+    linear-gradient(160deg, rgba(240, 244, 255, 0.035), rgba(9, 13, 24, 0.8) 60%);
+}
+@media (min-width: 720px) { .rg-calc { padding: 2.4rem 2rem 1.8rem; } }
+
+.rg-calc-titulo {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+
+/* El aparato: carcasa, pantalla y una luz cian. */
+.rg-aparato {
+  margin: 0.2rem 0 1.4rem;
+  padding: 0.7rem;
+  border-radius: 22px;
+  background: linear-gradient(160deg, #1a2540, #0a1120);
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  box-shadow: 0 30px 60px -30px rgba(34, 211, 238, 0.45), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.rg-aparato-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.15rem 0.45rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(226, 232, 246, 0.4);
+}
+.rg-aparato-puntos { display: inline-flex; gap: 5px; }
+.rg-aparato-puntos i { width: 8px; height: 8px; border-radius: 50%; background: rgba(240, 244, 255, 0.14); }
+.rg-aparato-puntos i:first-child { background: #22d3ee; box-shadow: 0 0 8px #22d3ee; }
+
+.rg-pantalla {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem 1.15rem 1rem;
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(180deg, rgba(34, 211, 238, 0.03) 0 2px, transparent 2px 4px),
+    radial-gradient(120% 80% at 50% 0%, rgba(34, 211, 238, 0.1), transparent 70%),
+    #050a14;
+  border: 1px solid rgba(34, 211, 238, 0.16);
+  font-variant-numeric: tabular-nums;
+}
+
+.rg-pregunta { font-size: 0.8rem; color: rgba(226, 232, 246, 0.55); }
+.rg-grande {
+  margin: 0.1rem 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.rg-resultado {
+  margin-top: 0.1rem;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #67e8f9;
+  text-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+}
+.rg-veces {
+  align-self: flex-start;
+  margin: 0.45rem 0 1rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #070d1a;
+  background: #67e8f9;
+}
+
+.rg-barras { list-style: none; display: grid; gap: 0.55rem; margin: 0 0 0.9rem; padding: 0; }
+.rg-barras li { display: grid; grid-template-columns: 1fr; gap: 0.25rem; }
+.rg-barra-nombre { font-size: 0.74rem; font-weight: 600; color: rgba(226, 232, 246, 0.7); }
+.rg-barra-pista { height: 8px; border-radius: 999px; background: rgba(240, 244, 255, 0.06); overflow: hidden; }
+.rg-barra {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(240, 244, 255, 0.35);
+  transform-origin: left;
+  animation: rgBarra 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.rg-barras li:nth-child(2) .rg-barra { animation-delay: 0.08s; }
+.rg-barras li:nth-child(3) .rg-barra { animation-delay: 0.16s; }
+.rg-barras li:nth-child(4) .rg-barra { animation-delay: 0.24s; }
+.rg-barras li.is-objetivo .rg-barra { background: linear-gradient(90deg, #22d3ee, #a5f3fc); box-shadow: 0 0 12px rgba(34, 211, 238, 0.6); }
+.rg-barras li.is-hoy .rg-barra { background: rgba(34, 211, 238, 0.5); }
+.rg-barra-valor { font-size: 0.72rem; color: rgba(226, 232, 246, 0.45); }
+
+@keyframes rgBarra {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.rg-fuente { font-size: 0.68rem; color: rgba(226, 232, 246, 0.38); }
+
+/* Sin datos: la fórmula, en vertical. */
+.rg-pantalla--formula { gap: 0.35rem; }
+.rg-linea { padding: 0.65rem 0.8rem; border-radius: 10px; background: rgba(240, 244, 255, 0.04); }
+.rg-linea small { font-size: 0.82rem; color: rgba(226, 232, 246, 0.75); }
+.rg-linea--total { background: rgba(34, 211, 238, 0.12); }
+.rg-linea--total small { color: #67e8f9; font-weight: 700; }
+.rg-op { align-self: center; font-weight: 800; color: #22d3ee; }
+
+.rg-calc .rg-boton { align-self: flex-start; }
+.rg-nota { margin: 0.75rem 0 0; font-size: 0.78rem; color: rgba(226, 232, 246, 0.48); }
+
+@media (max-width: 640px) {
+  .rg-boton { align-self: stretch; justify-content: center; }
+  .rg-calc .rg-boton { align-self: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rg-ficha, .rg-boton, .rg-boton svg { transition: none; }
+  .rg-barra { animation: none; }
+  .rg-dic:hover .rg-ficha--1 { transform: rotate(-7deg) translate(-10px, 10px); }
+  .rg-dic:hover .rg-ficha--2 { transform: rotate(5deg) translate(14px, -4px); }
+  .rg-dic:hover .rg-ficha--frente { transform: rotate(-1deg); }
+  .rg-boton:hover, .rg-boton:hover svg { transform: none; }
+}
