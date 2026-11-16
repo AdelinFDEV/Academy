@@ -221,7 +221,9 @@ Datos reales de Search Console, del 29 de agosto al 3 de septiembre de 2026 (46 
 
 **Las tres que ya recibían impresiones están hechas**, y el recuento no se escribe aquí: sale de `npm run check:glosario`.
 
-La siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`, `staking`— son los siguientes candidatos, y `pnl` el primero: es el que más se confunde con el que se acaba de ampliar.
+La siguiente tanda **sale del hilo que ya funciona**, no de adivinar: la consulta más buscada del sitio es «curso de fiscalidad sobre criptomonedas» (6 impresiones) y también aparece «cointracking hacienda». Es decir, el ángulo fiscal español tira. Los términos que lo tocan —`pnl`, `market-cap`, `oferta-circulante`— son los siguientes candidatos, y `pnl` el primero: es el que más se confunde con el que se acaba de ampliar.
+
+**`staking` se amplió el 16-11-2026** porque Search Console le daba 20 impresiones («qué es staking» y «que es el staking») con una ficha de 233 palabras: ahora tiene 1.518, título «Qué es el staking y cuánto rinde de verdad», siete preguntas y una definición corta nueva (la anterior lo comparaba con un depósito bancario). Mirar a las 4-6 semanas su posición y sus clics.
 
 ⚠️ **Antes de escribir la siguiente, vuelve a mirar Search Console.** Con tres fichas profundas publicadas, los datos de agosto ya no son los que mandan.
 
