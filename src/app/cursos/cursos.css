@@ -280,6 +280,76 @@
 }
 .cf-objetivos p { margin: 0; font-size: 0.94rem; line-height: 1.6; color: rgba(240, 244, 255, 0.82); }
 
+/* Los términos enlazados al diccionario dentro de la ficha (regla del
+   diccionario): el mismo color del texto, con un subrayado del acento. */
+.cf-lead a,
+.cf-objetivos a,
+.cf-para a,
+.cf .det-faq-item a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cf-acento) 55%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.cf-lead a:hover,
+.cf-objetivos a:hover,
+.cf-para a:hover,
+.cf .det-faq-item a:hover { color: #ffffff; text-decoration-color: var(--cf-acento); }
+
+/* ── Para quién es ─────────────────────────────────────────────────────── */
+
+.cf-para { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
+@media (min-width: 860px) { .cf-para { grid-template-columns: 3fr 2fr; } }
+
+.cf-para-col {
+  padding: 1.3rem 1.3rem 1.1rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(240, 244, 255, 0.035), rgba(9, 13, 24, 0.6) 55%);
+}
+
+.cf-para-titulo {
+  margin: 0 0 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.55);
+}
+
+.cf-para ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.cf-para li { display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.94rem; line-height: 1.6; color: rgba(240, 244, 255, 0.82); }
+.cf-para li svg { flex-shrink: 0; margin-top: 0.2rem; }
+.cf-para-col--si li svg { color: #4ade80; }
+.cf-para-col--no li svg { color: rgba(248, 113, 113, 0.8); }
+
+/* ── Al día: lo reciente que ya recoge el temario ──────────────────────── */
+
+.cf-aldia { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+@media (min-width: 860px) { .cf-aldia { grid-template-columns: repeat(2, 1fr); } }
+.cf-aldia li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 1.05rem 1.15rem;
+  border: 1px solid rgba(240, 244, 255, 0.08);
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(240, 244, 255, 0.03), rgba(9, 13, 24, 0.55) 60%);
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: rgba(240, 244, 255, 0.8);
+}
+.cf-aldia li svg { flex-shrink: 0; margin-top: 0.2rem; color: var(--cf-acento); }
+.cf-aldia a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--cf-acento) 55%, transparent);
+  text-underline-offset: 3px;
+}
+.cf-aldia a:hover { color: #ffffff; text-decoration-color: var(--cf-acento); }
+
 /* ── Temario en línea de tiempo ────────────────────────────────────────── */
 
 .cf-temario { position: relative; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.85rem; }

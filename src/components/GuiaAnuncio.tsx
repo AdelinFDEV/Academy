@@ -24,7 +24,10 @@ import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
  */
 
 export type EstadoLector = "premium" | "cuenta" | "anonimo";
-export type ProductoAnuncio = "diario" | "portfolio" | "cursos" | "premium";
+export type ProductoAnuncio = "diario" | "portfolio" | "cursos" | "curso-fiscalidad" | "premium";
+
+/** Las ilustraciones que hay en `public/anuncios/`: un curso concreto usa la de los cursos. */
+type Imagen = "diario" | "portfolio" | "cursos" | "premium";
 
 type Ficha = {
   etiqueta: string;
@@ -37,6 +40,8 @@ type Ficha = {
   /** La herramienta en sí, para quien ya es Premium. Ausente = no se le enseña nada. */
   dentro?: string;
   botonDentro?: string;
+  /** La ilustración de `public/anuncios/`. */
+  imagen: Imagen;
 };
 
 const destinoDe = (id: string) => {
@@ -56,6 +61,7 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
     ],
     boton: "Ver el Diario por dentro",
     botonDentro: "Abrir mi diario",
+    imagen: "diario",
     ...destinoDe("diario"),
   },
   portfolio: {
@@ -69,6 +75,7 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
     ],
     boton: "Ver mi cartera real",
     botonDentro: "Abrir el Portfolio",
+    imagen: "portfolio",
     ...destinoDe("portfolio"),
   },
   cursos: {
@@ -82,7 +89,28 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
     ],
     boton: "Ver todos los cursos",
     botonDentro: "Seguir con mis cursos",
+    imagen: "cursos",
     ...destinoDe("cursos"),
+  },
+  // Un curso concreto, para la guía de su mismo tema: «curso de fiscalidad»
+  // es la consulta que más impresiones trae al sitio, y la guía es la página
+  // que Google enseña para ella. El anuncio genérico de cursos no le decía a
+  // nadie, ni a Google, que ese curso existe. Textos comprobados contra
+  // scripts/cursos/fiscalidad-cripto-espana/curso.json (16-11-2026).
+  "curso-fiscalidad": {
+    etiqueta: "Curso de fiscalidad cripto",
+    titulo: "De esta guía a tu declaración, paso a paso",
+    texto: "El curso de fiscalidad de criptomonedas en España: 7 módulos y 24 lecciones, de la primera compra a la Renta Web.",
+    puntos: [
+      "Un año de operaciones calculado con FIFO, de principio a fin",
+      "Staking, airdrops, DeFi, NFT y pérdidas, cada uno en su base",
+      "Qué hacer si Hacienda te escribe, y certificado al terminar",
+    ],
+    boton: "Ver el curso de fiscalidad",
+    destino: "/cursos/fiscalidad-cripto-espana",
+    dentro: "/aula/fiscalidad-cripto-espana",
+    botonDentro: "Entrar al curso",
+    imagen: "cursos",
   },
   premium: {
     etiqueta: "AdelinBTC Premium",
@@ -95,6 +123,7 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
     ],
     boton: "Ver qué incluye Premium",
     destino: "/premium",
+    imagen: "premium",
   },
 };
 
@@ -106,11 +135,11 @@ const FICHAS: Record<ProductoAnuncio, Ficha> = {
  *
  * Para cambiar una, se sustituye el archivo con el mismo nombre y tamaño.
  */
-function Figura({ producto }: { producto: ProductoAnuncio }) {
+function Figura({ imagen }: { imagen: Imagen }) {
   return (
     <div className="gan-figura" aria-hidden="true">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={`/anuncios/${producto}.webp`} alt="" width={800} height={598} loading="lazy" decoding="async" />
+      <img src={`/anuncios/${imagen}.webp`} alt="" width={800} height={598} loading="lazy" decoding="async" />
     </div>
   );
 }
@@ -139,7 +168,7 @@ export default function GuiaAnuncio({
   return (
     <aside className={`gan gan--${producto}${compacto ? " gan--compacto" : ""}`} aria-label={f.etiqueta}>
       <div className="gan-tarjeta">
-        <Figura producto={producto} />
+        <Figura imagen={f.imagen} />
         <div className="gan-cuerpo">
           <span className="gan-etiqueta">{f.etiqueta}</span>
           <p className="gan-titulo">{f.titulo}</p>

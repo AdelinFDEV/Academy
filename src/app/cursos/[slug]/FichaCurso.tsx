@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowRight, Award, BadgeCheck, BarChart3, BookOpenText, CalendarCheck, ChevronDown, CircleCheckBig,
+  ArrowRight, Award, BadgeCheck, BarChart3, BookOpenText, CalendarCheck, ChevronDown, CircleCheckBig, CircleX,
   ClipboardCheck, Clock3, Crown, Download, GraduationCap, Layers, Medal, PlayCircle, ShieldCheck, Sparkles,
 } from "lucide-react";
 import SiteNav from "@/components/SiteNav";
@@ -8,8 +8,40 @@ import Footer from "@/components/Footer";
 import DisclaimerRiesgo from "@/components/DisclaimerRiesgo";
 import ComoFunciona from "@/components/aula/ComoFunciona";
 import Certificado from "@/components/aula/Certificado";
+import Termino from "@/components/Termino";
 import type { CursoCompleto, DatosAlumno, Sesion } from "@/lib/cursos";
 import { duracion, fechaLarga, minutosTotales, type EstadoCurso } from "@/lib/cursos-progreso";
+import type { CursoSeo } from "@/lib/cursos-seo";
+import { PREMIUM_PRICE_EUR, precioEur } from "@/lib/stripe";
+
+/**
+ * Enlaza al diccionario la PRIMERA aparición de cada término de `mapa` en
+ * `texto`. `usados` se comparte entre todos los textos de la página, en el
+ * orden en que se pintan, para que cada término se enlace una sola vez.
+ */
+function conTerminos(texto: string, mapa: Record<string, string> | undefined, usados: Set<string>): React.ReactNode {
+  if (!mapa) return texto;
+  const partes: React.ReactNode[] = [];
+  let resto = texto;
+  for (;;) {
+    let mejor: { termino: string; i: number } | null = null;
+    for (const termino of Object.keys(mapa)) {
+      if (usados.has(termino)) continue;
+      const i = resto.indexOf(termino);
+      if (i > -1 && (!mejor || i < mejor.i || (i === mejor.i && termino.length > mejor.termino.length))) {
+        mejor = { termino, i };
+      }
+    }
+    if (!mejor) break;
+    usados.add(mejor.termino);
+    partes.push(resto.slice(0, mejor.i));
+    partes.push(<Termino key={mejor.termino} slug={mapa[mejor.termino]}>{mejor.termino}</Termino>);
+    resto = resto.slice(mejor.i + mejor.termino.length);
+  }
+  if (partes.length === 0) return texto;
+  partes.push(resto);
+  return partes;
+}
 
 /**
  * La ficha pública de un curso, solo la parte que se pinta. Los datos los
@@ -25,11 +57,28 @@ interface Props {
   sesion: Sesion | null;
   alumno: DatosAlumno | null;
   progreso: EstadoCurso | null;
+  seo?: CursoSeo;
 }
 
-export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
+export default function FichaCurso({ c, sesion, alumno, progreso, seo }: Props) {
   const { curso, modulos } = c;
   const slug = curso.slug;
+  const terminosUsados = new Set<string>();
+  const enlazar = (texto: string) => conTerminos(texto, seo?.terminos, terminosUsados);
+  // Las secciones numeradas van seguidas aunque falte alguna opcional. El
+  // certificado no enseña su número, pero ocupa el suyo.
+  const tieneFaq = !!seo?.faq?.length;
+  let n = 0;
+  const num = {
+    para: seo?.para ? ++n : 0,
+    objetivos: curso.objetivos.length > 0 ? ++n : 0,
+    alDia: seo?.alDia ? ++n : 0,
+    temario: ++n,
+    certificado: ++n,
+    como: ++n,
+    faq: tieneFaq ? ++n : 0,
+  };
+  const dos = (x: number) => String(x).padStart(2, "0");
   const lecciones = modulos.reduce((t, m) => t + m.lecciones.length, 0);
   const total = minutosTotales(modulos);
 
@@ -79,16 +128,16 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
         <header className="cf-hero">
           <div className="cf-hero-texto">
             <div className="cf-chips">
-              <span className="cf-chip"><GraduationCap size={14} aria-hidden="true" /> Curso</span>
+              <span className="cf-chip"><GraduationCap size={14} aria-hidden="true" /> Curso online</span>
               <span className="cf-chip"><BarChart3 size={14} aria-hidden="true" /> Nivel {curso.nivel}</span>
-              <span className="cf-chip cf-chip--oro"><Crown size={14} aria-hidden="true" /> Incluido en Premium</span>
+              <span className="cf-chip cf-chip--oro"><Crown size={14} aria-hidden="true" /> Incluido en Premium · {precioEur(PREMIUM_PRICE_EUR)}/mes</span>
             </div>
 
             <h1 className="cf-titulo">
-              {curso.titulo}
+              {seo?.h1 ?? curso.titulo}
               {curso.subtitulo && <span className="cf-titulo-grad">{curso.subtitulo}</span>}
             </h1>
-            {curso.descripcion && <p className="cf-lead">{curso.descripcion}</p>}
+            {curso.descripcion && <p className="cf-lead">{enlazar(curso.descripcion)}</p>}
 
             <div className="cf-acciones">
               <Link href={cta.href} prefetch={cta.href.startsWith("/api/") ? false : undefined} className="cf-btn">
@@ -141,11 +190,42 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
           </aside>
         </header>
 
-        {/* ── 01 · Lo que sabrás hacer ── */}
+        {/* ── Para quién es ── */}
+        {seo?.para && (
+          <section className="det-seccion">
+            <header className="det-sechead">
+              <span className="det-sechead-num">{dos(num.para)}</span>
+              <div className="det-sechead-text">
+                <h2 className="det-h2">Para quién es este curso</h2>
+                <p className="det-sechead-sub">Y para quién no, que también conviene saberlo antes de empezar.</p>
+              </div>
+            </header>
+            <div className="cf-para">
+              <div className="cf-para-col cf-para-col--si">
+                <p className="cf-para-titulo">Te sirve si…</p>
+                <ul>
+                  {seo.para.si.map((t) => (
+                    <li key={t}><CircleCheckBig size={17} strokeWidth={2.2} aria-hidden="true" /><span>{enlazar(t)}</span></li>
+                  ))}
+                </ul>
+              </div>
+              <div className="cf-para-col cf-para-col--no">
+                <p className="cf-para-titulo">No es para ti si…</p>
+                <ul>
+                  {seo.para.no.map((t) => (
+                    <li key={t}><CircleX size={17} strokeWidth={2.2} aria-hidden="true" /><span>{enlazar(t)}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── Lo que sabrás hacer ── */}
         {curso.objetivos.length > 0 && (
           <section className="det-seccion">
             <header className="det-sechead">
-              <span className="det-sechead-num">01</span>
+              <span className="det-sechead-num">{dos(num.objetivos)}</span>
               <div className="det-sechead-text">
                 <h2 className="det-h2">Lo que sabrás hacer al terminar</h2>
                 <p className="det-sechead-sub">No es teoría para aprobar: es lo que vas a poder hacer con tu propia declaración.</p>
@@ -156,17 +236,37 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
                 <li key={o}>
                   <span className="cf-objetivo-icono" aria-hidden="true"><CircleCheckBig size={18} strokeWidth={2.2} /></span>
                   <span className="cf-objetivo-num">{String(i + 1).padStart(2, "0")}</span>
-                  <p>{o}</p>
+                  <p>{enlazar(o)}</p>
                 </li>
               ))}
             </ul>
           </section>
         )}
 
-        {/* ── 02 · Temario ── */}
+        {/* ── Al día: lo reciente que el temario ya recoge ── */}
+        {seo?.alDia && (
+          <section className="det-seccion">
+            <header className="det-sechead">
+              <span className="det-sechead-num">{dos(num.alDia)}</span>
+              <div className="det-sechead-text">
+                <h2 className="det-h2">Al día a {seo.alDia.fecha}: lo que ya recoge el temario</h2>
+                <p className="det-sechead-sub">
+                  La tributación de las criptomonedas cambia cada año. Esto es lo más reciente, y está dentro del curso.
+                </p>
+              </div>
+            </header>
+            <ul className="cf-aldia">
+              {seo.alDia.puntos.map((p) => (
+                <li key={p}><CalendarCheck size={17} strokeWidth={2.1} aria-hidden="true" /><span>{enlazar(p)}</span></li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ── Temario ── */}
         <section className="det-seccion">
           <header className="det-sechead">
-            <span className="det-sechead-num">02</span>
+            <span className="det-sechead-num">{dos(num.temario)}</span>
             <div className="det-sechead-text">
               <h2 className="det-h2">El temario completo</h2>
               <p className="det-sechead-sub">
@@ -247,7 +347,7 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
           </ol>
         </section>
 
-        {/* ── 03 · El certificado ── */}
+        {/* ── El certificado ── */}
         <section className="cf-cert" aria-labelledby="cf-cert-titulo">
           <div className="cf-cert-texto">
             <span className="cf-cert-kicker"><Award size={15} aria-hidden="true" /> Tu meta</span>
@@ -289,10 +389,10 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
           </div>
         </section>
 
-        {/* ── 04 · Cómo funciona ── */}
+        {/* ── Cómo funciona ── */}
         <section className="det-seccion det-seccion--panel">
           <header className="det-sechead">
-            <span className="det-sechead-num">04</span>
+            <span className="det-sechead-num">{dos(num.como)}</span>
             <div className="det-sechead-text">
               <h2 className="det-h2">Cómo funciona</h2>
               <p className="det-sechead-sub">Igual en todos los cursos de la academia.</p>
@@ -300,6 +400,30 @@ export default function FichaCurso({ c, sesion, alumno, progreso }: Props) {
           </header>
           <ComoFunciona />
         </section>
+
+        {/* ── Preguntas frecuentes ── */}
+        {seo?.faq && seo.faq.length > 0 && (
+          <section className="det-seccion">
+            <header className="det-sechead">
+              <span className="det-sechead-num">{dos(num.faq)}</span>
+              <div className="det-sechead-text">
+                {/* Con el nombre largo del curso: es el <h2> que lleva la consulta (Fase 6.5). */}
+                <h2 className="det-h2">Preguntas frecuentes sobre el {(seo?.h1 ?? "curso").replace(/^Curso\b/, "curso")}</h2>
+              </div>
+            </header>
+            <div className="det-faq">
+              {seo.faq.map((f) => (
+                <details key={f.q} className="det-faq-item">
+                  <summary>{f.q}</summary>
+                  <p>
+                    {f.a}
+                    {f.enlace && <> <Link href={f.enlace.href}>{f.enlace.texto}</Link>.</>}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
 
         <DisclaimerRiesgo variante={curso.aviso} />
 

@@ -4,7 +4,8 @@ import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema, ORG_ID } from "@/lib/schema";
 import { SITE_URL } from "@/lib/site";
 import { cursoPorSlug, datosAlumno, sesionActual } from "@/lib/cursos";
-import { estadoCurso } from "@/lib/cursos-progreso";
+import { estadoCurso, minutosTotales } from "@/lib/cursos-progreso";
+import { PREMIUM_PRICE_EUR } from "@/lib/stripe";
 import { CURSO_SEO } from "@/lib/cursos-seo";
 import FichaCurso from "./FichaCurso";
 import "../../herramientas/detalle.css";
@@ -35,7 +36,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ...(c.curso.published
       ? { alternates: { canonical: `/cursos/${slug}` } }
       : { robots: { index: false, follow: false } }),
-    openGraph: c.curso.portada ? { images: [c.curso.portada] } : undefined,
+    // Con título propio: sin él, al compartir el enlace sale el de la portada.
+    openGraph: {
+      title: nombre,
+      description: descripcion,
+      type: "website",
+      locale: "es_ES",
+      siteName: "AdelinBTC Academy",
+      url: `/cursos/${slug}`,
+      ...(c.curso.portada && { images: [c.curso.portada] }),
+    },
   };
 }
 
@@ -70,10 +80,23 @@ export default async function FichaCursoPage({ params }: Props) {
             educationalLevel: curso.nivel,
             ...(curso.revisado && { dateModified: curso.revisado }),
             syllabusSections: modulos.map((m) => ({ "@type": "Syllabus", name: m.titulo, description: m.descripcion ?? "" })),
+            // Solo lo que se ve en la ficha: «Curso online», la duración del
+            // panel «Lo que incluye» y el precio de Premium junto a «Incluido en Premium».
+            hasCourseInstance: {
+              "@type": "CourseInstance",
+              courseMode: "online",
+              courseWorkload: `PT${Math.floor(minutosTotales(modulos) / 60)}H${minutosTotales(modulos) % 60}M`,
+            },
+            offers: {
+              "@type": "Offer",
+              category: "Subscription",
+              price: PREMIUM_PRICE_EUR,
+              priceCurrency: "EUR",
+            },
           },
         ]}
       />
-      <FichaCurso c={c} sesion={sesion} alumno={alumno} progreso={progreso} />
+      <FichaCurso c={c} sesion={sesion} alumno={alumno} progreso={progreso} seo={CURSO_SEO[slug]} />
     </>
   );
 }

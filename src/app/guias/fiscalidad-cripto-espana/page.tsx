@@ -529,7 +529,7 @@ export default async function FiscalidadCriptoEspanaPage() {
         </section>
 
         {/* ── Anuncio de media guía ── */}
-        <GuiaAnuncio producto="cursos" variante="compacto" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
+        <GuiaAnuncio producto="curso-fiscalidad" variante="compacto" estado={isPremium ? "premium" : isRegistered ? "cuenta" : "anonimo"} />
 
         {/* ── SECCIÓN 5: RENTAS ── */}
         <section id="rentas" className="gbc-section">
