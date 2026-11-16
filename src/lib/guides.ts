@@ -150,6 +150,21 @@ export const GUIDES: GuideMeta[] = [
     tags: ["CRIPTOMONEDAS"],
     portada: "/guias/ethereum.webp",
   },
+  {
+    slug: "solana",
+    title: "Qué es Solana y qué ha pagado por ser tan rápida",
+    shortTitle: "Solana",
+    description: "Por qué Solana es tan rápida y barata, lo que cuesta de verdad usarla, las seis caídas de la red con fecha y causa, cuánto rinde el staking de SOL descontando la inflación y sus riesgos.",
+    difficulty: "intermedio",
+    sections: 9,
+    badge: "A Contrarreloj",
+    badgeId: "guide-solana",
+    readTime: "13 min",
+    color: "#e6b455",
+    topics: ["Por qué es tan rápida", "Comisiones y depósitos", "Las caídas, una a una", "El staking de SOL"],
+    tags: ["CRIPTOMONEDAS"],
+    portada: "/guias/solana.webp",
+  },
 ];
 
 /**
@@ -193,24 +208,6 @@ export interface GuiaBorrador extends GuideMeta {
  * navegador. El buscador ya la enseña: pide las publicadas a `/api/guias/publicadas`.
  */
 export const BORRADORES: GuiaBorrador[] = [
-  {
-    slug: "solana",
-    title: "Qué es Solana y qué ha pagado por ser tan rápida",
-    shortTitle: "Solana",
-    description: "Por qué Solana es tan rápida y barata, lo que cuesta de verdad usarla, las seis caídas de la red con fecha y causa, cuánto rinde el staking de SOL descontando la inflación y sus riesgos.",
-    difficulty: "intermedio",
-    sections: 9,
-    badge: "A Contrarreloj",
-    badgeId: "guide-solana",
-    readTime: "13 min",
-    color: "#e6b455",
-    topics: ["Por qué es tan rápida", "Comisiones y depósitos", "Las caídas, una a una", "El staking de SOL"],
-    tags: ["CRIPTOMONEDAS"],
-    portada: "/guias/solana.webp",
-    lista: "2026-11-13",
-    consulta: "qué es solana",
-    auditada: "2026-11-13",
-  },
   {
     slug: "cardano",
     title: "Qué es Cardano (ADA) y cuánto rinde su staking",

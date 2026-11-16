@@ -289,7 +289,7 @@ export default async function RenderPage() {
             </p>
             <p>
               La respuesta llegó a finales de <strong>2023</strong>: la comunidad aprobó migrar la red a
-              <strong> Solana</strong>, una blockchain mucho más rápida y barata, y aprovechó para renombrar
+              <strong> <Link href="/guias/solana">Solana</Link></strong>, una blockchain mucho más rápida y barata, y aprovechó para renombrar
               el token de <strong>RNDR a RENDER</strong>. Desde entonces, el proyecto ha surfeado la
               narrativa que lo cambió todo en 2024: la unión de <strong>IA y DePIN</strong>. Las mismas GPUs
               que renderizan gráficos sirven para entrenar y ejecutar modelos de inteligencia artificial, y
